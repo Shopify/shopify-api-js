@@ -1,7 +1,7 @@
 {
-  "name": "@shopify/shopify-node-api",
+  "name": "@shopify/shopify-api",
   "version": "0.0.1",
-  "description": "Shopify Node API to supporting core functionality (auth, graphql proxy, webhooks)",
+  "description": "Shopify TypeScript API to support core API functionality (auth, graphql proxy, webhooks)",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shopify/shopify-node-api.git"
+    "url": "git+https://github.com/Shopify/shopify_ts_api.git"
   },
   "bugs": {
-    "url": "https://github.com/Shopify/shopify-node-api/issues"
+    "url": "https://github.com/Shopify/shopify_ts_api/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify-node-api/README.md",
+  "homepage": "https://github.com/Shopify/shopify_ts_api/README.md",
   "author": "Shopify Inc.",
   "license": "MIT",
   "dependencies": {},
