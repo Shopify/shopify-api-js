@@ -3,9 +3,9 @@ import '../../../test/test_helper';
 import { Session } from '../session';
 import { CustomSessionStorage } from '../storage/custom';
 
-test("can use custom session storage", async () => {
+test('can use custom session storage', async () => {
   const sessionId = 'test_session';
-  const session = new Session(sessionId, (new Date()).getTime() + 86400000);
+  const session = new Session(sessionId);
 
   let store_called = false;
   let load_called = false;
@@ -22,7 +22,7 @@ test("can use custom session storage", async () => {
     () => {
       delete_called = true;
       return true;
-    },
+    }
   );
 
   await expect(storage.storeSession(session)).resolves.toBe(true);
@@ -49,14 +49,14 @@ test("can use custom session storage", async () => {
   expect(delete_called).toBe(true);
 });
 
-test("custom session storage failures and exceptions are raised", async () => {
+test('custom session storage failures and exceptions are raised', async () => {
   const sessionId = 'test_session';
-  const session = new Session(sessionId, (new Date()).getTime() + 86400000);
+  const session = new Session(sessionId);
 
   let storage = new CustomSessionStorage(
     () => false,
     () => null,
-    () => false,
+    () => false
   );
 
   await expect(storage.storeSession(session)).resolves.toBe(false);
@@ -64,12 +64,24 @@ test("custom session storage failures and exceptions are raised", async () => {
   await expect(storage.deleteSession(sessionId)).resolves.toBe(false);
 
   storage = new CustomSessionStorage(
-    () => { throw 'Failed to store!'; },
-    () => { throw 'Failed to load!'; },
-    () => { throw 'Failed to delete!'; },
+    () => {
+      throw 'Failed to store!';
+    },
+    () => {
+      throw 'Failed to load!';
+    },
+    () => {
+      throw 'Failed to delete!';
+    }
   );
 
-  await expect(storage.storeSession(session)).rejects.toEqual('Failed to store!');
-  await expect(storage.loadSession(sessionId)).rejects.toEqual('Failed to load!');
-  await expect(storage.deleteSession(sessionId)).rejects.toEqual('Failed to delete!');
+  await expect(storage.storeSession(session)).rejects.toEqual(
+    'Failed to store!'
+  );
+  await expect(storage.loadSession(sessionId)).rejects.toEqual(
+    'Failed to load!'
+  );
+  await expect(storage.deleteSession(sessionId)).rejects.toEqual(
+    'Failed to delete!'
+  );
 });
