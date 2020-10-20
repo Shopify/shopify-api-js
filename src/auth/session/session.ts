@@ -1,16 +1,17 @@
+import { OnlineAccessInfo } from '../types';
 /**
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.
  */
 class Session {
-  /** Unique id by which to store / load the session */
-  readonly id: string;
-  /** When the session expires, in ms from epoch */
-  public expires: number;
+  public shop: string;
+  public state: string;
+  public scope: string;
+  public expires?: Date;
+  public isOnline?: boolean;
+  public accessToken?: string;
+  public onlineAccesInfo?: OnlineAccessInfo;
 
-  constructor(id: string, expires: number) {
-    this.id = id;
-    this.expires = expires;
-  }
+  constructor(readonly id: string) {}
 }
 
 export { Session };
