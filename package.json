@@ -20,11 +20,12 @@
   "homepage": "https://github.com/Shopify/shopify_ts_api/README.md",
   "author": "Shopify Inc.",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
-    "babel-preset-shopify": "^21.0.0",
     "eslint": "^7.9.0",
     "jest": "^26.4.2",
+    "ts-jest": "^26.4.1",
     "rimraf": "^3.0.2",
     "typescript": "^4.0.2"
   },
