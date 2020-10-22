@@ -18,5 +18,17 @@ Fixes #0000 <!-- link to issue if one exists -->
 
 <!--
   Summary of the changes committed.
-  Before / after screenshots appreciated for UI changes.
+  Before / after screenshots appreciated for UI changes, if applicable.
 -->
+
+## Type of change
+
+- [ ] Patch: Bug (non-breaking change which fixes an issue)
+- [ ] Minor: New feature (non-breaking change which adds functionality)
+- [ ] Major: Breaking change (fix or feature that would cause existing functionality to not work as expected)
+
+
+## Checklist
+
+- [ ] I have added a changelog entry, prefixed by the type of change noted above
+- [ ] I have added/updated tests for this change
