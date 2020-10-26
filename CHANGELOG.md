@@ -7,4 +7,4 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-- Start of Changelog
+- [#7](https://github.com/Shopify/shopify_ts_api/pull/7): Adding central Shopify.Context object
