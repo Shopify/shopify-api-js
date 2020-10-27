@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 
 export default function safeCompare(
-  a: string | object | any[],
-  b: string | object | any[]
+  a: string | { [key: string]: string } | (string | number)[],
+  b: string | { [key: string]: string } | (string | number)[]
 ): boolean {
   if (typeof a === typeof b) {
     let buffA: Buffer;

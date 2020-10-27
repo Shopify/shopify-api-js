@@ -20,27 +20,15 @@
   "homepage": "https://github.com/Shopify/shopify_ts_api/README.md",
   "author": "Shopify Inc.",
   "license": "MIT",
-  "dependencies": {
-    "@types/jest": "^26.0.15",
-    "nonce": "^1.0.4"
-  },
+  "dependencies": {},
   "devDependencies": {
-<<<<<<< HEAD
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",
-=======
-    "@types/node": "^14.14.1",
-    "babel-preset-shopify": "^21.0.0",
->>>>>>> 04ada13... Adds utils for HMAC and shop validation and safe comparison.
     "eslint": "^7.9.0",
     "eslint-plugin-shopify": "^35.1.0",
     "jest": "^26.4.2",
     "rimraf": "^3.0.2",
-<<<<<<< HEAD
     "ts-jest": "^26.4.1",
-=======
-    "tslib": "^2.0.3",
->>>>>>> 04ada13... Adds utils for HMAC and shop validation and safe comparison.
     "typescript": "^4.0.2"
   },
   "eslintConfig": {
