@@ -21,6 +21,7 @@
   "author": "Shopify Inc.",
   "license": "MIT",
   "dependencies": {
+    "@shopify/network": "^1.5.0"
   },
   "devDependencies": {
     "eslint": "^7.9.0",
