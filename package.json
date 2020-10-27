@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "lint": "eslint",
+    "lint": "eslint '**/*.{ts,tsx}' --max-warnings 0",
     "clean": "rimraf ./dist"
   },
   "repository": {
@@ -20,14 +20,20 @@
   "homepage": "https://github.com/Shopify/shopify_ts_api/README.md",
   "author": "Shopify Inc.",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
     "eslint": "^7.9.0",
+    "eslint-plugin-shopify": "^35.1.0",
     "jest": "^26.4.2",
-    "ts-jest": "^26.4.1",
     "rimraf": "^3.0.2",
+    "ts-jest": "^26.4.1",
     "typescript": "^4.0.2"
+  },
+  "eslintConfig": {
+    "extends": "plugin:shopify/esnext",
+    "env": {}
   },
   "files": [
     "dist/*",
