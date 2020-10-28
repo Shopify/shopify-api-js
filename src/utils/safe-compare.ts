@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { ShopifyError } from '../error';
 
 export default function safeCompare(
   a: string | { [key: string]: string } | (string | number)[],
@@ -19,7 +20,10 @@ export default function safeCompare(
     if (buffA.length === buffB.length) {
       return crypto.timingSafeEqual(buffA, buffB);
     }
+  } else {
+    throw new ShopifyError(
+      `Mismatched data types provided: ${typeof a} and ${typeof b}`
+    );
   }
-
   return false;
 }

@@ -1,4 +1,4 @@
-import validateShop from '../validateShop';
+import validateShop from '../shop-validator';
 
 test('returns a boolean value', () => {
   expect(typeof validateShop('someshop')).toBe('boolean');

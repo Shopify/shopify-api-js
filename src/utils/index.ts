@@ -1,12 +1,12 @@
-import ShopifyHMACValidator from './HMACValidator';
-import validateShop from './validateShop';
-import safeCompare from './safeCompare';
+import { validateHmac } from './hmac-validator';
+import validateShop from './shop-validator';
+import safeCompare from './safe-compare';
 
 const ShopifyUtilities = {
-  ShopifyHMACValidator,
+  validateHmac,
   validateShop,
   safeCompare,
 };
 
 export default ShopifyUtilities;
-export { ShopifyHMACValidator, validateShop, safeCompare };
+export { validateHmac, validateShop, safeCompare };
