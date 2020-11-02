@@ -6,21 +6,17 @@ test('returns a boolean value', () => {
 
 test('returns true for valid shop urls', () => {
   const shopUrl = 'https://someshop.myshopify.com';
-  const result = validateShop(shopUrl);
-
-  expect(result).toBe(true);
+  expect(validateShop(shopUrl)).toBe(true);
 });
 
 test('returns false for invalid shop urls', () => {
   const shopUrl = 'https://notshopify.com';
-  const result = validateShop(shopUrl);
-
-  expect(result).toBe(false);
+  const anotherShop = 'https://-invalid.myshopify.com';
+  expect(validateShop(shopUrl)).toBe(false);
+  expect(validateShop(anotherShop)).toBe(false);
 });
 
 test("returns false for invalid shop urls, even if they contain the string 'myshopify.com'", () => {
   const shopUrl = 'https://notshopify.myshopify.com.org/potato';
-  const result = validateShop(shopUrl);
-
-  expect(result).toBe(false);
+  expect(validateShop(shopUrl)).toBe(false);
 });

@@ -1,4 +1,4 @@
-import { ShopifyError } from '../../error';
+import { SafeCompareError } from '../../error';
 import safeCompare from '../safe-compare';
 
 test('safeCompare returns correct boolean value for comparisons', () => {
@@ -9,6 +9,7 @@ test('safeCompare returns correct boolean value for comparisons', () => {
   expect(safeCompare(valueA, valueB)).toBe(true);
   expect(safeCompare(valueB, valueC)).toBe(false);
 });
+
 test('works on all appropriate data types (strings, arrays, objects)', () => {
   const string1 = 'string';
   const string2 = 'string';
@@ -27,14 +28,29 @@ test('works on all appropriate data types (strings, arrays, objects)', () => {
   expect(objResult).toBe(true);
 });
 
-test('args of different types throw ShopifyError', () => {
+test('appropriately returns false for mismatched values on all data types', () => {
+  const string1 = 'a string';
+  const string2 = 'a different string';
+  const stringResult = safeCompare(string1, string2);
+
+  const array1 = ['one fish', 'two fish'];
+  const array2 = ['red fish', 'blue fish'];
+  const arrayResult = safeCompare(array1, array2);
+
+  const obj1 = { thing: 'one' };
+  const obj2 = { thing: 'two' };
+  const objResult = safeCompare(obj1, obj2);
+
+  expect(stringResult).toBe(false);
+  expect(arrayResult).toBe(false);
+  expect(objResult).toBe(false);
+});
+
+test('args of different types throw SafeCompareError', () => {
   const arg1 = 'hello';
   const arg2 = ['world'];
 
   expect(() => {
     safeCompare(arg1, arg2);
-  }).toThrowError(ShopifyError);
-  expect(() => {
-    safeCompare(arg1, arg2);
-  }).toThrow(/Mismatched data types provided:/);
+  }).toThrowError(SafeCompareError);
 });

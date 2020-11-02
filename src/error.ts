@@ -1,3 +1,7 @@
 class ShopifyError extends Error {}
 
-export { ShopifyError };
+class InvalidHmacError extends ShopifyError {}
+
+class SafeCompareError extends ShopifyError {}
+
+export { ShopifyError, InvalidHmacError, SafeCompareError };

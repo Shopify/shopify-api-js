@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { ShopifyError } from '../error';
+import { SafeCompareError } from '../error';
 
 export default function safeCompare(
   a: string | { [key: string]: string } | (string | number)[],
@@ -21,7 +21,7 @@ export default function safeCompare(
       return crypto.timingSafeEqual(buffA, buffB);
     }
   } else {
-    throw new ShopifyError(
+    throw new SafeCompareError(
       `Mismatched data types provided: ${typeof a} and ${typeof b}`
     );
   }

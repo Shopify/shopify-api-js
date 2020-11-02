@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import querystring from 'querystring';
 import { AuthQueryObject } from '../auth/types';
 import safeCompare from './safe-compare';
-import { ShopifyError } from '../error';
+import { InvalidHmacError } from '../error';
 
 function stringifyQuery(query: AuthQueryObject): string {
   const orderedObj = Object.keys(query)
@@ -22,9 +22,9 @@ function generateLocalHmac(query: AuthQueryObject): string {
     .digest('hex');
 }
 
-export function validateHmac(query: AuthQueryObject): boolean {
+export default function validateHmac(query: AuthQueryObject): boolean {
   if (!query.hmac) {
-    throw new ShopifyError('Query does not contain an HMAC value.');
+    throw new InvalidHmacError('Query does not contain an HMAC value.');
   }
   const { hmac, ...rest } = query;
   const localHmac = generateLocalHmac(rest);

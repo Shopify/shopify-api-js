@@ -1,6 +1,6 @@
-import { validateHmac } from '../hmac-validator';
+import validateHmac from '../hmac-validator';
 import { AuthQueryObject } from '../../auth/types';
-import { ShopifyError } from '../../error';
+import { InvalidHmacError } from '../../error';
 
 test('correctly validates query objects', () => {
   const testQuery: AuthQueryObject = {
@@ -23,7 +23,7 @@ test('correctly validates query objects', () => {
   expect(validateHmac(badQuery)).toBe(false);
 });
 
-test('queries without hmac key throw ShopifyError', () => {
+test('queries without hmac key throw InvalidHmacError', () => {
   const noHmacQuery = {
     code: 'some code goes here',
     timestamp: 'a number as a string',
@@ -33,5 +33,5 @@ test('queries without hmac key throw ShopifyError', () => {
 
   expect(() => {
     validateHmac(noHmacQuery);
-  }).toThrow(new ShopifyError('Query does not contain an HMAC value.'));
+  }).toThrowError(InvalidHmacError);
 });
