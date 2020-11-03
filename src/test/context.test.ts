@@ -1,43 +1,67 @@
 import './test_helper';
 
-import {Context} from '../context';
+import {Context, ContextParams} from '../context';
 import {ShopifyError} from '../error';
 
-test("a single Context instance exists", () => {
+test("can initialize and update context", () => {
   Context.initialize(
-    'api_key',
-    'api_secret_key',
-    ['do_one_thing', 'do_something_else'],
-    'host_name'
+    {
+      API_KEY: 'api_key',
+      API_SECRET_KEY: 'api_secret_key',
+      SCOPES: ['do_one_thing', 'do_something_else'],
+      HOST_NAME: 'host_name',
+    }
   );
 
-  const ctx = Context.get();
-  expect(ctx).toBeInstanceOf(Context);
+  expect(Context.API_KEY).toEqual('api_key');
+  expect(Context.API_SECRET_KEY).toEqual('api_secret_key');
+  expect(Context.SCOPES).toEqual(['do_one_thing', 'do_something_else']);
+  expect(Context.HOST_NAME).toEqual('host_name');
 
-  const ctx2 = Context.get();
-  expect(ctx2).toStrictEqual(ctx);
-
-  // Reinitialize and ensure everything is still up to date
   Context.initialize(
-    'updated_api_key',
-    'updated_api_secret_key',
-    ['do_one_thing', 'do_something_else', 'one_more_thing'],
-    'updated_host_name'
+    {
+      API_KEY: 'updated_api_key',
+      API_SECRET_KEY: 'updated_api_secret_key',
+      SCOPES: ['do_one_thing', 'do_something_else', 'one_more_thing'],
+      HOST_NAME: 'updated_host_name',
+    }
   );
 
-  const ctx3 = Context.get();
-  expect(ctx3).toStrictEqual(ctx2);
-});
-
-test("can't get before initializing", () => {
-  expect(() => Context.get()).toThrow(new ShopifyError("Cannot get Context before calling Context.initialize()"));
+  expect(Context.API_KEY).toEqual('updated_api_key');
+  expect(Context.API_SECRET_KEY).toEqual('updated_api_secret_key');
+  expect(Context.SCOPES).toEqual(['do_one_thing', 'do_something_else', 'one_more_thing']);
+  expect(Context.HOST_NAME).toEqual('updated_host_name');
 });
 
 test("can't initialize with empty values", () => {
-  expect(() => Context.initialize('', 'secret_key', ['scope'], 'host_name')).toThrow(ShopifyError);
-  expect(() => Context.initialize('api_key', '', ['scope'], 'host_name')).toThrow(ShopifyError);
-  expect(() => Context.initialize('api_key', 'secret_key', [], 'host_name')).toThrow(ShopifyError);
-  expect(() => Context.initialize('api_key', 'secret_key', ['scope'], '')).toThrow(ShopifyError);
+  const valid: ContextParams = {
+    API_KEY: 'api_key',
+    API_SECRET_KEY: 'secret_key',
+    SCOPES: ['scope'],
+    HOST_NAME: 'host_name',
+  };
 
-  expect(() => Context.initialize('', '', [], '')).toThrow(ShopifyError);
+  let invalid: ContextParams = Object.assign({}, valid);
+  invalid.API_KEY = '';
+  expect(() => Context.initialize(invalid)).toThrow(ShopifyError);
+
+  invalid = Object.assign({}, valid);
+  invalid.API_SECRET_KEY = '';
+  expect(() => Context.initialize(invalid)).toThrow(ShopifyError);
+
+  invalid = Object.assign({}, valid);
+  invalid.SCOPES = [];
+  expect(() => Context.initialize(invalid)).toThrow(ShopifyError);
+
+  invalid = Object.assign({}, valid);
+  invalid.HOST_NAME = '';
+  expect(() => Context.initialize(invalid)).toThrow(ShopifyError);
+
+  const empty: ContextParams = {
+    API_KEY: '',
+    API_SECRET_KEY: '',
+    SCOPES: [],
+    HOST_NAME: '',
+  };
+  expect(() => Context.initialize(empty)).toThrow(ShopifyError);
 });
