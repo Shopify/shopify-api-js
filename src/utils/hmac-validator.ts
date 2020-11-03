@@ -7,7 +7,10 @@ import { InvalidHmacError } from '../error';
 function stringifyQuery(query: AuthQueryObject): string {
   const orderedObj = Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
-    .reduce((a, k) => {
+    .reduce((
+      a: {[key: string]: string | undefined},
+      k: keyof AuthQueryObject
+    ) => {
       a[k] = query[k];
       return a;
     }, {});
