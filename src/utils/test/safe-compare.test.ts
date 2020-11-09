@@ -1,4 +1,4 @@
-import { SafeCompareError } from '../../error';
+import ShopifyErrors from '../../error';
 import safeCompare from '../safe-compare';
 
 test('safeCompare returns correct boolean value for comparisons', () => {
@@ -52,5 +52,5 @@ test('args of different types throw SafeCompareError', () => {
 
   expect(() => {
     safeCompare(arg1, arg2);
-  }).toThrowError(SafeCompareError);
+  }).toThrowError(ShopifyErrors.SafeCompareError);
 });
