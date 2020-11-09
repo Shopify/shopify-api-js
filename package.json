@@ -20,7 +20,11 @@
   "homepage": "https://github.com/Shopify/shopify_ts_api/README.md",
   "author": "Shopify Inc.",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@shopify/network": "^1.5.1",
+    "axios": "^0.21.0",
+    "tslib": "^2.0.3"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",

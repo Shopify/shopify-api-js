@@ -1,6 +1,6 @@
 import validateHmac from '../hmac-validator';
 import { AuthQueryObject } from '../../auth/types';
-import { InvalidHmacError } from '../../error';
+import ShopifyErrors from '../../error';
 import { Context } from '../../context';
 import crypto from 'crypto';
 
@@ -42,5 +42,5 @@ test('queries without hmac key throw InvalidHmacError', () => {
 
   expect(() => {
     validateHmac(noHmacQuery);
-  }).toThrowError(InvalidHmacError);
+  }).toThrowError(ShopifyErrors.InvalidHmacError);
 });
