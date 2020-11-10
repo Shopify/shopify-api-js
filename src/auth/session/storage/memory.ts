@@ -19,12 +19,4 @@ export class MemorySessionStorage implements SessionStorage {
     }
     return true;
   }
-
-  public async cleanUpOldSessions(threshold: number): Promise<void> {
-    for (const id in this.sessions) {
-      if (this.sessions[id].expires < threshold) {
-        await this.deleteSession(id);
-      }
-    }
-  }
 }

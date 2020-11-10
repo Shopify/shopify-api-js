@@ -1,4 +1,5 @@
-import {Context, ContextParams} from './context';
+import {Context} from './context';
+import {ContextParams} from './types';
 import {ShopifyError} from './error';
 
 const Shopify = {
