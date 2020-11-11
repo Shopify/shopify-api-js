@@ -1,8 +1,8 @@
+import { enableFetchMocks } from 'jest-fetch-mock';
+enableFetchMocks();
+
 import { Context } from '../context';
 import { ApiVersion } from '../types';
-import fetchMock from  'jest-fetch-mock';
-
-fetchMock.enableMocks();
 
 beforeEach(() => {
   // We want to reset the Context object on every run so that tests start with a consistent state
@@ -14,5 +14,5 @@ beforeEach(() => {
     API_VERSION: ApiVersion.Unstable,
   });
 
-  fetchMock.resetMocks();
+  fetchMock.mockRestore();
 });

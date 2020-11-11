@@ -1,15 +1,20 @@
 import '../../test/test_helper';
 import { assertHttpRequest } from './test_helper';
 
-import { HttpClient, DataType } from '../http_client';
+import { HttpClient, DataType, HeaderParams } from '../http_client';
 import ShopifyErrors from '../../error';
 import querystring from 'querystring';
 
 const domain = 'test-shop'; // Omitting the myshopify.com part to fail if real requests are made
 const successResponse = { message: "Your HTTP request was successful!" };
 
+const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe("HTTP client", () => {
-  test("can make GET request", async () => {
+  afterAll(() => {
+    setRestClientRetryTime(originalRetryTime);
+  });
+
+  it("can make GET request", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -18,7 +23,7 @@ describe("HTTP client", () => {
     assertHttpRequest('GET', domain, '/url/path');
   });
 
-  test("can make POST request with type JSON", async () => {
+  it("can make POST request with type JSON", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -38,7 +43,7 @@ describe("HTTP client", () => {
     assertHttpRequest('POST', domain, '/url/path', { 'Content-Type': DataType.JSON.toString() }, JSON.stringify(postData));
   });
 
-  test("can make POST request with type JSON and data is already formatted", async () => {
+  it("can make POST request with type JSON and data is already formatted", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -58,7 +63,7 @@ describe("HTTP client", () => {
     assertHttpRequest('POST', domain, '/url/path', { 'Content-Type': DataType.JSON.toString() }, JSON.stringify(postData));
   });
 
-  test("can make POST request with zero-length JSON", async () => {
+  it("can make POST request with zero-length JSON", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -73,7 +78,7 @@ describe("HTTP client", () => {
     assertHttpRequest('POST', domain, '/url/path', {}, null);
   });
 
-  test("can make POST request with form-data type", async () => {
+  it("can make POST request with form-data type", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -93,7 +98,7 @@ describe("HTTP client", () => {
     assertHttpRequest('POST', domain, '/url/path', { 'Content-Type': DataType.URLEncoded.toString() }, querystring.stringify(postData));
   });
 
-  test("can make POST request with form-data type and data is already formatted", async () => {
+  it("can make POST request with form-data type and data is already formatted", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -113,7 +118,7 @@ describe("HTTP client", () => {
     assertHttpRequest('POST', domain, '/url/path', { 'Content-Type': DataType.URLEncoded.toString() }, querystring.stringify(postData));
   });
 
-  test("can make POST request with GraphQL type", async () => {
+  it("can make POST request with GraphQL type", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -141,7 +146,7 @@ describe("HTTP client", () => {
     assertHttpRequest('POST', domain, '/url/path', { 'Content-Type': DataType.GraphQL.toString() }, graphql_query);
   });
 
-  test("can make PUT request with type JSON", async () => {
+  it("can make PUT request with type JSON", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -161,7 +166,7 @@ describe("HTTP client", () => {
     assertHttpRequest('PUT', domain, '/url/path/123', { 'Content-Type': DataType.JSON.toString() }, JSON.stringify(putData));
   });
 
-  test("can make DELETE request", async () => {
+  it("can make DELETE request", async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -170,45 +175,49 @@ describe("HTTP client", () => {
     assertHttpRequest('DELETE', domain, '/url/path/123');
   });
 
-  test("gracefully handles errors", async () => {
+  it("gracefully handles errors", async () => {
     const client = new HttpClient(domain);
 
-    const testErrorResponse = async (status: number | null, expectedError: NewableFunction) => {
-      const errorResponse = {
-        errors: 'Something went wrong!',
-      };
+    const statusText = 'Did not work';
+    const requestId = 'Request id header';
 
-      fetchMock.resetMocks();
-      if (status !== null) {
-        const headers = new Headers();
-        headers.append('content-type', 'application/json; charset=utf-8');
-        const responseObject = new Response(JSON.stringify(errorResponse), {
-          status: status,
-          headers,
+    const testErrorResponse = async (status: number | null, expectedError: NewableFunction, expectRequestId: boolean) => {
+      let caught = false;
+      await client.get({ path: '/url/path' })
+        .catch(error => {
+          caught = true;
+          expect(error).toBeInstanceOf(expectedError);
+          if (expectedError === ShopifyErrors.HttpResponseError) {
+            expect(error).toHaveProperty('code', status);
+            expect(error).toHaveProperty('statusText', statusText);
+          }
+          if (expectRequestId) {
+            expect(error.message).toContain(requestId);
+          }
+
+          assertHttpRequest('GET', domain, '/url/path');
         });
-        fetchMock.mockImplementation(() => Promise.resolve(responseObject));
-      }
-      else {
-        fetchMock.mockRejectOnce(() => Promise.reject());
-      }
 
-      const expectResult = expect(client.get({ path: '/url/path' })).rejects;
-      await expectResult.toBeInstanceOf(expectedError);
-      // Make sure we return the HTTP response code in the fallback error
-      if (expectedError === ShopifyErrors.HttpResponseError) {
-        expectResult.toHaveProperty('code', status);
-      }
-
-      assertHttpRequest('GET', domain, '/url/path');
+      expect(caught).toEqual(true);
     };
 
-    await testErrorResponse(403, ShopifyErrors.HttpResponseError);
-    await testErrorResponse(429, ShopifyErrors.HttpThrottlingError);
-    await testErrorResponse(500, ShopifyErrors.HttpInternalError);
-    await testErrorResponse(null, ShopifyErrors.HttpRequestError);
+    fetchMock.mockResponses(
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 403, statusText: statusText, headers: { 'x-request-id': requestId } }],
+      [JSON.stringify({}),                                  { status: 404, statusText: statusText, headers: {} }],
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 429, statusText: statusText, headers: { 'x-request-id': requestId } }],
+      [JSON.stringify({}),                                  { status: 500, statusText: statusText, headers: { 'x-request-id': requestId } }],
+    );
+
+    await testErrorResponse(403, ShopifyErrors.HttpResponseError, true);
+    await testErrorResponse(404, ShopifyErrors.HttpResponseError, false);
+    await testErrorResponse(429, ShopifyErrors.HttpThrottlingError, true);
+    await testErrorResponse(500, ShopifyErrors.HttpInternalError, true);
+
+    fetchMock.mockRejectOnce(() => Promise.reject());
+    await testErrorResponse(null, ShopifyErrors.HttpRequestError, false);
   });
 
-  test("allows custom headers", async () => {
+  it("allows custom headers", async () => {
     const client = new HttpClient(domain);
 
     const customHeaders = {
@@ -221,16 +230,76 @@ describe("HTTP client", () => {
     assertHttpRequest('GET', domain, '/url/path', customHeaders);
   });
 
-  test("extends User-Agent if it is provided", async () => {
+  it("extends User-Agent if it is provided", async () => {
     const client = new HttpClient(domain);
 
-    const customHeaders = {
-      'User-Agent': 'My agent',
-    };
-
+    let customHeaders: HeaderParams = { 'User-Agent': 'My agent' };
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.get({ path: '/url/path', extraHeaders: customHeaders })).resolves.toEqual(successResponse);
     assertHttpRequest('GET', domain, '/url/path', { 'User-Agent': expect.stringContaining('My agent | Shopify App Dev Kit v') });
+
+    customHeaders = { 'user-agent': 'My lowercase agent' };
+
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+
+    await expect(client.get({ path: '/url/path', extraHeaders: customHeaders })).resolves.toEqual(successResponse);
+    assertHttpRequest('GET', domain, '/url/path', { 'User-Agent': expect.stringContaining('My lowercase agent | Shopify App Dev Kit v') });
+  });
+
+  it("fails with invalid retry count", async () => {
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+
+    await expect(client.get({ path: '/url/path', tries: -1 })).rejects.toBeInstanceOf(ShopifyErrors.HttpRequestError);
+  });
+
+  it("retries failed requests but returns success", async () => {
+    setRestClientRetryTime(0);
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponses(
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 429, statusText: 'Did not work' }],
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 429, statusText: 'Did not work' }],
+      [JSON.stringify(successResponse), { status: 200 }],
+    );
+
+    await expect(client.get({ path: '/url/path', tries: 3 })).resolves.toEqual(successResponse);
+    assertHttpRequest('GET', domain, '/url/path', {}, null, 3);
+  });
+
+  it("retries failed requests and stops on non-retriable errors", async () => {
+    setRestClientRetryTime(0);
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponses(
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 500, statusText: 'Did not work' }],
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 403, statusText: 'Did not work' }],
+      [JSON.stringify(successResponse), { status: 200 }],
+    );
+
+    await expect(client.get({ path: '/url/path', tries: 3 })).rejects.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    assertHttpRequest('GET', domain, '/url/path', {}, null, 2); // The second call resulted in a non-retriable error
+  });
+
+  it("stops retrying after reaching the limit", async () => {
+    setRestClientRetryTime(0);
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponses(
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 500, statusText: 'Did not work' }],
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 500, statusText: 'Did not work' }],
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 500, statusText: 'Did not work' }],
+      [JSON.stringify({ errors: 'Something went wrong!' }), { status: 500, statusText: 'Did not work' }],
+    );
+
+    await expect(client.get({ path: '/url/path', tries: 3 })).rejects.toBeInstanceOf(ShopifyErrors.HttpMaxRetriesError);
+    assertHttpRequest('GET', domain, '/url/path', {}, null, 3);
   });
 });
+
+function setRestClientRetryTime(time: number) {
+  // We de-type HttpClient here so we can alter its readonly time property
+  (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
+}
