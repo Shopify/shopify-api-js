@@ -1,6 +1,6 @@
-import {Context} from './context';
-import {ContextParams} from './types';
-import {ShopifyError} from './error';
+import { Context } from './context';
+import { ContextParams } from './types';
+import { ShopifyError } from './error';
 
 const Shopify = {
   ShopifyError,

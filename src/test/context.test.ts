@@ -1,9 +1,9 @@
 import './test_helper';
 
-import {ShopifyError} from '../error';
-import {Context} from '../context';
-import {ContextParams} from '../types';
-import {CustomSessionStorage, Session} from '../auth/session';
+import { ShopifyError } from '../error';
+import { Context } from '../context';
+import { ContextParams } from '../types';
+import { CustomSessionStorage, Session } from '../auth/session';
 
 test("can initialize and update context", () => {
   Context.initialize(

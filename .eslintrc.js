@@ -16,5 +16,6 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
+        "object-curly-spacing": ["error", "always"]
     }
 };

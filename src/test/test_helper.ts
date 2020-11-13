@@ -1,4 +1,4 @@
-import {Context} from "../context"
+import { Context } from "../context"
 
 beforeEach(() => {
   // We want to reset the Context object on every run so that tests start with a consistent state

@@ -1,6 +1,6 @@
-import {ShopifyError} from './error';
-import {Session, SessionStorage, MemorySessionStorage} from './auth/session';
-import {ContextParams} from './types';
+import { ShopifyError } from './error';
+import { Session, SessionStorage, MemorySessionStorage } from './auth/session';
+import { ContextParams } from './types';
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage,
@@ -84,4 +84,4 @@ const Context: ContextInterface = {
   },
 };
 
-export {Context};
+export { Context };
