@@ -20,7 +20,7 @@ describe("REST client", () => {
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.get('products')).resolves.toEqual(successResponse);
-    assertHttpRequest('GET', domain, '/admin/products.json');
+    assertHttpRequest('GET', domain, '/admin/api/unstable/products.json');
   });
 
   it("can make POST request", async () => {
@@ -34,7 +34,7 @@ describe("REST client", () => {
     };
 
     await expect(client.post('products', postData)).resolves.toEqual(successResponse);
-    assertHttpRequest('POST', domain, '/admin/products.json', {}, postData);
+    assertHttpRequest('POST', domain, '/admin/api/unstable/products.json', {}, postData);
   });
 
   it("can make PUT request", async () => {
@@ -48,7 +48,7 @@ describe("REST client", () => {
     };
 
     await expect(client.put('products/123', postData)).resolves.toEqual(successResponse);
-    assertHttpRequest('PUT', domain, '/admin/products/123.json', {}, postData);
+    assertHttpRequest('PUT', domain, '/admin/api/unstable/products/123.json', {}, postData);
   });
 
   it("can make DELETE request", async () => {
@@ -57,7 +57,7 @@ describe("REST client", () => {
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.delete('products/123')).resolves.toEqual(successResponse);
-    assertHttpRequest('DELETE', domain, '/admin/products/123.json');
+    assertHttpRequest('DELETE', domain, '/admin/api/unstable/products/123.json');
   });
 
   it("merges custom headers with the default ones", async () => {
@@ -72,6 +72,6 @@ describe("REST client", () => {
     await expect(client.get('products', customHeaders)).resolves.toEqual(successResponse);
 
     customHeaders[ShopifyHeader.AccessToken] = 'dummy-token';
-    assertHttpRequest('GET', domain, '/admin/products.json', customHeaders);
+    assertHttpRequest('GET', domain, '/admin/api/unstable/products.json', customHeaders);
   });
 });

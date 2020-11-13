@@ -1,4 +1,5 @@
 import { Context } from '../context';
+import { ApiVersion } from '../types';
 import fetchMock from  'jest-fetch-mock';
 
 fetchMock.enableMocks();
@@ -10,6 +11,7 @@ beforeEach(() => {
     API_SECRET_KEY: 'test_secret_key',
     SCOPES: ['test_scope'],
     HOST_NAME: 'test_host_name',
+    API_VERSION: ApiVersion.Unstable,
   });
 
   fetchMock.resetMocks();

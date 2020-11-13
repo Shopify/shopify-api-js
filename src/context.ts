@@ -1,6 +1,6 @@
 import ShopifyErrors from './error';
 import { Session, SessionStorage, MemorySessionStorage } from './auth/session';
-import { ContextParams } from './types';
+import { ApiVersion, ContextParams } from './types';
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage,
@@ -39,6 +39,7 @@ const Context: ContextInterface = {
   API_SECRET_KEY: '',
   SCOPES: [],
   HOST_NAME: '',
+  API_VERSION: ApiVersion.Unstable,
   SESSION_STORAGE: new MemorySessionStorage(),
 
   initialize(params: ContextParams): void {
@@ -58,13 +59,16 @@ const Context: ContextInterface = {
     }
 
     if (missing.length) {
-      throw new ShopifyErrors.ShopifyError(`Cannot initialize Shopify App Dev Kit. Missing values for: ${missing.join(', ')}`);
+      throw new ShopifyErrors.ShopifyError(
+        `Cannot initialize Shopify App Dev Kit. Missing values for: ${missing.join(', ')}`
+      );
     }
 
     this.API_KEY = params.API_KEY;
     this.API_SECRET_KEY = params.API_SECRET_KEY;
     this.SCOPES = params.SCOPES;
     this.HOST_NAME = params.HOST_NAME;
+    this.API_VERSION = params.API_VERSION;
 
     if (params.SESSION_STORAGE) {
       this.SESSION_STORAGE = params.SESSION_STORAGE;

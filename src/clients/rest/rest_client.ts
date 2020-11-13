@@ -1,3 +1,4 @@
+import { Context } from '../../context';
 import { ShopifyHeader } from '../../types';
 import { HttpClient, RequestParams } from '../http_client';
 
@@ -19,6 +20,6 @@ export class RestClient extends HttpClient {
   }
 
   private getRestPath(path: string): string {
-    return `/admin/${path}.json`;
+    return `/admin/api/${Context.API_VERSION}/${path}.json`;
   }
 }

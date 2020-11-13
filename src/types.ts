@@ -5,6 +5,7 @@ export interface ContextParams {
   API_SECRET_KEY: string,
   SCOPES: string[],
   HOST_NAME: string,
+  API_VERSION: ApiVersion,
   SESSION_STORAGE?: SessionStorage,
 }
 
