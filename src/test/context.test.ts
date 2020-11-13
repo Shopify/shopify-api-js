@@ -1,6 +1,6 @@
 import './test_helper';
 
-import { ShopifyError } from '../error';
+import ShopifyErrors from '../error';
 import { Context } from '../context';
 import { ContextParams } from '../types';
 import { CustomSessionStorage, Session } from '../auth/session';
@@ -31,19 +31,19 @@ test("can't initialize with empty values", () => {
 
   let invalid: ContextParams = Object.assign({}, valid);
   invalid.API_KEY = '';
-  expect(() => Context.initialize(invalid)).toThrow(ShopifyError);
+  expect(() => Context.initialize(invalid)).toThrow(ShopifyErrors.ShopifyError);
 
   invalid = Object.assign({}, valid);
   invalid.API_SECRET_KEY = '';
-  expect(() => Context.initialize(invalid)).toThrow(ShopifyError);
+  expect(() => Context.initialize(invalid)).toThrow(ShopifyErrors.ShopifyError);
 
   invalid = Object.assign({}, valid);
   invalid.SCOPES = [];
-  expect(() => Context.initialize(invalid)).toThrow(ShopifyError);
+  expect(() => Context.initialize(invalid)).toThrow(ShopifyErrors.ShopifyError);
 
   invalid = Object.assign({}, valid);
   invalid.HOST_NAME = '';
-  expect(() => Context.initialize(invalid)).toThrow(ShopifyError);
+  expect(() => Context.initialize(invalid)).toThrow(ShopifyErrors.ShopifyError);
 
   const empty: ContextParams = {
     API_KEY: '',
@@ -51,7 +51,7 @@ test("can't initialize with empty values", () => {
     SCOPES: [],
     HOST_NAME: '',
   };
-  expect(() => Context.initialize(empty)).toThrow(ShopifyError);
+  expect(() => Context.initialize(empty)).toThrow(ShopifyErrors.ShopifyError);
 });
 
 test("can store, load and delete memory sessions by default", async () => {

@@ -1,4 +1,4 @@
-import { ShopifyError } from './error';
+import ShopifyErrors from './error';
 import { Session, SessionStorage, MemorySessionStorage } from './auth/session';
 import { ContextParams } from './types';
 
@@ -58,7 +58,7 @@ const Context: ContextInterface = {
     }
 
     if (missing.length) {
-      throw new ShopifyError(`Cannot initialize Shopify App Dev Kit. Missing values for: ${missing.join(', ')}`);
+      throw new ShopifyErrors.ShopifyError(`Cannot initialize Shopify App Dev Kit. Missing values for: ${missing.join(', ')}`);
     }
 
     this.API_KEY = params.API_KEY;

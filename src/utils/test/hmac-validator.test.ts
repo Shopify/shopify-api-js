@@ -1,6 +1,6 @@
 import validateHmac from '../hmac-validator';
 import { AuthQueryObject } from '../../auth/types';
-import { InvalidHmacError } from '../../error';
+import ShopifyErrors from '../../error';
 
 test('correctly validates query objects', () => {
   const testQuery: AuthQueryObject = {
@@ -33,5 +33,5 @@ test('queries without hmac key throw InvalidHmacError', () => {
 
   expect(() => {
     validateHmac(noHmacQuery);
-  }).toThrowError(InvalidHmacError);
+  }).toThrowError(ShopifyErrors.InvalidHmacError);
 });
