@@ -1,15 +1,24 @@
 import validateHmac from '../hmac-validator';
 import { AuthQueryObject } from '../../auth/types';
 import { InvalidHmacError } from '../../error';
+import { Context } from '../../context';
+import crypto from 'crypto';
 
 test('correctly validates query objects', () => {
-  const testQuery: AuthQueryObject = {
-    code: 'some code goes here',
-    hmac: '3a95433f2b2126c305c90ee20b80822d12a662d3183d533599ed86dabc3d1bd0',
-    timestamp: 'a number as a string',
-    state: 'some nonce passed from auth',
-    shop: 'the shop URL',
+  Context.API_SECRET_KEY = 'my super secret key';
+  const queryString = "code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string";
+  const queryObjectWithoutHmac = {
+    code: "some code goes here",
+    shop: "the shop URL",
+    state: "some nonce passed from auth",
+    timestamp: "a number as a string"
   };
+  const localHmac = crypto
+    .createHmac('sha256', Context.API_SECRET_KEY)
+    .update(queryString)
+    .digest('hex');
+
+  const testQuery: AuthQueryObject = Object.assign(queryObjectWithoutHmac, { hmac: localHmac });
 
   const badQuery: AuthQueryObject = {
     code: 'some code goes here',
