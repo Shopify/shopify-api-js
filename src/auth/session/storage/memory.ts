@@ -1,5 +1,5 @@
-import {Session} from '../session';
-import {SessionStorage} from '../session_storage';
+import { Session } from '../session';
+import { SessionStorage } from '../session_storage';
 
 export class MemorySessionStorage implements SessionStorage {
   private sessions: {[id: string]: Session} = {};

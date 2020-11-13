@@ -1,7 +1,7 @@
 import '../../../test/test_helper';
 
-import {Session} from '../session';
-import {MemorySessionStorage} from '../storage/memory';
+import { Session } from '../session';
+import { MemorySessionStorage } from '../storage/memory';
 
 test("can store and delete sessions in memory", async () => {
   const sessionId = 'test_session';

@@ -1,7 +1,7 @@
 import '../../../test/test_helper';
 
-import {Session} from '../session';
-import {CustomSessionStorage} from '../storage/custom';
+import { Session } from '../session';
+import { CustomSessionStorage } from '../storage/custom';
 
 test("can use custom session storage", async () => {
   const sessionId = 'test_session';
