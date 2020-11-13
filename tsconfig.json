@@ -41,5 +41,14 @@
   "exclude": [
     "**/*.test.ts",
     "**/*.test.tsx"
-  ]
+  ],
+  "typedocOptions": {
+    "inputFiles": ["./src"],
+    "mode": "file",
+    "out": "docs",
+    "exclude": "**/test/**",
+    "excludeNotExported": true,
+    "excludePrivate": true,
+    "disableSources": true
+  }
 }
