@@ -1,4 +1,7 @@
-import { Context } from "../context"
+import { Context } from '../context';
+import fetchMock from  'jest-fetch-mock';
+
+fetchMock.enableMocks();
 
 beforeEach(() => {
   // We want to reset the Context object on every run so that tests start with a consistent state
@@ -8,4 +11,6 @@ beforeEach(() => {
     SCOPES: ['test_scope'],
     HOST_NAME: 'test_host_name',
   });
+
+  fetchMock.resetMocks();
 });

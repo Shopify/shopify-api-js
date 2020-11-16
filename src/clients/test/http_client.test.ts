@@ -1,20 +1,17 @@
 import '../../test/test_helper';
-import { axiosMock, buildHttpResponse, assertHttpRequest } from './test_helper';
+import { assertHttpRequest } from './test_helper';
 
 import { HttpClient } from '../http_client';
 import ShopifyErrors from '../../error';
-import { AxiosError, AxiosResponse } from 'axios';
 
-const domain = 'test-shop.myshopify.com';
+const domain = 'test-shop'; // Omitting the myshopify.com part to fail if real requests are made
 const successResponse = { message: "Your HTTP request was successful!" };
 
 describe("HTTP client", () => {
-  beforeEach(axiosMock.request.mockRestore);
-
   test("can make GET request", async () => {
     const client = new HttpClient(domain);
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.get('/url/path')).resolves.toEqual(successResponse);
     assertHttpRequest('GET', domain, '/url/path');
@@ -23,7 +20,7 @@ describe("HTTP client", () => {
   test("can make POST request", async () => {
     const client = new HttpClient(domain);
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -37,7 +34,7 @@ describe("HTTP client", () => {
   test("can make PUT request", async () => {
     const client = new HttpClient(domain);
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -51,7 +48,7 @@ describe("HTTP client", () => {
   test("can make DELETE request", async () => {
     const client = new HttpClient(domain);
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.delete('/url/path/123')).resolves.toEqual(successResponse);
     assertHttpRequest('DELETE', domain, '/url/path/123');
@@ -61,17 +58,23 @@ describe("HTTP client", () => {
     const client = new HttpClient(domain);
 
     const testErrorResponse = async (status: number | null, expectedError: NewableFunction) => {
-      const errorResponse: AxiosError = {
-        message: "Something went wrong!",
-      } as AxiosError;
-      if (status) {
-        errorResponse.response = {
-          status: status,
-        } as AxiosResponse;
-      }
+      const errorResponse = {
+        errors: 'Something went wrong!',
+      };
 
-      axiosMock.request.mockRestore();
-      axiosMock.request.mockRejectedValue(errorResponse);
+      fetchMock.resetMocks();
+      if (status !== null) {
+        const headers = new Headers();
+        headers.append('content-type', 'application/json; charset=utf-8');
+        const responseObject = new Response(JSON.stringify(errorResponse), {
+          status: status,
+          headers,
+        });
+        fetchMock.mockImplementation(() => Promise.resolve(responseObject));
+      }
+      else {
+        fetchMock.mockRejectOnce(() => Promise.reject());
+      }
 
       const expectResult = expect(client.get('/url/path')).rejects;
       await expectResult.toBeInstanceOf(expectedError);
@@ -96,7 +99,7 @@ describe("HTTP client", () => {
       'X-Not-A-Real-Header': 'some_value',
     };
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.get('/url/path', customHeaders)).resolves.toEqual(successResponse);
     assertHttpRequest('GET', domain, '/url/path', customHeaders);

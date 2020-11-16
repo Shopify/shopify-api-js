@@ -1,9 +1,9 @@
 import '../../../test/test_helper';
 import { ShopifyHeader } from '../../../types';
-import { axiosMock, buildHttpResponse, assertHttpRequest } from '../../test/test_helper';
+import { assertHttpRequest } from '../../test/test_helper';
 import { RestClient } from '../rest_client';
 
-const domain = 'test-shop.myshopify.com';
+const domain = 'test-shop'; // Omitting the myshopify.com part to fail if real requests are made
 const successResponse = {
   products: [
     {
@@ -14,12 +14,10 @@ const successResponse = {
 };
 
 describe("REST client", () => {
-  beforeEach(axiosMock.request.mockRestore);
-
   it("can make GET request", async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.get('products')).resolves.toEqual(successResponse);
     assertHttpRequest('GET', domain, '/admin/products.json');
@@ -28,7 +26,7 @@ describe("REST client", () => {
   it("can make POST request", async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -42,7 +40,7 @@ describe("REST client", () => {
   it("can make PUT request", async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -56,7 +54,7 @@ describe("REST client", () => {
   it("can make DELETE request", async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.delete('products/123')).resolves.toEqual(successResponse);
     assertHttpRequest('DELETE', domain, '/admin/products/123.json');
@@ -69,7 +67,7 @@ describe("REST client", () => {
       'X-Not-A-Real-Header': 'some_value',
     };
 
-    axiosMock.request.mockReturnValue(buildHttpResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.get('products', customHeaders)).resolves.toEqual(successResponse);
 

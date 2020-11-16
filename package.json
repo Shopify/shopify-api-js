@@ -22,7 +22,8 @@
   "license": "MIT",
   "dependencies": {
     "@shopify/network": "^1.5.1",
-    "axios": "^0.21.0",
+    "@types/node-fetch": "^2.5.7",
+    "node-fetch": "^2.6.1",
     "tslib": "^2.0.3"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "eslint-plugin-shopify": "^35.1.0",
     "eslint-plugin-tsdoc": "^0.2.7",
     "jest": "^26.4.2",
+    "jest-fetch-mock": "^3.0.3",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.4.1",
     "typedoc": "^0.19.2",

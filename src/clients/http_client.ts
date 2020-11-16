@@ -1,5 +1,5 @@
 import querystring, { ParsedUrlQueryInput } from 'querystring';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import fetch, { RequestInit, Response } from 'node-fetch';
 import { Method, StatusCode } from '@shopify/network';
 import ShopifyErrors from '../error';
 
@@ -105,31 +105,41 @@ class HttpClient {
       extraHeaders,
     );
 
-    const options: AxiosRequestConfig = {
-      baseURL: `https://${this.domain}`,
-      url: path,
+    const url = `https://${this.domain}${path}`;
+    const options: RequestInit = {
       method: method.toString(),
       headers: headers,
-      data: parsedPostData,
-    } as AxiosRequestConfig;
+      body: parsedPostData,
+    } as RequestInit;
 
-    return this.doRequest(options);
+    return this.doRequest(url, options);
   }
 
-  private async doRequest(options: AxiosRequestConfig): Promise<unknown> {
-    return axios.request(options)
-      .then((response: AxiosResponse) => response.data)
-      .catch((error: AxiosError) => {
-        const status = error.response ? error.response.status : -1;
-        switch (true) {
-          case status === StatusCode.TooManyRequests:
-            return Promise.reject(new ShopifyErrors.HttpThrottlingError(`Shopify is throttling requests: ${error.message}`));
-          case status >= StatusCode.InternalServerError:
-            return Promise.reject(new ShopifyErrors.HttpInternalError(`Shopify internal error: ${error.message}`));
-          case status === -1:
-            return Promise.reject(new ShopifyErrors.HttpRequestError(`Failed to make Shopify HTTP request: ${error.message}`));
-          default:
-            return Promise.reject(new ShopifyErrors.HttpResponseError(`Received an error response from Shopify: ${error.message}`, status));
+  private async doRequest(url: string, options: RequestInit): Promise<unknown> {
+    return fetch(url, options)
+      .then(async (response: Response) => {
+        const body = await response.json();
+
+        if (response.ok) {
+          return body;
+        }
+        else {
+          switch (true) {
+            case response.status === StatusCode.TooManyRequests:
+              throw new ShopifyErrors.HttpThrottlingError(`Shopify is throttling requests: ${body.errors}`);
+            case response.status >= StatusCode.InternalServerError:
+              throw new ShopifyErrors.HttpInternalError(`Shopify internal error: ${body.errors}`);
+            default:
+              throw new ShopifyErrors.HttpResponseError(`Received an error response from Shopify: ${body.errors}`, response.status);
+          }
+        }
+      })
+      .catch((error) => {
+        if (!(error instanceof ShopifyErrors.ShopifyError)) {
+          throw new ShopifyErrors.HttpRequestError(`Failed to make Shopify HTTP request: ${error}`);
+        }
+        else {
+          throw error;
         }
       });
   }
