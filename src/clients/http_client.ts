@@ -1,17 +1,34 @@
-import querystring, { ParsedUrlQueryInput } from 'querystring';
 import fetch, { RequestInit, Response } from 'node-fetch';
+import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Method, StatusCode } from '@shopify/network';
 import ShopifyErrors from '../error';
 
-type HeaderParams = {[key: string]: string};
+type HeaderParams = Record<string, string>;
 
-type RequestParams = {
-  method: Method,
+enum DataType {
+  JSON = "application/json",
+  GraphQL = "application/graphql",
+  URLEncoded = "application/x-www-form-urlencoded"
+}
+
+type GetRequestParams = {
   path: string,
+  type?: DataType,
+  data?: Record<string, unknown> | string,
   extraHeaders?: HeaderParams,
-  postData?: ParsedUrlQueryInput,
   maxRetries?: number,
-};
+}
+
+type PostRequestParams = GetRequestParams & {
+  type: DataType,
+  data: Record<string, unknown> | string,
+}
+
+type PutRequestParams = PostRequestParams;
+
+type DeleteRequestParams = GetRequestParams;
+
+type RequestParams = (GetRequestParams | PostRequestParams) & { method: Method }
 
 class HttpClient {
   public constructor(private domain: string) {
@@ -22,54 +39,34 @@ class HttpClient {
    * Performs a GET request on the given path.
    *
    * @param path Path to query
-   * @param extraHeaders Extra headers to send along with the request
+   * @param extraHeaders Extra headers to send along with the request (optional)
    */
-  public async get(path: string, extraHeaders?: HeaderParams): Promise<unknown> {
-    return this.request({
-      method: Method.Get,
-      path: path,
-      extraHeaders: extraHeaders,
-    });
+  public async get(params: GetRequestParams): Promise<unknown> {
+    return this.request({ method: Method.Get, ...params });
   }
 
   /**
    * Performs a POST request on the given path.
    *
    * @param path Path to query
+   * @param type Type of data (URL encoded string, JSON, GraphQL)
    * @param data Data to send
    * @param extraHeaders Extra headers to send along with the request
    */
-  public async post(
-    path: string,
-    data: ParsedUrlQueryInput,
-    extraHeaders?: HeaderParams
-  ): Promise<unknown> {
-    return this.request({
-      method: Method.Post,
-      path: path,
-      postData: data,
-      extraHeaders: extraHeaders,
-    });
+  public async post(params: PostRequestParams): Promise<unknown> {
+    return this.request({ method: Method.Post, ...params });
   }
 
   /**
    * Performs a PUT request on the given path.
    *
    * @param path Path to query
+   * @param type Type of data (URL encoded string, JSON, GraphQL)
    * @param data Data to send
    * @param extraHeaders Extra headers to send along with the request
    */
-  public async put(
-    path: string,
-    data: ParsedUrlQueryInput,
-    extraHeaders?: HeaderParams
-  ): Promise<unknown> {
-    return this.request({
-      method: Method.Put,
-      path: path,
-      postData: data,
-      extraHeaders: extraHeaders,
-    });
+  public async put(params: PutRequestParams): Promise<unknown> {
+    return this.request({ method: Method.Put, ...params });
   }
 
   /**
@@ -78,38 +75,41 @@ class HttpClient {
    * @param path Path to query
    * @param extraHeaders Extra headers to send along with the request
    */
-  public async delete(path: string, extraHeaders?: HeaderParams): Promise<unknown> {
-    return this.request({
-      method: Method.Delete,
-      path: path,
-      extraHeaders: extraHeaders,
-    });
+  public async delete(params: DeleteRequestParams): Promise<unknown> {
+    return this.request({ method: Method.Delete, ...params });
   }
 
-  protected async request({
-    method,
-    path,
-    extraHeaders,
-    postData,
-  }: RequestParams): Promise<unknown> {
-    let parsedPostData: string | null = null;
-    if (postData) {
-      parsedPostData = querystring.stringify(postData);
+  protected async request(params: RequestParams): Promise<unknown> {
+    let headers = params.extraHeaders;
+    let body = null;
+    if (params.method === Method.Post || params.method === Method.Put) {
+      const { type, data } = params as PostRequestParams;
+      if (data) {
+        switch (type) {
+          case DataType.JSON:
+            body = typeof data === 'string' ? data : JSON.stringify(data);
+            break;
+          case DataType.URLEncoded:
+            body = typeof data === 'string' ? data : querystring.stringify(data as ParsedUrlQueryInput);
+            break;
+          case DataType.GraphQL:
+            body = data as string;
+            break;
+        }
+        headers = Object.assign(
+          {
+            'Content-Type': type,
+            'Content-Length': Buffer.byteLength(body as string),
+          },
+          params.extraHeaders,
+        );
+      }
     }
-
-    const headers = Object.assign(
-      {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': parsedPostData ? Buffer.byteLength(parsedPostData) : 0
-      },
-      extraHeaders,
-    );
-
-    const url = `https://${this.domain}${path}`;
+    const url = `https://${this.domain}${params.path}`;
     const options: RequestInit = {
-      method: method.toString(),
+      method: params.method.toString(),
       headers: headers,
-      body: parsedPostData,
+      body: body
     } as RequestInit;
 
     return this.doRequest(url, options);
@@ -148,4 +148,5 @@ class HttpClient {
 export {
   HttpClient,
   RequestParams,
+  DataType,
 };
