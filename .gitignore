@@ -5,3 +5,4 @@ dist
 coverage/
 yarn-error.log
 docs/
+tsconfig.tsbuildinfo
