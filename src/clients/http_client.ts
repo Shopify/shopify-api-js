@@ -2,6 +2,7 @@ import fetch, { RequestInit, Response } from 'node-fetch';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Method, StatusCode } from '@shopify/network';
 import ShopifyErrors from '../error';
+import { SHOPIFY_APP_DEV_KIT_VERSION } from '../version';
 
 type HeaderParams = Record<string, string>;
 
@@ -80,7 +81,21 @@ class HttpClient {
   }
 
   protected async request(params: RequestParams): Promise<unknown> {
-    let headers = params.extraHeaders;
+    let userAgent = `Shopify App Dev Kit v${SHOPIFY_APP_DEV_KIT_VERSION} | Node ${process.version}`;
+    if (params.extraHeaders) {
+      if (params.extraHeaders['user-agent']) {
+        userAgent = `${params.extraHeaders['user-agent']} | ${userAgent}`;
+      }
+      else if (params.extraHeaders['User-Agent']) {
+        userAgent = `${params.extraHeaders['User-Agent']} | ${userAgent}`;
+      }
+    }
+
+    let headers: typeof params.extraHeaders = Object.assign(
+      {},
+      params.extraHeaders,
+      { 'User-Agent': userAgent }
+    );
     let body = null;
     if (params.method === Method.Post || params.method === Method.Put) {
       const { type, data } = params as PostRequestParams;
@@ -105,6 +120,7 @@ class HttpClient {
         );
       }
     }
+
     const url = `https://${this.domain}${params.path}`;
     const options: RequestInit = {
       method: params.method.toString(),

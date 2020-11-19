@@ -220,4 +220,17 @@ describe("HTTP client", () => {
     await expect(client.get({ path: '/url/path', extraHeaders: customHeaders })).resolves.toEqual(successResponse);
     assertHttpRequest('GET', domain, '/url/path', customHeaders);
   });
+
+  test("extends User-Agent if it is provided", async () => {
+    const client = new HttpClient(domain);
+
+    const customHeaders = {
+      'User-Agent': 'My agent',
+    };
+
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+
+    await expect(client.get({ path: '/url/path', extraHeaders: customHeaders })).resolves.toEqual(successResponse);
+    assertHttpRequest('GET', domain, '/url/path', { 'User-Agent': expect.stringContaining('My agent | Shopify App Dev Kit v') });
+  });
 });
