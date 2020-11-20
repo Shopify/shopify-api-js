@@ -5,9 +5,11 @@ export function assertHttpRequest(
   domain: string,
   path: string,
   headers: Record<string, unknown> = {},
-  data: string | null = null
+  data: string | null = null,
+  retries: number | null = null
 ): void {
-  expect(fetchMock).toBeCalledWith(
+  const expectResult = expect(fetchMock);
+  expectResult.toBeCalledWith(
     `https://${domain}${path}`,
     expect.objectContaining({
       method: method,
@@ -15,4 +17,8 @@ export function assertHttpRequest(
       body: data,
     })
   );
+
+  if (retries !== null) {
+    expectResult.toHaveBeenCalledTimes(retries);
+  }
 }
