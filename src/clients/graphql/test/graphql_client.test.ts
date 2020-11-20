@@ -1,5 +1,5 @@
-/* eslint @typescript-eslint/no-var-requires: "off" */
 import '../../../test/test_helper';
+import { ShopifyHeader } from '../../../types';
 import { assertHttpRequest } from '../../test/test_helper';
 import { GraphqlClient } from '../graphql_client';
 
@@ -28,4 +28,18 @@ describe('GraphQL client', () => {
     await expect(client.query({ data: QUERY })).resolves.toEqual(successResponse);
     assertHttpRequest('POST', DOMAIN, '/admin/api/unstable/graphql.json', {}, QUERY);
   });
+
+  it('merges custom headers with default', async () => {
+    const client: GraphqlClient = new GraphqlClient(DOMAIN, 'bork');
+    const customHeader: Record<string, string> = {
+      'X-Glib-Glob': 'goobers',
+    };
+
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+
+    await expect(client.query({ extraHeaders: customHeader, data: QUERY })).resolves.toEqual(successResponse);
+
+    customHeader[ShopifyHeader.AccessToken] = 'bork';
+    assertHttpRequest('POST', DOMAIN, '/admin/api/unstable/graphql.json', customHeader, QUERY);
+  })
 });

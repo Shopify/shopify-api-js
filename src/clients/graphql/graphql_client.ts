@@ -5,11 +5,8 @@ import { DataType, HttpClient, PostRequestParams } from '../http_client';
 type GraphqlParams = Omit<PostRequestParams, "path" | "type">;
 
 export class GraphqlClient extends HttpClient{
-  readonly token: string;
-
-  constructor(domain: string, token: string) {
+  constructor(domain: string, readonly token: string) {
     super(domain);
-    this.token = token;
   }
 
   async query(params: GraphqlParams): Promise<unknown> {
