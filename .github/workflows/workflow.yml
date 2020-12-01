@@ -1,27 +1,17 @@
 on: push
 name: CI
 jobs:
-  lint:
+  CI:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Install
-        uses: CultureHQ/actions-yarn@master
-        with:
-          args: install
       - name: Lint
-        uses: CultureHQ/actions-yarn@master
+        uses: actions/setup-node@v1
         with:
-          args: lint
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Install
-        uses: CultureHQ/actions-yarn@master
-        with:
-          args: install
+          node-version: '12.x'
+      - run: yarn lint
       - name: Test
-        uses: CultureHQ/actions-yarn@master
+        uses: actions/setup-node@v1
         with:
-          args: test
+          node-version: '12.x'
+      - run: yarn test
