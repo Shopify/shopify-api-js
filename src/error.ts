@@ -7,13 +7,13 @@ class SafeCompareError extends ShopifyError {}
 class HttpRequestError extends ShopifyError {}
 class HttpMaxRetriesError extends ShopifyError {}
 class HttpResponseError extends ShopifyError {
-  public constructor(message: string, readonly code: number, readonly statusText: string) {
-    super(message);
-  }
+  public constructor(message: string, readonly code: number, readonly statusText: string) { super(message); }
 }
 class HttpRetriableError extends ShopifyError {}
 class HttpInternalError extends HttpRetriableError {}
-class HttpThrottlingError extends HttpRetriableError {}
+class HttpThrottlingError extends HttpRetriableError {
+  public constructor(message: string, readonly retryAfter?: number) { super(message); }
+}
 
 const ShopifyErrors = {
   ShopifyError,

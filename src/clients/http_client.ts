@@ -130,7 +130,11 @@ class HttpClient {
         if (e instanceof ShopifyErrors.HttpRetriableError) {
           // We're not out of tries yet, use them
           if (tries < maxTries) {
-            await new Promise(r => setTimeout(r, HttpClient.RETRY_WAIT_TIME));
+            let waitTime = HttpClient.RETRY_WAIT_TIME;
+            if (e instanceof ShopifyErrors.HttpThrottlingError && e.retryAfter) {
+              waitTime = e.retryAfter * 1000;
+            }
+            await new Promise(r => setTimeout(r, waitTime));
             continue;
           }
 
@@ -169,10 +173,13 @@ class HttpClient {
 
           const errorMessage = (errorMessages.length) ? ': ' + errorMessages.join('. ') : '';
           switch (true) {
-            case response.status === StatusCode.TooManyRequests:
+            case response.status === StatusCode.TooManyRequests: {
+              const retryAfter = response.headers.get('Retry-After');
               throw new ShopifyErrors.HttpThrottlingError(
-                `Shopify is throttling requests${errorMessage}`
+                `Shopify is throttling requests${errorMessage}`,
+                retryAfter ? parseFloat(retryAfter) : undefined
               );
+            }
             case response.status >= StatusCode.InternalServerError:
               throw new ShopifyErrors.HttpInternalError(
                 `Shopify internal error${errorMessage}`

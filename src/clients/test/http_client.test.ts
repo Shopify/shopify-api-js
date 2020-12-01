@@ -297,6 +297,30 @@ describe("HTTP client", () => {
     await expect(client.get({ path: '/url/path', tries: 3 })).rejects.toBeInstanceOf(ShopifyErrors.HttpMaxRetriesError);
     assertHttpRequest('GET', domain, '/url/path', {}, null, 3);
   });
+
+  it("waits for the amount of time defined by the Retry-After header", async () => {
+    setRestClientRetryTime(4000); // Default to a lot longer than the time we actually expect to sleep for
+    const realWaitTime = 0.05;
+
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponses(
+      [
+        JSON.stringify({ errors: 'Something went wrong!' }),
+        { status: 429, statusText: 'Did not work', headers: { 'Retry-After': realWaitTime.toString() } }
+      ],
+      [JSON.stringify(successResponse), { status: 200 }],
+    );
+
+    // If we don't retry within an acceptable amount of time, we assume to be paused for longer than Retry-After
+    const retryTimeout = setTimeout(() => {
+      throw 'Request was not retried within the interval defined by Retry-After, test failed';
+    }, 4000);
+
+    await expect(client.get({ path: '/url/path', tries: 2 })).resolves.toEqual(successResponse);
+    assertHttpRequest('GET', domain, '/url/path', {}, null, 2);
+    clearTimeout(retryTimeout);
+  });
 });
 
 function setRestClientRetryTime(time: number) {
