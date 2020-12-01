@@ -3,6 +3,7 @@ import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Method, StatusCode } from '@shopify/network';
 import ShopifyErrors from '../error';
 import { SHOPIFY_APP_DEV_KIT_VERSION } from '../version';
+import { validateShop } from '../utils';
 
 type HeaderParams = Record<string, string>;
 
@@ -35,6 +36,10 @@ class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000; // 1 second
 
   public constructor(private domain: string) {
+    if (!validateShop(domain)) {
+      throw new ShopifyErrors.InvalidShopError(`Domain ${domain} is not valid`);
+    }
+
     this.domain = domain;
   }
 
