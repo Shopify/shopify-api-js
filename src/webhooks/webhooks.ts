@@ -144,11 +144,11 @@ const Webhooks: WebhooksInterface = {
       }
     });
 
-    const success = isSuccess(result, deliveryMethod);
+    const success = isSuccess(result.body, deliveryMethod);
     if (success) {
       this.webhookRegistry.push({ path: path, topic: topic, webhookHandler: webhookHandler });
     }
-    return { success: success, result };
+    return { success: success, result: result.body };
   },
 
   process({ headers, body }: ProcessOptions): ProcessReturn {
