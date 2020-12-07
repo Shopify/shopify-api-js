@@ -1,4 +1,4 @@
-import fetch, { RequestInit, Response } from 'node-fetch';
+import fetch, { RequestInit, Response, Headers } from 'node-fetch';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Method, StatusCode } from '@shopify/network';
 import ShopifyErrors from '../error';
@@ -17,6 +17,7 @@ type GetRequestParams = {
   path: string,
   type?: DataType,
   data?: Record<string, unknown> | string,
+  query?: Record<string, string | number>,
   extraHeaders?: HeaderParams,
   tries?: number,
 }
@@ -32,6 +33,11 @@ type DeleteRequestParams = GetRequestParams;
 
 type RequestParams = (GetRequestParams | PostRequestParams) & { method: Method }
 
+type RequestReturn = {
+  body: unknown,
+  headers: Headers,
+};
+
 class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000; // 1 second
 
@@ -46,32 +52,32 @@ class HttpClient {
   /**
    * Performs a GET request on the given path.
    */
-  public async get(params: GetRequestParams): Promise<unknown> {
+  public async get(params: GetRequestParams): Promise<RequestReturn> {
     return this.request({ method: Method.Get, ...params });
   }
 
   /**
    * Performs a POST request on the given path.
    */
-  public async post(params: PostRequestParams): Promise<unknown> {
+  public async post(params: PostRequestParams): Promise<RequestReturn> {
     return this.request({ method: Method.Post, ...params });
   }
 
   /**
    * Performs a PUT request on the given path.
    */
-  public async put(params: PutRequestParams): Promise<unknown> {
+  public async put(params: PutRequestParams): Promise<RequestReturn> {
     return this.request({ method: Method.Put, ...params });
   }
 
   /**
    * Performs a DELETE request on the given path.
    */
-  public async delete(params: DeleteRequestParams): Promise<unknown> {
+  public async delete(params: DeleteRequestParams): Promise<RequestReturn> {
     return this.request({ method: Method.Delete, ...params });
   }
 
-  protected async request(params: RequestParams): Promise<unknown> {
+  protected async request(params: RequestParams): Promise<RequestReturn> {
     const maxTries = params.tries ? params.tries : 1;
     if (maxTries <= 0) {
       throw new ShopifyErrors.HttpRequestError(`Number of tries must be >= 0, got ${maxTries}`);
@@ -118,7 +124,9 @@ class HttpClient {
       }
     }
 
-    const url = `https://${this.domain}${params.path}`;
+    const queryString = params.query ? '?' + querystring.stringify(params.query as ParsedUrlQueryInput) : '';
+
+    const url = `https://${this.domain}${params.path}${queryString}`;
     const options: RequestInit = {
       method: params.method.toString(),
       headers: headers,
@@ -155,15 +163,22 @@ class HttpClient {
         throw e;
       }
     }
+
+    // We're never supposed to come this far, this is here only for the benefit of Typescript
+    /* istanbul ignore next */
+    throw new ShopifyErrors.ShopifyError(`Unexpected flow, reached maximum HTTP tries but did not throw an error`);
   }
 
-  private async doRequest(url: string, options: RequestInit): Promise<unknown> {
+  private async doRequest(url: string, options: RequestInit): Promise<RequestReturn> {
     return fetch(url, options)
       .then(async (response: Response) => {
         const body = await response.json();
 
         if (response.ok) {
-          return body;
+          return {
+            body: body,
+            headers: response.headers,
+          };
         }
         else {
           const errorMessages: string[] = [];
@@ -218,4 +233,5 @@ export {
   DeleteRequestParams,
   RequestParams,
   DataType,
+  RequestReturn,
 };
