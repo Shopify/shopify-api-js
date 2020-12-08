@@ -6,6 +6,7 @@ export interface ContextParams {
   SCOPES: string[],
   HOST_NAME: string,
   API_VERSION: ApiVersion,
+  IS_EMBEDDED_APP: boolean,
   SESSION_STORAGE?: SessionStorage,
 }
 

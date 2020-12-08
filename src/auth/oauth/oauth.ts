@@ -10,6 +10,8 @@ import { DataType, HttpClient } from '../../clients/http_client';
 import ShopifyErrors from '../../error';
 
 const ShopifyOAuth = {
+  SESSION_COOKIE_NAME: 'shopify_app_session',
+
   async beginAuth(
     request: http.IncomingMessage,
     response: http.ServerResponse,
@@ -32,7 +34,7 @@ const ShopifyOAuth = {
 
     await Context.storeSession(session);
 
-    cookies.set('shopify_app_session', session.id, {
+    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
       signed: true,
       expires: new Date(Date.now() + 60000),
     });
@@ -61,18 +63,7 @@ const ShopifyOAuth = {
       keys: [Context.API_SECRET_KEY],
     });
 
-    const sessionCookie: string | undefined = cookies.get(
-      'shopify_app_session',
-      { signed: true }
-    );
-
-    if (!sessionCookie) {
-      throw new ShopifyErrors.SessionNotFound(
-        `Cannot complete OAuth process. No session cookie found for the specified shop url: ${query.shop}`
-      );
-    }
-
-    const currentSession = await Context.loadSession(sessionCookie);
+    const currentSession = await utils.loadCurrentSession(request, response);
 
     if (!currentSession) {
       throw new ShopifyErrors.SessionNotFound(
@@ -109,7 +100,7 @@ const ShopifyOAuth = {
       currentSession.scope = scope;
       currentSession.onlineAccesInfo = rest;
 
-      cookies.set('shopify_app_session', sessionCookie, {
+      cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
         signed: true,
         domain: Context.HOST_NAME,
         expires: sessionExpiration,

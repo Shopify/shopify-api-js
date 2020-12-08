@@ -3,6 +3,7 @@ enableFetchMocks();
 
 import { Context } from '../context';
 import { ApiVersion } from '../types';
+import { MemorySessionStorage } from '../auth/session';
 
 beforeEach(() => {
   // We want to reset the Context object on every run so that tests start with a consistent state
@@ -12,6 +13,8 @@ beforeEach(() => {
     SCOPES: ['test_scope'],
     HOST_NAME: 'test_host_name',
     API_VERSION: ApiVersion.Unstable,
+    IS_EMBEDDED_APP: false,
+    SESSION_STORAGE: new MemorySessionStorage(),
   });
 
   fetchMock.mockRestore();
