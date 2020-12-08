@@ -5,7 +5,7 @@ import { assertHttpRequest } from '../../test/test_helper';
 import { RestClient } from '../rest_client';
 import querystring from 'querystring';
 
-const domain = 'test-shop'; // Omitting the myshopify.com part to fail if real requests are made
+const domain = 'test-shop.myshopify.io';
 const successResponse = {
   products: [
     {

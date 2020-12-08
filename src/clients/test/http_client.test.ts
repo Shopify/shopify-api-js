@@ -5,13 +5,17 @@ import { HttpClient, DataType, HeaderParams } from '../http_client';
 import ShopifyErrors from '../../error';
 import querystring from 'querystring';
 
-const domain = 'test-shop'; // Omitting the myshopify.com part to fail if real requests are made
+const domain = 'test-shop.myshopify.io';
 const successResponse = { message: "Your HTTP request was successful!" };
 
 const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe("HTTP client", () => {
   afterAll(() => {
     setRestClientRetryTime(originalRetryTime);
+  });
+
+  it("validates the given domain", () => {
+    expect(() => new HttpClient('invalid domain')).toThrow(ShopifyErrors.InvalidShopError);
   });
 
   it("can make GET request", async () => {

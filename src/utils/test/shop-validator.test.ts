@@ -5,18 +5,18 @@ test('returns a boolean value', () => {
 });
 
 test('returns true for valid shop urls', () => {
-  const shopUrl = 'https://someshop.myshopify.com';
+  const shopUrl = 'someshop.myshopify.io';
   expect(validateShop(shopUrl)).toBe(true);
 });
 
 test('returns false for invalid shop urls', () => {
-  const shopUrl = 'https://notshopify.com';
-  const anotherShop = 'https://-invalid.myshopify.com';
+  const shopUrl = 'notshopify.com';
+  const anotherShop = '-invalid.myshopify.io';
   expect(validateShop(shopUrl)).toBe(false);
   expect(validateShop(anotherShop)).toBe(false);
 });
 
-test("returns false for invalid shop urls, even if they contain the string 'myshopify.com'", () => {
-  const shopUrl = 'https://notshopify.myshopify.com.org/potato';
+test("returns false for invalid shop urls, even if they contain the string 'myshopify.io'", () => {
+  const shopUrl = 'notshopify.myshopify.io.org/potato';
   expect(validateShop(shopUrl)).toBe(false);
 });
