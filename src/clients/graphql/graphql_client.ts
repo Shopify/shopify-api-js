@@ -1,10 +1,10 @@
 import { Context } from '../../context'
 import { ShopifyHeader } from '../../types';
-import { DataType, PostRequestParams, PostRequest } from '../client';
+import { DataType, PostRequestParams, PostRequest } from '../http_client';
 
 type GraphqlParams = Omit<PostRequestParams, "path" | "type">;
 
-class GraphqlClient {
+export class GraphqlClient {
   constructor(readonly domain: string, readonly token: string) {
   }
 

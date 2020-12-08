@@ -1,6 +1,6 @@
 import { Context } from '../../context';
 import { ShopifyHeader } from '../../types';
-import { HttpClient, RequestParams } from '../http_client';
+import { HttpClient, RequestParams } from '../http_client_reference';
 
 export class RestClient extends HttpClient {
   private accessToken: string;

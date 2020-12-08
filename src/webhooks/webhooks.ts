@@ -1,6 +1,6 @@
 // import fetch from 'node-fetch';
 import { StatusCode } from '@shopify/network';
-import { DataType, HttpClient } from '../clients/http_client';
+import { DataType, HttpClient } from '../clients/http_client_reference';
 import { ShopifyHeader, ApiVersion } from '../types';
 import { Topic } from './types';
 import { createHmac } from 'crypto';
