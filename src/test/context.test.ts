@@ -15,12 +15,12 @@ const validParams: ContextParams = {
 
 const originalWarn = console.warn;
 
-describe("Context object", () => {
+describe('Context object', () => {
   afterEach(() => {
     console.warn = originalWarn;
   });
 
-  it("can initialize and update context", () => {
+  it('can initialize and update context', () => {
     Context.initialize(validParams);
 
     expect(Context.API_KEY).toEqual(validParams.API_KEY);
@@ -35,8 +35,7 @@ describe("Context object", () => {
     try {
       Context.initialize(invalid);
       fail('Initializing without API_KEY did not throw an exception');
-    }
-    catch (e) {
+    } catch (e) {
       expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
       expect(e.message).toContain('Missing values for: API_KEY');
     }
@@ -46,8 +45,7 @@ describe("Context object", () => {
     try {
       Context.initialize(invalid);
       fail('Initializing without API_SECRET_KEY did not throw an exception');
-    }
-    catch (e) {
+    } catch (e) {
       expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
       expect(e.message).toContain('Missing values for: API_SECRET_KEY');
     }
@@ -57,8 +55,7 @@ describe("Context object", () => {
     try {
       Context.initialize(invalid);
       fail('Initializing without SCOPES did not throw an exception');
-    }
-    catch (e) {
+    } catch (e) {
       expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
       expect(e.message).toContain('Missing values for: SCOPES');
     }
@@ -68,8 +65,7 @@ describe("Context object", () => {
     try {
       Context.initialize(invalid);
       fail('Initializing without HOST_NAME did not throw an exception');
-    }
-    catch (e) {
+    } catch (e) {
       expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
       expect(e.message).toContain('Missing values for: HOST_NAME');
     }
@@ -84,20 +80,20 @@ describe("Context object", () => {
     expect(() => Context.initialize(empty)).toThrow(ShopifyErrors.ShopifyError);
   });
 
-  it("can store, load and delete memory sessions by default", async () => {
+  it('can store, load and delete memory sessions by default', async () => {
     Context.initialize(validParams);
 
     const sessionId = 'test_session';
-    const session = new Session(sessionId, (new Date()).getTime() + 86400000);
+    const session = new Session(sessionId);
 
     await expect(Context.storeSession(session)).resolves.toEqual(true);
     await expect(Context.loadSession(sessionId)).resolves.toEqual(session);
     await expect(Context.deleteSession(sessionId)).resolves.toEqual(true);
   });
 
-  it("can store, load and delete custom storage sessions", async () => {
+  it('can store, load and delete custom storage sessions', async () => {
     const sessionId = 'test_session';
-    const session = new Session(sessionId, (new Date()).getTime() + 86400000);
+    const session = new Session(sessionId);
 
     let store_called = false;
     let load_called = false;
@@ -114,19 +110,17 @@ describe("Context object", () => {
       () => {
         delete_called = true;
         return true;
-      },
+      }
     );
 
-    Context.initialize(
-      {
-        API_KEY: 'api_key',
-        API_SECRET_KEY: 'api_secret_key',
-        SCOPES: ['do_one_thing', 'do_something_else'],
-        HOST_NAME: 'host_name',
-        API_VERSION: ApiVersion.Unstable,
-        SESSION_STORAGE: storage,
-      },
-    );
+    Context.initialize({
+      API_KEY: 'api_key',
+      API_SECRET_KEY: 'api_secret_key',
+      SCOPES: ['do_one_thing', 'do_something_else'],
+      HOST_NAME: 'host_name',
+      API_VERSION: ApiVersion.Unstable,
+      SESSION_STORAGE: storage,
+    });
 
     await expect(Context.storeSession(session)).resolves.toEqual(true);
     expect(store_called).toBe(true);

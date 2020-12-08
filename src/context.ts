@@ -3,35 +3,41 @@ import { Session, SessionStorage, MemorySessionStorage } from './auth/session';
 import { ApiVersion, ContextParams } from './types';
 
 interface ContextInterface extends ContextParams {
-  SESSION_STORAGE: SessionStorage,
+  SESSION_STORAGE: SessionStorage;
 
   /**
    * Sets up the Shopify App Dev Kit to be able to integrate with Shopify and run authenticated commands.
    *
    * @param params Settings to update
    */
-  initialize(params: ContextParams): void,
+  initialize(params: ContextParams): void;
 
   /**
    * Creates or updates the given session using the assigned strategy.
    *
    * @param session Session to store
    */
-  storeSession(session: Session): Promise<boolean>,
+  storeSession(session: Session): Promise<boolean>;
 
   /**
    * Loads a session using the assigned strategy.
    *
    * @param id Id of the session to load
    */
-  loadSession(id: string): Promise<Session | null>,
+  loadSession(id: string): Promise<Session | null>;
 
   /**
    * Deletes a session using the assigned strategy.
    *
    * @param id Id of the session to delete
    */
-  deleteSession(id: string): Promise<boolean>,
+  deleteSession(id: string): Promise<boolean>;
+
+  /**
+   * Throws error if context has not been initialized.
+   */
+
+  throwIfUnitialized(): void | never;
 }
 
 const Context: ContextInterface = {
@@ -85,6 +91,14 @@ const Context: ContextInterface = {
 
   async deleteSession(id: string): Promise<boolean> {
     return this.SESSION_STORAGE.deleteSession(id);
+  },
+
+  throwIfUnitialized(): void {
+    if (!this.API_KEY || this.API_KEY.length == 0) {
+      throw new ShopifyErrors.UninitializedContextError(
+        'Context has not been properly initialized. Please call the .initialize() method to setup your app context object.'
+      );
+    }
   },
 };
 
