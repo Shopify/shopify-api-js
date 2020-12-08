@@ -1,19 +1,18 @@
 import { Context } from '../../context'
 import { ShopifyHeader } from '../../types';
-import { DataType, HttpClient, PostRequestParams } from '../http_client';
+import { DataType, PostRequestParams, PostRequest } from '../client';
 
 type GraphqlParams = Omit<PostRequestParams, "path" | "type">;
 
-export class GraphqlClient extends HttpClient{
-  constructor(domain: string, readonly token: string) {
-    super(domain);
+class GraphqlClient {
+  constructor(readonly domain: string, readonly token: string) {
   }
 
   async query(params: GraphqlParams): Promise<unknown> {
     params.extraHeaders = Object.assign({ [ShopifyHeader.AccessToken]: this.token }, params.extraHeaders);
 
     const path = `/admin/api/${Context.API_VERSION}/graphql.json`
-    return super.post({ path: path, type: DataType.GraphQL, ...params });
+    return Graphql.post(this.domain, { path: path, type: DataType.GraphQL, ...params });
   }
 }
-
+const Graphql = PostRequest(GraphqlClient);
