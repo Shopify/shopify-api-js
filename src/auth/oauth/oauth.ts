@@ -44,7 +44,7 @@ const ShopifyOAuth = {
       scope: Context.SCOPES,
       redirect_uri: redirect,
       state: state,
-      'grant_options[]': isOnline ? 'per_user' : '',
+      'grant_options[]': isOnline ? 'per-user' : '',
     };
 
     const queryString = querystring.stringify(query);

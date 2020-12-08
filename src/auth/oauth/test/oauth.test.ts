@@ -121,7 +121,7 @@ describe('beginAuth', () => {
       scope: Context.SCOPES,
       redirect_uri: Context.HOST_NAME + '/some-callback',
       state: session ? session.state : '',
-      'grant_options[]': 'per_user',
+      'grant_options[]': 'per-user',
     };
     const expectedQueryString = querystring.stringify(query);
 
