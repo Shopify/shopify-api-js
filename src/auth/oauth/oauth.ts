@@ -88,12 +88,13 @@ const ShopifyOAuth = {
     };
 
     const client = new HttpClient(currentSession.shop);
-    if (currentSession.isOnline) {
-      const response = (await client.post(postParams)) as OnlineAccessResponse;
+    const postResponse = await client.post(postParams);
 
-      const { access_token, scope, ...rest } = response;
+    if (currentSession.isOnline) {
+      const responseBody = postResponse.body as OnlineAccessResponse;
+      const { access_token, scope, ...rest } = responseBody;
       const sessionExpiration = new Date(
-        Date.now() + response.expires_in * 1000
+        Date.now() + responseBody.expires_in * 1000
       );
       currentSession.accessToken = access_token;
       currentSession.expires = sessionExpiration;
@@ -106,9 +107,9 @@ const ShopifyOAuth = {
         expires: sessionExpiration,
       });
     } else {
-      const response = (await client.post(postParams)) as AccessTokenResponse;
-      currentSession.accessToken = response.access_token;
-      currentSession.scope = response.scope;
+      const responseBody = postResponse.body as AccessTokenResponse;
+      currentSession.accessToken = responseBody.access_token;
+      currentSession.scope = responseBody.scope;
     }
 
     await Context.storeSession(currentSession);
