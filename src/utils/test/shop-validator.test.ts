@@ -1,12 +1,10 @@
 import validateShop from '../shop-validator';
 
-test('returns a boolean value', () => {
-  expect(typeof validateShop('someshop')).toBe('boolean');
-});
-
 test('returns true for valid shop urls', () => {
-  const shopUrl = 'someshop.myshopify.io';
+  const shopUrl = 'someshop.myshopify.com';
+  const devUrl = 'devshop.myshopify.io';
   expect(validateShop(shopUrl)).toBe(true);
+  expect(validateShop(devUrl)).toBe(true);
 });
 
 test('returns false for invalid shop urls', () => {

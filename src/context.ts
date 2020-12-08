@@ -36,7 +36,6 @@ interface ContextInterface extends ContextParams {
   /**
    * Throws error if context has not been initialized.
    */
-
   throwIfUnitialized(): void | never;
 }
 
@@ -46,6 +45,7 @@ const Context: ContextInterface = {
   SCOPES: [],
   HOST_NAME: '',
   API_VERSION: ApiVersion.Unstable,
+  IS_EMBEDDED_APP: true,
   SESSION_STORAGE: new MemorySessionStorage(),
 
   initialize(params: ContextParams): void {
@@ -75,6 +75,7 @@ const Context: ContextInterface = {
     this.SCOPES = params.SCOPES;
     this.HOST_NAME = params.HOST_NAME;
     this.API_VERSION = params.API_VERSION;
+    this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
 
     if (params.SESSION_STORAGE) {
       this.SESSION_STORAGE = params.SESSION_STORAGE;

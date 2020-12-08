@@ -5,12 +5,16 @@ import { Context } from '../context';
 import { ApiVersion, ContextParams } from '../types';
 import { CustomSessionStorage, Session } from '../auth/session';
 
+jest.mock('cookies');
+import Cookies from 'cookies';
+
 const validParams: ContextParams = {
   API_KEY: 'api_key',
   API_SECRET_KEY: 'secret_key',
   SCOPES: ['scope'],
   HOST_NAME: 'host_name',
   API_VERSION: ApiVersion.Unstable,
+  IS_EMBEDDED_APP: true,
 };
 
 const originalWarn = console.warn;
@@ -18,6 +22,7 @@ const originalWarn = console.warn;
 describe('Context object', () => {
   afterEach(() => {
     console.warn = originalWarn;
+    (Cookies as any).mockClear(); // eslint-disable-line @typescript-eslint/no-explicit-any
   });
 
   it('can initialize and update context', () => {
@@ -76,6 +81,7 @@ describe('Context object', () => {
       SCOPES: [],
       HOST_NAME: '',
       API_VERSION: ApiVersion.Unstable,
+      IS_EMBEDDED_APP: true,
     };
     expect(() => Context.initialize(empty)).toThrow(ShopifyErrors.ShopifyError);
   });
@@ -113,14 +119,9 @@ describe('Context object', () => {
       }
     );
 
-    Context.initialize({
-      API_KEY: 'api_key',
-      API_SECRET_KEY: 'api_secret_key',
-      SCOPES: ['do_one_thing', 'do_something_else'],
-      HOST_NAME: 'host_name',
-      API_VERSION: ApiVersion.Unstable,
-      SESSION_STORAGE: storage,
-    });
+    const params = Object.assign({}, validParams);
+    params.SESSION_STORAGE = storage;
+    Context.initialize(params);
 
     await expect(Context.storeSession(session)).resolves.toEqual(true);
     expect(store_called).toBe(true);
