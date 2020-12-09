@@ -16,7 +16,7 @@ export default async function loadCurrentSession(request: http.IncomingMessage, 
   let session: Session | null = null;
 
   if (Context.IS_EMBEDDED_APP) {
-    // TODO load session from JWT token
+    // TODO load session from JWT
   }
   else {
     const cookies = new Cookies(request, response, {
