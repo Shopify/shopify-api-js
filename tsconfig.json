@@ -28,22 +28,13 @@
       "es2018",
       "esnext.asynciterable"
     ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./node_modules/@types"],
     "outDir": "./dist",
     "baseUrl": ".",
     "rootDir": "."
   },
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "./package.json"
-  ],
-  "exclude": [
-    "**/*.test.ts",
-    "**/*.test.tsx"
-  ],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "./package.json"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx"],
   "typedocOptions": {
     "inputFiles": ["./src"],
     "mode": "file",
