@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
 class ShopifyError extends Error {
-  constructor(...args: any) {
+  constructor(...args: any) { /* eslint-disable-line @typescript-eslint/no-explicit-any */ /*  eslint-disable-line @typescript-eslint/explicit-module-boundary-types */
     super(...args);
     Object.setPrototypeOf(this, new.target.prototype);
   }
