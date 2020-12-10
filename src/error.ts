@@ -1,4 +1,12 @@
-class ShopifyError extends Error {}
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
+class ShopifyError extends Error {
+  constructor(...args: any) {
+    super(...args);
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
 
 class InvalidHmacError extends ShopifyError {}
 class InvalidShopError extends ShopifyError {}
@@ -10,11 +18,7 @@ class UninitializedContextError extends ShopifyError {}
 class HttpRequestError extends ShopifyError {}
 class HttpMaxRetriesError extends ShopifyError {}
 class HttpResponseError extends ShopifyError {
-  public constructor(
-    message: string,
-    readonly code: number,
-    readonly statusText: string
-  ) {
+  public constructor(message: string, readonly code: number, readonly statusText: string) {
     super(message);
   }
 }
