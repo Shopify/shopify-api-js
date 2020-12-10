@@ -3,6 +3,7 @@ class ShopifyError extends Error {}
 class InvalidHmacError extends ShopifyError {}
 class InvalidShopError extends ShopifyError {}
 class InvalidJwtError extends ShopifyError {}
+class MissingJwtTokenError extends ShopifyError {}
 
 class SafeCompareError extends ShopifyError {}
 class UninitializedContextError extends ShopifyError {}
@@ -34,6 +35,7 @@ const ShopifyErrors = {
   InvalidHmacError,
   InvalidShopError,
   InvalidJwtError,
+  MissingJwtTokenError,
   SafeCompareError,
   HttpRequestError,
   HttpMaxRetriesError,

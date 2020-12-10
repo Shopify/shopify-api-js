@@ -23,6 +23,7 @@ const ShopifyOAuth = {
 
     const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],
+      secure: true,
     });
 
     const state = utils.nonce();
@@ -37,6 +38,8 @@ const ShopifyOAuth = {
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
       signed: true,
       expires: new Date(Date.now() + 60000),
+      sameSite: 'none',
+      secure: true,
     });
 
     const query = {
@@ -61,9 +64,10 @@ const ShopifyOAuth = {
 
     const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],
+      secure: true,
     });
 
-    const currentSession = await utils.loadCurrentSession(request, response);
+    const currentSession = await utils.loadCurrentSession(request, response, true);
 
     if (!currentSession) {
       throw new ShopifyErrors.SessionNotFound(
@@ -105,6 +109,8 @@ const ShopifyOAuth = {
         signed: true,
         domain: Context.HOST_NAME,
         expires: sessionExpiration,
+        sameSite: 'none',
+        secure: true,
       });
     } else {
       const responseBody = postResponse.body as AccessTokenResponse;
