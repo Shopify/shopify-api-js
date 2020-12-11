@@ -2,8 +2,8 @@
   "name": "@shopify/shopify-api",
   "version": "0.0.1",
   "description": "Shopify TypeScript API to support core API functionality (auth, graphql proxy, webhooks)",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "build": "tsc",
