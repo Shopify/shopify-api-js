@@ -1,6 +1,6 @@
 import './test_helper';
 
-import ShopifyErrors from '../error';
+import * as ShopifyErrors from '../error';
 import { Context } from '../context';
 import { ApiVersion, ContextParams } from '../types';
 import { CustomSessionStorage, Session } from '../auth/session';

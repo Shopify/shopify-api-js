@@ -3,12 +3,12 @@ import { PageInfo } from './page_info';
 
 const ShopifyRestClient = {
   RestClient,
-  PageInfo
+  PageInfo,
 };
 
 export default ShopifyRestClient;
 
 export {
   RestClient,
-  PageInfo
+  PageInfo,
 };

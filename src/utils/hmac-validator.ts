@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import querystring from 'querystring';
 import { AuthQuery } from '../auth/types';
 import safeCompare from './safe-compare';
-import ShopifyErrors from '../error';
+import * as ShopifyErrors from '../error';
 import { Context } from '../context';
 
 export function stringifyQuery(query: AuthQuery): string {

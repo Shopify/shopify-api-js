@@ -2,7 +2,7 @@ import { Method, Header, StatusCode } from '@shopify/network';
 import '../../test/test_helper';
 import { ApiVersion, ShopifyHeader } from "../../types";
 import { DeliveryMethod, ProcessReturn, RegisterOptions } from '../webhooks';
-import { Webhooks } from '..';
+import ShopifyWebhooks from '..';
 import { createHmac } from 'crypto';
 import { Context } from '../../context';
 import { DataType } from '../../clients/http_client';
@@ -38,9 +38,9 @@ function genericWebhookHandler(topic: string, shop_domain: string, body: Buffer)
   return;
 }
 
-describe('Webhooks.register', () => {
+describe('ShopifyWebhooks.Registry.register', () => {
   beforeEach(async () => {
-    Webhooks.webhookRegistry = [];
+    ShopifyWebhooks.Registry.webhookRegistry = [];
   });
 
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
@@ -54,7 +54,7 @@ describe('Webhooks.register', () => {
       webhookHandler: genericWebhookHandler
     };
 
-    const result = await Webhooks.register(webhook);
+    const result = await ShopifyWebhooks.Registry.register(webhook);
     expect(result.success).toBe(true);
     expect(result.result).toEqual(successResponse);
     expect(fetchMock.mock.calls.length).toBe(1);
@@ -72,7 +72,7 @@ describe('Webhooks.register', () => {
       webhookHandler: genericWebhookHandler
     };
 
-    const result = await Webhooks.register(webhook);
+    const result = await ShopifyWebhooks.Registry.register(webhook);
     expect(result.success).toBe(false);
     expect(result.result).toEqual(failResponse);
     expect(fetchMock.mock.calls.length).toBe(1);
@@ -91,7 +91,7 @@ describe('Webhooks.register', () => {
       webhookHandler: genericWebhookHandler
     };
 
-    const result = await Webhooks.register(webhook);
+    const result = await ShopifyWebhooks.Registry.register(webhook);
     expect(result.success).toBe(true);
     expect(result.result).toEqual(eventBridgeSuccessResponse);
     expect(fetchMock.mock.calls.length).toBe(1);
@@ -99,7 +99,7 @@ describe('Webhooks.register', () => {
   });
 });
 
-describe('Webhooks.process', () => {
+describe('ShopifyWebhooks.Registry.process', () => {
   const rawBody = Buffer.from('{"foo": "bar"}', 'utf8');
 
   beforeEach(async () => {
@@ -107,17 +107,17 @@ describe('Webhooks.process', () => {
   });
 
   afterEach(async () => {
-    Webhooks.webhookRegistry = [];
+    ShopifyWebhooks.Registry.webhookRegistry = [];
   });
 
   it('handles the request when topic is already registered', async () => {
-    Webhooks.webhookRegistry.push({
+    ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler
     });
 
-    const result: ProcessReturn = Webhooks.process({
+    const result: ProcessReturn = ShopifyWebhooks.Registry.process({
       headers: headers({ hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')) }),
       body: rawBody
     });
@@ -126,13 +126,13 @@ describe('Webhooks.process', () => {
   });
 
   it('handles the request and returns Forbidden when topic is not registered', async () => {
-    Webhooks.webhookRegistry.push({
+    ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'NONSENSE_TOPIC',
       webhookHandler: genericWebhookHandler
     });
 
-    const result: ProcessReturn = Webhooks.process({
+    const result: ProcessReturn = ShopifyWebhooks.Registry.process({
       headers: headers({ hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')) }),
       body: rawBody
     });
@@ -141,13 +141,13 @@ describe('Webhooks.process', () => {
   });
 
   it('handles the request and returns Forbidden when hmac does not match', async () => {
-    Webhooks.webhookRegistry.push({
+    ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler
     });
 
-    const result: ProcessReturn = Webhooks.process({
+    const result: ProcessReturn = ShopifyWebhooks.Registry.process({
       headers: headers({ hmac: hmac('incorrect secret', rawBody.toString('utf8')) }),
       body: rawBody
     });
@@ -156,33 +156,33 @@ describe('Webhooks.process', () => {
   });
 });
 
-describe('Webhooks.isWebhookPath', () => {
+describe('ShopifyWebhooks.Registry.isWebhookPath', () => {
   beforeEach(async () => {
-    Webhooks.webhookRegistry = [];
+    ShopifyWebhooks.Registry.webhookRegistry = [];
   });
 
   it('returns true when given path is registered for a webhook topic', async () => {
-    Webhooks.webhookRegistry.push({
+    ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler
     });
 
-    expect(Webhooks.isWebhookPath('/webhooks')).toBe(true);
+    expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(true);
   });
 
   it('returns false when given path is not registered for a webhook topic', async () => {
-    Webhooks.webhookRegistry.push({
+    ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/fakepath',
       topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler
     });
 
-    expect(Webhooks.isWebhookPath('/webhooks')).toBe(false);
+    expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(false);
   });
 
   it('returns false when there is no webhooks registered', async () => {
-    expect(Webhooks.isWebhookPath('/webhooks')).toBe(false);
+    expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(false);
   });
 });
 

@@ -2,7 +2,7 @@ import '../../test/test_helper';
 import { assertHttpRequest } from '../test/test_helper';
 
 import { HttpClient, DataType, HeaderParams, RequestReturn } from '../http_client';
-import ShopifyErrors from '../../error';
+import * as ShopifyErrors from '../../error';
 import querystring from 'querystring';
 
 const domain = 'test-shop.myshopify.io';

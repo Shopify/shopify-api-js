@@ -179,4 +179,4 @@ const Webhooks: WebhooksInterface = {
   }
 };
 
-export { Webhooks };
+export { Webhooks, WebhooksInterface };

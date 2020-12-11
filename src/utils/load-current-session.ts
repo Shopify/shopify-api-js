@@ -1,10 +1,10 @@
 import http from 'http';
 import Cookies from 'cookies';
-import { ShopifyOAuth } from '../auth/oauth/oauth';
 import { Context } from '../context';
+import * as ShopifyErrors from '../error';
+import { ShopifyOAuth } from '../auth/oauth/oauth';
 import { Session } from '../auth/session';
 import decodeSessionToken from './decode-session-token';
-import ShopifyErrors from '../error';
 
 /**
  * Loads the current user's session, based on the given request.

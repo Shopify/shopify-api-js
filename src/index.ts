@@ -1,9 +1,10 @@
 import { Context } from './context';
-import { ContextParams } from './types';
-import ShopifyErrors from './error';
+import * as ShopifyErrors from './error';
 
-export {
-  Context,
-  ContextParams,
-  ShopifyErrors,
+const Shopify = {
+  Context: Context,
+  Errors: ShopifyErrors,
 };
+
+export default Shopify;
+export * from './types';

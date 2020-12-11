@@ -1,6 +1,6 @@
 import validateHmac from '../hmac-validator';
 import { AuthQuery } from '../../auth/types';
-import ShopifyErrors from '../../error';
+import * as ShopifyErrors from '../../error';
 import { Context } from '../../context';
 import crypto from 'crypto';
 

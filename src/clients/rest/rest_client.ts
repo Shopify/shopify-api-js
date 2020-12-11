@@ -1,11 +1,8 @@
 import { Context } from '../../context';
 import { ShopifyHeader } from '../../types';
-import { HttpClient, RequestParams, RequestReturn } from '../http_client';
+import { HttpClient, RequestParams } from '../http_client';
 import { PageInfo, PageInfoParams } from './page_info';
-
-type RestRequestReturn = RequestReturn & {
-  pageInfo?: PageInfo,
-};
+import { RestRequestReturn } from './types';
 
 class RestClient extends HttpClient {
   private static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;

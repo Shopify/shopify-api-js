@@ -1,4 +1,4 @@
-import ShopifyErrors from '../../error';
+import * as ShopifyErrors from '../../error';
 import safeCompare from '../safe-compare';
 
 test('safeCompare returns correct boolean value for comparisons', () => {

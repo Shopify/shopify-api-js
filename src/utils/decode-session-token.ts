@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
-import ShopifyErrors from '../error';
 import { Context } from '../context';
+import * as ShopifyErrors from '../error';
 import validateShop from './shop-validator';
 
 type JwtPayload = {

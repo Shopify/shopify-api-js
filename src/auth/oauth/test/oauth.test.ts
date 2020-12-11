@@ -1,7 +1,7 @@
 import '../../../test/test_helper';
 import { ShopifyOAuth } from '../oauth';
 import { Context } from '../../../context';
-import ShopifyErrors from '../../../error';
+import * as ShopifyErrors from '../../../error';
 import { generateLocalHmac } from '../../../utils/hmac-validator';
 import { AuthQuery } from '../../types';
 import querystring from 'querystring';
