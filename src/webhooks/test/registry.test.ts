@@ -1,7 +1,7 @@
 import { Method, Header, StatusCode } from '@shopify/network';
 import '../../test/test_helper';
 import { ApiVersion, ShopifyHeader } from "../../types";
-import { DeliveryMethod, ProcessReturn, RegisterOptions } from '../webhooks';
+import { DeliveryMethod, ProcessReturn, RegisterOptions } from '../registry';
 import ShopifyWebhooks from '..';
 import { createHmac } from 'crypto';
 import { Context } from '../../context';
