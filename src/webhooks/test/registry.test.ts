@@ -7,6 +7,7 @@ import { createHmac } from 'crypto';
 import { Context } from '../../context';
 import { DataType } from '../../clients/http_client';
 import { assertHttpRequest } from '../../clients/test/test_helper';
+import * as ShopifyErrors from '../../error';
 
 const successResponse = {
   data: {
@@ -125,6 +126,21 @@ describe('ShopifyWebhooks.Registry.process', () => {
     expect(result.statusCode).toBe(StatusCode.Ok);
   });
 
+  it('handles lower case headers', async () => {
+    ShopifyWebhooks.Registry.webhookRegistry.push({
+      path: '/webhooks',
+      topic: 'PRODUCTS',
+      webhookHandler: genericWebhookHandler
+    });
+
+    const result: ProcessReturn = ShopifyWebhooks.Registry.process({
+      headers: headers({ hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')), lowercase: true }),
+      body: rawBody
+    });
+
+    expect(result.statusCode).toBe(StatusCode.Ok);
+  });
+
   it('handles the request and returns Forbidden when topic is not registered', async () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
@@ -153,6 +169,23 @@ describe('ShopifyWebhooks.Registry.process', () => {
     });
 
     expect(result.statusCode).toBe(StatusCode.Forbidden);
+  });
+
+  it('fails if the any of the required headers are missing', () => {
+    ShopifyWebhooks.Registry.webhookRegistry.push({
+      path: '/webhooks',
+      topic: 'NONSENSE_TOPIC',
+      webhookHandler: genericWebhookHandler
+    });
+
+    expect(() => ShopifyWebhooks.Registry.process({ headers: headers({ hmac: '' }), body: rawBody }))
+      .toThrow(ShopifyErrors.InvalidWebhookError);
+
+    expect(() => ShopifyWebhooks.Registry.process({ headers: headers({ topic: '' }), body: rawBody }))
+      .toThrow(ShopifyErrors.InvalidWebhookError);
+
+    expect(() => ShopifyWebhooks.Registry.process({ headers: headers({ domain: '' }), body: rawBody }))
+      .toThrow(ShopifyErrors.InvalidWebhookError);
   });
 });
 
@@ -190,11 +223,12 @@ function headers({
   hmac = 'fake',
   topic = 'products',
   domain = 'shop1.myshopify.io',
-}: { hmac?: string; topic?: string; domain?: string } = {}) {
+  lowercase = false
+}: { hmac?: string; topic?: string; domain?: string, lowercase?: boolean } = {}) {
   return {
-    [ShopifyHeader.Hmac]: hmac,
-    [ShopifyHeader.Topic]: topic,
-    [ShopifyHeader.Domain]: domain,
+    [lowercase ? ShopifyHeader.Hmac.toLowerCase() : ShopifyHeader.Hmac]: hmac,
+    [lowercase ? ShopifyHeader.Topic.toLowerCase() : ShopifyHeader.Topic]: topic,
+    [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]: domain,
   };
 }
 
