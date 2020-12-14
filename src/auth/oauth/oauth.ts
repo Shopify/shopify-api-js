@@ -16,7 +16,7 @@ const ShopifyOAuth = {
     request: http.IncomingMessage,
     response: http.ServerResponse,
     shop: string,
-    redirect: string,
+    redirectPath: string,
     isOnline = false
   ): Promise<string> {
     Context.throwIfUnitialized();
@@ -45,7 +45,7 @@ const ShopifyOAuth = {
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.join(', '),
-      redirect_uri: redirect,
+      redirect_uri: `https://${Context.HOST_NAME}${redirectPath}`,
       state: state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
@@ -107,7 +107,6 @@ const ShopifyOAuth = {
 
       cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
         signed: true,
-        domain: Context.HOST_NAME,
         expires: sessionExpiration,
         sameSite: 'none',
         secure: true,
