@@ -6,6 +6,7 @@ import { Topic } from './types';
 import { createHmac } from 'crypto';
 import ShopifyUtilities from '../utils';
 import { Context } from '../context';
+import * as ShopifyErrors from '../error';
 
 export enum DeliveryMethod {
   Http = 'http',
@@ -152,21 +153,52 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   process({ headers, body }: ProcessOptions): ProcessReturn {
-    const hmac = headers[ShopifyHeader.Hmac];
-    const topic = headers[ShopifyHeader.Topic];
-    const domain = headers[ShopifyHeader.Domain];
+    let hmac: string | undefined;
+    let topic: string | undefined;
+    let domain: string | undefined;
+    for (const header in headers) {
+      switch (header.toLowerCase()) {
+        case ShopifyHeader.Hmac.toLowerCase():
+          hmac = headers[header];
+          break;
+        case ShopifyHeader.Topic.toLowerCase():
+          topic = headers[header];
+          break;
+        case ShopifyHeader.Domain.toLowerCase():
+          domain = headers[header];
+          break;
+      }
+    }
+
+    const missingHeaders = [];
+    if (!hmac) {
+      missingHeaders.push(ShopifyHeader.Hmac);
+    }
+    if (!topic) {
+      missingHeaders.push(ShopifyHeader.Topic);
+    }
+    if (!domain) {
+      missingHeaders.push(ShopifyHeader.Domain);
+    }
+
+    if (missingHeaders.length) {
+      throw new ShopifyErrors.InvalidWebhookError(
+        `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(', ')}]`
+      );
+    }
+
     const result: ProcessReturn = { statusCode: StatusCode.Forbidden, headers: {} };
 
     const generatedHash = createHmac('sha256', Context.API_SECRET_KEY)
       .update(body.toString('utf-8'), 'utf8')
       .digest('base64');
 
-    if (ShopifyUtilities.safeCompare(generatedHash, hmac)) {
-      const graphqlTopic = topic.toUpperCase().replace(/\//g, '_');
+    if (ShopifyUtilities.safeCompare(generatedHash, (hmac as string))) {
+      const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
       const webhookEntry = this.webhookRegistry.find(e => e.topic === graphqlTopic);
 
       if (webhookEntry) {
-        webhookEntry.webhookHandler(graphqlTopic, domain, body);
+        webhookEntry.webhookHandler(graphqlTopic, (domain as string), body);
         result.statusCode = StatusCode.Ok
         result.headers = {};
       }
