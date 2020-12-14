@@ -44,22 +44,12 @@ describe('beginAuth', () => {
     Context.API_KEY = '';
 
     await expect(() =>
-      ShopifyOAuth.beginAuth(
-        req,
-        res,
-        shop,
-        Context.HOST_NAME + '/some-callback'
-      )
+      ShopifyOAuth.beginAuth(req, res, shop, '/some-callback')
     ).rejects.toBeInstanceOf(ShopifyErrors.UninitializedContextError);
   });
 
   test('creates and stores a new session for the specified shop', async () => {
-    const authRoute = await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      shop,
-      Context.HOST_NAME + '/some-callback'
-    );
+    const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
     const session = await Context.loadSession(cookies.id);
 
     expect(Cookies).toHaveBeenCalledTimes(1);
@@ -73,61 +63,41 @@ describe('beginAuth', () => {
   });
 
   test('sets session id and cookie to shop name with "_offline" for offline access requests', async () => {
-    await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      shop,
-      Context.HOST_NAME + '/some-callback'
-    );
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
 
     expect(cookies.id).toBe(shop + '_offline');
   });
 
   test('returns the correct auth url for given info', async () => {
-    const authRoute = await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      shop,
-      Context.HOST_NAME + '/some-callback'
-    );
+    const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
     const session = await Context.loadSession(cookies.id);
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES,
-      redirect_uri: Context.HOST_NAME + '/some-callback',
+      redirect_uri: `https://${Context.HOST_NAME}/some-callback`,
       state: session ? session.state : '',
       'grant_options[]': '',
     };
 
     const expectedQueryString = querystring.stringify(query);
 
-    expect(authRoute).toBe(
-      `https://${shop}/admin/oauth/authorize?${expectedQueryString}`
-    );
+    expect(authRoute).toBe(`https://${shop}/admin/oauth/authorize?${expectedQueryString}`);
   });
 
   test('appends per_user access mode to url when isOnline is set to true', async () => {
-    const authRoute = await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      shop,
-      Context.HOST_NAME + '/some-callback',
-      true
-    );
+    const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.loadSession(cookies.id);
 
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES,
-      redirect_uri: Context.HOST_NAME + '/some-callback',
+      redirect_uri: `https://${Context.HOST_NAME}/some-callback`,
       state: session ? session.state : '',
       'grant_options[]': 'per-user',
     };
     const expectedQueryString = querystring.stringify(query);
 
-    expect(authRoute).toBe(
-      `https://${shop}/admin/oauth/authorize?${expectedQueryString}`
-    );
+    expect(authRoute).toBe(`https://${shop}/admin/oauth/authorize?${expectedQueryString}`);
   });
 });
 
@@ -182,12 +152,7 @@ describe('validateAuthCallback', () => {
   });
 
   test('throws an error when receiving a callback for a shop with no saved session', async () => {
-    await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      'invalidurl.com',
-      Context.HOST_NAME + '/some-callback'
-    );
+    await ShopifyOAuth.beginAuth(req, res, 'invalidurl.com', '/some-callback');
 
     Context.deleteSession(cookies.id);
 
@@ -199,12 +164,7 @@ describe('validateAuthCallback', () => {
   });
 
   test('throws error when callback includes invalid hmac, or state', async () => {
-    await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      'invalidurl.com',
-      Context.HOST_NAME + '/some-callback'
-    );
+    await ShopifyOAuth.beginAuth(req, res, 'invalidurl.com', '/some-callback');
     const testCallbackQuery: AuthQuery = {
       shop: 'invalidurl.com',
       state: 'incorrect',
@@ -219,12 +179,7 @@ describe('validateAuthCallback', () => {
   });
 
   test('requests access token for valid callbacks with offline access and updates session', async () => {
-    await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      shop,
-      Context.HOST_NAME + '/some-callback'
-    );
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
     let session = await Context.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
       shop: shop,
@@ -250,13 +205,7 @@ describe('validateAuthCallback', () => {
   });
 
   test('requests access token for valid callbacks with online access and updates session with expiration and onlineAccessInfo', async () => {
-    await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      shop,
-      Context.HOST_NAME + '/some-callback',
-      true
-    );
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
       shop: shop,
