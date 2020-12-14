@@ -23,6 +23,11 @@ export function generateLocalHmac(query: AuthQuery): string {
     .digest('hex');
 }
 
+/**
+ * Uses the received query to validate the contained hmac value against the rest of the query content.
+ * 
+ * @param query HTTP Request Query, containing the information to be validated.
+ */
 export default function validateHmac(query: AuthQuery): boolean {
   if (!query.hmac) {
     throw new ShopifyErrors.InvalidHmacError(
