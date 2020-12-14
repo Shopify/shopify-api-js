@@ -15,8 +15,8 @@ const ShopifyOAuth = {
   /**
    * Initializes a session and cookie for the OAuth process, and returns the necessary authorization url.
    * 
-   * @param request Request object
-   * @param response Response object
+   * @param request Current HTTP Request
+   * @param response Current HTTP Response
    * @param shop Shop url: {shop}.myshopify.com
    * @param redirect Redirect url for callback 
    * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token. 
@@ -71,9 +71,9 @@ const ShopifyOAuth = {
    * If valid, will make the subsequent request to update the current session with the appropriate access token.
    * Throws errors for missing sessions and invalid callbacks. 
    * 
-   * @param request Request object
-   * @param response Response object
-   * @param query Request query object, containing the information to be validated.
+   * @param request Current HTTP Request
+   * @param response Current HTTP Response
+   * @param query Current HTTP Request Query, containing the information to be validated.
    *              Depending on framework, this may need to be cast as "unknown" before being passed. 
    */
   async validateAuthCallback(
@@ -146,7 +146,7 @@ const ShopifyOAuth = {
 /**
  * Uses the validation utils validateHmac, validateShop, and safeCompare to assess whether the callback is valid.
  * 
- * @param query Request query object
+ * @param query Current HTTP Request Query
  * @param session Current session
  */
 function validQuery(query: AuthQuery, session: Session): boolean {
