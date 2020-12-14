@@ -143,6 +143,12 @@ const ShopifyOAuth = {
   },
 };
 
+/**
+ * Uses the validation utils validateHmac, validateShop, and safeCompare to assess whether the callback is valid.
+ * 
+ * @param query Request query object
+ * @param session Current session
+ */
 function validQuery(query: AuthQuery, session: Session): boolean {
   return (
     utils.validateHmac(query) &&
