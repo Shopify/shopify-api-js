@@ -9,7 +9,8 @@
     "build": "tsc",
     "lint": "eslint '**/*.{ts,tsx}' --max-warnings 0",
     "clean": "rimraf ./dist tsconfig.tsbuildinfo",
-    "preversion": "yarn test",
+    "prepublishOnly": "yarn run build",
+    "preversion": "yarn run test",
     "postversion": "git push origin main --follow-tags && echo \"Log in to shipit to deploy version $npm_package_version\""
   },
   "publishConfig": {
