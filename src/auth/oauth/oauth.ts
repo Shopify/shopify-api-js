@@ -12,6 +12,17 @@ import * as ShopifyErrors from '../../error';
 const ShopifyOAuth = {
   SESSION_COOKIE_NAME: 'shopify_app_session',
 
+  /**
+   * Initializes a session and cookie for the OAuth process, and returns the necessary authorization url.
+   * 
+   * @param request Request object
+   * @param response Response object
+   * @param shop Shop url: {shop}.myshopify.com
+   * @param redirect Redirect url for callback 
+   * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token. 
+   *                 During final oauth request, will receive back the online access token and current online session information. 
+   *                 Defaults to offline access.
+   */
   async beginAuth(
     request: http.IncomingMessage,
     response: http.ServerResponse,
@@ -55,6 +66,16 @@ const ShopifyOAuth = {
     return `https://${shop}/admin/oauth/authorize?${queryString}`;
   },
 
+  /**
+   * Validates the received callback query. 
+   * If valid, will make the subsequent request to update the current session with the appropriate access token.
+   * Throws errors for missing sessions and invalid callbacks. 
+   * 
+   * @param request Request object
+   * @param response Response object
+   * @param query Request query object, containing the information to be validated.
+   *              Depending on framework, this may need to be cast as "unknown" before being passed. 
+   */
   async validateAuthCallback(
     request: http.IncomingMessage,
     response: http.ServerResponse,

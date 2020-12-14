@@ -1,6 +1,12 @@
 import crypto from 'crypto';
 import * as ShopifyErrors from '../error';
 
+/**
+ * A timing safe string comparison utility.
+ * 
+ * @param a any string, array of strings, or object with string values
+ * @param b any string, array of strings, or object with string values
+ */
 export default function safeCompare(
   a: string | { [key: string]: string } | (string | number)[],
   b: string | { [key: string]: string } | (string | number)[]
