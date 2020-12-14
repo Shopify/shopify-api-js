@@ -1,7 +1,7 @@
-import { Webhooks } from './webhooks';
+import { WebhooksRegistry } from './registry';
 
 const ShopifyWebhooks = {
-  Registry: Webhooks,
+  Registry: WebhooksRegistry,
 };
 
 export default ShopifyWebhooks;

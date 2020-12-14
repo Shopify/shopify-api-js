@@ -45,7 +45,7 @@ export type ProcessReturn = {
   headers: Record<string, string>
 }
 
-interface WebhooksInterface {
+interface RegistryInterface {
   webhookRegistry: WebhookRegistryEntry[],
 
   /**
@@ -121,7 +121,7 @@ function buildQuery(
   `;
 }
 
-const Webhooks: WebhooksInterface = {
+const WebhooksRegistry: RegistryInterface = {
   webhookRegistry: [],
 
   async register({
@@ -179,4 +179,4 @@ const Webhooks: WebhooksInterface = {
   }
 };
 
-export { Webhooks, WebhooksInterface };
+export { WebhooksRegistry, RegistryInterface };
