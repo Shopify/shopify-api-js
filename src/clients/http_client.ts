@@ -1,9 +1,9 @@
 import fetch, { RequestInit, Response, Headers } from 'node-fetch';
 import querystring, { ParsedUrlQueryInput } from 'querystring';
 import { Method, StatusCode } from '@shopify/network';
-import ShopifyErrors from '../error';
+import * as ShopifyErrors from '../error';
 import { SHOPIFY_APP_DEV_KIT_VERSION } from '../version';
-import { validateShop } from '../utils';
+import ShopifyUtils from '../utils';
 
 type HeaderParams = Record<string, string>;
 
@@ -42,7 +42,7 @@ class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000; // 1 second
 
   public constructor(private domain: string) {
-    if (!validateShop(domain)) {
+    if (!ShopifyUtils.validateShop(domain)) {
       throw new ShopifyErrors.InvalidShopError(`Domain ${domain} is not valid`);
     }
 

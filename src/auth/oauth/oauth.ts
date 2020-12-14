@@ -7,7 +7,7 @@ import querystring from 'querystring';
 import { AuthQuery, AccessTokenResponse, OnlineAccessResponse } from '../types';
 import { Session } from '../session';
 import { DataType, HttpClient } from '../../clients/http_client';
-import ShopifyErrors from '../../error';
+import * as ShopifyErrors from '../../error';
 
 const ShopifyOAuth = {
   SESSION_COOKIE_NAME: 'shopify_app_session',

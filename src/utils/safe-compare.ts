@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import ShopifyErrors from '../error';
+import * as ShopifyErrors from '../error';
 
 export default function safeCompare(
   a: string | { [key: string]: string } | (string | number)[],

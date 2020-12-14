@@ -5,7 +5,7 @@ import loadCurrentSession from './load-current-session';
 import decodeSessionToken from './decode-session-token';
 import nonce from './nonce';
 
-const ShopifyUtilities = {
+const ShopifyUtils = {
   validateHmac,
   validateShop,
   safeCompare,
@@ -14,5 +14,4 @@ const ShopifyUtilities = {
   nonce,
 };
 
-export default ShopifyUtilities;
-export { validateHmac, validateShop, safeCompare, loadCurrentSession, decodeSessionToken, nonce };
+export default ShopifyUtils;

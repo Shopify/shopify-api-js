@@ -1,4 +1,4 @@
-import ShopifyErrors from './error';
+import * as ShopifyErrors from './error';
 import { Session, SessionStorage, MemorySessionStorage } from './auth/session';
 import { ApiVersion, ContextParams } from './types';
 
@@ -103,4 +103,4 @@ const Context: ContextInterface = {
   },
 };
 
-export { Context };
+export { Context, ContextInterface };

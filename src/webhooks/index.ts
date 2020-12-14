@@ -1,3 +1,8 @@
-export { Webhooks } from './webhooks';
+import { Webhooks } from './webhooks';
 
-export { Topic } from './types';
+const ShopifyWebhooks = {
+  Registry: Webhooks,
+};
+
+export default ShopifyWebhooks;
+export { ShopifyWebhooks };

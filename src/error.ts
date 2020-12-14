@@ -31,7 +31,7 @@ class HttpThrottlingError extends HttpRetriableError {
 class InvalidOAuthError extends ShopifyError {}
 class SessionNotFound extends ShopifyError {}
 
-const ShopifyErrors = {
+export {
   ShopifyError,
   InvalidHmacError,
   InvalidShopError,
@@ -48,5 +48,3 @@ const ShopifyErrors = {
   InvalidOAuthError,
   SessionNotFound,
 };
-
-export default ShopifyErrors;

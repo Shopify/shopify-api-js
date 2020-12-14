@@ -1,8 +1,7 @@
 import { Context } from '../../context'
+import { GraphqlParams } from './types';
 import { ShopifyHeader } from '../../types';
-import { DataType, HttpClient, PostRequestParams } from '../http_client';
-
-type GraphqlParams = Omit<PostRequestParams, "path" | "type">;
+import { DataType, HttpClient } from '../http_client';
 
 export class GraphqlClient{
   private readonly client: HttpClient;
@@ -18,4 +17,3 @@ export class GraphqlClient{
     return this.client.post({ path: path, type: DataType.GraphQL, ...params });
   }
 }
-

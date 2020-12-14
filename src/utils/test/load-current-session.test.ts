@@ -4,8 +4,8 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 
 import { Context } from '../../context';
+import * as ShopifyErrors from '../../error';
 import { Session } from '../../auth/session';
-import ShopifyErrors from '../../error';
 import { JwtPayload } from '../decode-session-token';
 import loadCurrentSession from '../load-current-session';
 

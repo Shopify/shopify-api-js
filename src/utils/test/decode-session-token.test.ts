@@ -3,8 +3,8 @@ import '../../test/test_helper';
 import jwt from 'jsonwebtoken';
 
 import decodeSessionToken, { JwtPayload } from '../decode-session-token';
-import ShopifyErrors from '../../error';
 import { Context } from '../../context';
+import * as ShopifyErrors from '../../error';
 
 let payload: JwtPayload;
 
