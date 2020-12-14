@@ -44,7 +44,7 @@ const ShopifyOAuth = {
 
     const query = {
       client_id: Context.API_KEY,
-      scope: Context.SCOPES,
+      scope: Context.SCOPES.join(', '),
       redirect_uri: redirect,
       state: state,
       'grant_options[]': isOnline ? 'per-user' : '',
