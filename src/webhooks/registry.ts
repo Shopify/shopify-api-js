@@ -1,6 +1,6 @@
 // import fetch from 'node-fetch';
 import { StatusCode } from '@shopify/network';
-import { DataType, HttpClient } from '../clients/http_client';
+import { GraphqlClient } from '../clients/graphql/graphql_client';
 import { ShopifyHeader, ApiVersion } from '../types';
 import { Topic } from './types';
 import { createHmac } from 'crypto';
@@ -130,19 +130,12 @@ const WebhooksRegistry: RegistryInterface = {
     topic,
     accessToken,
     shop,
-    apiVersion,
     deliveryMethod = DeliveryMethod.Http,
     webhookHandler
   }: RegisterOptions): Promise<RegisterReturn> {
-    // TODO - refactor to use the GraphQL client when it's ready
-    const client = new HttpClient(shop);
-    const result = await client.post({
-      path: `/admin/api/${apiVersion}/graphql.json`,
-      type: DataType.GraphQL,
+    const client = new GraphqlClient(shop, accessToken);
+    const result = await client.query({
       data: buildQuery(topic, path, deliveryMethod),
-      extraHeaders: {
-        [ShopifyHeader.AccessToken]: accessToken,
-      }
     });
 
     const success = isSuccess(result.body, deliveryMethod);
