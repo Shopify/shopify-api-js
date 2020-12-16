@@ -2,7 +2,6 @@
 import { StatusCode } from '@shopify/network';
 import { GraphqlClient } from '../clients/graphql/graphql_client';
 import { ShopifyHeader, ApiVersion } from '../types';
-import { Topic } from './types';
 import { createHmac } from 'crypto';
 import ShopifyUtilities from '../utils';
 import { Context } from '../context';
@@ -16,7 +15,8 @@ export enum DeliveryMethod {
 export type webhookHandlerFunction = (topic: string, shop_domain: string, body: Buffer) => void;
 
 export interface RegisterOptions {
-  topic: Topic;
+  /** See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics */
+  topic: string;
   path: string;
   shop: string;
   accessToken: string;
