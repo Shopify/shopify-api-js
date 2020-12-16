@@ -6,12 +6,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "tsc",
+    "build": "npx tsc",
     "lint": "eslint '**/*.{ts,tsx}' --max-warnings 0",
     "clean": "rimraf ./dist tsconfig.tsbuildinfo",
-    "prepublishOnly": "yarn run build",
-    "preversion": "yarn run test",
-    "postversion": "git push origin main --follow-tags && echo \"Log in to shipit to deploy version $npm_package_version\""
+    "prepublishOnly": "yarn run build"
   },
   "publishConfig": {
     "access": "public"
