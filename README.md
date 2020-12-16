@@ -15,10 +15,25 @@ $ yarn add @shopify/shopify-api
 ## Usage
 
 ### Express:
-_This usage guide assumes a basic understanding of Express_
 
-**Required Dependencies:** 
+**Prerequisites:** 
+To follow this usage guide you will need to : 
+- have a basic understanding of the [Express](https://expressjs.com/) app framework and of [TypeScript](https://typescriptlang.org)
+- have a Shopify Partner account and development store 
+- _OR_ have a test store where you can create a private app 
+- have a private or custom app already setup in your test store or partner account
+- use `ngrok`, in order to create a secure tunnel to your app running on your localhost
+- add the `ngrok` url and the appropriate redirect for your OAuth callback route to your app settings
+
+**Install dependencies:** 
+- This step will generate your app's `package.json` and install the following necessary dependencies: 
+  - `@shopify/shopify-api` - this library
+  - `express` - the Express framework
+  - `dotenv` - tool to read from `.env` files
+  - `typescript` - TypeScript language
+  - `@types/express` - Express types
 ```shell
+$ yarn init -y 
 $ yarn add @shopify/shopify-api express
 $ yarn add --dev dotenv typescript @types/express
 ```
@@ -95,7 +110,7 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 })
 
-// the rest the example code goes here 
+// the rest of the example code goes here 
 
 app.listen(3000, () => {
   console.log('your app is now listening on port 3000')
