@@ -16,7 +16,7 @@ $ yarn add @shopify/shopify-api
 
 ### Express:
 
-**Prerequisites:** 
+**Requirements:** 
 To follow this usage guide you will need to : 
 - have a basic understanding of the [Express](https://expressjs.com/) app framework and of [TypeScript](https://typescriptlang.org)
 - have a Shopify Partner account and development store 
