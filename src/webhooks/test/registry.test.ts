@@ -87,7 +87,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.April20,
+      apiVersion: ApiVersion.Unstable,
       deliveryMethod: DeliveryMethod.EventBridge,
       webhookHandler: genericWebhookHandler
     };
