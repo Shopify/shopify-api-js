@@ -30,7 +30,7 @@ const ShopifyOAuth = {
     redirectPath: string,
     isOnline = false
   ): Promise<string> {
-    Context.throwIfUnitialized();
+    Context.throwIfUninitialized();
 
     const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],
@@ -81,7 +81,7 @@ const ShopifyOAuth = {
     response: http.ServerResponse,
     query: AuthQuery
   ): Promise<void> {
-    Context.throwIfUnitialized();
+    Context.throwIfUninitialized();
 
     const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],
