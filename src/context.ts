@@ -36,7 +36,7 @@ interface ContextInterface extends ContextParams {
   /**
    * Throws error if context has not been initialized.
    */
-  throwIfUnitialized(): void | never;
+  throwIfUninitialized(): void | never;
 }
 
 const Context: ContextInterface = {
@@ -94,7 +94,7 @@ const Context: ContextInterface = {
     return this.SESSION_STORAGE.deleteSession(id);
   },
 
-  throwIfUnitialized(): void {
+  throwIfUninitialized(): void {
     if (!this.API_KEY || this.API_KEY.length == 0) {
       throw new ShopifyErrors.UninitializedContextError(
         'Context has not been properly initialized. Please call the .initialize() method to setup your app context object.'

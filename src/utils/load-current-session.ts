@@ -19,7 +19,7 @@ export default async function loadCurrentSession(
   response: http.ServerResponse,
   isOauthCall = false
 ): Promise<Session | null> {
-  Context.throwIfUnitialized();
+  Context.throwIfUninitialized();
 
   const cookies = new Cookies(request, response, {
     secure: true,
