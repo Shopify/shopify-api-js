@@ -4,7 +4,7 @@
 
 1. Ensure your local repo is up-to-date
    ```
-   git checkout master && git pull
+   git checkout main && git pull
    ```
 
 1. Create a branch named `release_X_Y_Z` (replacing `X_Y_Z` with the intended release version)
