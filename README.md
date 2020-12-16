@@ -34,7 +34,7 @@ Begin by placing the following in an `.env` file at the root of your project:
   ```
   SHOP={dev store url}
   API_KEY={api key}
-  API_SECRET={api secret key}
+  API_SECRET_KEY={api secret key}
   SCOPES={scopes}
   HOST={your app's host, we used ngrok}
   ```
