@@ -4,7 +4,7 @@
 
 1. Ensure your local repo is up-to-date
    ```
-   git checkout master && git pull
+   git checkout main && git pull
    ```
 
 1. Add an entry for the new release to `CHANGELOG.md`, and/or move the contents from the *Unreleased* to the new release
