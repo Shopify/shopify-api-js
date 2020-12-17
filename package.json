@@ -1,6 +1,6 @@
 {
   "name": "@shopify/shopify-api",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Shopify TypeScript API to support core API functionality (auth, graphql proxy, webhooks)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,7 +23,7 @@
   "bugs": {
     "url": "https://github.com/Shopify/shopify_ts_api/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify_ts_api/README.md",
+  "homepage": "https://github.com/Shopify/shopify_ts_api",
   "author": "Shopify Inc.",
   "license": "MIT",
   "dependencies": {
