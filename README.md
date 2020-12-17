@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 <!-- [![npm version](https://badge.fury.io/js/%40shopify%2Fkoa-shopify-auth.svg)](https://badge.fury.io/js/%40shopify%2Fshopify-api) -->
 
-TypeScript API supporting authentication, graphql and REST client, and registration/receipt of webhooks for [Shopify](https://www.shopify.com/) applications.
+TypeScript API supporting authentication, GraphQL and REST client, and registration/receipt of webhooks for [Shopify](https://www.shopify.com/) applications.
 
 # Usage and examples
 
@@ -14,13 +14,14 @@ To follow these usage guides, you will need to:
 - have a basic understanding of [Node](https://nodejs.org) and of [TypeScript](https://typescriptlang.org)
 - have a Shopify Partner account and development store
 - _OR_ have a test store where you can create a private app
-- have a private or custom app already setup in your test store or partner account
+- have a private or custom app already set up in your test store or partner account
 - use [ngrok](https://ngrok.com), in order to create a secure tunnel to your app running on your localhost
-- add the `ngrok` url and the appropriate redirect for your OAuth callback route to your app settings
+- add the `ngrok` URL and the appropriate redirect for your OAuth callback route to your app settings
 
 **Environment**
 
-You'll need your application to load the API secret and API secret key (found when you create an app in your Partner Account).  The mechanism is entirely up to you.  For example, you could use a library like `dotenv` to read them from a `.env` file, or set environment variables with the values.  However you do it, be sure to NOT save the API secret and key in GitHub or other code repository where others can view them.
+You'll need your application to load the API secret and API secret key (found when you create an app in your Partner Account). The mechanism is entirely up to you. For example, you could use a library like `dotenv` to read them from a `.env` file, or set environment variables with the values. However you do it, be sure to NOT save the API secret and key in GitHub or other code repository where others can view them.
+
 ## Express
 
 For this guide, basic understanding of the [Express](https://expressjs.com/) app framework is required.
@@ -39,13 +40,13 @@ $ yarn add @shopify/shopify-api express
 $ yarn add --dev dotenv typescript @types/express
 ```
 
-**Setup environment**
+**Set up environment**
 
 Begin by placing the following in an `.env` file at the root of your project:
 - Your API secret
 - Your API secret key
 - Your app's host, without the protocol prefix (in this case we used an `ngrok` tunnel to provide a secure connection to our localhost)
-- Your test store url
+- Your test store URL
 - Your app's required scopes
   ```
   SHOP={dev store url}
@@ -55,7 +56,7 @@ Begin by placing the following in an `.env` file at the root of your project:
   HOST={your app's host, we used ngrok}
   ```
 
-**Setup base files**
+**Set up base files**
 
 - Add the following `tsconfig.json` in the root of your project:
     ```json
@@ -90,7 +91,7 @@ Begin by placing the following in an `.env` file at the root of your project:
   ```
 - Create `src/index.ts`
 
-**Add imports, environment variables, and setup `Context`**
+**Add imports, environment variables, and set up `Context`**
 
 ```ts
 // src/index.ts
@@ -164,6 +165,7 @@ app.listen(3000, () => {
   ```
 
 **Make a GraphQL API call**
+
 - You can also use the `GraphQLClient` to make requests to the GraphQL API in a similar way
 - Create an instance of `GraphQLClient` using the current shop URL and session `accessToken`
 - Use `client.query` to make your request, passing your query as `data`
@@ -189,7 +191,8 @@ app.listen(3000, () => {
   ```
 
 **Running your app**
-- Start your `ngrok` tunnel and add the displayed `ngrok` url to the app setup in your admin, along with the redirect route
+
+- Start your `ngrok` tunnel and add the displayed `ngrok` URL to the app setup in your admin, along with the redirect route
   ```shell
   $ ngrok http 3000
   ```
@@ -200,6 +203,7 @@ app.listen(3000, () => {
 ## Node (no framework)
 
 **Install dependencies**
+
 - This step will generate your app's `package.json` and install the following necessary dependencies:
   - `@shopify/shopify-api` - this library
   - `dotenv` - tool to read from `.env` files
@@ -218,7 +222,7 @@ Begin by placing the following in an `.env` file at the root of your project:
 - Your API secret
 - Your API secret key
 - Your app's host, without the protocol prefix (in this case we used an `ngrok` tunnel to provide a secure connection to our localhost)
-- Your test store url
+- Your test store URL
 - Your app's required scopes
   ```
   SHOP={dev store url}
@@ -228,7 +232,7 @@ Begin by placing the following in an `.env` file at the root of your project:
   HOST={your app's host, we used ngrok}
   ```
 
-**Setup base files**
+**Set up base files**
 
 - Add the following `tsconfig.json` in the root of your project:
     ```json
@@ -263,7 +267,7 @@ Begin by placing the following in an `.env` file at the root of your project:
   ```
 - Create `src/index.ts`
 
-**Add imports, environment variables, and setup `Context`**
+**Add imports, environment variables, and set up `Context`**
 
 ```typescript
 // src/index.ts
@@ -348,7 +352,7 @@ http.createServer(onRequest).listen(3000);
 
 **Add your OAuth callback route**
 
-After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route (which you provided as a parameter to `beginAuth`, above).  Your app will now use the provided `validateAuthCallback` method to finalized the OAuth process.
+After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route (which you provided as a parameter to `beginAuth`, above).  Your app will now use the provided `validateAuthCallback` method to finalize the OAuth process.
 
 ```typescript
   :
@@ -382,7 +386,7 @@ http.createServer(onRequest).listen(3000);
 
 **Register a Webhook**
 
-If your application's functionality depends on knowing when events occur on a given store, you need to register a Webhook!  You should register your webhooks after the OAuth process completes.
+If your application's functionality depends on knowing when events occur on a given store, you need to register a Webhook. You should register your webhooks after the OAuth process completes.
 
 ```typescript
   :
@@ -455,7 +459,8 @@ http.createServer(onRequest).listen(3000);
 ```
 
 **Running your app**
-- Start your `ngrok` tunnel and add the displayed `ngrok` url to the app setup in your admin, along with the redirect route
+
+- Start your `ngrok` tunnel and add the displayed `ngrok` URL to the app setup in your admin, along with the redirect route
   ```shell
   $ ngrok http 3000
   ```
