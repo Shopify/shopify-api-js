@@ -40,7 +40,7 @@ $ yarn add @shopify/shopify-api express
 $ yarn add --dev dotenv typescript @types/express
 ```
 
-**Set pp environment**
+**Set up environment**
 
 Begin by placing the following in an `.env` file at the root of your project:
 - Your API secret
