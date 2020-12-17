@@ -1,11 +1,16 @@
 import '../../../test/test_helper';
+
+import querystring from 'querystring';
+import http from 'http';
+import jwt from 'jsonwebtoken';
+
 import { ShopifyOAuth } from '../oauth';
 import { Context } from '../../../context';
 import * as ShopifyErrors from '../../../error';
-import { generateLocalHmac } from '../../../utils/hmac-validator';
 import { AuthQuery } from '../../types';
-import querystring from 'querystring';
-import http from 'http';
+import { generateLocalHmac } from '../../../utils/hmac-validator';
+import { JwtPayload } from '../../../utils/decode-session-token';
+import loadCurrentSession from '../../../utils/load-current-session';
 
 jest.mock('cookies');
 import Cookies from 'cookies';
@@ -65,7 +70,7 @@ describe('beginAuth', () => {
   test('sets session id and cookie to shop name with "_offline" for offline access requests', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
 
-    expect(cookies.id).toBe(shop + '_offline');
+    expect(cookies.id).toBe(`offline_${shop}`);
   });
 
   test('returns the correct auth url for given info', async () => {
@@ -248,5 +253,72 @@ describe('validateAuthCallback', () => {
     } else {
       return false;
     }
+  });
+
+  test("converts an OAuth session into a JWT one if is online", async () => {
+    Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
+
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
+    const session = await Context.loadSession(cookies.id);
+
+    const successResponse = {
+      access_token: 'some access token',
+      scope: 'pet_kitties, walk_dogs',
+      expires_in: '525600',
+      associated_user_scope: 'pet_kitties',
+      associated_user: {
+        id: '1',
+        first_name: 'John',
+        last_name: 'Smith',
+        email: 'john@example.com',
+        email_verified: true,
+        account_owner: true,
+        locale: 'en',
+        collaborator: true,
+      },
+    };
+    const testCallbackQuery: AuthQuery = {
+      shop: shop,
+      state: session ? session.state : '',
+      timestamp: (+new Date()).toString(),
+      code: 'some random auth code',
+    };
+    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    testCallbackQuery.hmac = expectedHmac;
+
+    fetchMock.mockResponse(JSON.stringify(successResponse));
+    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
+
+    await expect(Context.loadSession(cookies.id)).resolves.toBeNull();
+
+    const jwtPayload: JwtPayload = {
+      iss: `https://${shop}/admin`,
+      dest: `https://${shop}`,
+      aud: Context.API_KEY,
+      sub: "1",
+      exp: Date.now() / 1000 + 3600,
+      nbf: 1234,
+      iat: 1234,
+      jti: "4321",
+      sid: "abc123",
+    };
+
+    const jwtSessionId = `${shop}_${jwtPayload.sub}`;
+    await expect(Context.loadSession(jwtSessionId)).resolves.not.toBeNull();
+
+    // Simulate a subsequent JWT request to see if the session is loaded as the current one
+
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
+    const jwtReq = {
+      headers: {
+        "authorization": `Bearer ${token}`,
+      }
+    } as http.IncomingMessage;
+    const jwtRes = {} as http.ServerResponse;
+
+    const currentSession = await loadCurrentSession(jwtReq, jwtRes);
+    expect(currentSession).not.toBe(null);
+    expect(currentSession?.id).toEqual(jwtSessionId);
   });
 });

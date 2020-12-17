@@ -14,7 +14,7 @@ class Session {
 
   constructor(readonly id: string) {}
 
-  public static async cloneSession(session: Session, newId: string): Promise<Session> {
+  public static cloneSession(session: Session, newId: string): Session {
     const newSession = new Session(newId);
 
     newSession.shop = session.shop;

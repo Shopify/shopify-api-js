@@ -17,8 +17,8 @@ describe("loadCurrentSession", () => {
 
   beforeEach(() => {
     jwtPayload = {
-      iss: "test-shop.myshopify.io/admin",
-      dest: "test-shop.myshopify.io",
+      iss: "https://test-shop.myshopify.io/admin",
+      dest: "https://test-shop.myshopify.io",
       aud: Context.API_KEY,
       sub: "1",
       exp: Date.now() / 1000 + 3600,
@@ -70,35 +70,10 @@ describe("loadCurrentSession", () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    const session = new Session(jwtPayload.sid);
+    const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`);
     await expect(Context.storeSession(session)).resolves.toEqual(true);
 
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
-  });
-
-  it("converts an OAuth session into a JWT one", async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
-
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
-    const req = {
-      headers: {
-        "authorization": `Bearer ${token}`,
-      }
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
-
-    const cookieId = '1234-this-is-a-cookie-session-id';
-
-    // We expect to find the OAuth cookie session, which will be deleted after we migrate it over to a JWT one
-    const session = new Session(cookieId);
-    await expect(Context.storeSession(session)).resolves.toEqual(true);
-    Cookies.prototype.get.mockImplementation(() => cookieId);
-
-    const jwtSession = new Session(jwtPayload.sid);
-    jwtSession.expires = new Date(jwtPayload.exp * 1000);
-    await expect(loadCurrentSession(req, res)).resolves.toEqual(jwtSession);
-    await expect(Context.loadSession(cookieId)).resolves.toBeNull();
   });
 
   it("loads nothing if no authorization header is present", async () => {

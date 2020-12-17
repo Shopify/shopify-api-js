@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import http from 'http';
 import Cookies from 'cookies';
+import querystring from 'querystring';
+
 import { Context } from '../../context';
 import utils from '../../utils';
-import querystring from 'querystring';
-import { AuthQuery, AccessTokenResponse, OnlineAccessResponse } from '../types';
+import { AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo } from '../types';
 import { Session } from '../session';
 import { DataType, HttpClient } from '../../clients/http_client';
 import * as ShopifyErrors from '../../error';
@@ -14,13 +15,13 @@ const ShopifyOAuth = {
 
   /**
    * Initializes a session and cookie for the OAuth process, and returns the necessary authorization url.
-   * 
+   *
    * @param request Current HTTP Request
    * @param response Current HTTP Response
    * @param shop Shop url: {shop}.myshopify.com
-   * @param redirect Redirect url for callback 
-   * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token. 
-   *                 During final oauth request, will receive back the online access token and current online session information. 
+   * @param redirect Redirect url for callback
+   * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token.
+   *                 During final oauth request, will receive back the online access token and current online session information.
    *                 Defaults to offline access.
    */
   async beginAuth(
@@ -39,7 +40,7 @@ const ShopifyOAuth = {
 
     const state = utils.nonce();
 
-    const session = new Session(isOnline ? uuidv4() : shop + '_offline');
+    const session = new Session(isOnline ? uuidv4() : this.getOfflineSessionId(shop));
     session.shop = shop;
     session.state = state;
     session.isOnline = isOnline;
@@ -67,14 +68,14 @@ const ShopifyOAuth = {
   },
 
   /**
-   * Validates the received callback query. 
+   * Validates the received callback query.
    * If valid, will make the subsequent request to update the current session with the appropriate access token.
-   * Throws errors for missing sessions and invalid callbacks. 
-   * 
+   * Throws errors for missing sessions and invalid callbacks.
+   *
    * @param request Current HTTP Request
    * @param response Current HTTP Response
    * @param query Current HTTP Request Query, containing the information to be validated.
-   *              Depending on framework, this may need to be cast as "unknown" before being passed. 
+   *              Depending on framework, this may need to be cast as "unknown" before being passed.
    */
   async validateAuthCallback(
     request: http.IncomingMessage,
@@ -88,7 +89,12 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    const currentSession = await utils.loadCurrentSession(request, response, true);
+    let currentSession: Session | null = null;
+
+    const sessionCookie = this.getCookieSessionId(request, response);
+    if (sessionCookie) {
+      currentSession = await Context.loadSession(sessionCookie);
+    }
 
     if (!currentSession) {
       throw new ShopifyErrors.SessionNotFound(
@@ -125,26 +131,70 @@ const ShopifyOAuth = {
       currentSession.expires = sessionExpiration;
       currentSession.scope = scope;
       currentSession.onlineAccesInfo = rest;
-
-      cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
-        signed: true,
-        expires: sessionExpiration,
-        sameSite: 'none',
-        secure: true,
-      });
     } else {
       const responseBody = postResponse.body as AccessTokenResponse;
       currentSession.accessToken = responseBody.access_token;
       currentSession.scope = responseBody.scope;
     }
 
-    await Context.storeSession(currentSession);
+    // If app is embedded or this is an offline session, we're no longer intereseted in the cookie
+    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
+      signed: true,
+      expires: (Context.IS_EMBEDDED_APP || !currentSession.isOnline) ? new Date() : currentSession.expires,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    // If this is an online session for an embedded app, we assume it will be loaded from a JWT from here on out
+    if (Context.IS_EMBEDDED_APP && currentSession.isOnline) {
+      const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
+      const jwtSessionId = this.getJwtSessionId(currentSession.shop, ""+onlineInfo.associated_user.id);
+      const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
+      await Context.deleteSession(currentSession.id);
+      await Context.storeSession(jwtSession);
+    }
+    else {
+      await Context.storeSession(currentSession);
+    }
+  },
+
+  /**
+   * Loads the current session id from the session cookie.
+   *
+   * @param request HTTP request object
+   * @param response HTTP response object
+   */
+  getCookieSessionId(request: http.IncomingMessage, response: http.ServerResponse): string | undefined {
+    const cookies = new Cookies(request, response, {
+      secure: true,
+      keys: [Context.API_SECRET_KEY],
+    });
+    return cookies.get(this.SESSION_COOKIE_NAME, { signed: true });
+  },
+
+  /**
+   * Builds a JWT session id from the current shop and user.
+   *
+   * @param shop Shopify shop domain
+   * @param userId Current actor id
+   */
+  getJwtSessionId(shop: string, userId: string): string {
+    return `${shop}_${userId}`;
+  },
+
+  /**
+   * Builds an offline session id for the given shop.
+   *
+   * @param shop Shopify shop domain
+   */
+  getOfflineSessionId(shop: string): string {
+    return `offline_${shop}`;
   },
 };
 
 /**
  * Uses the validation utils validateHmac, validateShop, and safeCompare to assess whether the callback is valid.
- * 
+ *
  * @param query Current HTTP Request Query
  * @param session Current session
  */
