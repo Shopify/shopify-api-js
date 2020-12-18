@@ -16,7 +16,7 @@ interface SessionStorage {
    *
    * @param id Id of the session to load
    */
-  loadSession(id: string): Promise<Session | null>;
+  loadSession(id: string): Promise<Session | undefined>;
 
   /**
    * Deletes a session from storage.

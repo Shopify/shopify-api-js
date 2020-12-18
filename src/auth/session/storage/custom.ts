@@ -4,8 +4,8 @@ import { SessionStorage } from '../session_storage';
 export class CustomSessionStorage implements SessionStorage {
   constructor(
     readonly storeCallback: (session: Session) => boolean,
-    readonly loadCallback: (id: string) => Session | null,
-    readonly deleteCallback: (id: string) => boolean,
+    readonly loadCallback: (id: string) => Session | undefined,
+    readonly deleteCallback: (id: string) => boolean
   ) {
     this.storeCallback = storeCallback;
     this.loadCallback = loadCallback;
@@ -16,7 +16,7 @@ export class CustomSessionStorage implements SessionStorage {
     return this.storeCallback(session);
   }
 
-  public async loadSession(id: string): Promise<Session | null> {
+  public async loadSession(id: string): Promise<Session | undefined> {
     return this.loadCallback(id);
   }
 

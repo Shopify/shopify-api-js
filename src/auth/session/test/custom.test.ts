@@ -55,12 +55,12 @@ test('custom session storage failures and exceptions are raised', async () => {
 
   let storage = new CustomSessionStorage(
     () => false,
-    () => null,
+    () => undefined,
     () => false
   );
 
   await expect(storage.storeSession(session)).resolves.toBe(false);
-  await expect(storage.loadSession(sessionId)).resolves.toBeNull();
+  await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
   await expect(storage.deleteSession(sessionId)).resolves.toBe(false);
 
   storage = new CustomSessionStorage(
@@ -75,13 +75,7 @@ test('custom session storage failures and exceptions are raised', async () => {
     }
   );
 
-  await expect(storage.storeSession(session)).rejects.toEqual(
-    'Failed to store!'
-  );
-  await expect(storage.loadSession(sessionId)).rejects.toEqual(
-    'Failed to load!'
-  );
-  await expect(storage.deleteSession(sessionId)).rejects.toEqual(
-    'Failed to delete!'
-  );
+  await expect(storage.storeSession(session)).rejects.toEqual('Failed to store!');
+  await expect(storage.loadSession(sessionId)).rejects.toEqual('Failed to load!');
+  await expect(storage.deleteSession(sessionId)).rejects.toEqual('Failed to delete!');
 });

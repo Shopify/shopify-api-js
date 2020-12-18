@@ -15,25 +15,26 @@ import decodeSessionToken from './decode-session-token';
 export default async function loadCurrentSession(
   request: http.IncomingMessage,
   response: http.ServerResponse
-): Promise<Session | null> {
+): Promise<Session | undefined> {
   Context.throwIfUninitialized();
 
-  let session: Session | null = null;
+  let session: Session | undefined = undefined;
 
   if (Context.IS_EMBEDDED_APP) {
     const authHeader = request.headers['authorization'];
     if (authHeader) {
       const matches = authHeader.match(/^Bearer (.+)$/);
       if (!matches) {
-        throw new ShopifyErrors.MissingJwtTokenError("Missing Bearer token in authorization header");
+        throw new ShopifyErrors.MissingJwtTokenError('Missing Bearer token in authorization header');
       }
 
       const jwtPayload = decodeSessionToken(matches[1]);
       const jwtSessionId = ShopifyOAuth.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);
       session = await Context.loadSession(jwtSessionId);
+    } else {
+      throw new ShopifyErrors.MissingJwtTokenError('Missing authorization header');
     }
-  }
-  else {
+  } else {
     const sessionCookie = ShopifyOAuth.getCookieSessionId(request, response);
     if (sessionCookie) {
       session = await Context.loadSession(sessionCookie);

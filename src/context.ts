@@ -24,7 +24,7 @@ interface ContextInterface extends ContextParams {
    *
    * @param id Id of the session to load
    */
-  loadSession(id: string): Promise<Session | null>;
+  loadSession(id: string): Promise<Session | undefined>;
 
   /**
    * Deletes a session using the assigned strategy.
@@ -86,7 +86,7 @@ const Context: ContextInterface = {
     return this.SESSION_STORAGE.storeSession(session);
   },
 
-  async loadSession(id: string): Promise<Session | null> {
+  async loadSession(id: string): Promise<Session | undefined> {
     return this.SESSION_STORAGE.loadSession(id);
   },
 
