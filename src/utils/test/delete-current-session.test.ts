@@ -17,8 +17,8 @@ describe('deleteCurrenSession', () => {
   let jwtPayload: JwtPayload;
   beforeEach(() => {
     jwtPayload = {
-      iss: 'test-shop.myshopify.io/admin',
-      dest: 'test-shop.myshopify.io',
+      iss: 'https://test-shop.myshopify.io/admin',
+      dest: 'https://test-shop.myshopify.io',
       aud: Context.API_KEY,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
@@ -30,8 +30,8 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current session when using cookies', async () => {
-    Context.initialize(Context);
     Context.IS_EMBEDDED_APP = false;
+    Context.initialize(Context);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -48,8 +48,8 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current session when using JWT', async () => {
-    Context.initialize(Context);
     Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
 
     const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
     const req = {
@@ -67,8 +67,8 @@ describe('deleteCurrenSession', () => {
   });
 
   it('throws an error when no cookie is found', async () => {
-    Context.initialize(Context);
     Context.IS_EMBEDDED_APP = false;
+    Context.initialize(Context);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -79,8 +79,8 @@ describe('deleteCurrenSession', () => {
   });
 
   it('throws an error when authorization header is missing or not a bearer token', async () => {
-    Context.initialize(Context);
     Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
 
     let req = {
       headers: {},

@@ -6,7 +6,7 @@ import { ShopifyOAuth } from '../auth/oauth/oauth';
 import decodeSessionToken from './decode-session-token';
 
 /**
- * Finds and deletes the current user's session, based on the give request and response
+ * Finds and deletes the current user's session, based on the given request and response
  *
  * @param req Current HTTP request
  * @param res Current HTTP response
@@ -16,13 +16,6 @@ export default async function deleteCurrentSession(
   res: http.ServerResponse
 ): Promise<boolean | never> {
   Context.throwIfUninitialized();
-
-  const cookies = new Cookies(req, res, {
-    secure: true,
-    keys: [Context.API_SECRET_KEY],
-  });
-
-  const sessionCookie: string | undefined = cookies.get(ShopifyOAuth.SESSION_COOKIE_NAME, { signed: true });
 
   if (Context.IS_EMBEDDED_APP) {
     const authHeader = req.headers['authorization'];
@@ -40,6 +33,13 @@ export default async function deleteCurrentSession(
       throw new ShopifyErrors.MissingJwtTokenError('Missing authorization header');
     }
   } else {
+    const cookies = new Cookies(req, res, {
+      secure: true,
+      keys: [Context.API_SECRET_KEY],
+    });
+
+    const sessionCookie: string | undefined = cookies.get(ShopifyOAuth.SESSION_COOKIE_NAME, { signed: true });
+
     if (sessionCookie) {
       await Context.deleteSession(sessionCookie);
       cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME);
