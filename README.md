@@ -2,11 +2,18 @@
 
 <!-- ![Build Status]() -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
-<!-- [![npm version](https://badge.fury.io/js/%40shopify%2Fkoa-shopify-auth.svg)](https://badge.fury.io/js/%40shopify%2Fshopify-api) -->
+[![npm version](https://badge.fury.io/js/%40shopify%2Fshopify-api.svg)](https://badge.fury.io/js/%40shopify%2Fshopify-api)
 
-TypeScript API supporting authentication, GraphQL and REST client, and registration/receipt of webhooks for [Shopify](https://www.shopify.com/) applications.
+This library provides support for TypeScript / JavaScript [Shopify](https://www.shopify.com) Apps to access the [Shopify Admin API](https://shopify.dev/docs/admin-api), by making it easier to perform the following actions:
 
-## Requirements
+- Creating [online](https://shopify.dev/concepts/about-apis/authentication#online-access) or [offline](https://shopify.dev/concepts/about-apis/authentication#offline-access) access tokens for the Admin API via OAuth
+- Making requests to the [REST API](https://shopify.dev/docs/admin-api/rest/reference)
+- Making requests to the [GraphQL API](https://shopify.dev/docs/admin-api/graphql/reference)
+- Register / process webhooks
+
+This library can be used in any application that has a Node.js backend, since it doesn't rely on any specific framework - you can include it alongside your preferred stack and only use the features that you need to build your App.
+
+# Requirements
 
 To follow these usage guides, you will need to:
 - have a basic understanding of [Node.js](https://nodejs.org) and of [TypeScript](https://typescriptlang.org)
@@ -18,17 +25,16 @@ To follow these usage guides, you will need to:
 
 This guide will provide instructions on how to create an app using plain Node.js code, or the [Express](https://expressjs.com/) framework. Both examples are written in Typescript.
 
-## Environment
+# Getting started
 
-You'll need your application to load the API secret and API secret key (found when you create an app in your Partner Account). The mechanism for loading these values is entirely up to you - this example uses the `dotenv` library to read them from a `.env` file, but it is common practice to set environment variables with the values in production environments.
+Before your App can make any requests to the Shopify backend, you'll need to set up a few environment variables so you can initialize the library.
 
-However you choose to do it, be sure to NOT save the API secret and key in GitHub or other code repository where others can view them, as that information can be used to forge requests for your Shopify App.
+## Install dependencies
 
-### Install dependencies
-- This step will generate your app's `package.json` and install the following necessary dependencies:
-  - `@shopify/shopify-api` - this library
-  - `dotenv` - tool to read from `.env` files
-  - `typescript` - TypeScript language
+This step will generate your app's `package.json` and install the following necessary dependencies:
+- `@shopify/shopify-api` - this library
+- `dotenv` - tool to read from `.env` files
+- `typescript` - TypeScript language
 
 Furthermore, if using Express you will also need to add the `express` package as a dependency.
 
@@ -54,29 +60,13 @@ Examples:
   ```
 </details>
 
-### Set up environment
+## Set up base files
 
-Begin by placing the following in an `.env` file at the root of your project:
-- Your API secret
-- Your API secret key
-- Your app's host, without the protocol prefix (in this case we used an `ngrok` tunnel to provide a secure connection to our localhost)
-- Your test store URL
-- Your app's required scopes
-  ```
-  SHOP={dev store url}
-  API_KEY={api key}
-  API_SECRET_KEY={api secret key}
-  SCOPES={scopes}
-  HOST={your app's host, we used ngrok}
-  ```
-
-### Set up base files
-
-This example app will require at least the following files to work, and the contents listed below.
+This example app will require at least the following files to work, and their contents are listed below.
 
 ```bash
+package.json # Created in the previous step
 .env
-package.json
 tsconfig.json
 src/
   index.ts
@@ -113,7 +103,7 @@ node_modules
 }
 ```
 
-The `package.json` file is a standard `yarn` package file, but you'll need to add the following to the `scripts` section:
+Add the following `scripts` section to your `package.json` so you can easily build / start your App:
 ```json
 "scripts": {
   "build": "npx tsc",
@@ -122,9 +112,24 @@ The `package.json` file is a standard `yarn` package file, but you'll need to ad
 },
 ```
 
+## Set up environment
+
+You'll need your application to load the API secret and API secret key (found when you create an app in your Partner Account). The mechanism for loading these values is entirely up to you - this example uses the `dotenv` library to read them from a `.env` file, but it is common practice to set environment variables with the values in production environments.
+
+However you choose to do it, be sure to NOT save the API secret and key in GitHub or other code repository where others can view them, as that information can be used to forge requests for your Shopify App.
+
+Begin by placing the following in an `.env` file at the root of your project:
+  ```yaml
+  SHOP={dev store url}            # Your test store URL
+  API_KEY={api key}               # Your API secret
+  API_SECRET_KEY={api secret key} # Your API secret key
+  SCOPES={scopes}                 # Your app's required scopes
+  HOST={your app's host}          # Your app's host, without the protocol prefix (in this case we used an `ngrok` tunnel to provide a secure connection to our localhost)
+  ```
+
 ## Add imports, environment variables, and set up `Context`
 
-First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library.
+First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library. Note that you only need to set up `Context` once when your App is loaded, and the library will automatically use those settings whenever they are needed.
 
 <details>
   <summary>Node.js</summary>
@@ -206,7 +211,7 @@ First of all, in your `src/index.ts` file, you'll need to set up your applicatio
   ```
 </details>
 
-## Running your app
+## Running your App
 
 - Start your `ngrok` tunnel and add the displayed `ngrok` URL to the app setup in your admin, along with the redirect route
   ```shell
@@ -215,32 +220,9 @@ First of all, in your `src/index.ts` file, you'll need to set up your applicatio
 - Run `yarn start` and you should have your app running on your specified `localhost`
 - Access the HTTPS address provided by `ngrok` to reach your app
 
-## Notes on session handling
+# Using the library
 
-Before you start writing your application, please note that the Shopify library stores some information for OAuth in sessions. Since each application may choose a different strategy to store information, the library cannot dictate any specific storage strategy. By default, `Shopify.Context` is initialized with `MemorySessionStorage`, which will enable you to start developing your app by storing sessions in memory. You can continue to follow this guide to quickly get your app set up, but please keep the following in mind.
-
-`MemorySessionStorage` is **purposely** designed to be a single-process, development-only solution. It **will leak** memory in most cases and delete all sessions when your app restarts. You should **never** use it in production apps. In order to use your preferred storage choice with the Shopify library, you'll need to perform a few steps:
-
-- Create a class that extends the `SessionStorage` interface, and implements the following methods: `loadSession`, `storeSession`, and `deleteSession`.
-- _OR_ Create a new instance of `CustomSessionStorage`, providing callbacks for these methods.
-- Implement those methods so that they perform the necessary actions in your app's storage.
-- Provide an instance of that class when calling `Shopify.Context.initialize`, for example:
-```ts
-  // src/my_session_storage.ts
-  import { SessionStorage, Session } from '@shopify/shopify-api';
-
-  class MySessionStorage extends SessionStorage {
-    public async loadSession(sessionId: string) { ... }
-    public async storeSession(session: Session) { ... }
-    public async deleteSession(sessionId: string) { ... }
-  }
-
-  // src/index.ts
-  Shopify.Context.initialize({
-    ... // app settings
-    SESSION_STORAGE: new MySessionStorage(),
-  });
-```
+Now that the library is set up for your project, you'll be able to use it to start adding functionality to your App. In this section you'll find instructions for all the features available in the library.
 
 ## Add a route to start OAuth
 
@@ -524,3 +506,34 @@ To process a webhook, you need to listen on the route(s) you provided during the
   });
   ```
 </details>
+
+# Known issues and caveats
+
+By following this guide, you will have a fully functional Shopify App. However, there are some things you should be aware of before using your new App in a production environment.
+
+## Notes on session handling
+
+Before you start writing your application, please note that the Shopify library stores some information for OAuth in sessions. Since each application may choose a different strategy to store information, the library cannot dictate any specific storage strategy. By default, `Shopify.Context` is initialized with `MemorySessionStorage`, which will enable you to start developing your app by storing sessions in memory. You can quickly get your app set up using it, but please keep the following in mind.
+
+`MemorySessionStorage` is **purposely** designed to be a single-process, development-only solution. It **will leak** memory in most cases and delete all sessions when your app restarts. You should **never** use it in production apps. In order to use your preferred storage choice with the Shopify library, you'll need to perform a few steps:
+
+- Create a class that extends the `SessionStorage` interface, and implements the following methods: `loadSession`, `storeSession`, and `deleteSession`.
+- _OR_ Create a new instance of `CustomSessionStorage`, providing callbacks for these methods.
+- Implement those methods so that they perform the necessary actions in your app's storage.
+- Provide an instance of that class when calling `Shopify.Context.initialize`, for example:
+```ts
+  // src/my_session_storage.ts
+  import { SessionStorage, Session } from '@shopify/shopify-api';
+
+  class MySessionStorage extends SessionStorage {
+    public async loadSession(sessionId: string) { ... }
+    public async storeSession(session: Session) { ... }
+    public async deleteSession(sessionId: string) { ... }
+  }
+
+  // src/index.ts
+  Shopify.Context.initialize({
+    ... // app settings
+    SESSION_STORAGE: new MySessionStorage(),
+  });
+```
