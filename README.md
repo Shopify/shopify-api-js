@@ -6,48 +6,53 @@
 
 TypeScript API supporting authentication, GraphQL and REST client, and registration/receipt of webhooks for [Shopify](https://www.shopify.com/) applications.
 
-# Usage and examples
-
 ## Requirements
 
 To follow these usage guides, you will need to:
-- have a basic understanding of [Node](https://nodejs.org) and of [TypeScript](https://typescriptlang.org)
+- have a basic understanding of [Node.js](https://nodejs.org) and of [TypeScript](https://typescriptlang.org)
 - have a Shopify Partner account and development store
 - _OR_ have a test store where you can create a private app
 - have a private or custom app already set up in your test store or partner account
 - use [ngrok](https://ngrok.com), in order to create a secure tunnel to your app running on your localhost
 - add the `ngrok` URL and the appropriate redirect for your OAuth callback route to your app settings
 
-This guide will provide instructions on how to create an app using the [Express](https://expressjs.com/) app framework, or using plain Node code.
+This guide will provide instructions on how to create an app using plain Node.js code, or the [Express](https://expressjs.com/) framework. Both examples are written in Typescript.
 
 ## Environment
 
-You'll need your application to load the API secret and API secret key (found when you create an app in your Partner Account). The mechanism is entirely up to you. For example, you could use a library like `dotenv` to read them from a `.env` file, or set environment variables with the values. However you do it, be sure to NOT save the API secret and key in GitHub or other code repository where others can view them.
+You'll need your application to load the API secret and API secret key (found when you create an app in your Partner Account). The mechanism for loading these values is entirely up to you - this example uses the `dotenv` library to read them from a `.env` file, but it is common practice to set environment variables with the values in production environments.
+
+However you choose to do it, be sure to NOT save the API secret and key in GitHub or other code repository where others can view them, as that information can be used to forge requests for your Shopify App.
 
 ### Install dependencies
 - This step will generate your app's `package.json` and install the following necessary dependencies:
   - `@shopify/shopify-api` - this library
   - `dotenv` - tool to read from `.env` files
   - `typescript` - TypeScript language
-  - `@types/express` - Express types
 
 Furthermore, if using Express you will also need to add the `express` package as a dependency.
 
 Examples:
 
-**Express**
-```shell
-$ yarn init -y
-$ yarn add @shopify/shopify-api express
-$ yarn add --dev dotenv typescript @types/express
-```
+<details>
+  <summary>Node.js</summary>
 
-**Node**
-```shell
-$ yarn init -y
-$ yarn add @shopify/shopify-api
-$ yarn add --dev dotenv typescript @types/node
-```
+  ```shell
+  $ yarn init -y
+  $ yarn add @shopify/shopify-api
+  $ yarn add --dev dotenv typescript @types/node
+  ```
+</details>
+
+<details>
+  <summary>Express</summary>
+
+  ```shell
+  $ yarn init -y
+  $ yarn add @shopify/shopify-api express
+  $ yarn add --dev dotenv typescript @types/express
+  ```
+</details>
 
 ### Set up environment
 
@@ -67,42 +72,109 @@ Begin by placing the following in an `.env` file at the root of your project:
 
 ### Set up base files
 
-- Add the following `tsconfig.json` in the root of your project:
-  ```json
-  {
-    "compilerOptions": {
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "target": "es6",
-        "noImplicitAny": true,
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "dist",
-        "baseUrl": ".",
-        "paths": {
-            "*": [
-                "node_modules/*"
-            ]
-        }
-    },
-    "include": [
-        "src/**/*"
-    ]
-  }
-  ```
-- Add the following `scripts` to your `package.json`:
-  ```json
-  "scripts": {
-    "build": "npx tsc",
-    "prestart": "yarn run build",
-    "start": "node dist/index.js"
-  },
-  ```
-- Create `src/index.ts`
+This example app will require at least the following files to work, and the contents listed below.
 
-### Add imports, environment variables, and set up `Context`
+```bash
+.env
+package.json
+tsconfig.json
+src/
+  index.ts
+```
+
+If your application is in a Git repository, you should make sure to add these files to `.gitignore`:
+```
+.env
+dist
+node_modules
+```
+
+`tsconfig.json`
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
+```
+
+The `package.json` file is a standard `yarn` package file, but you'll need to add the following to the `scripts` section:
+```json
+"scripts": {
+  "build": "npx tsc",
+  "prestart": "yarn run build",
+  "start": "node dist/index.js"
+},
+```
+
+## Add imports, environment variables, and set up `Context`
 
 First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library.
+
+<details>
+  <summary>Node.js</summary>
+
+  ```typescript
+  // src/index.ts
+  import http from 'http';
+  import url from 'url';
+  import querystring from 'querystring';
+  import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
+  require('dotenv').config();
+
+  const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env
+
+  Shopify.Context.initialize({
+    API_KEY,
+    API_SECRET_KEY,
+    SCOPES: [SCOPES],
+    HOST_NAME: HOST,
+    IS_EMBEDDED_APP: {boolean},
+    API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
+  });
+  ```
+
+  You will also need to set up a basic router to be able to process requests:
+
+  ```typescript
+  async function onRequest(request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
+    const { headers, url: req_url } = request;
+    const pathName: string | null = url.parse(req_url).pathname;
+    const queryString: string = (String)(url.parse(req_url).query);
+    const query: Record<string, any> = querystring.parse(queryString);
+
+    if (pathName === '/') {
+      // check if we're logged in/authorized
+      const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
+      if(!currentSession) {
+        // not logged in, redirect to login
+        response.writeHead(302, { 'Location': `/login` });
+        response.end();
+      } else {
+        // do something amazing with your application!
+      }
+      return;
+    } // end of if(pathName === '/')
+  } // end of onRequest()
+
+  http.createServer(onRequest).listen(3000);
+  ```
+</details>
 
 <details>
   <summary>Express</summary>
@@ -134,83 +206,21 @@ First of all, in your `src/index.ts` file, you'll need to set up your applicatio
   ```
 </details>
 
-<details>
-  <summary>Node</summary>
-
-  ```typescript
-  // src/index.ts
-  import http from 'http';
-  import url from 'url';
-  import querystring from 'querystring';
-  import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
-  require('dotenv').config();
-
-  const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env
-
-  Shopify.Context.initialize({
-    API_KEY,
-    API_SECRET_KEY,
-    SCOPES: [SCOPES],
-    HOST_NAME: HOST,
-    IS_EMBEDDED_APP: {boolean},
-    API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
-  });
-  ```
-
-  You will also need to set up a basic Node router to be able to process requests:
-
-  ```typescript
-  async function onRequest(request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
-    const { headers, url: req_url } = request;
-    const pathName: string | null = url.parse(req_url).pathname;
-    const queryString: string = (String)(url.parse(req_url).query);
-    const query: Record<string, any> = querystring.parse(queryString);
-
-    if (pathName === '/') {
-      // check if we're logged in/authorized
-      const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
-      if(!currentSession) {
-        // not logged in, redirect to login
-        response.writeHead(302, { 'Location': `/login` });
-        response.end();
-      } else {
-        // do something amazing with your application!
-      }
-      return;
-    } // end of if(pathName === '/')
-  } // end of onRequest()
-
-  http.createServer(onRequest).listen(3000);
-  ```
-</details>
-
-### Running your app
+## Running your app
 
 - Start your `ngrok` tunnel and add the displayed `ngrok` URL to the app setup in your admin, along with the redirect route
   ```shell
   $ ngrok http 3000
   ```
 - Run `yarn start` and you should have your app running on your specified `localhost`
-- In your browser, navigate to `{your ngrok address}/oauth/begin` to begin OAuth
-- When OAuth completes, navigate to your REST and GraphQL endpoints to see the requested data being returned
+- Access the HTTPS address provided by `ngrok` to reach your app
 
-### Add a route to start OAuth
+## Add a route to start OAuth
 
 The route for starting the OAuth process (in this case `/login`) will use the library's `beginAuth` method.  The `beginAuth` method takes in the request and response objects (from the `http` module), along with the target shop _(string)_, redirect route _(string)_, and whether or not you are requesting [online access](https://shopify.dev/concepts/about-apis/authentication#api-access-modes) _(boolean)_.  The method will return a URI that will be used for redirecting the user to the Shopify Authentication screen.
 
 <details>
-  <summary>Express</summary>
-
-  ```ts
-  app.get('/login', async (req, res) => {
-    let authRoute = await Shopify.Auth.OAuth.beginAuth(req, res, SHOP, '/auth/callback', true);
-    return res.redirect(authRoute);
-  })
-  ```
-</details>
-
-<details>
-  <summary>Node</summary>
+  <summary>Node.js</summary>
 
   ```typescript
     :
@@ -243,27 +253,23 @@ The route for starting the OAuth process (in this case `/login`) will use the li
   ```
 </details>
 
-### Add your OAuth callback route
-
-After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route (which you provided as a parameter to `beginAuth`, above). Your app will now use the provided `validateAuthCallback` method to finalize the OAuth process. This method _has no return value_, so you should `catch` any errors it may throw.
-
 <details>
   <summary>Express</summary>
 
   ```ts
-  app.get('/auth/callback', async (req, res) => {
-    try {
-      await Shopify.Auth.OAuth.validateAuthCallback(req, res, req.query as unknown as AuthQuery); // req.query must be cast to unkown and then AuthQuery in order to be accepted
-    } catch (error) {
-      console.error(error); // in practice these should be handled more gracefully
-    }
-    return res.redirect('/'); // wherever you want your user to end up after OAuth completes
-  });
+  app.get('/login', async (req, res) => {
+    let authRoute = await Shopify.Auth.OAuth.beginAuth(req, res, SHOP, '/auth/callback', true);
+    return res.redirect(authRoute);
+  })
   ```
 </details>
 
+## Add your OAuth callback route
+
+After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route (which you provided as a parameter to `beginAuth`, above). Your app will now use the provided `validateAuthCallback` method to finalize the OAuth process. This method _has no return value_, so you should `catch` any errors it may throw.
+
 <details>
-  <summary>Node</summary>
+  <summary>Node.js</summary>
 
   ```typescript
     } // end of if (pathName === '/login')
@@ -295,7 +301,24 @@ After the app is authenticated with Shopify, the Shopify platform will send a re
   ```
 </details>
 
-### Make a REST API call
+<details>
+  <summary>Express</summary>
+
+  ```ts
+  app.get('/auth/callback', async (req, res) => {
+    try {
+      await Shopify.Auth.OAuth.validateAuthCallback(req, res, req.query as unknown as AuthQuery); // req.query must be cast to unkown and then AuthQuery in order to be accepted
+    } catch (error) {
+      console.error(error); // in practice these should be handled more gracefully
+    }
+    return res.redirect('/'); // wherever you want your user to end up after OAuth completes
+  });
+  ```
+</details>
+
+After process is completed, you can navigate to `{your ngrok address}/oauth/begin` in your browser to begin OAuth. When it completes, you will have a Shopify session that enables you to make requests to the Admin API, as detailed next.
+
+## Make a REST API call
 
 Once OAuth is complete, we can use the library's `RestClient` to make an API call. To do that, you can create an instance of `RestClient` using the current shop URL and session `accessToken` to make requests to the Admin API.
 
@@ -311,7 +334,7 @@ You can run the code below in any endpoint where you have access to a request an
   // do something with the returned data
 ```
 
-### Make a GraphQL API call
+## Make a GraphQL API call
 
 You can also use the `GraphqlClient` to make requests to the GraphQL Admin API in a similar way. To do that, create an instance of `GraphqlClient` using the current shop URL and session `accessToken` in your app's endpoint.
 
@@ -334,7 +357,7 @@ You can also use the `GraphqlClient` to make requests to the GraphQL Admin API i
   // do something with the returned data
 ```
 
-### Register a Webhook
+## Register a Webhook
 
 If your application's functionality depends on knowing when events occur on a given store, you need to register a Webhook. You need an access token to register webhooks, so you should complete the OAuth process beforehand. In this example the webhook is being registered as soon as the authentication is completed.
 
@@ -343,41 +366,12 @@ The Shopify library enables you to handle all Webhooks in a single endpoint (see
 **Note**: The webhooks you register with Shopify are saved in the Shopify platform, but your handlers need to be reloaded whenever your server restarts. It is recommended to store your Webhooks in a persistent manner (for example, in a database) so that you can reload previously registered webhooks when your app restarts.
 
 <details>
-  <summary>Express</summary>
-
-  ```ts
-  app.get('/auth/callback', async (req, res) => {
-    try {
-      await Shopify.Auth.OAuth.validateAuthCallback(req, res, req.query as unknown as AuthQuery); // req.query must be cast to unkown and then AuthQuery in order to be accepted
-
-      const handleWebhookRequest = (topic: string, shop: string, webhookRequestBody: Buffer) => {
-        // this handler is triggered when a webhook is sent by the Shopify platform to your application
-      }
-
-      const currentSession = await Shopify.Utils.loadCurrentSession(request, response, false);
-
-      const resp = await Shopify.Webhooks.Registry.register({
-        path: '/webhooks',
-        topic: 'PRODUCTS_CREATE',
-        accessToken: currentSession.accessToken,
-        shop: currentSession.shop,
-        apiVersion: Context.API_VERSION,
-        webhookHandler: handleWebhookRequest
-      });
-    } catch (error) {
-      console.error(error); // in practice these should be handled more gracefully
-    }
-    return res.redirect('/'); // wherever you want your user to end up after OAuth completes
-  });
-  ```
-</details>
-
-<details>
-  <summary>Node</summary>
+  <summary>Node.js</summary>
 
   ```typescript
     } // end of if (pathName === '/login')
 
+    // Register webhooks after OAuth completes
     if (pathName === '/auth/callback') {
       try {
         await Shopify.Auth.OAuth.validateAuthCallback(request, response, query as AuthQuery);
@@ -404,38 +398,43 @@ The Shopify library enables you to handle all Webhooks in a single endpoint (see
   ```
 </details>
 
-### Process a Webhook
-
-To process a webhook, you need to listen on the route(s) you provided during the Webhook registration process, then call the appropriate handler.  The library provides a convenient `process` method which takes care of calling the correct handler for the registered Webhook topics.
-
 <details>
   <summary>Express</summary>
 
-  ```typescript
-  app.post('/webhooks', async (req, res) => {
+  ```ts
+  // Register webhooks after OAuth completes
+  app.get('/auth/callback', async (req, res) => {
     try {
-      const result = Shopify.Webhooks.Registry.process({ headers: req.headers, body: req.body });
+      await Shopify.Auth.OAuth.validateAuthCallback(req, res, req.query as unknown as AuthQuery); // req.query must be cast to unkown and then AuthQuery in order to be accepted
 
-      response.writeHead(result.statusCode, result.headers);
-      response.end();
-    }
-    catch (e) {
-      console.log(e);
+      const handleWebhookRequest = (topic: string, shop: string, webhookRequestBody: Buffer) => {
+        // this handler is triggered when a webhook is sent by the Shopify platform to your application
+      }
 
-      response.writeHead(500);
-      if (e instanceof Shopify.Errors.ShopifyError) {
-        response.end(e.message);
-      }
-      else {
-        response.end(`Failed to complete webhook processing: ${e.message}`);
-      }
+      const currentSession = await Shopify.Utils.loadCurrentSession(request, response, false);
+
+      const resp = await Shopify.Webhooks.Registry.register({
+        path: '/webhooks',
+        topic: 'PRODUCTS_CREATE',
+        accessToken: currentSession.accessToken,
+        shop: currentSession.shop,
+        apiVersion: Context.API_VERSION,
+        webhookHandler: handleWebhookRequest
+      });
+    } catch (error) {
+      console.error(error); // in practice these should be handled more gracefully
     }
+    return res.redirect('/'); // wherever you want your user to end up after OAuth completes
   });
   ```
 </details>
 
+## Process a Webhook
+
+To process a webhook, you need to listen on the route(s) you provided during the Webhook registration process, then call the appropriate handler.  The library provides a convenient `process` method which takes care of calling the correct handler for the registered Webhook topics.
+
 <details>
-  <summary>Node</summary>
+  <summary>Node.js</summary>
 
   ```typescript
     } // end of if (pathName === '/auth/callback')
@@ -470,5 +469,31 @@ To process a webhook, you need to listen on the route(s) you provided during the
   }  // end of onRequest()
 
   http.createServer(onRequest).listen(3000);
+  ```
+</details>
+
+<details>
+  <summary>Express</summary>
+
+  ```typescript
+  app.post('/webhooks', async (req, res) => {
+    try {
+      const result = Shopify.Webhooks.Registry.process({ headers: req.headers, body: req.body });
+
+      response.writeHead(result.statusCode, result.headers);
+      response.end();
+    }
+    catch (e) {
+      console.log(e);
+
+      response.writeHead(500);
+      if (e instanceof Shopify.Errors.ShopifyError) {
+        response.end(e.message);
+      }
+      else {
+        response.end(`Failed to complete webhook processing: ${e.message}`);
+      }
+    }
+  });
   ```
 </details>
