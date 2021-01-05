@@ -46,4 +46,19 @@
   "exclude": [
     "**/*.test.ts", "**/test/*", "**/__tests__/*",
   ],
+<<<<<<< HEAD
 }
+=======
+  "typedocOptions": {
+    "inputFiles": [
+      "./src"
+    ],
+    "mode": "file",
+    "out": "tsdocs",
+    "exclude": "**/test/**",
+    "excludeNotExported": true,
+    "excludePrivate": true,
+    "disableSources": true
+  }
+}
+>>>>>>> 256689b9 (Splitting getting started guide into docs pages)

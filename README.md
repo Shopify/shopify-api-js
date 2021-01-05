@@ -46,6 +46,7 @@ To follow these usage guides, you will need to:
 - have a private or custom app already set up in your test store or partner account
 - use [ngrok](https://ngrok.com), in order to create a secure tunnel to your app running on your localhost
 - add the `ngrok` URL and the appropriate redirect for your OAuth callback route to your app settings
+<<<<<<< HEAD
 - have a JavaScript package manager such as [yarn](https://yarnpkg.com) installed
 
 ## Getting started
@@ -529,3 +530,28 @@ Before you start writing your application, please note that the Shopify library 
   });
 ```
 >>>>>>> d7f82fef (Improve README layout)
+=======
+- have [yarn](https://yarnpkg.com) installed
+
+<!-- Make sure this section is in sync with docs/index.md -->
+# Getting started
+
+You can follow our [getting started guide](docs/index.md), which will provide instructions on how to create an app using plain Node.js code, or the [Express](https://expressjs.com/) framework. Both examples are written in Typescript.
+
+- [Getting started](docs/getting_started.md)
+  - [Install dependencies](docs/getting_started.md#install-dependencies)
+  - [Set up base files](docs/getting_started.md#set-up-base-files)
+  - [Set up environment](docs/getting_started.md#set-up-environment)
+  - [Set up Context](docs/getting_started.md#set-up-context)
+  - [Running your app](docs/getting_started.md#running-your-app)
+- [Performing OAuth](docs/usage/oauth.md)
+  - [Add a route to start OAuth](docs/usage/oauth.md#add-a-route-to-start-oauth)
+  - [Add your OAuth callback route](docs/usage/oauth.md#add-your-oauth-callback-route)
+- [Make a REST API call](docs/usage/rest.md)
+- [Make a GraphQL API call](docs/usage/graphql.md)
+- [Webhooks](docs/usage/webhooks.md)
+  - [Register a Webhook](docs/usage/webhooks.md#register-a-webhook)
+  - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
+- [Known issues and caveats](docs/issues.md)
+  - [Notes on session handling](docs/issues.md#notes-on-session-handling)
+>>>>>>> 256689b9 (Splitting getting started guide into docs pages)
