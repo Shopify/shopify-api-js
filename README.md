@@ -4,14 +4,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 [![npm version](https://badge.fury.io/js/%40shopify%2Fshopify-api.svg)](https://badge.fury.io/js/%40shopify%2Fshopify-api)
 
-This library provides support for TypeScript / JavaScript [Shopify](https://www.shopify.com) Apps to access the [Shopify Admin API](https://shopify.dev/docs/admin-api), by making it easier to perform the following actions:
+This library provides support for TypeScript/JavaScript [Shopify](https://www.shopify.com) apps to access the [Shopify Admin API](https://shopify.dev/docs/admin-api), by making it easier to perform the following actions:
 
 - Creating [online](https://shopify.dev/concepts/about-apis/authentication#online-access) or [offline](https://shopify.dev/concepts/about-apis/authentication#offline-access) access tokens for the Admin API via OAuth
 - Making requests to the [REST API](https://shopify.dev/docs/admin-api/rest/reference)
 - Making requests to the [GraphQL API](https://shopify.dev/docs/admin-api/graphql/reference)
-- Register / process webhooks
+- Register/process webhooks
 
-This library can be used in any application that has a Node.js backend, since it doesn't rely on any specific framework - you can include it alongside your preferred stack and only use the features that you need to build your App.
+This library can be used in any application that has a Node.js backend, since it doesn't rely on any specific framework—you can include it alongside your preferred stack and only use the features that you need to build your app.
 
 # Requirements
 
@@ -27,14 +27,14 @@ This guide will provide instructions on how to create an app using plain Node.js
 
 # Getting started
 
-Before your App can make any requests to the Shopify backend, you'll need to set up a few environment variables so you can initialize the library.
+Before you start building your app, you'll need to perform the steps below. This guide assumes you already have [yarn](https://yarnpkg.com/) installed.
 
 ## Install dependencies
 
 This step will generate your app's `package.json` and install the following necessary dependencies:
-- `@shopify/shopify-api` - this library
-- `dotenv` - tool to read from `.env` files
-- `typescript` - TypeScript language
+- `@shopify/shopify-api`—this library
+- `dotenv`—tool to read from `.env` files
+- `typescript`—TypeScript language
 
 Furthermore, if using Express you will also need to add the `express` package as a dependency.
 
@@ -103,7 +103,7 @@ node_modules
 }
 ```
 
-Add the following `scripts` section to your `package.json` so you can easily build / start your App:
+Add the following `scripts` section to your `package.json` so you can easily build/start your app:
 ```json
 "scripts": {
   "build": "npx tsc",
@@ -114,14 +114,14 @@ Add the following `scripts` section to your `package.json` so you can easily bui
 
 ## Set up environment
 
-You'll need your application to load the API secret and API secret key (found when you create an app in your Partner Account). The mechanism for loading these values is entirely up to you - this example uses the `dotenv` library to read them from a `.env` file, but it is common practice to set environment variables with the values in production environments.
+You'll need your application to load the API key and API secret key (found when you create an app in your Partner Account). The mechanism for loading these values is entirely up to you—this example uses the `dotenv` library to read them from a `.env` file, but it is common practice to set environment variables with the values in production environments.
 
-However you choose to do it, be sure to NOT save the API secret and key in GitHub or other code repository where others can view them, as that information can be used to forge requests for your Shopify App.
+However you choose to do it, be sure to NOT save the API key and secret key in GitHub or other code repository where others can view them, as that information can be used to forge requests for your Shopify app.
 
 Begin by placing the following in an `.env` file at the root of your project:
   ```yaml
   SHOP={dev store url}            # Your test store URL
-  API_KEY={api key}               # Your API secret
+  API_KEY={api key}               # Your API key
   API_SECRET_KEY={api secret key} # Your API secret key
   SCOPES={scopes}                 # Your app's required scopes
   HOST={your app's host}          # Your app's host, without the protocol prefix (in this case we used an `ngrok` tunnel to provide a secure connection to our localhost)
@@ -129,7 +129,7 @@ Begin by placing the following in an `.env` file at the root of your project:
 
 ## Add imports, environment variables, and set up `Context`
 
-First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library. Note that you only need to set up `Context` once when your App is loaded, and the library will automatically use those settings whenever they are needed.
+First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library. Note that you only need to set up `Context` once when your app is loaded, and the library will automatically use those settings whenever they are needed.
 
 <details>
   <summary>Node.js</summary>
@@ -211,7 +211,7 @@ First of all, in your `src/index.ts` file, you'll need to set up your applicatio
   ```
 </details>
 
-## Running your App
+## Running your app
 
 - Start your `ngrok` tunnel and add the displayed `ngrok` URL to the app setup in your admin, along with the redirect route
   ```shell
@@ -222,7 +222,7 @@ First of all, in your `src/index.ts` file, you'll need to set up your applicatio
 
 # Using the library
 
-Now that the library is set up for your project, you'll be able to use it to start adding functionality to your App. In this section you'll find instructions for all the features available in the library.
+Now that the library is set up for your project, you'll be able to use it to start adding functionality to your app. In this section you'll find instructions for all the features available in the library.
 
 ## Add a route to start OAuth
 
@@ -509,7 +509,7 @@ To process a webhook, you need to listen on the route(s) you provided during the
 
 # Known issues and caveats
 
-By following this guide, you will have a fully functional Shopify App. However, there are some things you should be aware of before using your new App in a production environment.
+By following this guide, you will have a fully functional Shopify app. However, there are some things you should be aware of before using your new app in a production environment.
 
 ## Notes on session handling
 
