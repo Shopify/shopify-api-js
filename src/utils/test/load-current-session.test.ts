@@ -12,24 +12,24 @@ import loadCurrentSession from '../load-current-session';
 jest.mock('cookies');
 import Cookies from 'cookies';
 
-describe("loadCurrentSession", () => {
+describe('loadCurrentSession', () => {
   let jwtPayload: JwtPayload;
 
   beforeEach(() => {
     jwtPayload = {
-      iss: "https://test-shop.myshopify.io/admin",
-      dest: "https://test-shop.myshopify.io",
+      iss: 'https://test-shop.myshopify.io/admin',
+      dest: 'https://test-shop.myshopify.io',
       aud: Context.API_KEY,
-      sub: "1",
+      sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
       iat: 1234,
-      jti: "4321",
-      sid: "abc123",
+      jti: '4321',
+      sid: 'abc123',
     };
   });
 
-  it("gets the current session from cookies for non-embedded apps", async () => {
+  it('gets the current session from cookies for non-embedded apps', async () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
@@ -46,7 +46,7 @@ describe("loadCurrentSession", () => {
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });
 
-  it("loads nothing if there is no session for non-embedded apps", async () => {
+  it('loads nothing if there is no session for non-embedded apps', async () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
@@ -55,18 +55,18 @@ describe("loadCurrentSession", () => {
 
     Cookies.prototype.get.mockImplementation(() => null);
 
-    await expect(loadCurrentSession(req, res)).resolves.toBeNull();
+    await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
   });
 
-  it("gets the current session from JWT token for embedded apps", async () => {
+  it('gets the current session from JWT token for embedded apps', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
     const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
     const req = {
       headers: {
-        "authorization": `Bearer ${token}`,
-      }
+        authorization: `Bearer ${token}`,
+      },
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
@@ -76,42 +76,42 @@ describe("loadCurrentSession", () => {
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });
 
-  it("loads nothing if no authorization header is present", async () => {
+  it('throws error if no authorization header is present', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
     const req = { headers: {} } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    await expect(loadCurrentSession(req, res)).resolves.toBeNull();
+    await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
   });
 
-  it("loads nothing if there is no session for embedded apps", async () => {
+  it('loads nothing if there is no session for embedded apps', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
     const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
     const req = {
       headers: {
-        "authorization": `Bearer ${token}`,
-      }
+        authorization: `Bearer ${token}`,
+      },
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    await expect(loadCurrentSession(req, res)).resolves.toBeNull();
+    await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
   });
 
-  it("fails if authorization header is not a Bearer token", async () => {
+  it('fails if authorization header is missing or is not a Bearer token', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
     const req = {
       headers: {
-        'authorization': 'Not a Bearer token!',
-      }
+        authorization: 'Not a Bearer token!',
+      },
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    await expect(loadCurrentSession(req, res)).rejects.toThrow(ShopifyErrors.MissingJwtTokenError);
+    await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
   });
 });

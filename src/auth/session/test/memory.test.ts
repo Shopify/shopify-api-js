@@ -15,7 +15,7 @@ test('can store and delete sessions in memory', async () => {
   await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
 
   await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
-  await expect(storage.loadSession(sessionId)).resolves.toBeNull();
+  await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
 
   // Deleting a non-existing session should work
   await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
@@ -23,5 +23,5 @@ test('can store and delete sessions in memory', async () => {
 
 test('wrong ids return null sessions from memory', async () => {
   const storage = new MemorySessionStorage();
-  await expect(storage.loadSession('not_a_session_id')).resolves.toBeNull();
+  await expect(storage.loadSession('not_a_session_id')).resolves.toBeUndefined();
 });

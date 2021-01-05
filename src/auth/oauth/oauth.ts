@@ -89,7 +89,7 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    let currentSession: Session | null = null;
+    let currentSession: Session | undefined = undefined;
 
     const sessionCookie = this.getCookieSessionId(request, response);
     if (sessionCookie) {
@@ -124,9 +124,7 @@ const ShopifyOAuth = {
     if (currentSession.isOnline) {
       const responseBody = postResponse.body as OnlineAccessResponse;
       const { access_token, scope, ...rest } = responseBody;
-      const sessionExpiration = new Date(
-        Date.now() + responseBody.expires_in * 1000
-      );
+      const sessionExpiration = new Date(Date.now() + responseBody.expires_in * 1000);
       currentSession.accessToken = access_token;
       currentSession.expires = sessionExpiration;
       currentSession.scope = scope;
@@ -140,7 +138,7 @@ const ShopifyOAuth = {
     // If app is embedded or this is an offline session, we're no longer intereseted in the cookie
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
       signed: true,
-      expires: (Context.IS_EMBEDDED_APP || !currentSession.isOnline) ? new Date() : currentSession.expires,
+      expires: Context.IS_EMBEDDED_APP || !currentSession.isOnline ? new Date() : currentSession.expires,
       sameSite: 'none',
       secure: true,
     });
@@ -148,12 +146,11 @@ const ShopifyOAuth = {
     // If this is an online session for an embedded app, we assume it will be loaded from a JWT from here on out
     if (Context.IS_EMBEDDED_APP && currentSession.isOnline) {
       const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
-      const jwtSessionId = this.getJwtSessionId(currentSession.shop, ""+onlineInfo.associated_user.id);
+      const jwtSessionId = this.getJwtSessionId(currentSession.shop, '' + onlineInfo.associated_user.id);
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
       await Context.deleteSession(currentSession.id);
       await Context.storeSession(jwtSession);
-    }
-    else {
+    } else {
       await Context.storeSession(currentSession);
     }
   },

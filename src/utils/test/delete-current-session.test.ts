@@ -44,7 +44,7 @@ describe('deleteCurrenSession', () => {
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
     await expect(deleteCurrentSession(req, res)).resolves.toBe(true);
-    await expect(loadCurrentSession(req, res)).resolves.toBe(null);
+    await expect(loadCurrentSession(req, res)).resolves.toBe(undefined);
   });
 
   it('finds and deletes the current session when using JWT', async () => {
@@ -63,7 +63,7 @@ describe('deleteCurrenSession', () => {
     await expect(Context.storeSession(session)).resolves.toEqual(true);
 
     await expect(deleteCurrentSession(req, res)).resolves.toBe(true);
-    await expect(loadCurrentSession(req, res)).resolves.toBe(null);
+    await expect(loadCurrentSession(req, res)).resolves.toBe(undefined);
   });
 
   it('throws an error when no cookie is found', async () => {
