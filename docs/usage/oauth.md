@@ -99,4 +99,6 @@ app.get('/auth/callback', async (req, res) => {
 
 After process is completed, you can navigate to `{your ngrok address}/oauth/begin` in your browser to begin OAuth. When it completes, you will have a Shopify session that enables you to make requests to the Admin API, as detailed next.
 
+You can use the `Shopify.Utils.loadCurrentSession()` method to load an online session automatically based on the current request. It will use cookies to load online sessions for non-embedded apps, and the `Authorization` header for token-based sessions in embedded apps, making all apps safe to use in modern browsers that block 3rd party cookies.
+
 [Back to guide index](../index.md)
