@@ -162,6 +162,7 @@ HOST_SCHEME={your app's URI scheme} # Either http or https. Note http is intende
 First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library. Note that you only need to set up `Context` once when your app is loaded, and the library will automatically use those settings whenever they are needed.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 While setting up `Context`, you'll be able to set [which version of the Admin API](https://shopify.dev/concepts/about-apis/versioning) your app will be using. All supported versions are available in `ApiVersion`, including `'unstable'`. The `Context.API_VERSION` setting will be applied to all requests made by the library.
 
 (See [oauth](./usage/oauth.md#add-your-oauth-callback-route) for use of `ACTIVE_SHOPIFY_SHOPS`)
@@ -225,6 +226,10 @@ http.createServer(onRequest).listen(3000);
 ```
 
 =======
+=======
+While setting up `Context`, you'll be able to set [which version of the Admin API](https://shopify.dev/concepts/about-apis/versioning) your app will be using. All supported versions are available in `ApiVersion`, including `'unstable'`. The `Context.API_VERSION` setting will be applied to all requests made by the library.
+
+>>>>>>> b49be3b0 (Adding notes on session loading and API versions)
 <details>
   <summary>Node.js</summary>
 
