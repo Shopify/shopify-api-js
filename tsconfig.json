@@ -49,7 +49,7 @@
       "./src"
     ],
     "mode": "file",
-    "out": "docs",
+    "out": "tsdocs",
     "exclude": "**/test/**",
     "excludeNotExported": true,
     "excludePrivate": true,
