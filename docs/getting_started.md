@@ -104,6 +104,8 @@ Begin by placing the following in an `.env` file at the root of your project:
 
 First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library. Note that you only need to set up `Context` once when your app is loaded, and the library will automatically use those settings whenever they are needed.
 
+While setting up `Context`, you'll be able to set [which version of the Admin API](https://shopify.dev/concepts/about-apis/versioning) your app will be using. All supported versions are available in `ApiVersion`, including `'unstable'`. The `Context.API_VERSION` setting will be applied to all requests made by the library.
+
 <details>
   <summary>Node.js</summary>
 
