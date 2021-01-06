@@ -30,8 +30,12 @@ class HttpThrottlingError extends HttpRetriableError {
 
 class InvalidOAuthError extends ShopifyError {}
 class SessionNotFound extends ShopifyError {}
+class InvalidSession extends ShopifyError {}
 
 class InvalidWebhookError extends ShopifyError {}
+
+class MissingRequiredArgument extends ShopifyError {}
+class UnsupportedClientType extends ShopifyError {}
 
 export {
   ShopifyError,
@@ -49,5 +53,8 @@ export {
   UninitializedContextError,
   InvalidOAuthError,
   SessionNotFound,
+  InvalidSession,
   InvalidWebhookError,
+  MissingRequiredArgument,
+  UnsupportedClientType,
 };
