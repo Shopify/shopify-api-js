@@ -1,4 +1,4 @@
-import { OnlineAccessInfo } from '../types';
+import {OnlineAccessInfo} from '../types';
 
 /**
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.
@@ -29,4 +29,4 @@ class Session {
   }
 }
 
-export { Session };
+export {Session};

@@ -1,16 +1,17 @@
 import '../../test/test_helper';
 
 import http from 'http';
-import jwt from 'jsonwebtoken';
 
-import { Context } from '../../context';
+import jwt from 'jsonwebtoken';
+import Cookies from 'cookies';
+
+import {Context} from '../../context';
 import * as ShopifyErrors from '../../error';
-import { Session } from '../../auth/session';
-import { JwtPayload } from '../decode-session-token';
+import {Session} from '../../auth/session';
+import {JwtPayload} from '../decode-session-token';
 import loadCurrentSession from '../load-current-session';
 
 jest.mock('cookies');
-import Cookies from 'cookies';
 
 describe('loadCurrentSession', () => {
   let jwtPayload: JwtPayload;
@@ -62,7 +63,7 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -80,7 +81,7 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const req = { headers: {} } as http.IncomingMessage;
+    const req = {headers: {}} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
     await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
@@ -90,7 +91,7 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
     const req = {
       headers: {
         authorization: `Bearer ${token}`,

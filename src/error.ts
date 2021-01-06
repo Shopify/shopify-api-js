@@ -1,5 +1,5 @@
 class ShopifyError extends Error {
-  constructor(...args: any) { /* eslint-disable-line @typescript-eslint/no-explicit-any */ /*  eslint-disable-line @typescript-eslint/explicit-module-boundary-types */
+  constructor(...args: any) {
     super(...args);
     Object.setPrototypeOf(this, new.target.prototype);
   }

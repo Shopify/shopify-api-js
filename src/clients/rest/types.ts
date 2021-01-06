@@ -1,8 +1,9 @@
-import { PageInfo } from './page_info';
-import { RequestReturn } from '../http_client';
+import {RequestReturn} from '../http_client';
+
+import {PageInfo} from './page_info';
 
 type RestRequestReturn = RequestReturn & {
-  pageInfo?: PageInfo,
+  pageInfo?: PageInfo;
 };
 
-export { RestRequestReturn };
+export {RestRequestReturn};

@@ -1,45 +1,25 @@
-import fetch, { RequestInit, Response, Headers } from 'node-fetch';
-import querystring, { ParsedUrlQueryInput } from 'querystring';
-import { Method, StatusCode } from '@shopify/network';
-import * as ShopifyErrors from '../error';
-import { SHOPIFY_APP_DEV_KIT_VERSION } from '../version';
-import ShopifyUtils from '../utils';
+import querystring, {ParsedUrlQueryInput} from 'querystring';
 
-type HeaderParams = Record<string, string>;
+import fetch, {RequestInit, Response} from 'node-fetch';
+import {Method, StatusCode} from '@shopify/network';
 
-enum DataType {
-  JSON = "application/json",
-  GraphQL = "application/graphql",
-  URLEncoded = "application/x-www-form-urlencoded"
-}
+import * as ShopifyErrors from '../../error';
+import {SHOPIFY_APP_DEV_KIT_VERSION} from '../../version';
+import validateShop from '../../utils/shop-validator';
 
-type GetRequestParams = {
-  path: string,
-  type?: DataType,
-  data?: Record<string, unknown> | string,
-  query?: Record<string, string | number>,
-  extraHeaders?: HeaderParams,
-  tries?: number,
-}
-
-type PostRequestParams = GetRequestParams & {
-  type: DataType,
-  data: Record<string, unknown> | string,
-}
-
-type PutRequestParams = PostRequestParams;
-
-type DeleteRequestParams = GetRequestParams;
-
-type RequestParams = (GetRequestParams | PostRequestParams) & { method: Method }
-
-type RequestReturn = {
-  body: unknown,
-  headers: Headers,
-};
+import {
+  DataType,
+  GetRequestParams,
+  PostRequestParams,
+  PutRequestParams,
+  DeleteRequestParams,
+  RequestParams,
+  RequestReturn,
+} from './types';
 
 class HttpClient {
-  static readonly RETRY_WAIT_TIME = 1000; // 1 second
+  // 1 second
+  static readonly RETRY_WAIT_TIME = 1000;
 
   public constructor(private domain: string) {
     if (!ShopifyUtils.validateShop(domain)) {
@@ -53,28 +33,28 @@ class HttpClient {
    * Performs a GET request on the given path.
    */
   public async get(params: GetRequestParams): Promise<RequestReturn> {
-    return this.request({ method: Method.Get, ...params });
+    return this.request({method: Method.Get, ...params});
   }
 
   /**
    * Performs a POST request on the given path.
    */
   public async post(params: PostRequestParams): Promise<RequestReturn> {
-    return this.request({ method: Method.Post, ...params });
+    return this.request({method: Method.Post, ...params});
   }
 
   /**
    * Performs a PUT request on the given path.
    */
   public async put(params: PutRequestParams): Promise<RequestReturn> {
-    return this.request({ method: Method.Put, ...params });
+    return this.request({method: Method.Put, ...params});
   }
 
   /**
    * Performs a DELETE request on the given path.
    */
   public async delete(params: DeleteRequestParams): Promise<RequestReturn> {
-    return this.request({ method: Method.Delete, ...params });
+    return this.request({method: Method.Delete, ...params});
   }
 
   protected async request(params: RequestParams): Promise<RequestReturn> {
@@ -88,20 +68,18 @@ class HttpClient {
       if (params.extraHeaders['user-agent']) {
         userAgent = `${params.extraHeaders['user-agent']} | ${userAgent}`;
         delete params.extraHeaders['user-agent'];
-      }
-      else if (params.extraHeaders['User-Agent']) {
+      } else if (params.extraHeaders['User-Agent']) {
         userAgent = `${params.extraHeaders['User-Agent']} | ${userAgent}`;
       }
     }
 
-    let headers: typeof params.extraHeaders = Object.assign(
-      {},
-      params.extraHeaders,
-      { 'User-Agent': userAgent }
-    );
+    let headers: typeof params.extraHeaders = {
+      ...params.extraHeaders,
+      'User-Agent': userAgent,
+    };
     let body = null;
     if (params.method === Method.Post || params.method === Method.Put) {
-      const { type, data } = params as PostRequestParams;
+      const {type, data} = params as PostRequestParams;
       if (data) {
         switch (type) {
           case DataType.JSON:
@@ -114,53 +92,54 @@ class HttpClient {
             body = data as string;
             break;
         }
-        headers = Object.assign(
-          {
-            'Content-Type': type,
-            'Content-Length': Buffer.byteLength(body as string),
-          },
-          params.extraHeaders,
-        );
+        headers = {
+          'Content-Type': type,
+          'Content-Length': Buffer.byteLength(body as string),
+          ...params.extraHeaders,
+        };
       }
     }
 
-    const queryString = params.query ? '?' + querystring.stringify(params.query as ParsedUrlQueryInput) : '';
+    const queryString = params.query ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}` : '';
 
     const url = `https://${this.domain}${params.path}${queryString}`;
     const options: RequestInit = {
       method: params.method.toString(),
-      headers: headers,
-      body: body
+      headers,
+      body,
     } as RequestInit;
+
+    async function sleep(waitTime: number): Promise<void> {
+      return new Promise((resolve) => setTimeout(resolve, waitTime));
+    }
 
     let tries = 0;
     while (tries < maxTries) {
       try {
         return await this.doRequest(url, options);
-      }
-      catch (e) {
+      } catch (error) {
         tries++;
-        if (e instanceof ShopifyErrors.HttpRetriableError) {
+        if (error instanceof ShopifyErrors.HttpRetriableError) {
           // We're not out of tries yet, use them
           if (tries < maxTries) {
             let waitTime = HttpClient.RETRY_WAIT_TIME;
-            if (e instanceof ShopifyErrors.HttpThrottlingError && e.retryAfter) {
-              waitTime = e.retryAfter * 1000;
+            if (error instanceof ShopifyErrors.HttpThrottlingError && error.retryAfter) {
+              waitTime = error.retryAfter * 1000;
             }
-            await new Promise(r => setTimeout(r, waitTime));
+            await sleep(waitTime);
             continue;
           }
 
           // We're set to multiple tries but ran out
           if (maxTries > 1) {
             throw new ShopifyErrors.HttpMaxRetriesError(
-              `Exceeded maximum retry count of ${maxTries}. Last message: ${e.message}`
+              `Exceeded maximum retry count of ${maxTries}. Last message: ${error.message}`,
             );
           }
         }
 
         // We're not retrying or the error is not retriable, rethrow
-        throw e;
+        throw error;
       }
     }
 
@@ -176,62 +155,48 @@ class HttpClient {
 
         if (response.ok) {
           return {
-            body: body,
+            body,
             headers: response.headers,
           };
-        }
-        else {
+        } else {
           const errorMessages: string[] = [];
           if (body.errors) {
             errorMessages.push(body.errors);
           }
           if (response.headers && response.headers.get('x-request-id')) {
             errorMessages.push(
-              `If you report this error, please include this id: ${response.headers.get('x-request-id')}`
+              `If you report this error, please include this id: ${response.headers.get('x-request-id')}`,
             );
           }
 
-          const errorMessage = (errorMessages.length) ? ': ' + errorMessages.join('. ') : '';
+          const errorMessage = errorMessages.length ? `: ${errorMessages.join('. ')}` : '';
           switch (true) {
             case response.status === StatusCode.TooManyRequests: {
               const retryAfter = response.headers.get('Retry-After');
               throw new ShopifyErrors.HttpThrottlingError(
                 `Shopify is throttling requests${errorMessage}`,
-                retryAfter ? parseFloat(retryAfter) : undefined
+                retryAfter ? parseFloat(retryAfter) : undefined,
               );
             }
             case response.status >= StatusCode.InternalServerError:
-              throw new ShopifyErrors.HttpInternalError(
-                `Shopify internal error${errorMessage}`
-              );
+              throw new ShopifyErrors.HttpInternalError(`Shopify internal error${errorMessage}`);
             default:
               throw new ShopifyErrors.HttpResponseError(
                 `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
                 response.status,
-                response.statusText
+                response.statusText,
               );
           }
         }
       })
       .catch((error) => {
-        if (!(error instanceof ShopifyErrors.ShopifyError)) {
-          throw new ShopifyErrors.HttpRequestError(`Failed to make Shopify HTTP request: ${error}`);
-        }
-        else {
+        if (error instanceof ShopifyErrors.ShopifyError) {
           throw error;
+        } else {
+          throw new ShopifyErrors.HttpRequestError(`Failed to make Shopify HTTP request: ${error}`);
         }
       });
   }
 }
 
-export {
-  HttpClient,
-  HeaderParams,
-  GetRequestParams,
-  PostRequestParams,
-  PutRequestParams,
-  DeleteRequestParams,
-  RequestParams,
-  DataType,
-  RequestReturn,
-};
+export {HttpClient};

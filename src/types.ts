@@ -1,13 +1,13 @@
-import { SessionStorage } from './auth/session';
+import {SessionStorage} from './auth/session';
 
 export interface ContextParams {
-  API_KEY: string,
-  API_SECRET_KEY: string,
-  SCOPES: string[],
-  HOST_NAME: string,
-  API_VERSION: ApiVersion,
-  IS_EMBEDDED_APP: boolean,
-  SESSION_STORAGE?: SessionStorage,
+  API_KEY: string;
+  API_SECRET_KEY: string;
+  SCOPES: string[];
+  HOST_NAME: string;
+  API_VERSION: ApiVersion;
+  IS_EMBEDDED_APP: boolean;
+  SESSION_STORAGE?: SessionStorage;
 }
 
 export enum ApiVersion {

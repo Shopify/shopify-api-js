@@ -1,52 +1,54 @@
 import '../../../test/test_helper';
 
-import { Session } from '../session';
-import { CustomSessionStorage } from '../storage/custom';
+import {Session} from '../session';
+import {CustomSessionStorage} from '../storage/custom';
 
 test('can use custom session storage', async () => {
   const sessionId = 'test_session';
-  const session = new Session(sessionId);
+  let session: Session | undefined = new Session(sessionId);
 
-  let store_called = false;
-  let load_called = false;
-  let delete_called = false;
+  let storeCalled = false;
+  let loadCalled = false;
+  let deleteCalled = false;
   const storage = new CustomSessionStorage(
     () => {
-      store_called = true;
+      storeCalled = true;
       return true;
     },
     () => {
-      load_called = true;
+      loadCalled = true;
       return session;
     },
     () => {
-      delete_called = true;
+      deleteCalled = true;
+      session = undefined;
       return true;
-    }
+    },
   );
 
   await expect(storage.storeSession(session)).resolves.toBe(true);
-  expect(store_called).toBe(true);
+  expect(storeCalled).toBe(true);
+  storeCalled = false;
 
   await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
-  expect(load_called).toBe(true);
-
-  store_called = load_called = false;
+  expect(loadCalled).toBe(true);
+  loadCalled = false;
 
   await expect(storage.storeSession(session)).resolves.toBe(true);
-  expect(store_called).toBe(true);
+  expect(storeCalled).toBe(true);
 
   await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
-  expect(load_called).toBe(true);
+  expect(loadCalled).toBe(true);
 
   await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
-  expect(delete_called).toBe(true);
-  expect(storage.loadSession(sessionId)).resolves.toBeNull;
+  expect(deleteCalled).toBe(true);
+  deleteCalled = false;
+
+  await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
 
   // Deleting a non-existing session should work
-  delete_called = false;
   await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
-  expect(delete_called).toBe(true);
+  expect(deleteCalled).toBe(true);
 });
 
 test('custom session storage failures and exceptions are raised', async () => {
@@ -56,7 +58,7 @@ test('custom session storage failures and exceptions are raised', async () => {
   let storage = new CustomSessionStorage(
     () => false,
     () => undefined,
-    () => false
+    () => false,
   );
 
   await expect(storage.storeSession(session)).resolves.toBe(false);
@@ -65,17 +67,17 @@ test('custom session storage failures and exceptions are raised', async () => {
 
   storage = new CustomSessionStorage(
     () => {
-      throw 'Failed to store!';
+      throw Error('Failed to store!');
     },
     () => {
-      throw 'Failed to load!';
+      throw Error('Failed to load!');
     },
     () => {
-      throw 'Failed to delete!';
-    }
+      throw Error('Failed to delete!');
+    },
   );
 
-  await expect(storage.storeSession(session)).rejects.toEqual('Failed to store!');
-  await expect(storage.loadSession(sessionId)).rejects.toEqual('Failed to load!');
-  await expect(storage.deleteSession(sessionId)).rejects.toEqual('Failed to delete!');
+  await expect(storage.storeSession(session)).rejects.toEqual(Error('Failed to store!'));
+  await expect(storage.loadSession(sessionId)).rejects.toEqual(Error('Failed to load!'));
+  await expect(storage.deleteSession(sessionId)).rejects.toEqual(Error('Failed to delete!'));
 });
