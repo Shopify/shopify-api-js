@@ -1,42 +1,41 @@
-import { Method, Header, StatusCode } from '@shopify/network';
 import '../../test/test_helper';
-import { ApiVersion, ShopifyHeader } from "../../types";
-import { DeliveryMethod, ProcessReturn, RegisterOptions } from '../registry';
-import ShopifyWebhooks from '..';
-import { createHmac } from 'crypto';
-import { Context } from '../../context';
-import { DataType } from '../../clients/http_client';
-import { assertHttpRequest } from '../../clients/test/test_helper';
+import {createHmac} from 'crypto';
+
+import {Method, Header, StatusCode} from '@shopify/network';
+
+import {DeliveryMethod, ProcessReturn, RegisterOptions} from '../registry';
+import {ApiVersion, ShopifyHeader} from '../../types';
+import {Context} from '../../context';
+import {DataType} from '../../clients/http_client';
+import {assertHttpRequest} from '../../clients/test/test_helper';
 import * as ShopifyErrors from '../../error';
+import ShopifyWebhooks from '..';
 
 const successResponse = {
   data: {
     webhookSubscriptionCreate: {
       userErrors: [],
-      webhookSubscription: { id: 'gid://shopify/WebhookSubscription/12345' },
+      webhookSubscription: {id: 'gid://shopify/WebhookSubscription/12345'},
     },
-  }
+  },
 };
 
 const eventBridgeSuccessResponse = {
   data: {
     eventBridgeWebhookSubscriptionCreate: {
       userErrors: [],
-      webhookSubscription: { id: 'gid://shopify/WebhookSubscription/12345' },
+      webhookSubscription: {id: 'gid://shopify/WebhookSubscription/12345'},
     },
-  }
+  },
 };
 
 const failResponse = {
-  data: {
-  }
+  data: {},
 };
 
-function genericWebhookHandler(topic: string, shop_domain: string, body: Buffer) {
-  if (topic && shop_domain && body) {
-    return;
+function genericWebhookHandler(topic: string, shopDomain: string, body: Buffer) {
+  if (topic && shopDomain && body) { // eslint-disable-lint no-empty
   }
-  return;
 }
 
 describe('ShopifyWebhooks.Registry.register', () => {
@@ -52,7 +51,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
       apiVersion: ApiVersion.Unstable,
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
@@ -70,7 +69,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
       apiVersion: ApiVersion.Unstable,
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
@@ -89,7 +88,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       shop: 'shop1.myshopify.io',
       apiVersion: ApiVersion.Unstable,
       deliveryMethod: DeliveryMethod.EventBridge,
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
@@ -115,12 +114,12 @@ describe('ShopifyWebhooks.Registry.process', () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'PRODUCTS',
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     });
 
     const result: ProcessReturn = ShopifyWebhooks.Registry.process({
-      headers: headers({ hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')) }),
-      body: rawBody
+      headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8'))}),
+      body: rawBody,
     });
 
     expect(result.statusCode).toBe(StatusCode.Ok);
@@ -130,12 +129,12 @@ describe('ShopifyWebhooks.Registry.process', () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'PRODUCTS',
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     });
 
     const result: ProcessReturn = ShopifyWebhooks.Registry.process({
-      headers: headers({ hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')), lowercase: true }),
-      body: rawBody
+      headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')), lowercase: true}),
+      body: rawBody,
     });
 
     expect(result.statusCode).toBe(StatusCode.Ok);
@@ -145,12 +144,12 @@ describe('ShopifyWebhooks.Registry.process', () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'NONSENSE_TOPIC',
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     });
 
     const result: ProcessReturn = ShopifyWebhooks.Registry.process({
-      headers: headers({ hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')) }),
-      body: rawBody
+      headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8'))}),
+      body: rawBody,
     });
 
     expect(result.statusCode).toBe(StatusCode.Forbidden);
@@ -160,12 +159,12 @@ describe('ShopifyWebhooks.Registry.process', () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'PRODUCTS',
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     });
 
     const result: ProcessReturn = ShopifyWebhooks.Registry.process({
-      headers: headers({ hmac: hmac('incorrect secret', rawBody.toString('utf8')) }),
-      body: rawBody
+      headers: headers({hmac: hmac('incorrect secret', rawBody.toString('utf8'))}),
+      body: rawBody,
     });
 
     expect(result.statusCode).toBe(StatusCode.Forbidden);
@@ -175,17 +174,20 @@ describe('ShopifyWebhooks.Registry.process', () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'NONSENSE_TOPIC',
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     });
 
-    expect(() => ShopifyWebhooks.Registry.process({ headers: headers({ hmac: '' }), body: rawBody }))
-      .toThrow(ShopifyErrors.InvalidWebhookError);
+    expect(() => ShopifyWebhooks.Registry.process({headers: headers({hmac: ''}), body: rawBody})).toThrow(
+      ShopifyErrors.InvalidWebhookError,
+    );
 
-    expect(() => ShopifyWebhooks.Registry.process({ headers: headers({ topic: '' }), body: rawBody }))
-      .toThrow(ShopifyErrors.InvalidWebhookError);
+    expect(() => ShopifyWebhooks.Registry.process({headers: headers({topic: ''}), body: rawBody})).toThrow(
+      ShopifyErrors.InvalidWebhookError,
+    );
 
-    expect(() => ShopifyWebhooks.Registry.process({ headers: headers({ domain: '' }), body: rawBody }))
-      .toThrow(ShopifyErrors.InvalidWebhookError);
+    expect(() => ShopifyWebhooks.Registry.process({headers: headers({domain: ''}), body: rawBody})).toThrow(
+      ShopifyErrors.InvalidWebhookError,
+    );
   });
 });
 
@@ -198,7 +200,7 @@ describe('ShopifyWebhooks.Registry.isWebhookPath', () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'PRODUCTS',
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     });
 
     expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(true);
@@ -208,7 +210,7 @@ describe('ShopifyWebhooks.Registry.isWebhookPath', () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/fakepath',
       topic: 'PRODUCTS',
-      webhookHandler: genericWebhookHandler
+      webhookHandler: genericWebhookHandler,
     });
 
     expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(false);
@@ -223,8 +225,8 @@ function headers({
   hmac = 'fake',
   topic = 'products',
   domain = 'shop1.myshopify.io',
-  lowercase = false
-}: { hmac?: string; topic?: string; domain?: string, lowercase?: boolean } = {}) {
+  lowercase = false,
+}: {hmac?: string; topic?: string; domain?: string; lowercase?: boolean;} = {}) {
   return {
     [lowercase ? ShopifyHeader.Hmac.toLowerCase() : ShopifyHeader.Hmac]: hmac,
     [lowercase ? ShopifyHeader.Topic.toLowerCase() : ShopifyHeader.Topic]: topic,
@@ -276,6 +278,6 @@ function assertWebhookRegistrationRequest(webhook: RegisterOptions) {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
-    createWebhookQuery(webhook.topic, `https://${Context.HOST_NAME}${webhook.path}`, webhook.deliveryMethod)
+    createWebhookQuery(webhook.topic, `https://${Context.HOST_NAME}${webhook.path}`, webhook.deliveryMethod),
   );
 }
