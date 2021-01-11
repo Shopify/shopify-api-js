@@ -7,7 +7,11 @@ import ShopifyClients from './clients';
 import ShopifyUtils from './utils';
 import ShopifyWebhooks from './webhooks';
 
+<<<<<<< HEAD
 export const Shopify = {
+=======
+const Shopify = {
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
   Context,
   Auth: ShopifyAuth,
   Billing: ShopifyBilling,

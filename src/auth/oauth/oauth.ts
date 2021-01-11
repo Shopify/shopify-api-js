@@ -4,6 +4,7 @@ import querystring from 'querystring';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'cookies';
 
+<<<<<<< HEAD
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
@@ -12,6 +13,14 @@ import decodeSessionToken from '../../utils/decode-session-token';
 import {Session} from '../session';
 import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType, RequestReturn} from '../../clients/http_client/types';
+=======
+
+import {Context} from '../../context';
+import utils from '../../utils';
+import {AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo} from '../types';
+import {Session} from '../session';
+import {DataType, HttpClient} from '../../clients/http_client';
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
 import * as ShopifyErrors from '../../error';
 import {SessionInterface} from '../session/types';
 import {sanitizeShop} from '../../utils/shop-validator';
@@ -43,7 +52,11 @@ const ShopifyOAuth = {
     response: http.ServerResponse,
     shop: string,
     redirectPath: string,
+<<<<<<< HEAD
     isOnline = true,
+=======
+    isOnline = false,
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
   ): Promise<string> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
@@ -66,8 +79,13 @@ const ShopifyOAuth = {
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
+<<<<<<< HEAD
       scope: Context.SCOPES.toString(),
       redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}${redirectPath}`,
+=======
+      scope: Context.SCOPES.join(', '),
+      redirect_uri: `https://${Context.HOST_NAME}${redirectPath}`,
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
       state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
@@ -94,7 +112,11 @@ const ShopifyOAuth = {
     request: http.IncomingMessage,
     response: http.ServerResponse,
     query: AuthQuery,
+<<<<<<< HEAD
   ): Promise<SessionInterface> {
+=======
+  ): Promise<void> {
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
@@ -105,9 +127,22 @@ const ShopifyOAuth = {
     );
     deleteCookie(request, response, this.STATE_COOKIE_NAME);
 
+<<<<<<< HEAD
     if (!stateFromCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
+=======
+    let currentSession: Session | undefined;
+
+    const sessionCookie = this.getCookieSessionId(request, response);
+    if (sessionCookie) {
+      currentSession = await Context.loadSession(sessionCookie);
+    }
+
+    if (!currentSession) {
+      throw new ShopifyErrors.SessionNotFound(
+        `Cannot complete OAuth process. No session found for the specified shop url: ${query.shop}`,
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
       );
     }
 
@@ -135,6 +170,7 @@ const ShopifyOAuth = {
     const client = new HttpClient(cleanShop);
     const postResponse = await client.post(postParams);
 
+<<<<<<< HEAD
     const session: Session = createSession(
       postResponse,
       cleanShop,
@@ -161,6 +197,39 @@ const ShopifyOAuth = {
       throw new ShopifyErrors.SessionStorageError(
         'Session could not be saved. Please check your session storage functionality.',
       );
+=======
+    if (currentSession.isOnline) {
+      const responseBody = postResponse.body as OnlineAccessResponse;
+      const {access_token, scope, ...rest} = responseBody;
+      const sessionExpiration = new Date(Date.now() + responseBody.expires_in * 1000);
+      currentSession.accessToken = access_token;
+      currentSession.expires = sessionExpiration;
+      currentSession.scope = scope;
+      currentSession.onlineAccesInfo = rest;
+    } else {
+      const responseBody = postResponse.body as AccessTokenResponse;
+      currentSession.accessToken = responseBody.access_token;
+      currentSession.scope = responseBody.scope;
+    }
+
+    // If app is embedded or this is an offline session, we're no longer intereseted in the cookie
+    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
+      signed: true,
+      expires: Context.IS_EMBEDDED_APP || !currentSession.isOnline ? new Date() : currentSession.expires,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    // If this is an online session for an embedded app, we assume it will be loaded from a JWT from here on out
+    if (Context.IS_EMBEDDED_APP && currentSession.isOnline) {
+      const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
+      const jwtSessionId = this.getJwtSessionId(currentSession.shop, `${onlineInfo.associated_user.id}`);
+      const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
+      await Context.deleteSession(currentSession.id);
+      await Context.storeSession(jwtSession);
+    } else {
+      await Context.storeSession(currentSession);
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
     }
 
     return session;
@@ -172,11 +241,20 @@ const ShopifyOAuth = {
    * @param request HTTP request object
    * @param response HTTP response object
    */
+<<<<<<< HEAD
   getCookieSessionId(
     request: http.IncomingMessage,
     response: http.ServerResponse,
   ): string | undefined {
     return getValueFromCookie(request, response, this.SESSION_COOKIE_NAME);
+=======
+  getCookieSessionId(request: http.IncomingMessage, response: http.ServerResponse): string | undefined {
+    const cookies = new Cookies(request, response, {
+      secure: true,
+      keys: [Context.API_SECRET_KEY],
+    });
+    return cookies.get(this.SESSION_COOKIE_NAME, {signed: true});
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
   },
 
   /**
@@ -258,6 +336,7 @@ function validQuery(query: AuthQuery, stateFromCookie: string): boolean {
   return validateHmac(query) && safeCompare(query.state, stateFromCookie);
 }
 
+<<<<<<< HEAD
 /**
  * Loads a given value from the cookie
  *
@@ -350,4 +429,6 @@ function createSession(
   return session;
 }
 
+=======
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
 export {ShopifyOAuth};

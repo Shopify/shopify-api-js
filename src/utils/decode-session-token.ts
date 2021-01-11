@@ -2,9 +2,15 @@ import jwt from 'jsonwebtoken';
 
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
+<<<<<<< HEAD
 
 const JWT_PERMITTED_CLOCK_TOLERANCE = 10;
 
+=======
+
+import validateShop from './shop-validator';
+
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
 interface JwtPayload {
   iss: string;
   dest: string;
@@ -25,6 +31,7 @@ interface JwtPayload {
 function decodeSessionToken(token: string): JwtPayload {
   let payload: JwtPayload;
   try {
+<<<<<<< HEAD
     payload = jwt.verify(token, Context.API_SECRET_KEY, {
       algorithms: ['HS256'],
       clockTolerance: JWT_PERMITTED_CLOCK_TOLERANCE,
@@ -33,6 +40,11 @@ function decodeSessionToken(token: string): JwtPayload {
     throw new ShopifyErrors.InvalidJwtError(
       `Failed to parse session token '${token}': ${error.message}`,
     );
+=======
+    payload = jwt.verify(token, Context.API_SECRET_KEY, {algorithms: ['HS256']}) as JwtPayload;
+  } catch (e) {
+    throw new ShopifyErrors.InvalidJwtError(`Failed to parse session token '${token}': ${e.message}`);
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
   }
 
   // The exp and nbf fields are validated by the JWT library

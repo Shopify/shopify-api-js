@@ -1,10 +1,15 @@
 import path from 'path';
 
 import * as ShopifyErrors from './error';
+<<<<<<< HEAD
 import {SessionStorage} from './auth/session/session_storage';
 import {SQLiteSessionStorage} from './auth/session/storage/sqlite';
 import {ApiVersion, ContextParams} from './base-types';
 import {AuthScopes} from './auth/scopes';
+=======
+import {Session, SessionStorage, MemorySessionStorage} from './auth/session';
+import {ApiVersion, ContextParams} from './types';
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
 
 interface ContextInterface extends ContextParams {
   HOST_SCHEME: string;
@@ -72,9 +77,13 @@ const Context: ContextInterface = {
 
     if (missing.length) {
       throw new ShopifyErrors.ShopifyError(
+<<<<<<< HEAD
         `Cannot initialize Shopify API Library. Missing values for: ${missing.join(
           ', ',
         )}`,
+=======
+        `Cannot initialize Shopify App Dev Kit. Missing values for: ${missing.join(', ')}`,
+>>>>>>> e83b5faf (Run yarn lint --fix on all files)
       );
     }
 
