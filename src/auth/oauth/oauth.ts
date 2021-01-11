@@ -4,7 +4,6 @@ import querystring from 'querystring';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'cookies';
 
-
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
@@ -147,8 +146,7 @@ const ShopifyOAuth = {
     let oauthSessionExpiration = currentSession.expires;
     if (!currentSession.isOnline) {
       oauthSessionExpiration = new Date();
-    }
-    else if (Context.IS_EMBEDDED_APP) {
+    } else if (Context.IS_EMBEDDED_APP) {
       // If this is an online session for an embedded app, prepare a JWT session to be used going forward
       const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
       const jwtSessionId = this.getJwtSessionId(currentSession.shop, `${onlineInfo.associated_user.id}`);
@@ -211,11 +209,7 @@ const ShopifyOAuth = {
  * @param session Current session
  */
 function validQuery(query: AuthQuery, session: Session): boolean {
-  return (
-    validateHmac(query) &&
-    validateShop(query.shop) &&
-    safeCompare(query.state, session.state as string)
-  );
+  return validateHmac(query) && validateShop(query.shop) && safeCompare(query.state, session.state as string);
 }
 
 export {ShopifyOAuth};
