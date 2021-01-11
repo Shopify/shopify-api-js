@@ -5,6 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 import Cookies from 'cookies';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
@@ -15,6 +16,8 @@ import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType, RequestReturn} from '../../clients/http_client/types';
 =======
 
+=======
+>>>>>>> 844b0ba2 (Run yarn lint --fix on all files)
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
@@ -230,8 +233,7 @@ const ShopifyOAuth = {
     let oauthSessionExpiration = currentSession.expires;
     if (!currentSession.isOnline) {
       oauthSessionExpiration = new Date();
-    }
-    else if (Context.IS_EMBEDDED_APP) {
+    } else if (Context.IS_EMBEDDED_APP) {
       // If this is an online session for an embedded app, prepare a JWT session to be used going forward
       const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
       const jwtSessionId = this.getJwtSessionId(currentSession.shop, `${onlineInfo.associated_user.id}`);
@@ -372,12 +374,16 @@ function validQuery(query: AuthQuery, stateFromCookie: string): boolean {
   return validateHmac(query) && safeCompare(query.state, stateFromCookie);
 =======
 function validQuery(query: AuthQuery, session: Session): boolean {
+<<<<<<< HEAD
   return (
     validateHmac(query) &&
     validateShop(query.shop) &&
     safeCompare(query.state, session.state as string)
   );
 >>>>>>> b9763756 (Fix almost all dependency cycle errors)
+=======
+  return validateHmac(query) && validateShop(query.shop) && safeCompare(query.state, session.state as string);
+>>>>>>> 844b0ba2 (Run yarn lint --fix on all files)
 }
 
 <<<<<<< HEAD

@@ -2,10 +2,17 @@ import '../../../test/test_helper';
 import querystring from 'querystring';
 
 import {ShopifyHeader} from '../../../types';
+<<<<<<< HEAD
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {assertHttpRequest} from '../../http_client/test/test_helper';
 import {RestClient} from '../rest_client';
 import {RestRequestReturn, PageInfo} from '../types';
+=======
+import {DataType} from '../../http_client';
+import {assertHttpRequest} from '../../test/test_helper';
+import {RestClient, RestRequestReturn} from '../rest_client';
+import {PageInfo} from '../page_info';
+>>>>>>> e0e6e80 (Run yarn lint --fix on all files)
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {
@@ -37,9 +44,14 @@ describe('REST client', () => {
       amount: 10,
     };
 
+<<<<<<< HEAD
     await expect(client.post({path: 'products', type: DataType.JSON, data: postData})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
+=======
+    await expect(client.post({path: 'products', type: DataType.JSON, data: postData}))
+      .resolves.toEqual(buildExpectedResponse(successResponse));
+>>>>>>> e0e6e80 (Run yarn lint --fix on all files)
     assertHttpRequest(
       'POST',
       domain,
@@ -59,9 +71,14 @@ describe('REST client', () => {
       amount: 10,
     };
 
+<<<<<<< HEAD
     await expect(client.post({path: 'products', type: DataType.URLEncoded, data: postData})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
+=======
+    await expect(client.post({path: 'products', type: DataType.URLEncoded, data: postData}))
+      .resolves.toEqual(buildExpectedResponse(successResponse));
+>>>>>>> e0e6e80 (Run yarn lint --fix on all files)
     assertHttpRequest(
       'POST',
       domain,
@@ -81,9 +98,14 @@ describe('REST client', () => {
       amount: 10,
     };
 
+<<<<<<< HEAD
     await expect(client.put({path: 'products/123', type: DataType.JSON, data: putData})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
+=======
+    await expect(client.put({path: 'products/123', type: DataType.JSON, data: putData}))
+      .resolves.toEqual(buildExpectedResponse(successResponse));
+>>>>>>> e0e6e80 (Run yarn lint --fix on all files)
     assertHttpRequest(
       'PUT',
       domain,
@@ -98,7 +120,12 @@ describe('REST client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
+<<<<<<< HEAD
     await expect(client.delete({path: 'products/123'})).resolves.toEqual(buildExpectedResponse(successResponse));
+=======
+    await expect(client.delete({path: 'products/123'}))
+      .resolves.toEqual(buildExpectedResponse(successResponse));
+>>>>>>> e0e6e80 (Run yarn lint --fix on all files)
     assertHttpRequest('DELETE', domain, '/admin/api/unstable/products/123.json');
   });
 

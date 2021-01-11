@@ -7,13 +7,13 @@ import * as ShopifyErrors from '../../error';
 import {SHOPIFY_APP_DEV_KIT_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
 import {
-DataType,
-GetRequestParams,
-PostRequestParams,
-PutRequestParams,
-DeleteRequestParams,
-RequestParams,
-RequestReturn,
+  DataType,
+  GetRequestParams,
+  PostRequestParams,
+  PutRequestParams,
+  DeleteRequestParams,
+  RequestParams,
+  RequestReturn,
 } from './types';
 
 class HttpClient {
@@ -72,7 +72,6 @@ class HttpClient {
     }
 
     let headers: typeof params.extraHeaders = {
-
       ...params.extraHeaders,
       'User-Agent': userAgent,
     };
@@ -174,9 +173,7 @@ class HttpClient {
               );
             }
             case response.status >= StatusCode.InternalServerError:
-              throw new ShopifyErrors.HttpInternalError(
-                `Shopify internal error${errorMessage}`,
-              );
+              throw new ShopifyErrors.HttpInternalError(`Shopify internal error${errorMessage}`);
             default:
               throw new ShopifyErrors.HttpResponseError(
                 `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
@@ -196,6 +193,4 @@ class HttpClient {
   }
 }
 
-export {
-  HttpClient
-};
+export {HttpClient};
