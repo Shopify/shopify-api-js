@@ -19,8 +19,8 @@ test('works on all appropriate data types (strings, arrays, objects)', () => {
   const array2 = [1, 2, 'fish'];
   const arrayResult = safeCompare(array1, array2);
 
-  const obj1 = { key: 'val' };
-  const obj2 = { key: 'val' };
+  const obj1 = {key: 'val'};
+  const obj2 = {key: 'val'};
   const objResult = safeCompare(obj1, obj2);
 
   expect(stringResult).toBe(true);
@@ -37,8 +37,8 @@ test('appropriately returns false for mismatched values on all data types', () =
   const array2 = ['red fish', 'blue fish'];
   const arrayResult = safeCompare(array1, array2);
 
-  const obj1 = { thing: 'one' };
-  const obj2 = { thing: 'two' };
+  const obj1 = {thing: 'one'};
+  const obj2 = {thing: 'two'};
   const objResult = safeCompare(obj1, obj2);
 
   expect(stringResult).toBe(false);

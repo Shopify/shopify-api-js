@@ -1,9 +1,10 @@
 import http from 'http';
 
-import { Context } from '../context';
+import {Context} from '../context';
 import * as ShopifyErrors from '../error';
-import { ShopifyOAuth } from '../auth/oauth/oauth';
-import { Session } from '../auth/session';
+import {ShopifyOAuth} from '../auth/oauth/oauth';
+import {Session} from '../auth/session';
+
 import decodeSessionToken from './decode-session-token';
 
 /**
@@ -14,14 +15,14 @@ import decodeSessionToken from './decode-session-token';
  */
 export default async function loadCurrentSession(
   request: http.IncomingMessage,
-  response: http.ServerResponse
+  response: http.ServerResponse,
 ): Promise<Session | undefined> {
   Context.throwIfUninitialized();
 
-  let session: Session | undefined = undefined;
+  let session: Session | undefined;
 
   if (Context.IS_EMBEDDED_APP) {
-    const authHeader = request.headers['authorization'];
+    const authHeader = request.headers.authorization;
     if (authHeader) {
       const matches = authHeader.match(/^Bearer (.+)$/);
       if (!matches) {

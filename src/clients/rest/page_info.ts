@@ -1,12 +1,13 @@
-import { RestClient, RestRequestReturn } from './rest_client';
 import querystring from 'querystring';
 
-type PageInfoParams = {
-  limit: number,
-  fields?: string[],
-  previousPageUrl?: string,
-  nextPageUrl?: string,
-};
+import {RestClient, RestRequestReturn} from './rest_client';
+
+interface PageInfoParams {
+  limit: number;
+  fields?: string[];
+  previousPageUrl?: string;
+  nextPageUrl?: string;
+}
 
 class PageInfo {
   constructor(private params: PageInfoParams) {}
@@ -45,8 +46,8 @@ class PageInfo {
 
     const client = new RestClient(url.hostname, accessToken);
     return client.get({
-      path: path,
-      query: query,
+      path,
+      query,
     });
   }
 
@@ -66,8 +67,8 @@ class PageInfo {
 
     const client = new RestClient(url.hostname, accessToken);
     return client.get({
-      path: path,
-      query: query,
+      path,
+      query,
     });
   }
 }

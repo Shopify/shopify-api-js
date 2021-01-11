@@ -1,13 +1,15 @@
-import { v4 as uuidv4 } from 'uuid';
 import http from 'http';
-import Cookies from 'cookies';
 import querystring from 'querystring';
 
-import { Context } from '../../context';
+import {v4 as uuidv4} from 'uuid';
+import Cookies from 'cookies';
+
+
+import {Context} from '../../context';
 import utils from '../../utils';
-import { AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo } from '../types';
-import { Session } from '../session';
-import { DataType, HttpClient } from '../../clients/http_client';
+import {AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo} from '../types';
+import {Session} from '../session';
+import {DataType, HttpClient} from '../../clients/http_client';
 import * as ShopifyErrors from '../../error';
 
 const ShopifyOAuth = {
@@ -29,7 +31,7 @@ const ShopifyOAuth = {
     response: http.ServerResponse,
     shop: string,
     redirectPath: string,
-    isOnline = false
+    isOnline = false,
   ): Promise<string> {
     Context.throwIfUninitialized();
 
@@ -58,7 +60,7 @@ const ShopifyOAuth = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.join(', '),
       redirect_uri: `https://${Context.HOST_NAME}${redirectPath}`,
-      state: state,
+      state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
 
@@ -80,7 +82,7 @@ const ShopifyOAuth = {
   async validateAuthCallback(
     request: http.IncomingMessage,
     response: http.ServerResponse,
-    query: AuthQuery
+    query: AuthQuery,
   ): Promise<void> {
     Context.throwIfUninitialized();
 
@@ -89,7 +91,7 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    let currentSession: Session | undefined = undefined;
+    let currentSession: Session | undefined;
 
     const sessionCookie = this.getCookieSessionId(request, response);
     if (sessionCookie) {
@@ -98,7 +100,7 @@ const ShopifyOAuth = {
 
     if (!currentSession) {
       throw new ShopifyErrors.SessionNotFound(
-        `Cannot complete OAuth process. No session found for the specified shop url: ${query.shop}`
+        `Cannot complete OAuth process. No session found for the specified shop url: ${query.shop}`,
       );
     }
 
@@ -123,7 +125,7 @@ const ShopifyOAuth = {
 
     if (currentSession.isOnline) {
       const responseBody = postResponse.body as OnlineAccessResponse;
-      const { access_token, scope, ...rest } = responseBody;
+      const {access_token, scope, ...rest} = responseBody;
       const sessionExpiration = new Date(Date.now() + responseBody.expires_in * 1000);
       currentSession.accessToken = access_token;
       currentSession.expires = sessionExpiration;
@@ -146,7 +148,7 @@ const ShopifyOAuth = {
     // If this is an online session for an embedded app, we assume it will be loaded from a JWT from here on out
     if (Context.IS_EMBEDDED_APP && currentSession.isOnline) {
       const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
-      const jwtSessionId = this.getJwtSessionId(currentSession.shop, '' + onlineInfo.associated_user.id);
+      const jwtSessionId = this.getJwtSessionId(currentSession.shop, `${onlineInfo.associated_user.id}`);
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
       await Context.deleteSession(currentSession.id);
       await Context.storeSession(jwtSession);
@@ -166,7 +168,7 @@ const ShopifyOAuth = {
       secure: true,
       keys: [Context.API_SECRET_KEY],
     });
-    return cookies.get(this.SESSION_COOKIE_NAME, { signed: true });
+    return cookies.get(this.SESSION_COOKIE_NAME, {signed: true});
   },
 
   /**
@@ -203,4 +205,4 @@ function validQuery(query: AuthQuery, session: Session): boolean {
   );
 }
 
-export { ShopifyOAuth };
+export {ShopifyOAuth};

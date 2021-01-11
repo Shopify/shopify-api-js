@@ -1,8 +1,8 @@
-import { Session } from '../session';
-import { SessionStorage } from '../session_storage';
+import {Session} from '../session';
+import {SessionStorage} from '../session_storage';
 
 export class MemorySessionStorage implements SessionStorage {
-  private sessions: { [id: string]: Session } = {};
+  private sessions: { [id: string]: Session; } = {};
 
   public async storeSession(session: Session): Promise<boolean> {
     this.sessions[session.id] = session;

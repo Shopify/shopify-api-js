@@ -1,12 +1,13 @@
 import './test_helper';
 
+import Cookies from 'cookies';
+
 import * as ShopifyErrors from '../error';
-import { Context } from '../context';
-import { ApiVersion, ContextParams } from '../types';
-import { CustomSessionStorage, Session } from '../auth/session';
+import {Context} from '../context';
+import {ApiVersion, ContextParams} from '../types';
+import {CustomSessionStorage, Session} from '../auth/session';
 
 jest.mock('cookies');
-import Cookies from 'cookies';
 
 const validParams: ContextParams = {
   API_KEY: 'api_key',
@@ -35,7 +36,7 @@ describe('Context object', () => {
   });
 
   it("can't initialize with empty values", () => {
-    let invalid: ContextParams = Object.assign({}, validParams);
+    let invalid: ContextParams = {...validParams};
     invalid.API_KEY = '';
     try {
       Context.initialize(invalid);
@@ -45,7 +46,7 @@ describe('Context object', () => {
       expect(e.message).toContain('Missing values for: API_KEY');
     }
 
-    invalid = Object.assign({}, validParams);
+    invalid = {...validParams};
     invalid.API_SECRET_KEY = '';
     try {
       Context.initialize(invalid);
@@ -55,7 +56,7 @@ describe('Context object', () => {
       expect(e.message).toContain('Missing values for: API_SECRET_KEY');
     }
 
-    invalid = Object.assign({}, validParams);
+    invalid = {...validParams};
     invalid.SCOPES = [];
     try {
       Context.initialize(invalid);
@@ -65,7 +66,7 @@ describe('Context object', () => {
       expect(e.message).toContain('Missing values for: SCOPES');
     }
 
-    invalid = Object.assign({}, validParams);
+    invalid = {...validParams};
     invalid.HOST_NAME = '';
     try {
       Context.initialize(invalid);
@@ -116,10 +117,10 @@ describe('Context object', () => {
       () => {
         delete_called = true;
         return true;
-      }
+      },
     );
 
-    const params = Object.assign({}, validParams);
+    const params = {...validParams};
     params.SESSION_STORAGE = storage;
     Context.initialize(params);
 
