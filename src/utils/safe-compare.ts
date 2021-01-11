@@ -1,34 +1,35 @@
 import crypto from 'crypto';
+
 import * as ShopifyErrors from '../error';
 
 /**
  * A timing safe string comparison utility.
- * 
- * @param a any string, array of strings, or object with string values
- * @param b any string, array of strings, or object with string values
+ *
+ * @param first any string, array of strings, or object with string values
+ * @param second any string, array of strings, or object with string values
  */
 export default function safeCompare(
-  a: string | { [key: string]: string } | (string | number)[],
-  b: string | { [key: string]: string } | (string | number)[]
+  first: string | { [key: string]: string; } | [string | number],
+  second: string | { [key: string]: string; } | [string | number],
 ): boolean {
-  if (typeof a === typeof b) {
-    let buffA: Buffer;
-    let buffB: Buffer;
+  if (typeof first === typeof second) {
+    let buff1: Buffer;
+    let buff2: Buffer;
 
-    if (typeof a === 'object' && typeof b === 'object') {
-      buffA = Buffer.from(JSON.stringify(a));
-      buffB = Buffer.from(JSON.stringify(b));
+    if (typeof first === 'object' && typeof second === 'object') {
+      buff1 = Buffer.from(JSON.stringify(first));
+      buff2 = Buffer.from(JSON.stringify(second));
     } else {
-      buffA = Buffer.from(a);
-      buffB = Buffer.from(b);
+      buff1 = Buffer.from(first);
+      buff2 = Buffer.from(second);
     }
 
-    if (buffA.length === buffB.length) {
-      return crypto.timingSafeEqual(buffA, buffB);
+    if (buff1.length === buff2.length) {
+      return crypto.timingSafeEqual(buff1, buff2);
     }
   } else {
     throw new ShopifyErrors.SafeCompareError(
-      `Mismatched data types provided: ${typeof a} and ${typeof b}`
+      `Mismatched data types provided: ${typeof first} and ${typeof second}`,
     );
   }
   return false;

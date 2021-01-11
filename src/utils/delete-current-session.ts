@@ -1,8 +1,11 @@
 import http from 'http';
+
 import Cookies from 'cookies';
-import { Context } from '../context';
+
+import {Context} from '../context';
 import * as ShopifyErrors from '../error';
-import { ShopifyOAuth } from '../auth/oauth/oauth';
+import {ShopifyOAuth} from '../auth/oauth/oauth';
+
 import decodeSessionToken from './decode-session-token';
 
 /**
@@ -13,12 +16,12 @@ import decodeSessionToken from './decode-session-token';
  */
 export default async function deleteCurrentSession(
   req: http.IncomingMessage,
-  res: http.ServerResponse
+  res: http.ServerResponse,
 ): Promise<boolean | never> {
   Context.throwIfUninitialized();
 
   if (Context.IS_EMBEDDED_APP) {
-    const authHeader = req.headers['authorization'];
+    const authHeader = req.headers.authorization;
     if (authHeader) {
       const matches = authHeader.match(/^Bearer (.+)$/);
       if (!matches) {
@@ -38,7 +41,7 @@ export default async function deleteCurrentSession(
       keys: [Context.API_SECRET_KEY],
     });
 
-    const sessionCookie: string | undefined = cookies.get(ShopifyOAuth.SESSION_COOKIE_NAME, { signed: true });
+    const sessionCookie: string | undefined = cookies.get(ShopifyOAuth.SESSION_COOKIE_NAME, {signed: true});
 
     if (sessionCookie) {
       await Context.deleteSession(sessionCookie);
