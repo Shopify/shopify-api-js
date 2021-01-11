@@ -7,7 +7,7 @@ import * as ShopifyErrors from '../error';
 import {SHOPIFY_APP_DEV_KIT_VERSION} from '../version';
 import ShopifyUtils from '../utils';
 
-type HeaderParams = Record<string, string>;
+type HeaderParams = Record<string, string | number>;
 
 enum DataType {
   JSON = 'application/json',
