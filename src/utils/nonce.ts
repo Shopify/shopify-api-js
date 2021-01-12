@@ -3,7 +3,7 @@ export default function nonce(): string {
   let n = '';
 
   for (let i = 0; i <= 3; i++) {
-    n += Math.round(+new Date() * Math.random());
+    n += Math.round(Number(new Date()) * Math.random());
   }
 
   const s = n.substr(n.length - length);

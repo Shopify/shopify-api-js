@@ -1,9 +1,10 @@
-import { Session } from './session';
+import {Session} from './session';
 
 /**
  * Defines the strategy to be used to store sessions for the Shopify App.
  */
 interface SessionStorage {
+
   /**
    * Creates or updates the given session in storage.
    *
@@ -26,4 +27,4 @@ interface SessionStorage {
   deleteSession(id: string): Promise<boolean>;
 }
 
-export { SessionStorage };
+export {SessionStorage};

@@ -2,18 +2,19 @@ import '../../../test/test_helper';
 
 import querystring from 'querystring';
 import http from 'http';
-import jwt from 'jsonwebtoken';
 
-import { ShopifyOAuth } from '../oauth';
-import { Context } from '../../../context';
+import jwt from 'jsonwebtoken';
+import Cookies from 'cookies';
+
+import {ShopifyOAuth} from '../oauth';
+import {Context} from '../../../context';
 import * as ShopifyErrors from '../../../error';
-import { AuthQuery } from '../../types';
-import { generateLocalHmac } from '../../../utils/hmac-validator';
-import { JwtPayload } from '../../../utils/decode-session-token';
+import {AuthQuery} from '../../types';
+import {generateLocalHmac} from '../../../utils/hmac-validator';
+import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
 
 jest.mock('cookies');
-import Cookies from 'cookies';
 
 let shop: string;
 
@@ -47,7 +48,7 @@ describe('beginAuth', () => {
     Context.API_KEY = '';
 
     await expect(() => ShopifyOAuth.beginAuth(req, res, shop, '/some-callback')).rejects.toBeInstanceOf(
-      ShopifyErrors.UninitializedContextError
+      ShopifyErrors.UninitializedContextError,
     );
   });
 
@@ -131,16 +132,16 @@ describe('validateAuthCallback', () => {
     Context.API_KEY = '';
     const session = await Context.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
-      shop: shop,
+      shop,
       state: session ? session.state : '',
-      timestamp: (+new Date()).toString(),
+      timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     await expect(() => ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery)).rejects.toBeInstanceOf(
-      ShopifyErrors.UninitializedContextError
+      ShopifyErrors.UninitializedContextError,
     );
   });
 
@@ -148,8 +149,7 @@ describe('validateAuthCallback', () => {
     await expect(() =>
       ShopifyOAuth.validateAuthCallback(req, res, {
         shop: 'I do not exist',
-      } as AuthQuery)
-    ).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
+      } as AuthQuery)).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
   });
 
   test('throws an error when receiving a callback for a shop with no saved session', async () => {
@@ -160,8 +160,7 @@ describe('validateAuthCallback', () => {
     await expect(() =>
       ShopifyOAuth.validateAuthCallback(req, res, {
         shop: 'I do not exist',
-      } as AuthQuery)
-    ).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
+      } as AuthQuery)).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
   });
 
   test('throws error when callback includes invalid hmac, or state', async () => {
@@ -169,13 +168,13 @@ describe('validateAuthCallback', () => {
     const testCallbackQuery: AuthQuery = {
       shop: 'invalidurl.com',
       state: 'incorrect',
-      timestamp: (+new Date()).toString(),
+      timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
     testCallbackQuery.hmac = 'definitely the wrong hmac';
 
     await expect(() => ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery)).rejects.toBeInstanceOf(
-      ShopifyErrors.InvalidOAuthError
+      ShopifyErrors.InvalidOAuthError,
     );
   });
 
@@ -183,9 +182,9 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
     let session = await Context.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
-      shop: shop,
+      shop,
       state: session ? session.state : '',
-      timestamp: (+new Date()).toString(),
+      timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
     const expectedHmac = generateLocalHmac(testCallbackQuery);
@@ -207,9 +206,9 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
-      shop: shop,
+      shop,
       state: session ? session.state : '',
-      timestamp: (+new Date()).toString(),
+      timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
     const expectedHmac = generateLocalHmac(testCallbackQuery);
@@ -273,9 +272,9 @@ describe('validateAuthCallback', () => {
       },
     };
     const testCallbackQuery: AuthQuery = {
-      shop: shop,
+      shop,
       state: session ? session.state : '',
-      timestamp: (+new Date()).toString(),
+      timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
     const expectedHmac = generateLocalHmac(testCallbackQuery);
@@ -303,7 +302,7 @@ describe('validateAuthCallback', () => {
 
     // Simulate a subsequent JWT request to see if the session is loaded as the current one
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
     const jwtReq = {
       headers: {
         authorization: `Bearer ${token}`,

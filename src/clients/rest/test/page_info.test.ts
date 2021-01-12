@@ -1,8 +1,8 @@
 import '../../../test/test_helper';
 
-import { PageInfo, PageInfoParams } from '../page_info';
-import { assertHttpRequest } from '../../test/test_helper';
-import { RestRequestReturn } from '../rest_client';
+import {PageInfo, PageInfoParams} from '../page_info';
+import {assertHttpRequest} from '../../test/test_helper';
+import {RestRequestReturn} from '../rest_client';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {
@@ -10,12 +10,12 @@ const successResponse = {
     {
       title: 'Test title',
       amount: 10,
-    }
-  ]
+    },
+  ],
 };
 
-describe("PageInfo", () => {
-  it("can be serialized and de-serialized", () => {
+describe('PageInfo', () => {
+  it('can be serialized and de-serialized', () => {
     const params = getDefaultParams();
     const pageInfo = new PageInfo(params);
 
@@ -23,7 +23,7 @@ describe("PageInfo", () => {
     expect(newInfo).toEqual(pageInfo);
   });
 
-  it("can trigger previous page request", async () => {
+  it('can trigger previous page request', async () => {
     const params = getDefaultParams();
 
     const pageInfo = new PageInfo(params);
@@ -34,7 +34,7 @@ describe("PageInfo", () => {
     assertHttpRequest('GET', domain, `/admin/api/unstable/products.json?limit=10&fields=test1%2Ctest2&page_info=previousToken`);
   });
 
-  it("can chain previous page requests until we run out of results", async () => {
+  it('can chain previous page requests until we run out of results', async () => {
     const params = getDefaultParams();
 
     let pageInfo = new PageInfo(params);
@@ -49,9 +49,9 @@ describe("PageInfo", () => {
     // We make 3 successful requests for the previous page, but the last one only mentions the next page,
     // so the fourth request returns null right away because there are no more results.
     fetchMock.mockResponses(
-      [JSON.stringify(successResponse), { headers: { 'link': linkHeader.join(', ') } }],
-      [JSON.stringify(successResponse), { headers: { 'link': linkHeader.join(', ') } }],
-      [JSON.stringify(successResponse), { headers: { 'link': `<${params.nextPageUrl}>; rel="next"` } }],
+      [JSON.stringify(successResponse), {headers: {link: linkHeader.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: linkHeader.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: `<${params.nextPageUrl}>; rel="next"`}}],
     );
 
     const checkPreviousPageRequest = (result: RestRequestReturn | null, pageInfo?: PageInfo): PageInfo => {
@@ -59,7 +59,7 @@ describe("PageInfo", () => {
       assertHttpRequest('GET', domain, `/admin/api/unstable/products.json?limit=10&fields=test1%2Ctest2&page_info=previousToken`);
 
       if (!result?.pageInfo) {
-        throw "Expected page info object to be in the response after a request";
+        throw 'Expected page info object to be in the response after a request';
       }
 
       return result?.pageInfo;
@@ -83,7 +83,7 @@ describe("PageInfo", () => {
     await expect(pageInfo.getPreviousPage('testToken')).resolves.toBeNull();
   });
 
-  it("can trigger next page request", async () => {
+  it('can trigger next page request', async () => {
     const params = getDefaultParams();
 
     const pageInfo = new PageInfo(params);
@@ -94,7 +94,7 @@ describe("PageInfo", () => {
     assertHttpRequest('GET', domain, `/admin/api/unstable/products.json?limit=10&fields=test1%2Ctest2&page_info=nextToken`);
   });
 
-  it("can chain next page requests until we run out of results", async () => {
+  it('can chain next page requests until we run out of results', async () => {
     const params = getDefaultParams();
 
     let pageInfo = new PageInfo(params);
@@ -109,9 +109,9 @@ describe("PageInfo", () => {
     // We make 3 successful requests for the next page, but the last one only mentions the previous page,
     // so the fourth request returns null right away because there are no more results.
     fetchMock.mockResponses(
-      [JSON.stringify(successResponse), { headers: { 'link': linkHeader.join(', ') } }],
-      [JSON.stringify(successResponse), { headers: { 'link': linkHeader.join(', ') } }],
-      [JSON.stringify(successResponse), { headers: { 'link': `<${params.previousPageUrl}>; rel="previous"` } }],
+      [JSON.stringify(successResponse), {headers: {link: linkHeader.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: linkHeader.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: `<${params.previousPageUrl}>; rel="previous"`}}],
     );
 
     const checkNextPageRequest = (result: RestRequestReturn | null, pageInfo?: PageInfo): PageInfo => {
@@ -119,7 +119,7 @@ describe("PageInfo", () => {
       assertHttpRequest('GET', domain, `/admin/api/unstable/products.json?limit=10&fields=test1%2Ctest2&page_info=nextToken`);
 
       if (!result?.pageInfo) {
-        throw "Expected page info object to be in the response after a request";
+        throw 'Expected page info object to be in the response after a request';
       }
 
       return result?.pageInfo;
@@ -151,8 +151,8 @@ function getDefaultParams(): PageInfoParams {
   const nextUrl = `https://${domain}/admin/api/unstable/products.json?limit=${limit}&fields=${fields.join(',')}&page_info=nextToken`;
 
   return {
-    limit: limit,
-    fields: fields,
+    limit,
+    fields,
     previousPageUrl: previousUrl,
     nextPageUrl: nextUrl,
   };

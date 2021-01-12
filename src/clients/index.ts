@@ -2,9 +2,9 @@ import * as Rest from './rest';
 import * as Graphql from './graphql';
 
 const ShopifyClients = {
-  Rest: Rest,
-  Graphql: Graphql,
+  Rest,
+  Graphql,
 };
 
 export default ShopifyClients;
-export { ShopifyClients };
+export {ShopifyClients};

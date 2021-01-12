@@ -1,8 +1,9 @@
-import validateHmac from '../hmac-validator';
-import { AuthQuery } from '../../auth/types';
-import * as ShopifyErrors from '../../error';
-import { Context } from '../../context';
 import crypto from 'crypto';
+
+import validateHmac from '../hmac-validator';
+import {AuthQuery} from '../../auth/types';
+import * as ShopifyErrors from '../../error';
+import {Context} from '../../context';
 
 test('correctly validates query objects', () => {
   Context.API_SECRET_KEY = 'my super secret key';

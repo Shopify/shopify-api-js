@@ -1,4 +1,4 @@
-import { GraphqlClient } from './graphql_client';
+import {GraphqlClient} from './graphql_client';
 
 const ShopifyGraphqlClient = {
   GraphqlClient,

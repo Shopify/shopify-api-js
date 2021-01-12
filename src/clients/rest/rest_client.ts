@@ -1,8 +1,9 @@
-import { Context } from '../../context';
-import { ShopifyHeader } from '../../types';
-import { HttpClient, RequestParams } from '../http_client';
-import { PageInfo, PageInfoParams } from './page_info';
-import { RestRequestReturn } from './types';
+import {Context} from '../../context';
+import {ShopifyHeader} from '../../types';
+import {HttpClient, RequestParams} from '../http_client';
+
+import {PageInfo, PageInfoParams} from './page_info';
+import {RestRequestReturn} from './types';
 
 class RestClient extends HttpClient {
   private static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
@@ -15,7 +16,7 @@ class RestClient extends HttpClient {
   }
 
   protected async request(params: RequestParams): Promise<RestRequestReturn> {
-    params.extraHeaders = Object.assign({}, params.extraHeaders);
+    params.extraHeaders = {...params.extraHeaders};
     params.extraHeaders[ShopifyHeader.AccessToken] = this.accessToken;
 
     params.path = this.getRestPath(params.path);
@@ -25,7 +26,7 @@ class RestClient extends HttpClient {
     const link = ret.headers.get('link');
     if (params.query && link !== undefined) {
       const pageInfoParams: PageInfoParams = {
-        limit: parseInt('' + params.query['limit']),
+        limit: parseInt(`${params.query.limit}`),
       };
 
       if (link) {

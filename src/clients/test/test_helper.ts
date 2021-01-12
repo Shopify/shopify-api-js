@@ -6,16 +6,16 @@ export function assertHttpRequest(
   path: string,
   headers: Record<string, unknown> = {},
   data: string | null = null,
-  retries: number | null = null
+  retries: number | null = null,
 ): void {
   const expectResult = expect(fetchMock);
   expectResult.toBeCalledWith(
     `https://${domain}${path}`,
     expect.objectContaining({
-      method: method,
+      method,
       headers: expect.objectContaining(headers),
       body: data,
-    })
+    }),
   );
 
   if (retries !== null) {
