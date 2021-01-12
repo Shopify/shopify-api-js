@@ -16,11 +16,19 @@ import {DataType, RequestReturn} from '../../clients/http_client/types';
 =======
 
 import {Context} from '../../context';
-import utils from '../../utils';
+import nonce from '../../utils/nonce';
+import validateHmac from '../../utils/hmac-validator';
+import validateShop from '../../utils/shop-validator';
+import safeCompare from '../../utils/safe-compare';
 import {AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo} from '../types';
 import {Session} from '../session';
+<<<<<<< HEAD
 import {DataType, HttpClient} from '../../clients/http_client';
 >>>>>>> e83b5faf (Run yarn lint --fix on all files)
+=======
+import {HttpClient} from '../../clients/http_client/http_client';
+import {DataType} from '../../clients/http_client/types';
+>>>>>>> b9763756 (Fix almost all dependency cycle errors)
 import * as ShopifyErrors from '../../error';
 import {SessionInterface} from '../session/types';
 import {sanitizeShop} from '../../utils/shop-validator';
@@ -67,7 +75,11 @@ const ShopifyOAuth = {
       secure: true,
     });
 
+<<<<<<< HEAD
     const state = isOnline ? `online_${nonce()}` : `offline_${nonce()}`;
+=======
+    const state = nonce();
+>>>>>>> b9763756 (Fix almost all dependency cycle errors)
 
     cookies.set(ShopifyOAuth.STATE_COOKIE_NAME, state, {
       signed: true,
@@ -332,8 +344,17 @@ const ShopifyOAuth = {
  * @param query Current HTTP Request Query
  * @param stateFromCookie state value from the current cookie
  */
+<<<<<<< HEAD
 function validQuery(query: AuthQuery, stateFromCookie: string): boolean {
   return validateHmac(query) && safeCompare(query.state, stateFromCookie);
+=======
+function validQuery(query: AuthQuery, session: Session): boolean {
+  return (
+    validateHmac(query) &&
+    validateShop(query.shop) &&
+    safeCompare(query.state, session.state as string)
+  );
+>>>>>>> b9763756 (Fix almost all dependency cycle errors)
 }
 
 <<<<<<< HEAD

@@ -1,6 +1,6 @@
 import '../../../test/test_helper';
 import {ShopifyHeader} from '../../../types';
-import {assertHttpRequest} from '../../test/test_helper';
+import {assertHttpRequest} from '../../http_client/test/test_helper';
 import {GraphqlClient} from '../graphql_client';
 
 const DOMAIN = 'shop.myshopify.com';

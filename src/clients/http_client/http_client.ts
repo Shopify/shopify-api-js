@@ -1,50 +1,26 @@
 import querystring, {ParsedUrlQueryInput} from 'querystring';
 
-import fetch, {RequestInit, Response, Headers} from 'node-fetch';
+import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
 
-import * as ShopifyErrors from '../error';
-import {SHOPIFY_APP_DEV_KIT_VERSION} from '../version';
-import ShopifyUtils from '../utils';
-
-type HeaderParams = Record<string, string | number>;
-
-enum DataType {
-  JSON = 'application/json',
-  GraphQL = 'application/graphql',
-  URLEncoded = 'application/x-www-form-urlencoded'
-}
-
-interface GetRequestParams {
-  path: string;
-  type?: DataType;
-  data?: Record<string, unknown> | string;
-  query?: Record<string, string | number>;
-  extraHeaders?: HeaderParams;
-  tries?: number;
-}
-
-type PostRequestParams = GetRequestParams & {
-  type: DataType;
-  data: Record<string, unknown> | string;
-};
-
-type PutRequestParams = PostRequestParams;
-
-type DeleteRequestParams = GetRequestParams;
-
-type RequestParams = (GetRequestParams | PostRequestParams) & { method: Method; };
-
-interface RequestReturn {
-  body: unknown;
-  headers: Headers;
-}
+import * as ShopifyErrors from '../../error';
+import {SHOPIFY_APP_DEV_KIT_VERSION} from '../../version';
+import validateShop from '../../utils/shop-validator';
+import {
+DataType,
+GetRequestParams,
+PostRequestParams,
+PutRequestParams,
+DeleteRequestParams,
+RequestParams,
+RequestReturn,
+} from './types';
 
 class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000; // 1 second
 
   public constructor(private domain: string) {
-    if (!ShopifyUtils.validateShop(domain)) {
+    if (!validateShop(domain)) {
       throw new ShopifyErrors.InvalidShopError(`Domain ${domain} is not valid`);
     }
 
@@ -221,13 +197,5 @@ class HttpClient {
 }
 
 export {
-  HttpClient,
-  HeaderParams,
-  GetRequestParams,
-  PostRequestParams,
-  PutRequestParams,
-  DeleteRequestParams,
-  RequestParams,
-  DataType,
-  RequestReturn,
+  HttpClient
 };
