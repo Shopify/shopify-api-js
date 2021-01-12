@@ -2,10 +2,11 @@ import '../../../test/test_helper';
 import querystring from 'querystring';
 
 import {ShopifyHeader} from '../../../types';
-import {DataType} from '../../http_client';
-import {assertHttpRequest} from '../../test/test_helper';
-import {RestClient, RestRequestReturn} from '../rest_client';
-import {PageInfo} from '../page_info';
+import {DataType} from '../../types';
+import {assertHttpRequest} from '../../http_client/test/test_helper';
+import {RestClient} from '../rest_client';
+import {RestRequestReturn} from '../types';
+import {PageInfo} from '../page_info/page_info';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {

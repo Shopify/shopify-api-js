@@ -6,8 +6,8 @@ import {Method, Header, StatusCode} from '@shopify/network';
 import {DeliveryMethod, ProcessReturn, RegisterOptions} from '../registry';
 import {ApiVersion, ShopifyHeader} from '../../types';
 import {Context} from '../../context';
-import {DataType} from '../../clients/http_client';
-import {assertHttpRequest} from '../../clients/test/test_helper';
+import {DataType} from '../../clients/types';
+import {assertHttpRequest} from '../../clients/http_client/test/test_helper';
 import * as ShopifyErrors from '../../error';
 import ShopifyWebhooks from '..';
 

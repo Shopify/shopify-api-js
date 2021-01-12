@@ -1,8 +1,10 @@
 import {Context} from '../../context';
 import {ShopifyHeader} from '../../types';
-import {HttpClient, RequestParams} from '../http_client';
+import {HttpClient} from '../http_client/http_client';
+import {RequestParams} from '../http_client/types';
 
-import {PageInfo, PageInfoParams} from './page_info';
+import {PageInfo} from './page_info/page_info';
+import {PageInfoParams} from './page_info/types';
 import {RestRequestReturn} from './types';
 
 class RestClient extends HttpClient {
@@ -73,5 +75,4 @@ class RestClient extends HttpClient {
 
 export {
   RestClient,
-  RestRequestReturn,
 };
