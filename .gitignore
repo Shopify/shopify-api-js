@@ -4,5 +4,5 @@ yarn-error.log
 dist
 coverage/
 yarn-error.log
-docs/
+tsdocs/
 tsconfig.tsbuildinfo
