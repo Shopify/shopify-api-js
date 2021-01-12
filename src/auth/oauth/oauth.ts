@@ -6,10 +6,14 @@ import Cookies from 'cookies';
 
 
 import {Context} from '../../context';
-import utils from '../../utils';
+import nonce from '../../utils/nonce';
+import validateHmac from '../../utils/hmac-validator';
+import validateShop from '../../utils/shop-validator';
+import safeCompare from '../../utils/safe-compare';
 import {AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo} from '../types';
 import {Session} from '../session';
-import {DataType, HttpClient} from '../../clients/http_client';
+import {HttpClient} from '../../clients/http_client/http_client';
+import {DataType} from '../../clients/http_client/types';
 import * as ShopifyErrors from '../../error';
 
 const ShopifyOAuth = {
@@ -40,7 +44,7 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    const state = utils.nonce();
+    const state = nonce();
 
     const session = new Session(isOnline ? uuidv4() : this.getOfflineSessionId(shop));
     session.shop = shop;
@@ -199,9 +203,9 @@ const ShopifyOAuth = {
  */
 function validQuery(query: AuthQuery, session: Session): boolean {
   return (
-    utils.validateHmac(query) &&
-    utils.validateShop(query.shop) &&
-    utils.safeCompare(query.state, session.state as string)
+    validateHmac(query) &&
+    validateShop(query.shop) &&
+    safeCompare(query.state, session.state as string)
   );
 }
 

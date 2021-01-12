@@ -1,8 +1,9 @@
-import '../../../test/test_helper';
+import '../../../../test/test_helper';
 
-import {PageInfo, PageInfoParams} from '../page_info';
-import {assertHttpRequest} from '../../test/test_helper';
-import {RestRequestReturn} from '../rest_client';
+import {PageInfo} from '../page_info';
+import {PageInfoParams} from '../types';
+import {assertHttpRequest} from '../../../http_client/test/test_helper';
+import {RestRequestReturn} from '../../types';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {

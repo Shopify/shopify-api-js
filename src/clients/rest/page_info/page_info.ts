@@ -1,13 +1,9 @@
 import querystring from 'querystring';
 
-import {RestClient, RestRequestReturn} from './rest_client';
+import {RestClient} from '../rest_client';
+import {RestRequestReturn} from '../types';
 
-interface PageInfoParams {
-  limit: number;
-  fields?: string[];
-  previousPageUrl?: string;
-  nextPageUrl?: string;
-}
+import {PageInfoParams} from './types';
 
 class PageInfo {
   constructor(private params: PageInfoParams) {}
@@ -75,5 +71,4 @@ class PageInfo {
 
 export {
   PageInfo,
-  PageInfoParams,
 };
