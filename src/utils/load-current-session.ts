@@ -31,10 +31,12 @@ export default async function loadCurrentSession(
       const jwtPayload = decodeSessionToken(matches[1]);
       const jwtSessionId = ShopifyOAuth.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);
       session = await Context.loadSession(jwtSessionId);
-    } else {
-      throw new ShopifyErrors.MissingJwtTokenError('Missing authorization header');
     }
-  } else {
+  }
+
+  // We fall back to the cookie session to allow apps to load their skeleton page after OAuth, so they can set up App
+  // Bridge and get a new JWT.
+  if (!session) {
     const sessionCookie = ShopifyOAuth.getCookieSessionId(request, response);
     if (sessionCookie) {
       session = await Context.loadSession(sessionCookie);

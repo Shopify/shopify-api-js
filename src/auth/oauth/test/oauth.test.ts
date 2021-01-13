@@ -249,7 +249,7 @@ describe('validateAuthCallback', () => {
     }
   });
 
-  test('converts an OAuth session into a JWT one if is online', async () => {
+  test('converts an OAuth session into a JWT one if it is online', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
@@ -284,7 +284,15 @@ describe('validateAuthCallback', () => {
     fetchMock.mockResponse(JSON.stringify(successResponse));
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
 
-    await expect(Context.loadSession(cookies.id)).resolves.toBeUndefined();
+    let expectedCookieExpiration = Date.now() / 1000;
+    expectedCookieExpiration += 30;
+    const cookieSession = await Context.loadSession(cookies.id);
+    expect(cookieSession).not.toBeUndefined();
+
+    if (cookieSession?.expires) {
+      const actualCookieExpiration: number = cookieSession.expires.getTime() / 1000;
+      expect(Math.abs(expectedCookieExpiration - actualCookieExpiration)).toBeLessThan(1); // 1-second grace period
+    }
 
     const jwtPayload: JwtPayload = {
       iss: `https://${shop}/admin`,

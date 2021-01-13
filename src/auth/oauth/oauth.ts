@@ -143,16 +143,18 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    // If this is an online session for an embedded app, we assume it will be loaded from a JWT from here on out
+    // If this is an online session for an embedded app, we assume it will be loaded from a JWT from here on out. The
+    // cookie session is preserved for 30s so that the app skeleton page can still be loaded using it
     if (Context.IS_EMBEDDED_APP && currentSession.isOnline) {
       const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
       const jwtSessionId = this.getJwtSessionId(currentSession.shop, '' + onlineInfo.associated_user.id);
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
-      await Context.deleteSession(currentSession.id);
       await Context.storeSession(jwtSession);
-    } else {
-      await Context.storeSession(currentSession);
+
+      currentSession.expires = new Date(Date.now() + 30000);
     }
+
+    await Context.storeSession(currentSession);
   },
 
   /**
