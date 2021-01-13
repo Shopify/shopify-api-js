@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
 ### Added
 ### Fixed
+
+## [0.2.1] - 2021-01-13
+
+### Fixed
+
+- Ensure that the OAuth session expiration matches the cookie expiration [#72](https://github.com/shopify/shopify_ts_api/pull/72)
+
 ## [0.2.0] - 2021-01-13
 
 - Preserve the OAuth cookie session for a few seconds so SPA can perform their initial load using it [#70](https://github.com/shopify/shopify_ts_api/pull/70)
