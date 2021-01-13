@@ -4,6 +4,7 @@
 
 ### Patch Changes
 
+<<<<<<< HEAD
 - 85e7478f: [Internal] Improved tracking of webhook registration GraphQL calls
 
 <<<<<<< HEAD
@@ -256,6 +257,9 @@
 
 ## [3.1.2] - 2022-06-07
 
+=======
+## [Unreleased]
+>>>>>>> a230deb6 (v0.2.1)
 ### Added
 
 - Store user id and expiration date of online tokens
@@ -273,6 +277,7 @@
 - Add optional `saving` parameter to `serialize` of `Base` class - default is `false` and will include read-only attributes in returned object; `true` used for `save` when committing via API to Shopify.
 
 ### Fixed
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 - Fixes [#363](https://github.com/Shopify/shopify-api-js/issues/363)
@@ -453,6 +458,15 @@
 - Session fetches now return `undefined` when a session is not available [#64](https://github.com/Shopify/shopify-api-js/pull/64)
 - Add `deleteCurrentSession` utils method [#60](https://github.com/Shopify/shopify-api-js/pull/60)
 =======
+=======
+
+## [0.2.1] - 2021-01-13
+
+### Fixed
+
+- Ensure that the OAuth session expiration matches the cookie expiration [#72](https://github.com/shopify/shopify_ts_api/pull/72)
+
+>>>>>>> a230deb6 (v0.2.1)
 ## [0.2.0] - 2021-01-13
 
 - Preserve the OAuth cookie session for a few seconds so SPA can perform their initial load using it [#70](https://github.com/shopify/shopify_ts_api/pull/70)
