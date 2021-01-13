@@ -21,7 +21,7 @@ describe('REST client', () => {
   it('can make GET request', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.get({path: 'products'})).resolves.toEqual(buildExpectedResponse(successResponse));
     assertHttpRequest('GET', domain, '/admin/api/unstable/products.json');
@@ -30,7 +30,7 @@ describe('REST client', () => {
   it('can make POST request with JSON data', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -52,7 +52,7 @@ describe('REST client', () => {
   it('can make POST request with form data', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -74,7 +74,7 @@ describe('REST client', () => {
   it('can make PUT request with JSON data', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     const putData = {
       title: 'Test product',
@@ -111,18 +111,121 @@ describe('REST client', () => {
       'X-Not-A-Real-Header': 'some_value',
     };
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
-    await expect(client.get({path: 'products', extraHeaders: customHeaders}))
-      .resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.get({path: 'products', extraHeaders: customHeaders})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
 
     customHeaders[ShopifyHeader.AccessToken] = 'dummy-token';
     assertHttpRequest('GET', domain, '/admin/api/unstable/products.json', customHeaders);
   });
+
+  it('includes pageInfo of type PageInfo in the returned object for calls with next or previous pages', async () => {
+    const params = getDefaultPageInfo();
+    const client = new RestClient(domain, 'dummy-token');
+    const linkHeaders = [`<${params.previousPageUrl}>; rel="previous"`, `<${params.nextPageUrl}>; rel="next"`];
+
+    fetchMock.mockResponses([JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}]);
+
+    const response = (await client.get({path: 'products', query: {limit: 10}})) as RestRequestReturn;
+
+    expect(response).toHaveProperty('pageInfo');
+    expect(response.pageInfo).toEqual(params);
+  });
+
+  it('is able to make subsequent get requests to either pageInfo.nextPage or pageInfo.prevPage', async () => {
+    const params = getDefaultPageInfo();
+    const client = new RestClient(domain, 'dummy-token');
+    const linkHeaders = [`<${params.previousPageUrl}>; rel="previous"`, `<${params.nextPageUrl}>; rel="next"`];
+
+    fetchMock.mockResponses(
+      [JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}],
+    );
+
+    const initialResponse = (await client.get({path: 'products', query: {limit: 10}})) as RestRequestReturn;
+
+    const pageInfo = initialResponse.pageInfo as PageInfo;
+    const nextPageResponse = await client.get(pageInfo.nextPage as GetRequestParams);
+    expect(nextPageResponse).toBeDefined();
+    expect(nextPageResponse).toHaveProperty('pageInfo');
+
+    const prevPageResponse = await client.get(pageInfo.prevPage as GetRequestParams);
+    expect(prevPageResponse).toBeDefined();
+    expect(prevPageResponse).toHaveProperty('pageInfo');
+  });
+
+  it('can request next pages until they run out', async () => {
+    const params = getDefaultPageInfo();
+    const client = new RestClient(domain, 'dummy-token');
+    const linkHeaders = [`<${params.previousPageUrl}>; rel="previous"`, `<${params.nextPageUrl}>; rel="next"`];
+
+    fetchMock.mockResponses(
+      [JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: `<${params.previousPageUrl}>; rel="previous"`}}],
+    );
+
+    const initialResponse = (await client.get({path: 'products', query: {limit: 10}})) as RestRequestReturn;
+    expect(initialResponse.pageInfo!.nextPageUrl).toBe(params.nextPageUrl);
+    const secondResponse = (await client.get(initialResponse.pageInfo!.nextPage!)) as RestRequestReturn;
+    expect(secondResponse.pageInfo!.nextPageUrl).toBe(params.nextPageUrl);
+    const thirdResponse = (await client.get(secondResponse.pageInfo!.nextPage!)) as RestRequestReturn;
+    expect(thirdResponse.pageInfo!.nextPageUrl).toBeUndefined();
+    expect(thirdResponse.pageInfo!.nextPage).toBeUndefined();
+  });
+
+  it('can request previous pages until they run out', async () => {
+    const params = getDefaultPageInfo();
+    const client = new RestClient(domain, 'dummy-token');
+    const linkHeaders = [`<${params.previousPageUrl}>; rel="previous"`, `<${params.nextPageUrl}>; rel="next"`];
+
+    fetchMock.mockResponses(
+      [JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}],
+      [JSON.stringify(successResponse), {headers: {link: `<${params.previousPageUrl}>; rel="next"`}}],
+    );
+
+    const initialResponse = (await client.get({path: 'products', query: {limit: 10}})) as RestRequestReturn;
+    expect(initialResponse.pageInfo!.previousPageUrl).toBe(params.previousPageUrl);
+    const secondResponse = (await client.get(initialResponse.pageInfo!.prevPage!)) as RestRequestReturn;
+    expect(secondResponse.pageInfo!.previousPageUrl).toBe(params.previousPageUrl);
+    const thirdResponse = (await client.get(secondResponse.pageInfo!.prevPage!)) as RestRequestReturn;
+    expect(thirdResponse.pageInfo!.previousPageUrl).toBeUndefined();
+    expect(thirdResponse.pageInfo!.prevPage).toBeUndefined();
+  });
 });
 
-function buildMockResponse(obj: unknown): string {
-  return JSON.stringify(obj);
+function getDefaultPageInfo(): PageInfo {
+  const limit = '10';
+  const fields = ['test1', 'test2'];
+  const previousUrl = `https://${domain}/admin/api/unstable/products.json?limit=${limit}&fields=${fields.join(
+    ',',
+  )}&page_info=previousToken`;
+  const nextUrl = `https://${domain}/admin/api/unstable/products.json?limit=${limit}&fields=${fields.join(
+    ',',
+  )}&page_info=nextToken`;
+  const prevPage = {
+    path: 'products',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    query: {fields: fields.join(','), limit: `${limit}`, page_info: 'previousToken'},
+  };
+  const nextPage = {
+    path: 'products',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    query: {fields: fields.join(','), limit: `${limit}`, page_info: 'nextToken'},
+  };
+
+  return {
+    limit,
+    fields,
+    previousPageUrl: previousUrl,
+    nextPageUrl: nextUrl,
+    prevPage,
+    nextPage,
+  };
 }
 
 function buildExpectedResponse(obj: unknown, pageInfo?: PageInfo): RestRequestReturn {

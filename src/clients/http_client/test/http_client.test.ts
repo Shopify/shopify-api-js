@@ -1,8 +1,9 @@
-import '../../test/test_helper';
+import '../../../test/test_helper';
 import querystring from 'querystring';
 
-import {HttpClient, DataType, HeaderParams, RequestReturn} from '../http_client';
-import * as ShopifyErrors from '../../error';
+import {HttpClient} from '../http_client';
+import {DataType, HeaderParams, RequestReturn} from '../../types';
+import * as ShopifyErrors from '../../../error';
 
 import {assertHttpRequest} from './test_helper';
 

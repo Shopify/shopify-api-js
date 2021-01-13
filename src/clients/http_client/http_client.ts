@@ -22,7 +22,7 @@ class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000;
 
   public constructor(private domain: string) {
-    if (!ShopifyUtils.validateShop(domain)) {
+    if (!validateShop(domain)) {
       throw new ShopifyErrors.InvalidShopError(`Domain ${domain} is not valid`);
     }
 
