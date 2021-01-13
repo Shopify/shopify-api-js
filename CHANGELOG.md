@@ -273,6 +273,7 @@
 - Add optional `saving` parameter to `serialize` of `Base` class - default is `false` and will include read-only attributes in returned object; `true` used for `save` when committing via API to Shopify.
 
 ### Fixed
+<<<<<<< HEAD
 
 - Fixes [#363](https://github.com/Shopify/shopify-api-js/issues/363)
   - Webhooks `register` now checks for any attempt to register a GDPR topic (not done via API but by Partner Dashboard), provides an error message in response
@@ -451,6 +452,13 @@
 - Preserve the OAuth cookie session for a few seconds so SPA can perform their initial load using it [#70](https://github.com/Shopify/shopify-api-js/pull/70)
 - Session fetches now return `undefined` when a session is not available [#64](https://github.com/Shopify/shopify-api-js/pull/64)
 - Add `deleteCurrentSession` utils method [#60](https://github.com/Shopify/shopify-api-js/pull/60)
+=======
+## [0.2.0] - 2021-01-13
+
+- Preserve the OAuth cookie session for a few seconds so SPA can perform their initial load using it [#70](https://github.com/shopify/shopify_ts_api/pull/70)
+- Session fetches now return `undefined` when a session is not available [#64](https://github.com/shopify/shopify_ts_api/pull/64)
+- Add `deleteCurrentSession` utils method [#60](https://github.com/shopify/shopify_ts_api/pull/60)
+>>>>>>> d55a06e9 (v0.2.0)
 
 ## [0.1.0] - 2020-12-17
 
