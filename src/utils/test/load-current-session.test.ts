@@ -76,14 +76,14 @@ describe('loadCurrentSession', () => {
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });
 
-  it('throws error if no authorization header is present', async () => {
+  it('loads nothing if no authorization header is present', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
     const req = { headers: {} } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
+    await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
   });
 
   it('loads nothing if there is no session for embedded apps', async () => {
@@ -113,5 +113,26 @@ describe('loadCurrentSession', () => {
     const res = {} as http.ServerResponse;
 
     await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
+  });
+
+  it('falls back to the cookie session for embedded apps', async () => {
+    Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
+
+    const req = {
+      headers: {
+        authorization: '',
+      },
+    } as http.IncomingMessage;
+    const res = {} as http.ServerResponse;
+
+    const cookieId = '1234-this-is-a-cookie-session-id';
+
+    const session = new Session(cookieId);
+    await expect(Context.storeSession(session)).resolves.toEqual(true);
+
+    Cookies.prototype.get.mockImplementation(() => cookieId);
+
+    await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });
 });
