@@ -135,24 +135,30 @@ const ShopifyOAuth = {
       currentSession.scope = responseBody.scope;
     }
 
-    // If app is embedded or this is an offline session, we're no longer intereseted in the cookie
-    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
-      signed: true,
-      expires: Context.IS_EMBEDDED_APP || !currentSession.isOnline ? new Date() : currentSession.expires,
-      sameSite: 'none',
-      secure: true,
-    });
+    // If this is an offline session, we're no longer interested in the cookie. If it is online in an embedded app, we
+    // want the cookie session to expire a few seconds from now to give the app time to load itself to set up a JWT.
+    // Otherwise, we want to leave the cookie session alone until the actual expiration.
+    let oauthSessionExpiration = currentSession.expires;
+    if (!currentSession.isOnline) {
+      oauthSessionExpiration = new Date();
+    }
+    else if (Context.IS_EMBEDDED_APP) {
+      oauthSessionExpiration = new Date(Date.now() + 30000);
+      currentSession.expires = oauthSessionExpiration;
 
-    // If this is an online session for an embedded app, we assume it will be loaded from a JWT from here on out. The
-    // cookie session is preserved for 30s so that the app skeleton page can still be loaded using it
-    if (Context.IS_EMBEDDED_APP && currentSession.isOnline) {
+      // If this is an online session for an embedded app, prepare a JWT session to be used from here on out
       const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
       const jwtSessionId = this.getJwtSessionId(currentSession.shop, '' + onlineInfo.associated_user.id);
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
       await Context.storeSession(jwtSession);
-
-      currentSession.expires = new Date(Date.now() + 30000);
     }
+
+    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
+      signed: true,
+      expires: oauthSessionExpiration,
+      sameSite: 'none',
+      secure: true,
+    });
 
     await Context.storeSession(currentSession);
   },
