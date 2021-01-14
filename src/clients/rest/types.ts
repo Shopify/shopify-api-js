@@ -1,10 +1,14 @@
-import {RequestReturn} from '../http_client/types';
+import {RequestReturn, GetRequestParams} from '../http_client/types';
 
-// require is a work-around for PageInfo dependency cycle
-import PageInfo = require('./page_info/page_info');
+export interface PageInfo {
+  limit: string;
+  fields?: string[];
+  previousPageUrl?: string;
+  nextPageUrl?: string;
+  prevPage?: GetRequestParams;
+  nextPage?: GetRequestParams;
+}
 
-type RestRequestReturn = RequestReturn & {
-  pageInfo?: PageInfo.PageInfo;
+export type RestRequestReturn = RequestReturn & {
+  pageInfo?: PageInfo;
 };
-
-export {RestRequestReturn};
