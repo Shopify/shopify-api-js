@@ -460,11 +460,11 @@
 =======
 =======
 
-## [0.2.1] - 2021-01-13
+## [0.2.2] - 2021-01-14
 
 ### Fixed
 
-- Ensure that the OAuth session expiration matches the cookie expiration [#72](https://github.com/shopify/shopify_ts_api/pull/72)
+- Ensure that the OAuth session expiration matches the cookie expiration [#72](https://github.com/shopify/shopify_ts_api/pull/72) / [#73](https://github.com/shopify/shopify_ts_api/pull/73)
 
 >>>>>>> a230deb6 (v0.2.1)
 ## [0.2.0] - 2021-01-13
