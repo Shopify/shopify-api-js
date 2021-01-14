@@ -143,14 +143,15 @@ const ShopifyOAuth = {
       oauthSessionExpiration = new Date();
     }
     else if (Context.IS_EMBEDDED_APP) {
-      oauthSessionExpiration = new Date(Date.now() + 30000);
-      currentSession.expires = oauthSessionExpiration;
-
-      // If this is an online session for an embedded app, prepare a JWT session to be used from here on out
+      // If this is an online session for an embedded app, prepare a JWT session to be used going forward
       const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
       const jwtSessionId = this.getJwtSessionId(currentSession.shop, '' + onlineInfo.associated_user.id);
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
       await Context.storeSession(jwtSession);
+
+      // Make sure the current OAuth session expires along with the cookie
+      oauthSessionExpiration = new Date(Date.now() + 30000);
+      currentSession.expires = oauthSessionExpiration;
     }
 
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
