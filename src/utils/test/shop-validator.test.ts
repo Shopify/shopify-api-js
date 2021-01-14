@@ -1,10 +1,15 @@
 import validateShop from '../shop-validator';
 
 test('returns true for valid shop urls', () => {
-  const shopUrl = 'someshop.myshopify.com';
-  const devUrl = 'devshop.myshopify.io';
-  expect(validateShop(shopUrl)).toBe(true);
-  expect(validateShop(devUrl)).toBe(true);
+  const shopUrl1 = 'someshop.myshopify.com';
+  const shopUrl2 = 'devshop.myshopify.io';
+  const shopUrl3 = 'test-shop.myshopify.com';
+  const shopUrl4 = 'dev-shop-.myshopify.io';
+
+  expect(validateShop(shopUrl1)).toBe(true);
+  expect(validateShop(shopUrl2)).toBe(true);
+  expect(validateShop(shopUrl3)).toBe(true);
+  expect(validateShop(shopUrl4)).toBe(true);
 });
 
 test('returns false for invalid shop urls', () => {
