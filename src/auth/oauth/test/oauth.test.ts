@@ -258,7 +258,7 @@ describe('validateAuthCallback', () => {
     const successResponse = {
       access_token: 'some access token',
       scope: 'pet_kitties, walk_dogs',
-      expires_in: '525600',
+      expires_in: 525600,
       associated_user_scope: 'pet_kitties',
       associated_user: {
         id: '1',
@@ -298,7 +298,7 @@ describe('validateAuthCallback', () => {
       dest: `https://${shop}`,
       aud: Context.API_KEY,
       sub: '1',
-      exp: Date.now() / 1000 + 3600,
+      exp: new Date(Date.now() + successResponse.expires_in * 1000).getTime() / 1000,
       nbf: 1234,
       iat: 1234,
       jti: '4321',
@@ -306,7 +306,11 @@ describe('validateAuthCallback', () => {
     };
 
     const jwtSessionId = `${shop}_${jwtPayload.sub}`;
-    await expect(Context.loadSession(jwtSessionId)).resolves.not.toBeUndefined();
+    const actualJwtSession = await Context.loadSession(jwtSessionId);
+    expect(actualJwtSession).not.toBeUndefined();
+
+    const actualJwtExpiration = actualJwtSession?.expires ? actualJwtSession.expires.getTime() / 1000 : 0;
+    expect(Math.abs(actualJwtExpiration - jwtPayload.exp)).toBeLessThan(1); // 1-second grace period
 
     // Simulate a subsequent JWT request to see if the session is loaded as the current one
 
