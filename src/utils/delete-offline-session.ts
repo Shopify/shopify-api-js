@@ -1,5 +1,5 @@
-import { Context } from '../context';
-import OAuth from '../../src/auth/oauth';
+import {Context} from '../context';
+import OAuth from '../auth/oauth';
 
 /**
  * Helper method to find and delete offline sessions by shop url.

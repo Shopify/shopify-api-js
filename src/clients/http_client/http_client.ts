@@ -6,6 +6,7 @@ import {Method, StatusCode} from '@shopify/network';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_APP_DEV_KIT_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
+
 import {
   DataType,
   GetRequestParams,
