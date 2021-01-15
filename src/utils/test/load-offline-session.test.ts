@@ -1,9 +1,9 @@
 import '../../test/test_helper';
 
 import loadOfflineSession from '../load-offline-session';
-import { Session } from '../../auth/session/session';
+import {Session} from '../../auth/session/session';
 import OAuth from '../../auth/oauth';
-import { Context } from '../../context';
+import {Context} from '../../context';
 
 describe('loadOfflineSession', () => {
   const shop = 'some-shop.myshopify.com';
