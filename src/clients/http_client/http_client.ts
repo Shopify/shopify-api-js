@@ -109,7 +109,7 @@ class HttpClient {
       body,
     } as RequestInit;
 
-    async function sleep(waitTime: number): Promise<unknown> {
+    async function sleep(waitTime: number): Promise<void> {
       return new Promise((resolve) => setTimeout(resolve, waitTime));
     }
 
