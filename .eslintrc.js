@@ -8,5 +8,6 @@ module.exports = {
   ignorePatterns: ['dist/'],
   rules: {
     'import/no-named-as-default': 0,
+    'no-mixed-operators': 0,
   },
 };
