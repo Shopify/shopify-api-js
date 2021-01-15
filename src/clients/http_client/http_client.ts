@@ -18,7 +18,8 @@ import {
 } from './types';
 
 class HttpClient {
-  static readonly RETRY_WAIT_TIME = 1000; // 1 second
+  // 1 second
+  static readonly RETRY_WAIT_TIME = 1000;
 
   public constructor(private domain: string) {
     if (!validateShop(domain)) {
@@ -108,33 +109,37 @@ class HttpClient {
       body,
     } as RequestInit;
 
+    async function sleep(waitTime: number): Promise<unknown> {
+      return new Promise((resolve) => setTimeout(resolve, waitTime));
+    }
+
     let tries = 0;
     while (tries < maxTries) {
       try {
         return await this.doRequest(url, options);
-      } catch (e) {
+      } catch (error) {
         tries++;
-        if (e instanceof ShopifyErrors.HttpRetriableError) {
+        if (error instanceof ShopifyErrors.HttpRetriableError) {
           // We're not out of tries yet, use them
           if (tries < maxTries) {
             let waitTime = HttpClient.RETRY_WAIT_TIME;
-            if (e instanceof ShopifyErrors.HttpThrottlingError && e.retryAfter) {
-              waitTime = e.retryAfter * 1000;
+            if (error instanceof ShopifyErrors.HttpThrottlingError && error.retryAfter) {
+              waitTime = error.retryAfter * 1000;
             }
-            await new Promise((r) => setTimeout(r, waitTime));
+            await sleep(waitTime);
             continue;
           }
 
           // We're set to multiple tries but ran out
           if (maxTries > 1) {
             throw new ShopifyErrors.HttpMaxRetriesError(
-              `Exceeded maximum retry count of ${maxTries}. Last message: ${e.message}`,
+              `Exceeded maximum retry count of ${maxTries}. Last message: ${error.message}`,
             );
           }
         }
 
         // We're not retrying or the error is not retriable, rethrow
-        throw e;
+        throw error;
       }
     }
 
@@ -185,10 +190,10 @@ class HttpClient {
         }
       })
       .catch((error) => {
-        if (!(error instanceof ShopifyErrors.ShopifyError)) {
-          throw new ShopifyErrors.HttpRequestError(`Failed to make Shopify HTTP request: ${error}`);
-        } else {
+        if (error instanceof ShopifyErrors.ShopifyError) {
           throw error;
+        } else {
+          throw new ShopifyErrors.HttpRequestError(`Failed to make Shopify HTTP request: ${error}`);
         }
       });
   }
