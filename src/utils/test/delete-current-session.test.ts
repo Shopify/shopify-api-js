@@ -1,17 +1,18 @@
 import '../../test/test_helper';
 
 import http from 'http';
-import jwt from 'jsonwebtoken';
 
-import { Context } from '../../context';
+import jwt from 'jsonwebtoken';
+import Cookies from 'cookies';
+
+import {Context} from '../../context';
 import * as ShopifyErrors from '../../error';
-import { Session } from '../../auth/session';
-import { JwtPayload } from '../decode-session-token';
+import {Session} from '../../auth/session';
+import {JwtPayload} from '../decode-session-token';
 import deleteCurrentSession from '../delete-current-session';
 import loadCurrentSession from '../load-current-session';
 
 jest.mock('cookies');
-import Cookies from 'cookies';
 
 describe('deleteCurrenSession', () => {
   let jwtPayload: JwtPayload;
@@ -51,7 +52,7 @@ describe('deleteCurrenSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, { algorithm: 'HS256' });
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
     const req = {
       headers: {
         authorization: `Bearer ${token}`,

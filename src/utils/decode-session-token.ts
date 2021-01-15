@@ -1,19 +1,20 @@
 import jwt from 'jsonwebtoken';
 
-import { Context } from '../context';
+import {Context} from '../context';
 import * as ShopifyErrors from '../error';
+
 import validateShop from './shop-validator';
 
-type JwtPayload = {
-  iss: string,
-  dest: string,
-  aud: string,
-  sub: string,
-  exp: number,
-  nbf: number,
-  iat: number,
-  jti: string,
-  sid: string,
+interface JwtPayload {
+  iss: string;
+  dest: string;
+  aud: string;
+  sub: string;
+  exp: number;
+  nbf: number;
+  iat: number;
+  jti: string;
+  sid: string;
 }
 
 /**
@@ -24,10 +25,9 @@ type JwtPayload = {
 function decodeSessionToken(token: string): JwtPayload {
   let payload: JwtPayload;
   try {
-    payload = jwt.verify(token, Context.API_SECRET_KEY, { algorithms: ['HS256'] }) as JwtPayload;
-  }
-  catch (e) {
-    throw new ShopifyErrors.InvalidJwtError(`Failed to parse session token '${token}': ${e.message}`);
+    payload = jwt.verify(token, Context.API_SECRET_KEY, {algorithms: ['HS256']}) as JwtPayload;
+  } catch (error) {
+    throw new ShopifyErrors.InvalidJwtError(`Failed to parse session token '${token}': ${error.message}`);
   }
 
   // The exp and nbf fields are validated by the JWT library

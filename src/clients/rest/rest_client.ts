@@ -1,8 +1,11 @@
-import { Context } from '../../context';
-import { ShopifyHeader } from '../../types';
-import { HttpClient, RequestParams } from '../http_client';
-import { PageInfo, PageInfoParams } from './page_info';
-import { RestRequestReturn } from './types';
+import querystring from 'querystring';
+
+import {Context} from '../../context';
+import {ShopifyHeader} from '../../types';
+import {HttpClient} from '../http_client/http_client';
+import {RequestParams, GetRequestParams} from '../http_client/types';
+
+import {RestRequestReturn, PageInfo} from './types';
 
 class RestClient extends HttpClient {
   private static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
@@ -15,24 +18,24 @@ class RestClient extends HttpClient {
   }
 
   protected async request(params: RequestParams): Promise<RestRequestReturn> {
-    params.extraHeaders = Object.assign({}, params.extraHeaders);
+    params.extraHeaders = {...params.extraHeaders};
     params.extraHeaders[ShopifyHeader.AccessToken] = this.accessToken;
 
     params.path = this.getRestPath(params.path);
 
-    const ret = await super.request(params) as RestRequestReturn;
+    const ret = (await super.request(params)) as RestRequestReturn;
 
     const link = ret.headers.get('link');
     if (params.query && link !== undefined) {
-      const pageInfoParams: PageInfoParams = {
-        limit: parseInt('' + params.query['limit']),
+      const pageInfo: PageInfo = {
+        limit: params.query.limit.toString(),
       };
 
       if (link) {
         const links = link.split(', ');
 
-        for (let i = 0; i < links.length; i++) {
-          const parsedLink = links[i].match(RestClient.LINK_HEADER_REGEXP);
+        for (const link of links) {
+          const parsedLink = link.match(RestClient.LINK_HEADER_REGEXP);
           if (!parsedLink) {
             continue;
           }
@@ -42,24 +45,26 @@ class RestClient extends HttpClient {
           const linkFields = linkUrl.searchParams.get('fields');
           const linkPageToken = linkUrl.searchParams.get('page_info');
 
-          if (!pageInfoParams.fields && linkFields) {
-            pageInfoParams.fields = linkFields.split(',');
+          if (!pageInfo.fields && linkFields) {
+            pageInfo.fields = linkFields.split(',');
           }
 
           if (linkPageToken) {
             switch (linkRel) {
               case 'previous':
-                pageInfoParams.previousPageUrl = parsedLink[1];
+                pageInfo.previousPageUrl = parsedLink[1];
+                pageInfo.prevPage = this.buildRequestParams(parsedLink[1]);
                 break;
               case 'next':
-                pageInfoParams.nextPageUrl = parsedLink[1];
+                pageInfo.nextPageUrl = parsedLink[1];
+                pageInfo.nextPage = this.buildRequestParams(parsedLink[1]);
                 break;
             }
           }
         }
       }
 
-      ret.pageInfo = new PageInfo(pageInfoParams);
+      ret.pageInfo = pageInfo;
     }
 
     return ret;
@@ -68,9 +73,16 @@ class RestClient extends HttpClient {
   private getRestPath(path: string): string {
     return `/admin/api/${Context.API_VERSION}/${path}.json`;
   }
+
+  private buildRequestParams(newPageUrl: string): GetRequestParams {
+    const url = new URL(newPageUrl);
+    const path = url.pathname.replace(/^\/admin\/api\/[^/]+\/(.*)\.json$/, '$1');
+    const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as Record<string, string | number>;
+    return {
+      path,
+      query,
+    };
+  }
 }
 
-export {
-  RestClient,
-  RestRequestReturn,
-};
+export {RestClient};

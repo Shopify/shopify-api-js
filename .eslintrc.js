@@ -1,23 +1,14 @@
 module.exports = {
-    "env": {
-        "browser": false,
-        "es2021": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint",
-        "eslint-plugin-tsdoc",
-    ],
-    "rules": {
-        "object-curly-spacing": ["error", "always"]
-    },
-    "ignorePatterns": ["dist/"]
+  env: {
+    browser: false,
+    es2021: true,
+  },
+  plugins: ['@shopify'],
+  extends: ['plugin:@shopify/typescript'],
+  ignorePatterns: ['dist/'],
+  rules: {
+    'import/no-named-as-default': 0,
+    'no-mixed-operators': 0,
+    'no-console': 0,
+  },
 };

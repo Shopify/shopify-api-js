@@ -1,6 +1,6 @@
 import * as ShopifyErrors from './error';
-import { Session, SessionStorage, MemorySessionStorage } from './auth/session';
-import { ApiVersion, ContextParams } from './types';
+import {Session, SessionStorage, MemorySessionStorage} from './auth/session';
+import {ApiVersion, ContextParams} from './types';
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;
@@ -66,7 +66,7 @@ const Context: ContextInterface = {
 
     if (missing.length) {
       throw new ShopifyErrors.ShopifyError(
-        `Cannot initialize Shopify App Dev Kit. Missing values for: ${missing.join(', ')}`
+        `Cannot initialize Shopify App Dev Kit. Missing values for: ${missing.join(', ')}`,
       );
     }
 
@@ -95,12 +95,12 @@ const Context: ContextInterface = {
   },
 
   throwIfUninitialized(): void {
-    if (!this.API_KEY || this.API_KEY.length == 0) {
+    if (!this.API_KEY || this.API_KEY.length === 0) {
       throw new ShopifyErrors.UninitializedContextError(
-        'Context has not been properly initialized. Please call the .initialize() method to setup your app context object.'
+        'Context has not been properly initialized. Please call the .initialize() method to setup your app context object.',
       );
     }
   },
 };
 
-export { Context, ContextInterface };
+export {Context, ContextInterface};

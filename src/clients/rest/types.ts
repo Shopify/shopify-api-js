@@ -1,8 +1,14 @@
-import { PageInfo } from './page_info';
-import { RequestReturn } from '../http_client';
+import {RequestReturn, GetRequestParams} from '../http_client/types';
 
-type RestRequestReturn = RequestReturn & {
-  pageInfo?: PageInfo,
+export interface PageInfo {
+  limit: string;
+  fields?: string[];
+  previousPageUrl?: string;
+  nextPageUrl?: string;
+  prevPage?: GetRequestParams;
+  nextPage?: GetRequestParams;
+}
+
+export type RestRequestReturn = RequestReturn & {
+  pageInfo?: PageInfo;
 };
-
-export { RestRequestReturn };

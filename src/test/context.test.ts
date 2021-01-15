@@ -1,12 +1,13 @@
 import './test_helper';
 
+import Cookies from 'cookies';
+
 import * as ShopifyErrors from '../error';
-import { Context } from '../context';
-import { ApiVersion, ContextParams } from '../types';
-import { CustomSessionStorage, Session } from '../auth/session';
+import {Context} from '../context';
+import {ApiVersion, ContextParams} from '../types';
+import {CustomSessionStorage, Session} from '../auth/session';
 
 jest.mock('cookies');
-import Cookies from 'cookies';
 
 const validParams: ContextParams = {
   API_KEY: 'api_key',
@@ -22,7 +23,7 @@ const originalWarn = console.warn;
 describe('Context object', () => {
   afterEach(() => {
     console.warn = originalWarn;
-    (Cookies as any).mockClear(); // eslint-disable-line @typescript-eslint/no-explicit-any
+    (Cookies as any).mockClear();
   });
 
   it('can initialize and update context', () => {
@@ -35,44 +36,44 @@ describe('Context object', () => {
   });
 
   it("can't initialize with empty values", () => {
-    let invalid: ContextParams = Object.assign({}, validParams);
+    let invalid: ContextParams = {...validParams};
     invalid.API_KEY = '';
     try {
       Context.initialize(invalid);
       fail('Initializing without API_KEY did not throw an exception');
-    } catch (e) {
-      expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(e.message).toContain('Missing values for: API_KEY');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain('Missing values for: API_KEY');
     }
 
-    invalid = Object.assign({}, validParams);
+    invalid = {...validParams};
     invalid.API_SECRET_KEY = '';
     try {
       Context.initialize(invalid);
       fail('Initializing without API_SECRET_KEY did not throw an exception');
-    } catch (e) {
-      expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(e.message).toContain('Missing values for: API_SECRET_KEY');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain('Missing values for: API_SECRET_KEY');
     }
 
-    invalid = Object.assign({}, validParams);
+    invalid = {...validParams};
     invalid.SCOPES = [];
     try {
       Context.initialize(invalid);
       fail('Initializing without SCOPES did not throw an exception');
-    } catch (e) {
-      expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(e.message).toContain('Missing values for: SCOPES');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain('Missing values for: SCOPES');
     }
 
-    invalid = Object.assign({}, validParams);
+    invalid = {...validParams};
     invalid.HOST_NAME = '';
     try {
       Context.initialize(invalid);
       fail('Initializing without HOST_NAME did not throw an exception');
-    } catch (e) {
-      expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(e.message).toContain('Missing values for: HOST_NAME');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain('Missing values for: HOST_NAME');
     }
 
     const empty: ContextParams = {
@@ -101,35 +102,35 @@ describe('Context object', () => {
     const sessionId = 'test_session';
     const session = new Session(sessionId);
 
-    let store_called = false;
-    let load_called = false;
-    let delete_called = false;
+    let storeCalled = false;
+    let loadCalled = false;
+    let deleteCalled = false;
     const storage = new CustomSessionStorage(
       () => {
-        store_called = true;
+        storeCalled = true;
         return true;
       },
       () => {
-        load_called = true;
+        loadCalled = true;
         return session;
       },
       () => {
-        delete_called = true;
+        deleteCalled = true;
         return true;
-      }
+      },
     );
 
-    const params = Object.assign({}, validParams);
+    const params = {...validParams};
     params.SESSION_STORAGE = storage;
     Context.initialize(params);
 
     await expect(Context.storeSession(session)).resolves.toEqual(true);
-    expect(store_called).toBe(true);
+    expect(storeCalled).toBe(true);
 
     await expect(Context.loadSession(sessionId)).resolves.toEqual(session);
-    expect(load_called).toBe(true);
+    expect(loadCalled).toBe(true);
 
     await expect(Context.deleteSession(sessionId)).resolves.toEqual(true);
-    expect(delete_called).toBe(true);
+    expect(deleteCalled).toBe(true);
   });
 });

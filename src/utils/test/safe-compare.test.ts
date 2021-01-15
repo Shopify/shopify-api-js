@@ -15,16 +15,21 @@ test('works on all appropriate data types (strings, arrays, objects)', () => {
   const string2 = 'string';
   const stringResult = safeCompare(string1, string2);
 
-  const array1 = [1, 2, 'fish'];
-  const array2 = [1, 2, 'fish'];
-  const arrayResult = safeCompare(array1, array2);
+  const numberArray1 = [1, 2];
+  const numberArray2 = [1, 2];
+  const numberArrayResult = safeCompare(numberArray1, numberArray2);
 
-  const obj1 = { key: 'val' };
-  const obj2 = { key: 'val' };
+  const stringArray1 = ['alice', 'bob', 'charlie'];
+  const stringArray2 = ['alice', 'bob', 'charlie'];
+  const stringArrayResult = safeCompare(stringArray1, stringArray2);
+
+  const obj1 = {key: 'val'};
+  const obj2 = {key: 'val'};
   const objResult = safeCompare(obj1, obj2);
 
   expect(stringResult).toBe(true);
-  expect(arrayResult).toBe(true);
+  expect(numberArrayResult).toBe(true);
+  expect(stringArrayResult).toBe(true);
   expect(objResult).toBe(true);
 });
 
@@ -37,8 +42,8 @@ test('appropriately returns false for mismatched values on all data types', () =
   const array2 = ['red fish', 'blue fish'];
   const arrayResult = safeCompare(array1, array2);
 
-  const obj1 = { thing: 'one' };
-  const obj2 = { thing: 'two' };
+  const obj1 = {thing: 'one'};
+  const obj2 = {thing: 'two'};
   const objResult = safeCompare(obj1, obj2);
 
   expect(stringResult).toBe(false);
