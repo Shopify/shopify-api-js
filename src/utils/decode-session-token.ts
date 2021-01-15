@@ -26,8 +26,8 @@ function decodeSessionToken(token: string): JwtPayload {
   let payload: JwtPayload;
   try {
     payload = jwt.verify(token, Context.API_SECRET_KEY, {algorithms: ['HS256']}) as JwtPayload;
-  } catch (e) {
-    throw new ShopifyErrors.InvalidJwtError(`Failed to parse session token '${token}': ${e.message}`);
+  } catch (error) {
+    throw new ShopifyErrors.InvalidJwtError(`Failed to parse session token '${token}': ${error.message}`);
   }
 
   // The exp and nbf fields are validated by the JWT library

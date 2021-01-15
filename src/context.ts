@@ -95,7 +95,7 @@ const Context: ContextInterface = {
   },
 
   throwIfUninitialized(): void {
-    if (!this.API_KEY || this.API_KEY.length == 0) {
+    if (!this.API_KEY || this.API_KEY.length === 0) {
       throw new ShopifyErrors.UninitializedContextError(
         'Context has not been properly initialized. Please call the .initialize() method to setup your app context object.',
       );

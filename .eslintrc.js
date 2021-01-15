@@ -9,5 +9,6 @@ module.exports = {
   rules: {
     'import/no-named-as-default': 0,
     'no-mixed-operators': 0,
+    'no-console': 0,
   },
 };

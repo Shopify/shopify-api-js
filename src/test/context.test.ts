@@ -23,7 +23,7 @@ const originalWarn = console.warn;
 describe('Context object', () => {
   afterEach(() => {
     console.warn = originalWarn;
-    (Cookies as any).mockClear(); // eslint-disable-line @typescript-eslint/no-explicit-any
+    (Cookies as any).mockClear();
   });
 
   it('can initialize and update context', () => {
@@ -41,9 +41,9 @@ describe('Context object', () => {
     try {
       Context.initialize(invalid);
       fail('Initializing without API_KEY did not throw an exception');
-    } catch (e) {
-      expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(e.message).toContain('Missing values for: API_KEY');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain('Missing values for: API_KEY');
     }
 
     invalid = {...validParams};
@@ -51,9 +51,9 @@ describe('Context object', () => {
     try {
       Context.initialize(invalid);
       fail('Initializing without API_SECRET_KEY did not throw an exception');
-    } catch (e) {
-      expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(e.message).toContain('Missing values for: API_SECRET_KEY');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain('Missing values for: API_SECRET_KEY');
     }
 
     invalid = {...validParams};
@@ -61,9 +61,9 @@ describe('Context object', () => {
     try {
       Context.initialize(invalid);
       fail('Initializing without SCOPES did not throw an exception');
-    } catch (e) {
-      expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(e.message).toContain('Missing values for: SCOPES');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain('Missing values for: SCOPES');
     }
 
     invalid = {...validParams};
@@ -71,9 +71,9 @@ describe('Context object', () => {
     try {
       Context.initialize(invalid);
       fail('Initializing without HOST_NAME did not throw an exception');
-    } catch (e) {
-      expect(e).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(e.message).toContain('Missing values for: HOST_NAME');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain('Missing values for: HOST_NAME');
     }
 
     const empty: ContextParams = {
