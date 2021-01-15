@@ -1,6 +1,6 @@
-import { Session } from '../auth/session/session';
-import { Context } from '../context';
-import OAuth from '../../src/auth/oauth';
+import {Session} from '../auth/session/session';
+import {Context} from '../context';
+import OAuth from '../auth/oauth';
 
 /**
  * Helper method for quickly loading offline sessions by shop url.

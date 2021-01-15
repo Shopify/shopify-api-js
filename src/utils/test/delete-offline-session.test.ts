@@ -1,9 +1,9 @@
 import '../../test/test_helper';
 
 import deleteOfflineSession from '../delete-offline-session';
-import Session from '../../auth/session/';
+import Session from '../../auth/session';
 import OAuth from '../../auth/oauth';
-import { Context } from '../../context';
+import {Context} from '../../context';
 import loadOfflineSession from '../load-offline-session';
 
 describe('deleteOfflineSession', () => {
