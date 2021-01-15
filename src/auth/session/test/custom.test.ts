@@ -5,7 +5,7 @@ import {CustomSessionStorage} from '../storage/custom';
 
 test('can use custom session storage', async () => {
   const sessionId = 'test_session';
-  const session = new Session(sessionId);
+  let session: Session | undefined = new Session(sessionId);
 
   let storeCalled = false;
   let loadCalled = false;
@@ -21,6 +21,7 @@ test('can use custom session storage', async () => {
     },
     () => {
       deleteCalled = true;
+      session = undefined;
       return true;
     },
   );
@@ -41,10 +42,11 @@ test('can use custom session storage', async () => {
 
   await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
   expect(deleteCalled).toBe(true);
-  expect(storage.loadSession(sessionId)).resolves.toBeNull();
+  deleteCalled = false;
+
+  await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
 
   // Deleting a non-existing session should work
-  deleteCalled = false;
   await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
   expect(deleteCalled).toBe(true);
 });
