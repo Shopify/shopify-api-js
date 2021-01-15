@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 export interface AuthQuery {
   code: string;
   timestamp: string;
@@ -25,6 +26,7 @@ export interface OnlineAccessInfo {
     collaborator: boolean;
   };
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export interface OnlineAccessResponse
   extends AccessTokenResponse,

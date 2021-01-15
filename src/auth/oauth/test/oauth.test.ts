@@ -20,7 +20,7 @@ let shop: string;
 
 beforeEach(() => {
   shop = 'someshop.myshopify.io';
-  (Cookies as any).mockClear(); // eslint-disable-line @typescript-eslint/no-explicit-any
+  (Cookies as any).mockClear();
 });
 
 describe('beginAuth', () => {
@@ -75,6 +75,7 @@ describe('beginAuth', () => {
   test('returns the correct auth url for given info', async () => {
     const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
     const session = await Context.loadSession(cookies.id);
+    /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES,
@@ -82,6 +83,7 @@ describe('beginAuth', () => {
       state: session ? session.state : '',
       'grant_options[]': '',
     };
+    /* eslint-enable @typescript-eslint/naming-convention */
 
     const expectedQueryString = querystring.stringify(query);
 
@@ -92,6 +94,7 @@ describe('beginAuth', () => {
     const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.loadSession(cookies.id);
 
+    /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES,
@@ -99,6 +102,7 @@ describe('beginAuth', () => {
       state: session ? session.state : '',
       'grant_options[]': 'per-user',
     };
+    /* eslint-enable @typescript-eslint/naming-convention */
     const expectedQueryString = querystring.stringify(query);
 
     expect(authRoute).toBe(`https://${shop}/admin/oauth/authorize?${expectedQueryString}`);
@@ -190,16 +194,18 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
+    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token string',
       scope: Context.SCOPES.join(','),
     };
+    /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     session = await Context.loadSession(cookies.id);
 
-    session ? expect(session.accessToken).toBe(successResponse.access_token) : false;
+    expect(session?.accessToken).toBe(successResponse.access_token);
   });
 
   test('requests access token for valid callbacks with online access and updates session with expiration and onlineAccessInfo', async () => {
@@ -214,6 +220,7 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
+    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token',
       scope: 'pet_kitties, walk_dogs',
@@ -236,16 +243,13 @@ describe('validateAuthCallback', () => {
       associated_user_scope: successResponse.associated_user_scope,
       associated_user: successResponse.associated_user,
     };
+    /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
-    if (session) {
-      expect(session.accessToken).toBe(successResponse.access_token);
-      expect(session.expires).toBeInstanceOf(Date);
-      expect(session.onlineAccesInfo).toEqual(expectedOnlineAccessInfo);
-    } else {
-      return false;
-    }
+    expect(session?.accessToken).toBe(successResponse.access_token);
+    expect(session?.expires).toBeInstanceOf(Date);
+    expect(session?.onlineAccesInfo).toEqual(expectedOnlineAccessInfo);
   });
 
   test('converts an OAuth session into a JWT one if it is online', async () => {
@@ -255,6 +259,7 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.loadSession(cookies.id);
 
+    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token',
       scope: 'pet_kitties, walk_dogs',
@@ -277,6 +282,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
+    /* eslint-enable @typescript-eslint/naming-convention */
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
@@ -290,7 +296,8 @@ describe('validateAuthCallback', () => {
 
     if (cookieSession?.expires) {
       const actualCookieExpiration: number = cookieSession.expires.getTime() / 1000;
-      expect(Math.abs(expectedCookieExpiration - actualCookieExpiration)).toBeLessThan(1); // 1-second grace period
+      // 1-second grace period
+      expect(Math.abs(expectedCookieExpiration - actualCookieExpiration)).toBeLessThan(1);
     }
 
     const jwtPayload: JwtPayload = {
@@ -310,7 +317,8 @@ describe('validateAuthCallback', () => {
     expect(actualJwtSession).not.toBeUndefined();
 
     const actualJwtExpiration = actualJwtSession?.expires ? actualJwtSession.expires.getTime() / 1000 : 0;
-    expect(Math.abs(actualJwtExpiration - jwtPayload.exp)).toBeLessThan(1); // 1-second grace period
+    // 1-second grace period
+    expect(Math.abs(actualJwtExpiration - jwtPayload.exp)).toBeLessThan(1);
 
     // Simulate a subsequent JWT request to see if the session is loaded as the current one
 

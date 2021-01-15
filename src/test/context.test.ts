@@ -102,20 +102,20 @@ describe('Context object', () => {
     const sessionId = 'test_session';
     const session = new Session(sessionId);
 
-    let store_called = false;
-    let load_called = false;
-    let delete_called = false;
+    let storeCalled = false;
+    let loadCalled = false;
+    let deleteCalled = false;
     const storage = new CustomSessionStorage(
       () => {
-        store_called = true;
+        storeCalled = true;
         return true;
       },
       () => {
-        load_called = true;
+        loadCalled = true;
         return session;
       },
       () => {
-        delete_called = true;
+        deleteCalled = true;
         return true;
       },
     );
@@ -125,12 +125,12 @@ describe('Context object', () => {
     Context.initialize(params);
 
     await expect(Context.storeSession(session)).resolves.toEqual(true);
-    expect(store_called).toBe(true);
+    expect(storeCalled).toBe(true);
 
     await expect(Context.loadSession(sessionId)).resolves.toEqual(session);
-    expect(load_called).toBe(true);
+    expect(loadCalled).toBe(true);
 
     await expect(Context.deleteSession(sessionId)).resolves.toEqual(true);
-    expect(delete_called).toBe(true);
+    expect(deleteCalled).toBe(true);
   });
 });
