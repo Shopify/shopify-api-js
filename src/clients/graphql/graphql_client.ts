@@ -1,3 +1,4 @@
+import {MissingRequiredArgument} from '../../error';
 import {Context} from '../../context';
 import {ShopifyHeader} from '../../base_types';
 import {HttpClient} from '../http_client/http_client';
@@ -13,6 +14,10 @@ export class GraphqlClient {
   }
 
   async query(params: GraphqlParams): Promise<RequestReturn> {
+    if (params.data.length === 0) {
+      throw new MissingRequiredArgument('Query missing.');
+    }
+
     params.extraHeaders = {[ShopifyHeader.AccessToken]: this.token, ...params.extraHeaders};
     const path = `/admin/api/${Context.API_VERSION}/graphql.json`;
 
