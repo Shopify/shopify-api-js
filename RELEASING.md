@@ -1,4 +1,4 @@
-## Releasing shopify_ts_api
+## Releasing shopify-node-api
 
 1. Check the Semantic Versioning page for info on how to version the new release: http://semver.org
 

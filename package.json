@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shopify/shopify_ts_api.git"
+    "url": "git+https://github.com/Shopify/shopify-node-api.git"
   },
   "bugs": {
-    "url": "https://github.com/Shopify/shopify_ts_api/issues"
+    "url": "https://github.com/Shopify/shopify-node-api/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify_ts_api",
+  "homepage": "https://github.com/Shopify/shopify-node-api",
   "author": "Shopify Inc.",
   "license": "MIT",
   "dependencies": {
