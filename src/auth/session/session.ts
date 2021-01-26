@@ -1,4 +1,4 @@
-import {OnlineAccessInfo} from '../types';
+import {OnlineAccessInfo} from '../oauth/types';
 
 /**
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.

@@ -1,5 +1,5 @@
 import * as ShopifyErrors from './error';
-import {Session, SessionStorage, MemorySessionStorage} from './auth/session';
+import {SessionStorage, MemorySessionStorage} from './auth/session';
 import {ApiVersion, ContextParams} from './types';
 
 interface ContextInterface extends ContextParams {
@@ -11,27 +11,6 @@ interface ContextInterface extends ContextParams {
    * @param params Settings to update
    */
   initialize(params: ContextParams): void;
-
-  /**
-   * Creates or updates the given session using the assigned strategy.
-   *
-   * @param session Session to store
-   */
-  storeSession(session: Session): Promise<boolean>;
-
-  /**
-   * Loads a session using the assigned strategy.
-   *
-   * @param id Id of the session to load
-   */
-  loadSession(id: string): Promise<Session | undefined>;
-
-  /**
-   * Deletes a session using the assigned strategy.
-   *
-   * @param id Id of the session to delete
-   */
-  deleteSession(id: string): Promise<boolean>;
 
   /**
    * Throws error if context has not been initialized.
@@ -80,18 +59,6 @@ const Context: ContextInterface = {
     if (params.SESSION_STORAGE) {
       this.SESSION_STORAGE = params.SESSION_STORAGE;
     }
-  },
-
-  async storeSession(session: Session): Promise<boolean> {
-    return this.SESSION_STORAGE.storeSession(session);
-  },
-
-  async loadSession(id: string): Promise<Session | undefined> {
-    return this.SESSION_STORAGE.loadSession(id);
-  },
-
-  async deleteSession(id: string): Promise<boolean> {
-    return this.SESSION_STORAGE.deleteSession(id);
   },
 
   throwIfUninitialized(): void {

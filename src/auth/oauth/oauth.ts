@@ -9,11 +9,12 @@ import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
 import validateShop from '../../utils/shop-validator';
 import safeCompare from '../../utils/safe-compare';
-import {AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo} from '../types';
 import {Session} from '../session';
 import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
 import * as ShopifyErrors from '../../error';
+
+import {AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo} from './types';
 
 const ShopifyOAuth = {
   SESSION_COOKIE_NAME: 'shopify_app_session',
@@ -50,7 +51,7 @@ const ShopifyOAuth = {
     session.state = state;
     session.isOnline = isOnline;
 
-    await Context.storeSession(session);
+    await Context.SESSION_STORAGE.storeSession(session);
 
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
       signed: true,
@@ -100,7 +101,7 @@ const ShopifyOAuth = {
 
     const sessionCookie = this.getCookieSessionId(request, response);
     if (sessionCookie) {
-      currentSession = await Context.loadSession(sessionCookie);
+      currentSession = await Context.SESSION_STORAGE.loadSession(sessionCookie);
     }
 
     if (!currentSession) {
@@ -155,7 +156,7 @@ const ShopifyOAuth = {
       const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
       const jwtSessionId = this.getJwtSessionId(currentSession.shop, `${onlineInfo.associated_user.id}`);
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
-      await Context.storeSession(jwtSession);
+      await Context.SESSION_STORAGE.storeSession(jwtSession);
 
       // Make sure the current OAuth session expires along with the cookie
       oauthSessionExpiration = new Date(Date.now() + 30000);
@@ -169,7 +170,7 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    await Context.storeSession(currentSession);
+    await Context.SESSION_STORAGE.storeSession(currentSession);
   },
 
   /**

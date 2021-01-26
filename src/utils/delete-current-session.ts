@@ -30,7 +30,7 @@ export default async function deleteCurrentSession(
 
       const jwtPayload = decodeSessionToken(matches[1]);
       const jwtSessionId = ShopifyOAuth.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);
-      await Context.deleteSession(jwtSessionId);
+      await Context.SESSION_STORAGE.deleteSession(jwtSessionId);
       return true;
     } else {
       throw new ShopifyErrors.MissingJwtTokenError('Missing authorization header');
@@ -44,7 +44,7 @@ export default async function deleteCurrentSession(
     const sessionCookie: string | undefined = cookies.get(ShopifyOAuth.SESSION_COOKIE_NAME, {signed: true});
 
     if (sessionCookie) {
-      await Context.deleteSession(sessionCookie);
+      await Context.SESSION_STORAGE.deleteSession(sessionCookie);
       cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME);
       return true;
     } else {

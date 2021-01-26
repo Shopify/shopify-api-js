@@ -41,7 +41,7 @@ describe('withSession', () => {
     session.isOnline = false;
     session.shop = shop;
     session.accessToken = 'gimme-access';
-    await Context.storeSession(session);
+    await Context.SESSION_STORAGE.storeSession(session);
 
     await expect(withSession({clientType: 'blah' as any, isOnline: false, shop})).rejects.toThrow(
       ShopifyErrors.UnsupportedClientType,
@@ -65,7 +65,7 @@ describe('withSession', () => {
     const session = new Session(offlineId);
     session.isOnline = false;
     session.shop = shop;
-    await Context.storeSession(session);
+    await Context.SESSION_STORAGE.storeSession(session);
 
     await expect(withSession({clientType: 'rest', isOnline: false, shop})).rejects.toThrow(
       ShopifyErrors.InvalidSession,
@@ -78,7 +78,7 @@ describe('withSession', () => {
     session.isOnline = false;
     session.shop = shop;
     session.accessToken = 'gimme-access';
-    await Context.storeSession(session);
+    await Context.SESSION_STORAGE.storeSession(session);
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',
@@ -109,7 +109,7 @@ describe('withSession', () => {
     session.isOnline = true;
     session.shop = shop;
     session.accessToken = 'gimme-access';
-    await Context.storeSession(session);
+    await Context.SESSION_STORAGE.storeSession(session);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -149,7 +149,7 @@ describe('withSession', () => {
     session.isOnline = true;
     session.shop = shop;
     session.accessToken = 'gimme-access';
-    await Context.storeSession(session);
+    await Context.SESSION_STORAGE.storeSession(session);
 
     const jwtPayload = {
       iss: `https://${shop}`,

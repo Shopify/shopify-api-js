@@ -11,5 +11,5 @@ export default async function deleteOfflineSession(shop: string): Promise<boolea
 
   const sessionId = OAuth.getOfflineSessionId(shop);
 
-  return Context.deleteSession(sessionId);
+  return Context.SESSION_STORAGE.deleteSession(sessionId);
 }

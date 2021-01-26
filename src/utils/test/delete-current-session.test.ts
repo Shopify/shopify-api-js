@@ -40,7 +40,7 @@ describe('deleteCurrenSession', () => {
     const cookieId = '1234-this-is-a-cookie-session-id';
 
     const session = new Session(cookieId);
-    await expect(Context.storeSession(session)).resolves.toEqual(true);
+    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -61,7 +61,7 @@ describe('deleteCurrenSession', () => {
     const res = {} as http.ServerResponse;
 
     const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`);
-    await expect(Context.storeSession(session)).resolves.toEqual(true);
+    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
 
     await expect(deleteCurrentSession(req, res)).resolves.toBe(true);
     await expect(loadCurrentSession(req, res)).resolves.toBe(undefined);

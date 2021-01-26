@@ -29,5 +29,5 @@ export enum ShopifyHeader {
   Domain = 'X-Shopify-Shop-Domain',
 }
 
-export * from './auth/types';
+export * from './auth/oauth/types';
 export * from './clients/types';

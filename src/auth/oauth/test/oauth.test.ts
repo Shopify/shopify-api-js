@@ -9,7 +9,7 @@ import Cookies from 'cookies';
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
 import * as ShopifyErrors from '../../../error';
-import {AuthQuery} from '../../types';
+import {AuthQuery} from '../types';
 import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
@@ -54,7 +54,7 @@ describe('beginAuth', () => {
 
   test('creates and stores a new session for the specified shop', async () => {
     const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
-    const session = await Context.loadSession(cookies.id);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     expect(Cookies).toHaveBeenCalledTimes(1);
     expect(Cookies.prototype.set).toHaveBeenCalledTimes(1);
@@ -74,7 +74,7 @@ describe('beginAuth', () => {
 
   test('returns the correct auth url for given info', async () => {
     const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
-    const session = await Context.loadSession(cookies.id);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
@@ -92,7 +92,7 @@ describe('beginAuth', () => {
 
   test('appends per_user access mode to url when isOnline is set to true', async () => {
     const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    const session = await Context.loadSession(cookies.id);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
@@ -134,7 +134,7 @@ describe('validateAuthCallback', () => {
 
   test('throws Context error when not properly initialized', async () => {
     Context.API_KEY = '';
-    const session = await Context.loadSession(cookies.id);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
       shop,
       state: session ? session.state : '',
@@ -159,7 +159,7 @@ describe('validateAuthCallback', () => {
   test('throws an error when receiving a callback for a shop with no saved session', async () => {
     await ShopifyOAuth.beginAuth(req, res, 'invalidurl.com', '/some-callback');
 
-    Context.deleteSession(cookies.id);
+    await Context.SESSION_STORAGE.deleteSession(cookies.id);
 
     await expect(() =>
       ShopifyOAuth.validateAuthCallback(req, res, {
@@ -184,7 +184,7 @@ describe('validateAuthCallback', () => {
 
   test('requests access token for valid callbacks with offline access and updates session', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
-    let session = await Context.loadSession(cookies.id);
+    let session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
       shop,
       state: session ? session.state : '',
@@ -203,14 +203,14 @@ describe('validateAuthCallback', () => {
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
-    session = await Context.loadSession(cookies.id);
+    session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     expect(session?.accessToken).toBe(successResponse.access_token);
   });
 
   test('requests access token for valid callbacks with online access and updates session with expiration and onlineAccessInfo', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    const session = await Context.loadSession(cookies.id);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
       shop,
       state: session ? session.state : '',
@@ -257,7 +257,7 @@ describe('validateAuthCallback', () => {
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    const session = await Context.loadSession(cookies.id);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -291,7 +291,7 @@ describe('validateAuthCallback', () => {
 
     let expectedCookieExpiration = Date.now() / 1000;
     expectedCookieExpiration += 30;
-    const cookieSession = await Context.loadSession(cookies.id);
+    const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
 
     if (cookieSession?.expires) {
@@ -313,7 +313,7 @@ describe('validateAuthCallback', () => {
     };
 
     const jwtSessionId = `${shop}_${jwtPayload.sub}`;
-    const actualJwtSession = await Context.loadSession(jwtSessionId);
+    const actualJwtSession = await Context.SESSION_STORAGE.loadSession(jwtSessionId);
     expect(actualJwtSession).not.toBeUndefined();
 
     const actualJwtExpiration = actualJwtSession?.expires ? actualJwtSession.expires.getTime() / 1000 : 0;

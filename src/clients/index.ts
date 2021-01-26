@@ -1,5 +1,5 @@
-import * as Rest from './rest';
-import * as Graphql from './graphql';
+import {RestClient as Rest} from './rest';
+import {GraphqlClient as Graphql} from './graphql';
 
 const ShopifyClients = {
   Rest,
