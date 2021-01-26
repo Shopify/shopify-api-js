@@ -20,8 +20,7 @@ export type WebhookHandlerFunction = (
 ) => void;
 
 export interface RegisterOptions {
-
-  /** See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics */
+  // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
   topic: string;
   path: string;
   shop: string;
@@ -52,6 +51,21 @@ export interface ProcessReturn {
   headers: Record<string, string>;
 }
 
+interface WebhookCheckResponseNode {
+  node: {
+    id: string;
+    callbackUrl: string;
+  };
+}
+
+interface WebhookCheckResponse {
+  data: {
+    webhookSubscriptions: {
+      edges: WebhookCheckResponseNode[];
+    };
+  };
+}
+
 interface RegistryInterface {
   webhookRegistry: WebhookRegistryEntry[];
 
@@ -77,46 +91,83 @@ interface RegistryInterface {
   isWebhookPath(path: string): boolean;
 }
 
-function isSuccess(result: any, deliveryMethod: DeliveryMethod): boolean {
+function isSuccess(result: any, deliveryMethod: DeliveryMethod, webhookId?: string): boolean {
   switch (deliveryMethod) {
     case DeliveryMethod.Http:
-      return Boolean(
-        result.data &&
-          result.data.webhookSubscriptionCreate &&
-          result.data.webhookSubscriptionCreate.webhookSubscription,
-      );
+      if (webhookId) {
+        return Boolean(
+          result.data &&
+            result.data.webhookSubscriptionUpdate &&
+            result.data.webhookSubscriptionUpdate.webhookSubscription,
+        );
+      } else {
+        return Boolean(
+          result.data &&
+            result.data.webhookSubscriptionCreate &&
+            result.data.webhookSubscriptionCreate.webhookSubscription,
+        );
+      }
     case DeliveryMethod.EventBridge:
-      return Boolean(
-        result.data &&
-          result.data.eventBridgeWebhookSubscriptionCreate &&
-          result.data.eventBridgeWebhookSubscriptionCreate.webhookSubscription,
-      );
+      if (webhookId) {
+        return Boolean(
+          result.data &&
+            result.data.eventBridgeWebhookSubscriptionUpdate &&
+            result.data.eventBridgeWebhookSubscriptionUpdate.webhookSubscription,
+        );
+      } else {
+        return Boolean(
+          result.data &&
+            result.data.eventBridgeWebhookSubscriptionCreate &&
+            result.data.eventBridgeWebhookSubscriptionCreate.webhookSubscription,
+        );
+      }
     default:
       return false;
   }
 }
 
+function buildCheckQuery(topic: string): string {
+  return `{
+    webhookSubscriptions(first: 1, topics: ${topic}) {
+      edges {
+        node {
+          id
+          callbackUrl
+        }
+      }
+    }
+  }`;
+}
+
 function buildQuery(
   topic: string,
-  path: string,
+  address: string,
   deliveryMethod: DeliveryMethod,
+  webhookId?: string,
 ): string {
-  const address = `https://${Context.HOST_NAME}${path}`;
+  let identifier: string;
+  if (webhookId) {
+    identifier = `id: "${webhookId}"`;
+  } else {
+    identifier = `topic: ${topic}`;
+  }
+
   let mutationName: string;
   let webhookSubscriptionArgs: string;
   switch (deliveryMethod) {
     case DeliveryMethod.Http:
-      mutationName = 'webhookSubscriptionCreate';
+      mutationName = webhookId ? 'webhookSubscriptionUpdate' : 'webhookSubscriptionCreate';
       webhookSubscriptionArgs = `{callbackUrl: "${address}"}`;
       break;
     case DeliveryMethod.EventBridge:
-      mutationName = 'eventBridgeWebhookSubscriptionCreate';
+      mutationName = webhookId ? 'eventBridgeWebhookSubscriptionUpdate' : 'eventBridgeWebhookSubscriptionCreate';
       webhookSubscriptionArgs = `{arn: "${address}"}`;
       break;
   }
+
   return `
-    mutation webhookSubscriptionCreate {
-      ${mutationName}(topic: ${topic}, webhookSubscription: ${webhookSubscriptionArgs}) {
+    mutation webhookSubscription {
+      ${mutationName}(${identifier}, webhookSubscription: ${webhookSubscriptionArgs}) {
         userErrors {
           field
           message
@@ -141,15 +192,43 @@ const WebhooksRegistry: RegistryInterface = {
     webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
     const client = new GraphqlClient(shop, accessToken);
-    const result = await client.query({
-      data: buildQuery(topic, path, deliveryMethod),
-    });
+    const address = `https://${Context.HOST_NAME}${path}`;
 
-    const success = isSuccess(result.body, deliveryMethod);
+    const checkResult = await client.query({
+      data: buildCheckQuery(topic),
+    });
+    const checkBody = checkResult.body as WebhookCheckResponse;
+
+    let webhookId: string | undefined;
+    let mustRegister = true;
+    if (checkBody.data.webhookSubscriptions.edges.length) {
+      webhookId = checkBody.data.webhookSubscriptions.edges[0].node.id;
+      if (checkBody.data.webhookSubscriptions.edges[0].node.callbackUrl === address) {
+        mustRegister = false;
+      }
+    }
+
+    let success: boolean;
+    let body: unknown;
+    if (mustRegister) {
+      const result = await client.query({
+        data: buildQuery(topic, address, deliveryMethod, webhookId),
+      });
+
+      success = isSuccess(result.body, deliveryMethod, webhookId);
+      body = result.body;
+    } else {
+      success = true;
+      body = {};
+    }
+
     if (success) {
+      // Remove this topic from the registry if it is already there
+      this.webhookRegistry = this.webhookRegistry.filter((item) => item.topic !== topic);
       this.webhookRegistry.push({path, topic, webhookHandler});
     }
-    return {success, result: result.body};
+
+    return {success, result: body};
   },
 
   process({headers, body}: ProcessOptions): ProcessReturn {
