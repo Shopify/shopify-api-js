@@ -1,9 +1,9 @@
 import '../../test/test_helper';
 
+import {Context} from '../../context';
 import deleteOfflineSession from '../delete-offline-session';
 import {Session} from '../../auth/session';
 import OAuth from '../../auth/oauth';
-import {Context} from '../../context';
 import loadOfflineSession from '../load-offline-session';
 
 describe('deleteOfflineSession', () => {
@@ -12,7 +12,7 @@ describe('deleteOfflineSession', () => {
 
   beforeEach(() => {
     const offlineSession = new Session(offlineId);
-    Context.storeSession(offlineSession);
+    Context.SESSION_STORAGE.storeSession(offlineSession);
   });
 
   it('deletes offline sessions by shop', async () => {

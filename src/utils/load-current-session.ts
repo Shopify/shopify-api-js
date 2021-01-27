@@ -31,7 +31,7 @@ export default async function loadCurrentSession(
 
       const jwtPayload = decodeSessionToken(matches[1]);
       const jwtSessionId = ShopifyOAuth.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);
-      session = await Context.loadSession(jwtSessionId);
+      session = await Context.SESSION_STORAGE.loadSession(jwtSessionId);
     }
   }
 
@@ -40,7 +40,7 @@ export default async function loadCurrentSession(
   if (!session) {
     const sessionCookie = ShopifyOAuth.getCookieSessionId(request, response);
     if (sessionCookie) {
-      session = await Context.loadSession(sessionCookie);
+      session = await Context.SESSION_STORAGE.loadSession(sessionCookie);
     }
   }
 

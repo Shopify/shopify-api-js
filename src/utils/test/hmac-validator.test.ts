@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
 import validateHmac from '../hmac-validator';
-import {AuthQuery} from '../../auth/types';
+import {AuthQuery} from '../../auth/oauth/types';
 import * as ShopifyErrors from '../../error';
 import {Context} from '../../context';
 
