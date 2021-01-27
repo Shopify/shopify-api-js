@@ -13,12 +13,14 @@ This method accepts a `withSessionParams` object as its argument, which accepts 
 - If `isOnline` is
   `false`, you must pass in the `shop` option to request that shops **offline** `Session` information.
 
+_Note: The following are specific examples of GraphQL/online session, and REST/offline session, but any combination is valid._
+
 To use this method to create a GraphQL client with the current online session, you can run the following code inside any
 authenticated route where you can access the `request` and `response` objects:
 
 ```ts
-// create a `withSessionParams` object with the necessary information to pass to `withSession`
-const clientWithSessionParams: withSessionParams = {
+// create a `WithSessionParams` object with the necessary information to pass to `withSession`
+const clientWithSessionParams: WithSessionParams = {
   clientType: 'graphql',
   isOnline: true,
   req: request,
@@ -44,7 +46,7 @@ You can also use this method to create a REST client with an offline session, in
 the shop you would like to access:
 
 ```ts
-const clientWithSessionParams: withSessionParams = {
+const clientWithSessionParams: WithSessionParams = {
   clientType: 'rest',
   isOnline: false,
   shop: SOME_SHOP_URL,
@@ -56,7 +58,3 @@ const products = await client.get({path: 'products'});
 
 const currentSessionScope = session.scope;
 ```
-
-_Important Note: You can create any combination of REST or GraphQL clients with either an online or offline session,_
-_these are just two example combinations. You could also create REST for an online session, or GraphQL for an offline_
-_session_
