@@ -9,6 +9,7 @@ import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
 import validateShop from '../../utils/shop-validator';
 import safeCompare from '../../utils/safe-compare';
+import decodeSessionToken from '../../utils/decode-session-token';
 import {Session} from '../session';
 import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
@@ -204,6 +205,37 @@ const ShopifyOAuth = {
    */
   getOfflineSessionId(shop: string): string {
     return `offline_${shop}`;
+  },
+
+  /**
+   * Extracts the current session id from the request / response pair.
+   *
+   * @param request HTTP request object
+   * @param response HTTP response object
+   */
+  getCurrentSessionId(request: http.IncomingMessage, response: http.ServerResponse): string | undefined {
+    let currentSessionId: string | undefined;
+
+    if (Context.IS_EMBEDDED_APP) {
+      const authHeader = request.headers.authorization;
+      if (authHeader) {
+        const matches = authHeader.match(/^Bearer (.+)$/);
+        if (!matches) {
+          throw new ShopifyErrors.MissingJwtTokenError('Missing Bearer token in authorization header');
+        }
+
+        const jwtPayload = decodeSessionToken(matches[1]);
+        currentSessionId = this.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);
+      }
+    }
+
+    // We fall back to the cookie session to allow apps to load their skeleton page after OAuth, so they can set up App
+    // Bridge and get a new JWT.
+    if (!currentSessionId) {
+      currentSessionId = this.getCookieSessionId(request, response);
+    }
+
+    return currentSessionId;
   },
 };
 

@@ -79,22 +79,16 @@ describe('deleteCurrenSession', () => {
     await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
   });
 
-  it('throws an error when authorization header is missing or not a bearer token', async () => {
+  it('throws an error when authorization header is not a bearer token', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    let req = {
-      headers: {},
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
-
-    await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
-
-    req = {
+    const req = {
       headers: {
         authorization: "What's a bearer token?",
       },
     } as http.IncomingMessage;
+    const res = {} as http.ServerResponse;
 
     await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
   });
