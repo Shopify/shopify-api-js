@@ -1,12 +1,8 @@
 import http from 'http';
 
-import Cookies from 'cookies';
-
 import {Context} from '../context';
-import * as ShopifyErrors from '../error';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
-
-import decodeSessionToken from './decode-session-token';
+import * as ShopifyErrors from '../error';
 
 /**
  * Finds and deletes the current user's session, based on the given request and response
@@ -15,40 +11,15 @@ import decodeSessionToken from './decode-session-token';
  * @param res Current HTTP response
  */
 export default async function deleteCurrentSession(
-  req: http.IncomingMessage,
-  res: http.ServerResponse,
+  request: http.IncomingMessage,
+  response: http.ServerResponse,
 ): Promise<boolean | never> {
   Context.throwIfUninitialized();
 
-  if (Context.IS_EMBEDDED_APP) {
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-      const matches = authHeader.match(/^Bearer (.+)$/);
-      if (!matches) {
-        throw new ShopifyErrors.MissingJwtTokenError('Missing Bearer token in authorization header');
-      }
-
-      const jwtPayload = decodeSessionToken(matches[1]);
-      const jwtSessionId = ShopifyOAuth.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);
-      await Context.SESSION_STORAGE.deleteSession(jwtSessionId);
-      return true;
-    } else {
-      throw new ShopifyErrors.MissingJwtTokenError('Missing authorization header');
-    }
-  } else {
-    const cookies = new Cookies(req, res, {
-      secure: true,
-      keys: [Context.API_SECRET_KEY],
-    });
-
-    const sessionCookie: string | undefined = cookies.get(ShopifyOAuth.SESSION_COOKIE_NAME, {signed: true});
-
-    if (sessionCookie) {
-      await Context.SESSION_STORAGE.deleteSession(sessionCookie);
-      cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME);
-      return true;
-    } else {
-      throw new ShopifyErrors.SessionNotFound('No active cookie session found.');
-    }
+  const sessionId = ShopifyOAuth.getCurrentSessionId(request, response);
+  if (!sessionId) {
+    throw new ShopifyErrors.SessionNotFound('No active session found.');
   }
+
+  return Context.SESSION_STORAGE.deleteSession(sessionId);
 }

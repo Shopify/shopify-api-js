@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
 
 import {Session} from '../../auth/session';
-import OAuth from '../../auth/oauth';
+import OAuth, {ShopifyOAuth} from '../../auth/oauth';
 import withSession from '../with-session';
 import {Context} from '../../context';
 import {RestWithSession, GraphqlWithSession} from '../types';
@@ -118,23 +118,23 @@ describe('withSession', () => {
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
-    const restRequestCtx = (await withSession({
+    const restRequestCtx = await withSession({
       clientType: 'rest',
       isOnline: true,
       req,
       res,
-    })) as RestWithSession;
-
-    const gqlRequestCtx = (await withSession({
-      clientType: 'graphql',
-      isOnline: true,
-      req,
-      res,
-    })) as GraphqlWithSession;
+    }) as RestWithSession;
 
     expect(restRequestCtx).toBeDefined();
     expect(restRequestCtx.session.shop).toBe(shop);
     expect(restRequestCtx.client).toBeInstanceOf(RestClient);
+
+    const gqlRequestCtx = await withSession({
+      clientType: 'graphql',
+      isOnline: true,
+      req,
+      res,
+    }) as GraphqlWithSession;
 
     expect(gqlRequestCtx).toBeDefined();
     expect(gqlRequestCtx.session.shop).toBe(shop);
@@ -145,7 +145,9 @@ describe('withSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const session = new Session(`12345`);
+    const sub = '1';
+    const sessionId = ShopifyOAuth.getJwtSessionId(shop, sub);
+    const session = new Session(sessionId);
     session.isOnline = true;
     session.shop = shop;
     session.accessToken = 'gimme-access';
@@ -155,7 +157,7 @@ describe('withSession', () => {
       iss: `https://${shop}`,
       dest: `https://${shop}`,
       aud: Context.API_KEY,
-      sub: '1',
+      sub,
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
       iat: 1234,
@@ -171,23 +173,23 @@ describe('withSession', () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    const restRequestCtx = (await withSession({
+    const restRequestCtx = await withSession({
       clientType: 'rest',
       isOnline: true,
       req,
       res,
-    })) as RestWithSession;
-
-    const gqlRequestCtx = (await withSession({
-      clientType: 'graphql',
-      isOnline: true,
-      req,
-      res,
-    })) as GraphqlWithSession;
+    }) as RestWithSession;
 
     expect(restRequestCtx).toBeDefined();
     expect(restRequestCtx.session.shop).toBe(shop);
     expect(restRequestCtx.client).toBeInstanceOf(RestClient);
+
+    const gqlRequestCtx = await withSession({
+      clientType: 'graphql',
+      isOnline: true,
+      req,
+      res,
+    }) as GraphqlWithSession;
 
     expect(gqlRequestCtx).toBeDefined();
     expect(gqlRequestCtx.session.shop).toBe(shop);
