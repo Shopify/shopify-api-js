@@ -52,32 +52,34 @@ const ShopifyOAuth = {
     session.state = state;
     session.isOnline = isOnline;
 
-    if (await Context.SESSION_STORAGE.storeSession(session)) {
-      cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
-        signed: true,
-        expires: new Date(Date.now() + 60000),
-        sameSite: 'none',
-        secure: true,
-      });
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(session);
 
-      /* eslint-disable @typescript-eslint/naming-convention */
-      const query = {
-        client_id: Context.API_KEY,
-        scope: Context.SCOPES.join(', '),
-        redirect_uri: `https://${Context.HOST_NAME}${redirectPath}`,
-        state,
-        'grant_options[]': isOnline ? 'per-user' : '',
-      };
-      /* eslint-enable @typescript-eslint/naming-convention */
-
-      const queryString = querystring.stringify(query);
-
-      return `https://${shop}/admin/oauth/authorize?${queryString}`;
-    } else {
+    if (!sessionStored) {
       throw new ShopifyErrors.SessionStorageError(
         'OAuth Session could not be saved. Please check your session storage functionality.',
       );
     }
+
+    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
+      signed: true,
+      expires: new Date(Date.now() + 60000),
+      sameSite: 'none',
+      secure: true,
+    });
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const query = {
+      client_id: Context.API_KEY,
+      scope: Context.SCOPES.join(', '),
+      redirect_uri: `https://${Context.HOST_NAME}${redirectPath}`,
+      state,
+      'grant_options[]': isOnline ? 'per-user' : '',
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    const queryString = querystring.stringify(query);
+
+    return `https://${shop}/admin/oauth/authorize?${queryString}`;
   },
 
   /**
@@ -175,7 +177,9 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    if (!await Context.SESSION_STORAGE.storeSession(currentSession)) {
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(currentSession);
+
+    if (!sessionStored) {
       throw new ShopifyErrors.SessionStorageError(
         'OAuth Session could not be saved. Please check your session storage functionality.',
       );
