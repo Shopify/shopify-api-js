@@ -52,28 +52,32 @@ const ShopifyOAuth = {
     session.state = state;
     session.isOnline = isOnline;
 
-    await Context.SESSION_STORAGE.storeSession(session);
+    if (await Context.SESSION_STORAGE.storeSession(session)) {
+      cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
+        signed: true,
+        expires: new Date(Date.now() + 60000),
+        sameSite: 'none',
+        secure: true,
+      });
 
-    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
-      signed: true,
-      expires: new Date(Date.now() + 60000),
-      sameSite: 'none',
-      secure: true,
-    });
+      /* eslint-disable @typescript-eslint/naming-convention */
+      const query = {
+        client_id: Context.API_KEY,
+        scope: Context.SCOPES.join(', '),
+        redirect_uri: `https://${Context.HOST_NAME}${redirectPath}`,
+        state,
+        'grant_options[]': isOnline ? 'per-user' : '',
+      };
+      /* eslint-enable @typescript-eslint/naming-convention */
 
-    /* eslint-disable @typescript-eslint/naming-convention */
-    const query = {
-      client_id: Context.API_KEY,
-      scope: Context.SCOPES.join(', '),
-      redirect_uri: `https://${Context.HOST_NAME}${redirectPath}`,
-      state,
-      'grant_options[]': isOnline ? 'per-user' : '',
-    };
-    /* eslint-enable @typescript-eslint/naming-convention */
+      const queryString = querystring.stringify(query);
 
-    const queryString = querystring.stringify(query);
-
-    return `https://${shop}/admin/oauth/authorize?${queryString}`;
+      return `https://${shop}/admin/oauth/authorize?${queryString}`;
+    } else {
+      throw new ShopifyErrors.SessionStorageError(
+        'OAuth Session could not be saved. Please check your session storage functionality.',
+      );
+    }
   },
 
   /**
@@ -171,7 +175,11 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    await Context.SESSION_STORAGE.storeSession(currentSession);
+    if (!await Context.SESSION_STORAGE.storeSession(currentSession)) {
+      throw new ShopifyErrors.SessionStorageError(
+        'OAuth Session could not be saved. Please check your session storage functionality.',
+      );
+    }
   },
 
   /**

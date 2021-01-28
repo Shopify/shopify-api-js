@@ -33,6 +33,7 @@ class SessionNotFound extends ShopifyError {}
 class InvalidSession extends ShopifyError {}
 
 class InvalidWebhookError extends ShopifyError {}
+class SessionStorageError extends ShopifyError {}
 
 class MissingRequiredArgument extends ShopifyError {}
 class UnsupportedClientType extends ShopifyError {}
@@ -57,4 +58,5 @@ export {
   InvalidWebhookError,
   MissingRequiredArgument,
   UnsupportedClientType,
+  SessionStorageError,
 };

@@ -2,6 +2,7 @@ import '../../../test/test_helper';
 
 import {Session} from '../session';
 import {CustomSessionStorage} from '../storage/custom';
+import {SessionStorageError} from '../../../error';
 
 test('can use custom session storage', async () => {
   const sessionId = 'test_session';
@@ -77,7 +78,15 @@ test('custom session storage failures and exceptions are raised', async () => {
     },
   );
 
-  await expect(storage.storeSession(session)).rejects.toEqual(Error('Failed to store!'));
-  await expect(storage.loadSession(sessionId)).rejects.toEqual(Error('Failed to load!'));
-  await expect(storage.deleteSession(sessionId)).rejects.toEqual(Error('Failed to delete!'));
+  await expect(storage.storeSession(session)).rejects.toThrow(SessionStorageError);
+  await expect(storage.loadSession(sessionId)).rejects.toThrow(SessionStorageError);
+  await expect(storage.deleteSession(sessionId)).rejects.toThrow(SessionStorageError);
+
+  storage = new CustomSessionStorage(
+    () => true,
+    () => 'this is not a Session' as any,
+    () => true,
+  );
+
+  await expect(storage.loadSession(sessionId)).rejects.toThrow(SessionStorageError);
 });
