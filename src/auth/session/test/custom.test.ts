@@ -52,7 +52,7 @@ test('can use custom session storage', async () => {
   expect(deleteCalled).toBe(true);
 });
 
-test('custom session storage failures and exceptions are raised', async () => {
+test('custom session storage failures and exceptions are raised', () => {
   const sessionId = 'test_session';
   const session = new Session(sessionId);
 
@@ -62,9 +62,9 @@ test('custom session storage failures and exceptions are raised', async () => {
     () => false,
   );
 
-  await expect(storage.storeSession(session)).resolves.toBe(false);
-  await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
-  await expect(storage.deleteSession(sessionId)).resolves.toBe(false);
+  expect(storage.storeSession(session)).resolves.toBe(false);
+  expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
+  expect(storage.deleteSession(sessionId)).resolves.toBe(false);
 
   storage = new CustomSessionStorage(
     () => {
@@ -78,14 +78,17 @@ test('custom session storage failures and exceptions are raised', async () => {
     },
   );
 
-  await expect(storage.storeSession(session)).rejects.toThrow(SessionStorageError);
-  await expect(storage.storeSession(session)).rejects.toThrow(/Error: Failed to store!/);
+  const expectedStore = expect(storage.storeSession(session)).rejects;
+  expectedStore.toThrow(SessionStorageError);
+  expectedStore.toThrow(/Error: Failed to store!/);
 
-  await expect(storage.loadSession(sessionId)).rejects.toThrow(SessionStorageError);
-  await expect(storage.loadSession(sessionId)).rejects.toThrow(/Error: Failed to load!/);
+  const expectedLoad = expect(storage.loadSession(sessionId)).rejects;
+  expectedLoad.toThrow(SessionStorageError);
+  expectedLoad.toThrow(/Error: Failed to load!/);
 
-  await expect(storage.deleteSession(sessionId)).rejects.toThrow(SessionStorageError);
-  await expect(storage.deleteSession(sessionId)).rejects.toThrow(/Error: Failed to delete!/);
+  const expectedDelete = expect(storage.deleteSession(sessionId)).rejects;
+  expectedDelete.toThrow(SessionStorageError);
+  expectedDelete.toThrow(/Error: Failed to delete!/);
 
   storage = new CustomSessionStorage(
     () => true,
@@ -93,5 +96,5 @@ test('custom session storage failures and exceptions are raised', async () => {
     () => true,
   );
 
-  await expect(storage.loadSession(sessionId)).rejects.toThrow(SessionStorageError);
+  expect(storage.loadSession(sessionId)).rejects.toThrow(SessionStorageError);
 });
