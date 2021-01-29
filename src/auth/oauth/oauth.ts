@@ -52,7 +52,13 @@ const ShopifyOAuth = {
     session.state = state;
     session.isOnline = isOnline;
 
-    await Context.SESSION_STORAGE.storeSession(session);
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(session);
+
+    if (!sessionStored) {
+      throw new ShopifyErrors.SessionStorageError(
+        'OAuth Session could not be saved. Please check your session storage functionality.',
+      );
+    }
 
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
       signed: true,
@@ -171,7 +177,13 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    await Context.SESSION_STORAGE.storeSession(currentSession);
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(currentSession);
+
+    if (!sessionStored) {
+      throw new ShopifyErrors.SessionStorageError(
+        'OAuth Session could not be saved. Please check your session storage functionality.',
+      );
+    }
   },
 
   /**

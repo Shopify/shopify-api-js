@@ -13,6 +13,7 @@ import {AuthQuery} from '../types';
 import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
+import {CustomSessionStorage, Session} from '../../session';
 
 jest.mock('cookies');
 
@@ -47,8 +48,21 @@ describe('beginAuth', () => {
   test('throws Context error when not properly initialized', async () => {
     Context.API_KEY = '';
 
-    await expect(() => ShopifyOAuth.beginAuth(req, res, shop, '/some-callback')).rejects.toBeInstanceOf(
+    await expect(ShopifyOAuth.beginAuth(req, res, shop, '/some-callback')).rejects.toThrow(
       ShopifyErrors.UninitializedContextError,
+    );
+  });
+
+  test('throws SessionStorageErrors when storeSession returns false', async () => {
+    const storage = new CustomSessionStorage(
+      () => false,
+      () => new Session(shop),
+      () => true,
+    );
+    Context.SESSION_STORAGE = storage;
+
+    await expect(ShopifyOAuth.beginAuth(req, res, shop, 'some-callback')).rejects.toThrow(
+      ShopifyErrors.SessionStorageError,
     );
   });
 
@@ -144,16 +158,17 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
-    await expect(() => ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery)).rejects.toBeInstanceOf(
+    await expect(ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery)).rejects.toThrow(
       ShopifyErrors.UninitializedContextError,
     );
   });
 
   test("throws an error when receiving a callback for a shop that doesn't have a session cookie", async () => {
-    await expect(() =>
+    await expect(
       ShopifyOAuth.validateAuthCallback(req, res, {
         shop: 'I do not exist',
-      } as AuthQuery)).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
+      } as AuthQuery),
+    ).rejects.toThrow(ShopifyErrors.SessionNotFound);
   });
 
   test('throws an error when receiving a callback for a shop with no saved session', async () => {
@@ -161,10 +176,11 @@ describe('validateAuthCallback', () => {
 
     await Context.SESSION_STORAGE.deleteSession(cookies.id);
 
-    await expect(() =>
+    await expect(
       ShopifyOAuth.validateAuthCallback(req, res, {
         shop: 'I do not exist',
-      } as AuthQuery)).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
+      } as AuthQuery),
+    ).rejects.toThrow(ShopifyErrors.SessionNotFound);
   });
 
   test('throws error when callback includes invalid hmac, or state', async () => {
@@ -177,8 +193,43 @@ describe('validateAuthCallback', () => {
     };
     testCallbackQuery.hmac = 'definitely the wrong hmac';
 
-    await expect(() => ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery)).rejects.toBeInstanceOf(
+    await expect(ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery)).rejects.toThrow(
       ShopifyErrors.InvalidOAuthError,
+    );
+  });
+
+  test('throws a SessionStorageError when storeSession returns false', async () => {
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+
+    const testCallbackQuery: AuthQuery = {
+      shop,
+      state: session ? session.state : '',
+      timestamp: Number(new Date()).toString(),
+      code: 'some random auth code',
+    };
+    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    testCallbackQuery.hmac = expectedHmac;
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const successResponse = {
+      access_token: 'some access token string',
+      scope: Context.SCOPES.join(','),
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    fetchMock.mockResponse(JSON.stringify(successResponse));
+
+    // create new storage with broken storeCallback for validateAuthCallback to use
+    /* eslint-disable-next-line require-atomic-updates */
+    Context.SESSION_STORAGE = new CustomSessionStorage(
+      () => false,
+      () => session,
+      () => true,
+    );
+
+    await expect(ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery)).rejects.toThrow(
+      ShopifyErrors.SessionStorageError,
     );
   });
 

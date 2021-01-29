@@ -1,5 +1,6 @@
 import {Session} from '../session';
 import {SessionStorage} from '../session_storage';
+import * as ShopifyErrors from '../../../error';
 
 export class CustomSessionStorage implements SessionStorage {
   constructor(
@@ -13,14 +14,44 @@ export class CustomSessionStorage implements SessionStorage {
   }
 
   public async storeSession(session: Session): Promise<boolean> {
-    return this.storeCallback(session);
+    try {
+      return this.storeCallback(session);
+    } catch (error) {
+      throw new ShopifyErrors.SessionStorageError(
+        `CustomSessionStorage failed to store a session. Error Details: ${error}`,
+      );
+    }
   }
 
   public async loadSession(id: string): Promise<Session | undefined> {
-    return this.loadCallback(id);
+    let result: Session | undefined;
+    try {
+      result = this.loadCallback(id);
+    } catch (error) {
+      throw new ShopifyErrors.SessionStorageError(
+        `CustomSessionStorage failed to load a session. Error Details: ${error}`,
+      );
+    }
+    if (result) {
+      if (result instanceof Session) {
+        return result;
+      } else {
+        throw new ShopifyErrors.SessionStorageError(
+          `Expected return to be instanceof Session, but received instanceof ${result!.constructor.name}.`,
+        );
+      }
+    } else {
+      return undefined;
+    }
   }
 
   public async deleteSession(id: string): Promise<boolean> {
-    return this.deleteCallback(id);
+    try {
+      return this.deleteCallback(id);
+    } catch (error) {
+      throw new ShopifyErrors.SessionStorageError(
+        `CustomSessionStorage failed to delete a session. Error Details: ${error}`,
+      );
+    }
   }
 }
