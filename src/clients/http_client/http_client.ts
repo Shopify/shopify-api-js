@@ -1,4 +1,6 @@
 import querystring, {ParsedUrlQueryInput} from 'querystring';
+import crypto from 'crypto';
+import fs from 'fs';
 
 import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
@@ -21,6 +23,9 @@ import {
 class HttpClient {
   // 1 second
   static readonly RETRY_WAIT_TIME = 1000;
+  // 5 minutes
+  static readonly DEPRECATION_ALERT_DELAY = 300000;
+  private LOGGED_DEPRECATIONS: Record<string, number> = {};
 
   public constructor(private domain: string) {
     if (!validateShop(domain)) {
@@ -160,6 +165,32 @@ class HttpClient {
         const body = await response.json();
 
         if (response.ok) {
+          if (response.headers && response.headers.has('X-Shopify-API-Deprecated-Reason')) {
+            const deprecation = {
+              message: response.headers.get('X-Shopify-API-Deprecated-Reason'),
+              path: url,
+            };
+
+            const depHash = crypto.createHash('md5').update(JSON.stringify(deprecation)).digest('hex');
+
+            if (
+              !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
+              Date.now() - this.LOGGED_DEPRECATIONS[depHash] >= HttpClient.DEPRECATION_ALERT_DELAY
+            ) {
+              this.LOGGED_DEPRECATIONS[depHash] = Date.now();
+
+              if (Context.LOG_FILE) {
+                const stack = new Error().stack;
+                const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
+                  deprecation,
+                )}\n    Stack Trace: ${stack}\n`;
+                fs.writeFileSync(Context.LOG_FILE, log, {flag: 'a', encoding: 'utf-8'});
+              } else {
+                console.warn('API Deprecation Notice:', deprecation);
+              }
+            }
+          }
+
           return {
             body,
             headers: response.headers,

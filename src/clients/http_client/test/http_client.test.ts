@@ -1,5 +1,6 @@
 import '../../../test/test_helper';
 import querystring from 'querystring';
+import fs from 'fs';
 
 import {HttpClient} from '../http_client';
 import {DataType, HeaderParams, RequestReturn} from '../../types';
@@ -10,11 +11,17 @@ import {assertHttpRequest} from './test_helper';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
+const logFilePath = `${process.cwd()}/src/clients/http_client/test/test_logs.txt`;
 
 const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
+  beforeEach(() => {
+    fs.writeFileSync(logFilePath, '');
+  });
+
   afterAll(() => {
     setRestClientRetryTime(originalRetryTime);
+    fs.writeFileSync(logFilePath, '');
   });
 
   it('validates the given domain', () => {
@@ -427,6 +434,129 @@ describe('HTTP client', () => {
     await expect(client.get({path: '/url/path', tries: 2})).resolves.toEqual(buildExpectedResponse(successResponse));
     assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 2});
     clearTimeout(retryTimeout);
+  });
+
+  it('logs deprecation headers to the console when they are present', async () => {
+    const client = new HttpClient(domain);
+    console.warn = jest.fn();
+
+    fetchMock.mockResponses(
+      [
+        JSON.stringify({
+          message: 'Some deprecated request',
+        }),
+        {
+          status: 200,
+          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+        },
+      ],
+      [
+        JSON.stringify({
+          message: 'Some deprecated post request',
+          body: {
+            query: 'some query',
+          },
+        }),
+        {
+          status: 200,
+          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+        },
+      ],
+    );
+
+    await client.get({path: '/url/path'});
+
+    expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
+      message: 'This API endpoint has been deprecated',
+      path: 'https://test-shop.myshopify.io/url/path',
+    });
+
+    await client.post({path: '/url/path', type: DataType.JSON, data: {query: 'some query'}});
+
+    expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
+      message: 'This API endpoint has been deprecated',
+      path: 'https://test-shop.myshopify.io/url/path',
+    });
+  });
+
+  it('will wait 5 minutes before logging repeat deprecation alerts', async () => {
+    jest.useFakeTimers();
+
+    const client = new HttpClient(domain);
+    console.warn = jest.fn();
+
+    fetchMock.mockResponses(
+      [
+        JSON.stringify({
+          message: 'Some deprecated request',
+        }),
+        {
+          status: 200,
+          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+        },
+      ],
+      [
+        JSON.stringify({
+          message: 'Some deprecated request',
+        }),
+        {
+          status: 200,
+          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+        },
+      ],
+      [
+        JSON.stringify({
+          message: 'Some deprecated request',
+        }),
+        {
+          status: 200,
+          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+        },
+      ],
+    );
+    // first call should call console.warn
+    await client.get({path: '/url/path'});
+    // this one should skip it
+    await client.get({path: '/url/path'});
+    // one warn so far
+    expect(console.warn).toHaveBeenCalledTimes(1);
+
+    // use jest.fn() to advance time by 5 minutes
+    const currentTime = Date.now();
+    Date.now = jest.fn(() => currentTime + 300000);
+
+    // should warn a second time since 5 mins have passed
+    await client.get({path: '/url/path'});
+
+    expect(console.warn).toHaveBeenCalledTimes(2);
+  });
+
+  it('writes deprecation notices to log file if one is specified in Context', async () => {
+    Context.LOG_FILE = logFilePath;
+    Context.initialize(Context);
+
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponse(
+      JSON.stringify({
+        message: 'Some deprecated request',
+      }),
+      {
+        status: 200,
+        headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+      },
+    );
+
+    await client.get({path: '/url/path'});
+
+    // open and read test log file
+    const fileContent = fs.readFileSync(logFilePath, {encoding: 'utf-8', flag: 'r'});
+
+    expect(fileContent).toContain('API Deprecation Notice');
+    expect(fileContent).toContain(
+      ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
+    );
+    expect(fileContent).toContain(`Stack Trace: Error:`);
   });
 });
 
