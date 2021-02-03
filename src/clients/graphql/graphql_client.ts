@@ -1,5 +1,5 @@
 import {Context} from '../../context';
-import {ShopifyHeader} from '../../types';
+import {ShopifyHeader} from '../../base_types';
 import {HttpClient} from '../http_client/http_client';
 import {DataType, RequestReturn} from '../http_client/types';
 

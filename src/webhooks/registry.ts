@@ -3,68 +3,20 @@ import {createHmac} from 'crypto';
 import {StatusCode} from '@shopify/network';
 
 import {GraphqlClient} from '../clients/graphql/graphql_client';
-import {ShopifyHeader, ApiVersion} from '../types';
+import {ShopifyHeader} from '../base_types';
 import ShopifyUtilities from '../utils';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
 
-export enum DeliveryMethod {
-  Http = 'http',
-  EventBridge = 'eventbridge',
-}
-
-export type WebhookHandlerFunction = (
-  topic: string,
-  shop_domain: string,
-  body: Buffer
-) => void;
-
-export interface RegisterOptions {
-  // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
-  topic: string;
-  path: string;
-  shop: string;
-  accessToken: string;
-  apiVersion: ApiVersion;
-  deliveryMethod?: DeliveryMethod;
-  webhookHandler: WebhookHandlerFunction;
-}
-
-export interface RegisterReturn {
-  success: boolean;
-  result: unknown;
-}
-
-interface WebhookRegistryEntry {
-  path: string;
-  topic: string;
-  webhookHandler: WebhookHandlerFunction;
-}
-
-export interface ProcessOptions {
-  headers: Record<string, string>;
-  body: Buffer;
-}
-
-export interface ProcessReturn {
-  statusCode: StatusCode;
-  headers: Record<string, string>;
-}
-
-interface WebhookCheckResponseNode {
-  node: {
-    id: string;
-    callbackUrl: string;
-  };
-}
-
-interface WebhookCheckResponse {
-  data: {
-    webhookSubscriptions: {
-      edges: WebhookCheckResponseNode[];
-    };
-  };
-}
+import {
+  DeliveryMethod,
+  RegisterOptions,
+  RegisterReturn,
+  WebhookRegistryEntry,
+  ProcessOptions,
+  ProcessReturn,
+  WebhookCheckResponse,
+} from './types';
 
 interface RegistryInterface {
   webhookRegistry: WebhookRegistryEntry[];

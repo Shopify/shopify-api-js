@@ -7,6 +7,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 ### Added
+- Webhooks types are now exported outside the library [#91](https://github.com/shopify/shopify-node-api/pull/91)
 ### Fixed
 
 ## [0.3.1] - 2021-02-03
