@@ -9,6 +9,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Added
 ### Fixed
 
+## [0.3.1] - 2021-02-03
+### Fixed
+- Fixed an issue when deleting the current session for embedded apps [#88](https://github.com/shopify/shopify-node-api/pull/88)
+
 ## [0.3.0] - 2021-01-27
 ### Added
 - Add `withSession` utility method [#83](https://github.com/shopify/shopify-node-api/pull/83)
