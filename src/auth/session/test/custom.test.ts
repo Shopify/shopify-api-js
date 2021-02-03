@@ -14,16 +14,16 @@ test('can use custom session storage', async () => {
   const storage = new CustomSessionStorage(
     () => {
       storeCalled = true;
-      return true;
+      return Promise.resolve(true);
     },
     () => {
       loadCalled = true;
-      return session;
+      return Promise.resolve(session);
     },
     () => {
       deleteCalled = true;
       session = undefined;
-      return true;
+      return Promise.resolve(true);
     },
   );
 
@@ -57,9 +57,9 @@ test('custom session storage failures and exceptions are raised', () => {
   const session = new Session(sessionId);
 
   let storage = new CustomSessionStorage(
-    () => false,
-    () => undefined,
-    () => false,
+    () => Promise.resolve(false),
+    () => Promise.resolve(undefined),
+    () => Promise.resolve(false),
   );
 
   expect(storage.storeSession(session)).resolves.toBe(false);
@@ -67,15 +67,9 @@ test('custom session storage failures and exceptions are raised', () => {
   expect(storage.deleteSession(sessionId)).resolves.toBe(false);
 
   storage = new CustomSessionStorage(
-    () => {
-      throw Error('Failed to store!');
-    },
-    () => {
-      throw Error('Failed to load!');
-    },
-    () => {
-      throw Error('Failed to delete!');
-    },
+    () => Promise.reject(new Error('Failed to store!')),
+    () => Promise.reject(new Error('Failed to load!')),
+    () => Promise.reject(new Error('Failed to delete!')),
   );
 
   const expectedStore = expect(storage.storeSession(session)).rejects;
@@ -91,9 +85,9 @@ test('custom session storage failures and exceptions are raised', () => {
   expectedDelete.toThrow(/Error: Failed to delete!/);
 
   storage = new CustomSessionStorage(
-    () => true,
-    () => 'this is not a Session' as any,
-    () => true,
+    () => Promise.resolve(true),
+    () => Promise.resolve('this is not a Session' as any),
+    () => Promise.resolve(true),
   );
 
   expect(storage.loadSession(sessionId)).rejects.toThrow(SessionStorageError);

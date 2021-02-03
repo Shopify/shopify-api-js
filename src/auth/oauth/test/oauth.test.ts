@@ -55,9 +55,9 @@ describe('beginAuth', () => {
 
   test('throws SessionStorageErrors when storeSession returns false', async () => {
     const storage = new CustomSessionStorage(
-      () => false,
-      () => new Session(shop),
-      () => true,
+      () => Promise.resolve(false),
+      () => Promise.resolve(new Session(shop)),
+      () => Promise.resolve(true),
     );
     Context.SESSION_STORAGE = storage;
 
@@ -223,9 +223,9 @@ describe('validateAuthCallback', () => {
     // create new storage with broken storeCallback for validateAuthCallback to use
     /* eslint-disable-next-line require-atomic-updates */
     Context.SESSION_STORAGE = new CustomSessionStorage(
-      () => false,
-      () => session,
-      () => true,
+      () => Promise.resolve(false),
+      () => Promise.resolve(session),
+      () => Promise.resolve(true),
     );
 
     await expect(ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery)).rejects.toThrow(
