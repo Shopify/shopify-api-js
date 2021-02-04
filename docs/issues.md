@@ -8,24 +8,27 @@ Before you start writing your application, please note that the Shopify library 
 
 `MemorySessionStorage` is **purposely** designed to be a single-process, development-only solution. It **will leak** memory in most cases and delete all sessions when your app restarts. You should **never** use it in production apps. In order to use your preferred storage choice with the Shopify library, you'll need to perform a few steps:
 
-- Create a class that extends the `SessionStorage` interface, and implements the following methods: `loadSession`, `storeSession`, and `deleteSession`.
-- _OR_ Create a new instance of `CustomSessionStorage`, providing callbacks for these methods.
-- Implement those methods so that they perform the necessary actions in your app's storage.
-- Provide an instance of that class when calling `Shopify.Context.initialize`, for example:
+- Create a new instance of `CustomSessionStorage`, passing in callbacks to store, load, and delete sessions.
+- Implement those callbacks so that they perform the necessary actions in your preferred storage method.
+- Provide that instance when calling `Shopify.Context.initialize`, for example:
 ```ts
   // src/my_session_storage.ts
-  import { SessionStorage, Session } from '@shopify/shopify-api';
+  import { SessionStorage } from '@shopify/shopify-api';
 
-  class MySessionStorage extends SessionStorage {
-    public async loadSession(sessionId: string) { ... }
-    public async storeSession(session: Session) { ... }
-    public async deleteSession(sessionId: string) { ... }
-  }
+  async function storeCallback(session: Session): Promise<boolean> { ... }
+  async function loadCallback(id: string): Promise<Session | undefined> { ... }
+  async function deleteCallback(id: string): Promise<boolean> { ... }
+
+  const mySessionStorage = new Shopify.Session.CustomSessionStorage(
+    storeCallback,
+    loadCallback,
+    deleteCallback,
+  );
 
   // src/index.ts
   Shopify.Context.initialize({
     ... // app settings
-    SESSION_STORAGE: new MySessionStorage(),
+    SESSION_STORAGE: mySessionStorage(),
   });
 ```
 

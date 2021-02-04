@@ -4,9 +4,9 @@ import * as ShopifyErrors from '../../../error';
 
 export class CustomSessionStorage implements SessionStorage {
   constructor(
-    readonly storeCallback: (session: Session) => boolean,
-    readonly loadCallback: (id: string) => Session | undefined,
-    readonly deleteCallback: (id: string) => boolean,
+    readonly storeCallback: (session: Session) => Promise<boolean>,
+    readonly loadCallback: (id: string) => Promise<Session | undefined>,
+    readonly deleteCallback: (id: string) => Promise<boolean>,
   ) {
     this.storeCallback = storeCallback;
     this.loadCallback = loadCallback;
@@ -15,7 +15,7 @@ export class CustomSessionStorage implements SessionStorage {
 
   public async storeSession(session: Session): Promise<boolean> {
     try {
-      return this.storeCallback(session);
+      return await this.storeCallback(session);
     } catch (error) {
       throw new ShopifyErrors.SessionStorageError(
         `CustomSessionStorage failed to store a session. Error Details: ${error}`,
@@ -26,7 +26,7 @@ export class CustomSessionStorage implements SessionStorage {
   public async loadSession(id: string): Promise<Session | undefined> {
     let result: Session | undefined;
     try {
-      result = this.loadCallback(id);
+      result = await this.loadCallback(id);
     } catch (error) {
       throw new ShopifyErrors.SessionStorageError(
         `CustomSessionStorage failed to load a session. Error Details: ${error}`,
@@ -47,7 +47,7 @@ export class CustomSessionStorage implements SessionStorage {
 
   public async deleteSession(id: string): Promise<boolean> {
     try {
-      return this.deleteCallback(id);
+      return await this.deleteCallback(id);
     } catch (error) {
       throw new ShopifyErrors.SessionStorageError(
         `CustomSessionStorage failed to delete a session. Error Details: ${error}`,
