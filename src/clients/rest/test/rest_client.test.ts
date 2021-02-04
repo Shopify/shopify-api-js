@@ -1,7 +1,7 @@
 import '../../../test/test_helper';
 import querystring from 'querystring';
 
-import {ShopifyHeader} from '../../../types';
+import {ShopifyHeader} from '../../../base_types';
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {assertHttpRequest} from '../../http_client/test/test_helper';
 import {RestClient} from '../rest_client';

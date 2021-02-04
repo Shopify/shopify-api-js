@@ -1,6 +1,6 @@
 import * as ShopifyErrors from './error';
 import {SessionStorage, MemorySessionStorage} from './auth/session';
-import {ApiVersion, ContextParams} from './types';
+import {ApiVersion, ContextParams} from './base_types';
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;

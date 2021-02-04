@@ -3,8 +3,8 @@ import {createHmac} from 'crypto';
 
 import {Method, Header, StatusCode} from '@shopify/network';
 
-import {DeliveryMethod, ProcessReturn, RegisterOptions} from '../registry';
-import {ApiVersion, ShopifyHeader} from '../../types';
+import {DeliveryMethod, ProcessReturn, RegisterOptions} from '../types';
+import {ApiVersion, ShopifyHeader} from '../../base_types';
 import {Context} from '../../context';
 import {DataType} from '../../clients/types';
 import {assertHttpRequest} from '../../clients/http_client/test/test_helper';

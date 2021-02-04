@@ -1,5 +1,5 @@
 import '../../../test/test_helper';
-import {ShopifyHeader} from '../../../types';
+import {ShopifyHeader} from '../../../base_types';
 import {assertHttpRequest} from '../../http_client/test/test_helper';
 import {GraphqlClient} from '../graphql_client';
 

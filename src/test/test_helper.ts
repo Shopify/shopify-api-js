@@ -1,7 +1,7 @@
 import {enableFetchMocks} from 'jest-fetch-mock';
 
 import {Context} from '../context';
-import {ApiVersion} from '../types';
+import {ApiVersion} from '../base_types';
 import {MemorySessionStorage} from '../auth/session';
 
 enableFetchMocks();
