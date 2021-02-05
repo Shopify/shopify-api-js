@@ -1,7 +1,5 @@
 import {StatusCode} from '@shopify/network';
 
-import {ApiVersion} from '../base_types';
-
 export enum DeliveryMethod {
   Http = 'http',
   EventBridge = 'eventbridge',
@@ -19,7 +17,6 @@ export interface RegisterOptions {
   path: string;
   shop: string;
   accessToken: string;
-  apiVersion: ApiVersion;
   deliveryMethod?: DeliveryMethod;
   webhookHandler: WebhookHandlerFunction;
 }
