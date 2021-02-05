@@ -338,6 +338,18 @@ describe('ShopifyWebhooks.Registry.process', () => {
     expect(result.statusCode).toBe(StatusCode.Forbidden);
   });
 
+  it('fails if the given body is empty', () => {
+    ShopifyWebhooks.Registry.webhookRegistry.push({
+      path: '/webhooks',
+      topic: 'NONSENSE_TOPIC',
+      webhookHandler: genericWebhookHandler,
+    });
+
+    expect(() => ShopifyWebhooks.Registry.process({headers: headers(), body: Buffer.from('', 'utf8')})).toThrow(
+      ShopifyErrors.MissingRequiredArgument,
+    );
+  });
+
   it('fails if the any of the required headers are missing', () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
