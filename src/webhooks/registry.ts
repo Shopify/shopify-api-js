@@ -184,24 +184,26 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   process({headers, body}: ProcessOptions): ProcessReturn {
+    if (!body.length) {
+      throw new ShopifyErrors.MissingRequiredArgument('No body was received when processing webhook');
+    }
+
     let hmac: string | undefined;
     let topic: string | undefined;
     let domain: string | undefined;
-    for (const header in headers) {
-      if (header) {
-        switch (header.toLowerCase()) {
-          case ShopifyHeader.Hmac.toLowerCase():
-            hmac = headers[header];
-            break;
-          case ShopifyHeader.Topic.toLowerCase():
-            topic = headers[header];
-            break;
-          case ShopifyHeader.Domain.toLowerCase():
-            domain = headers[header];
-            break;
-        }
+    Object.entries(headers).map(([header, value]) => {
+      switch (header.toLowerCase()) {
+        case ShopifyHeader.Hmac.toLowerCase():
+          hmac = value;
+          break;
+        case ShopifyHeader.Topic.toLowerCase():
+          topic = value;
+          break;
+        case ShopifyHeader.Domain.toLowerCase():
+          domain = value;
+          break;
       }
-    }
+    });
 
     const missingHeaders = [];
     if (!hmac) {
