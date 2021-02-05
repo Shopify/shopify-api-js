@@ -11,7 +11,7 @@ type WebhookHandlerFunction = (
   topic: string,
   shop_domain: string,
   body: Buffer
-) => void;
+) => Promise<void>;
 
 export interface RegisterOptions {
   // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics

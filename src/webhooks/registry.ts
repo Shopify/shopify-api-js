@@ -33,7 +33,7 @@ interface RegistryInterface {
    *
    * @param options Parameters required to process a webhook message, including headers and message body
    */
-  process(options: ProcessOptions): ProcessReturn;
+  process(options: ProcessOptions): Promise<ProcessReturn>;
 
   /**
    * Confirms that the given path is a webhook path
@@ -183,7 +183,7 @@ const WebhooksRegistry: RegistryInterface = {
     return {success, result: body};
   },
 
-  process({headers, body}: ProcessOptions): ProcessReturn {
+  async process({headers, body}: ProcessOptions): Promise<ProcessReturn> {
     if (!body.length) {
       throw new ShopifyErrors.MissingRequiredArgument('No body was received when processing webhook');
     }
@@ -240,7 +240,7 @@ const WebhooksRegistry: RegistryInterface = {
       );
 
       if (webhookEntry) {
-        webhookEntry.webhookHandler(graphqlTopic, domain as string, body);
+        await webhookEntry.webhookHandler(graphqlTopic, domain as string, body);
         result.statusCode = StatusCode.Ok;
         result.headers = {};
       }
