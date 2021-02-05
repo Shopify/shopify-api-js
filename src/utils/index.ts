@@ -8,6 +8,7 @@ import deleteOfflineSession from './delete-offline-session';
 import storeSession from './store-session';
 import decodeSessionToken from './decode-session-token';
 import nonce from './nonce';
+import withSession from './with-session';
 
 const ShopifyUtils = {
   validateHmac,
@@ -20,6 +21,7 @@ const ShopifyUtils = {
   storeSession,
   decodeSessionToken,
   nonce,
+  withSession,
 };
 
 export default ShopifyUtils;
