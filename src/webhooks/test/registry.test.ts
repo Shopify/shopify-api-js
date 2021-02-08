@@ -75,8 +75,9 @@ const failResponse = {
   data: {},
 };
 
-function genericWebhookHandler(topic: string, shopDomain: string, body: Buffer) {
-  if (topic && shopDomain && body) { // eslint-disable-lint no-empty
+async function genericWebhookHandler(topic: string, shopDomain: string, body: Buffer): Promise<void> {
+  if (!topic || !shopDomain || !body) {
+    throw new Error('Missing webhook parameters');
   }
 }
 
@@ -285,7 +286,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    const result: ProcessReturn = ShopifyWebhooks.Registry.process({
+    const result: ProcessReturn = await ShopifyWebhooks.Registry.process({
       headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8'))}),
       body: rawBody,
     });
@@ -300,7 +301,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    const result: ProcessReturn = ShopifyWebhooks.Registry.process({
+    const result: ProcessReturn = await ShopifyWebhooks.Registry.process({
       headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')), lowercase: true}),
       body: rawBody,
     });
@@ -315,7 +316,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    const result: ProcessReturn = ShopifyWebhooks.Registry.process({
+    const result: ProcessReturn = await ShopifyWebhooks.Registry.process({
       headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8'))}),
       body: rawBody,
     });
@@ -330,7 +331,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    const result: ProcessReturn = ShopifyWebhooks.Registry.process({
+    const result: ProcessReturn = await ShopifyWebhooks.Registry.process({
       headers: headers({hmac: hmac('incorrect secret', rawBody.toString('utf8'))}),
       body: rawBody,
     });
@@ -338,34 +339,34 @@ describe('ShopifyWebhooks.Registry.process', () => {
     expect(result.statusCode).toBe(StatusCode.Forbidden);
   });
 
-  it('fails if the given body is empty', () => {
+  it('fails if the given body is empty', async () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'NONSENSE_TOPIC',
       webhookHandler: genericWebhookHandler,
     });
 
-    expect(() => ShopifyWebhooks.Registry.process({headers: headers(), body: Buffer.from('', 'utf8')})).toThrow(
+    expect(() => ShopifyWebhooks.Registry.process({headers: headers(), body: Buffer.from('', 'utf8')})).rejects.toThrow(
       ShopifyErrors.MissingRequiredArgument,
     );
   });
 
-  it('fails if the any of the required headers are missing', () => {
+  it('fails if the any of the required headers are missing', async () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
       topic: 'NONSENSE_TOPIC',
       webhookHandler: genericWebhookHandler,
     });
 
-    expect(() => ShopifyWebhooks.Registry.process({headers: headers({hmac: ''}), body: rawBody})).toThrow(
+    expect(() => ShopifyWebhooks.Registry.process({headers: headers({hmac: ''}), body: rawBody})).rejects.toThrow(
       ShopifyErrors.InvalidWebhookError,
     );
 
-    expect(() => ShopifyWebhooks.Registry.process({headers: headers({topic: ''}), body: rawBody})).toThrow(
+    expect(() => ShopifyWebhooks.Registry.process({headers: headers({topic: ''}), body: rawBody})).rejects.toThrow(
       ShopifyErrors.InvalidWebhookError,
     );
 
-    expect(() => ShopifyWebhooks.Registry.process({headers: headers({domain: ''}), body: rawBody})).toThrow(
+    expect(() => ShopifyWebhooks.Registry.process({headers: headers({domain: ''}), body: rawBody})).rejects.toThrow(
       ShopifyErrors.InvalidWebhookError,
     );
   });
