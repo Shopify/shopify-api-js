@@ -4,7 +4,7 @@ import {createHmac} from 'crypto';
 import {Method, Header, StatusCode} from '@shopify/network';
 
 import {DeliveryMethod, ProcessReturn, RegisterOptions} from '../types';
-import {ApiVersion, ShopifyHeader} from '../../base_types';
+import {ShopifyHeader} from '../../base_types';
 import {Context} from '../../context';
 import {DataType} from '../../clients/types';
 import {assertHttpRequest} from '../../clients/http_client/test/test_helper';
@@ -94,7 +94,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       webhookHandler: genericWebhookHandler,
     };
 
@@ -114,7 +113,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       webhookHandler: genericWebhookHandler,
     };
 
@@ -134,7 +132,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       deliveryMethod: DeliveryMethod.EventBridge,
       webhookHandler: genericWebhookHandler,
     };
@@ -155,7 +152,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       webhookHandler: genericWebhookHandler,
     };
 
@@ -175,7 +171,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       deliveryMethod: DeliveryMethod.EventBridge,
       webhookHandler: genericWebhookHandler,
     };
@@ -195,7 +190,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       deliveryMethod: DeliveryMethod.EventBridge,
       webhookHandler: genericWebhookHandler,
     };
@@ -215,7 +209,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       deliveryMethod: 'Something else',
       webhookHandler: genericWebhookHandler,
     };
@@ -232,7 +225,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       webhookHandler: genericWebhookHandler,
     };
     await ShopifyWebhooks.Registry.register(webhook);
@@ -246,7 +238,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_UPDATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      apiVersion: ApiVersion.Unstable,
       webhookHandler: genericWebhookHandler,
     };
     await ShopifyWebhooks.Registry.register(webhook);
@@ -472,7 +463,7 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
   assertHttpRequest(
     Method.Post.toString(),
     webhook.shop,
-    `/admin/api/${webhook.apiVersion}/graphql.json`,
+    `/admin/api/${Context.API_VERSION}/graphql.json`,
     {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
@@ -485,7 +476,7 @@ function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: 
   assertHttpRequest(
     Method.Post.toString(),
     webhook.shop,
-    `/admin/api/${webhook.apiVersion}/graphql.json`,
+    `/admin/api/${Context.API_VERSION}/graphql.json`,
     {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
