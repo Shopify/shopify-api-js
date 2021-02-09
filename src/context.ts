@@ -66,6 +66,10 @@ const Context: ContextInterface = {
     if (params.SESSION_STORAGE) {
       this.SESSION_STORAGE = params.SESSION_STORAGE;
     }
+
+    if (params.USER_AGENT_PREFIX) {
+      this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
+    }
   },
 
   throwIfUninitialized(): void {
