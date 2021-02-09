@@ -63,7 +63,7 @@ const ShopifyOAuth = {
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
       signed: true,
       expires: new Date(Date.now() + 60000),
-      sameSite: 'none',
+      sameSite: 'lax',
       secure: true,
     });
 
@@ -173,7 +173,7 @@ const ShopifyOAuth = {
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
       signed: true,
       expires: oauthSessionExpiration,
-      sameSite: 'none',
+      sameSite: 'lax',
       secure: true,
     });
 
