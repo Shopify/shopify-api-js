@@ -1,26 +1,28 @@
-import validateHmac from './hmac-validator';
-import validateShop from './shop-validator';
-import safeCompare from './safe-compare';
-import loadCurrentSession from './load-current-session';
-import loadOfflineSession from './load-offline-session';
+import decodeSessionToken from './decode-session-token';
 import deleteCurrentSession from './delete-current-session';
 import deleteOfflineSession from './delete-offline-session';
-import storeSession from './store-session';
-import decodeSessionToken from './decode-session-token';
+import loadCurrentSession from './load-current-session';
+import loadOfflineSession from './load-offline-session';
 import nonce from './nonce';
+import graphqlProxy from './graphql_proxy';
+import safeCompare from './safe-compare';
+import storeSession from './store-session';
+import validateHmac from './hmac-validator';
+import validateShop from './shop-validator';
 import withSession from './with-session';
 
 const ShopifyUtils = {
-  validateHmac,
-  validateShop,
-  safeCompare,
-  loadCurrentSession,
-  loadOfflineSession,
+  decodeSessionToken,
   deleteCurrentSession,
   deleteOfflineSession,
-  storeSession,
-  decodeSessionToken,
+  loadCurrentSession,
+  loadOfflineSession,
   nonce,
+  graphqlProxy,
+  safeCompare,
+  storeSession,
+  validateHmac,
+  validateShop,
   withSession,
 };
 
