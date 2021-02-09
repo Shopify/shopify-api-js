@@ -12,6 +12,7 @@ class MissingJwtTokenError extends ShopifyError {}
 
 class SafeCompareError extends ShopifyError {}
 class UninitializedContextError extends ShopifyError {}
+class PrivateAppError extends ShopifyError {}
 
 class HttpRequestError extends ShopifyError {}
 class HttpMaxRetriesError extends ShopifyError {}
@@ -59,4 +60,5 @@ export {
   MissingRequiredArgument,
   UnsupportedClientType,
   SessionStorageError,
+  PrivateAppError,
 };

@@ -5,14 +5,23 @@ beforeEach(() => {
   currentCall = 0;
 });
 
-export function assertHttpRequest(
-  method: string,
-  domain: string,
-  path: string,
-  headers: Record<string, unknown> = {},
-  data: string | null = null,
+interface AssertHttpRequestParams {
+  method: string;
+  domain: string;
+  path: string;
+  headers?: Record<string, unknown>;
+  data?: string | null;
+  tries?: number;
+}
+
+export function assertHttpRequest({
+  method,
+  domain,
+  path,
+  headers = {},
+  data = null,
   tries = 1,
-): void {
+}: AssertHttpRequestParams): void {
   const maxCall = currentCall + tries;
   for (let i = currentCall; i < maxCall; i++) {
     currentCall++;

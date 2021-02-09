@@ -7,6 +7,7 @@ export interface ContextParams {
   HOST_NAME: string;
   API_VERSION: ApiVersion;
   IS_EMBEDDED_APP: boolean;
+  IS_PRIVATE_APP?: boolean;
   SESSION_STORAGE?: SessionStorage;
 }
 

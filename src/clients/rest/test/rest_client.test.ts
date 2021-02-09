@@ -6,6 +6,8 @@ import {DataType, GetRequestParams} from '../../http_client/types';
 import {assertHttpRequest} from '../../http_client/test/test_helper';
 import {RestClient} from '../rest_client';
 import {RestRequestReturn, PageInfo} from '../types';
+import {Context} from '../../../context';
+import * as ShopifyErrors from '../../../error';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {
@@ -24,7 +26,7 @@ describe('REST client', () => {
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.get({path: 'products'})).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest('GET', domain, '/admin/api/unstable/products.json');
+    assertHttpRequest({method: 'GET', domain, path: '/admin/api/unstable/products.json'});
   });
 
   it('can make POST request with JSON data', async () => {
@@ -40,13 +42,13 @@ describe('REST client', () => {
     await expect(client.post({path: 'products', type: DataType.JSON, data: postData}))
       .resolves.toEqual(buildExpectedResponse(successResponse));
 
-    assertHttpRequest(
-      'POST',
+    assertHttpRequest({
+      method: 'POST',
       domain,
-      '/admin/api/unstable/products.json',
-      {'Content-Type': DataType.JSON.toString()},
-      JSON.stringify(postData),
-    );
+      path: '/admin/api/unstable/products.json',
+      headers: {'Content-Type': DataType.JSON.toString()},
+      data: JSON.stringify(postData),
+    });
   });
 
   it('can make POST request with form data', async () => {
@@ -62,13 +64,13 @@ describe('REST client', () => {
     await expect(client.post({path: 'products', type: DataType.URLEncoded, data: postData}))
       .resolves.toEqual(buildExpectedResponse(successResponse));
 
-    assertHttpRequest(
-      'POST',
+    assertHttpRequest({
+      method: 'POST',
       domain,
-      '/admin/api/unstable/products.json',
-      {'Content-Type': DataType.URLEncoded.toString()},
-      querystring.stringify(postData),
-    );
+      path: '/admin/api/unstable/products.json',
+      headers: {'Content-Type': DataType.URLEncoded.toString()},
+      data: querystring.stringify(postData),
+    });
   });
 
   it('can make PUT request with JSON data', async () => {
@@ -84,13 +86,13 @@ describe('REST client', () => {
     await expect(client.put({path: 'products/123', type: DataType.JSON, data: putData}))
       .resolves.toEqual(buildExpectedResponse(successResponse));
 
-    assertHttpRequest(
-      'PUT',
+    assertHttpRequest({
+      method: 'PUT',
       domain,
-      '/admin/api/unstable/products/123.json',
-      {'Content-Type': DataType.JSON.toString()},
-      JSON.stringify(putData),
-    );
+      path: '/admin/api/unstable/products/123.json',
+      headers: {'Content-Type': DataType.JSON.toString()},
+      data: JSON.stringify(putData),
+    });
   });
 
   it('can make DELETE request', async () => {
@@ -101,7 +103,7 @@ describe('REST client', () => {
     await expect(client.delete({path: 'products/123'}))
       .resolves.toEqual(buildExpectedResponse(successResponse));
 
-    assertHttpRequest('DELETE', domain, '/admin/api/unstable/products/123.json');
+    assertHttpRequest({method: 'DELETE', domain, path: '/admin/api/unstable/products/123.json'});
   });
 
   it('merges custom headers with the default ones', async () => {
@@ -118,7 +120,7 @@ describe('REST client', () => {
     );
 
     customHeaders[ShopifyHeader.AccessToken] = 'dummy-token';
-    assertHttpRequest('GET', domain, '/admin/api/unstable/products.json', customHeaders);
+    assertHttpRequest({method: 'GET', domain, path: '/admin/api/unstable/products.json', headers: customHeaders});
   });
 
   it('includes pageInfo of type PageInfo in the returned object for calls with next or previous pages', async () => {
@@ -195,6 +197,30 @@ describe('REST client', () => {
     const thirdResponse = (await client.get(secondResponse.pageInfo!.prevPage!)) as RestRequestReturn;
     expect(thirdResponse.pageInfo!.previousPageUrl).toBeUndefined();
     expect(thirdResponse.pageInfo!.prevPage).toBeUndefined();
+  });
+
+  it('adapts to private app requests', async () => {
+    Context.IS_PRIVATE_APP = true;
+    Context.initialize(Context);
+
+    const client = new RestClient(domain);
+
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+
+    const customHeaders: Record<string, string> = {};
+    customHeaders[ShopifyHeader.AccessToken] = 'test_secret_key';
+
+    await expect(client.get({path: 'products'})).resolves.toEqual(buildExpectedResponse(successResponse));
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/admin/api/unstable/products.json',
+      headers: customHeaders,
+    });
+  });
+
+  it('fails to instantiate without access token', () => {
+    expect(() => new RestClient(domain)).toThrow(ShopifyErrors.MissingRequiredArgument);
   });
 });
 

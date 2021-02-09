@@ -460,27 +460,27 @@ function createWebhookQuery(topic: string, address: string, deliveryMethod?: Del
 }
 
 function assertWebhookCheckRequest(webhook: RegisterOptions) {
-  assertHttpRequest(
-    Method.Post.toString(),
-    webhook.shop,
-    `/admin/api/${Context.API_VERSION}/graphql.json`,
-    {
+  assertHttpRequest({
+    method: Method.Post.toString(),
+    domain: webhook.shop,
+    path: `/admin/api/${Context.API_VERSION}/graphql.json`,
+    headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
-    createWebhookCheckQuery(webhook.topic),
-  );
+    data: createWebhookCheckQuery(webhook.topic),
+  });
 }
 
 function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: string) {
-  assertHttpRequest(
-    Method.Post.toString(),
-    webhook.shop,
-    `/admin/api/${Context.API_VERSION}/graphql.json`,
-    {
+  assertHttpRequest({
+    method: Method.Post.toString(),
+    domain: webhook.shop,
+    path: `/admin/api/${Context.API_VERSION}/graphql.json`,
+    headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
-    createWebhookQuery(webhook.topic, `https://${Context.HOST_NAME}${webhook.path}`, webhook.deliveryMethod, webhookId),
-  );
+    data: createWebhookQuery(webhook.topic, `https://${Context.HOST_NAME}${webhook.path}`, webhook.deliveryMethod, webhookId),
+  });
 }

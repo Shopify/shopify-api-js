@@ -15,6 +15,7 @@ const validParams: ContextParams = {
   HOST_NAME: 'host_name',
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
+  IS_PRIVATE_APP: false,
 };
 
 const originalWarn = console.warn;
