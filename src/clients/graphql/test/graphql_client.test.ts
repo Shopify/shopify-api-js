@@ -121,13 +121,13 @@ describe('GraphQL client', () => {
 
     await expect(client.query({data: queryWithVariables})).resolves.toEqual(buildExpectedResponse(expectedResponse));
 
-    assertHttpRequest(
-      'POST',
-      DOMAIN,
-      '/admin/api/unstable/graphql.json',
-      {'Content-Length': 219, 'Content-Type': 'application/json', 'X-Shopify-Access-Token': 'bork'},
-      JSON.stringify(queryWithVariables),
-    );
+    assertHttpRequest({
+      method: 'POST',
+      domain: DOMAIN,
+      path: '/admin/api/unstable/graphql.json',
+      headers: {'Content-Length': 219, 'Content-Type': 'application/json', 'X-Shopify-Access-Token': 'bork'},
+      data: JSON.stringify(queryWithVariables),
+    });
   });
 });
 
