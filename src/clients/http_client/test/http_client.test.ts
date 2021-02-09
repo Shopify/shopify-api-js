@@ -298,7 +298,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
-        'User-Agent': expect.stringContaining('My agent | Shopify App Dev Kit v'),
+        'User-Agent': expect.stringContaining('My agent | Shopify API Library v'),
       },
     });
 
@@ -314,7 +314,40 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
-        'User-Agent': expect.stringContaining('My lowercase agent | Shopify App Dev Kit v'),
+        'User-Agent': expect.stringContaining('My lowercase agent | Shopify API Library v'),
+      },
+    });
+  });
+
+  it('extends a User-Agent provided by Context', async () => {
+    Context.USER_AGENT_PREFIX = 'Context Agent';
+    Context.initialize(Context);
+
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponses(buildMockResponse(successResponse), buildMockResponse(successResponse));
+
+    await expect(client.get({path: '/url/path'})).resolves.toEqual(buildExpectedResponse(successResponse));
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/url/path',
+      headers: {
+        'User-Agent': expect.stringContaining('Context Agent | Shopify API Library v'),
+      },
+    });
+
+    const customHeaders: HeaderParams = {'User-Agent': 'Headers Agent'};
+
+    await expect(client.get({path: '/url/path', extraHeaders: customHeaders})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/url/path',
+      headers: {
+        'User-Agent': expect.stringContaining('Headers Agent | Context Agent | Shopify API Library v'),
       },
     });
   });
