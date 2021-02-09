@@ -1,0 +1,42 @@
+# Configuration for probot-stale - https://github.com/probot/stale
+
+# Issues or Pull Requests with these labels will never be considered stale.
+# Set to `[]` to disable
+exemptLabels:
+  - Security
+
+# Label to use when marking as stale
+staleLabel: Stale
+
+pulls:
+  # Number of days of inactivity before an Issue or Pull Request becomes stale
+  daysUntilStale: 90
+
+  # Number of days of inactivity before a Pull Request with the stale label is closed.
+  # Set to false to disable. If disabled, issues still need to be closed manually,
+  # but will remain marked as stale.
+  daysUntilClose: 14
+
+  # Comment to post when marking as stale. Set to `false` to disable
+  markComment: >
+    This pull request has been automatically marked as stale because it has not had
+    activity in 90 days. It will be closed if no further activity occurs.
+
+issues:
+  # Number of days of inactivity before an Issue or Pull Request becomes stale
+  # TO-DO: the real value will be 90, this version is for testing
+  daysUntilStale: 1
+
+  # Issues labeled `Confirmed` are ignored
+  exemptLabels:
+    - Confirmed
+
+  # Number of days of inactivity before an Issue with the stale label is closed.
+  # Set to false to disable. If disabled, issues still need to be closed manually,
+  # but will remain marked as stale.
+  daysUntilClose: 14
+
+  # Comment to post when marking as stale. Set to `false` to disable
+  markComment: >
+    This issue has been automatically marked as stale because it has not had
+    activity in 90 days. It will be closed if no further activity occurs.
