@@ -39,6 +39,7 @@ const ShopifyOAuth = {
     isOnline = false,
   ): Promise<string> {
     Context.throwIfUninitialized();
+    Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
     const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],
@@ -98,6 +99,7 @@ const ShopifyOAuth = {
     query: AuthQuery,
   ): Promise<void> {
     Context.throwIfUninitialized();
+    Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
     const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],

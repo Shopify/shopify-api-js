@@ -121,6 +121,13 @@ describe('beginAuth', () => {
 
     expect(authRoute).toBe(`https://${shop}/admin/oauth/authorize?${expectedQueryString}`);
   });
+
+  test('fails to start if the app is private', () => {
+    Context.IS_PRIVATE_APP = true;
+    Context.initialize(Context);
+
+    expect(ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true)).rejects.toThrow(ShopifyErrors.PrivateAppError);
+  });
 });
 
 describe('validateAuthCallback', () => {
@@ -384,5 +391,12 @@ describe('validateAuthCallback', () => {
     const currentSession = await loadCurrentSession(jwtReq, jwtRes);
     expect(currentSession).not.toBe(null);
     expect(currentSession?.id).toEqual(jwtSessionId);
+  });
+
+  test('fails to run if the app is private', () => {
+    Context.IS_PRIVATE_APP = true;
+    Context.initialize(Context);
+
+    expect(ShopifyOAuth.validateAuthCallback(req, res, {} as AuthQuery)).rejects.toThrow(ShopifyErrors.PrivateAppError);
   });
 });

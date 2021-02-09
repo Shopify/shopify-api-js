@@ -16,6 +16,11 @@ interface ContextInterface extends ContextParams {
    * Throws error if context has not been initialized.
    */
   throwIfUninitialized(): void | never;
+
+  /**
+   * Throws error if the current app is private.
+   */
+  throwIfPrivateApp(message: string): void | never;
 }
 
 const Context: ContextInterface = {
@@ -25,6 +30,7 @@ const Context: ContextInterface = {
   HOST_NAME: '',
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
+  IS_PRIVATE_APP: false,
   SESSION_STORAGE: new MemorySessionStorage(),
 
   initialize(params: ContextParams): void {
@@ -55,6 +61,7 @@ const Context: ContextInterface = {
     this.HOST_NAME = params.HOST_NAME;
     this.API_VERSION = params.API_VERSION;
     this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
+    this.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
 
     if (params.SESSION_STORAGE) {
       this.SESSION_STORAGE = params.SESSION_STORAGE;
@@ -66,6 +73,12 @@ const Context: ContextInterface = {
       throw new ShopifyErrors.UninitializedContextError(
         'Context has not been properly initialized. Please call the .initialize() method to setup your app context object.',
       );
+    }
+  },
+
+  throwIfPrivateApp(message: string): void {
+    if (Context.IS_PRIVATE_APP) {
+      throw new ShopifyErrors.PrivateAppError(message);
     }
   },
 };

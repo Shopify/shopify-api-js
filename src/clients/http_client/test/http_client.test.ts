@@ -26,7 +26,7 @@ describe('HTTP client', () => {
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     await expect(client.get({path: '/url/path'})).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest('GET', domain, '/url/path');
+    assertHttpRequest({method: 'GET', domain, path: '/url/path'});
   });
 
   it('can make POST request with type JSON', async () => {
@@ -46,13 +46,13 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest(
-      'POST',
+    assertHttpRequest({
+      method: 'POST',
       domain,
-      '/url/path',
-      {'Content-Type': DataType.JSON.toString()},
-      JSON.stringify(postData),
-    );
+      path: '/url/path',
+      headers: {'Content-Type': DataType.JSON.toString()},
+      data: JSON.stringify(postData),
+    });
   });
 
   it('can make POST request with type JSON and data is already formatted', async () => {
@@ -72,13 +72,13 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest(
-      'POST',
+    assertHttpRequest({
+      method: 'POST',
       domain,
-      '/url/path',
-      {'Content-Type': DataType.JSON.toString()},
-      JSON.stringify(postData),
-    );
+      path: '/url/path',
+      headers: {'Content-Type': DataType.JSON.toString()},
+      data: JSON.stringify(postData),
+    });
   });
 
   it('can make POST request with zero-length JSON', async () => {
@@ -93,7 +93,7 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest('POST', domain, '/url/path', {}, null);
+    assertHttpRequest({method: 'POST', domain, path: '/url/path'});
   });
 
   it('can make POST request with form-data type', async () => {
@@ -113,13 +113,13 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest(
-      'POST',
+    assertHttpRequest({
+      method: 'POST',
       domain,
-      '/url/path',
-      {'Content-Type': DataType.URLEncoded.toString()},
-      querystring.stringify(postData),
-    );
+      path: '/url/path',
+      headers: {'Content-Type': DataType.URLEncoded.toString()},
+      data: querystring.stringify(postData),
+    });
   });
 
   it('can make POST request with form-data type and data is already formatted', async () => {
@@ -139,13 +139,13 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest(
-      'POST',
+    assertHttpRequest({
+      method: 'POST',
       domain,
-      '/url/path',
-      {'Content-Type': DataType.URLEncoded.toString()},
-      querystring.stringify(postData),
-    );
+      path: '/url/path',
+      headers: {'Content-Type': DataType.URLEncoded.toString()},
+      data: querystring.stringify(postData),
+    });
   });
 
   it('can make POST request with GraphQL type', async () => {
@@ -173,7 +173,13 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest('POST', domain, '/url/path', {'Content-Type': DataType.GraphQL.toString()}, graphqlQuery);
+    assertHttpRequest({
+      method: 'POST',
+      domain,
+      path: '/url/path',
+      headers: {'Content-Type': DataType.GraphQL.toString()},
+      data: graphqlQuery,
+    });
   });
 
   it('can make PUT request with type JSON', async () => {
@@ -193,13 +199,13 @@ describe('HTTP client', () => {
     };
 
     await expect(client.put(putParams)).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest(
-      'PUT',
+    assertHttpRequest({
+      method: 'PUT',
       domain,
-      '/url/path/123',
-      {'Content-Type': DataType.JSON.toString()},
-      JSON.stringify(putData),
-    );
+      path: '/url/path/123',
+      headers: {'Content-Type': DataType.JSON.toString()},
+      data: JSON.stringify(putData),
+    });
   });
 
   it('can make DELETE request', async () => {
@@ -208,7 +214,7 @@ describe('HTTP client', () => {
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     await expect(client.delete({path: '/url/path/123'})).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest('DELETE', domain, '/url/path/123');
+    assertHttpRequest({method: 'DELETE', domain, path: '/url/path/123'});
   });
 
   it('gracefully handles errors', async () => {
@@ -234,7 +240,7 @@ describe('HTTP client', () => {
           expect(error.message).toContain(requestId);
         }
 
-        assertHttpRequest('GET', domain, '/url/path');
+        assertHttpRequest({method: 'GET', domain, path: '/url/path'});
       });
 
       expect(caught).toEqual(true);
@@ -274,7 +280,7 @@ describe('HTTP client', () => {
     await expect(client.get({path: '/url/path', extraHeaders: customHeaders})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
-    assertHttpRequest('GET', domain, '/url/path', customHeaders);
+    assertHttpRequest({method: 'GET', domain, path: '/url/path', headers: customHeaders});
   });
 
   it('extends User-Agent if it is provided', async () => {
@@ -286,8 +292,13 @@ describe('HTTP client', () => {
     await expect(client.get({path: '/url/path', extraHeaders: customHeaders})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
-    assertHttpRequest('GET', domain, '/url/path', {
-      'User-Agent': expect.stringContaining('My agent | Shopify App Dev Kit v'),
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/url/path',
+      headers: {
+        'User-Agent': expect.stringContaining('My agent | Shopify App Dev Kit v'),
+      },
     });
 
     customHeaders = {'user-agent': 'My lowercase agent'};
@@ -297,8 +308,13 @@ describe('HTTP client', () => {
     await expect(client.get({path: '/url/path', extraHeaders: customHeaders})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
-    assertHttpRequest('GET', domain, '/url/path', {
-      'User-Agent': expect.stringContaining('My lowercase agent | Shopify App Dev Kit v'),
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/url/path',
+      headers: {
+        'User-Agent': expect.stringContaining('My lowercase agent | Shopify App Dev Kit v'),
+      },
     });
   });
 
@@ -321,7 +337,7 @@ describe('HTTP client', () => {
     );
 
     await expect(client.get({path: '/url/path', tries: 3})).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest('GET', domain, '/url/path', {}, null, 3);
+    assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 3});
   });
 
   it('retries failed requests and stops on non-retriable errors', async () => {
@@ -336,7 +352,7 @@ describe('HTTP client', () => {
 
     await expect(client.get({path: '/url/path', tries: 3})).rejects.toBeInstanceOf(ShopifyErrors.HttpResponseError);
     // The second call resulted in a non-retriable error
-    assertHttpRequest('GET', domain, '/url/path', {}, null, 2);
+    assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 2});
   });
 
   it('stops retrying after reaching the limit', async () => {
@@ -351,7 +367,7 @@ describe('HTTP client', () => {
     );
 
     await expect(client.get({path: '/url/path', tries: 3})).rejects.toBeInstanceOf(ShopifyErrors.HttpMaxRetriesError);
-    assertHttpRequest('GET', domain, '/url/path', {}, null, 3);
+    assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 3});
   });
 
   it('waits for the amount of time defined by the Retry-After header', async () => {
@@ -375,7 +391,7 @@ describe('HTTP client', () => {
     }, 4000);
 
     await expect(client.get({path: '/url/path', tries: 2})).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest('GET', domain, '/url/path', {}, null, 2);
+    assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 2});
     clearTimeout(retryTimeout);
   });
 });
