@@ -9,6 +9,7 @@ export interface ContextParams {
   IS_EMBEDDED_APP: boolean;
   IS_PRIVATE_APP?: boolean;
   SESSION_STORAGE?: SessionStorage;
+  USER_AGENT_PREFIX?: string;
 }
 
 export enum ApiVersion {

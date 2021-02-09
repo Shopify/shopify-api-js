@@ -6,6 +6,7 @@ import {Method, StatusCode} from '@shopify/network';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_APP_DEV_KIT_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
+import {Context} from '../../context';
 
 import {
   DataType,
@@ -63,7 +64,12 @@ class HttpClient {
       throw new ShopifyErrors.HttpRequestError(`Number of tries must be >= 0, got ${maxTries}`);
     }
 
-    let userAgent = `Shopify App Dev Kit v${SHOPIFY_APP_DEV_KIT_VERSION} | Node ${process.version}`;
+    let userAgent = `Shopify API Library v${SHOPIFY_APP_DEV_KIT_VERSION} | Node ${process.version}`;
+
+    if (Context.USER_AGENT_PREFIX) {
+      userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
+    }
+
     if (params.extraHeaders) {
       if (params.extraHeaders['user-agent']) {
         userAgent = `${params.extraHeaders['user-agent']} | ${userAgent}`;

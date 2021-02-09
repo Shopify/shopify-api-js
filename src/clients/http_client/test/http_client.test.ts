@@ -4,6 +4,7 @@ import querystring from 'querystring';
 import {HttpClient} from '../http_client';
 import {DataType, HeaderParams, RequestReturn} from '../../types';
 import * as ShopifyErrors from '../../../error';
+import {Context} from '../../../context';
 
 import {assertHttpRequest} from './test_helper';
 
