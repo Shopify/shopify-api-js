@@ -9,6 +9,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Added
 - Webhooks types are now exported outside the library [#91](https://github.com/shopify/shopify-node-api/pull/91)
 ### Fixed
+- Use cryptographically random bytes to generate nonce [#98](https://github.com/Shopify/shopify-node-api/pull/98)
 
 ## [0.3.1] - 2021-02-03
 ### Fixed
