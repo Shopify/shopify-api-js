@@ -44,7 +44,9 @@ describe('GraphQL client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
-    await expect(client.query({extraHeaders: customHeader, data: QUERY})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.query({extraHeaders: customHeader, data: QUERY})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
 
     customHeader[ShopifyHeader.AccessToken] = 'bork';
     assertHttpRequest({
@@ -78,6 +80,54 @@ describe('GraphQL client', () => {
 
   it('fails to instantiate without access token', () => {
     expect(() => new GraphqlClient(DOMAIN)).toThrow(ShopifyErrors.MissingRequiredArgument);
+  });
+
+  it('can handle queries with variables', async () => {
+    const client: GraphqlClient = new GraphqlClient(DOMAIN, 'bork');
+    const queryWithVariables = {
+      query: `query FirstTwo($first: Int) {
+        products(first: $first) {
+          edges {
+            node {
+              id
+          }
+        }
+      }
+    }`,
+      variables: `{
+        'first': 2,
+      }`,
+    };
+    const expectedResponse = {
+      data: {
+        products: {
+          edges: [
+            {
+              node: {
+                id: 'foo',
+              },
+            },
+            {
+              node: {
+                id: 'bar',
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    fetchMock.mockResponseOnce(JSON.stringify(expectedResponse));
+
+    await expect(client.query({data: queryWithVariables})).resolves.toEqual(buildExpectedResponse(expectedResponse));
+
+    assertHttpRequest(
+      'POST',
+      DOMAIN,
+      '/admin/api/unstable/graphql.json',
+      {'Content-Length': 219, 'Content-Type': 'application/json', 'X-Shopify-Access-Token': 'bork'},
+      JSON.stringify(queryWithVariables),
+    );
   });
 });
 
