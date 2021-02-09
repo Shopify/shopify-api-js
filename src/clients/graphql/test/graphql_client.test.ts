@@ -83,6 +83,14 @@ describe('GraphQL client', () => {
     fetchMock.mockResponseOnce(JSON.stringify(expectedResponse));
 
     await expect(client.query({data: queryWithVariables})).resolves.toEqual(buildExpectedResponse(expectedResponse));
+
+    assertHttpRequest(
+      'POST',
+      DOMAIN,
+      '/admin/api/unstable/graphql.json',
+      {'Content-Length': 219, 'Content-Type': 'application/json', 'X-Shopify-Access-Token': 'bork'},
+      JSON.stringify(queryWithVariables),
+    );
   });
 });
 
