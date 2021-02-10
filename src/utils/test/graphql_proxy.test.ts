@@ -23,6 +23,18 @@ const shopQuery = `{
     name
   }
 }`;
+const objectQuery = {
+  query: `{
+    query {
+      with {
+        variable
+      }
+    }
+  }`,
+  variables: `{
+    foo: bar
+  }`,
+};
 const shop = 'shop.myshopify.com';
 const accessToken = 'dangit';
 let token = '';
@@ -54,14 +66,23 @@ describe('GraphQL proxy with session', () => {
     const app = express();
     app.post('/proxy', graphqlProxy);
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
-    const response = await request(app)
+    fetchMock.mockResponses(JSON.stringify(successResponse), JSON.stringify(successResponse));
+
+    const firstResponse = await request(app)
       .post('/proxy')
       .set('authorization', `Bearer ${token}`)
       .send(shopQuery)
       .expect(200);
 
-    expect(JSON.parse(response.text)).toEqual(successResponse);
+    expect(JSON.parse(firstResponse.text)).toEqual(successResponse);
+
+    const nextResponse = await request(app)
+      .post('/proxy')
+      .set('authorization', `Bearer ${token}`)
+      .send(objectQuery)
+      .expect(200);
+
+    expect(JSON.parse(nextResponse.text)).toEqual(successResponse);
   });
 
   it('rejects if no query', async () => {
