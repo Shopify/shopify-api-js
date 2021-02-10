@@ -51,7 +51,7 @@ const Context: ContextInterface = {
 
     if (missing.length) {
       throw new ShopifyErrors.ShopifyError(
-        `Cannot initialize Shopify App Dev Kit. Missing values for: ${missing.join(', ')}`,
+        `Cannot initialize Shopify API Library. Missing values for: ${missing.join(', ')}`,
       );
     }
 
@@ -69,6 +69,10 @@ const Context: ContextInterface = {
 
     if (params.USER_AGENT_PREFIX) {
       this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
+    }
+
+    if (params.LOG_FILE) {
+      this.LOG_FILE = params.LOG_FILE;
     }
   },
 

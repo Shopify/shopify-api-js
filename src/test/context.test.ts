@@ -16,6 +16,7 @@ const validParams: ContextParams = {
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
+  LOG_FILE: 'some-file-path.txt',
 };
 
 const originalWarn = console.warn;
@@ -83,6 +84,7 @@ describe('Context object', () => {
       HOST_NAME: '',
       API_VERSION: ApiVersion.Unstable,
       IS_EMBEDDED_APP: true,
+      LOG_FILE: '',
     };
     expect(() => Context.initialize(empty)).toThrow(ShopifyErrors.ShopifyError);
   });
