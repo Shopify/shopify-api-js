@@ -7,6 +7,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- GraphQL Proxy attempts to parse the request body as JSON before passing it to the client. [#106](https://github.com/shopify/shopify-node-api/pull/106)
+
 ## [0.4.0] - 2021-02-10
 
 ### Added

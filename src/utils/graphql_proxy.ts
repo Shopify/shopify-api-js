@@ -8,35 +8,40 @@ import loadCurrentSession from './load-current-session';
 export default async function graphqlProxy(userReq: http.IncomingMessage, userRes: http.ServerResponse): Promise<void> {
   const session = await loadCurrentSession(userReq, userRes);
   if (!session) {
-    throw new ShopifyErrors.SessionNotFound(
-      'Cannot proxy query. No session found.',
-    );
+    throw new ShopifyErrors.SessionNotFound('Cannot proxy query. No session found.');
   } else if (!session.accessToken) {
-    throw new ShopifyErrors.InvalidSession(
-      'Cannot proxy query. Session not authenticated.',
-    );
+    throw new ShopifyErrors.InvalidSession('Cannot proxy query. Session not authenticated.');
   }
 
   const shopName: string = session.shop;
   const token: string = session.accessToken;
-  let query = '';
+  let reqBodyString = '';
 
-  const promise: Promise<void> = new Promise((resolve, _reject) => { // eslint-disable-line promise/param-names
+  // eslint-disable-next-line promise/param-names
+  const promise: Promise<void> = new Promise((resolve, _reject) => {
     userReq.on('data', (chunk) => {
-      query += chunk;
+      reqBodyString += chunk;
     });
 
     userReq.on('end', async () => {
+      let reqBodyObject: Record<string, unknown> | undefined;
+      try {
+        reqBodyObject = JSON.parse(reqBodyString);
+      } catch (err) {
+        // we can just continue and attempt to pass the string
+      }
+
+      let status = 200;
       let body: unknown = '';
+
       try {
         const options = {
-          data: query,
+          data: reqBodyObject ? reqBodyObject : reqBodyString,
         };
         const client = new GraphqlClient(shopName, token);
         const response = await client.query(options);
         body = response.body;
       } catch (err) {
-        let status;
         switch (err.constructor.name) {
           case 'MissingRequiredArgument':
             status = 400;
@@ -50,9 +55,9 @@ export default async function graphqlProxy(userReq: http.IncomingMessage, userRe
           default:
             status = 500;
         }
-        userRes.statusCode = status;
         body = err.message;
       } finally {
+        userRes.statusCode = status;
         userRes.end(JSON.stringify(body));
       }
       return resolve();
