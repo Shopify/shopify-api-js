@@ -6,7 +6,7 @@ interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;
 
   /**
-   * Sets up the Shopify App Dev Kit to be able to integrate with Shopify and run authenticated commands.
+   * Sets up the Shopify API Library to be able to integrate with Shopify and run authenticated commands.
    *
    * @param params Settings to update
    */

@@ -6,7 +6,7 @@ import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
 
 import * as ShopifyErrors from '../../error';
-import {SHOPIFY_APP_DEV_KIT_VERSION} from '../../version';
+import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
 import {Context} from '../../context';
 
@@ -69,7 +69,7 @@ class HttpClient {
       throw new ShopifyErrors.HttpRequestError(`Number of tries must be >= 0, got ${maxTries}`);
     }
 
-    let userAgent = `Shopify API Library v${SHOPIFY_APP_DEV_KIT_VERSION} | Node ${process.version}`;
+    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
 
     if (Context.USER_AGENT_PREFIX) {
       userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
