@@ -18,6 +18,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - Webhooks types are now exported outside the library [#91](https://github.com/shopify/shopify-node-api/pull/91)
 - Added support for private apps [#99](https://github.com/Shopify/shopify-node-api/pull/99)
 - `USER_AGENT_PREFIX` added to Context, to add agent to all requests [#101](https://github.com/Shopify/shopify-node-api/pull/101)
+- Add link to tutorial on how to rotate credentials if neccesary [#107](https://github.com/Shopify/shopify-node-api/pull/107)
 
 ### Fixed
 

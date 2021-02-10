@@ -45,12 +45,15 @@ src/
   index.ts
 ```
 
-If your application is in a Git repository, you should make sure to add these files to `.gitignore`:
+If your application is in a Git repository, you should **make sure to add these files to `.gitignore`**.
+
 ```
 .env
 dist
 node_modules
 ```
+
+ **Important:** If you ever accidentally commit your API secret to GitHub or any other third party, you can follow [this tutorial](https://shopify.dev/tutorials/rotate-revoke-api-credentials) on how to generate new credentials for your application.
 
 `tsconfig.json`
 ```json
