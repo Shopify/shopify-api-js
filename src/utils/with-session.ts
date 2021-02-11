@@ -18,7 +18,6 @@ export default async function withSession({
   Context.throwIfUninitialized();
 
   let session: Session | undefined;
-  let client: RestClient | GraphqlClient;
   if (isOnline) {
     if (!req || !res) {
       throw new ShopifyErrors.MissingRequiredArgument('Please pass in both the "request" and "response" objects.');
@@ -39,6 +38,7 @@ export default async function withSession({
     throw new ShopifyErrors.InvalidSession('Requested session does not contain an accessToken.');
   }
 
+  let client: RestClient | GraphqlClient;
   switch (clientType) {
     case 'rest':
       client = new RestClient(session.shop, session.accessToken);

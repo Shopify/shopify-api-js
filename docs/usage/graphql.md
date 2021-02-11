@@ -4,7 +4,7 @@ Once OAuth is complete, we can use the library's `GraphqlClient` to make request
 
 ```ts
   const session = await Shopify.Utils.loadCurrentSession(req, res); // load the current session to get the `accessToken`
-  const client = new Shopify.Clients.Graphql.GraphqlClient(session.shop, session.accessToken); // GraphQLClient accepts the same arguments as RestClient
+  const client = new Shopify.Clients.Graphql(session.shop, session.accessToken); // GraphQLClient accepts the same arguments as RestClient
   const products = await client.query({ // use client.query and pass your query as `data`
     data: `{
       products (first: 10) {

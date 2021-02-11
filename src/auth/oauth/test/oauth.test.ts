@@ -307,7 +307,7 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     expect(session?.accessToken).toBe(successResponse.access_token);
     expect(session?.expires).toBeInstanceOf(Date);
-    expect(session?.onlineAccesInfo).toEqual(expectedOnlineAccessInfo);
+    expect(session?.onlineAccessInfo).toEqual(expectedOnlineAccessInfo);
   });
 
   test('converts an OAuth session into a JWT one if it is online', async () => {

@@ -10,7 +10,8 @@ The Shopify library enables you to handle all Webhooks in a single endpoint (see
 
 In this example the webhook is being registered as soon as the authentication is completed.
 
-### Node.js
+<details>
+<summary>Node.js</summary>
 
 ```typescript
   } // end of if (pathName === '/login')
@@ -18,20 +19,19 @@ In this example the webhook is being registered as soon as the authentication is
   // Register webhooks after OAuth completes
   if (pathName === '/auth/callback') {
     try {
-      await Shopify.Auth.OAuth.validateAuthCallback(request, response, query as AuthQuery);
+      await Shopify.Auth.validateAuthCallback(request, response, query as AuthQuery);
 
-      const handleWebhookRequest = (topic: string, shop: string, webhookRequestBody: Buffer) => {
+      const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: Buffer) => {
         // this handler is triggered when a webhook is sent by the Shopify platform to your application
       }
 
-      const currentSession = await Shopify.Utils.loadCurrentSession(request, response, false);
+      const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
 
       const resp = await Shopify.Webhooks.Registry.register({
         path: '/webhooks',
         topic: 'PRODUCTS_CREATE',
         accessToken: currentSession.accessToken,
         shop: currentSession.shop,
-        apiVersion: Context.API_VERSION,
         webhookHandler: handleWebhookRequest
       });
       response.writeHead(302, { 'Location': '/' });
@@ -40,27 +40,28 @@ In this example the webhook is being registered as soon as the authentication is
     catch (e) {
       ...
 ```
+</details>
 
-### Express
+<details>
+<summary>Express</summary>
 
 ```ts
 // Register webhooks after OAuth completes
 app.get('/auth/callback', async (req, res) => {
   try {
-    await Shopify.Auth.OAuth.validateAuthCallback(req, res, req.query as unknown as AuthQuery); // req.query must be cast to unkown and then AuthQuery in order to be accepted
+    await Shopify.Auth.validateAuthCallback(req, res, req.query as unknown as AuthQuery); // req.query must be cast to unkown and then AuthQuery in order to be accepted
 
-    const handleWebhookRequest = (topic: string, shop: string, webhookRequestBody: Buffer) => {
+    const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: Buffer) => {
       // this handler is triggered when a webhook is sent by the Shopify platform to your application
     }
 
-    const currentSession = await Shopify.Utils.loadCurrentSession(request, response, false);
+    const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
 
     const resp = await Shopify.Webhooks.Registry.register({
       path: '/webhooks',
       topic: 'PRODUCTS_CREATE',
       accessToken: currentSession.accessToken,
       shop: currentSession.shop,
-      apiVersion: Context.API_VERSION,
       webhookHandler: handleWebhookRequest
     });
   } catch (error) {
@@ -69,12 +70,14 @@ app.get('/auth/callback', async (req, res) => {
   return res.redirect('/'); // wherever you want your user to end up after OAuth completes
 });
 ```
+</details>
 
 ## Process a Webhook
 
 To process a webhook, you need to listen on the route(s) you provided during the Webhook registration process, then call the appropriate handler.  The library provides a convenient `process` method which takes care of calling the correct handler for the registered Webhook topics.
 
-### Node.js
+<details>
+<summary>Node.js</summary>
 
 ```typescript
   } // end of if (pathName === '/auth/callback')
@@ -86,7 +89,7 @@ To process a webhook, you need to listen on the route(s) you provided during the
     }).on('end', function () {
       const buffer: Buffer = Buffer.concat(data);
       try {
-        const result = Shopify.Webhooks.Registry.process({ headers: headers, body: buffer });
+        const result = await Shopify.Webhooks.Registry.process({ headers: headers, body: buffer });
 
         response.writeHead(result.statusCode, result.headers);
         response.end();
@@ -103,36 +106,38 @@ To process a webhook, you need to listen on the route(s) you provided during the
         }
       }
     });
-
     return;
   } // end of if (Shopify.Webhooks.Registry.isWebhookPath(pathName))
 }  // end of onRequest()
 
 http.createServer(onRequest).listen(3000);
 ```
+</details>
 
-### Express
+<details>
+<summary>Express</summary>
 
 ```typescript
 app.post('/webhooks', async (req, res) => {
   try {
-    const result = Shopify.Webhooks.Registry.process({ headers: req.headers, body: req.body });
+    const result = await Shopify.Webhooks.Registry.process({ headers: req.headers, body: req.body });
 
-    response.writeHead(result.statusCode, result.headers);
-    response.end();
+    res.writeHead(result.statusCode, result.headers);
+    res.end();
   }
   catch (e) {
     console.log(e);
 
-    response.writeHead(500);
+    res.writeHead(500);
     if (e instanceof Shopify.Errors.ShopifyError) {
-      response.end(e.message);
+      res.end(e.message);
     }
     else {
-      response.end(`Failed to complete webhook processing: ${e.message}`);
+      res.end(`Failed to complete webhook processing: ${e.message}`);
     }
   }
 });
 ```
+</details>
 
 [Back to guide index](../index.md)

@@ -19,7 +19,8 @@ This method accepts a `withSessionParams` object as its argument, which accepts 
 
 The following are specific examples of GraphQL/online session, and REST/offline session, but any combination of `clientType` and `isOnline` is valid.
 
-### Example: GraphQL Client with online Session
+<details>
+<summary>Example: GraphQL Client with online Session</summary>
 
 ```ts
 // create a `WithSessionParams` object with the necessary information to pass to `withSession`
@@ -30,7 +31,7 @@ const clientWithSessionParams: WithSessionParams = {
   res: response, // http.ServerResponse object
 };
 
-const {client, session} = await Shopify.Utils.withSession(clientWithSessionParams);
+const {client, session} = await Shopify.Utils.withSession(clientWithSessionParams) as GraphqlWithSession;
 
 // now you can make requests to the API using this client:
 const shopName = await client.query({
@@ -44,8 +45,10 @@ const shopName = await client.query({
 // you can also introspect on the returned Session, if you need to
 const currentSessionUser = session.onlineAccessInfo.associated_user;
 ```
+</details>
 
-### Example: REST Client with offline session
+<details>
+<summary>Example: REST Client with offline session</summary>
 
 ```ts
 const clientWithSessionParams: WithSessionParams = {
@@ -54,9 +57,10 @@ const clientWithSessionParams: WithSessionParams = {
   shop: SHOP, // Shopify store url, without protocol, ie: "{shop}.myshopify.com"
 };
 
-const {client, session} = await Shopify.Utils.withSession(clientWithSessionParams);
+const {client, session} = await Shopify.Utils.withSession(clientWithSessionParams) as RestWithSession;
 
 const products = await client.get({path: 'products'});
 
 const currentSessionScope = session.scope;
 ```
+</details>
