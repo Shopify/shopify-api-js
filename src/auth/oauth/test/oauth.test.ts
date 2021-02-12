@@ -92,7 +92,7 @@ describe('beginAuth', () => {
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
-      scope: Context.SCOPES,
+      scope: Context.SCOPES.toString(),
       redirect_uri: `https://${Context.HOST_NAME}/some-callback`,
       state: session ? session.state : '',
       'grant_options[]': '',
@@ -111,7 +111,7 @@ describe('beginAuth', () => {
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
-      scope: Context.SCOPES,
+      scope: Context.SCOPES.toString(),
       redirect_uri: `https://${Context.HOST_NAME}/some-callback`,
       state: session ? session.state : '',
       'grant_options[]': 'per-user',
@@ -221,7 +221,7 @@ describe('validateAuthCallback', () => {
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token string',
-      scope: Context.SCOPES.join(','),
+      scope: Context.SCOPES.toString(),
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -255,7 +255,7 @@ describe('validateAuthCallback', () => {
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token string',
-      scope: Context.SCOPES.join(','),
+      scope: Context.SCOPES.toString(),
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 

@@ -71,7 +71,7 @@ const ShopifyOAuth = {
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
-      scope: Context.SCOPES.join(', '),
+      scope: Context.SCOPES.toString(),
       redirect_uri: `https://${Context.HOST_NAME}${redirectPath}`,
       state,
       'grant_options[]': isOnline ? 'per-user' : '',

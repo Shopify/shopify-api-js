@@ -1,9 +1,11 @@
 import * as ShopifyErrors from './error';
 import {SessionStorage, MemorySessionStorage} from './auth/session';
 import {ApiVersion, ContextParams} from './base_types';
+import {AuthScopes} from './auth/scopes';
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;
+  SCOPES: AuthScopes;
 
   /**
    * Sets up the Shopify API Library to be able to integrate with Shopify and run authenticated commands.
@@ -26,7 +28,7 @@ interface ContextInterface extends ContextParams {
 const Context: ContextInterface = {
   API_KEY: '',
   API_SECRET_KEY: '',
-  SCOPES: [],
+  SCOPES: new AuthScopes([]),
   HOST_NAME: '',
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
@@ -34,6 +36,13 @@ const Context: ContextInterface = {
   SESSION_STORAGE: new MemorySessionStorage(),
 
   initialize(params: ContextParams): void {
+    let scopes: AuthScopes;
+    if (params.SCOPES instanceof AuthScopes) {
+      scopes = params.SCOPES;
+    } else {
+      scopes = new AuthScopes(params.SCOPES);
+    }
+
     // Make sure that the essential params actually have content in them
     const missing: string[] = [];
     if (!params.API_KEY.length) {
@@ -42,7 +51,7 @@ const Context: ContextInterface = {
     if (!params.API_SECRET_KEY.length) {
       missing.push('API_SECRET_KEY');
     }
-    if (!params.SCOPES.length) {
+    if (!scopes.toArray().length) {
       missing.push('SCOPES');
     }
     if (!params.HOST_NAME.length) {
@@ -57,7 +66,7 @@ const Context: ContextInterface = {
 
     this.API_KEY = params.API_KEY;
     this.API_SECRET_KEY = params.API_SECRET_KEY;
-    this.SCOPES = params.SCOPES;
+    this.SCOPES = scopes;
     this.HOST_NAME = params.HOST_NAME;
     this.API_VERSION = params.API_VERSION;
     this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;

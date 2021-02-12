@@ -1,9 +1,10 @@
 import {SessionStorage} from './auth/session';
+import {AuthScopes} from './auth/scopes';
 
 export interface ContextParams {
   API_KEY: string;
   API_SECRET_KEY: string;
-  SCOPES: string[];
+  SCOPES: string[] | AuthScopes;
   HOST_NAME: string;
   API_VERSION: ApiVersion;
   IS_EMBEDDED_APP: boolean;
