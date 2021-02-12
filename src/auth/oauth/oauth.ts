@@ -147,7 +147,7 @@ const ShopifyOAuth = {
       currentSession.accessToken = access_token;
       currentSession.expires = sessionExpiration;
       currentSession.scope = scope;
-      currentSession.onlineAccesInfo = rest;
+      currentSession.onlineAccessInfo = rest;
     } else {
       const responseBody = postResponse.body as AccessTokenResponse;
       currentSession.accessToken = responseBody.access_token;
@@ -162,7 +162,7 @@ const ShopifyOAuth = {
       oauthSessionExpiration = new Date();
     } else if (Context.IS_EMBEDDED_APP) {
       // If this is an online session for an embedded app, prepare a JWT session to be used going forward
-      const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
+      const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
       const jwtSessionId = this.getJwtSessionId(currentSession.shop, `${onlineInfo.associated_user.id}`);
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
       await Context.SESSION_STORAGE.storeSession(jwtSession);

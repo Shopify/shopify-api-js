@@ -13,7 +13,7 @@ class Session {
     newSession.expires = session.expires;
     newSession.isOnline = session.isOnline;
     newSession.accessToken = session.accessToken;
-    newSession.onlineAccesInfo = session.onlineAccesInfo;
+    newSession.onlineAccessInfo = session.onlineAccessInfo;
 
     return newSession;
   }
@@ -24,7 +24,7 @@ class Session {
   public expires?: Date;
   public isOnline?: boolean;
   public accessToken?: string;
-  public onlineAccesInfo?: OnlineAccessInfo;
+  public onlineAccessInfo?: OnlineAccessInfo;
 
   constructor(readonly id: string) {}
 }
