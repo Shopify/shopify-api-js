@@ -32,7 +32,7 @@ describe('Context object', () => {
 
     expect(Context.API_KEY).toEqual(validParams.API_KEY);
     expect(Context.API_SECRET_KEY).toEqual(validParams.API_SECRET_KEY);
-    expect(Context.SCOPES).toEqual(validParams.SCOPES);
+    expect(Context.SCOPES.equals(validParams.SCOPES)).toBeTruthy();
     expect(Context.HOST_NAME).toEqual(validParams.HOST_NAME);
   });
 
