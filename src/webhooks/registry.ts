@@ -1,4 +1,5 @@
 import {createHmac} from 'crypto';
+import http from 'http';
 
 import {StatusCode} from '@shopify/network';
 
@@ -13,8 +14,6 @@ import {
   RegisterOptions,
   RegisterReturn,
   WebhookRegistryEntry,
-  ProcessOptions,
-  ProcessReturn,
   WebhookCheckResponse,
 } from './types';
 
@@ -31,9 +30,10 @@ interface RegistryInterface {
   /**
    * Processes the webhook request received from the Shopify API
    *
-   * @param options Parameters required to process a webhook message, including headers and message body
+   * @param request HTTP request received from Shopify
+   * @param response HTTP response to the request
    */
-  process(options: ProcessOptions): Promise<ProcessReturn>;
+  process(request: http.IncomingMessage, response: http.ServerResponse): Promise<void>;
 
   /**
    * Confirms that the given path is a webhook path
@@ -176,80 +176,108 @@ const WebhooksRegistry: RegistryInterface = {
 
     if (success) {
       // Remove this topic from the registry if it is already there
-      this.webhookRegistry = this.webhookRegistry.filter((item) => item.topic !== topic);
-      this.webhookRegistry.push({path, topic, webhookHandler});
+      WebhooksRegistry.webhookRegistry = WebhooksRegistry.webhookRegistry.filter((item) => item.topic !== topic);
+      WebhooksRegistry.webhookRegistry.push({path, topic, webhookHandler});
     }
 
     return {success, result: body};
   },
 
-  async process({headers, body}: ProcessOptions): Promise<ProcessReturn> {
-    if (!body.length) {
-      throw new ShopifyErrors.MissingRequiredArgument('No body was received when processing webhook');
-    }
+  async process(request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
+    let reqBody = '';
 
-    let hmac: string | undefined;
-    let topic: string | undefined;
-    let domain: string | undefined;
-    Object.entries(headers).map(([header, value]) => {
-      switch (header.toLowerCase()) {
-        case ShopifyHeader.Hmac.toLowerCase():
-          hmac = value;
-          break;
-        case ShopifyHeader.Topic.toLowerCase():
-          topic = value;
-          break;
-        case ShopifyHeader.Domain.toLowerCase():
-          domain = value;
-          break;
-      }
+    const promise: Promise<void> = new Promise((resolve, reject) => {
+      request.on('data', (chunk) => {
+        reqBody += chunk;
+      });
+
+      request.on('end', async () => {
+        if (!reqBody.length) {
+          response.writeHead(StatusCode.BadRequest);
+          response.end();
+          return reject(new ShopifyErrors.InvalidWebhookError('No body was received when processing webhook'));
+        }
+
+        let hmac: string | string [] | undefined;
+        let topic: string | string [] | undefined;
+        let domain: string | string [] | undefined;
+        Object.entries(request.headers).map(([header, value]) => {
+          switch (header.toLowerCase()) {
+            case ShopifyHeader.Hmac.toLowerCase():
+              hmac = value;
+              break;
+            case ShopifyHeader.Topic.toLowerCase():
+              topic = value;
+              break;
+            case ShopifyHeader.Domain.toLowerCase():
+              domain = value;
+              break;
+          }
+        });
+
+        const missingHeaders = [];
+        if (!hmac) {
+          missingHeaders.push(ShopifyHeader.Hmac);
+        }
+        if (!topic) {
+          missingHeaders.push(ShopifyHeader.Topic);
+        }
+        if (!domain) {
+          missingHeaders.push(ShopifyHeader.Domain);
+        }
+
+        if (missingHeaders.length) {
+          response.writeHead(StatusCode.BadRequest);
+          response.end();
+          return reject(new ShopifyErrors.InvalidWebhookError(
+            `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(', ')}]`,
+          ));
+        }
+
+        let statusCode: StatusCode | undefined;
+        let responseError: Error | undefined;
+        const headers = {};
+
+        const generatedHash = createHmac('sha256', Context.API_SECRET_KEY)
+          .update(reqBody, 'utf8')
+          .digest('base64');
+
+        if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
+          const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
+          const webhookEntry = WebhooksRegistry.webhookRegistry.find((entry) => entry.topic === graphqlTopic);
+
+          if (webhookEntry) {
+            try {
+              await webhookEntry.webhookHandler(graphqlTopic, domain as string, reqBody);
+              statusCode = StatusCode.Ok;
+            } catch (error) {
+              statusCode = StatusCode.InternalServerError;
+              responseError = error;
+            }
+          } else {
+            statusCode = StatusCode.Forbidden;
+            responseError = new ShopifyErrors.InvalidWebhookError(`No webhook is registered for topic ${topic}`);
+          }
+        } else {
+          statusCode = StatusCode.Forbidden;
+          responseError = new ShopifyErrors.InvalidWebhookError(`Could not validate request for topic ${topic}`);
+        }
+
+        response.writeHead(statusCode, headers);
+        response.end();
+        if (responseError) {
+          return reject(responseError);
+        } else {
+          return resolve();
+        }
+      });
     });
 
-    const missingHeaders = [];
-    if (!hmac) {
-      missingHeaders.push(ShopifyHeader.Hmac);
-    }
-    if (!topic) {
-      missingHeaders.push(ShopifyHeader.Topic);
-    }
-    if (!domain) {
-      missingHeaders.push(ShopifyHeader.Domain);
-    }
-
-    if (missingHeaders.length) {
-      throw new ShopifyErrors.InvalidWebhookError(
-        `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
-          ', ',
-        )}]`,
-      );
-    }
-
-    const result: ProcessReturn = {
-      statusCode: StatusCode.Forbidden,
-      headers: {},
-    };
-
-    const generatedHash = createHmac('sha256', Context.API_SECRET_KEY)
-      .update(body.toString('utf-8'), 'utf8')
-      .digest('base64');
-
-    if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
-      const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
-      const webhookEntry = this.webhookRegistry.find(
-        (entry) => entry.topic === graphqlTopic,
-      );
-
-      if (webhookEntry) {
-        await webhookEntry.webhookHandler(graphqlTopic, domain as string, body);
-        result.statusCode = StatusCode.Ok;
-        result.headers = {};
-      }
-    }
-    return result;
+    return promise;
   },
 
   isWebhookPath(path: string): boolean {
-    return Boolean(this.webhookRegistry.find((entry) => entry.path === path));
+    return Boolean(WebhooksRegistry.webhookRegistry.find((entry) => entry.path === path));
   },
 };
 

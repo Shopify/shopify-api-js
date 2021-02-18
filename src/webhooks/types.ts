@@ -1,5 +1,3 @@
-import {StatusCode} from '@shopify/network';
-
 export enum DeliveryMethod {
   Http = 'http',
   EventBridge = 'eventbridge',
@@ -8,7 +6,7 @@ export enum DeliveryMethod {
 type WebhookHandlerFunction = (
   topic: string,
   shop_domain: string,
-  body: Buffer
+  body: string
 ) => Promise<void>;
 
 export interface RegisterOptions {
@@ -30,16 +28,6 @@ export interface WebhookRegistryEntry {
   path: string;
   topic: string;
   webhookHandler: WebhookHandlerFunction;
-}
-
-export interface ProcessOptions {
-  headers: Record<string, string>;
-  body: Buffer;
-}
-
-export interface ProcessReturn {
-  statusCode: StatusCode;
-  headers: Record<string, string>;
 }
 
 interface WebhookCheckResponseNode {

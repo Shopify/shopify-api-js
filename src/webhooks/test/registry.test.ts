@@ -1,15 +1,17 @@
 import '../../test/test_helper';
 import {createHmac} from 'crypto';
 
+import express from 'express';
+import request from 'supertest';
 import {Method, Header, StatusCode} from '@shopify/network';
 
-import {DeliveryMethod, ProcessReturn, RegisterOptions} from '../types';
+import {DeliveryMethod, RegisterOptions} from '../types';
 import {ShopifyHeader} from '../../base_types';
 import {Context} from '../../context';
 import {DataType} from '../../clients/types';
 import {assertHttpRequest} from '../../clients/http_client/test/test_helper';
-import * as ShopifyErrors from '../../error';
 import ShopifyWebhooks from '..';
+import * as ShopifyErrors from '../../error';
 
 const webhookCheckEmptyResponse = {
   data: {
@@ -75,7 +77,7 @@ const failResponse = {
   data: {},
 };
 
-async function genericWebhookHandler(topic: string, shopDomain: string, body: Buffer): Promise<void> {
+async function genericWebhookHandler(topic: string, shopDomain: string, body: string): Promise<void> {
   if (!topic || !shopDomain || !body) {
     throw new Error('Missing webhook parameters');
   }
@@ -260,10 +262,13 @@ describe('ShopifyWebhooks.Registry.register', () => {
 });
 
 describe('ShopifyWebhooks.Registry.process', () => {
-  const rawBody = Buffer.from('{"foo": "bar"}', 'utf8');
+  const rawBody = '{"foo": "bar"}';
 
   beforeEach(async () => {
     Context.API_SECRET_KEY = 'kitties are cute';
+
+    Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
   });
 
   afterEach(async () => {
@@ -277,12 +282,14 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    const result: ProcessReturn = await ShopifyWebhooks.Registry.process({
-      headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8'))}),
-      body: rawBody,
-    });
+    const app = express();
+    app.post('/webhooks', ShopifyWebhooks.Registry.process);
 
-    expect(result.statusCode).toBe(StatusCode.Ok);
+    await request(app)
+      .post('/webhooks')
+      .set(headers({hmac: hmac(Context.API_SECRET_KEY, rawBody)}))
+      .send(rawBody)
+      .expect(StatusCode.Ok);
   });
 
   it('handles lower case headers', async () => {
@@ -292,12 +299,14 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    const result: ProcessReturn = await ShopifyWebhooks.Registry.process({
-      headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8')), lowercase: true}),
-      body: rawBody,
-    });
+    const app = express();
+    app.post('/webhooks', ShopifyWebhooks.Registry.process);
 
-    expect(result.statusCode).toBe(StatusCode.Ok);
+    await request(app)
+      .post('/webhooks')
+      .set(headers({hmac: hmac(Context.API_SECRET_KEY, rawBody), lowercase: true}))
+      .send(rawBody)
+      .expect(StatusCode.Ok);
   });
 
   it('handles the request and returns Forbidden when topic is not registered', async () => {
@@ -307,12 +316,23 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    const result: ProcessReturn = await ShopifyWebhooks.Registry.process({
-      headers: headers({hmac: hmac(Context.API_SECRET_KEY, rawBody.toString('utf8'))}),
-      body: rawBody,
+    const app = express();
+    app.post('/webhooks', async (req, res) => {
+      let errorThrown = false;
+      try {
+        await ShopifyWebhooks.Registry.process(req, res);
+      } catch (error) {
+        errorThrown = true;
+        expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
+      }
+      expect(errorThrown).toBeTruthy();
     });
 
-    expect(result.statusCode).toBe(StatusCode.Forbidden);
+    await request(app)
+      .post('/webhooks')
+      .set(headers({hmac: hmac(Context.API_SECRET_KEY, rawBody)}))
+      .send(rawBody)
+      .expect(StatusCode.Forbidden);
   });
 
   it('handles the request and returns Forbidden when hmac does not match', async () => {
@@ -322,12 +342,23 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    const result: ProcessReturn = await ShopifyWebhooks.Registry.process({
-      headers: headers({hmac: hmac('incorrect secret', rawBody.toString('utf8'))}),
-      body: rawBody,
+    const app = express();
+    app.post('/webhooks', async (req, res) => {
+      let errorThrown = false;
+      try {
+        await ShopifyWebhooks.Registry.process(req, res);
+      } catch (error) {
+        errorThrown = true;
+        expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
+      }
+      expect(errorThrown).toBeTruthy();
     });
 
-    expect(result.statusCode).toBe(StatusCode.Forbidden);
+    await request(app)
+      .post('/webhooks')
+      .set(headers({hmac: hmac('incorrect secret', rawBody)}))
+      .send(rawBody)
+      .expect(StatusCode.Forbidden);
   });
 
   it('fails if the given body is empty', async () => {
@@ -337,29 +368,90 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
 
-    expect(() => ShopifyWebhooks.Registry.process({headers: headers(), body: Buffer.from('', 'utf8')})).rejects.toThrow(
-      ShopifyErrors.MissingRequiredArgument,
-    );
+    const app = express();
+    app.post('/webhooks', async (req, res) => {
+      let errorThrown = false;
+      try {
+        await ShopifyWebhooks.Registry.process(req, res);
+      } catch (error) {
+        errorThrown = true;
+        expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
+      }
+      expect(errorThrown).toBeTruthy();
+    });
+
+    await request(app)
+      .post('/webhooks')
+      .set(headers())
+      .expect(StatusCode.BadRequest);
   });
 
   it('fails if the any of the required headers are missing', async () => {
     ShopifyWebhooks.Registry.webhookRegistry.push({
       path: '/webhooks',
-      topic: 'NONSENSE_TOPIC',
+      topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler,
     });
 
-    expect(() => ShopifyWebhooks.Registry.process({headers: headers({hmac: ''}), body: rawBody})).rejects.toThrow(
-      ShopifyErrors.InvalidWebhookError,
-    );
+    const app = express();
+    app.post('/webhooks', async (req, res) => {
+      let errorThrown = false;
+      try {
+        await ShopifyWebhooks.Registry.process(req, res);
+      } catch (error) {
+        errorThrown = true;
+        expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
+      }
+      expect(errorThrown).toBeTruthy();
+    });
 
-    expect(() => ShopifyWebhooks.Registry.process({headers: headers({topic: ''}), body: rawBody})).rejects.toThrow(
-      ShopifyErrors.InvalidWebhookError,
-    );
+    await request(app)
+      .post('/webhooks')
+      .set(headers({hmac: ''}))
+      .send(rawBody)
+      .expect(StatusCode.BadRequest);
 
-    expect(() => ShopifyWebhooks.Registry.process({headers: headers({domain: ''}), body: rawBody})).rejects.toThrow(
-      ShopifyErrors.InvalidWebhookError,
-    );
+    await request(app)
+      .post('/webhooks')
+      .set(headers({topic: ''}))
+      .send(rawBody)
+      .expect(StatusCode.BadRequest);
+
+    await request(app)
+      .post('/webhooks')
+      .set(headers({domain: ''}))
+      .send(rawBody)
+      .expect(StatusCode.BadRequest);
+  });
+
+  it('catches handler errors but still responds', async () => {
+    const errorMessage = 'Oh no something went wrong!';
+
+    ShopifyWebhooks.Registry.webhookRegistry.push({
+      path: '/webhooks',
+      topic: 'PRODUCTS',
+      webhookHandler: () => {
+        throw new Error(errorMessage);
+      },
+    });
+
+    const app = express();
+    app.post('/webhooks', async (req, res) => {
+      let errorThrown = false;
+      try {
+        await ShopifyWebhooks.Registry.process(req, res);
+      } catch (error) {
+        errorThrown = true;
+        expect(error.message).toEqual(errorMessage);
+      }
+      expect(errorThrown).toBeTruthy();
+    });
+
+    await request(app)
+      .post('/webhooks')
+      .set(headers({hmac: hmac(Context.API_SECRET_KEY, rawBody)}))
+      .send(rawBody)
+      .expect(500);
   });
 });
 
