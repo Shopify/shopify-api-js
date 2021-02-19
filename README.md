@@ -38,6 +38,8 @@ You can follow our [getting started guide](docs/index.md), which will provide in
 - [Performing OAuth](docs/usage/oauth.md)
   - [Add a route to start OAuth](docs/usage/oauth.md#add-a-route-to-start-oauth)
   - [Add your OAuth callback route](docs/usage/oauth.md#add-your-oauth-callback-route)
+  - [Fetching sessions](docs/usage/oauth.md#fetching-sessions)
+  - [Detecting scope changes](docs/usage/oauth.md#detecting-scope-changes)
 - [Make a REST API call](docs/usage/rest.md)
 - [Make a GraphQL API call](docs/usage/graphql.md)
 - [Webhooks](docs/usage/webhooks.md)
