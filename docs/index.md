@@ -13,6 +13,8 @@ You can follow our getting started guide, which will provide instructions on how
 - [Performing OAuth](usage/oauth.md)
   - [Add a route to start OAuth](usage/oauth.md#add-a-route-to-start-oauth)
   - [Add your OAuth callback route](usage/oauth.md#add-your-oauth-callback-route)
+  - [Fetching sessions](usage/oauth.md#fetching-sessions)
+  - [Detecting scope changes](usage/oauth.md#detecting-scope-changes)
 - [Make a REST API call](usage/rest.md)
 - [Make a GraphQL API call](usage/graphql.md)
 - [Create a Client using `withSession`](usage/withsession.md)

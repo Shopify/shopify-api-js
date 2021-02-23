@@ -108,4 +108,33 @@ After process is completed, you can navigate to `{your ngrok address}/oauth/begi
 
 You can use the `Shopify.Utils.loadCurrentSession()` method to load an online session automatically based on the current request. It will use cookies to load online sessions for non-embedded apps, and the `Authorization` header for token-based sessions in embedded apps, making all apps safe to use in modern browsers that block 3rd party cookies.
 
+## Fetching sessions
+
+As mentioned in the previous sections, you can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `Context.SESSION_STORAGE` strategy, and can be retrieved with the below utitilies.
+
+- To load an online session:
+```ts
+await Shopify.Utils.loadCurrentSession(request, response)
+```
+- To load an offline session:
+```ts
+await Shopify.Utils.loadOfflineSession(shop)
+```
+
+The library supports creating both offline and online sessions for the same shop, so it is up to the app to call the appropriate loading method depending on its needs.
+
+## Detecting scope changes
+
+When the OAuth process is completed, the created session has a `scope` field which holds all of the scopes that were requested from the merchant at the time.
+
+When an app's scopes change, it needs to request merchants to go through OAuth again to renew its permissions. The library provides an easy way for you to check whether that is the case at any point in your code:
+
+```ts
+const session: Session; // Loaded from one of the utility methods above
+
+if (!Shopify.Context.SCOPES.equals(session.scope)) {
+  // Scopes have changed, the app should redirect the merchant to OAuth
+}
+```
+
 [Back to guide index](../index.md)
