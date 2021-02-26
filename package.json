@@ -1,7 +1,7 @@
 {
   "name": "@shopify/shopify-api",
   "version": "1.0.0",
-  "description": "Shopify TypeScript API to support core API functionality (auth, graphql proxy, webhooks)",
+  "description": "Shopify Admin API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -26,6 +26,16 @@
   "homepage": "https://github.com/Shopify/shopify-node-api",
   "author": "Shopify Inc.",
   "license": "MIT",
+  "keywords": [
+    "shopify",
+    "node",
+    "jwt",
+    "app",
+    "graphql",
+    "rest",
+    "webhook",
+    "Admin API"
+  ],
   "dependencies": {
     "@shopify/network": "^1.5.1",
     "@types/jsonwebtoken": "^8.5.0",

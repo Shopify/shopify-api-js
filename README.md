@@ -16,7 +16,7 @@ This library can be used in any application that has a Node.js backend, since it
 # Requirements
 
 To follow these usage guides, you will need to:
-- have a basic understanding of [Node.js](https://nodejs.org) and of [TypeScript](https://typescriptlang.org)
+- have a basic understanding of [Node.js](https://nodejs.org)
 - have a Shopify Partner account and development store
 - _OR_ have a test store where you can create a private app
 - have a private or custom app already set up in your test store or partner account
