@@ -112,16 +112,16 @@ You can use the `Shopify.Utils.loadCurrentSession()` method to load an online se
 
 As mentioned in the previous sections, you can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `Context.SESSION_STORAGE` strategy, and can be retrieved with the below utitilies.
 
-- To load an online session:
+- To load a session, you can use the following method. You can load both online and offline sessions from the current request / response objects.
 ```ts
-await Shopify.Utils.loadCurrentSession(request, response)
+await Shopify.Utils.loadCurrentSession(request, response, isOnline);
 ```
-- To load an offline session:
+- If you need to load a session for a background job, you can get offline sessions directly from the shop.
 ```ts
-await Shopify.Utils.loadOfflineSession(shop)
+await Shopify.Utils.loadOfflineSession(shop);
 ```
 
-The library supports creating both offline and online sessions for the same shop, so it is up to the app to call the appropriate loading method depending on its needs.
+**Note**: the `loadOfflineSession` method does not perform any validations on the `shop` parameter. You should avoid calling it from user inputs or URLs.
 
 ## Detecting scope changes
 
