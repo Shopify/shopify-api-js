@@ -6,7 +6,7 @@ import ShopifyClients from './clients';
 import ShopifyUtils from './utils';
 import ShopifyWebhooks from './webhooks';
 
-const Shopify = {
+export const Shopify = {
   Context,
   Auth: ShopifyAuth,
   Session: ShopifySession,
