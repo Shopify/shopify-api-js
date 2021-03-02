@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## [1.1.0] - 2021-03-02
 - Minor text/doc changes
 - Added `2021-01` API version to enum. [#117](https://github.com/shopify/shopify-node-api/pull/117)
 - Allow retrieving offline sessions using `loadCurrentSession`. [#119](https://github.com/shopify/shopify-node-api/pull/119)
