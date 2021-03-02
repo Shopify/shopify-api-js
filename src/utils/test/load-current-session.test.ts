@@ -10,6 +10,7 @@ import * as ShopifyErrors from '../../error';
 import {Session} from '../../auth/session';
 import {JwtPayload} from '../decode-session-token';
 import loadCurrentSession from '../load-current-session';
+import {ShopifyOAuth} from '../../auth/oauth/oauth';
 
 jest.mock('cookies');
 
@@ -135,5 +136,40 @@ describe('loadCurrentSession', () => {
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
+  });
+
+  it('loads offline sessions from cookies', async () => {
+    Context.IS_EMBEDDED_APP = false;
+    Context.initialize(Context);
+
+    const req = {} as http.IncomingMessage;
+    const res = {} as http.ServerResponse;
+
+    const cookieId = ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io');
+
+    const session = new Session(cookieId);
+    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
+
+    Cookies.prototype.get.mockImplementation(() => cookieId);
+
+    await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
+  });
+
+  it('loads offline sessions from JWT token', async () => {
+    Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
+
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const req = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    } as http.IncomingMessage;
+    const res = {} as http.ServerResponse;
+
+    const session = new Session(ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io'));
+    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
+
+    await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
   });
 });

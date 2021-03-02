@@ -8,6 +8,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## Unreleased
 - Minor text/doc changes
 - Added `2021-01` API version to enum. [#117](https://github.com/shopify/shopify-node-api/pull/117)
+- Allow retrieving offline sessions using `loadCurrentSession`. [#119](https://github.com/shopify/shopify-node-api/pull/119)
 
 ## [1.0.0]
 

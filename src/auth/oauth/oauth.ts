@@ -224,10 +224,15 @@ const ShopifyOAuth = {
   /**
    * Extracts the current session id from the request / response pair.
    *
-   * @param request HTTP request object
+   * @param request  HTTP request object
    * @param response HTTP response object
+   * @param isOnline Whether to load online (default) or offline sessions (optional)
    */
-  getCurrentSessionId(request: http.IncomingMessage, response: http.ServerResponse): string | undefined {
+  getCurrentSessionId(
+    request: http.IncomingMessage,
+    response: http.ServerResponse,
+    isOnline = true,
+  ): string | undefined {
     let currentSessionId: string | undefined;
 
     if (Context.IS_EMBEDDED_APP) {
@@ -239,13 +244,20 @@ const ShopifyOAuth = {
         }
 
         const jwtPayload = decodeSessionToken(matches[1]);
-        currentSessionId = this.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);
+        const shop = jwtPayload.dest.replace(/^https:\/\//, '');
+        if (isOnline) {
+          currentSessionId = this.getJwtSessionId(shop, jwtPayload.sub);
+        } else {
+          currentSessionId = this.getOfflineSessionId(shop);
+        }
       }
     }
 
-    // We fall back to the cookie session to allow apps to load their skeleton page after OAuth, so they can set up App
-    // Bridge and get a new JWT.
+    // Non-embedded apps will always load sessions using cookies. However, we fall back to the cookie session for
+    // embedded apps to allow apps to load their skeleton page after OAuth, so they can set up App Bridge and get a new
+    // JWT.
     if (!currentSessionId) {
+      // We still want to get the offline session id from the cookie to make sure it's validated
       currentSessionId = this.getCookieSessionId(request, response);
     }
 
