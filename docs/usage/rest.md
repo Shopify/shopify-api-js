@@ -9,45 +9,46 @@ The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and
 **Get and Delete:**
 
 - The `get` method accepts a `GetRequestParams` object, which accepts the following parameters: `path`, `type`, `data`, `query`, `extraHeaders`, and `tries`.
-
-- **`GetRequestParams`:**
-  | Parameter | Type | Notes | Required? | Default Value |
-  | -------------- | ----------------------------------- | ------------------------------------------------------------------------------------- | :---------: | :-------------: |
-  | `path` | `string` |The requested API endpoint path | True | none |
-  | `data` | `Record<string, unknown> \| string` | The body of the request | False | none |
-  | `type` | `DataType` | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) | False | none |
-  | `query` | `Record<string, string \| number>` | An optional query object to be appended to the request | False | none |
-  | `extraHeaders` | `Record<string, string \| number>` | Any additional headers you want to send with your request | False | none |
-  | `tries` | `number` | The maximum number of times to retry the request _(must be >= 0)_ | False | `1` |
 - The `delete` method accepts a `DeleteRequestParams` object, **which has an identical strucuture to `GetRequestParams`**.
+-
+- **`GetRequestParams` / `DeleteRequestParams`:**
+  | Parameter | Type | Required? | Default Value | Notes |
+  | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
+  | `path` | `string` | True | none | The requested API endpoint path |
+  | `data` | `Record<string, unknown> \| string` | False | none | The body of the request |
+  | `type` | `DataType` | False | none | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) |
+  | `query` | `Record<string, string \| number>` | False | none | An optional query object to be appended to the request |
+  | `extraHeaders` | `Record<string, string \| number>` | False | none | Any additional headers you want to send with your request |
+  | `tries` | `number` | False | `1` | The maximum number of times to retry the request _(must be >= 0)_ |
 
 **Post and Put:**
 
 - The `post` method accepts a `PostRequestParams` object, which differs from `get` in that both the `type` and `data` parameters are required, in addition to the `path`.
-
-- **`PostRequestParams`:**
-  | Parameter | Type | Notes | Required? | Default Value |
-  | -------------- | ----------------------------------- | ------------------------------------------------------------------------------------- | :---------: | :-------------: |
-  | `path` | `string` |The requested API endpoint path | True | none |
-  | `data` | `Record<string, unknown> \| string` | The body of the request | True | none |
-  | `type` | `DataType` | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) | True | none |
-  | `query` | `Record<string, string \| number>` | An optional query object to be appended to the request | False | none |
-  | `extraHeaders` | `Record<string, string \| number>` | Any additional headers you want to send with your request | False | none |
-  | `tries` | `number` | The maximum number of times to retry the request _(must be >= 0)_ | False | `1` |
-
 - The `put` method accepts a `PutRequestParams` object, **which has an identical structure to `PostRequestParams`**.
+-
+- **`PostRequestParams` / `PutRequestParams`:**
+  | Parameter | Type | Required? | Default Value | Notes |
+  | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
+  | `path` | `string` | True | none | The requested API endpoint path |
+  | `data` | `Record<string, unknown> \| string` | True | none | The body of the request |
+  | `type` | `DataType` | True | none | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) |
+  | `query` | `Record<string, string \| number>` | False | none | An optional query object to be appended to the request |
+  | `extraHeaders` | `Record<string, string \| number>` | False | none | Any additional headers you want to send with your request |
+  | `tries` | `number` | False | `1` | The maximum number of times to retry the request _(must be >= 0)_ |
 
 ## Usage Examples:
 
-You can run the code below in any endpoint where you have access to a request and response objects.
+We can run the code below in any endpoint where we have access to the request and response objects.
 
 **Perform a `get` request:**
 
 ```ts
-const session = await Shopify.Utils.loadCurrentSession(req, res); // load the current session to get the `accessToken`
-const client = new Shopify.Clients.Rest(session.shop, session.accessToken); // create a new client for the specified shop
+// Load the current session to get the `accessToken`.
+const session = await Shopify.Utils.loadCurrentSession(req, res);
+// Create a new client for the specified shop.
+const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
+// Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
 const products = await client.get({
-  // use client.get to request the REST endpoint you need, in this case "products"
   path: 'products',
 });
 
@@ -57,15 +58,22 @@ const products = await client.get({
 **Perform a `post` request:**
 
 ```ts
-const session = await Shopify.Utils.loadCurrentSession(req, res); // load the current session to get the `accessToken`
-const client = new Shopify.Clients.Rest(session.shop, session.accessToken); // create a new client for the specified shop
+// Load the current session to get the `accessToken`.
+const session = await Shopify.Utils.loadCurrentSession(req, res);
+// Create a new client for the specified shop.
+const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
+// Build your post request body.
 const body = {
-  // post request body for a new product
+  ...
 };
+// Use `client.post` to send your request to the specified Shopify REST API endpoint.
 await client.post({
   path: 'products',
   data: body,
+  type: DataType.JSON,
 });
 ```
+
+_for more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/admin-api/rest/reference/products/product#create-2021-01)._
 
 [Back to guide index](../index.md)
