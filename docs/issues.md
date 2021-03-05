@@ -11,12 +11,13 @@ Before you start writing your application, please note that the Shopify library 
 - Create a new instance of `CustomSessionStorage`, passing in callbacks to store, load, and delete sessions.
 - Implement those callbacks so that they perform the necessary actions in your preferred storage method.
 - Provide that instance when calling `Shopify.Context.initialize`, for example:
+
 ```ts
   // src/my_session_storage.ts
   import { SessionStorage } from '@shopify/shopify-api';
 
   async function storeCallback(session: Session): Promise<boolean> { ... }
-  async function loadCallback(id: string): Promise<Session | undefined> { ... }
+  async function loadCallback(id: string): Promise<Session | Record<string, unknown> | undefined> { ... }
   async function deleteCallback(id: string): Promise<boolean> { ... }
 
   const mySessionStorage = new Shopify.Session.CustomSessionStorage(
