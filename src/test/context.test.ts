@@ -17,6 +17,7 @@ const validParams: ContextParams = {
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
   LOG_FILE: 'some-file-path.txt',
+  EVENTBRIDGE_ARN: 'arn',
 };
 
 const originalWarn = console.warn;
@@ -85,6 +86,7 @@ describe('Context object', () => {
       API_VERSION: ApiVersion.Unstable,
       IS_EMBEDDED_APP: true,
       LOG_FILE: '',
+      EVENTBRIDGE_ARN: '',
     };
     expect(() => Context.initialize(empty)).toThrow(ShopifyErrors.ShopifyError);
   });

@@ -84,7 +84,15 @@ function buildCheckQuery(topic: string): string {
       edges {
         node {
           id
-          callbackUrl
+          endpoint {
+            __typename
+            ... on WebhookHttpEndpoint {
+              callbackUrl
+            }
+            ... on WebhookEventBridgeEndpoint {
+              arn
+            }
+          }
         }
       }
     }
@@ -144,8 +152,10 @@ const WebhooksRegistry: RegistryInterface = {
     webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
     const client = new GraphqlClient(shop, accessToken);
-    const address = `https://${Context.HOST_NAME}${path}`;
-
+    const address =
+      deliveryMethod && deliveryMethod === DeliveryMethod.EventBridge
+        ? path || Context.EVENTBRIDGE_ARN
+        : `https://${Context.HOST_NAME}${path}`;
     const checkResult = await client.query({
       data: buildCheckQuery(topic),
     });
@@ -154,8 +164,10 @@ const WebhooksRegistry: RegistryInterface = {
     let webhookId: string | undefined;
     let mustRegister = true;
     if (checkBody.data.webhookSubscriptions.edges.length) {
-      webhookId = checkBody.data.webhookSubscriptions.edges[0].node.id;
-      if (checkBody.data.webhookSubscriptions.edges[0].node.callbackUrl === address) {
+      const {id, endpoint} = checkBody.data.webhookSubscriptions.edges[0].node;
+      const endpointAddress = endpoint.__typename === 'WebhookHttpEndpoint' ? endpoint.callbackUrl : endpoint.arn;
+      webhookId = id;
+      if (endpointAddress === address) {
         mustRegister = false;
       }
     }
@@ -177,7 +189,7 @@ const WebhooksRegistry: RegistryInterface = {
     if (success) {
       // Remove this topic from the registry if it is already there
       WebhooksRegistry.webhookRegistry = WebhooksRegistry.webhookRegistry.filter((item) => item.topic !== topic);
-      WebhooksRegistry.webhookRegistry.push({path, topic, webhookHandler});
+      WebhooksRegistry.webhookRegistry.push({path: path || Context.EVENTBRIDGE_ARN, topic, webhookHandler});
     }
 
     return {success, result: body};

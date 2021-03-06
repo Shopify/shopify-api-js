@@ -29,7 +29,28 @@ const webhookCheckResponse = {
         {
           node: {
             id: webhookId,
-            callbackUrl: 'https://test_host_name/webhooks',
+            endpoint: {
+              __typename: 'WebhookHttpEndpoint',
+              callbackUrl: 'https://test_host_name/webhooks',
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+
+const eventBridgeWebhookCheckResponse = {
+  data: {
+    webhookSubscriptions: {
+      edges: [
+        {
+          node: {
+            id: webhookId,
+            endpoint: {
+              __typename: 'WebhookEventBridgeEndpoint',
+              arn: 'arn:test',
+            },
           },
         },
       ],
@@ -130,7 +151,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
     const webhook: RegisterOptions = {
-      path: '/webhooks',
+      path: 'arn:test',
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
@@ -166,10 +187,10 @@ describe('ShopifyWebhooks.Registry.register', () => {
   });
 
   it('updates a pre-existing eventbridge webhook even if it is already registered with Shopify', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessUpdateResponse));
     const webhook: RegisterOptions = {
-      path: '/webhooks/new',
+      path: 'arn:test-new',
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
@@ -186,9 +207,9 @@ describe('ShopifyWebhooks.Registry.register', () => {
   });
 
   it('fully skips registering a webhook if it is already registered with Shopify and its callback is the same', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
     const webhook: RegisterOptions = {
-      path: '/webhooks',
+      path: 'arn:test',
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
@@ -265,6 +286,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   const rawBody = '{"foo": "bar"}';
 
   beforeEach(async () => {
+    fetchMock.resetMocks();
     Context.API_SECRET_KEY = 'kitties are cute';
 
     Context.IS_EMBEDDED_APP = true;
@@ -508,7 +530,15 @@ function createWebhookCheckQuery(topic: string) {
       edges {
         node {
           id
-          callbackUrl
+          endpoint {
+            __typename
+            ... on WebhookHttpEndpoint {
+              callbackUrl
+            }
+            ... on WebhookEventBridgeEndpoint {
+              arn
+            }
+          }
         }
       }
     }
@@ -565,6 +595,10 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
 }
 
 function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: string) {
+  const address =
+    webhook.deliveryMethod && webhook.deliveryMethod === DeliveryMethod.EventBridge
+      ? webhook.path || Context.EVENTBRIDGE_ARN
+      : `https://${Context.HOST_NAME}${webhook.path}`;
   assertHttpRequest({
     method: Method.Post.toString(),
     domain: webhook.shop,
@@ -573,6 +607,6 @@ function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: 
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
-    data: createWebhookQuery(webhook.topic, `https://${Context.HOST_NAME}${webhook.path}`, webhook.deliveryMethod, webhookId),
+    data: createWebhookQuery(webhook.topic, address, webhook.deliveryMethod, webhookId),
   });
 }
