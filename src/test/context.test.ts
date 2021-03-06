@@ -35,6 +35,7 @@ describe('Context object', () => {
     expect(Context.API_SECRET_KEY).toEqual(validParams.API_SECRET_KEY);
     expect(Context.SCOPES.equals(validParams.SCOPES)).toBeTruthy();
     expect(Context.HOST_NAME).toEqual(validParams.HOST_NAME);
+    expect(Context.EVENTBRIDGE_ARN).toEqual(validParams.EVENTBRIDGE_ARN);
   });
 
   it("can't initialize with empty values", () => {
