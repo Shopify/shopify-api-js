@@ -24,7 +24,7 @@ const products = await client.query({
           node {
             id
             title
-            bodyHtml
+            descriptionHtml
           }
         }
       }

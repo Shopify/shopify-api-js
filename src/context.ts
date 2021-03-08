@@ -83,6 +83,10 @@ const Context: ContextInterface = {
     if (params.LOG_FILE) {
       this.LOG_FILE = params.LOG_FILE;
     }
+
+    if (params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN) {
+      this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN = params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
+    }
   },
 
   throwIfUninitialized(): void {

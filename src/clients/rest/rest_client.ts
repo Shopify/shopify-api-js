@@ -21,10 +21,10 @@ class RestClient extends HttpClient {
   }
 
   protected async request(params: RequestParams): Promise<RestRequestReturn> {
-    params.extraHeaders = {...params.extraHeaders};
-
-    params.extraHeaders[ShopifyHeader.AccessToken] = Context.IS_PRIVATE_APP
-      ? Context.API_SECRET_KEY : this.accessToken as string;
+    params.extraHeaders = {
+      [ShopifyHeader.AccessToken]: Context.IS_PRIVATE_APP ? Context.API_SECRET_KEY : this.accessToken as string,
+      ...params.extraHeaders,
+    };
 
     params.path = this.getRestPath(params.path);
 
@@ -80,8 +80,10 @@ class RestClient extends HttpClient {
   }
 
   private buildRequestParams(newPageUrl: string): GetRequestParams {
+    const pattern = `^/admin/api/[^/]+/(.*).json$`;
+
     const url = new URL(newPageUrl);
-    const path = url.pathname.replace(/^\/admin\/api\/[^/]+\/(.*)\.json$/, '$1');
+    const path = url.pathname.replace(new RegExp(pattern), '$1');
     const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as Record<string, string | number>;
     return {
       path,
