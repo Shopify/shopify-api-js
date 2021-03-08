@@ -6,12 +6,12 @@ Once OAuth is complete, we can use the library's `RestClient` to make an API cal
 
 The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and `put`, . These methods each take in an associated `<method>RequestParams` object as their argument, each with a set of required and optional parameters. The tables below outline these params objects.
 
-**Get and Delete:**
+### Get and Delete:
 
 - The `get` method accepts a `GetRequestParams` object, which accepts the following parameters: `path`, `type`, `data`, `query`, `extraHeaders`, and `tries`.
 - The `delete` method accepts a `DeleteRequestParams` object, **which has an identical strucuture to `GetRequestParams`**.
--
-- **`GetRequestParams` / `DeleteRequestParams`:**
+
+**`GetRequestParams` / `DeleteRequestParams`:**
   | Parameter | Type | Required? | Default Value | Notes |
   | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
   | `path` | `string` | True | none | The requested API endpoint path |
@@ -21,12 +21,12 @@ The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and
   | `extraHeaders` | `Record<string, string \| number>` | False | none | Any additional headers you want to send with your request |
   | `tries` | `number` | False | `1` | The maximum number of times to retry the request _(must be >= 0)_ |
 
-**Post and Put:**
+### Post and Put:
 
 - The `post` method accepts a `PostRequestParams` object, which differs from `get` in that both the `type` and `data` parameters are required, in addition to the `path`.
 - The `put` method accepts a `PutRequestParams` object, **which has an identical structure to `PostRequestParams`**.
--
-- **`PostRequestParams` / `PutRequestParams`:**
+
+**`PostRequestParams` / `PutRequestParams`:**
   | Parameter | Type | Required? | Default Value | Notes |
   | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
   | `path` | `string` | True | none | The requested API endpoint path |
@@ -40,7 +40,7 @@ The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and
 
 We can run the code below in any endpoint where we have access to the request and response objects.
 
-**Perform a `get` request:**
+### Perform a `GET` request:
 
 ```ts
 // Load the current session to get the `accessToken`.
@@ -55,7 +55,7 @@ const products = await client.get({
 // do something with the returned data
 ```
 
-**Perform a `post` request:**
+### Perform a `POST` request:
 
 ```ts
 // Load the current session to get the `accessToken`.
