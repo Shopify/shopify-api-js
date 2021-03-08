@@ -13,6 +13,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 
+- Improved documentation for GraphQL and Rest Clients. [#123](https://github.com/Shopify/shopify-node-api/pull/123)
+
+### Fixed
+
 ## [1.1.0] - 2021-03-02
 
 - Minor text/doc changes
