@@ -4,18 +4,20 @@ Once OAuth is complete, we can use the library's `GraphqlClient` to make request
 
 The `GraphQLClient`'s main method is `query`, which accepts a `GraphQLParams` object as its argument. `GraphQLParams` only requires the `data` parameter, but also optionally accepts `query`, `extraHeaders`, and `tries`:
 
-| Parameter      | Type                                | Notes                                                                                 | Required? | Default Value |
-| -------------- | ----------------------------------- | ------------------------------------------------------------------------------------- | :-------: | :-----------: |
-| `data`         | `Record<string, unknown> \| string` | Takes in either the query as a string, and an object containing a query and variables |   True    |     none      |
-| `query`        | `Record<string, string \| number>`  | An optional query object to be appended to the request                                |   False   |     none      |
-| `extraHeaders` | `Record<string, string \| number>`  | Any additional headers you want to send with your request                             |   False   |     none      |
-| `tries`        | `number`                            | The maximum number of times to retry the request _(must be >= 0)_                     |   False   |      `1`      |
+| Parameter      | Type                                |Required? | Default Value | Notes                                                                                 |
+| -------------- | ----------------------------------- |:-------: | :-----------: | ------------------------------------------------------------------------------------- |
+| `data`         | `Record<string, unknown> \| string` |    True    |     none     | Takes in either the query as a string, and an object containing a query and variables |
+| `query`        | `Record<string, string \| number>`  |   False   |     none      | An optional query object to be appended to the request                                |
+| `extraHeaders` | `Record<string, string \| number>`  |   False   |     none      | Any additional headers you want to send with your request                             |
+| `tries`        | `number`                            |   False   |      `1`      | The maximum number of times to retry the request _(must be >= 0)_                     |
 
 ```ts
-const session = await Shopify.Utils.loadCurrentSession(req, res); // load the current session to get the `accessToken`
-const client = new Shopify.Clients.Graphql(session.shop, session.accessToken); // GraphQLClient accepts the same arguments as RestClient
+// Load the current session to get the `accessToken`
+const session = await Shopify.Utils.loadCurrentSession(req, res);
+// GraphQLClient takes in the a the shop and the accessToken for that shop.
+const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
+// Use client.query and pass your query as `data`
 const products = await client.query({
-  // use client.query and pass your query as `data`
   data: `{
       products (first: 10) {
         edges {
@@ -28,6 +30,7 @@ const products = await client.query({
       }
     }`,
 });
+
 // do something with the returned data
 ```
 
