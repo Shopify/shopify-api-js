@@ -37,7 +37,7 @@ export class CustomSessionStorage implements SessionStorage {
         return result;
       } else if (result instanceof Object && 'id' in result) {
         let session = new Session(result.id as string);
-        session = Object.assign(session, result);
+        session = {...session, ...result};
         return session;
       } else {
         throw new ShopifyErrors.SessionStorageError(
