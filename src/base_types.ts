@@ -12,7 +12,6 @@ export interface ContextParams {
   SESSION_STORAGE?: SessionStorage;
   LOG_FILE?: string;
   USER_AGENT_PREFIX?: string;
-  EVENTBRIDGE_ARN: string;
 }
 
 export enum ApiVersion {

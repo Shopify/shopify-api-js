@@ -34,7 +34,6 @@ const Context: ContextInterface = {
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
   SESSION_STORAGE: new MemorySessionStorage(),
-  EVENTBRIDGE_ARN: '',
 
   initialize(params: ContextParams): void {
     let scopes: AuthScopes;
@@ -72,7 +71,6 @@ const Context: ContextInterface = {
     this.API_VERSION = params.API_VERSION;
     this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
     this.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
-    this.EVENTBRIDGE_ARN = params.EVENTBRIDGE_ARN;
 
     if (params.SESSION_STORAGE) {
       this.SESSION_STORAGE = params.SESSION_STORAGE;

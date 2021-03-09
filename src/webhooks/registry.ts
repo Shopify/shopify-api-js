@@ -154,7 +154,7 @@ const WebhooksRegistry: RegistryInterface = {
     const client = new GraphqlClient(shop, accessToken);
     const address =
       deliveryMethod && deliveryMethod === DeliveryMethod.EventBridge
-        ? path || Context.EVENTBRIDGE_ARN
+        ? path
         : `https://${Context.HOST_NAME}${path}`;
     const checkResult = await client.query({
       data: buildCheckQuery(topic),
@@ -189,7 +189,7 @@ const WebhooksRegistry: RegistryInterface = {
     if (success) {
       // Remove this topic from the registry if it is already there
       WebhooksRegistry.webhookRegistry = WebhooksRegistry.webhookRegistry.filter((item) => item.topic !== topic);
-      WebhooksRegistry.webhookRegistry.push({path: path || Context.EVENTBRIDGE_ARN, topic, webhookHandler});
+      WebhooksRegistry.webhookRegistry.push({path, topic, webhookHandler});
     }
 
     return {success, result: body};

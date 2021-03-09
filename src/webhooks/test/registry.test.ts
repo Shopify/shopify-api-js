@@ -597,7 +597,7 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
 function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: string) {
   const address =
     webhook.deliveryMethod && webhook.deliveryMethod === DeliveryMethod.EventBridge
-      ? webhook.path || Context.EVENTBRIDGE_ARN
+      ? webhook.path
       : `https://${Context.HOST_NAME}${webhook.path}`;
   assertHttpRequest({
     method: Method.Post.toString(),

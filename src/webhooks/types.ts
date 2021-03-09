@@ -9,22 +9,15 @@ type WebhookHandlerFunction = (
   body: string
 ) => Promise<void>;
 
-export type RegisterOptions = {
+export interface RegisterOptions {
   // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
   topic: string;
   path: string;
   shop: string;
   accessToken: string;
-  deliveryMethod?: DeliveryMethod.Http;
   webhookHandler: WebhookHandlerFunction;
-} | {
-  topic: string;
-  path?: string;
-  shop: string;
-  accessToken: string;
-  deliveryMethod: DeliveryMethod.EventBridge;
-  webhookHandler: WebhookHandlerFunction;
-};
+  deliveryMethod?: DeliveryMethod;
+}
 
 export interface RegisterReturn {
   success: boolean;

@@ -17,7 +17,6 @@ const validParams: ContextParams = {
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
   LOG_FILE: 'some-file-path.txt',
-  EVENTBRIDGE_ARN: 'arn',
 };
 
 const originalWarn = console.warn;
@@ -35,7 +34,6 @@ describe('Context object', () => {
     expect(Context.API_SECRET_KEY).toEqual(validParams.API_SECRET_KEY);
     expect(Context.SCOPES.equals(validParams.SCOPES)).toBeTruthy();
     expect(Context.HOST_NAME).toEqual(validParams.HOST_NAME);
-    expect(Context.EVENTBRIDGE_ARN).toEqual(validParams.EVENTBRIDGE_ARN);
   });
 
   it("can't initialize with empty values", () => {
@@ -87,7 +85,6 @@ describe('Context object', () => {
       API_VERSION: ApiVersion.Unstable,
       IS_EMBEDDED_APP: true,
       LOG_FILE: '',
-      EVENTBRIDGE_ARN: '',
     };
     expect(() => Context.initialize(empty)).toThrow(ShopifyErrors.ShopifyError);
   });
