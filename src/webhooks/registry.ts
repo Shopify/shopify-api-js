@@ -4,7 +4,7 @@ import http from 'http';
 import {StatusCode} from '@shopify/network';
 
 import {GraphqlClient} from '../clients/graphql/graphql_client';
-import {ShopifyHeader} from '../base_types';
+import {ApiVersion, ShopifyHeader} from '../base_types';
 import ShopifyUtilities from '../utils';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
@@ -15,6 +15,7 @@ import {
   RegisterReturn,
   WebhookRegistryEntry,
   WebhookCheckResponse,
+  WebhookCheckResponseLegacy,
 } from './types';
 
 interface RegistryInterface {
@@ -78,8 +79,21 @@ function isSuccess(result: any, deliveryMethod: DeliveryMethod, webhookId?: stri
   }
 }
 
+function versionSupportsEndpointField(
+  version: ApiVersion = Context.API_VERSION,
+) {
+  // 2020-07 onwards
+  return [
+    ApiVersion.July20,
+    ApiVersion.October20,
+    ApiVersion.January21,
+    ApiVersion.Unstable,
+    ApiVersion.Unversioned,
+  ].includes(version);
+}
+
 function buildCheckQuery(topic: string): string {
-  return `{
+  const query = `{
     webhookSubscriptions(first: 1, topics: ${topic}) {
       edges {
         node {
@@ -97,12 +111,25 @@ function buildCheckQuery(topic: string): string {
       }
     }
   }`;
+
+  const legacyQuery = `{
+    webhookSubscriptions(first: 1, topics: ${topic}) {
+      edges {
+        node {
+          id
+          callbackUrl
+        }
+      }
+    }
+  }`;
+
+  return versionSupportsEndpointField() ? query : legacyQuery;
 }
 
 function buildQuery(
   topic: string,
   address: string,
-  deliveryMethod: DeliveryMethod,
+  deliveryMethod: DeliveryMethod = DeliveryMethod.Http,
   webhookId?: string,
 ): string {
   let identifier: string;
@@ -115,11 +142,14 @@ function buildQuery(
   let mutationName: string;
   let webhookSubscriptionArgs: string;
   switch (deliveryMethod) {
-    case DeliveryMethod.Http:
+    case DeliveryMethod.Http || !versionSupportsEndpointField():
       mutationName = webhookId ? 'webhookSubscriptionUpdate' : 'webhookSubscriptionCreate';
       webhookSubscriptionArgs = `{callbackUrl: "${address}"}`;
       break;
     case DeliveryMethod.EventBridge:
+      if (!versionSupportsEndpointField()) {
+        throw new ShopifyErrors.UnsupportedClientType();
+      }
       mutationName = webhookId ? 'eventBridgeWebhookSubscriptionUpdate' : 'eventBridgeWebhookSubscriptionCreate';
       webhookSubscriptionArgs = `{arn: "${address}"}`;
       break;
@@ -158,14 +188,22 @@ const WebhooksRegistry: RegistryInterface = {
     const checkResult = await client.query({
       data: buildCheckQuery(topic),
     });
-    const checkBody = checkResult.body as WebhookCheckResponse;
-
+    const checkBody = versionSupportsEndpointField()
+      ? checkResult.body as WebhookCheckResponse
+      : checkResult.body as WebhookCheckResponseLegacy;
     let webhookId: string | undefined;
     let mustRegister = true;
     if (checkBody.data.webhookSubscriptions.edges.length) {
-      const {id, endpoint} = checkBody.data.webhookSubscriptions.edges[0].node;
-      const endpointAddress = endpoint.__typename === 'WebhookHttpEndpoint' ? endpoint.callbackUrl : endpoint.arn;
-      webhookId = id;
+      const {node} = checkBody.data.webhookSubscriptions.edges[0];
+      let endpointAddress = '';
+      if ('endpoint' in node) {
+        endpointAddress = node.endpoint.__typename === 'WebhookHttpEndpoint'
+          ? node.endpoint.callbackUrl
+          : node.endpoint.arn;
+      } else {
+        endpointAddress = node.callbackUrl;
+      }
+      webhookId = node.id;
       if (endpointAddress === address) {
         mustRegister = false;
       }

@@ -6,7 +6,7 @@ import request from 'supertest';
 import {Method, Header, StatusCode} from '@shopify/network';
 
 import {DeliveryMethod, RegisterOptions} from '../types';
-import {ShopifyHeader} from '../../base_types';
+import {ApiVersion, ShopifyHeader} from '../../base_types';
 import {Context} from '../../context';
 import {DataType} from '../../clients/types';
 import {assertHttpRequest} from '../../clients/http_client/test/test_helper';
@@ -55,6 +55,21 @@ const eventBridgeWebhookCheckResponse = {
               __typename: 'WebhookEventBridgeEndpoint',
               arn: 'arn:test',
             },
+          },
+        },
+      ],
+    },
+  },
+};
+
+const webhookCheckResponseLegacy = {
+  data: {
+    webhookSubscriptions: {
+      edges: [
+        {
+          node: {
+            id: webhookId,
+            callbackUrl: 'https://test_host_name/webhooks',
           },
         },
       ],
@@ -228,6 +243,41 @@ describe('ShopifyWebhooks.Registry.register', () => {
     assertWebhookCheckRequest(webhook);
   });
 
+  it('succeeds if a webhook is registered with a legacy API version', async () => {
+    Context.API_VERSION = ApiVersion.April19;
+    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponseLegacy));
+    fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
+    const webhook: RegisterOptions = {
+      path: '/webhooks/new',
+      topic: 'PRODUCTS_CREATE',
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+      webhookHandler: genericWebhookHandler,
+    };
+
+    const result = await ShopifyWebhooks.Registry.register(webhook);
+    expect(result.success).toBe(true);
+    expect(result.result).toEqual(successUpdateResponse);
+    expect(fetchMock.mock.calls.length).toBe(2);
+    assertWebhookCheckRequest(webhook);
+    assertWebhookRegistrationRequest(webhook, webhookId);
+  });
+
+  it('throws if an eventbridge webhook is registered with an unsupported API version', async () => {
+    expect(async () => {
+      Context.API_VERSION = ApiVersion.April19;
+      const webhook: RegisterOptions = {
+        path: '/webhooks/new',
+        topic: 'PRODUCTS_CREATE',
+        accessToken: 'some token',
+        shop: 'shop1.myshopify.io',
+        deliveryMethod: DeliveryMethod.EventBridge,
+        webhookHandler: genericWebhookHandler,
+      };
+      await ShopifyWebhooks.Registry.register(webhook);
+    }).rejects.toThrow();
+  });
+
   it('fails if given an invalid DeliveryMethod', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
@@ -292,7 +342,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   beforeEach(async () => {
     fetchMock.resetMocks();
     Context.API_SECRET_KEY = 'kitties are cute';
-
+    Context.API_VERSION = ApiVersion.Unstable;
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
   });

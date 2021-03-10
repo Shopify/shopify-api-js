@@ -30,23 +30,30 @@ export interface WebhookRegistryEntry {
   webhookHandler: WebhookHandlerFunction;
 }
 
-interface WebhookCheckResponseNode {
+interface WebhookCheckResponseNode<T = {
+  endpoint: {
+    __typename: 'WebhookHttpEndpoint';
+    callbackUrl: string;
+  } | {
+    __typename: 'WebhookEventBridgeEndpoint';
+    arn: string;
+  };
+}> {
   node: {
     id: string;
-    endpoint: {
-      __typename: 'WebhookHttpEndpoint';
-      callbackUrl: string;
-    } | {
-      __typename: 'WebhookEventBridgeEndpoint';
-      arn: string;
+  } & T;
+}
+
+export type WebhookCheckLegacyResponseNode = WebhookCheckResponseNode<{
+  callbackUrl: string;
+}>;
+
+export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
+  data: {
+    webhookSubscriptions: {
+      edges: T[];
     };
   };
 }
 
-export interface WebhookCheckResponse {
-  data: {
-    webhookSubscriptions: {
-      edges: WebhookCheckResponseNode[];
-    };
-  };
-}
+export type WebhookCheckResponseLegacy = WebhookCheckResponse<WebhookCheckLegacyResponseNode>;
