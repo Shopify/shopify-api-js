@@ -152,10 +152,9 @@ const WebhooksRegistry: RegistryInterface = {
     webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
     const client = new GraphqlClient(shop, accessToken);
-    const address =
-      deliveryMethod && deliveryMethod === DeliveryMethod.EventBridge
-        ? path
-        : `https://${Context.HOST_NAME}${path}`;
+    const address = deliveryMethod === DeliveryMethod.EventBridge
+      ? path
+      : `https://${Context.HOST_NAME}${path}`;
     const checkResult = await client.query({
       data: buildCheckQuery(topic),
     });
