@@ -292,4 +292,4 @@ const WebhooksRegistry: RegistryInterface = {
   },
 };
 
-export {WebhooksRegistry, RegistryInterface};
+export {WebhooksRegistry, RegistryInterface, buildCheckQuery, buildQuery};

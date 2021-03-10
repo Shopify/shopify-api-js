@@ -12,6 +12,10 @@ import {DataType} from '../../clients/types';
 import {assertHttpRequest} from '../../clients/http_client/test/test_helper';
 import ShopifyWebhooks from '..';
 import * as ShopifyErrors from '../../error';
+import {
+  buildQuery as createWebhookQuery,
+  buildCheckQuery as createWebhookCheckQuery,
+} from '../registry';
 
 const webhookCheckEmptyResponse = {
   data: {
@@ -522,63 +526,6 @@ function headers({
 
 function hmac(secret: string, body: string) {
   return createHmac('sha256', secret).update(body, 'utf8').digest('base64');
-}
-
-function createWebhookCheckQuery(topic: string) {
-  return `{
-    webhookSubscriptions(first: 1, topics: ${topic}) {
-      edges {
-        node {
-          id
-          endpoint {
-            __typename
-            ... on WebhookHttpEndpoint {
-              callbackUrl
-            }
-            ... on WebhookEventBridgeEndpoint {
-              arn
-            }
-          }
-        }
-      }
-    }
-  }`;
-}
-
-function createWebhookQuery(topic: string, address: string, deliveryMethod?: DeliveryMethod, webhookId?: string) {
-  const identifier = webhookId ? `id: "${webhookId}"` : `topic: ${topic}`;
-
-  if (deliveryMethod && deliveryMethod === DeliveryMethod.EventBridge) {
-    const name = webhookId ? 'eventBridgeWebhookSubscriptionUpdate' : 'eventBridgeWebhookSubscriptionCreate';
-    return `
-    mutation webhookSubscription {
-      ${name}(${identifier}, webhookSubscription: {arn: "${address}"}) {
-        userErrors {
-          field
-          message
-        }
-        webhookSubscription {
-          id
-        }
-      }
-    }
-  `;
-  } else {
-    const name = webhookId ? 'webhookSubscriptionUpdate' : 'webhookSubscriptionCreate';
-    return `
-    mutation webhookSubscription {
-      ${name}(${identifier}, webhookSubscription: {callbackUrl: "${address}"}) {
-        userErrors {
-          field
-          message
-        }
-        webhookSubscription {
-          id
-        }
-      }
-    }
-  `;
-  }
 }
 
 function assertWebhookCheckRequest(webhook: RegisterOptions) {
