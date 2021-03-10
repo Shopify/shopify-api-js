@@ -175,7 +175,7 @@ describe('validateAuthCallback', () => {
       ShopifyOAuth.validateAuthCallback(req, res, {
         shop: 'I do not exist',
       } as AuthQuery),
-    ).rejects.toThrow(ShopifyErrors.SessionNotFound);
+    ).rejects.toThrow(ShopifyErrors.CookieNotFound);
   });
 
   test('throws an error when receiving a callback for a shop with no saved session', async () => {
