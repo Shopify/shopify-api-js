@@ -106,13 +106,14 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    let currentSession: Session | undefined;
-
     const sessionCookie = this.getCookieSessionId(request, response);
-    if (sessionCookie) {
-      currentSession = await Context.SESSION_STORAGE.loadSession(sessionCookie);
+    if (!sessionCookie) {
+      throw new ShopifyErrors.CookieNotFound(
+        `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
+      );
     }
 
+    const currentSession = await Context.SESSION_STORAGE.loadSession(sessionCookie);
     if (!currentSession) {
       throw new ShopifyErrors.SessionNotFound(
         `Cannot complete OAuth process. No session found for the specified shop url: ${query.shop}`,
