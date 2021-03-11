@@ -44,7 +44,7 @@ interface WebhookCheckResponseNode<T = {
   } & T;
 }
 
-export type WebhookCheckLegacyResponseNode = WebhookCheckResponseNode<{
+type WebhookCheckLegacyResponseNode = WebhookCheckResponseNode<{
   callbackUrl: string;
 }>;
 
