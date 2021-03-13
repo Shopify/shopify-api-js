@@ -36,8 +36,8 @@ describe('REST client', () => {
     const getRequest = {
       path: 'products',
       query: {
-        "path": 'some_path'
-      }
+        path: 'some_path',
+      },
     };
 
     await expect(client.get(getRequest)).resolves.toEqual(buildExpectedResponse(successResponse));
