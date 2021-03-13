@@ -1,7 +1,7 @@
 import {RequestReturn, GetRequestParams} from '../http_client/types';
 
 export interface PageInfo {
-  limit: string;
+  limit?: string;
   fields?: string[];
   previousPageUrl?: string;
   nextPageUrl?: string;
