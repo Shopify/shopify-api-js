@@ -29,6 +29,21 @@ describe('REST client', () => {
     assertHttpRequest({method: 'GET', domain, path: '/admin/api/unstable/products.json'});
   });
 
+  it('can make GET request with path in query', async () => {
+    const client = new RestClient(domain, 'dummy-token');
+
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    const getRequest = {
+      path: 'products',
+      query: {
+        "path": 'some_path'
+      }
+    };
+
+    await expect(client.get(getRequest)).resolves.toEqual(buildExpectedResponse(successResponse));
+    assertHttpRequest({method: 'GET', domain, path: '/admin/api/unstable/products.json?path=some_path'});
+  });
+
   it('can make POST request with JSON data', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
