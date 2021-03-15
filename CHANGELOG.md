@@ -14,6 +14,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - Throw a different error for a missing cookie upon OAuth return [#131](https://github.com/shopify/shopify-node-api/pull/131)
 - Improved documentation for GraphQL and Rest Clients. [#123](https://github.com/Shopify/shopify-node-api/pull/123)
 - Made Docs directory more browseable in GitHub. [#136](https://github.com/Shopify/shopify-node-api/pull/136)
+- Made `limit` optional for get-requests with query [#135](https://github.com/Shopify/shopify-node-api/pull/135)
 
 ### Fixed
 
