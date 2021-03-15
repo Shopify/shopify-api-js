@@ -12,7 +12,7 @@ When you're ready to deploy your app and run it in production, you'll need to se
 
 | Method | Arg type | Return type  | Notes  |
 | ------- | ------- | ------------ | -------|
-| `storeCallback`  | `Session` | `Promise<boolean>` | Takes in the `Session` to be stored, returns a `boolean` (`true` if stored successfully).                                                                                                                            |
+| `storeCallback`  | `Session` | `Promise<boolean>` | Takes in the `Session` to be stored or updated, returns a `boolean` (`true` if stored successfully). <br/> This callback is used both to save new a `Session` and to **update an existing `Session`**.                                                                                                                        |
 | `loadCallback`   | `string`  | `Promise<Session \| Record<string, unknown> \| undefined> ` | Takes in the id of the `Session` to load (as a `string`) and returns either an instance of a `Session`, an object to be used to instantiate a `Session`, or `undefined` if no record is found for the specified id. |
 | `deleteCallback` | `string`  | `Promise<boolean>` | Takes in the id of the `Session` to load (as a `string`) and returns a  `booelan` (`true` if deleted successfully). |
 
@@ -60,7 +60,8 @@ class RedisStore {
 
   /*
     The storeCallback takes in the Session, and sets a stringified version of it on the redis store
-    If the session can be stored, we return true
+    This callback is used for BOTH saving new Sessions and updating existing Sessions.
+    If the session can be stored, return true
     Otherwise, return false
   */
   storeCallback = async (session: Session) => {
@@ -77,7 +78,7 @@ class RedisStore {
   /*
     The loadCallback takes in the id, and uses the getAsync method to access the session data
      If a stored session exists, it's parsed and returned
-     Otherwise, we return undefined
+     Otherwise, return undefined
   */
   loadCallback = async (id: string) => {
     try {
@@ -97,8 +98,8 @@ class RedisStore {
 
   /*
     The deleteCallback takes in the id, and uses the redis `del` method to delete it from the store
-    If the session can be deleted, we return true
-    Otherwise, we return false
+    If the session can be deleted, return true
+    Otherwise, return false
   */
   deleteCallback = async (id: string) => {
     try {
