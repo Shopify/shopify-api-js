@@ -24,10 +24,10 @@ To follow these usage guides, you will need to:
 - add the `ngrok` URL and the appropriate redirect for your OAuth callback route to your app settings
 - have [yarn](https://yarnpkg.com) installed
 
-<!-- Make sure this section is in sync with docs/index.md -->
+<!-- Make sure this section is in sync with docs/README.md -->
 # Getting started
 
-You can follow our [getting started guide](docs/index.md), which will provide instructions on how to create an app using plain Node.js code, or the [Express](https://expressjs.com/) framework. Both examples are written in Typescript.
+You can follow our [getting started guide](docs/), which will provide instructions on how to create an app using plain Node.js code, or the [Express](https://expressjs.com/) framework. Both examples are written in Typescript.
 
 - [Getting started](docs/getting_started.md)
   - [Install dependencies](docs/getting_started.md#install-dependencies)
