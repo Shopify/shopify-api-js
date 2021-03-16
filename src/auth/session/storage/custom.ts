@@ -34,10 +34,19 @@ export class CustomSessionStorage implements SessionStorage {
     }
     if (result) {
       if (result instanceof Session) {
+        if (result.expires && typeof result.expires === 'string') {
+          result.expires = new Date(result.expires);
+        }
+
         return result;
       } else if (result instanceof Object && 'id' in result) {
         let session = new Session(result.id as string);
         session = {...session, ...result};
+
+        if (session.expires && typeof session.expires === 'string') {
+          session.expires = new Date(session.expires);
+        }
+
         return session;
       } else {
         throw new ShopifyErrors.SessionStorageError(
