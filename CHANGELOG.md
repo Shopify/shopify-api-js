@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [1.2.0] - 2021-03-16
+
 ### Added
 - Allow plain objects to be returned from the `loadCallback` on `CustomSessionStorage` [#126](https://github.com/shopify/shopify-node-api/pull/126)
 
