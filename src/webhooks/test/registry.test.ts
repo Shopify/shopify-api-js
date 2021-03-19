@@ -125,6 +125,7 @@ async function genericWebhookHandler(topic: string, shopDomain: string, body: st
 
 describe('ShopifyWebhooks.Registry.register', () => {
   beforeEach(async () => {
+    Context.API_VERSION = ApiVersion.Unstable;
     ShopifyWebhooks.Registry.webhookRegistry = [];
   });
 
