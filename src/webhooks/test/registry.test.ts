@@ -266,6 +266,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
 
   it('throws if an eventbridge webhook is registered with an unsupported API version', async () => {
     expect(async () => {
+      fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
       Context.API_VERSION = ApiVersion.April19;
       const webhook: RegisterOptions = {
         path: '/webhooks/new',
@@ -276,7 +277,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
         webhookHandler: genericWebhookHandler,
       };
       await ShopifyWebhooks.Registry.register(webhook);
-    }).rejects.toThrow();
+    }).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
   });
 
   it('fails if given an invalid DeliveryMethod', async () => {

@@ -79,17 +79,9 @@ function isSuccess(result: any, deliveryMethod: DeliveryMethod, webhookId?: stri
   }
 }
 
-function versionSupportsEndpointField(
-  version: ApiVersion = Context.API_VERSION,
-) {
-  // 2020-07 onwards
-  return [
-    ApiVersion.July20,
-    ApiVersion.October20,
-    ApiVersion.January21,
-    ApiVersion.Unstable,
-    ApiVersion.Unversioned,
-  ].includes(version);
+// 2020-07 onwards
+function versionSupportsEndpointField() {
+  return ShopifyUtilities.versionCompatible(ApiVersion.July20);
 }
 
 function buildCheckQuery(topic: string): string {
@@ -132,6 +124,10 @@ function buildQuery(
   deliveryMethod: DeliveryMethod = DeliveryMethod.Http,
   webhookId?: string,
 ): string {
+  if (deliveryMethod === DeliveryMethod.EventBridge && !versionSupportsEndpointField()) {
+    // No endpoint fallback exists for EventBridge, so throw early
+    throw new ShopifyErrors.UnsupportedClientType(`EventBridge webhooks are not supported in API version "${Context.API_VERSION}".`);
+  }
   let identifier: string;
   if (webhookId) {
     identifier = `id: "${webhookId}"`;
@@ -147,9 +143,6 @@ function buildQuery(
       webhookSubscriptionArgs = `{callbackUrl: "${address}"}`;
       break;
     case DeliveryMethod.EventBridge:
-      if (!versionSupportsEndpointField()) {
-        throw new ShopifyErrors.UnsupportedClientType();
-      }
       mutationName = webhookId ? 'eventBridgeWebhookSubscriptionUpdate' : 'eventBridgeWebhookSubscriptionCreate';
       webhookSubscriptionArgs = `{arn: "${address}"}`;
       break;
