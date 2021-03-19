@@ -184,14 +184,11 @@ const WebhooksRegistry: RegistryInterface = {
       : `https://${Context.HOST_NAME}${path}`;
     const checkResult = await client.query({
       data: buildCheckQuery(topic),
-    });
-    const checkBody = versionSupportsEndpointField()
-      ? checkResult.body as WebhookCheckResponse
-      : checkResult.body as WebhookCheckResponseLegacy;
+    }) as { body: WebhookCheckResponse | WebhookCheckResponseLegacy; };
     let webhookId: string | undefined;
     let mustRegister = true;
-    if (checkBody.data.webhookSubscriptions.edges.length) {
-      const {node} = checkBody.data.webhookSubscriptions.edges[0];
+    if (checkResult.body.data.webhookSubscriptions.edges.length) {
+      const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
       let endpointAddress = '';
       if ('endpoint' in node) {
         endpointAddress = node.endpoint.__typename === 'WebhookHttpEndpoint'
