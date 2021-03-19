@@ -21,5 +21,7 @@ You can follow our getting started guide, which will provide instructions on how
 - [Webhooks](usage/webhooks.md)
   - [Register a Webhook](usage/webhooks.md#register-a-webhook)
   - [Process a Webhook](usage/webhooks.md#process-a-webhook)
+- [Create a `CustomSessionStorage` Solution](usage/customsessions.md)
+  - [Usage Example with Redis](usage/customsessions.md#example-usage)
 - [Known issues and caveats](issues.md)
   - [Notes on session handling](issues.md#notes-on-session-handling)
