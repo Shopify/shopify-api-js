@@ -138,7 +138,7 @@ function buildQuery(
   let mutationName: string;
   let webhookSubscriptionArgs: string;
   switch (deliveryMethod) {
-    case DeliveryMethod.Http || !versionSupportsEndpointField():
+    case DeliveryMethod.Http:
       mutationName = webhookId ? 'webhookSubscriptionUpdate' : 'webhookSubscriptionCreate';
       webhookSubscriptionArgs = `{callbackUrl: "${address}"}`;
       break;
