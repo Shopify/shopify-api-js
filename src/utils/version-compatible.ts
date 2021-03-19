@@ -12,6 +12,5 @@ export default function versionCompatible(referenceVersion: ApiVersion, currentV
   const numericVersion = (version: string) => parseInt(version.replace('-', ''), 10);
   const current = numericVersion(currentVersion);
   const reference = numericVersion(referenceVersion);
-  console.log(current, reference, current >= reference);
   return current >= reference;
 }
