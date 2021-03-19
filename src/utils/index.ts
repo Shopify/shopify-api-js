@@ -9,6 +9,7 @@ import safeCompare from './safe-compare';
 import storeSession from './store-session';
 import validateHmac from './hmac-validator';
 import validateShop from './shop-validator';
+import versionCompatible from './version-compatible';
 import withSession from './with-session';
 
 const ShopifyUtils = {
@@ -23,6 +24,7 @@ const ShopifyUtils = {
   storeSession,
   validateHmac,
   validateShop,
+  versionCompatible,
   withSession,
 };
 
