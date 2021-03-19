@@ -84,6 +84,12 @@ function versionSupportsEndpointField() {
   return ShopifyUtilities.versionCompatible(ApiVersion.July20);
 }
 
+function validateDeliveryMethod(deliveryMethod: DeliveryMethod) {
+  if (deliveryMethod === DeliveryMethod.EventBridge && !versionSupportsEndpointField()) {
+    throw new ShopifyErrors.UnsupportedClientType(`EventBridge webhooks are not supported in API version "${Context.API_VERSION}".`);
+  }
+}
+
 function buildCheckQuery(topic: string): string {
   const query = `{
     webhookSubscriptions(first: 1, topics: ${topic}) {
@@ -124,10 +130,7 @@ function buildQuery(
   deliveryMethod: DeliveryMethod = DeliveryMethod.Http,
   webhookId?: string,
 ): string {
-  if (deliveryMethod === DeliveryMethod.EventBridge && !versionSupportsEndpointField()) {
-    // No endpoint fallback exists for EventBridge, so throw early
-    throw new ShopifyErrors.UnsupportedClientType(`EventBridge webhooks are not supported in API version "${Context.API_VERSION}".`);
-  }
+  validateDeliveryMethod(deliveryMethod);
   let identifier: string;
   if (webhookId) {
     identifier = `id: "${webhookId}"`;
@@ -174,6 +177,7 @@ const WebhooksRegistry: RegistryInterface = {
     deliveryMethod = DeliveryMethod.Http,
     webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
+    validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
     const address = deliveryMethod === DeliveryMethod.EventBridge
       ? path
