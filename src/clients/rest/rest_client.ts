@@ -10,6 +10,7 @@ import {RestRequestReturn, PageInfo} from './types';
 
 class RestClient extends HttpClient {
   private static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
+  private static DEFAULT_LIMIT = '50';
 
   public constructor(domain: string, readonly accessToken?: string) {
     super(domain);
@@ -31,8 +32,7 @@ class RestClient extends HttpClient {
 
     const link = ret.headers.get('link');
     if (params.query && link !== undefined) {
-      const defaultLimit = '50';
-      let limit = defaultLimit;
+      let limit = RestClient.DEFAULT_LIMIT;
       if (params.query.limit) {
         limit = params.query.limit.toString();
       }
