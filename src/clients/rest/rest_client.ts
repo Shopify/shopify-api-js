@@ -31,14 +31,14 @@ class RestClient extends HttpClient {
 
     const link = ret.headers.get('link');
     if (params.query && link !== undefined) {
-      const DEFAULT_LIMIT = '50';
-      let limit = DEFAULT_LIMIT;
+      const defaultLimit = '50';
+      let limit = defaultLimit;
       if (params.query.limit) {
         limit = params.query.limit.toString();
       }
 
       const pageInfo: PageInfo = {
-        limit: limit,
+        limit,
       };
 
       if (link) {
