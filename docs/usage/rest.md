@@ -76,4 +76,4 @@ await client.post({
 
 _for more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/admin-api/rest/reference/products/product#create-2021-01)._
 
-[Back to guide index](../index.md)
+[Back to guide index](../README.md)

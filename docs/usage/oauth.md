@@ -137,4 +137,4 @@ if (!Shopify.Context.SCOPES.equals(session.scope)) {
 }
 ```
 
-[Back to guide index](../index.md)
+[Back to guide index](../README.md)

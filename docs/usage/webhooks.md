@@ -111,4 +111,4 @@ app.post('/webhooks', async (req, res) => {
 ```
 </details>
 
-[Back to guide index](../index.md)
+[Back to guide index](../README.md)
