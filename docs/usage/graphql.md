@@ -34,4 +34,4 @@ const products = await client.query({
 // do something with the returned data
 ```
 
-[Back to guide index](../index.md)
+[Back to guide index](../README.md)

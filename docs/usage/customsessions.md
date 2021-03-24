@@ -158,4 +158,4 @@ At this point, you should have a working `CustomSessionStorage` solution that wi
 
 **Note:** This is only one possible `CustomSessionStorage` solution. As long as your callback methods fit the requirements for argument types and return types, you can use any storage solution or database you're comfortable and/or familiar with.
 
-[Back to guide index](index.md)
+[Back to guide index](../README.md)

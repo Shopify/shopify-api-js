@@ -200,4 +200,4 @@ Once your files are set up, you can open your app in your browser to start addin
 - Run `yarn start` and you should have your app running on your specified `localhost`
 - Access the HTTPS address provided by `ngrok` to reach your app
 
-[Back to guide index](index.md)
+[Back to guide index](README.md)

@@ -8,4 +8,4 @@ Before you start writing your application, please note that the Shopify library 
 
 `MemorySessionStorage` is **purposely** designed to be a single-process, development-only solution. It **will leak** memory in most cases and delete all sessions when your app restarts. You should **never** use it in production apps. In order to use a `CustomSessionStorage` solution in your production app, you can reference our [usage example with redis](usage/customsessions.md) to get started.
 
-[Back to guide index](index.md)
+[Back to guide index](README.md)
