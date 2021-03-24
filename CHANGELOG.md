@@ -18,6 +18,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - Improved documentation for GraphQL and Rest Clients. [#123](https://github.com/Shopify/shopify-node-api/pull/123)
 - Made Docs directory more browseable in GitHub. [#136](https://github.com/Shopify/shopify-node-api/pull/136)
 - Make sure `CustomSessionStorage` converts the `expires` field from a string to `Date`. [#132](https://github.com/Shopify/shopify-node-api/pull/132)
+- Made `limit` optional for get-requests with query [#135](https://github.com/Shopify/shopify-node-api/pull/135)
 
 ## [1.1.0] - 2021-03-02
 
