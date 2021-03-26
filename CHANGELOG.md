@@ -7,6 +7,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [1.2.1] - 2021-03-26
+### Added
+- Added `April21` to `ApiVersion` [#149](https://github.com/Shopify/shopify-node-api/pull/149)
+
 ## [1.2.0] - 2021-03-16
 
 ### Added
