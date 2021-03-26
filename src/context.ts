@@ -1,5 +1,6 @@
 import * as ShopifyErrors from './error';
-import {SessionStorage, MemorySessionStorage} from './auth/session';
+import {SessionStorage} from './auth/session/session_storage';
+import {MemorySessionStorage} from './auth/session/storage/memory';
 import {ApiVersion, ContextParams} from './base_types';
 import {AuthScopes} from './auth/scopes';
 

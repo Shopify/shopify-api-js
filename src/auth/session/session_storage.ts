@@ -1,4 +1,4 @@
-import {Session} from './session';
+import {SessionInterface} from './types';
 
 /**
  * Defines the strategy to be used to store sessions for the Shopify App.
@@ -10,14 +10,14 @@ interface SessionStorage {
    *
    * @param session Session to store
    */
-  storeSession(session: Session): Promise<boolean>;
+  storeSession(session: SessionInterface): Promise<boolean>;
 
   /**
    * Loads a session from storage.
    *
    * @param id Id of the session to load
    */
-  loadSession(id: string): Promise<Session | undefined>;
+  loadSession(id: string): Promise<SessionInterface | undefined>;
 
   /**
    * Deletes a session from storage.

@@ -1,8 +1,8 @@
-import '../../../test/test_helper';
+import '../../../../test/test_helper';
 
-import {Session} from '../session';
-import {CustomSessionStorage} from '../storage/custom';
-import {SessionStorageError} from '../../../error';
+import {Session} from '../../session';
+import {CustomSessionStorage} from '../custom';
+import {SessionStorageError} from '../../../../error';
 
 describe('custom session storage', () => {
   test('can perform actions', async () => {
