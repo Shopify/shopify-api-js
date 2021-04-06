@@ -27,6 +27,7 @@ In this example the webhook is being registered as soon as the authentication is
 
       const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
 
+      // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
       const resp = await Shopify.Webhooks.Registry.register({
         path: '/webhooks',
         topic: 'PRODUCTS_CREATE',
@@ -57,6 +58,7 @@ app.get('/auth/callback', async (req, res) => {
 
     const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
 
+    // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
     const resp = await Shopify.Webhooks.Registry.register({
       path: '/webhooks',
       topic: 'PRODUCTS_CREATE',
