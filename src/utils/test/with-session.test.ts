@@ -36,9 +36,7 @@ describe('withSession', () => {
     /* we need to set up a session for this test, because errors will be thrown for a missing session before
     hitting the clientType error */
     const offlineId = OAuth.getOfflineSessionId(shop);
-    const session = new Session(offlineId);
-    session.isOnline = false;
-    session.shop = shop;
+    const session = new Session(offlineId, shop, 'state', false);
     session.accessToken = 'gimme-access';
     await Context.SESSION_STORAGE.storeSession(session);
 
@@ -61,9 +59,7 @@ describe('withSession', () => {
 
   it('throws an error when the session is not yet authenticated', async () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
-    const session = new Session(offlineId);
-    session.isOnline = false;
-    session.shop = shop;
+    const session = new Session(offlineId, shop, 'state', false);
     await Context.SESSION_STORAGE.storeSession(session);
 
     await expect(
@@ -73,9 +69,7 @@ describe('withSession', () => {
 
   it('returns an object containing the appropriate client and session for offline sessions', async () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
-    const session = new Session(offlineId);
-    session.isOnline = false;
-    session.shop = shop;
+    const session = new Session(offlineId, shop, 'state', false);
     session.accessToken = 'gimme-access';
     await Context.SESSION_STORAGE.storeSession(session);
 
@@ -104,9 +98,7 @@ describe('withSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const session = new Session(`12345`);
-    session.isOnline = true;
-    session.shop = shop;
+    const session = new Session(`12345`, shop, 'state', true);
     session.accessToken = 'gimme-access';
     await Context.SESSION_STORAGE.storeSession(session);
 
@@ -146,9 +138,7 @@ describe('withSession', () => {
 
     const sub = '1';
     const sessionId = ShopifyOAuth.getJwtSessionId(shop, sub);
-    const session = new Session(sessionId);
-    session.isOnline = true;
-    session.shop = shop;
+    const session = new Session(sessionId, shop, 'state', true);
     session.accessToken = 'gimme-access';
     await Context.SESSION_STORAGE.storeSession(session);
 

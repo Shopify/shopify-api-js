@@ -55,10 +55,10 @@ const ShopifyOAuth = {
 
     const session = new Session(
       isOnline ? uuidv4() : this.getOfflineSessionId(shop),
+      shop,
+      state,
+      isOnline,
     );
-    session.shop = shop;
-    session.state = state;
-    session.isOnline = isOnline;
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(session);
 

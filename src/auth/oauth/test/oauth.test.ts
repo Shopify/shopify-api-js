@@ -58,7 +58,7 @@ describe('beginAuth', () => {
   test('throws SessionStorageErrors when storeSession returns false', async () => {
     const storage = new CustomSessionStorage(
       () => Promise.resolve(false),
-      () => Promise.resolve(new Session(shop)),
+      () => Promise.resolve(new Session('id', shop, 'state', true)),
       () => Promise.resolve(true),
     );
     Context.SESSION_STORAGE = storage;
@@ -293,7 +293,7 @@ describe('validateAuthCallback', () => {
 
   test('requests access token for valid callbacks with online access and updates session with expiration and onlineAccessInfo', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+    let session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
       shop,
       state: session ? session.state : '',
@@ -330,6 +330,8 @@ describe('validateAuthCallback', () => {
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
+    session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+
     expect(session?.accessToken).toBe(successResponse.access_token);
     expect(session?.expires).toBeInstanceOf(Date);
     expect(session?.onlineAccessInfo).toEqual(expectedOnlineAccessInfo);

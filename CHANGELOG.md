@@ -42,6 +42,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - Added `April21` to `ApiVersion` [#149](https://github.com/Shopify/shopify-node-api/pull/149)
 
+### Fixed
+- Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+
 ## [1.2.0] - 2021-03-16
 
 ### Added
