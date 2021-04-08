@@ -6,7 +6,7 @@ import {MemorySessionStorage} from '../memory';
 test('can store and delete sessions in memory', async () => {
   const sessionId = 'test_session';
   const storage = new MemorySessionStorage();
-  const session = new Session(sessionId);
+  const session = new Session(sessionId, 'shop', 'state', false);
 
   await expect(storage.storeSession(session)).resolves.toBe(true);
   await expect(storage.loadSession(sessionId)).resolves.toEqual(session);

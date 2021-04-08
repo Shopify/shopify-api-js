@@ -11,7 +11,7 @@ describe('deleteOfflineSession', () => {
   const offlineId = OAuth.getOfflineSessionId(shop);
 
   beforeEach(() => {
-    const offlineSession = new Session(offlineId);
+    const offlineSession = new Session(offlineId, shop, 'state', false);
     Context.SESSION_STORAGE.storeSession(offlineSession);
   });
 

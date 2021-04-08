@@ -7,7 +7,7 @@ import {SessionStorageError} from '../../../../error';
 describe('custom session storage', () => {
   test('can perform actions', async () => {
     const sessionId = 'test_session';
-    let session: Session | undefined = new Session(sessionId);
+    let session: Session | undefined = new Session(sessionId, 'shop-url', 'state', true);
 
     let storeCalled = false;
     let loadCalled = false;
@@ -55,7 +55,7 @@ describe('custom session storage', () => {
 
   test('failures and exceptions are raised', () => {
     const sessionId = 'test_session';
-    const session = new Session(sessionId);
+    const session = new Session(sessionId, 'shop-url', 'state', true);
 
     let storage = new CustomSessionStorage(
       () => Promise.resolve(false),
@@ -99,7 +99,7 @@ describe('custom session storage', () => {
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + 10);
 
-    let session: Session | undefined = new Session(sessionId);
+    let session: Session | undefined = new Session(sessionId, 'shop', 'state', true);
     session.expires = expiration;
 
     const storage = new CustomSessionStorage(
@@ -128,9 +128,7 @@ describe('custom session storage', () => {
     expiration.setDate(expiration.getDate() + 10);
 
     /* eslint-disable @typescript-eslint/naming-convention */
-    let session: Session | undefined = new Session(sessionId);
-    session.shop = 'test.myshopify.io';
-    session.state = '1234';
+    let session: Session | undefined = new Session(sessionId, 'test.myshopify.io', '1234', true);
     session.scope = 'read_products';
     session.expires = expiration;
     session.isOnline = true;
@@ -176,7 +174,7 @@ describe('custom session storage', () => {
   it('allows empty fields in serialized object', async () => {
     const sessionId = 'test_session';
 
-    let session: Session | undefined = new Session(sessionId);
+    let session: Session | undefined = new Session(sessionId, 'shop', 'state', true);
 
     let serializedSession = '';
     const storage = new CustomSessionStorage(

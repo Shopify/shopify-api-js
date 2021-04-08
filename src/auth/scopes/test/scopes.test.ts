@@ -3,6 +3,14 @@ import '../../../test/test_helper';
 import {AuthScopes} from '../index';
 
 describe('AuthScopes', () => {
+  it('can be undefined', () => {
+    const scope = undefined;
+    const scopes = new AuthScopes(scope);
+
+    expect(scopes.toString()).toEqual('');
+    expect(scopes.has('read_something')).toBeFalsy();
+  });
+
   it('can parse and trim string scopes', () => {
     const scopeString = ' read_products, read_orders,,write_customers ';
     const scopes = new AuthScopes(scopeString);
