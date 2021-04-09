@@ -1,3 +1,5 @@
+//import {MissingRequiredArgument} from '../../error';
+
 class AuthScopes {
   public static SCOPE_DELIMITER = ',';
 
@@ -37,6 +39,10 @@ class AuthScopes {
 
   public equals(otherScopes: string | string[] | AuthScopes) {
     let other: AuthScopes;
+
+    // if (!otherScopes) {
+    //   throw new MissingRequiredArgument('Missing scopes');
+    // }
 
     if (otherScopes instanceof AuthScopes) {
       other = otherScopes;
