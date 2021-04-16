@@ -15,8 +15,8 @@ export interface RegisterOptions {
   path: string;
   shop: string;
   accessToken: string;
-  deliveryMethod?: DeliveryMethod;
   webhookHandler: WebhookHandlerFunction;
+  deliveryMethod?: DeliveryMethod;
 }
 
 export interface RegisterReturn {
@@ -30,17 +30,30 @@ export interface WebhookRegistryEntry {
   webhookHandler: WebhookHandlerFunction;
 }
 
-interface WebhookCheckResponseNode {
+interface WebhookCheckResponseNode<T = {
+  endpoint: {
+    __typename: 'WebhookHttpEndpoint';
+    callbackUrl: string;
+  } | {
+    __typename: 'WebhookEventBridgeEndpoint';
+    arn: string;
+  };
+}> {
   node: {
     id: string;
-    callbackUrl: string;
-  };
+  } & T;
 }
 
-export interface WebhookCheckResponse {
+type WebhookCheckLegacyResponseNode = WebhookCheckResponseNode<{
+  callbackUrl: string;
+}>;
+
+export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
   data: {
     webhookSubscriptions: {
-      edges: WebhookCheckResponseNode[];
+      edges: T[];
     };
   };
 }
+
+export type WebhookCheckResponseLegacy = WebhookCheckResponse<WebhookCheckLegacyResponseNode>;

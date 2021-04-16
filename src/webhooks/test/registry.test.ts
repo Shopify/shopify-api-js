@@ -6,12 +6,16 @@ import request from 'supertest';
 import {Method, Header, StatusCode} from '@shopify/network';
 
 import {DeliveryMethod, RegisterOptions} from '../types';
-import {ShopifyHeader} from '../../base_types';
+import {ApiVersion, ShopifyHeader} from '../../base_types';
 import {Context} from '../../context';
 import {DataType} from '../../clients/types';
 import {assertHttpRequest} from '../../clients/http_client/test/test_helper';
 import ShopifyWebhooks from '..';
 import * as ShopifyErrors from '../../error';
+import {
+  buildQuery as createWebhookQuery,
+  buildCheckQuery as createWebhookCheckQuery,
+} from '../registry';
 
 const webhookCheckEmptyResponse = {
   data: {
@@ -23,6 +27,42 @@ const webhookCheckEmptyResponse = {
 
 const webhookId = 'gid://shopify/WebhookSubscription/12345';
 const webhookCheckResponse = {
+  data: {
+    webhookSubscriptions: {
+      edges: [
+        {
+          node: {
+            id: webhookId,
+            endpoint: {
+              __typename: 'WebhookHttpEndpoint',
+              callbackUrl: 'https://test_host_name/webhooks',
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+
+const eventBridgeWebhookCheckResponse = {
+  data: {
+    webhookSubscriptions: {
+      edges: [
+        {
+          node: {
+            id: webhookId,
+            endpoint: {
+              __typename: 'WebhookEventBridgeEndpoint',
+              arn: 'arn:test',
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+
+const webhookCheckResponseLegacy = {
   data: {
     webhookSubscriptions: {
       edges: [
@@ -85,6 +125,7 @@ async function genericWebhookHandler(topic: string, shopDomain: string, body: st
 
 describe('ShopifyWebhooks.Registry.register', () => {
   beforeEach(async () => {
+    Context.API_VERSION = ApiVersion.Unstable;
     ShopifyWebhooks.Registry.webhookRegistry = [];
   });
 
@@ -130,7 +171,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
     const webhook: RegisterOptions = {
-      path: '/webhooks',
+      path: 'arn:test',
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
@@ -166,10 +207,10 @@ describe('ShopifyWebhooks.Registry.register', () => {
   });
 
   it('updates a pre-existing eventbridge webhook even if it is already registered with Shopify', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessUpdateResponse));
     const webhook: RegisterOptions = {
-      path: '/webhooks/new',
+      path: 'arn:test-new',
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
@@ -186,9 +227,9 @@ describe('ShopifyWebhooks.Registry.register', () => {
   });
 
   it('fully skips registering a webhook if it is already registered with Shopify and its callback is the same', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
     const webhook: RegisterOptions = {
-      path: '/webhooks',
+      path: 'arn:test',
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
@@ -201,6 +242,42 @@ describe('ShopifyWebhooks.Registry.register', () => {
     expect(result.result).toEqual({});
     expect(fetchMock.mock.calls.length).toBe(1);
     assertWebhookCheckRequest(webhook);
+  });
+
+  it('succeeds if a webhook is registered with a legacy API version', async () => {
+    Context.API_VERSION = ApiVersion.April19;
+    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponseLegacy));
+    fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
+    const webhook: RegisterOptions = {
+      path: '/webhooks/new',
+      topic: 'PRODUCTS_CREATE',
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+      webhookHandler: genericWebhookHandler,
+    };
+
+    const result = await ShopifyWebhooks.Registry.register(webhook);
+    expect(result.success).toBe(true);
+    expect(result.result).toEqual(successUpdateResponse);
+    expect(fetchMock.mock.calls.length).toBe(2);
+    assertWebhookCheckRequest(webhook);
+    assertWebhookRegistrationRequest(webhook, webhookId);
+  });
+
+  it('throws if an eventbridge webhook is registered with an unsupported API version', async () => {
+    expect(async () => {
+      fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
+      Context.API_VERSION = ApiVersion.April19;
+      const webhook: RegisterOptions = {
+        path: '/webhooks/new',
+        topic: 'PRODUCTS_CREATE',
+        accessToken: 'some token',
+        shop: 'shop1.myshopify.io',
+        deliveryMethod: DeliveryMethod.EventBridge,
+        webhookHandler: genericWebhookHandler,
+      };
+      await ShopifyWebhooks.Registry.register(webhook);
+    }).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
   });
 
   it('fails if given an invalid DeliveryMethod', async () => {
@@ -265,8 +342,9 @@ describe('ShopifyWebhooks.Registry.process', () => {
   const rawBody = '{"foo": "bar"}';
 
   beforeEach(async () => {
+    fetchMock.resetMocks();
     Context.API_SECRET_KEY = 'kitties are cute';
-
+    Context.API_VERSION = ApiVersion.Unstable;
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
   });
@@ -502,55 +580,6 @@ function hmac(secret: string, body: string) {
   return createHmac('sha256', secret).update(body, 'utf8').digest('base64');
 }
 
-function createWebhookCheckQuery(topic: string) {
-  return `{
-    webhookSubscriptions(first: 1, topics: ${topic}) {
-      edges {
-        node {
-          id
-          callbackUrl
-        }
-      }
-    }
-  }`;
-}
-
-function createWebhookQuery(topic: string, address: string, deliveryMethod?: DeliveryMethod, webhookId?: string) {
-  const identifier = webhookId ? `id: "${webhookId}"` : `topic: ${topic}`;
-
-  if (deliveryMethod && deliveryMethod === DeliveryMethod.EventBridge) {
-    const name = webhookId ? 'eventBridgeWebhookSubscriptionUpdate' : 'eventBridgeWebhookSubscriptionCreate';
-    return `
-    mutation webhookSubscription {
-      ${name}(${identifier}, webhookSubscription: {arn: "${address}"}) {
-        userErrors {
-          field
-          message
-        }
-        webhookSubscription {
-          id
-        }
-      }
-    }
-  `;
-  } else {
-    const name = webhookId ? 'webhookSubscriptionUpdate' : 'webhookSubscriptionCreate';
-    return `
-    mutation webhookSubscription {
-      ${name}(${identifier}, webhookSubscription: {callbackUrl: "${address}"}) {
-        userErrors {
-          field
-          message
-        }
-        webhookSubscription {
-          id
-        }
-      }
-    }
-  `;
-  }
-}
-
 function assertWebhookCheckRequest(webhook: RegisterOptions) {
   assertHttpRequest({
     method: Method.Post.toString(),
@@ -565,6 +594,10 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
 }
 
 function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: string) {
+  const address =
+    webhook.deliveryMethod && webhook.deliveryMethod === DeliveryMethod.EventBridge
+      ? webhook.path
+      : `https://${Context.HOST_NAME}${webhook.path}`;
   assertHttpRequest({
     method: Method.Post.toString(),
     domain: webhook.shop,
@@ -573,6 +606,6 @@ function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: 
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
-    data: createWebhookQuery(webhook.topic, `https://${Context.HOST_NAME}${webhook.path}`, webhook.deliveryMethod, webhookId),
+    data: createWebhookQuery(webhook.topic, address, webhook.deliveryMethod, webhookId),
   });
 }
