@@ -5,7 +5,7 @@ import {GraphqlClient} from '../graphql_client';
 import {Context} from '../../../context';
 import * as ShopifyErrors from '../../../error';
 
-const DOMAIN = 'shop.myshopify.com';
+const DOMAIN = 'shop.myshopify.io';
 const QUERY = `
 {
   shop {
@@ -25,6 +25,7 @@ const successResponse = {
 describe('GraphQL client', () => {
   it('can return response', async () => {
     const client: GraphqlClient = new GraphqlClient(DOMAIN, 'bork');
+
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.query({data: QUERY})).resolves.toEqual(buildExpectedResponse(successResponse));
@@ -65,10 +66,11 @@ describe('GraphQL client', () => {
     const client: GraphqlClient = new GraphqlClient(DOMAIN);
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
+    await expect(client.query({data: QUERY})).resolves.toEqual(buildExpectedResponse(successResponse));
+
     const customHeaders: Record<string, string> = {};
     customHeaders[ShopifyHeader.AccessToken] = 'test_secret_key';
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(buildExpectedResponse(successResponse));
     assertHttpRequest({
       method: 'POST',
       domain: DOMAIN,

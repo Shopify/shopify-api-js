@@ -11,7 +11,7 @@ We welcome your contributions to the project. There are a few steps to take when
 
 # Bug Reporting
 
-Shopify Admin API Library for Node uses GitHub issue tracking to manage bugs, please open an issue there.
+Shopify API Library for Node uses GitHub issue tracking to manage bugs, please open an issue there.
 
 # Feature Request
 

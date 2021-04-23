@@ -12,6 +12,7 @@ export interface ContextParams {
   SESSION_STORAGE?: SessionStorage;
   LOG_FILE?: string;
   USER_AGENT_PREFIX?: string;
+  PRIVATE_APP_STOREFRONT_ACCESS_TOKEN?: string;
 }
 
 export enum ApiVersion {
@@ -30,6 +31,7 @@ export enum ApiVersion {
 
 export enum ShopifyHeader {
   AccessToken = 'X-Shopify-Access-Token',
+  StorefrontAccessToken = 'X-Shopify-Storefront-Access-Token',
   Hmac = 'X-Shopify-Hmac-Sha256',
   Topic = 'X-Shopify-Topic',
   Domain = 'X-Shopify-Shop-Domain',

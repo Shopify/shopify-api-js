@@ -1,7 +1,7 @@
 {
   "name": "@shopify/shopify-api",
   "version": "1.2.1",
-  "description": "Shopify Admin API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
+  "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -34,7 +34,8 @@
     "graphql",
     "rest",
     "webhook",
-    "Admin API"
+    "Admin API",
+    "Storefront API"
   ],
   "dependencies": {
     "@shopify/network": "^1.5.1",

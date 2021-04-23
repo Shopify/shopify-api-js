@@ -17,6 +17,7 @@ You can follow our getting started guide, which will provide instructions on how
   - [Detecting scope changes](usage/oauth.md#detecting-scope-changes)
 - [Make a REST API call](usage/rest.md)
 - [Make a GraphQL API call](usage/graphql.md)
+- [Make a Storefront API call](usage/storefront.md)
 - [Create a Client using `withSession`](usage/withsession.md)
 - [Webhooks](usage/webhooks.md)
   - [Register a Webhook](usage/webhooks.md#register-a-webhook)

@@ -11,6 +11,8 @@ This library provides support for TypeScript/JavaScript [Shopify](https://www.sh
 - Making requests to the [GraphQL API](https://shopify.dev/docs/admin-api/graphql/reference)
 - Register/process webhooks
 
+Once your app has access to the Admin API, you can also access the [Shopify Storefront API](https://shopify.dev/docs/storefront-api) to run GraphQL queries using the `unauthenticated_*` access scopes.
+
 This library can be used in any application that has a Node.js backend, since it doesn't rely on any specific framework—you can include it alongside your preferred stack and only use the features that you need to build your app.
 
 # Requirements
@@ -42,6 +44,7 @@ You can follow our [getting started guide](docs/), which will provide instructio
   - [Detecting scope changes](docs/usage/oauth.md#detecting-scope-changes)
 - [Make a REST API call](docs/usage/rest.md)
 - [Make a GraphQL API call](docs/usage/graphql.md)
+- [Make a Storefront API call](docs/usage/storefront.md)
 - [Webhooks](docs/usage/webhooks.md)
   - [Register a Webhook](docs/usage/webhooks.md#register-a-webhook)
   - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)

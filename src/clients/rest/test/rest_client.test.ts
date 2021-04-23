@@ -141,7 +141,11 @@ describe('REST client', () => {
   it('includes pageInfo of type PageInfo in the returned object for calls with next or previous pages', async () => {
     const params = getDefaultPageInfo();
     const client = new RestClient(domain, 'dummy-token');
-    const linkHeaders = [`<${params.previousPageUrl}>; rel="previous"`, `<${params.nextPageUrl}>; rel="next"`];
+    const linkHeaders = [
+      `<${params.previousPageUrl}>; rel="previous"`,
+      `<${params.nextPageUrl}>; rel="next"`,
+      'This invalid info header will be ignored',
+    ];
 
     fetchMock.mockResponses([JSON.stringify(successResponse), {headers: {link: linkHeaders.join(', ')}}]);
 
@@ -222,10 +226,11 @@ describe('REST client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
+    await expect(client.get({path: 'products'})).resolves.toEqual(buildExpectedResponse(successResponse));
+
     const customHeaders: Record<string, string> = {};
     customHeaders[ShopifyHeader.AccessToken] = 'test_secret_key';
 
-    await expect(client.get({path: 'products'})).resolves.toEqual(buildExpectedResponse(successResponse));
     assertHttpRequest({
       method: 'GET',
       domain,
