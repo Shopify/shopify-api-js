@@ -1,0 +1,4 @@
+{
+  "retryOn429": true,
+  "fallbackRetryDelay": "1s"
+}
