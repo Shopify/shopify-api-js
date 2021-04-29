@@ -1,15 +1,15 @@
-import {Session} from '../session';
+import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 
 export class MemorySessionStorage implements SessionStorage {
-  private sessions: { [id: string]: Session; } = {};
+  private sessions: { [id: string]: SessionInterface; } = {};
 
-  public async storeSession(session: Session): Promise<boolean> {
+  public async storeSession(session: SessionInterface): Promise<boolean> {
     this.sessions[session.id] = session;
     return true;
   }
 
-  public async loadSession(id: string): Promise<Session | undefined> {
+  public async loadSession(id: string): Promise<SessionInterface | undefined> {
     return this.sessions[id] || undefined;
   }
 

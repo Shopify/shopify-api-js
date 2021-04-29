@@ -1,5 +1,5 @@
-import {SessionStorage} from './auth/session';
 import {AuthScopes} from './auth/scopes';
+import {SessionStorage} from './auth/session/session_storage';
 
 export interface ContextParams {
   API_KEY: string;

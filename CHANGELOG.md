@@ -8,6 +8,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## Unreleased
 ### Added
 - Added Storefront API client under `Shopify.Clients.Storefront`
+- Add `isActive()` method to `Session` class to check if session is active, replace `Session` with `SessionInterface` when used as a type [#153](https://github.com/Shopify/shopify-node-api/pull/153)
 
 ## [1.2.1] - 2021-03-26
 ### Added
