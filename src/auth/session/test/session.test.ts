@@ -22,7 +22,7 @@ describe('session', () => {
 describe('isActive', () => {
   it('returns true if session is active', () => {
     const session = new Session('active', 'active-shop', 'test_state', true);
-    session.scope = "test_scope"
+    session.scope = 'test_scope';
     session.accessToken = 'indeed';
     session.expires = new Date(Date.now() + 86400);
 

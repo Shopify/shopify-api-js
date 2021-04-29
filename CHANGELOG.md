@@ -36,14 +36,15 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - Added Storefront API client under `Shopify.Clients.Storefront`
 - Add `isActive()` method to `Session` class to check if session is active, replace `Session` with `SessionInterface` when used as a type [#153](https://github.com/Shopify/shopify-node-api/pull/153)
 
+### Fixed
+- Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+- Allow `undefined` in `AuthScopes` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
 ## [1.2.1] - 2021-03-26
 
 ### Added
 
 - Added `April21` to `ApiVersion` [#149](https://github.com/Shopify/shopify-node-api/pull/149)
-
-### Fixed
-- Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+- Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
 
 ## [1.2.0] - 2021-03-16
 
