@@ -19,18 +19,19 @@ class Session implements SessionInterface {
     return newSession;
   }
 
+  public isActive(): boolean {
+      const scopesUnchanged = Context.SCOPES.equals(this.scope);
+      if (scopesUnchanged && this.accessToken && (!this.expires || this.expires >= new Date())) {
+        return true;
+      }
+      return false;
+  }
+
   public scope?: string;
   public expires?: Date;
   public accessToken?: string;
   public onlineAccessInfo?: OnlineAccessInfo;
 
-  public isActive(): boolean {
-    const scopesUnchanged = Context.SCOPES.equals(this.scope);
-    if (scopesUnchanged && this.accessToken && (!this.expires || this.expires >= new Date())) {
-      return true;
-    }
-    return false;
-  }
   constructor(
     readonly id: string,
     public shop: string,
