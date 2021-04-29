@@ -9,7 +9,12 @@ import {SessionInterface} from './types';
  */
 class Session implements SessionInterface {
   public static cloneSession(session: Session, newId: string): Session {
-    const newSession = new Session(newId, session.shop, session.state, session.isOnline);
+    const newSession = new Session(
+      newId,
+      session.shop,
+      session.state,
+      session.isOnline,
+    );
 
     newSession.scope = session.scope;
     newSession.expires = session.expires;
@@ -18,11 +23,6 @@ class Session implements SessionInterface {
 
     return newSession;
   }
-
-  public scope?: string;
-  public expires?: Date;
-  public accessToken?: string;
-  public onlineAccessInfo?: OnlineAccessInfo;
 
   public isActive(): boolean {
     const scopesUnchanged = Context.SCOPES.equals(this.scope);
@@ -35,6 +35,12 @@ class Session implements SessionInterface {
     }
     return false;
   }
+
+  public scope?: string;
+  public expires?: Date;
+  public accessToken?: string;
+  public onlineAccessInfo?: OnlineAccessInfo;
+
   constructor(
     readonly id: string,
     public shop: string,

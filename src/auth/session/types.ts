@@ -4,7 +4,7 @@ export interface SessionInterface {
   readonly id: string;
   shop: string;
   state: string;
-  scope: string;
+  scope?: string;
   expires?: Date;
   isOnline?: boolean;
   accessToken?: string;

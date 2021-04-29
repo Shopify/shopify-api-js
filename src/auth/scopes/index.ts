@@ -1,3 +1,4 @@
+
 class AuthScopes {
   public static SCOPE_DELIMITER = ',';
 
@@ -29,7 +30,7 @@ class AuthScopes {
     this.expandedScopes = new Set([...scopeSet, ...impliedSet]);
   }
 
-  public has(scope: string | string[] | AuthScopes) {
+  public has(scope: string | string[] | AuthScopes | undefined) {
     let other: AuthScopes;
 
     if (scope instanceof AuthScopes) {
@@ -43,7 +44,7 @@ class AuthScopes {
     );
   }
 
-  public equals(otherScopes: string | string[] | AuthScopes) {
+  public equals(otherScopes: string | string[] | AuthScopes | undefined) {
     let other: AuthScopes;
 
     if (otherScopes instanceof AuthScopes) {
