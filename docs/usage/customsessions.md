@@ -67,7 +67,7 @@ class RedisStore {
   storeCallback = async (session: Session) => {
     try {
       // Inside our try, we use the `setAsync` method to save our session.
-      // This method returns a boolean (true is successful, false if not)
+      // This method returns a boolean (true if successful, false if not)
       return await this.setAsync(session.id, JSON.stringify(session))
     } catch (err) {
       // throw errors, and handle them gracefully in your application
@@ -104,7 +104,7 @@ class RedisStore {
   deleteCallback = async (id: string) => {
     try {
       // Inside our try, we use the `delAsync` method to delete our session.
-      // This method returns a boolean (true is successful, false if not)
+      // This method returns a boolean (true if successful, false if not)
       return await this.delAsync(id)
     } catch (err) {
       throw new Error(err)
