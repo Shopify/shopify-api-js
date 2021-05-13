@@ -74,6 +74,20 @@ app.get('/auth/callback', async (req, res) => {
 ```
 </details>
 
+### EventBridge and PubSub Webhooks
+
+You can also register webhooks for delivery to Amazon EventBridge or Google Cloud
+Pub/Sub. In this case the `path` argument to
+`Shopify.Webhooks.Registry.register` needs to be of a specific form.
+
+For EventBridge, the `path` must be the [ARN of the partner event
+source](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_EventSource.html).
+
+For Pub/Sub, the `path` must be of the form
+`pubsub://[PROJECT-ID]:[PUB-SUB-TOPIC-ID]`.  For example, if you created a topic
+with id `red` in the project `blue`, then the value of `path` would be
+`pubsub://red:blue`.
+
 ## Process a Webhook
 
 To process a webhook, you need to listen on the route(s) you provided during the Webhook registration process, then call the appropriate handler.  The library provides a convenient `process` method that acts as a middleware to handle webhooks. It takes care of calling the correct handler for the registered Webhook topics.
