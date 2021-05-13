@@ -45,38 +45,26 @@ interface RegistryInterface {
 }
 
 function isSuccess(result: any, deliveryMethod: DeliveryMethod, webhookId?: string): boolean {
+  let endpoint;
   switch (deliveryMethod) {
     case DeliveryMethod.Http:
-      if (webhookId) {
-        return Boolean(
-          result.data &&
-            result.data.webhookSubscriptionUpdate &&
-            result.data.webhookSubscriptionUpdate.webhookSubscription,
-        );
-      } else {
-        return Boolean(
-          result.data &&
-            result.data.webhookSubscriptionCreate &&
-            result.data.webhookSubscriptionCreate.webhookSubscription,
-        );
-      }
+      endpoint = 'webhookSubscription';
+      break;
     case DeliveryMethod.EventBridge:
-      if (webhookId) {
-        return Boolean(
-          result.data &&
-            result.data.eventBridgeWebhookSubscriptionUpdate &&
-            result.data.eventBridgeWebhookSubscriptionUpdate.webhookSubscription,
-        );
-      } else {
-        return Boolean(
-          result.data &&
-            result.data.eventBridgeWebhookSubscriptionCreate &&
-            result.data.eventBridgeWebhookSubscriptionCreate.webhookSubscription,
-        );
-      }
+      endpoint = 'eventBridgeWebhookSubscription';
+      break;
+    case DeliveryMethod.PubSub:
+      endpoint = 'pubSubWebhookSubscription';
+      break;
     default:
       return false;
   }
+  endpoint += webhookId ? 'Update' : 'Create';
+  return Boolean(
+    result.data &&
+      result.data[endpoint] &&
+      result.data[endpoint].webhookSubscription,
+  );
 }
 
 // 2020-07 onwards
@@ -84,9 +72,15 @@ function versionSupportsEndpointField() {
   return ShopifyUtilities.versionCompatible(ApiVersion.July20);
 }
 
+function versionSupportsPubSub() {
+  return ShopifyUtilities.versionCompatible(ApiVersion.July21);
+}
+
 function validateDeliveryMethod(deliveryMethod: DeliveryMethod) {
   if (deliveryMethod === DeliveryMethod.EventBridge && !versionSupportsEndpointField()) {
     throw new ShopifyErrors.UnsupportedClientType(`EventBridge webhooks are not supported in API version "${Context.API_VERSION}".`);
+  } else if (deliveryMethod === DeliveryMethod.PubSub && !versionSupportsPubSub()) {
+    throw new ShopifyErrors.UnsupportedClientType(`Pub/Sub webhooks are not supported in API version "${Context.API_VERSION}".`);
   }
 }
 
@@ -104,6 +98,12 @@ function buildCheckQuery(topic: string): string {
             ... on WebhookEventBridgeEndpoint {
               arn
             }
+            ${versionSupportsPubSub()
+                ? '... on WebhookPubSubEndpoint { \
+                    pubSubProject \
+                    pubSubTopic \
+                  }'
+                : ''}
           }
         }
       }
@@ -140,6 +140,8 @@ function buildQuery(
 
   let mutationName: string;
   let webhookSubscriptionArgs: string;
+  let pubSubProject: string;
+  let pubSubTopic: string;
   switch (deliveryMethod) {
     case DeliveryMethod.Http:
       mutationName = webhookId ? 'webhookSubscriptionUpdate' : 'webhookSubscriptionCreate';
@@ -148,6 +150,12 @@ function buildQuery(
     case DeliveryMethod.EventBridge:
       mutationName = webhookId ? 'eventBridgeWebhookSubscriptionUpdate' : 'eventBridgeWebhookSubscriptionCreate';
       webhookSubscriptionArgs = `{arn: "${address}"}`;
+      break;
+    case DeliveryMethod.PubSub:
+      mutationName = webhookId ? 'pubSubWebhookSubscriptionUpdate' : 'pubSubWebhookSubscriptionCreate';
+      [pubSubProject, pubSubTopic] = address.replace(/^pubsub:\/\//, '').split(':');
+      webhookSubscriptionArgs = `{pubSubProject: "${pubSubProject}",
+                                  pubSubTopic: "${pubSubTopic}"}`;
       break;
   }
 
@@ -179,9 +187,9 @@ const WebhooksRegistry: RegistryInterface = {
   }: RegisterOptions): Promise<RegisterReturn> {
     validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
-    const address = deliveryMethod === DeliveryMethod.EventBridge
-      ? path
-      : `https://${Context.HOST_NAME}${path}`;
+    const address = deliveryMethod === DeliveryMethod.Http
+      ? `https://${Context.HOST_NAME}${path}`
+      : path;
     const checkResult = await client.query({
       data: buildCheckQuery(topic),
     }) as { body: WebhookCheckResponse | WebhookCheckResponseLegacy; };
@@ -191,9 +199,11 @@ const WebhooksRegistry: RegistryInterface = {
       const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
       let endpointAddress = '';
       if ('endpoint' in node) {
-        endpointAddress = node.endpoint.__typename === 'WebhookHttpEndpoint'
-          ? node.endpoint.callbackUrl
-          : node.endpoint.arn;
+        if (node.endpoint.__typename === 'WebhookHttpEndpoint') {
+          endpointAddress = node.endpoint.callbackUrl;
+        } else if (node.endpoint.__typename === 'WebhookEventBridgeEndpoint') {
+          endpointAddress = node.endpoint.arn;
+        }
       } else {
         endpointAddress = node.callbackUrl;
       }
