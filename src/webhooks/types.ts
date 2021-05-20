@@ -1,6 +1,7 @@
 export enum DeliveryMethod {
   Http = 'http',
   EventBridge = 'eventbridge',
+  PubSub = 'pubsub',
 }
 
 type WebhookHandlerFunction = (
@@ -37,6 +38,10 @@ interface WebhookCheckResponseNode<T = {
   } | {
     __typename: 'WebhookEventBridgeEndpoint';
     arn: string;
+  } | {
+    __typename: 'WebhookPubSubEndpoint';
+    pubSubProject: string;
+    pubSubTopic: string;
   };
 }> {
   node: {
