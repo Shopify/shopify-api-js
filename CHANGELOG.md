@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## [1.4.0] - 2021-05-21
 ### Added
 - Add support for registering Google Pub/Sub webhooks [#181](https://github.com/Shopify/shopify-node-api/pull/181)
 - Added `July21` to `ApiVersion` [#181](https://github.com/Shopify/shopify-node-api/pull/181)
