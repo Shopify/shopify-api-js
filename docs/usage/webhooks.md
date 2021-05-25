@@ -86,7 +86,7 @@ source](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_EventSou
 For Pub/Sub, the `path` must be of the form
 `pubsub://[PROJECT-ID]:[PUB-SUB-TOPIC-ID]`.  For example, if you created a topic
 with id `red` in the project `blue`, then the value of `path` would be
-`pubsub://red:blue`.
+`pubsub://blue:red`.
 
 ## Process a Webhook
 
