@@ -1,5 +1,7 @@
 # `@shopify/shopify-api`
 
+## Browserified fork for use with Cloudflare Workers, without having to polyfill node at build time
+
 <!-- ![Build Status]() -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 [![npm version](https://badge.fury.io/js/%40shopify%2Fshopify-api.svg)](https://badge.fury.io/js/%40shopify%2Fshopify-api)
