@@ -1,4 +1,4 @@
-import http from 'http';
+import * as http from 'http';
 
 import {GraphqlClient} from '../clients/graphql';
 import * as ShopifyErrors from '../error';

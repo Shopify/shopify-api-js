@@ -1,4 +1,4 @@
-import http from 'http';
+import * as http from 'http';
 
 import {Context} from '../context';
 import {ShopifyOAuth} from '../auth/oauth/oauth';

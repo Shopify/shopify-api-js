@@ -1,4 +1,4 @@
-import http from 'http';
+import * as http from 'http';
 
 import {Session} from '../auth/session';
 import {GraphqlClient} from '../clients/graphql';

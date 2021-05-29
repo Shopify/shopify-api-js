@@ -1,5 +1,5 @@
 import {createHmac} from 'crypto';
-import http from 'http';
+import * as http from 'http';
 
 import {StatusCode} from '@shopify/network';
 
