@@ -7,7 +7,7 @@ This library comes with two session management options: `MemorySessionStorage` a
 When you're ready to deploy your app and run it in production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `Shopify.Context`. The `CustomSessionStorage` class expects to be initialized with three callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
 
 ## Callback methods
-
+ 
 - All of the callbacks used to create a new instance of `CustomSessionStorage` should be `async` functions and return a `Promise` that resolves to a specified type, as outlined below.
 
 | Method | Arg type | Return type  | Notes  |
