@@ -1,5 +1,4 @@
-import crypto from 'crypto';
-
+import CryptoJS from 'crypto-js';
 import qs from 'qs';
 
 import {AuthQuery} from '../auth/oauth/types';
@@ -20,10 +19,9 @@ export function stringifyQuery(query: AuthQuery): string {
 
 export function generateLocalHmac(query: AuthQuery): string {
   const queryString = stringifyQuery(query);
-  return crypto
-    .createHmac('sha256', Context.API_SECRET_KEY)
-    .update(queryString)
-    .digest('hex');
+  return CryptoJS
+    .HmacSHA256(queryString, Context.API_SECRET_KEY)
+    .toString(CryptoJS.enc.Hex);
 }
 
 /**

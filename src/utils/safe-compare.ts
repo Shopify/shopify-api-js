@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import timingSafeEqual from 'timing-safe-equal';
 
 import * as ShopifyErrors from '../error';
 
@@ -25,7 +25,7 @@ export default function safeCompare(
     }
 
     if (buffA.length === buffB.length) {
-      return crypto.timingSafeEqual(buffA, buffB);
+      return timingSafeEqual(buffA, buffB);
     }
   } else {
     throw new ShopifyErrors.SafeCompareError(
