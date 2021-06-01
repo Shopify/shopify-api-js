@@ -1,8 +1,7 @@
-import crypto from 'crypto';
 
 export default function nonce(): string {
   const length = 15;
-  const bytes = crypto.randomBytes(length);
+  const bytes = crypto.getRandomValues(Buffer.allocUnsafe(length));
 
   const nonce = bytes
     .map((byte) => {

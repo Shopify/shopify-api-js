@@ -1,6 +1,6 @@
-import crypto from 'crypto';
 import fs from 'fs';
 
+import CryptoJS from 'crypto-js';
 import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
 import qs from 'qs';
@@ -171,7 +171,7 @@ class HttpClient {
               path: url,
             };
 
-            const depHash = crypto.createHash('md5').update(JSON.stringify(deprecation)).digest('hex');
+            const depHash = CryptoJS.MD5(JSON.stringify(deprecation)).toString(CryptoJS.enc.Hex);
 
             if (
               !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
