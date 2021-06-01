@@ -1,5 +1,3 @@
-import fs from 'fs';
-
 import CryptoJS from 'crypto-js';
 import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
@@ -179,13 +177,7 @@ class HttpClient {
             ) {
               this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
-              if (Context.LOG_FILE) {
-                const stack = new Error().stack;
-                const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
-                  deprecation,
-                )}\n    Stack Trace: ${stack}\n`;
-                fs.writeFileSync(Context.LOG_FILE, log, {flag: 'a', encoding: 'utf-8'});
-              } else {
+              if (!Context.LOG_FILE) {
                 console.warn('API Deprecation Notice:', deprecation);
               }
             }

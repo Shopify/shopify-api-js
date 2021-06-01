@@ -1,5 +1,4 @@
 import '../../../test/test_helper';
-import fs from 'fs';
 
 import qs from 'qs';
 
@@ -12,17 +11,12 @@ import {assertHttpRequest} from './test_helper';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
-const logFilePath = `${process.cwd()}/src/clients/http_client/test/test_logs.txt`;
 
 const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
-  beforeEach(() => {
-    fs.writeFileSync(logFilePath, '');
-  });
 
   afterAll(() => {
     setRestClientRetryTime(originalRetryTime);
-    fs.writeFileSync(logFilePath, '');
   });
 
   it('validates the given domain', () => {
@@ -530,34 +524,6 @@ describe('HTTP client', () => {
     await client.get({path: '/url/path'});
 
     expect(console.warn).toHaveBeenCalledTimes(2);
-  });
-
-  it('writes deprecation notices to log file if one is specified in Context', async () => {
-    Context.LOG_FILE = logFilePath;
-    Context.initialize(Context);
-
-    const client = new HttpClient(domain);
-
-    fetchMock.mockResponse(
-      JSON.stringify({
-        message: 'Some deprecated request',
-      }),
-      {
-        status: 200,
-        headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
-      },
-    );
-
-    await client.get({path: '/url/path'});
-
-    // open and read test log file
-    const fileContent = fs.readFileSync(logFilePath, {encoding: 'utf-8', flag: 'r'});
-
-    expect(fileContent).toContain('API Deprecation Notice');
-    expect(fileContent).toContain(
-      ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
-    );
-    expect(fileContent).toContain(`Stack Trace: Error:`);
   });
 });
 
