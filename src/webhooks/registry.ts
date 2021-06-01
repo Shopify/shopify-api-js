@@ -1,4 +1,4 @@
-import {createHmac} from 'crypto';
+import CryptoJS from 'crypto-js'
 import http from 'http';
 
 import {StatusCode} from '@shopify/network';
@@ -291,9 +291,7 @@ const WebhooksRegistry: RegistryInterface = {
         let responseError: Error | undefined;
         const headers = {};
 
-        const generatedHash = createHmac('sha256', Context.API_SECRET_KEY)
-          .update(reqBody, 'utf8')
-          .digest('base64');
+        const generatedHash = CryptoJS.HmacSHA256(reqBody, Context.API_SECRET_KEY).toString(CryptoJS.enc.Base64);;
 
         if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
           const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');

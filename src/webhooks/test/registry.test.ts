@@ -1,5 +1,5 @@
 import '../../test/test_helper';
-import {createHmac} from 'crypto';
+import CryptoJS from 'crypto-js'
 
 import express from 'express';
 import request from 'supertest';
@@ -670,7 +670,7 @@ function headers({
 }
 
 function hmac(secret: string, body: string) {
-  return createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+  return CryptoJS.HmacSHA256(body, secret).toString(CryptoJS.enc.Base64);
 }
 
 function assertWebhookCheckRequest(webhook: RegisterOptions) {
