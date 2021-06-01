@@ -1,6 +1,6 @@
 import '../../test/test_helper';
-import CryptoJS from 'crypto-js'
 
+import CryptoJS from 'crypto-js';
 import express from 'express';
 import request from 'supertest';
 import {Method, Header, StatusCode} from '@shopify/network';

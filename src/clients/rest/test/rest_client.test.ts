@@ -1,5 +1,5 @@
 import '../../../test/test_helper';
-import querystring from 'querystring';
+import qs from 'qs';
 
 import {ShopifyHeader} from '../../../base_types';
 import {DataType, GetRequestParams} from '../../http_client/types';
@@ -84,7 +84,7 @@ describe('REST client', () => {
       domain,
       path: '/admin/api/unstable/products.json',
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: qs.stringify(postData),
     });
   });
 

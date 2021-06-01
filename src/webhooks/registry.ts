@@ -1,6 +1,6 @@
-import CryptoJS from 'crypto-js'
 import http from 'http';
 
+import CryptoJS from 'crypto-js';
 import {StatusCode} from '@shopify/network';
 
 import {GraphqlClient} from '../clients/graphql/graphql_client';
@@ -291,7 +291,7 @@ const WebhooksRegistry: RegistryInterface = {
         let responseError: Error | undefined;
         const headers = {};
 
-        const generatedHash = CryptoJS.HmacSHA256(reqBody, Context.API_SECRET_KEY).toString(CryptoJS.enc.Base64);;
+        const generatedHash = CryptoJS.HmacSHA256(reqBody, Context.API_SECRET_KEY).toString(CryptoJS.enc.Base64);
 
         if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
           const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');

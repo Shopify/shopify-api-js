@@ -1,10 +1,10 @@
 import '../../../test/test_helper';
 
-import querystring from 'querystring';
 import http from 'http';
 
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
+import qs from 'qs';
 
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
@@ -99,7 +99,7 @@ describe('beginAuth', () => {
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    const expectedQueryString = querystring.stringify(query);
+    const expectedQueryString = qs.stringify(query);
 
     expect(authRoute).toBe(`https://${shop}/admin/oauth/authorize?${expectedQueryString}`);
   });
@@ -117,7 +117,7 @@ describe('beginAuth', () => {
       'grant_options[]': 'per-user',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedQueryString = querystring.stringify(query);
+    const expectedQueryString = qs.stringify(query);
 
     expect(authRoute).toBe(`https://${shop}/admin/oauth/authorize?${expectedQueryString}`);
   });

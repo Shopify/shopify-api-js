@@ -1,8 +1,8 @@
 import http from 'http';
-import querystring from 'querystring';
 
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'cookies';
+import qs from 'qs';
 
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
@@ -78,7 +78,7 @@ const ShopifyOAuth = {
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    const queryString = querystring.stringify(query);
+    const queryString = qs.stringify(query);
 
     return `https://${shop}/admin/oauth/authorize?${queryString}`;
   },

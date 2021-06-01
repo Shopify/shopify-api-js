@@ -1,5 +1,6 @@
 import crypto from 'crypto';
-import querystring from 'querystring';
+
+import qs from 'qs';
 
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
@@ -14,7 +15,7 @@ export function stringifyQuery(query: AuthQuery): string {
       obj[key] = query[key];
       return obj;
     }, {});
-  return querystring.stringify(orderedObj);
+  return qs.stringify(orderedObj);
 }
 
 export function generateLocalHmac(query: AuthQuery): string {

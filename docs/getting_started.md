@@ -116,7 +116,7 @@ While setting up `Context`, you'll be able to set [which version of the Admin AP
   // src/index.ts
   import http from 'http';
   import url from 'url';
-  import querystring from 'querystring';
+  import qs from 'qs';
   import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
   require('dotenv').config();
 
@@ -139,7 +139,7 @@ While setting up `Context`, you'll be able to set [which version of the Admin AP
     const { headers, url: req_url } = request;
     const pathName: string | null = url.parse(req_url).pathname;
     const queryString: string = (String)(url.parse(req_url).query);
-    const query: Record<string, any> = querystring.parse(queryString);
+    const query: Record<string, any> = qs.parse(queryString);
 
     if (pathName === '/') {
       // check if we're logged in/authorized

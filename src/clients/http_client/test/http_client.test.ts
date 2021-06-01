@@ -1,6 +1,7 @@
 import '../../../test/test_helper';
-import querystring from 'querystring';
 import fs from 'fs';
+
+import qs from 'qs';
 
 import {HttpClient} from '../http_client';
 import {DataType, HeaderParams, RequestReturn} from '../../types';
@@ -126,7 +127,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: qs.stringify(postData),
     });
   });
 
@@ -143,7 +144,7 @@ describe('HTTP client', () => {
     const postParams = {
       path: '/url/path',
       type: DataType.URLEncoded,
-      data: querystring.stringify(postData),
+      data: qs.stringify(postData),
     };
 
     await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
@@ -152,7 +153,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: qs.stringify(postData),
     });
   });
 
