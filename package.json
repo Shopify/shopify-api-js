@@ -39,10 +39,12 @@
   ],
   "dependencies": {
     "@shopify/network": "^1.5.1",
+    "@types/crypto-js": "^4.0.1",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/node-fetch": "^2.5.7",
     "@types/supertest": "^2.0.10",
     "cookies": "^0.8.0",
+    "crypto-js": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.1",
     "tslib": "^2.0.3",
