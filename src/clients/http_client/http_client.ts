@@ -1,4 +1,4 @@
-import querystring, {ParsedUrlQueryInput} from 'querystring';
+import qs from 'qs';
 import crypto from 'crypto';
 import fs from 'fs';
 
@@ -97,7 +97,7 @@ class HttpClient {
             body = typeof data === 'string' ? data : JSON.stringify(data);
             break;
           case DataType.URLEncoded:
-            body = typeof data === 'string' ? data : querystring.stringify(data as ParsedUrlQueryInput);
+            body = typeof data === 'string' ? data : qs.stringify(data);
             break;
           case DataType.GraphQL:
             body = data as string;
@@ -111,7 +111,7 @@ class HttpClient {
       }
     }
 
-    const queryString = params.query ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}` : '';
+    const queryString = params.query ? `?${qs.stringify(params.query)}` : '';
 
     const url = `https://${this.domain}${params.path}${queryString}`;
     const options: RequestInit = {

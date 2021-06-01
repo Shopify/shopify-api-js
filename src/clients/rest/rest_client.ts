@@ -1,4 +1,4 @@
-import querystring from 'querystring';
+import qs from 'qs';
 
 import {Context} from '../../context';
 import {ShopifyHeader} from '../../base_types';
@@ -84,7 +84,7 @@ class RestClient extends HttpClient {
 
     const url = new URL(newPageUrl);
     const path = url.pathname.replace(new RegExp(pattern), '$1');
-    const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as Record<string, string | number>;
+    const query = qs.parse(url.search.replace(/^\?(.*)/, '$1')) as Record<string, string | number>;
     return {
       path,
       query,
