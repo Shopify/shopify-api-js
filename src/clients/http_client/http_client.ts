@@ -1,9 +1,9 @@
-import qs from 'qs';
 import crypto from 'crypto';
 import fs from 'fs';
 
 import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
+import qs from 'qs';
 
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';

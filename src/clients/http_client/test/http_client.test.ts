@@ -1,6 +1,7 @@
 import '../../../test/test_helper';
-import qs from 'qs';
 import fs from 'fs';
+
+import qs from 'qs';
 
 import {HttpClient} from '../http_client';
 import {DataType, HeaderParams, RequestReturn} from '../../types';

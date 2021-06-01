@@ -1,10 +1,10 @@
 import '../../../test/test_helper';
 
-import qs from 'qs';
 import http from 'http';
 
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
+import qs from 'qs';
 
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';

@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+
 import qs from 'qs';
 
 import {AuthQuery} from '../auth/oauth/types';

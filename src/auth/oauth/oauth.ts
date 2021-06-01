@@ -1,8 +1,8 @@
 import http from 'http';
-import qs from 'qs';
 
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'cookies';
+import qs from 'qs';
 
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
