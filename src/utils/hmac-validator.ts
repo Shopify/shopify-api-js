@@ -1,24 +1,24 @@
 import crypto from 'crypto';
 import querystring from 'querystring';
 
-import {AuthQuery, LocalHmacQuery} from '../auth/oauth/types';
+import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
 import {Context} from '../context';
 
 import safeCompare from './safe-compare';
 
-export function stringifyQuery(query: LocalHmacQuery): string {
+export function stringifyQuery(query: AuthQuery): string {
   const orderedObj = Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
-    .reduce((obj: Record<string, string | undefined>, key: keyof LocalHmacQuery) => {
+    .reduce((obj: Record<string, string | undefined>, key: keyof AuthQuery) => {
       obj[key] = query[key];
       return obj;
     }, {});
   return querystring.stringify(orderedObj);
 }
 
-export function generateLocalHmac(query: LocalHmacQuery): string {
-  const queryString = stringifyQuery(query);
+export function generateLocalHmac({code, timestamp, state, shop, host}: AuthQuery): string {
+  const queryString = stringifyQuery({code, timestamp, state, shop, ...host && {host}});
   return crypto
     .createHmac('sha256', Context.API_SECRET_KEY)
     .update(queryString)
@@ -36,8 +36,8 @@ export default function validateHmac(query: AuthQuery): boolean {
       'Query does not contain an HMAC value.',
     );
   }
-  const {hmac, code, timestamp, state, shop, host} = query;
-  const localHmac = generateLocalHmac({code, timestamp, state, shop, ...host && {host}});
+  const {hmac} = query;
+  const localHmac = generateLocalHmac(query);
 
   return safeCompare(hmac as string, localHmac);
 }
