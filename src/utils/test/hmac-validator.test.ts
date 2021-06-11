@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+
 import validateHmac from '../hmac-validator';
 import {AuthQuery} from '../../auth/oauth/types';
 import * as ShopifyErrors from '../../error';
@@ -65,8 +66,8 @@ test('queries with extra keys are not included in hmac querystring', () => {
 
   const testQueryWithExtraParam = Object.assign(queryObjectWithoutHmac, {
     hmac: localHmac,
-    shopify: ['callback']
+    shopify: ['callback'],
   });
 
   expect(validateHmac(testQueryWithExtraParam)).toBe(true);
-})
+});
