@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Fixed
+- Don't include extra params when calculating local hmac [#196](https://github.com/Shopify/shopify-node-api/pull/196)
 
 ## [1.4.0] - 2021-05-21
 ### Added
