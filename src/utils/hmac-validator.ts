@@ -1,23 +1,23 @@
 import crypto from 'crypto';
 import querystring from 'querystring';
 
-import {AuthQuery} from '../auth/oauth/types';
+import {AuthQuery, LocalHmacQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
 import {Context} from '../context';
 
 import safeCompare from './safe-compare';
 
-export function stringifyQuery(query: AuthQuery): string {
+export function stringifyQuery(query: LocalHmacQuery): string {
   const orderedObj = Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
-    .reduce((obj: Record<string, string | undefined>, key: keyof AuthQuery) => {
+    .reduce((obj: Record<string, string | undefined>, key: keyof LocalHmacQuery) => {
       obj[key] = query[key];
       return obj;
     }, {});
   return querystring.stringify(orderedObj);
 }
 
-export function generateLocalHmac(query: AuthQuery): string {
+export function generateLocalHmac(query: LocalHmacQuery): string {
   const queryString = stringifyQuery(query);
   return crypto
     .createHmac('sha256', Context.API_SECRET_KEY)
@@ -37,7 +37,7 @@ export default function validateHmac(query: AuthQuery): boolean {
     );
   }
   const {hmac, code, timestamp, state, shop, host} = query;
-  const localHmac = generateLocalHmac({code, timestamp, state, shop, host});
+  const localHmac = generateLocalHmac({code, timestamp, state, shop, ...host && {host}});
 
   return safeCompare(hmac as string, localHmac);
 }

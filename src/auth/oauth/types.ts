@@ -4,9 +4,17 @@ export interface AuthQuery {
   timestamp: string;
   state: string;
   shop: string;
-  host: string;
+  host?: string;
   hmac?: string;
   shopify?: string[];
+}
+
+export interface LocalHmacQuery {
+  code: string;
+  timestamp: string;
+  state: string;
+  shop: string;
+  host?: string;
 }
 
 export interface AccessTokenResponse {
