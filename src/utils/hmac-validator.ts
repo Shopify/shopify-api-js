@@ -36,8 +36,8 @@ export default function validateHmac(query: AuthQuery): boolean {
       'Query does not contain an HMAC value.',
     );
   }
-  const {hmac, ...rest} = query;
-  const localHmac = generateLocalHmac(rest);
+  const {hmac, code, timestamp, state, shop} = query;
+  const localHmac = generateLocalHmac({code, timestamp, state, shop});
 
   return safeCompare(hmac as string, localHmac);
 }
