@@ -187,6 +187,21 @@ While setting up `Context`, you'll be able to set [which version of the Admin AP
     console.log('your app is now listening on port 3000');
   });
   ```
+  
+  You will also need to set up a basic router to be able to process requests:
+
+  ```ts
+  
+  app.get('/', async (req, res) => {
+    const currentSession = await Shopify.Utils.loadCurrentSession(req, res);
+    if (!currentSession) {
+      // not logged in, redirect to login
+      return res.redirect(302, '/login');
+    } else {
+      // do something amazing with your application!
+    }
+  })
+  ```
 </details>
 
 ## Running your app
