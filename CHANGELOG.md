@@ -20,7 +20,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## [1.4.1] - 2021-06-11
 
 - Don't include extra params when calculating local hmac [#196](https://github.com/Shopify/shopify-node-api/pull/196)
-- Add a 5 second `clockTolerance` to fix `jwt not active` error [#227](https://github.com/Shopify/shopify-node-api/pull/227)
+- Change default for OAuth.beginAuth to online sessions [#203](https://github.com/Shopify/shopify-node-api/pull/203)
 
 ## [1.4.0] - 2021-05-21
 
@@ -38,8 +38,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
 
 ### Fixed
+
 - Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-node-api/pull/169)
 - Allow `undefined` in `AuthScopes` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+
 ## [1.2.1] - 2021-03-26
 
 ### Added
