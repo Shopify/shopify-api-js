@@ -13,7 +13,7 @@ The route for starting the OAuth process (in this case `/login`) will use the li
 | `request` | `http.IncomingMessage` | Yes | - | The HTTP Request. |
 | `response` | `http.ServerResponse` | Yes | - | The HTTP Response. |
 | `shop` | `string` | Yes | - | A Shopify domain name in the form `{exampleshop}.myshopify.com`. |
-| `redirectPath` | `string` | Yes | - | The redirect path used for callback with a leading `/`. The route should be whitelisted under the app settings. |
+| `redirectPath` | `string` | Yes | - | The redirect path used for callback with a leading `/`. The route should be allowed under the app settings. |
 | `isOnline` | `bool` | No | `true` | `true` if the session is online and `false` otherwise. |
 
 
