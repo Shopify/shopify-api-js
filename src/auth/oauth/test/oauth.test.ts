@@ -88,18 +88,13 @@ describe('beginAuth', () => {
   });
 
   test('sets session id and cookie to shop name with "_offline" for offline access requests', async () => {
-    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
 
     expect(cookies.id).toBe(`offline_${shop}`);
   });
 
   test('returns the correct auth url for given info', async () => {
-    const authRoute = await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      shop,
-      '/some-callback',
-    );
+    const authRoute = await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
