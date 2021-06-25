@@ -22,6 +22,20 @@ interface RegistryInterface {
   webhookRegistry: WebhookRegistryEntry[];
 
   /**
+   * Sets the handler for the given topic. If a handler was previously set for the same topic, it will be overridden.
+   *
+   * @param options Paramters to add a handler which are topic and webHookHandler
+   */
+  addHandler(options: WebhookRegistryEntry): Promise<void>;
+
+  /**
+   * Fetches the handler for the given topic. Returns null if no handler was registered.
+   *
+   * @param topic The topic to check
+   */
+  getHandler(topic: string): Promise<WebhookRegistryEntry | null>;
+
+  /**
    * Registers a Webhook Handler function for a given topic.
    *
    * @param options Parameters to register a handler, including topic, listening address, handler function
@@ -204,6 +218,16 @@ function buildQuery(
 const WebhooksRegistry: RegistryInterface = {
   webhookRegistry: [],
 
+  async addHandler({path, topic, webhookHandler}): Promise<void> {
+    WebhooksRegistry.webhookRegistry = WebhooksRegistry.webhookRegistry.filter((item) => item.topic !== topic);
+    WebhooksRegistry.webhookRegistry.push({path, topic, webhookHandler});
+  },
+
+  async getHandler(topic) {
+    const webhookEntry = WebhooksRegistry.webhookRegistry.find((entry) => entry.topic === topic);
+    return (webhookEntry) ? webhookEntry : null;
+  },
+
   async register({
     path,
     topic,
@@ -212,6 +236,9 @@ const WebhooksRegistry: RegistryInterface = {
     deliveryMethod = DeliveryMethod.Http,
     webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
+    if (webhookHandler) console.log(
+      'This method of passing in the webhook is now deprecated. Please use the addHandler function.'
+    );
     validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
     const address =
