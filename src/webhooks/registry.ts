@@ -225,7 +225,7 @@ const WebhooksRegistry: RegistryInterface = {
 
   async getHandler(topic) {
     const webhookEntry = WebhooksRegistry.webhookRegistry.find((entry) => entry.topic === topic);
-    return (webhookEntry) ? webhookEntry : null;
+    return webhookEntry ?? null;
   },
 
   async register({
@@ -236,9 +236,9 @@ const WebhooksRegistry: RegistryInterface = {
     deliveryMethod = DeliveryMethod.Http,
     webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
-    if (webhookHandler) console.log(
-      'This method of passing in the webhook is now deprecated. Please use the addHandler function.'
-    );
+    if (webhookHandler) {
+      console.log('This method of passing in the webhook is now deprecated. Please use the addHandler function.');
+    }
     validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
     const address =
