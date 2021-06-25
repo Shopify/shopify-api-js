@@ -55,6 +55,20 @@ const products = await client.get({
 // do something with the returned data
 ```
 
+### With additional `params`:
+
+```ts
+// Perform request Use `client.get` with additional params:
+const settingsJSON = await client.get({
+  path: `themes/${themeId}/assets`,
+  query: { 
+    "asset[key]": "config/settings_data.json" 
+  }
+});
+
+// do something with the returned data
+```
+
 ### Perform a `POST` request:
 
 ```ts
