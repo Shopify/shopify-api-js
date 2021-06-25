@@ -405,8 +405,9 @@ describe('ShopifyWebhooks.Registry.register', () => {
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      webhookHandler: genericWebhookHandler,
+      webhookHandler: undefined,
     };
+    await ShopifyWebhooks.Registry.addHandler({path: '/webhooks', topic: 'PRODUCTS_CREATE', webhookHandler: genericWebhookHandler});
     await ShopifyWebhooks.Registry.register(webhook);
     expect(ShopifyWebhooks.Registry.webhookRegistry).toHaveLength(1);
 
@@ -420,6 +421,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       shop: 'shop1.myshopify.io',
       webhookHandler: genericWebhookHandler,
     };
+    await ShopifyWebhooks.Registry.addHandler({path: '/webhooks', topic: 'PRODUCTS_UPDATE', webhookHandler: genericWebhookHandler});
     await ShopifyWebhooks.Registry.register(webhook);
     expect(ShopifyWebhooks.Registry.webhookRegistry).toHaveLength(2);
 
