@@ -16,7 +16,7 @@ export interface RegisterOptions {
   path: string;
   shop: string;
   accessToken: string;
-  webhookHandler: WebhookHandlerFunction;
+  webhookHandler?: WebhookHandlerFunction;
   deliveryMethod?: DeliveryMethod;
 }
 
