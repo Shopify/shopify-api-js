@@ -234,11 +234,7 @@ const WebhooksRegistry: RegistryInterface = {
     accessToken,
     shop,
     deliveryMethod = DeliveryMethod.Http,
-    webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
-    if (webhookHandler) {
-      console.log('This method of passing in the webhook is now deprecated. Please use the addHandler function.');
-    }
     validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
     const address =
