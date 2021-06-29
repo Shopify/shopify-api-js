@@ -19,12 +19,12 @@ import {
 } from './types';
 
 interface RegistryInterface {
-  webhookRegistry: WebhookRegistryEntry[];
+  webhookRegistry: {[topic: string]: WebhookRegistryEntry;};
 
   /**
    * Sets the handler for the given topic. If a handler was previously set for the same topic, it will be overridden.
    *
-   * @param options Paramters to add a handler which are topic and webHookHandler
+   * @param options Paramters to add a handler which are path, topic and webHookHandler
    */
   addHandler(options: WebhookRegistryEntry): Promise<void>;
 
@@ -38,7 +38,7 @@ interface RegistryInterface {
   /**
    * Registers a Webhook Handler function for a given topic.
    *
-   * @param options Parameters to register a handler, including topic, listening address, handler function
+   * @param options Parameters to register a handler, including topic, listening address, delivery method
    */
   register(options: RegisterOptions): Promise<RegisterReturn>;
 
@@ -216,16 +216,15 @@ function buildQuery(
 }
 
 const WebhooksRegistry: RegistryInterface = {
-  webhookRegistry: [],
+  webhookRegistry: {},
 
   async addHandler({path, topic, webhookHandler}): Promise<void> {
-    WebhooksRegistry.webhookRegistry = WebhooksRegistry.webhookRegistry.filter((item) => item.topic !== topic);
-    WebhooksRegistry.webhookRegistry.push({path, topic, webhookHandler});
+    delete WebhooksRegistry.webhookRegistry[topic];
+    WebhooksRegistry.webhookRegistry[topic] = {path, topic, webhookHandler};
   },
 
   async getHandler(topic) {
-    const webhookEntry = WebhooksRegistry.webhookRegistry.find((entry) => entry.topic === topic);
-    return webhookEntry ?? null;
+    return WebhooksRegistry.webhookRegistry[topic] ?? null;
   },
 
   async register({
@@ -359,12 +358,8 @@ const WebhooksRegistry: RegistryInterface = {
           .digest('base64');
 
         if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
-          const graphqlTopic = (topic as string)
-            .toUpperCase()
-            .replace(/\//g, '_');
-          const webhookEntry = WebhooksRegistry.webhookRegistry.find(
-            (entry) => entry.topic === graphqlTopic,
-          );
+          const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
+          const webhookEntry = WebhooksRegistry.webhookRegistry[graphqlTopic];
 
           if (webhookEntry) {
             try {
@@ -405,9 +400,12 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   isWebhookPath(path: string): boolean {
-    return Boolean(
-      WebhooksRegistry.webhookRegistry.find((entry) => entry.path === path),
-    );
+    for (const key in WebhooksRegistry.webhookRegistry) {
+      if (WebhooksRegistry.webhookRegistry[key].path === path) {
+        return true;
+      }
+    }
+    return false;
   },
 };
 
