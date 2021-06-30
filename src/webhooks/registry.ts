@@ -224,7 +224,7 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   async getHandler(topic) {
-    return (topic in WebhooksRegistry.webhookRegistry) ? WebhooksRegistry.webhookRegistry[topic] : null;
+    return topic in WebhooksRegistry.webhookRegistry ? WebhooksRegistry.webhookRegistry[topic] : null;
   },
 
   async register({
