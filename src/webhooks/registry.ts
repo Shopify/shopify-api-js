@@ -188,7 +188,7 @@ const WebhooksRegistry: RegistryInterface = {
     validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
     const address = deliveryMethod === DeliveryMethod.Http
-      ? `https://${Context.HOST_NAME}${path}`
+      ? `${Context.PROTOCOL}//${Context.HOST_NAME}${path}`
       : path;
     const checkResult = await client.query({
       data: buildCheckQuery(topic),

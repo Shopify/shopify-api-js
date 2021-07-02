@@ -6,3 +6,8 @@ coverage/
 yarn-error.log
 tsdocs/
 tsconfig.tsbuildinfo
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/shopify-node-api.iml
+/.idea/vcs.xml

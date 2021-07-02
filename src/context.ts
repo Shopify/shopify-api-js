@@ -31,6 +31,7 @@ const Context: ContextInterface = {
   API_SECRET_KEY: '',
   SCOPES: new AuthScopes([]),
   HOST_NAME: '',
+  PROTOCOL: 'https:',
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,

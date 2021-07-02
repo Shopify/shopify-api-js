@@ -689,7 +689,7 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
 function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: string) {
   const address =
     !webhook.deliveryMethod || webhook.deliveryMethod === DeliveryMethod.Http
-      ? `https://${Context.HOST_NAME}${webhook.path}`
+      ? `${Context.PROTOCOL}//${Context.HOST_NAME}${webhook.path}`
       : webhook.path;
   assertHttpRequest({
     method: Method.Post.toString(),
