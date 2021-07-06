@@ -8,7 +8,8 @@ import {Context} from '../../context';
 test('correctly validates query objects', () => {
   Context.API_SECRET_KEY = 'my super secret key';
   const queryString =
-    'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
+    'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a' +
+    '%20number%20as%20a%20string';
   const queryObjectWithoutHmac = {
     code: 'some code goes here',
     shop: 'the shop URL',
@@ -52,7 +53,8 @@ test('queries without hmac key throw InvalidHmacError', () => {
 test('queries with extra keys are not included in hmac querystring', () => {
   Context.API_SECRET_KEY = 'my super secret key';
   const queryString =
-    'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
+    'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%' +
+    '20number%20as%20a%20string';
   const queryObjectWithoutHmac = {
     code: 'some code goes here',
     shop: 'the shop URL',

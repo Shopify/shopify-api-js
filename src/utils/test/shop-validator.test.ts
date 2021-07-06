@@ -19,7 +19,7 @@ test('returns false for invalid shop urls', () => {
   expect(validateShop(anotherShop)).toBe(false);
 });
 
-test("returns false for invalid shop urls, even if they contain the string 'myshopify.io'", () => {
+test('returns false for invalid shop urls, even if they contain the string \'myshopify.io\'', () => {
   const shopUrl = 'notshopify.myshopify.io.org/potato';
   expect(validateShop(shopUrl)).toBe(false);
 });

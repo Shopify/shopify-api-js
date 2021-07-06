@@ -54,7 +54,7 @@ export default async function withSession({
       };
     default:
       throw new ShopifyErrors.UnsupportedClientType(
-        `"${clientType}" is an unsupported clientType. Please use "rest" or "graphql".`,
-      );
+      `"${clientType}" is an unsupported clientType. Please use "rest" or "graphql".`,
+    );
   }
 }

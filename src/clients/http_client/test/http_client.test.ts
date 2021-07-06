@@ -556,7 +556,7 @@ describe('HTTP client', () => {
     expect(fileContent).toContain(
       ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
     );
-    expect(fileContent).toContain(`Stack Trace: Error:`);
+    expect(fileContent).toContain('Stack Trace: Error:');
   });
 });
 

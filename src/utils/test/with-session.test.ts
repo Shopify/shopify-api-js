@@ -105,7 +105,7 @@ describe('withSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const session = new Session(`12345`);
+    const session = new Session('12345');
     session.isOnline = true;
     session.shop = shop;
     session.accessToken = 'gimme-access';

@@ -126,7 +126,8 @@ describe('beginAuth', () => {
     Context.IS_PRIVATE_APP = true;
     Context.initialize(Context);
 
-    expect(ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true)).rejects.toThrow(ShopifyErrors.PrivateAppError);
+    expect(ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true))
+      .rejects.toThrow(ShopifyErrors.PrivateAppError);
   });
 });
 
@@ -170,7 +171,7 @@ describe('validateAuthCallback', () => {
     );
   });
 
-  test("throws an error when receiving a callback for a shop that doesn't have a session cookie", async () => {
+  test('throws an error when receiving a callback for a shop that doesn\'t have a session cookie', async () => {
     await expect(
       ShopifyOAuth.validateAuthCallback(req, res, {
         shop: 'I do not exist',
@@ -266,7 +267,8 @@ describe('validateAuthCallback', () => {
     expect(session?.accessToken).toBe(successResponse.access_token);
   });
 
-  test('requests access token for valid callbacks with online access and updates session with expiration and onlineAccessInfo', async () => {
+  test('requests access token for valid callbacks with online access and updates session' +
+    ' with expiration and onlineAccessInfo', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {

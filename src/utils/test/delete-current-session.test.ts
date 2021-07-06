@@ -123,7 +123,7 @@ describe('deleteCurrenSession', () => {
 
     const req = {
       headers: {
-        authorization: "What's a bearer token?",
+        authorization: 'What\'s a bearer token?',
       },
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;

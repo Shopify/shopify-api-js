@@ -27,9 +27,9 @@ const ShopifyOAuth = {
    * @param response Current HTTP Response
    * @param shop Shop url: {shop}.myshopify.com
    * @param redirect Redirect url for callback
-   * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token.
-   *                 During final oauth request, will receive back the online access token and current online session information.
-   *                 Defaults to offline access.
+   * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online
+   *                 access token. During final oauth request, will receive back the online access token and current
+   *                 online session information. Defaults to offline access.
    */
   async beginAuth(
     request: http.IncomingMessage,

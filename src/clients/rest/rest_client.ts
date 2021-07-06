@@ -80,7 +80,7 @@ class RestClient extends HttpClient {
   }
 
   private buildRequestParams(newPageUrl: string): GetRequestParams {
-    const pattern = `^/admin/api/[^/]+/(.*).json$`;
+    const pattern = '^/admin/api/[^/]+/(.*).json$';
 
     const url = new URL(newPageUrl);
     const path = url.pathname.replace(new RegExp(pattern), '$1');

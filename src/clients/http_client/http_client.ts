@@ -156,7 +156,7 @@ class HttpClient {
 
     // We're never supposed to come this far, this is here only for the benefit of Typescript
     /* istanbul ignore next */
-    throw new ShopifyErrors.ShopifyError(`Unexpected flow, reached maximum HTTP tries but did not throw an error`);
+    throw new ShopifyErrors.ShopifyError('Unexpected flow, reached maximum HTTP tries but did not throw an error');
   }
 
   private async doRequest(url: string, options: RequestInit): Promise<RequestReturn> {
@@ -211,18 +211,18 @@ class HttpClient {
             case response.status === StatusCode.TooManyRequests: {
               const retryAfter = response.headers.get('Retry-After');
               throw new ShopifyErrors.HttpThrottlingError(
-                `Shopify is throttling requests${errorMessage}`,
-                retryAfter ? parseFloat(retryAfter) : undefined,
-              );
+              `Shopify is throttling requests${errorMessage}`,
+              retryAfter ? parseFloat(retryAfter) : undefined,
+            );
             }
             case response.status >= StatusCode.InternalServerError:
               throw new ShopifyErrors.HttpInternalError(`Shopify internal error${errorMessage}`);
             default:
               throw new ShopifyErrors.HttpResponseError(
-                `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
-                response.status,
-                response.statusText,
-              );
+              `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
+              response.status,
+              response.statusText,
+            );
           }
         }
       })

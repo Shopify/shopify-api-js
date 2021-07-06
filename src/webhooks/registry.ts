@@ -78,9 +78,13 @@ function versionSupportsPubSub() {
 
 function validateDeliveryMethod(deliveryMethod: DeliveryMethod) {
   if (deliveryMethod === DeliveryMethod.EventBridge && !versionSupportsEndpointField()) {
-    throw new ShopifyErrors.UnsupportedClientType(`EventBridge webhooks are not supported in API version "${Context.API_VERSION}".`);
+    throw new ShopifyErrors.UnsupportedClientType(
+      `EventBridge webhooks are not supported in API version "${Context.API_VERSION}".`,
+    );
   } else if (deliveryMethod === DeliveryMethod.PubSub && !versionSupportsPubSub()) {
-    throw new ShopifyErrors.UnsupportedClientType(`Pub/Sub webhooks are not supported in API version "${Context.API_VERSION}".`);
+    throw new ShopifyErrors.UnsupportedClientType(
+      `Pub/Sub webhooks are not supported in API version "${Context.API_VERSION}".`,
+    );
   }
 }
 

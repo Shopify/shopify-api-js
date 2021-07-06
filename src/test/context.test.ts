@@ -36,7 +36,7 @@ describe('Context object', () => {
     expect(Context.HOST_NAME).toEqual(validParams.HOST_NAME);
   });
 
-  it("can't initialize with empty values", () => {
+  it('can\'t initialize with empty values', () => {
     let invalid: ContextParams = {...validParams};
     invalid.API_KEY = '';
     try {

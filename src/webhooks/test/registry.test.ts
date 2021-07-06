@@ -166,7 +166,8 @@ describe('ShopifyWebhooks.Registry.register', () => {
     ShopifyWebhooks.Registry.webhookRegistry = [];
   });
 
-  it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
+  it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body ' +
+    'and the access token in the headers', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
     const webhook: RegisterOptions = {
@@ -185,7 +186,8 @@ describe('ShopifyWebhooks.Registry.register', () => {
     assertWebhookRegistrationRequest(webhook);
   });
 
-  it('returns a result with success set to false, body set to empty object, when the server doesn’t return a webhookSubscriptionCreate field', async () => {
+  it('returns a result with success set to false, body set to empty object, when the server doesn’t return a ' +
+    'webhookSubscriptionCreate field', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(failResponse));
     const webhook: RegisterOptions = {
@@ -303,7 +305,8 @@ describe('ShopifyWebhooks.Registry.register', () => {
     assertWebhookRegistrationRequest(webhook, webhookId);
   });
 
-  it('fully skips registering a webhook if it is already registered with Shopify and its callback is the same', async () => {
+  it('fully skips registering a webhook if it is already registered with Shopify and its callback is the same',
+  async () => {
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
     const webhook: RegisterOptions = {
       path: 'arn:test',

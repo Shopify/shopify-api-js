@@ -10,5 +10,7 @@ module.exports = {
     'import/no-named-as-default': 0,
     'no-mixed-operators': 0,
     'no-console': 0,
+    'quotes': ['error', 'single'],
+    'max-len': ['error', {'code': 120}],
   },
 };
