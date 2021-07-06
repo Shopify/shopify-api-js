@@ -26,14 +26,14 @@ interface RegistryInterface {
    *
    * @param options Paramters to add a handler which are path, topic and webHookHandler
    */
-  addHandler(options: WebhookRegistryEntry): Promise<void>;
+  addHandler(options: WebhookRegistryEntry): void;
 
   /**
    * Fetches the handler for the given topic. Returns null if no handler was registered.
    *
    * @param topic The topic to check
    */
-  getHandler(topic: string): Promise<WebhookRegistryEntry | null>;
+  getHandler(topic: string): WebhookRegistryEntry | null;
 
   /**
    * Registers a Webhook Handler function for a given topic.
@@ -218,12 +218,11 @@ function buildQuery(
 const WebhooksRegistry: RegistryInterface = {
   webhookRegistry: {},
 
-  async addHandler({path, topic, webhookHandler}): Promise<void> {
-    delete WebhooksRegistry.webhookRegistry[topic];
+  addHandler({path, topic, webhookHandler}: WebhookRegistryEntry): void {
     WebhooksRegistry.webhookRegistry[topic] = {path, topic, webhookHandler};
   },
 
-  async getHandler(topic) {
+  getHandler(topic): WebhookRegistryEntry | null {
     return topic in WebhooksRegistry.webhookRegistry ? WebhooksRegistry.webhookRegistry[topic] : null;
   },
 
@@ -359,7 +358,7 @@ const WebhooksRegistry: RegistryInterface = {
 
         if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
           const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
-          const webhookEntry = WebhooksRegistry.webhookRegistry[graphqlTopic];
+          const webhookEntry = WebhooksRegistry.getHandler(graphqlTopic);
 
           if (webhookEntry) {
             try {
