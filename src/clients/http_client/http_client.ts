@@ -211,18 +211,18 @@ class HttpClient {
             case response.status === StatusCode.TooManyRequests: {
               const retryAfter = response.headers.get('Retry-After');
               throw new ShopifyErrors.HttpThrottlingError(
-              `Shopify is throttling requests${errorMessage}`,
-              retryAfter ? parseFloat(retryAfter) : undefined,
-            );
+                `Shopify is throttling requests${errorMessage}`,
+                retryAfter ? parseFloat(retryAfter) : undefined,
+              );
             }
             case response.status >= StatusCode.InternalServerError:
               throw new ShopifyErrors.HttpInternalError(`Shopify internal error${errorMessage}`);
             default:
               throw new ShopifyErrors.HttpResponseError(
-              `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
-              response.status,
-              response.statusText,
-            );
+                `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
+                response.status,
+                response.statusText,
+              );
           }
         }
       })
