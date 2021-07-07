@@ -20,19 +20,18 @@ describe('withSession', () => {
   const shop = 'fake-shop.myshopify.io';
 
   it('throws an error for missing shop when !isOnline', async () => {
-    await expect(withSession({clientType: 'rest', isOnline: false})).rejects.toThrow(
-      ShopifyErrors.MissingRequiredArgument,
-    );
+    await expect(
+      withSession({clientType: 'rest', isOnline: false}),
+    ).rejects.toThrow(ShopifyErrors.MissingRequiredArgument);
   });
 
   it('throws an error for missing request and response objects when isOnline', async () => {
-    await expect(withSession({clientType: 'graphql', isOnline: true})).rejects.toThrow(
-      ShopifyErrors.MissingRequiredArgument,
-    );
+    await expect(
+      withSession({clientType: 'graphql', isOnline: true}),
+    ).rejects.toThrow(ShopifyErrors.MissingRequiredArgument);
   });
 
   it('throws an error for unsupported clientTypes', async () => {
-
     /* we need to set up a session for this test, because errors will be thrown for a missing session before
     hitting the clientType error */
 
@@ -43,21 +42,21 @@ describe('withSession', () => {
     session.accessToken = 'gimme-access';
     await Context.SESSION_STORAGE.storeSession(session);
 
-    await expect(withSession({clientType: 'blah' as any, isOnline: false, shop})).rejects.toThrow(
-      ShopifyErrors.UnsupportedClientType,
-    );
+    await expect(
+      withSession({clientType: 'blah' as any, isOnline: false, shop}),
+    ).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
   });
 
   it('throws an error when there is no session matching the params requested', async () => {
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    await expect(withSession({clientType: 'rest', isOnline: false, shop})).rejects.toThrow(
-      ShopifyErrors.SessionNotFound,
-    );
-    await expect(withSession({clientType: 'graphql', isOnline: true, req, res})).rejects.toThrowError(
-      ShopifyErrors.SessionNotFound,
-    );
+    await expect(
+      withSession({clientType: 'rest', isOnline: false, shop}),
+    ).rejects.toThrow(ShopifyErrors.SessionNotFound);
+    await expect(
+      withSession({clientType: 'graphql', isOnline: true, req, res}),
+    ).rejects.toThrowError(ShopifyErrors.SessionNotFound);
   });
 
   it('throws an error when the session is not yet authenticated', async () => {
@@ -67,9 +66,9 @@ describe('withSession', () => {
     session.shop = shop;
     await Context.SESSION_STORAGE.storeSession(session);
 
-    await expect(withSession({clientType: 'rest', isOnline: false, shop})).rejects.toThrow(
-      ShopifyErrors.InvalidSession,
-    );
+    await expect(
+      withSession({clientType: 'rest', isOnline: false, shop}),
+    ).rejects.toThrow(ShopifyErrors.InvalidSession);
   });
 
   it('returns an object containing the appropriate client and session for offline sessions', async () => {
@@ -118,23 +117,23 @@ describe('withSession', () => {
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
-    const restRequestCtx = await withSession({
+    const restRequestCtx = (await withSession({
       clientType: 'rest',
       isOnline: true,
       req,
       res,
-    }) as RestWithSession;
+    })) as RestWithSession;
 
     expect(restRequestCtx).toBeDefined();
     expect(restRequestCtx.session.shop).toBe(shop);
     expect(restRequestCtx.client).toBeInstanceOf(RestClient);
 
-    const gqlRequestCtx = await withSession({
+    const gqlRequestCtx = (await withSession({
       clientType: 'graphql',
       isOnline: true,
       req,
       res,
-    }) as GraphqlWithSession;
+    })) as GraphqlWithSession;
 
     expect(gqlRequestCtx).toBeDefined();
     expect(gqlRequestCtx.session.shop).toBe(shop);
@@ -165,7 +164,9 @@ describe('withSession', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -173,23 +174,23 @@ describe('withSession', () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    const restRequestCtx = await withSession({
+    const restRequestCtx = (await withSession({
       clientType: 'rest',
       isOnline: true,
       req,
       res,
-    }) as RestWithSession;
+    })) as RestWithSession;
 
     expect(restRequestCtx).toBeDefined();
     expect(restRequestCtx.session.shop).toBe(shop);
     expect(restRequestCtx.client).toBeInstanceOf(RestClient);
 
-    const gqlRequestCtx = await withSession({
+    const gqlRequestCtx = (await withSession({
       clientType: 'graphql',
       isOnline: true,
       req,
       res,
-    }) as GraphqlWithSession;
+    })) as GraphqlWithSession;
 
     expect(gqlRequestCtx).toBeDefined();
     expect(gqlRequestCtx.session.shop).toBe(shop);

@@ -154,7 +154,11 @@ const failResponse = {
   data: {},
 };
 
-async function genericWebhookHandler(topic: string, shopDomain: string, body: string): Promise<void> {
+async function genericWebhookHandler(
+  topic: string,
+  shopDomain: string,
+  body: string,
+): Promise<void> {
   if (!topic || !shopDomain || !body) {
     throw new Error('Missing webhook parameters');
   }
@@ -265,7 +269,9 @@ describe('ShopifyWebhooks.Registry.register', () => {
 
   it('updates a pre-existing eventbridge webhook even if it is already registered with Shopify', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessUpdateResponse));
+    fetchMock.mockResponseOnce(
+      JSON.stringify(eventBridgeSuccessUpdateResponse),
+    );
     const webhook: RegisterOptions = {
       path: 'arn:test-new',
       topic: 'PRODUCTS_CREATE',
@@ -385,7 +391,9 @@ describe('ShopifyWebhooks.Registry.register', () => {
       webhookHandler: genericWebhookHandler,
     };
 
-    const result = await ShopifyWebhooks.Registry.register(webhook as RegisterOptions);
+    const result = await ShopifyWebhooks.Registry.register(
+      webhook as RegisterOptions,
+    );
     expect(result.success).toBe(false);
   });
 
@@ -475,7 +483,12 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(Context.API_SECRET_KEY, rawBody), lowercase: true}))
+      .set(
+        headers({
+          hmac: hmac(Context.API_SECRET_KEY, rawBody),
+          lowercase: true,
+        }),
+      )
       .send(rawBody)
       .expect(StatusCode.Ok);
   });
@@ -661,11 +674,18 @@ function headers({
   topic = 'products',
   domain = 'shop1.myshopify.io',
   lowercase = false,
-}: {hmac?: string; topic?: string; domain?: string; lowercase?: boolean;} = {}) {
+}: {
+  hmac?: string;
+  topic?: string;
+  domain?: string;
+  lowercase?: boolean;
+} = {}) {
   return {
     [lowercase ? ShopifyHeader.Hmac.toLowerCase() : ShopifyHeader.Hmac]: hmac,
-    [lowercase ? ShopifyHeader.Topic.toLowerCase() : ShopifyHeader.Topic]: topic,
-    [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]: domain,
+    [lowercase ? ShopifyHeader.Topic.toLowerCase() : ShopifyHeader.Topic]:
+      topic,
+    [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]:
+      domain,
   };
 }
 
@@ -686,7 +706,10 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
   });
 }
 
-function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: string) {
+function assertWebhookRegistrationRequest(
+  webhook: RegisterOptions,
+  webhookId?: string,
+) {
   const address =
     !webhook.deliveryMethod || webhook.deliveryMethod === DeliveryMethod.Http
       ? `https://${Context.HOST_NAME}${webhook.path}`
@@ -699,6 +722,11 @@ function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: 
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
-    data: createWebhookQuery(webhook.topic, address, webhook.deliveryMethod, webhookId),
+    data: createWebhookQuery(
+      webhook.topic,
+      address,
+      webhook.deliveryMethod,
+      webhookId,
+    ),
   });
 }

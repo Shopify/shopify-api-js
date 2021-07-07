@@ -6,6 +6,4 @@ const ShopifyGraphqlClient = {
 
 export default ShopifyGraphqlClient;
 
-export {
-  GraphqlClient,
-};
+export {GraphqlClient};

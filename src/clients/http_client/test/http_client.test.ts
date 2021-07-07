@@ -25,7 +25,9 @@ describe('HTTP client', () => {
   });
 
   it('validates the given domain', () => {
-    expect(() => new HttpClient('invalid domain')).toThrow(ShopifyErrors.InvalidShopError);
+    expect(() => new HttpClient('invalid domain')).toThrow(
+      ShopifyErrors.InvalidShopError,
+    );
   });
 
   it('can make GET request', async () => {
@@ -33,7 +35,9 @@ describe('HTTP client', () => {
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
-    await expect(client.get({path: '/url/path'})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.get({path: '/url/path'})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({method: 'GET', domain, path: '/url/path'});
   });
 
@@ -53,7 +57,9 @@ describe('HTTP client', () => {
       data: postData,
     };
 
-    await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.post(postParams)).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({
       method: 'POST',
       domain,
@@ -79,7 +85,9 @@ describe('HTTP client', () => {
       data: JSON.stringify(postData),
     };
 
-    await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.post(postParams)).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({
       method: 'POST',
       domain,
@@ -100,7 +108,9 @@ describe('HTTP client', () => {
       data: '',
     };
 
-    await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.post(postParams)).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({method: 'POST', domain, path: '/url/path'});
   });
 
@@ -120,7 +130,9 @@ describe('HTTP client', () => {
       data: postData,
     };
 
-    await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.post(postParams)).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({
       method: 'POST',
       domain,
@@ -146,7 +158,9 @@ describe('HTTP client', () => {
       data: querystring.stringify(postData),
     };
 
-    await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.post(postParams)).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({
       method: 'POST',
       domain,
@@ -180,7 +194,9 @@ describe('HTTP client', () => {
       data: graphqlQuery,
     };
 
-    await expect(client.post(postParams)).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.post(postParams)).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({
       method: 'POST',
       domain,
@@ -206,7 +222,9 @@ describe('HTTP client', () => {
       data: putData,
     };
 
-    await expect(client.put(putParams)).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.put(putParams)).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({
       method: 'PUT',
       domain,
@@ -221,7 +239,9 @@ describe('HTTP client', () => {
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
-    await expect(client.delete({path: '/url/path/123'})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.delete({path: '/url/path/123'})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({method: 'DELETE', domain, path: '/url/path/123'});
   });
 
@@ -264,7 +284,10 @@ describe('HTTP client', () => {
         JSON.stringify({errors: 'Something went wrong!'}),
         {status: 429, statusText, headers: {'x-request-id': requestId}},
       ],
-      [JSON.stringify({}), {status: 500, statusText, headers: {'x-request-id': requestId}}],
+      [
+        JSON.stringify({}),
+        {status: 500, statusText, headers: {'x-request-id': requestId}},
+      ],
     );
 
     await testErrorResponse(403, ShopifyErrors.HttpResponseError, true);
@@ -285,10 +308,15 @@ describe('HTTP client', () => {
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
-    await expect(client.get({path: '/url/path', extraHeaders: customHeaders})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
-    assertHttpRequest({method: 'GET', domain, path: '/url/path', headers: customHeaders});
+    await expect(
+      client.get({path: '/url/path', extraHeaders: customHeaders}),
+    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/url/path',
+      headers: customHeaders,
+    });
   });
 
   it('extends User-Agent if it is provided', async () => {
@@ -297,15 +325,17 @@ describe('HTTP client', () => {
     let customHeaders: HeaderParams = {'User-Agent': 'My agent'};
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
-    await expect(client.get({path: '/url/path', extraHeaders: customHeaders})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
+    await expect(
+      client.get({path: '/url/path', extraHeaders: customHeaders}),
+    ).resolves.toEqual(buildExpectedResponse(successResponse));
     assertHttpRequest({
       method: 'GET',
       domain,
       path: '/url/path',
       headers: {
-        'User-Agent': expect.stringContaining('My agent | Shopify API Library v'),
+        'User-Agent': expect.stringContaining(
+          'My agent | Shopify API Library v',
+        ),
       },
     });
 
@@ -313,15 +343,17 @@ describe('HTTP client', () => {
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
-    await expect(client.get({path: '/url/path', extraHeaders: customHeaders})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
+    await expect(
+      client.get({path: '/url/path', extraHeaders: customHeaders}),
+    ).resolves.toEqual(buildExpectedResponse(successResponse));
     assertHttpRequest({
       method: 'GET',
       domain,
       path: '/url/path',
       headers: {
-        'User-Agent': expect.stringContaining('My lowercase agent | Shopify API Library v'),
+        'User-Agent': expect.stringContaining(
+          'My lowercase agent | Shopify API Library v',
+        ),
       },
     });
   });
@@ -332,21 +364,12 @@ describe('HTTP client', () => {
 
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponses(buildMockResponse(successResponse), buildMockResponse(successResponse));
+    fetchMock.mockResponses(
+      buildMockResponse(successResponse),
+      buildMockResponse(successResponse),
+    );
 
-    await expect(client.get({path: '/url/path'})).resolves.toEqual(buildExpectedResponse(successResponse));
-    assertHttpRequest({
-      method: 'GET',
-      domain,
-      path: '/url/path',
-      headers: {
-        'User-Agent': expect.stringContaining('Context Agent | Shopify API Library v'),
-      },
-    });
-
-    const customHeaders: HeaderParams = {'User-Agent': 'Headers Agent'};
-
-    await expect(client.get({path: '/url/path', extraHeaders: customHeaders})).resolves.toEqual(
+    await expect(client.get({path: '/url/path'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
     assertHttpRequest({
@@ -354,7 +377,25 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
-        'User-Agent': expect.stringContaining('Headers Agent | Context Agent | Shopify API Library v'),
+        'User-Agent': expect.stringContaining(
+          'Context Agent | Shopify API Library v',
+        ),
+      },
+    });
+
+    const customHeaders: HeaderParams = {'User-Agent': 'Headers Agent'};
+
+    await expect(
+      client.get({path: '/url/path', extraHeaders: customHeaders}),
+    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/url/path',
+      headers: {
+        'User-Agent': expect.stringContaining(
+          'Headers Agent | Context Agent | Shopify API Library v',
+        ),
       },
     });
   });
@@ -364,7 +405,9 @@ describe('HTTP client', () => {
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
-    await expect(client.get({path: '/url/path', tries: -1})).rejects.toBeInstanceOf(ShopifyErrors.HttpRequestError);
+    await expect(
+      client.get({path: '/url/path', tries: -1}),
+    ).rejects.toBeInstanceOf(ShopifyErrors.HttpRequestError);
   });
 
   it('retries failed requests but returns success', async () => {
@@ -372,12 +415,20 @@ describe('HTTP client', () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponses(
-      [JSON.stringify({errors: 'Something went wrong!'}), {status: 429, statusText: 'Did not work'}],
-      [JSON.stringify({errors: 'Something went wrong!'}), {status: 429, statusText: 'Did not work'}],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 429, statusText: 'Did not work'},
+      ],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 429, statusText: 'Did not work'},
+      ],
       [buildMockResponse(successResponse), {status: 200}],
     );
 
-    await expect(client.get({path: '/url/path', tries: 3})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.get({path: '/url/path', tries: 3})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 3});
   });
 
@@ -386,12 +437,20 @@ describe('HTTP client', () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponses(
-      [JSON.stringify({errors: 'Something went wrong!'}), {status: 500, statusText: 'Did not work'}],
-      [JSON.stringify({errors: 'Something went wrong!'}), {status: 403, statusText: 'Did not work'}],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 500, statusText: 'Did not work'},
+      ],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 403, statusText: 'Did not work'},
+      ],
       [buildMockResponse(successResponse), {status: 200}],
     );
 
-    await expect(client.get({path: '/url/path', tries: 3})).rejects.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    await expect(
+      client.get({path: '/url/path', tries: 3}),
+    ).rejects.toBeInstanceOf(ShopifyErrors.HttpResponseError);
     // The second call resulted in a non-retriable error
     assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 2});
   });
@@ -401,13 +460,27 @@ describe('HTTP client', () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponses(
-      [JSON.stringify({errors: 'Something went wrong!'}), {status: 500, statusText: 'Did not work'}],
-      [JSON.stringify({errors: 'Something went wrong!'}), {status: 500, statusText: 'Did not work'}],
-      [JSON.stringify({errors: 'Something went wrong!'}), {status: 500, statusText: 'Did not work'}],
-      [JSON.stringify({errors: 'Something went wrong!'}), {status: 500, statusText: 'Did not work'}],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 500, statusText: 'Did not work'},
+      ],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 500, statusText: 'Did not work'},
+      ],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 500, statusText: 'Did not work'},
+      ],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 500, statusText: 'Did not work'},
+      ],
     );
 
-    await expect(client.get({path: '/url/path', tries: 3})).rejects.toBeInstanceOf(ShopifyErrors.HttpMaxRetriesError);
+    await expect(
+      client.get({path: '/url/path', tries: 3}),
+    ).rejects.toBeInstanceOf(ShopifyErrors.HttpMaxRetriesError);
     assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 3});
   });
 
@@ -421,17 +494,25 @@ describe('HTTP client', () => {
     fetchMock.mockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 429, statusText: 'Did not work', headers: {'Retry-After': realWaitTime.toString()}},
+        {
+          status: 429,
+          statusText: 'Did not work',
+          headers: {'Retry-After': realWaitTime.toString()},
+        },
       ],
       [JSON.stringify(successResponse), {status: 200}],
     );
 
     // If we don't retry within an acceptable amount of time, we assume to be paused for longer than Retry-After
     const retryTimeout = setTimeout(() => {
-      throw new Error('Request was not retried within the interval defined by Retry-After, test failed');
+      throw new Error(
+        'Request was not retried within the interval defined by Retry-After, test failed',
+      );
     }, 4000);
 
-    await expect(client.get({path: '/url/path', tries: 2})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.get({path: '/url/path', tries: 2})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({method: 'GET', domain, path: '/url/path', tries: 2});
     clearTimeout(retryTimeout);
   });
@@ -447,7 +528,10 @@ describe('HTTP client', () => {
         }),
         {
           status: 200,
-          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
         },
       ],
       [
@@ -459,7 +543,10 @@ describe('HTTP client', () => {
         }),
         {
           status: 200,
-          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
         },
       ],
     );
@@ -471,7 +558,11 @@ describe('HTTP client', () => {
       path: 'https://test-shop.myshopify.io/url/path',
     });
 
-    await client.post({path: '/url/path', type: DataType.JSON, data: {query: 'some query'}});
+    await client.post({
+      path: '/url/path',
+      type: DataType.JSON,
+      data: {query: 'some query'},
+    });
 
     expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
       message: 'This API endpoint has been deprecated',
@@ -492,7 +583,10 @@ describe('HTTP client', () => {
         }),
         {
           status: 200,
-          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
         },
       ],
       [
@@ -501,7 +595,10 @@ describe('HTTP client', () => {
         }),
         {
           status: 200,
-          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
         },
       ],
       [
@@ -510,7 +607,10 @@ describe('HTTP client', () => {
         }),
         {
           status: 200,
-          headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
         },
       ],
     );
@@ -543,14 +643,20 @@ describe('HTTP client', () => {
       }),
       {
         status: 200,
-        headers: {'X-Shopify-API-Deprecated-Reason': 'This API endpoint has been deprecated'},
+        headers: {
+          'X-Shopify-API-Deprecated-Reason':
+            'This API endpoint has been deprecated',
+        },
       },
     );
 
     await client.get({path: '/url/path'});
 
     // open and read test log file
-    const fileContent = fs.readFileSync(logFilePath, {encoding: 'utf-8', flag: 'r'});
+    const fileContent = fs.readFileSync(logFilePath, {
+      encoding: 'utf-8',
+      flag: 'r',
+    });
 
     expect(fileContent).toContain('API Deprecation Notice');
     expect(fileContent).toContain(
@@ -562,7 +668,7 @@ describe('HTTP client', () => {
 
 function setRestClientRetryTime(time: number) {
   // We de-type HttpClient here so we can alter its readonly time property
-  ((HttpClient as unknown) as Record<string, number>).RETRY_WAIT_TIME = time;
+  (HttpClient as unknown as Record<string, number>).RETRY_WAIT_TIME = time;
 }
 
 function buildMockResponse(obj: unknown): string {

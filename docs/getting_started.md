@@ -5,6 +5,7 @@ Before you start building your app, you'll need to perform the steps below.
 ## Install dependencies
 
 This step will generate your app's `package.json` and install the following necessary dependencies:
+
 - `@shopify/shopify-api`—this library
 - `dotenv`—tool to read from `.env` files
 - `typescript`—TypeScript language
@@ -16,21 +17,23 @@ Examples:
 <details>
   <summary>Node.js</summary>
 
-  ```shell
-  $ yarn init -y
-  $ yarn add @shopify/shopify-api
-  $ yarn add --dev dotenv typescript @types/node
-  ```
+```shell
+$ yarn init -y
+$ yarn add @shopify/shopify-api
+$ yarn add --dev dotenv typescript @types/node
+```
+
 </details>
 
 <details>
   <summary>Express</summary>
 
-  ```shell
-  $ yarn init -y
-  $ yarn add @shopify/shopify-api express
-  $ yarn add --dev dotenv typescript @types/express
-  ```
+```shell
+$ yarn init -y
+$ yarn add @shopify/shopify-api express
+$ yarn add --dev dotenv typescript @types/express
+```
+
 </details>
 
 ## Set up base files
@@ -53,9 +56,10 @@ dist
 node_modules
 ```
 
- **Important:** If you ever accidentally commit your API secret to GitHub or any other third party, you can follow [this tutorial](https://shopify.dev/tutorials/rotate-revoke-api-credentials) on how to generate new credentials for your application.
+**Important:** If you ever accidentally commit your API secret to GitHub or any other third party, you can follow [this tutorial](https://shopify.dev/tutorials/rotate-revoke-api-credentials) on how to generate new credentials for your application.
 
 `tsconfig.json`
+
 ```json
 {
   "compilerOptions": {
@@ -68,18 +72,15 @@ node_modules
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "*": [
-        "node_modules/*"
-      ]
+      "*": ["node_modules/*"]
     }
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }
 ```
 
 Add the following `scripts` section to your `package.json` so you can easily build/start your app:
+
 ```json
 "scripts": {
   "build": "npx tsc",
@@ -95,13 +96,14 @@ You'll need your application to load the API key and API secret key (found when 
 However you choose to do it, be sure to NOT save the API key and secret key in GitHub or other code repository where others can view them, as that information can be used to forge requests for your Shopify app.
 
 Begin by placing the following in an `.env` file at the root of your project:
-  ```yaml
-  SHOP={dev store url}            # Your test store URL
-  API_KEY={api key}               # Your API key
-  API_SECRET_KEY={api secret key} # Your API secret key
-  SCOPES={scopes}                 # Your app's required scopes
-  HOST={your app's host}          # Your app's host, without the protocol prefix (in this case we used an `ngrok` tunnel to provide a secure connection to our localhost)
-  ```
+
+```yaml
+SHOP={dev store url}            # Your test store URL
+API_KEY={api key}               # Your API key
+API_SECRET_KEY={api secret key} # Your API secret key
+SCOPES={scopes}                 # Your app's required scopes
+HOST={your app's host}          # Your app's host, without the protocol prefix (in this case we used an `ngrok` tunnel to provide a secure connection to our localhost)
+```
 
 ## Set up Context
 
@@ -112,81 +114,89 @@ While setting up `Context`, you'll be able to set [which version of the Admin AP
 <details>
   <summary>Node.js</summary>
 
-  ```typescript
-  // src/index.ts
-  import http from 'http';
-  import url from 'url';
-  import querystring from 'querystring';
-  import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
-  require('dotenv').config();
+```typescript
+// src/index.ts
+import http from 'http';
+import url from 'url';
+import querystring from 'querystring';
+import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
+require('dotenv').config();
 
-  const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env
+const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env
 
-  Shopify.Context.initialize({
-    API_KEY,
-    API_SECRET_KEY,
-    SCOPES: [SCOPES],
-    HOST_NAME: HOST,
-    IS_EMBEDDED_APP: {boolean},
-    API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
-  });
-  ```
+Shopify.Context.initialize({
+  API_KEY,
+  API_SECRET_KEY,
+  SCOPES: [SCOPES],
+  HOST_NAME: HOST,
+  IS_EMBEDDED_APP: {boolean},
+  API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
+});
+```
 
-  You will also need to set up a basic router to be able to process requests:
+You will also need to set up a basic router to be able to process requests:
 
-  ```typescript
-  async function onRequest(request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
-    const { headers, url: req_url } = request;
-    const pathName: string | null = url.parse(req_url).pathname;
-    const queryString: string = (String)(url.parse(req_url).query);
-    const query: Record<string, any> = querystring.parse(queryString);
+```typescript
+async function onRequest(
+  request: http.IncomingMessage,
+  response: http.ServerResponse,
+): Promise<void> {
+  const {headers, url: req_url} = request;
+  const pathName: string | null = url.parse(req_url).pathname;
+  const queryString: string = String(url.parse(req_url).query);
+  const query: Record<string, any> = querystring.parse(queryString);
 
-    if (pathName === '/') {
-      // check if we're logged in/authorized
-      const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
-      if(!currentSession) {
-        // not logged in, redirect to login
-        response.writeHead(302, { 'Location': `/login` });
-        response.end();
-      } else {
-        // do something amazing with your application!
-      }
-      return;
-    } // end of if(pathName === '/')
-  } // end of onRequest()
+  if (pathName === '/') {
+    // check if we're logged in/authorized
+    const currentSession = await Shopify.Utils.loadCurrentSession(
+      request,
+      response,
+    );
+    if (!currentSession) {
+      // not logged in, redirect to login
+      response.writeHead(302, {Location: `/login`});
+      response.end();
+    } else {
+      // do something amazing with your application!
+    }
+    return;
+  } // end of if(pathName === '/')
+} // end of onRequest()
 
-  http.createServer(onRequest).listen(3000);
-  ```
+http.createServer(onRequest).listen(3000);
+```
+
 </details>
 
 <details>
   <summary>Express</summary>
 
-  ```ts
-  // src/index.ts
-  import express from 'express';
-  import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
-  require('dotenv').config();
+```ts
+// src/index.ts
+import express from 'express';
+import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
+require('dotenv').config();
 
-  const app = express();
+const app = express();
 
-  const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env;
+const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env;
 
-  Shopify.Context.initialize({
-    API_KEY,
-    API_SECRET_KEY,
-    SCOPES: [SCOPES],
-    HOST_NAME: HOST,
-    IS_EMBEDDED_APP: {boolean},
-    API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
-  });
+Shopify.Context.initialize({
+  API_KEY,
+  API_SECRET_KEY,
+  SCOPES: [SCOPES],
+  HOST_NAME: HOST,
+  IS_EMBEDDED_APP: {boolean},
+  API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
+});
 
-  // the rest of the example code goes here
+// the rest of the example code goes here
 
-  app.listen(3000, () => {
-    console.log('your app is now listening on port 3000');
-  });
-  ```
+app.listen(3000, () => {
+  console.log('your app is now listening on port 3000');
+});
+```
+
 </details>
 
 ## Running your app

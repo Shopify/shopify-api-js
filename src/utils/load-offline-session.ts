@@ -10,7 +10,10 @@ import OAuth from '../auth/oauth';
  * @param shop the shop url to find the offline session for
  * @param includeExpired optionally include expired sessions, defaults to false
  */
-export default async function loadOfflineSession(shop: string, includeExpired = false): Promise<Session | undefined> {
+export default async function loadOfflineSession(
+  shop: string,
+  includeExpired = false,
+): Promise<Session | undefined> {
   Context.throwIfUninitialized();
 
   const sessionId = OAuth.getOfflineSessionId(shop);
@@ -18,7 +21,12 @@ export default async function loadOfflineSession(shop: string, includeExpired = 
 
   const now = new Date();
 
-  if (session && !includeExpired && session.expires && session.expires.getTime() < now.getTime()) {
+  if (
+    session &&
+    !includeExpired &&
+    session.expires &&
+    session.expires.getTime() < now.getTime()
+  ) {
     return undefined;
   }
 

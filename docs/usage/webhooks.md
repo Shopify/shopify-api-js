@@ -41,6 +41,7 @@ In this example the webhook is being registered as soon as the authentication is
     catch (e) {
       ...
 ```
+
 </details>
 
 <details>
@@ -50,13 +51,24 @@ In this example the webhook is being registered as soon as the authentication is
 // Register webhooks after OAuth completes
 app.get('/auth/callback', async (req, res) => {
   try {
-    await Shopify.Auth.validateAuthCallback(req, res, req.query as unknown as AuthQuery); // req.query must be cast to unkown and then AuthQuery in order to be accepted
+    await Shopify.Auth.validateAuthCallback(
+      req,
+      res,
+      req.query as unknown as AuthQuery,
+    ); // req.query must be cast to unkown and then AuthQuery in order to be accepted
 
-    const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: Buffer) => {
+    const handleWebhookRequest = async (
+      topic: string,
+      shop: string,
+      webhookRequestBody: Buffer,
+    ) => {
       // this handler is triggered when a webhook is sent by the Shopify platform to your application
-    }
+    };
 
-    const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
+    const currentSession = await Shopify.Utils.loadCurrentSession(
+      request,
+      response,
+    );
 
     // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
     const resp = await Shopify.Webhooks.Registry.register({
@@ -64,7 +76,7 @@ app.get('/auth/callback', async (req, res) => {
       topic: 'PRODUCTS_CREATE',
       accessToken: currentSession.accessToken,
       shop: currentSession.shop,
-      webhookHandler: handleWebhookRequest
+      webhookHandler: handleWebhookRequest,
     });
   } catch (error) {
     console.error(error); // in practice these should be handled more gracefully
@@ -72,6 +84,7 @@ app.get('/auth/callback', async (req, res) => {
   return res.redirect('/'); // wherever you want your user to end up after OAuth completes
 });
 ```
+
 </details>
 
 ### EventBridge and PubSub Webhooks
@@ -84,13 +97,13 @@ For EventBridge, the `path` must be the [ARN of the partner event
 source](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_EventSource.html).
 
 For Pub/Sub, the `path` must be of the form
-`pubsub://[PROJECT-ID]:[PUB-SUB-TOPIC-ID]`.  For example, if you created a topic
+`pubsub://[PROJECT-ID]:[PUB-SUB-TOPIC-ID]`. For example, if you created a topic
 with id `red` in the project `blue`, then the value of `path` would be
 `pubsub://blue:red`.
 
 ## Process a Webhook
 
-To process a webhook, you need to listen on the route(s) you provided during the Webhook registration process, then call the appropriate handler.  The library provides a convenient `process` method that acts as a middleware to handle webhooks. It takes care of calling the correct handler for the registered Webhook topics.
+To process a webhook, you need to listen on the route(s) you provided during the Webhook registration process, then call the appropriate handler. The library provides a convenient `process` method that acts as a middleware to handle webhooks. It takes care of calling the correct handler for the registered Webhook topics.
 
 **Note**: The `process` method will always respond to Shopify, even if your call throws an error. You can catch and log errors, but you can't change the response.
 
@@ -111,6 +124,7 @@ To process a webhook, you need to listen on the route(s) you provided during the
 
 http.createServer(onRequest).listen(3000);
 ```
+
 </details>
 
 <details>
@@ -125,6 +139,7 @@ app.post('/webhooks', async (req, res) => {
   }
 });
 ```
+
 </details>
 
 [Back to guide index](../README.md)

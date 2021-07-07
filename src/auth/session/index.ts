@@ -10,9 +10,4 @@ const ShopifySession = {
 };
 
 export default ShopifySession;
-export {
-  Session,
-  SessionStorage,
-  MemorySessionStorage,
-  CustomSessionStorage,
-};
+export {Session, SessionStorage, MemorySessionStorage, CustomSessionStorage};

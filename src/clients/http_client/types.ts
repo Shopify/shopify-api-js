@@ -27,7 +27,9 @@ export type PutRequestParams = PostRequestParams;
 
 export type DeleteRequestParams = GetRequestParams;
 
-export type RequestParams = (GetRequestParams | PostRequestParams) & {method: Method;};
+export type RequestParams = (GetRequestParams | PostRequestParams) & {
+  method: Method;
+};
 
 export interface RequestReturn {
   body: unknown;

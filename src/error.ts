@@ -17,7 +17,11 @@ class PrivateAppError extends ShopifyError {}
 class HttpRequestError extends ShopifyError {}
 class HttpMaxRetriesError extends ShopifyError {}
 class HttpResponseError extends ShopifyError {
-  public constructor(message: string, readonly code: number, readonly statusText: string) {
+  public constructor(
+    message: string,
+    readonly code: number,
+    readonly statusText: string,
+  ) {
     super(message);
   }
 }
