@@ -254,7 +254,6 @@ describe('validateAuthCallback', () => {
     fetchMock.mockResponse(JSON.stringify(successResponse));
 
     // create new storage with broken storeCallback for validateAuthCallback to use
-    /* eslint-disable-next-line require-atomic-updates */
     Context.SESSION_STORAGE = new CustomSessionStorage(
       () => Promise.resolve(false),
       () => Promise.resolve(session),
