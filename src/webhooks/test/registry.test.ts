@@ -315,6 +315,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     const result = await ShopifyWebhooks.Registry.register(webhook);
     expect(result.success).toBe(true);
     expect(result.result).toEqual({});
+    expect('PRODUCTS_CREATE' in ShopifyWebhooks.Registry.webhookRegistry);
     expect(fetchMock.mock.calls).toHaveLength(1);
     assertWebhookCheckRequest(webhook);
   });
@@ -396,7 +397,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     };
     await ShopifyWebhooks.Registry.addHandler({path: '/webhooks', topic: 'PRODUCTS_CREATE', webhookHandler: genericWebhookHandler});
     await ShopifyWebhooks.Registry.register(webhook);
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(1);
+    expect('PRODUCTS_CREATE' in ShopifyWebhooks.Registry.webhookRegistry);
 
     // Add a second handler
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
@@ -409,6 +410,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     };
     await ShopifyWebhooks.Registry.addHandler({path: '/webhooks', topic: 'PRODUCTS_UPDATE', webhookHandler: genericWebhookHandler});
     await ShopifyWebhooks.Registry.register(webhook);
+    expect('PRODUCTS_UPDATE' in ShopifyWebhooks.Registry.webhookRegistry);
     expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(2);
 
     // Update the second handler and make sure we still have the two of them
