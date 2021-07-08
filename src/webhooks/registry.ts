@@ -220,7 +220,7 @@ const WebhooksRegistry: RegistryInterface = {
         : path;
     const checkResult = (await client.query({
       data: buildCheckQuery(topic),
-    })) as {body: WebhookCheckResponse | WebhookCheckResponseLegacy};
+    })) as {body: WebhookCheckResponse | WebhookCheckResponseLegacy;};
     let webhookId: string | undefined;
     let mustRegister = true;
     if (checkResult.body.data.webhookSubscriptions.edges.length) {

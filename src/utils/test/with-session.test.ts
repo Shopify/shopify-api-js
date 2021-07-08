@@ -32,9 +32,9 @@ describe('withSession', () => {
   });
 
   it('throws an error for unsupported clientTypes', async () => {
+
     /* we need to set up a session for this test, because errors will be thrown for a missing session before
     hitting the clientType error */
-
     const offlineId = OAuth.getOfflineSessionId(shop);
     const session = new Session(offlineId);
     session.isOnline = false;

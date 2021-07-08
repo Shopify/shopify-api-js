@@ -29,7 +29,7 @@ export function generateLocalHmac({
     timestamp,
     state,
     shop,
-    ...(host && {host}),
+    ...host && {host},
   });
   return crypto
     .createHmac('sha256', Context.API_SECRET_KEY)
