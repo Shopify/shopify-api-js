@@ -222,7 +222,7 @@ const WebhooksRegistry: RegistryInterface = {
     WebhooksRegistry.webhookRegistry[topic] = {path, topic, webhookHandler};
   },
 
-  getHandler(topic): WebhookRegistryEntry | null {
+  getHandler(topic: string): WebhookRegistryEntry | null {
     return topic in WebhooksRegistry.webhookRegistry ? WebhooksRegistry.webhookRegistry[topic] : null;
   },
 
