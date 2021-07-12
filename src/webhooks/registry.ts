@@ -276,13 +276,6 @@ const WebhooksRegistry: RegistryInterface = {
       body = {};
     }
 
-    if (success) {
-      // Remove this topic from the registry if it is already there
-      WebhooksRegistry.webhookRegistry =
-        WebhooksRegistry.webhookRegistry.filter((item) => item.topic !== topic);
-      WebhooksRegistry.webhookRegistry.push({path, topic, webhookHandler});
-    }
-
     return {success, result: body};
   },
 
