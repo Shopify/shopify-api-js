@@ -33,7 +33,11 @@ class Session implements SessionInterface {
 
   public isActive(): boolean {
     const scopesUnchanged = Context.SCOPES.equals(this.scope);
-    if (scopesUnchanged && this.accessToken && (!this.expires || this.expires >= new Date())) {
+    if (
+      scopesUnchanged &&
+      this.accessToken &&
+      (!this.expires || this.expires >= new Date())
+    ) {
       return true;
     }
     return false;
