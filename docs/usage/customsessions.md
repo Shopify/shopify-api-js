@@ -7,7 +7,7 @@ This library comes with two session management options: `MemorySessionStorage` a
 When you're ready to deploy your app and run it in production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `Shopify.Context`. The `CustomSessionStorage` class expects to be initialized with three callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
 
 ## Callback methods
-
+ 
 - All of the callbacks used to create a new instance of `CustomSessionStorage` should be `async` functions and return a `Promise` that resolves to a specified type, as outlined below.
 
 | Method           | Arg type           | Return type                                                          | Notes                                                                                                                                                                                                               |
@@ -70,7 +70,7 @@ class RedisStore {
   storeCallback = async (session: Session) => {
     try {
       // Inside our try, we use the `setAsync` method to save our session.
-      // This method returns a boolean (true is successful, false if not)
+      // This method returns a boolean (true if successful, false if not)
       return await this.setAsync(session.id, JSON.stringify(session));
     } catch (err) {
       // throw errors, and handle them gracefully in your application
@@ -107,7 +107,7 @@ class RedisStore {
   deleteCallback = async (id: string) => {
     try {
       // Inside our try, we use the `delAsync` method to delete our session.
-      // This method returns a boolean (true is successful, false if not)
+      // This method returns a boolean (true if successful, false if not)
       return await this.delAsync(id);
     } catch (err) {
       throw new Error(err);
