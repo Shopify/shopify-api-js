@@ -1,7 +1,7 @@
 ---
 name: '📈 Enhancement'
 about: Enhancement to our codebase that isn't a adding or changing a feature
-labels: "Type: Enhancement 📈" 
+labels: 'Type: Enhancement 📈'
 ---
 
 ## Overview/summary
@@ -17,7 +17,6 @@ labels: "Type: Enhancement 📈"
 ### Area
 
 - [ ] Add any relevant `Area: <area>` labels to this issue
-
 
 ---
 

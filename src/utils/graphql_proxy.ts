@@ -5,12 +5,19 @@ import * as ShopifyErrors from '../error';
 
 import loadCurrentSession from './load-current-session';
 
-export default async function graphqlProxy(userReq: http.IncomingMessage, userRes: http.ServerResponse): Promise<void> {
+export default async function graphqlProxy(
+  userReq: http.IncomingMessage,
+  userRes: http.ServerResponse,
+): Promise<void> {
   const session = await loadCurrentSession(userReq, userRes);
   if (!session) {
-    throw new ShopifyErrors.SessionNotFound('Cannot proxy query. No session found.');
+    throw new ShopifyErrors.SessionNotFound(
+      'Cannot proxy query. No session found.',
+    );
   } else if (!session.accessToken) {
-    throw new ShopifyErrors.InvalidSession('Cannot proxy query. Session not authenticated.');
+    throw new ShopifyErrors.InvalidSession(
+      'Cannot proxy query. Session not authenticated.',
+    );
   }
 
   const shopName: string = session.shop;

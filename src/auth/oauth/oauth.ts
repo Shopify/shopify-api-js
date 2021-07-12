@@ -15,7 +15,12 @@ import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
 import * as ShopifyErrors from '../../error';
 
-import {AuthQuery, AccessTokenResponse, OnlineAccessResponse, OnlineAccessInfo} from './types';
+import {
+  AuthQuery,
+  AccessTokenResponse,
+  OnlineAccessResponse,
+  OnlineAccessInfo,
+} from './types';
 
 const ShopifyOAuth = {
   SESSION_COOKIE_NAME: 'shopify_app_session',
@@ -48,7 +53,9 @@ const ShopifyOAuth = {
 
     const state = nonce();
 
-    const session = new Session(isOnline ? uuidv4() : this.getOfflineSessionId(shop));
+    const session = new Session(
+      isOnline ? uuidv4() : this.getOfflineSessionId(shop),
+    );
     session.shop = shop;
     session.state = state;
     session.isOnline = isOnline;
@@ -113,7 +120,9 @@ const ShopifyOAuth = {
       );
     }
 
-    const currentSession = await Context.SESSION_STORAGE.loadSession(sessionCookie);
+    const currentSession = await Context.SESSION_STORAGE.loadSession(
+      sessionCookie,
+    );
     if (!currentSession) {
       throw new ShopifyErrors.SessionNotFound(
         `Cannot complete OAuth process. No session found for the specified shop url: ${query.shop}`,
@@ -144,7 +153,9 @@ const ShopifyOAuth = {
     if (currentSession.isOnline) {
       const responseBody = postResponse.body as OnlineAccessResponse;
       const {access_token, scope, ...rest} = responseBody; // eslint-disable-line @typescript-eslint/naming-convention
-      const sessionExpiration = new Date(Date.now() + responseBody.expires_in * 1000);
+      const sessionExpiration = new Date(
+        Date.now() + responseBody.expires_in * 1000,
+      );
       currentSession.accessToken = access_token;
       currentSession.expires = sessionExpiration;
       currentSession.scope = scope;
@@ -164,7 +175,10 @@ const ShopifyOAuth = {
     } else if (Context.IS_EMBEDDED_APP) {
       // If this is an online session for an embedded app, prepare a JWT session to be used going forward
       const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
-      const jwtSessionId = this.getJwtSessionId(currentSession.shop, `${onlineInfo.associated_user.id}`);
+      const jwtSessionId = this.getJwtSessionId(
+        currentSession.shop,
+        `${onlineInfo.associated_user.id}`,
+      );
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
       await Context.SESSION_STORAGE.storeSession(jwtSession);
 
@@ -180,7 +194,9 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    const sessionStored = await Context.SESSION_STORAGE.storeSession(currentSession);
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(
+      currentSession,
+    );
 
     if (!sessionStored) {
       throw new ShopifyErrors.SessionStorageError(
@@ -195,7 +211,10 @@ const ShopifyOAuth = {
    * @param request HTTP request object
    * @param response HTTP response object
    */
-  getCookieSessionId(request: http.IncomingMessage, response: http.ServerResponse): string | undefined {
+  getCookieSessionId(
+    request: http.IncomingMessage,
+    response: http.ServerResponse,
+  ): string | undefined {
     const cookies = new Cookies(request, response, {
       secure: true,
       keys: [Context.API_SECRET_KEY],
@@ -241,7 +260,9 @@ const ShopifyOAuth = {
       if (authHeader) {
         const matches = authHeader.match(/^Bearer (.+)$/);
         if (!matches) {
-          throw new ShopifyErrors.MissingJwtTokenError('Missing Bearer token in authorization header');
+          throw new ShopifyErrors.MissingJwtTokenError(
+            'Missing Bearer token in authorization header',
+          );
         }
 
         const jwtPayload = decodeSessionToken(matches[1]);
@@ -273,7 +294,11 @@ const ShopifyOAuth = {
  * @param session Current session
  */
 function validQuery(query: AuthQuery, session: Session): boolean {
-  return validateHmac(query) && validateShop(query.shop) && safeCompare(query.state, session.state as string);
+  return (
+    validateHmac(query) &&
+    validateShop(query.shop) &&
+    safeCompare(query.state, session.state as string)
+  );
 }
 
 export {ShopifyOAuth};

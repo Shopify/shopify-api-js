@@ -13,7 +13,9 @@ describe('session', () => {
     expect(session.expires).toStrictEqual(sessionClone.expires);
     expect(session.isOnline).toStrictEqual(sessionClone.isOnline);
     expect(session.accessToken).toStrictEqual(sessionClone.accessToken);
-    expect(session.onlineAccessInfo).toStrictEqual(sessionClone.onlineAccessInfo);
+    expect(session.onlineAccessInfo).toStrictEqual(
+      sessionClone.onlineAccessInfo,
+    );
   });
 });
 

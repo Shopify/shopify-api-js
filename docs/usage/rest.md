@@ -12,14 +12,14 @@ The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and
 - The `delete` method accepts a `DeleteRequestParams` object, **which has an identical strucuture to `GetRequestParams`**.
 
 **`GetRequestParams` / `DeleteRequestParams`:**
-  | Parameter | Type | Required? | Default Value | Notes |
-  | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
-  | `path` | `string` | True | none | The requested API endpoint path |
-  | `data` | `Record<string, unknown> \| string` | False | none | The body of the request |
-  | `type` | `DataType` | False | none | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) |
-  | `query` | `Record<string, string \| number>` | False | none | An optional query object to be appended to the request |
-  | `extraHeaders` | `Record<string, string \| number>` | False | none | Any additional headers you want to send with your request |
-  | `tries` | `number` | False | `1` | The maximum number of times to retry the request _(must be >= 0)_ |
+| Parameter | Type | Required? | Default Value | Notes |
+| -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
+| `path` | `string` | True | none | The requested API endpoint path |
+| `data` | `Record<string, unknown> \| string` | False | none | The body of the request |
+| `type` | `DataType` | False | none | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) |
+| `query` | `Record<string, string \| number>` | False | none | An optional query object to be appended to the request |
+| `extraHeaders` | `Record<string, string \| number>` | False | none | Any additional headers you want to send with your request |
+| `tries` | `number` | False | `1` | The maximum number of times to retry the request _(must be >= 0)_ |
 
 ### Post and Put:
 
@@ -27,14 +27,14 @@ The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and
 - The `put` method accepts a `PutRequestParams` object, **which has an identical structure to `PostRequestParams`**.
 
 **`PostRequestParams` / `PutRequestParams`:**
-  | Parameter | Type | Required? | Default Value | Notes |
-  | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
-  | `path` | `string` | True | none | The requested API endpoint path |
-  | `data` | `Record<string, unknown> \| string` | True | none | The body of the request |
-  | `type` | `DataType` | True | none | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) |
-  | `query` | `Record<string, string \| number>` | False | none | An optional query object to be appended to the request |
-  | `extraHeaders` | `Record<string, string \| number>` | False | none | Any additional headers you want to send with your request |
-  | `tries` | `number` | False | `1` | The maximum number of times to retry the request _(must be >= 0)_ |
+| Parameter | Type | Required? | Default Value | Notes |
+| -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
+| `path` | `string` | True | none | The requested API endpoint path |
+| `data` | `Record<string, unknown> \| string` | True | none | The body of the request |
+| `type` | `DataType` | True | none | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) |
+| `query` | `Record<string, string \| number>` | False | none | An optional query object to be appended to the request |
+| `extraHeaders` | `Record<string, string \| number>` | False | none | Any additional headers you want to send with your request |
+| `tries` | `number` | False | `1` | The maximum number of times to retry the request _(must be >= 0)_ |
 
 ## Usage Examples:
 

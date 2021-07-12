@@ -17,8 +17,20 @@ export function stringifyQuery(query: AuthQuery): string {
   return querystring.stringify(orderedObj);
 }
 
-export function generateLocalHmac({code, timestamp, state, shop, host}: AuthQuery): string {
-  const queryString = stringifyQuery({code, timestamp, state, shop, ...host && {host}});
+export function generateLocalHmac({
+  code,
+  timestamp,
+  state,
+  shop,
+  host,
+}: AuthQuery): string {
+  const queryString = stringifyQuery({
+    code,
+    timestamp,
+    state,
+    shop,
+    ...host && {host},
+  });
   return crypto
     .createHmac('sha256', Context.API_SECRET_KEY)
     .update(queryString)

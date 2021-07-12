@@ -28,26 +28,15 @@
       "es2018",
       "esnext.asynciterable"
     ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./node_modules/@types"],
     "outDir": "./dist",
     "baseUrl": ".",
     "rootDir": "src"
   },
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
-  ],
-  "exclude": [
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/test/*"
-  ],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test/*"],
   "typedocOptions": {
-    "inputFiles": [
-      "./src"
-    ],
+    "inputFiles": ["./src"],
     "mode": "file",
     "out": "tsdocs",
     "exclude": "**/test/**",
