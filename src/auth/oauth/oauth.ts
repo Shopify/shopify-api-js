@@ -122,7 +122,7 @@ const ShopifyOAuth = {
       );
     }
 
-    const currentSession = await Context.SESSION_STORAGE.loadSession(
+    let currentSession = await Context.SESSION_STORAGE.loadSession(
       sessionCookie,
     );
     if (!currentSession) {
@@ -190,6 +190,7 @@ const ShopifyOAuth = {
           'OAuth Session could not be deleted. Please check your session storage functionality.',
         );
       }
+      currentSession = jwtSession;
     }
 
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
