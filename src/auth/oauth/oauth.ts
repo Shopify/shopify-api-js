@@ -14,6 +14,7 @@ import {Session} from '../session';
 import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
 import * as ShopifyErrors from '../../error';
+import {SessionInterface} from '../session/types';
 
 import {
   AuthQuery,
@@ -99,12 +100,13 @@ const ShopifyOAuth = {
    * @param response Current HTTP Response
    * @param query Current HTTP Request Query, containing the information to be validated.
    *              Depending on framework, this may need to be cast as "unknown" before being passed.
+   * @returns SessionInterface
    */
   async validateAuthCallback(
     request: http.IncomingMessage,
     response: http.ServerResponse,
     query: AuthQuery,
-  ): Promise<void> {
+  ): Promise<SessionInterface> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
@@ -182,9 +184,12 @@ const ShopifyOAuth = {
       const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
       await Context.SESSION_STORAGE.storeSession(jwtSession);
 
-      // Make sure the current OAuth session expires along with the cookie
-      oauthSessionExpiration = new Date(Date.now() + 30000);
-      currentSession.expires = oauthSessionExpiration;
+      const sessionDeleted = Context.SESSION_STORAGE.deleteSession(currentSession.id);
+      if (!sessionDeleted) {
+        throw new ShopifyErrors.SessionStorageError(
+          'OAuth Session could not be deleted. Please check your session storage functionality.',
+        );
+      }
     }
 
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
@@ -203,6 +208,8 @@ const ShopifyOAuth = {
         'OAuth Session could not be saved. Please check your session storage functionality.',
       );
     }
+
+    return currentSession;
   },
 
   /**
