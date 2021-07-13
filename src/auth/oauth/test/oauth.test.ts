@@ -370,10 +370,11 @@ describe('validateAuthCallback', () => {
     testCallbackQuery.hmac = expectedHmac;
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
-    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
+    const returnedCookie = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
+    expect(cookieSession).toEqual(returnedCookie);
 
     const jwtPayload: JwtPayload = {
       iss: `https://${shop}/admin`,
@@ -394,7 +395,7 @@ describe('validateAuthCallback', () => {
       jwtSessionId,
     );
     expect(actualJwtSession).not.toBeUndefined();
-
+    expect(actualJwtSession).toEqual(returnedCookie);
     const actualJwtExpiration = actualJwtSession?.expires
       ? actualJwtSession.expires.getTime() / 1000
       : 0;
