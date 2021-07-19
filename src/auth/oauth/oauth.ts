@@ -162,48 +162,43 @@ const ShopifyOAuth = {
       currentSession.expires = sessionExpiration;
       currentSession.scope = scope;
       currentSession.onlineAccessInfo = rest;
+
+
+      // If this is an offline session, we're no longer interested in the cookie. If it is online in an embedded app, we
+      // want the cookie session to expire a few seconds from now to give the app time to load itself to set up a JWT.
+      // Otherwise, we want to leave the cookie session alone until the actual expiration.
+      if (Context.IS_EMBEDDED_APP) {
+        // If this is an online session for an embedded app, replace the online session with a JWT session
+        const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
+        const jwtSessionId = this.getJwtSessionId(
+          currentSession.shop,
+          `${onlineInfo.associated_user.id}`,
+        );
+        const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
+
+        const sessionDeleted = await Context.SESSION_STORAGE.deleteSession(currentSession.id);
+        if (!sessionDeleted) {
+          throw new ShopifyErrors.SessionStorageError(
+            'OAuth Session could not be deleted. Please check your session storage functionality.',
+          );
+        }
+        currentSession = jwtSession;
+      }
     } else {
       const responseBody = postResponse.body as AccessTokenResponse;
       currentSession.accessToken = responseBody.access_token;
       currentSession.scope = responseBody.scope;
-    }
-
-    // If this is an offline session, we're no longer interested in the cookie. If it is online in an embedded app, we
-    // want the cookie session to expire a few seconds from now to give the app time to load itself to set up a JWT.
-    // Otherwise, we want to leave the cookie session alone until the actual expiration.
-    let oauthSessionExpiration = currentSession.expires;
-    if (!currentSession.isOnline) {
-      oauthSessionExpiration = new Date();
-    } else if (Context.IS_EMBEDDED_APP) {
-      // If this is an online session for an embedded app, prepare a JWT session to be used going forward
-      const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
-      const jwtSessionId = this.getJwtSessionId(
-        currentSession.shop,
-        `${onlineInfo.associated_user.id}`,
-      );
-      const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
-      await Context.SESSION_STORAGE.storeSession(jwtSession);
-
-      const sessionDeleted = Context.SESSION_STORAGE.deleteSession(currentSession.id);
-      if (!sessionDeleted) {
-        throw new ShopifyErrors.SessionStorageError(
-          'OAuth Session could not be deleted. Please check your session storage functionality.',
-        );
-      }
-      currentSession = jwtSession;
+      currentSession.expires = new Date();
     }
 
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
       signed: true,
-      expires: oauthSessionExpiration,
+      expires: currentSession.expires,
       sameSite: 'lax',
       secure: true,
     });
 
-    const sessionStored = await Context.SESSION_STORAGE.storeSession(
-      currentSession,
-    );
-
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(currentSession);
     if (!sessionStored) {
       throw new ShopifyErrors.SessionStorageError(
         'OAuth Session could not be saved. Please check your session storage functionality.',
