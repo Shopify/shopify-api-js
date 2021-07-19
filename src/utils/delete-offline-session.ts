@@ -6,7 +6,9 @@ import OAuth from '../auth/oauth';
  *
  * @param shop the shop url to find and delete a session for
  */
-export default async function deleteOfflineSession(shop: string): Promise<boolean> {
+export default async function deleteOfflineSession(
+  shop: string,
+): Promise<boolean> {
   Context.throwIfUninitialized();
 
   const sessionId = OAuth.getOfflineSessionId(shop);

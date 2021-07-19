@@ -18,7 +18,11 @@ export default async function deleteCurrentSession(
 ): Promise<boolean | never> {
   Context.throwIfUninitialized();
 
-  const sessionId = ShopifyOAuth.getCurrentSessionId(request, response, isOnline);
+  const sessionId = ShopifyOAuth.getCurrentSessionId(
+    request,
+    response,
+    isOnline,
+  );
   if (!sessionId) {
     throw new ShopifyErrors.SessionNotFound('No active session found.');
   }

@@ -6,30 +6,40 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
 ### Fixed
+
 - Don't include extra params when calculating local hmac [#196](https://github.com/Shopify/shopify-node-api/pull/196)
 
 ## [1.4.0] - 2021-05-21
+
 ### Added
+
 - Add support for registering Google Pub/Sub webhooks [#181](https://github.com/Shopify/shopify-node-api/pull/181)
 - Added `July21` to `ApiVersion` [#181](https://github.com/Shopify/shopify-node-api/pull/181)
 
 ## [1.3.0] - 2021-05-12
+
 ### Added
+
 - Added Storefront API client under `Shopify.Clients.Storefront`
 - Add `isActive()` method to `Session` class to check if session is active, replace `Session` with `SessionInterface` when used as a type [#153](https://github.com/Shopify/shopify-node-api/pull/153)
 
 ## [1.2.1] - 2021-03-26
+
 ### Added
+
 - Added `April21` to `ApiVersion` [#149](https://github.com/Shopify/shopify-node-api/pull/149)
 
 ## [1.2.0] - 2021-03-16
 
 ### Added
+
 - Allow plain objects to be returned from the `loadCallback` on `CustomSessionStorage` [#126](https://github.com/shopify/shopify-node-api/pull/126)
 - Documentation and example code for `CustomSessionStorage` [#129](https://github.com/shopify/shopify-node-api/pull/129)
 
 ### Fixed
+
 - Throw a different error for a missing cookie upon OAuth return [#131](https://github.com/shopify/shopify-node-api/pull/131)
 - Improved documentation for GraphQL and Rest Clients. [#123](https://github.com/Shopify/shopify-node-api/pull/123)
 - Made Docs directory more browseable in GitHub. [#136](https://github.com/Shopify/shopify-node-api/pull/136)

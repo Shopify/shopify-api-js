@@ -4,12 +4,12 @@ Once OAuth is complete, we can use the library's `GraphqlClient` to make request
 
 The `GraphQLClient`'s main method is `query`, which accepts a `GraphQLParams` object as its argument. `GraphQLParams` only requires the `data` parameter, but also optionally accepts `query`, `extraHeaders`, and `tries`:
 
-| Parameter      | Type                                |Required? | Default Value | Notes                                                                                 |
-| -------------- | ----------------------------------- |:-------: | :-----------: | ------------------------------------------------------------------------------------- |
-| `data`         | `Record<string, unknown> \| string` |    True  |     none      | Takes in either the query as a string, and an object containing a query and variables |
-| `query`        | `Record<string, string \| number>`  |   False  |     none      | An optional query object to be appended to the request                                |
-| `extraHeaders` | `Record<string, string \| number>`  |   False  |     none      | Any additional headers you want to send with your request                             |
-| `tries`        | `number`                            |   False  |      `1`      | The maximum number of times to retry the request _(must be >= 0)_                     |
+| Parameter      | Type                                | Required? | Default Value | Notes                                                                                 |
+| -------------- | ----------------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------- |
+| `data`         | `Record<string, unknown> \| string` |   True    |     none      | Takes in either the query as a string, and an object containing a query and variables |
+| `query`        | `Record<string, string \| number>`  |   False   |     none      | An optional query object to be appended to the request                                |
+| `extraHeaders` | `Record<string, string \| number>`  |   False   |     none      | Any additional headers you want to send with your request                             |
+| `tries`        | `number`                            |   False   |      `1`      | The maximum number of times to retry the request _(must be >= 0)_                     |
 
 ```ts
 // Load the current session to get the `accessToken`

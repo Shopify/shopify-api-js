@@ -28,7 +28,9 @@ describe('GraphQL client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.query({data: QUERY})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
     assertHttpRequest({
       method: 'POST',
       domain: DOMAIN,
@@ -45,9 +47,9 @@ describe('GraphQL client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
-    await expect(client.query({extraHeaders: customHeader, data: QUERY})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
+    await expect(
+      client.query({extraHeaders: customHeader, data: QUERY}),
+    ).resolves.toEqual(buildExpectedResponse(successResponse));
 
     customHeader[ShopifyHeader.AccessToken] = 'bork';
     assertHttpRequest({
@@ -66,7 +68,9 @@ describe('GraphQL client', () => {
     const client: GraphqlClient = new GraphqlClient(DOMAIN);
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.query({data: QUERY})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
 
     const customHeaders: Record<string, string> = {};
     customHeaders[ShopifyHeader.AccessToken] = 'test_secret_key';
@@ -81,7 +85,9 @@ describe('GraphQL client', () => {
   });
 
   it('fails to instantiate without access token', () => {
-    expect(() => new GraphqlClient(DOMAIN)).toThrow(ShopifyErrors.MissingRequiredArgument);
+    expect(() => new GraphqlClient(DOMAIN)).toThrow(
+      ShopifyErrors.MissingRequiredArgument,
+    );
   });
 
   it('can handle queries with variables', async () => {
@@ -121,13 +127,19 @@ describe('GraphQL client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(expectedResponse));
 
-    await expect(client.query({data: queryWithVariables})).resolves.toEqual(buildExpectedResponse(expectedResponse));
+    await expect(client.query({data: queryWithVariables})).resolves.toEqual(
+      buildExpectedResponse(expectedResponse),
+    );
 
     assertHttpRequest({
       method: 'POST',
       domain: DOMAIN,
       path: '/admin/api/unstable/graphql.json',
-      headers: {'Content-Length': 219, 'Content-Type': 'application/json', 'X-Shopify-Access-Token': 'bork'},
+      headers: {
+        'Content-Length': 219,
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': 'bork',
+      },
       data: JSON.stringify(queryWithVariables),
     });
   });

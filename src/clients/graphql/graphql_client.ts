@@ -19,7 +19,9 @@ export class GraphqlClient {
 
   constructor(readonly domain: string, readonly accessToken?: string) {
     if (!Context.IS_PRIVATE_APP && !accessToken) {
-      throw new ShopifyErrors.MissingRequiredArgument('Missing access token when creating GraphQL client');
+      throw new ShopifyErrors.MissingRequiredArgument(
+        'Missing access token when creating GraphQL client',
+      );
     }
 
     this.client = new HttpClient(this.domain);
@@ -52,7 +54,9 @@ export class GraphqlClient {
   protected getAccessTokenHeader(): AccessTokenHeader {
     return {
       header: ShopifyHeader.AccessToken,
-      value: Context.IS_PRIVATE_APP ? Context.API_SECRET_KEY : this.accessToken as string,
+      value: Context.IS_PRIVATE_APP
+        ? Context.API_SECRET_KEY
+        : (this.accessToken as string),
     };
   }
 }

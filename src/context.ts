@@ -62,7 +62,9 @@ const Context: ContextInterface = {
 
     if (missing.length) {
       throw new ShopifyErrors.ShopifyError(
-        `Cannot initialize Shopify API Library. Missing values for: ${missing.join(', ')}`,
+        `Cannot initialize Shopify API Library. Missing values for: ${missing.join(
+          ', ',
+        )}`,
       );
     }
 
@@ -87,7 +89,8 @@ const Context: ContextInterface = {
     }
 
     if (params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN) {
-      this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN = params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
+      this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN =
+        params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
     }
   },
 
