@@ -152,6 +152,7 @@ describe('beginAuth', () => {
 describe('validateAuthCallback', () => {
   let cookies = {
     id: '',
+    expires: new Date(),
   };
   let req: http.IncomingMessage;
   let res: http.ServerResponse;
@@ -159,15 +160,17 @@ describe('validateAuthCallback', () => {
   beforeEach(() => {
     cookies = {
       id: '',
+      expires: new Date(),
     };
 
     req = {} as http.IncomingMessage;
     res = {} as http.ServerResponse;
 
     Cookies.prototype.set.mockImplementation(
-      (cookieName: string, cookieValue: string) => {
+      (cookieName: string, cookieValue: string, options: {expires: Date;}) => {
         expect(cookieName).toBe('shopify_app_session');
         cookies.id = cookieValue;
+        cookies.expires = options.expires;
       },
     );
 
@@ -332,12 +335,28 @@ describe('validateAuthCallback', () => {
     expect(session?.onlineAccessInfo).toEqual(expectedOnlineAccessInfo);
   });
 
-  test('converts an OAuth session into a JWT one if it is online', async () => {
+  test('fails to run if the app is private', () => {
+    Context.IS_PRIVATE_APP = true;
+    Context.initialize(Context);
+
+    expect(
+      ShopifyOAuth.validateAuthCallback(req, res, {} as AuthQuery),
+    ).rejects.toThrow(ShopifyErrors.PrivateAppError);
+  });
+
+  test('properly updates the Oauth cookie for online, embedded apps', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+    // Begin auth
+    // Check that we DO have a cookie (that expires 1m in the future with grace period)
+    // Set up the test callback query
+    // Call validateAuthCallback
+    // Check that the cookie has the right id
+    // Check that the cookie has the right expiration date
+    // expect(cookies.expires).toBe("the right value");
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -370,8 +389,7 @@ describe('validateAuthCallback', () => {
     const returnedSession = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
-    expect(cookieSession).not.toBeUndefined();
-    expect(cookieSession).toEqual(returnedSession);
+    expect(cookieSession).toBeUndefined();
 
     const jwtPayload: JwtPayload = {
       iss: `https://${shop}/admin`,
@@ -416,12 +434,123 @@ describe('validateAuthCallback', () => {
     expect(currentSession?.id).toEqual(jwtSessionId);
   });
 
-  test('fails to run if the app is private', () => {
-    Context.IS_PRIVATE_APP = true;
+  test('properly updates the Oauth cookie for online, non-embedded apps', async () => {
+    Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    expect(
-      ShopifyOAuth.validateAuthCallback(req, res, {} as AuthQuery),
-    ).rejects.toThrow(ShopifyErrors.PrivateAppError);
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const successResponse = {
+      access_token: 'some access token',
+      scope: 'pet_kitties, walk_dogs',
+      expires_in: 525600,
+      associated_user_scope: 'pet_kitties',
+      associated_user: {
+        id: '1',
+        first_name: 'John',
+        last_name: 'Smith',
+        email: 'john@example.com',
+        email_verified: true,
+        account_owner: true,
+        locale: 'en',
+        collaborator: true,
+      },
+    };
+    const testCallbackQuery: AuthQuery = {
+      shop,
+      state: session ? session.state : '',
+      timestamp: Number(new Date()).toString(),
+      code: 'some random auth code',
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    testCallbackQuery.hmac = expectedHmac;
+
+    fetchMock.mockResponse(JSON.stringify(successResponse));
+
+    const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
+    expect(cookieSession).not.toBeUndefined();
+  });
+
+  test('for offline, embedded apps', async () => {
+    Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
+
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const successResponse = {
+      access_token: 'some access token',
+      scope: 'pet_kitties, walk_dogs',
+      expires_in: 525600,
+      associated_user_scope: 'pet_kitties',
+      associated_user: {
+        id: '1',
+        first_name: 'John',
+        last_name: 'Smith',
+        email: 'john@example.com',
+        email_verified: true,
+        account_owner: true,
+        locale: 'en',
+        collaborator: true,
+      },
+    };
+    const testCallbackQuery: AuthQuery = {
+      shop,
+      state: session ? session.state : '',
+      timestamp: Number(new Date()).toString(),
+      code: 'some random auth code',
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    testCallbackQuery.hmac = expectedHmac;
+
+    fetchMock.mockResponse(JSON.stringify(successResponse));
+
+    const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
+    expect(cookieSession).not.toBeUndefined();
+  });
+
+  test('for offline, non-embedded apps', async () => {
+    Context.IS_EMBEDDED_APP = false;
+    Context.initialize(Context);
+
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const successResponse = {
+      access_token: 'some access token',
+      scope: 'pet_kitties, walk_dogs',
+      expires_in: 525600,
+      associated_user_scope: 'pet_kitties',
+      associated_user: {
+        id: '1',
+        first_name: 'John',
+        last_name: 'Smith',
+        email: 'john@example.com',
+        email_verified: true,
+        account_owner: true,
+        locale: 'en',
+        collaborator: true,
+      },
+    };
+    const testCallbackQuery: AuthQuery = {
+      shop,
+      state: session ? session.state : '',
+      timestamp: Number(new Date()).toString(),
+      code: 'some random auth code',
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    testCallbackQuery.hmac = expectedHmac;
+
+    fetchMock.mockResponse(JSON.stringify(successResponse));
+
+    const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
+    expect(cookieSession).not.toBeUndefined();
   });
 });
