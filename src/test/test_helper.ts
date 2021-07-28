@@ -21,3 +21,12 @@ beforeEach(() => {
 
   fetchMock.mockRestore();
 });
+
+// TODO: add test helper here
+// export function here
+export function compareTime(
+  firstDate: number,
+  secondDate: number,
+): boolean {
+  return Math.abs(firstDate - secondDate) < 1000;
+};
