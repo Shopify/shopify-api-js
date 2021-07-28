@@ -163,13 +163,6 @@ const ShopifyOAuth = {
       currentSession.scope = scope;
       currentSession.onlineAccessInfo = rest;
 
-      cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
-        signed: true,
-        expires: currentSession.expires,
-        sameSite: 'lax',
-        secure: true,
-      });
-
       // If this is an offline session, we're no longer interested in the cookie. If it is online in an embedded app, we
       // want the cookie session to expire a few seconds from now to give the app time to load itself to set up a JWT.
       // Otherwise, we want to leave the cookie session alone until the actual expiration.
@@ -195,6 +188,13 @@ const ShopifyOAuth = {
       currentSession.accessToken = responseBody.access_token;
       currentSession.scope = responseBody.scope;
     }
+
+    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
+      signed: true,
+      expires: Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
+      sameSite: 'lax',
+      secure: true,
+    });
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(currentSession);
     if (!sessionStored) {

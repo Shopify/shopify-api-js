@@ -14,6 +14,7 @@ import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
 import {CustomSessionStorage, Session} from '../../session';
+import { compareTime } from '../../../test/test_helper';
 
 jest.mock('cookies');
 
@@ -155,9 +156,12 @@ describe('beginAuth', () => {
 });
 
 describe('validateAuthCallback', () => {
-  let cookies = {
+  let cookies: {
+    id: string,
+    expires?: Date,
+  } = {
     id: '',
-    expires: new Date(),
+    expires: undefined,
   };
   let req: http.IncomingMessage;
   let res: http.ServerResponse;
@@ -165,7 +169,7 @@ describe('validateAuthCallback', () => {
   beforeEach(() => {
     cookies = {
       id: '',
-      expires: new Date(),
+      expires: undefined,
     };
 
     req = {} as http.IncomingMessage;
@@ -353,13 +357,7 @@ describe('validateAuthCallback', () => {
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
-    // Begin auth
-    // Check that we DO have a cookie (that expires 1m in the future with grace period)
-    // Set up the test callback query
-    // Call validateAuthCallback
-    // Check that the cookie has the right id
-    // Check that the cookie has the right expiration date
-    // expect(cookies.expires).toBe("the right value");
+    expect(session).not.toBe(null);
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -390,9 +388,6 @@ describe('validateAuthCallback', () => {
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
     const returnedSession = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
-
-    const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
-    expect(cookieSession).toBeUndefined();
 
     const jwtPayload: JwtPayload = {
       iss: `https://${shop}/admin`,
@@ -435,6 +430,7 @@ describe('validateAuthCallback', () => {
     const currentSession = await loadCurrentSession(jwtReq, jwtRes);
     expect(currentSession).not.toBe(null);
     expect(currentSession?.id).toEqual(jwtSessionId);
+    expect(compareTime(cookies?.expires?.getTime() as number, new Date().getTime())).toBeTruthy();
   });
 
   test('properly updates the Oauth cookie for online, non-embedded apps', async () => {
@@ -472,12 +468,19 @@ describe('validateAuthCallback', () => {
     testCallbackQuery.hmac = expectedHmac;
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
+    const returnedSession = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
+    expect(returnedSession.id).toEqual(cookies.id);
+
+    expect(compareTime(
+      returnedSession?.expires?.getTime() as number,
+      new Date(Date.now() + successResponse.expires_in * 1000).getTime()
+    )).toBeTruthy();
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
   });
 
-  test('for offline, embedded apps', async () => {
+  test('properly updates the Oauth cookie for offline, embedded apps', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
@@ -512,12 +515,16 @@ describe('validateAuthCallback', () => {
     testCallbackQuery.hmac = expectedHmac;
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
+    const returnedSession = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
+    expect(returnedSession.id).toEqual(cookies.id);
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
+    expect(compareTime(cookies?.expires?.getTime() as number, new Date().getTime())).toBeTruthy();
+
   });
 
-  test('for offline, non-embedded apps', async () => {
+  test('properly updates the Oauth cookie for offline, non-embedded apps', async () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
@@ -552,6 +559,8 @@ describe('validateAuthCallback', () => {
     testCallbackQuery.hmac = expectedHmac;
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
+    const returnedSession = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
+    expect(returnedSession.id).toEqual(cookies.id);
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
