@@ -1,4 +1,3 @@
-import '../../../test/test_helper';
 
 import querystring from 'querystring';
 import http from 'http';
@@ -6,6 +5,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
 
+import {compareTime} from '../../../test/test_helper';
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
 import * as ShopifyErrors from '../../../error';
@@ -14,7 +14,7 @@ import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
 import {CustomSessionStorage, Session} from '../../session';
-import { compareTime } from '../../../test/test_helper';
+
 
 jest.mock('cookies');
 
@@ -152,8 +152,8 @@ describe('beginAuth', () => {
 
 describe('validateAuthCallback', () => {
   let cookies: {
-    id: string,
-    expires?: Date,
+    id: string;
+    expires?: Date;
   } = {
     id: '',
     expires: undefined,
@@ -470,7 +470,7 @@ describe('validateAuthCallback', () => {
 
     expect(compareTime(
       returnedSession?.expires?.getTime() as number,
-      new Date(Date.now() + successResponse.expires_in * 1000).getTime()
+      new Date(Date.now() + successResponse.expires_in * 1000).getTime(),
     )).toBeTruthy();
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
