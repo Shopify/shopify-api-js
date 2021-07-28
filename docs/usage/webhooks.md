@@ -66,8 +66,8 @@ app.get('/auth/callback', async (req, res) => {
     };
 
     const currentSession = await Shopify.Utils.loadCurrentSession(
-      request,
-      response,
+      req,
+      res,
     );
 
     // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
