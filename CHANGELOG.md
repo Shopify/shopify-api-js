@@ -10,6 +10,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Don't include extra params when calculating local hmac [#196](https://github.com/Shopify/shopify-node-api/pull/196)
+- `WEBHOOK_REGISTRY` added to Context [#222](https://github.com/Shopify/shopify-node-api/pull/222)
+- [Breaking] Remove `topic`, `path`, `webhookHandler` and `deliveryMethod` properties out of `Shopify.Webhooks.Registry.register` method [#222](https://github.com/Shopify/shopify-node-api/pull/222)
+- [Breaking] Change `Shopify.Webhooks.Registry.register` return format [#222](https://github.com/Shopify/shopify-node-api/pull/222)
+- [Breaking] Remove `webhookRegistry` out of `Shopify.Webhooks.Registry` [#222](https://github.com/Shopify/shopify-node-api/pull/222)
 
 ## [1.4.0] - 2021-05-21
 

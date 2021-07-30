@@ -167,104 +167,119 @@ async function genericWebhookHandler(
 describe('ShopifyWebhooks.Registry.register', () => {
   beforeEach(async () => {
     Context.API_VERSION = ApiVersion.Unstable;
-    ShopifyWebhooks.Registry.webhookRegistry = [];
+    Context.WEBHOOK_REGISTRY = {};
   });
 
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: '/webhooks',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(true);
-    expect(result.result).toEqual(successResponse);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(successResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
-    assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE');
   });
 
   it('returns a result with success set to false, body set to empty object, when the server doesn’t return a webhookSubscriptionCreate field', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(failResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: '/webhooks',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(false);
-    expect(result.result).toEqual(failResponse);
+    expect(result.PRODUCTS_CREATE.success).toBe(false);
+    expect(result.PRODUCTS_CREATE.result).toEqual(failResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
-    assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE');
   });
 
   it('sends an eventbridge registration GraphQL query for an eventbridge webhook registration', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: 'arn:test',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: DeliveryMethod.EventBridge,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: 'arn:test',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      deliveryMethod: DeliveryMethod.EventBridge,
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(true);
-    expect(result.result).toEqual(eventBridgeSuccessResponse);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(eventBridgeSuccessResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
-    assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE');
   });
 
   it('sends a pubsub registration GraphQL query for a pubsub webhook registration', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(pubSubSuccessResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: 'pubsub://my-project-id:my-topic-id',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: DeliveryMethod.PubSub,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: 'pubsub://my-project-id:my-topic-id',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      deliveryMethod: DeliveryMethod.PubSub,
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(true);
-    expect(result.result).toEqual(pubSubSuccessResponse);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(pubSubSuccessResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
-    assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE');
   });
 
   it('updates a pre-existing webhook even if it is already registered with Shopify', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
     fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: '/webhooks/new',
+        webhookHandler: genericWebhookHandler,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: '/webhooks/new',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(true);
-    expect(result.result).toEqual(successUpdateResponse);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(successUpdateResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
-    assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook, webhookId);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE', webhookId);
   });
 
   it('updates a pre-existing eventbridge webhook even if it is already registered with Shopify', async () => {
@@ -272,92 +287,107 @@ describe('ShopifyWebhooks.Registry.register', () => {
     fetchMock.mockResponseOnce(
       JSON.stringify(eventBridgeSuccessUpdateResponse),
     );
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: 'arn:test-new',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: DeliveryMethod.EventBridge,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: 'arn:test-new',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      deliveryMethod: DeliveryMethod.EventBridge,
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(true);
-    expect(result.result).toEqual(eventBridgeSuccessUpdateResponse);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(eventBridgeSuccessUpdateResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
-    assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook, webhookId);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE', webhookId);
   });
 
   it('updates a pre-existing pubsub webhook even if it is already registered with Shopify', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(pubSubWebhookCheckResponse));
     fetchMock.mockResponseOnce(JSON.stringify(pubSubSuccessUpdateResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: 'pubsub://my-project-id:my-topic-id',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: DeliveryMethod.PubSub,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: 'pubsub://my-project-id:my-topic-id',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      deliveryMethod: DeliveryMethod.PubSub,
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(true);
-    expect(result.result).toEqual(pubSubSuccessUpdateResponse);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(pubSubSuccessUpdateResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
-    assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook, webhookId);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE', webhookId);
   });
 
   it('fully skips registering a webhook if it is already registered with Shopify and its callback is the same', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: 'arn:test',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: DeliveryMethod.EventBridge,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: 'arn:test',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      deliveryMethod: DeliveryMethod.EventBridge,
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(true);
-    expect(result.result).toEqual({});
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual({});
     expect(fetchMock.mock.calls.length).toBe(1);
-    assertWebhookCheckRequest(webhook);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
   });
 
   it('succeeds if a webhook is registered with a legacy API version', async () => {
     Context.API_VERSION = ApiVersion.April19;
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponseLegacy));
     fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: '/webhooks/new',
+        webhookHandler: genericWebhookHandler,
+      },
+    };
     const webhook: RegisterOptions = {
-      path: '/webhooks/new',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(webhook);
-    expect(result.success).toBe(true);
-    expect(result.result).toEqual(successUpdateResponse);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(successUpdateResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
-    assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook, webhookId);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE', webhookId);
   });
 
   it('throws if an eventbridge webhook is registered with an unsupported API version', async () => {
     expect(async () => {
       fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
       Context.API_VERSION = ApiVersion.April19;
+      Context.WEBHOOK_REGISTRY = {
+        PRODUCTS_CREATE: {
+          path: '/webhooks/new',
+          webhookHandler: genericWebhookHandler,
+          deliveryMethod: DeliveryMethod.EventBridge,
+        },
+      };
       const webhook: RegisterOptions = {
-        path: '/webhooks/new',
-        topic: 'PRODUCTS_CREATE',
         accessToken: 'some token',
         shop: 'shop1.myshopify.io',
-        deliveryMethod: DeliveryMethod.EventBridge,
-        webhookHandler: genericWebhookHandler,
       };
       await ShopifyWebhooks.Registry.register(webhook);
     }).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
@@ -367,13 +397,16 @@ describe('ShopifyWebhooks.Registry.register', () => {
     expect(async () => {
       fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
       Context.API_VERSION = ApiVersion.April21;
+      Context.WEBHOOK_REGISTRY = {
+        PRODUCTS_CREATE: {
+          path: 'pubsub://my-project-id:my-topic-id',
+          webhookHandler: genericWebhookHandler,
+          deliveryMethod: DeliveryMethod.PubSub,
+        },
+      };
       const webhook: RegisterOptions = {
-        path: 'pubsub://my-project-id:my-topic-id',
-        topic: 'PRODUCTS_CREATE',
         accessToken: 'some token',
         shop: 'shop1.myshopify.io',
-        deliveryMethod: DeliveryMethod.PubSub,
-        webhookHandler: genericWebhookHandler,
       };
       await ShopifyWebhooks.Registry.register(webhook);
     }).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
@@ -382,60 +415,22 @@ describe('ShopifyWebhooks.Registry.register', () => {
   it('fails if given an invalid DeliveryMethod', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: 'Something else' as DeliveryMethod,
+      },
+    };
     const webhook = {
-      path: '/webhooks',
-      topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
-      deliveryMethod: 'Something else',
-      webhookHandler: genericWebhookHandler,
     };
 
     const result = await ShopifyWebhooks.Registry.register(
       webhook as RegisterOptions,
     );
-    expect(result.success).toBe(false);
-  });
-
-  it('only contains a single entry for a topic after an update', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
-    let webhook: RegisterOptions = {
-      path: '/webhooks',
-      topic: 'PRODUCTS_CREATE',
-      accessToken: 'some token',
-      shop: 'shop1.myshopify.io',
-      webhookHandler: genericWebhookHandler,
-    };
-    await ShopifyWebhooks.Registry.register(webhook);
-    expect(ShopifyWebhooks.Registry.webhookRegistry).toHaveLength(1);
-
-    // Add a second handler
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
-    webhook = {
-      path: '/webhooks',
-      topic: 'PRODUCTS_UPDATE',
-      accessToken: 'some token',
-      shop: 'shop1.myshopify.io',
-      webhookHandler: genericWebhookHandler,
-    };
-    await ShopifyWebhooks.Registry.register(webhook);
-    expect(ShopifyWebhooks.Registry.webhookRegistry).toHaveLength(2);
-
-    // Update the second handler and make sure we still have the two of them
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
-    webhook.path = '/webhooks/new';
-    await ShopifyWebhooks.Registry.register(webhook);
-    expect(ShopifyWebhooks.Registry.webhookRegistry).toHaveLength(2);
-
-    // Make sure we have one of each topic in the registry
-    const actualTopics = ShopifyWebhooks.Registry.webhookRegistry.reduce(
-      (arr: string[], item) => arr.concat(item.topic),
-      [],
-    );
-    expect(actualTopics).toEqual(['PRODUCTS_CREATE', 'PRODUCTS_UPDATE']);
+    expect(result.PRODUCTS_CREATE.success).toBe(false);
   });
 });
 
@@ -451,15 +446,14 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   afterEach(async () => {
-    ShopifyWebhooks.Registry.webhookRegistry = [];
+    Context.WEBHOOK_REGISTRY = {};
   });
 
   it('handles the request when topic is already registered', async () => {
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.PRODUCTS = {
       path: '/webhooks',
-      topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler,
-    });
+    };
 
     const app = express();
     app.post('/webhooks', ShopifyWebhooks.Registry.process);
@@ -472,11 +466,10 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('handles lower case headers', async () => {
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.PRODUCTS = {
       path: '/webhooks',
-      topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler,
-    });
+    };
 
     const app = express();
     app.post('/webhooks', ShopifyWebhooks.Registry.process);
@@ -494,11 +487,10 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('handles the request and returns Forbidden when topic is not registered', async () => {
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.NONSENSE_TOPIC = {
       path: '/webhooks',
-      topic: 'NONSENSE_TOPIC',
       webhookHandler: genericWebhookHandler,
-    });
+    };
 
     const app = express();
     app.post('/webhooks', async (req, res) => {
@@ -520,11 +512,10 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('handles the request and returns Forbidden when hmac does not match', async () => {
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.PRODUCTS = {
       path: '/webhooks',
-      topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler,
-    });
+    };
 
     const app = express();
     app.post('/webhooks', async (req, res) => {
@@ -546,11 +537,10 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('fails if the given body is empty', async () => {
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.NONSENSE_TOPIC = {
       path: '/webhooks',
-      topic: 'NONSENSE_TOPIC',
       webhookHandler: genericWebhookHandler,
-    });
+    };
 
     const app = express();
     app.post('/webhooks', async (req, res) => {
@@ -571,11 +561,10 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('fails if the any of the required headers are missing', async () => {
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.PRODUCTS = {
       path: '/webhooks',
-      topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler,
-    });
+    };
 
     const app = express();
     app.post('/webhooks', async (req, res) => {
@@ -611,13 +600,12 @@ describe('ShopifyWebhooks.Registry.process', () => {
   it('catches handler errors but still responds', async () => {
     const errorMessage = 'Oh no something went wrong!';
 
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.PRODUCTS = {
       path: '/webhooks',
-      topic: 'PRODUCTS',
       webhookHandler: () => {
         throw new Error(errorMessage);
       },
-    });
+    };
 
     const app = express();
     app.post('/webhooks', async (req, res) => {
@@ -641,25 +629,23 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
 describe('ShopifyWebhooks.Registry.isWebhookPath', () => {
   beforeEach(async () => {
-    ShopifyWebhooks.Registry.webhookRegistry = [];
+    Context.WEBHOOK_REGISTRY = {};
   });
 
   it('returns true when given path is registered for a webhook topic', async () => {
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.PRODUCTS = {
       path: '/webhooks',
-      topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler,
-    });
+    };
 
     expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(true);
   });
 
   it('returns false when given path is not registered for a webhook topic', async () => {
-    ShopifyWebhooks.Registry.webhookRegistry.push({
+    Context.WEBHOOK_REGISTRY.PRODUCTS = {
       path: '/fakepath',
-      topic: 'PRODUCTS',
       webhookHandler: genericWebhookHandler,
-    });
+    };
 
     expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(false);
   });
@@ -693,7 +679,7 @@ function hmac(secret: string, body: string) {
   return createHmac('sha256', secret).update(body, 'utf8').digest('base64');
 }
 
-function assertWebhookCheckRequest(webhook: RegisterOptions) {
+function assertWebhookCheckRequest(webhook: RegisterOptions, topic: string) {
   assertHttpRequest({
     method: Method.Post.toString(),
     domain: webhook.shop,
@@ -702,18 +688,20 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
-    data: createWebhookCheckQuery(webhook.topic),
+    data: createWebhookCheckQuery(topic),
   });
 }
 
 function assertWebhookRegistrationRequest(
   webhook: RegisterOptions,
+  topic: string,
   webhookId?: string,
 ) {
+  const {deliveryMethod, path} = Context.WEBHOOK_REGISTRY[topic];
   const address =
-    !webhook.deliveryMethod || webhook.deliveryMethod === DeliveryMethod.Http
-      ? `https://${Context.HOST_NAME}${webhook.path}`
-      : webhook.path;
+    !deliveryMethod || deliveryMethod === DeliveryMethod.Http
+      ? `https://${Context.HOST_NAME}${path}`
+      : path;
   assertHttpRequest({
     method: Method.Post.toString(),
     domain: webhook.shop,
@@ -723,9 +711,9 @@ function assertWebhookRegistrationRequest(
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
     data: createWebhookQuery(
-      webhook.topic,
+      topic,
       address,
-      webhook.deliveryMethod,
+      deliveryMethod,
       webhookId,
     ),
   });

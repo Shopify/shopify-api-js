@@ -13,18 +13,16 @@ import {
   DeliveryMethod,
   RegisterOptions,
   RegisterReturn,
-  WebhookRegistryEntry,
   WebhookCheckResponse,
   WebhookCheckResponseLegacy,
 } from './types';
 
 interface RegistryInterface {
-  webhookRegistry: WebhookRegistryEntry[];
 
   /**
-   * Registers a Webhook Handler function for a given topic.
+   * Registers the Webhooks provided in the Context WEBHOOK_REGISTRY
    *
-   * @param options Parameters to register a handler, including topic, listening address, handler function
+   * @param options Parameters to register the Webhooks, including shop, accessToken
    */
   register(options: RegisterOptions): Promise<RegisterReturn>;
 
@@ -202,67 +200,63 @@ function buildQuery(
 }
 
 const WebhooksRegistry: RegistryInterface = {
-  webhookRegistry: [],
-
   async register({
-    path,
-    topic,
     accessToken,
     shop,
-    deliveryMethod = DeliveryMethod.Http,
-    webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
-    validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
-    const address =
-      deliveryMethod === DeliveryMethod.Http
-        ? `https://${Context.HOST_NAME}${path}`
-        : path;
-    const checkResult = (await client.query({
-      data: buildCheckQuery(topic),
-    })) as {body: WebhookCheckResponse | WebhookCheckResponseLegacy;};
-    let webhookId: string | undefined;
-    let mustRegister = true;
-    if (checkResult.body.data.webhookSubscriptions.edges.length) {
-      const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
-      let endpointAddress = '';
-      if ('endpoint' in node) {
-        if (node.endpoint.__typename === 'WebhookHttpEndpoint') {
-          endpointAddress = node.endpoint.callbackUrl;
-        } else if (node.endpoint.__typename === 'WebhookEventBridgeEndpoint') {
-          endpointAddress = node.endpoint.arn;
+    const topics = Object.keys(Context.WEBHOOK_REGISTRY);
+    const registerReturn: RegisterReturn = {};
+
+    await Promise.all(
+      topics.map(async (topic) => {
+        const {path, deliveryMethod = DeliveryMethod.Http} = Context.WEBHOOK_REGISTRY[topic];
+        const address =
+        deliveryMethod === DeliveryMethod.Http
+          ? `https://${Context.HOST_NAME}${path}`
+          : path;
+        const checkResult = (await client.query({
+          data: buildCheckQuery(topic),
+        })) as {body: WebhookCheckResponse | WebhookCheckResponseLegacy;};
+        let webhookId: string | undefined;
+        let mustRegister = true;
+        if (checkResult.body.data.webhookSubscriptions.edges.length) {
+          const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
+          let endpointAddress = '';
+          if ('endpoint' in node) {
+            if (node.endpoint.__typename === 'WebhookHttpEndpoint') {
+              endpointAddress = node.endpoint.callbackUrl;
+            } else if (node.endpoint.__typename === 'WebhookEventBridgeEndpoint') {
+              endpointAddress = node.endpoint.arn;
+            }
+          } else {
+            endpointAddress = node.callbackUrl;
+          }
+          webhookId = node.id;
+          if (endpointAddress === address) {
+            mustRegister = false;
+          }
         }
-      } else {
-        endpointAddress = node.callbackUrl;
-      }
-      webhookId = node.id;
-      if (endpointAddress === address) {
-        mustRegister = false;
-      }
-    }
 
-    let success: boolean;
-    let body: unknown;
-    if (mustRegister) {
-      const result = await client.query({
-        data: buildQuery(topic, address, deliveryMethod, webhookId),
-      });
+        let success: boolean;
+        let body: unknown;
+        if (mustRegister) {
+          const result = await client.query({
+            data: buildQuery(topic, address, deliveryMethod, webhookId),
+          });
 
-      success = isSuccess(result.body, deliveryMethod, webhookId);
-      body = result.body;
-    } else {
-      success = true;
-      body = {};
-    }
+          success = isSuccess(result.body, deliveryMethod, webhookId);
+          body = result.body;
+        } else {
+          success = true;
+          body = {};
+        }
 
-    if (success) {
-      // Remove this topic from the registry if it is already there
-      WebhooksRegistry.webhookRegistry =
-        WebhooksRegistry.webhookRegistry.filter((item) => item.topic !== topic);
-      WebhooksRegistry.webhookRegistry.push({path, topic, webhookHandler});
-    }
+        registerReturn[topic] = {success, result: body};
+      }),
+    );
 
-    return {success, result: body};
+    return registerReturn;
   },
 
   async process(
@@ -336,12 +330,8 @@ const WebhooksRegistry: RegistryInterface = {
           .digest('base64');
 
         if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
-          const graphqlTopic = (topic as string)
-            .toUpperCase()
-            .replace(/\//g, '_');
-          const webhookEntry = WebhooksRegistry.webhookRegistry.find(
-            (entry) => entry.topic === graphqlTopic,
-          );
+          const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
+          const webhookEntry = Context.WEBHOOK_REGISTRY[graphqlTopic];
 
           if (webhookEntry) {
             try {
@@ -382,9 +372,12 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   isWebhookPath(path: string): boolean {
-    return Boolean(
-      WebhooksRegistry.webhookRegistry.find((entry) => entry.path === path),
-    );
+    for (const topic in Context.WEBHOOK_REGISTRY) {
+      if (Context.WEBHOOK_REGISTRY[topic].path === path) {
+        return true;
+      }
+    }
+    return false;
   },
 };
 

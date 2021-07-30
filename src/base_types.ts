@@ -1,5 +1,6 @@
 import {AuthScopes} from './auth/scopes';
 import {SessionStorage} from './auth/session/session_storage';
+import {WebhookRegistry} from './webhooks/types';
 
 export interface ContextParams {
   API_KEY: string;
@@ -13,6 +14,7 @@ export interface ContextParams {
   LOG_FILE?: string;
   USER_AGENT_PREFIX?: string;
   PRIVATE_APP_STOREFRONT_ACCESS_TOKEN?: string;
+  WEBHOOK_REGISTRY?: WebhookRegistry;
 }
 
 export enum ApiVersion {

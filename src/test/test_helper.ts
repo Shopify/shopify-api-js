@@ -17,6 +17,7 @@ beforeEach(() => {
     IS_EMBEDDED_APP: false,
     IS_PRIVATE_APP: false,
     SESSION_STORAGE: new MemorySessionStorage(),
+    WEBHOOK_REGISTRY: {},
   });
 
   fetchMock.mockRestore();

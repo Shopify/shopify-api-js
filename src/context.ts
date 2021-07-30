@@ -3,10 +3,12 @@ import {SessionStorage} from './auth/session/session_storage';
 import {MemorySessionStorage} from './auth/session/storage/memory';
 import {ApiVersion, ContextParams} from './base_types';
 import {AuthScopes} from './auth/scopes';
+import {WebhookRegistry} from './webhooks/types';
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;
   SCOPES: AuthScopes;
+  WEBHOOK_REGISTRY: WebhookRegistry;
 
   /**
    * Sets up the Shopify API Library to be able to integrate with Shopify and run authenticated commands.
@@ -35,31 +37,39 @@ const Context: ContextInterface = {
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
   SESSION_STORAGE: new MemorySessionStorage(),
+  WEBHOOK_REGISTRY: {},
 
   initialize(params: ContextParams): void {
     let scopes: AuthScopes;
     if (params.SCOPES instanceof AuthScopes) {
       scopes = params.SCOPES;
     } else {
-      scopes = new AuthScopes(params.SCOPES);
+      scopes = new AuthScopes(params.SCOPES || '');
     }
 
     // Make sure that the essential params actually have content in them
     const missing: string[] = [];
-    if (!params.API_KEY.length) {
+    if (!params.API_KEY) {
       missing.push('API_KEY');
     }
-    if (!params.API_SECRET_KEY.length) {
+    if (!params.API_SECRET_KEY) {
       missing.push('API_SECRET_KEY');
     }
     if (!scopes.toArray().length) {
       missing.push('SCOPES');
     }
-    if (!params.HOST_NAME.length) {
+    if (!params.HOST_NAME) {
       missing.push('HOST_NAME');
+    }
+    if (!params.API_VERSION) {
+      missing.push('API_VERSION');
+    }
+    if (!Object.prototype.hasOwnProperty.call(params, 'IS_EMBEDDED_APP')) {
+      missing.push('IS_EMBEDDED_APP');
     }
 
     if (missing.length) {
+      console.log(missing);
       throw new ShopifyErrors.ShopifyError(
         `Cannot initialize Shopify API Library. Missing values for: ${missing.join(
           ', ',
@@ -73,23 +83,41 @@ const Context: ContextInterface = {
     this.HOST_NAME = params.HOST_NAME;
     this.API_VERSION = params.API_VERSION;
     this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
-    this.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
+
+    if (Object.prototype.hasOwnProperty.call(params, 'IS_PRIVATE_APP')) {
+      this.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
+    } else {
+      this.IS_PRIVATE_APP = false;
+    }
 
     if (params.SESSION_STORAGE) {
       this.SESSION_STORAGE = params.SESSION_STORAGE;
+    } else {
+      this.SESSION_STORAGE = new MemorySessionStorage();
     }
 
-    if (params.USER_AGENT_PREFIX) {
-      this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
+    if (params.WEBHOOK_REGISTRY) {
+      this.WEBHOOK_REGISTRY = params.WEBHOOK_REGISTRY;
+    } else {
+      this.WEBHOOK_REGISTRY = {};
     }
 
     if (params.LOG_FILE) {
       this.LOG_FILE = params.LOG_FILE;
+    } else {
+      delete this.LOG_FILE;
+    }
+
+    if (params.USER_AGENT_PREFIX) {
+      this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
+    } else {
+      delete this.USER_AGENT_PREFIX;
     }
 
     if (params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN) {
-      this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN =
-        params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
+      this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN = params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
+    } else {
+      delete this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
     }
   },
 
