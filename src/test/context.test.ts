@@ -18,7 +18,7 @@ const validParams: ContextParams = {
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
   LOG_FILE: 'some-file-path.txt',
-  WEBHOOK_REGISTRY: {
+  WEBHOOKS_REGISTRY: {
     PRODUCTS_CREATE: {
       path: '/webhooks',
       webhookHandler: async () => {},
@@ -41,7 +41,7 @@ describe('Context object', () => {
     expect(Context.API_SECRET_KEY).toEqual(validParams.API_SECRET_KEY);
     expect(Context.SCOPES.equals(validParams.SCOPES)).toBeTruthy();
     expect(Context.HOST_NAME).toEqual(validParams.HOST_NAME);
-    expect(Context.WEBHOOK_REGISTRY).toEqual(validParams.WEBHOOK_REGISTRY);
+    expect(Context.WEBHOOKS_REGISTRY).toEqual(validParams.WEBHOOKS_REGISTRY);
   });
 
   it("can't initialize without required values", () => {
@@ -98,7 +98,7 @@ describe('Context object', () => {
     const {
       IS_PRIVATE_APP,
       SESSION_STORAGE,
-      WEBHOOK_REGISTRY,
+      WEBHOOKS_REGISTRY,
       LOG_FILE,
       USER_AGENT_PREFIX,
       PRIVATE_APP_STOREFRONT_ACCESS_TOKEN,
@@ -109,7 +109,7 @@ describe('Context object', () => {
 
     expect(Context.IS_PRIVATE_APP).toBe(false);
     expect(Context.SESSION_STORAGE).toEqual(new MemorySessionStorage());
-    expect(Context.WEBHOOK_REGISTRY).toEqual({});
+    expect(Context.WEBHOOKS_REGISTRY).toEqual({});
     expect(Context.LOG_FILE).toBeUndefined();
     expect(Context.USER_AGENT_PREFIX).toBeUndefined();
     expect(Context.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN).toBeUndefined();

@@ -124,13 +124,23 @@ require('dotenv').config();
 
 const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env
 
+const WEBHOOKS_REGISTRY = {
+  APP_UNINSTALLED: {
+    path: '/webhooks',
+    webhookHandler: (topic, shop, body) => {
+      console.log('APP_UNINSTALLED handler was executed');
+    }
+  }
+}
+
 Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
   HOST_NAME: HOST,
   IS_EMBEDDED_APP: {boolean},
-  API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
+  API_VERSION: ApiVersion.{version}, // all supported versions are available, as well as "unstable" and "unversioned"
+  WEBHOOKS_REGISTRY
 });
 ```
 
@@ -181,13 +191,23 @@ const app = express();
 
 const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env;
 
+const WEBHOOKS_REGISTRY = {
+  APP_UNINSTALLED: {
+    path: '/webhooks',
+    webhookHandler: (topic, shop, body) => {
+      console.log('APP_UNINSTALLED handler was executed');
+    }
+  }
+}
+
 Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
   HOST_NAME: HOST,
   IS_EMBEDDED_APP: {boolean},
-  API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
+  API_VERSION: ApiVersion.{version}, // all supported versions are available, as well as "unstable" and "unversioned"
+  WEBHOOKS_REGISTRY
 });
 
 // the rest of the example code goes here

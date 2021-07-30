@@ -1,14 +1,66 @@
 # Webhooks
 
-If your application's functionality depends on knowing when events occur on a given store, you need to register a Webhook. You need an access token to register webhooks, so you should complete the OAuth process beforehand.
+If your application's functionality depends on knowing when events occur on a given store, you need to register a Webhook. You need an access token to register Webhooks, so you should complete the OAuth process beforehand.
 
-The Shopify library enables you to handle all Webhooks in a single endpoint (see [Process a Webhook](#process-a-webhook) below), but you are not restricted to a single endpoint. Each topic you register can only be mapped to a single endpoint.
+The Shopify library enables you to handle all Webhooks in a single endpoint (see [Process Webhooks](#process-webhooks) below), but you are not restricted to a single endpoint. Each topic you register can only be mapped to a single endpoint.
 
-**Note**: The webhooks you register with Shopify are saved in the Shopify platform, but your handlers need to be reloaded whenever your server restarts. It is recommended to store your Webhooks in a persistent manner (for example, in a database) so that you can reload previously registered webhooks when your app restarts.
+## Webhooks registry
 
-## Register a Webhook
+Before registering Webhooks to Shopify, you need to define them in your Webhooks registry when you [set up the Context](getting_started.md#set-up-context).
 
-In this example the webhook is being registered as soon as the authentication is completed.
+```typescript
+const WEBHOOKS_REGISTRY = {
+  PRODUCTS_CREATE: {
+    path: '/webhooks',
+    webhookHandler: async (topic: string, shop: string, body: Buffer) => {
+      // this handler is triggered when a Webhook is sent by the Shopify platform to your application
+    }
+  }
+}
+
+Shopify.Context.initialize({
+  API_KEY,
+  API_SECRET_KEY,
+  SCOPES: [SCOPES],
+  HOST_NAME: HOST,
+  IS_EMBEDDED_APP: {boolean},
+  API_VERSION: ApiVersion.{version},
+  WEBHOOKS_REGISTRY
+});
+```
+
+The Webhooks registry is a collection of Webhooks where the key is a Webhook `topic` and the value is an object containing the Webhook `path`, `webhookHandler` and `deliveryMethod`.
+
+<details>
+<summary>Signature</summary>
+
+```typescript
+type WEBHOOKS_REGISTRY = {
+  [topic: string]: {
+    path: string;
+    webhookHandler: (topic: string, shop: string, body: Buffer) => Promise<void>;
+    deliveryMethod?: 'http' | 'eventbridge' | 'pubsub';
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Parameters</summary>
+
+| Parameter        | Type                                                            | Required? | Default Value | Notes                                                                                                                    |
+| ---------------- | --------------------------------------------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------ |
+| `topic`          | `string`                                                        |   True    |     none      | See the [list of available topics](https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic) |
+| `path`           | `string`                                                        |   True    |     none      | The path to call depending on the `deliveryMethod`                                                                       |
+| `webhookHandler` | `(topic: string, shop: string, body: Buffer) => Promise<void>`  |   True    |     none      | The handler to execute when the Webhook is called                                                                        |
+| `deliveryMethod` | <code>'http' &#124; 'eventbridge' &#124; 'pubsub'</code>        |   False   |     `'http'`  | See [Delivery methods](#delivery-methods) below for more de details                                                      |
+
+</details>
+
+## Register Webhooks
+
+In this example the Webhooks are being registered as soon as the authentication is completed.
 
 <details>
 <summary>Node.js</summary>
@@ -16,24 +68,16 @@ In this example the webhook is being registered as soon as the authentication is
 ```typescript
   } // end of if (pathName === '/login')
 
-  // Register webhooks after OAuth completes
+  // Register Webhooks after OAuth completes
   if (pathName === '/auth/callback') {
     try {
       await Shopify.Auth.validateAuthCallback(request, response, query as AuthQuery);
 
-      const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: Buffer) => {
-        // this handler is triggered when a webhook is sent by the Shopify platform to your application
-      }
-
       const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
 
-      // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
       const resp = await Shopify.Webhooks.Registry.register({
-        path: '/webhooks',
-        topic: 'PRODUCTS_CREATE',
         accessToken: currentSession.accessToken,
-        shop: currentSession.shop,
-        webhookHandler: handleWebhookRequest
+        shop: currentSession.shop
       });
       response.writeHead(302, { 'Location': '/' });
       response.end();
@@ -48,7 +92,7 @@ In this example the webhook is being registered as soon as the authentication is
 <summary>Express</summary>
 
 ```ts
-// Register webhooks after OAuth completes
+// Register Webhooks after OAuth completes
 app.get('/auth/callback', async (req, res) => {
   try {
     await Shopify.Auth.validateAuthCallback(
@@ -57,26 +101,14 @@ app.get('/auth/callback', async (req, res) => {
       req.query as unknown as AuthQuery,
     ); // req.query must be cast to unkown and then AuthQuery in order to be accepted
 
-    const handleWebhookRequest = async (
-      topic: string,
-      shop: string,
-      webhookRequestBody: Buffer,
-    ) => {
-      // this handler is triggered when a webhook is sent by the Shopify platform to your application
-    };
-
     const currentSession = await Shopify.Utils.loadCurrentSession(
       req,
       res,
     );
 
-    // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
     const resp = await Shopify.Webhooks.Registry.register({
-      path: '/webhooks',
-      topic: 'PRODUCTS_CREATE',
       accessToken: currentSession.accessToken,
-      shop: currentSession.shop,
-      webhookHandler: handleWebhookRequest,
+      shop: currentSession.shop
     });
   } catch (error) {
     console.error(error); // in practice these should be handled more gracefully
@@ -87,23 +119,21 @@ app.get('/auth/callback', async (req, res) => {
 
 </details>
 
-### EventBridge and PubSub Webhooks
+## Delivery methods
 
-You can also register webhooks for delivery to Amazon EventBridge or Google Cloud
-Pub/Sub. In this case the `path` argument to
-`Shopify.Webhooks.Registry.register` needs to be of a specific form.
+The default delivery method is `http`. With this method, Shopify will deliver the Webhook payload to an endpoint on your app that you specified in the `path` parameter (eg: `/webhooks`).
 
-For EventBridge, the `path` must be the [ARN of the partner event
-source](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_EventSource.html).
+However, if you need to manage large volumes of event notifications, then you can configure subscriptions to send Webhooks to [Amazon EventBridge](https://shopify.dev/apps/webhooks/eventbridge) and [Google Cloud Pub/Sub](https://shopify.dev/apps/webhooks/google-cloud).
 
-For Pub/Sub, the `path` must be of the form
-`pubsub://[PROJECT-ID]:[PUB-SUB-TOPIC-ID]`. For example, if you created a topic
-with id `red` in the project `blue`, then the value of `path` would be
-`pubsub://blue:red`.
+In this case the `path` parameter to needs to be of a specific form.
 
-## Process a Webhook
+For `eventbridge`, the `path` must be the [ARN of the partner event source](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_EventSource.html).
 
-To process a webhook, you need to listen on the route(s) you provided during the Webhook registration process, then call the appropriate handler. The library provides a convenient `process` method that acts as a middleware to handle webhooks. It takes care of calling the correct handler for the registered Webhook topics.
+For `pubsub`, the `path` must be of the form `pubsub://[PROJECT-ID]:[PUB-SUB-TOPIC-ID]`. For example, if you created a topic with id `red` in the project `blue`, then the value of `path` would be `pubsub://blue:red`.
+
+## Process Webhooks
+
+To process the Webhooks that use the `http` delivery method, you need to listen on the endpoint(s) you provided in the `path` parameter of your Webhooks in the `Shopify.Context.WEBHOOKS_REGISTRY`. The library provides a convenient `process` method that acts as a middleware to handle Webhooks. It takes care of calling the correct handler for the registered Webhook topics.
 
 **Note**: The `process` method will always respond to Shopify, even if your call throws an error. You can catch and log errors, but you can't change the response.
 

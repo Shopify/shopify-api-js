@@ -167,11 +167,11 @@ async function genericWebhookHandler(
 describe('ShopifyWebhooks.Registry.register', () => {
   beforeEach(async () => {
     Context.API_VERSION = ApiVersion.Unstable;
-    Context.WEBHOOK_REGISTRY = {};
+    Context.WEBHOOKS_REGISTRY = {};
   });
 
   it('does nothing if there is no webhook to register', async () => {
-    Context.WEBHOOK_REGISTRY = {};
+    Context.WEBHOOKS_REGISTRY = {};
     const webhook: RegisterOptions = {
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
@@ -185,7 +185,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
@@ -207,7 +207,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   it('returns a result with success set to false, body set to empty object, when the server doesn’t return a webhookSubscriptionCreate field', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(failResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
@@ -242,7 +242,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       return JSON.stringify({});
     });
 
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
@@ -274,7 +274,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   it('sends an eventbridge registration GraphQL query for an eventbridge webhook registration', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: 'arn:test',
         webhookHandler: genericWebhookHandler,
@@ -297,7 +297,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   it('sends a pubsub registration GraphQL query for a pubsub webhook registration', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(pubSubSuccessResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: 'pubsub://my-project-id:my-topic-id',
         webhookHandler: genericWebhookHandler,
@@ -320,7 +320,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   it('updates a pre-existing webhook even if it is already registered with Shopify', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
     fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: '/webhooks/new',
         webhookHandler: genericWebhookHandler,
@@ -344,7 +344,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     fetchMock.mockResponseOnce(
       JSON.stringify(eventBridgeSuccessUpdateResponse),
     );
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: 'arn:test-new',
         webhookHandler: genericWebhookHandler,
@@ -367,7 +367,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   it('updates a pre-existing pubsub webhook even if it is already registered with Shopify', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(pubSubWebhookCheckResponse));
     fetchMock.mockResponseOnce(JSON.stringify(pubSubSuccessUpdateResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: 'pubsub://my-project-id:my-topic-id',
         webhookHandler: genericWebhookHandler,
@@ -390,7 +390,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   // FIX
   it('fully skips registering a webhook if it is already registered with Shopify and its callback is the same', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: 'arn:test',
         webhookHandler: genericWebhookHandler,
@@ -413,7 +413,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     Context.API_VERSION = ApiVersion.April19;
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponseLegacy));
     fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: '/webhooks/new',
         webhookHandler: genericWebhookHandler,
@@ -436,7 +436,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     expect(async () => {
       fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
       Context.API_VERSION = ApiVersion.April19;
-      Context.WEBHOOK_REGISTRY = {
+      Context.WEBHOOKS_REGISTRY = {
         PRODUCTS_CREATE: {
           path: '/webhooks/new',
           webhookHandler: genericWebhookHandler,
@@ -459,7 +459,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     expect(async () => {
       fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
       Context.API_VERSION = ApiVersion.April21;
-      Context.WEBHOOK_REGISTRY = {
+      Context.WEBHOOKS_REGISTRY = {
         PRODUCTS_CREATE: {
           path: 'pubsub://my-project-id:my-topic-id',
           webhookHandler: genericWebhookHandler,
@@ -481,7 +481,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   it('fails if given an invalid DeliveryMethod', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
@@ -512,7 +512,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       return JSON.stringify({});
     });
 
-    Context.WEBHOOK_REGISTRY = {
+    Context.WEBHOOKS_REGISTRY = {
       PRODUCTS_CREATE: {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
@@ -549,11 +549,11 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   afterEach(async () => {
-    Context.WEBHOOK_REGISTRY = {};
+    Context.WEBHOOKS_REGISTRY = {};
   });
 
   it('handles the request when topic is already registered', async () => {
-    Context.WEBHOOK_REGISTRY.PRODUCTS = {
+    Context.WEBHOOKS_REGISTRY.PRODUCTS = {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     };
@@ -569,7 +569,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('handles lower case headers', async () => {
-    Context.WEBHOOK_REGISTRY.PRODUCTS = {
+    Context.WEBHOOKS_REGISTRY.PRODUCTS = {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     };
@@ -590,7 +590,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('handles the request and returns Forbidden when topic is not registered', async () => {
-    Context.WEBHOOK_REGISTRY.NONSENSE_TOPIC = {
+    Context.WEBHOOKS_REGISTRY.NONSENSE_TOPIC = {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     };
@@ -615,7 +615,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('handles the request and returns Forbidden when hmac does not match', async () => {
-    Context.WEBHOOK_REGISTRY.PRODUCTS = {
+    Context.WEBHOOKS_REGISTRY.PRODUCTS = {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     };
@@ -640,7 +640,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('fails if the given body is empty', async () => {
-    Context.WEBHOOK_REGISTRY.NONSENSE_TOPIC = {
+    Context.WEBHOOKS_REGISTRY.NONSENSE_TOPIC = {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     };
@@ -664,7 +664,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('fails if the any of the required headers are missing', async () => {
-    Context.WEBHOOK_REGISTRY.PRODUCTS = {
+    Context.WEBHOOKS_REGISTRY.PRODUCTS = {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     };
@@ -703,7 +703,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   it('catches handler errors but still responds', async () => {
     const errorMessage = 'Oh no something went wrong!';
 
-    Context.WEBHOOK_REGISTRY.PRODUCTS = {
+    Context.WEBHOOKS_REGISTRY.PRODUCTS = {
       path: '/webhooks',
       webhookHandler: () => {
         throw new Error(errorMessage);
@@ -732,11 +732,11 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
 describe('ShopifyWebhooks.Registry.isWebhookPath', () => {
   beforeEach(async () => {
-    Context.WEBHOOK_REGISTRY = {};
+    Context.WEBHOOKS_REGISTRY = {};
   });
 
   it('returns true when given path is registered for a webhook topic', async () => {
-    Context.WEBHOOK_REGISTRY.PRODUCTS = {
+    Context.WEBHOOKS_REGISTRY.PRODUCTS = {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     };
@@ -745,7 +745,7 @@ describe('ShopifyWebhooks.Registry.isWebhookPath', () => {
   });
 
   it('returns false when given path is not registered for a webhook topic', async () => {
-    Context.WEBHOOK_REGISTRY.PRODUCTS = {
+    Context.WEBHOOKS_REGISTRY.PRODUCTS = {
       path: '/fakepath',
       webhookHandler: genericWebhookHandler,
     };
@@ -800,7 +800,7 @@ function assertWebhookRegistrationRequest(
   topic: string,
   webhookId?: string,
 ) {
-  const {deliveryMethod, path} = Context.WEBHOOK_REGISTRY[topic];
+  const {deliveryMethod, path} = Context.WEBHOOKS_REGISTRY[topic];
   const address =
     !deliveryMethod || deliveryMethod === DeliveryMethod.Http
       ? `https://${Context.HOST_NAME}${path}`

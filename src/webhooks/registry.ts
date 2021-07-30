@@ -20,7 +20,7 @@ import {
 interface RegistryInterface {
 
   /**
-   * Registers the Webhooks provided in the Context WEBHOOK_REGISTRY
+   * Registers the Webhooks provided in the Context WEBHOOKS_REGISTRY
    *
    * @param options Parameters to register the Webhooks, including shop, accessToken
    */
@@ -205,11 +205,11 @@ const WebhooksRegistry: RegistryInterface = {
     shop,
   }: RegisterOptions): Promise<RegisterReturn> {
     const client = new GraphqlClient(shop, accessToken);
-    const topics = Object.keys(Context.WEBHOOK_REGISTRY);
+    const topics = Object.keys(Context.WEBHOOKS_REGISTRY);
     const registerReturn: RegisterReturn = {};
 
     for (const topic of topics) {
-      const {path, deliveryMethod = DeliveryMethod.Http} = Context.WEBHOOK_REGISTRY[topic];
+      const {path, deliveryMethod = DeliveryMethod.Http} = Context.WEBHOOKS_REGISTRY[topic];
       const address = deliveryMethod === DeliveryMethod.Http
         ? `https://${Context.HOST_NAME}${path}`
         : path;
@@ -328,7 +328,7 @@ const WebhooksRegistry: RegistryInterface = {
 
         if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
           const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
-          const webhookEntry = Context.WEBHOOK_REGISTRY[graphqlTopic];
+          const webhookEntry = Context.WEBHOOKS_REGISTRY[graphqlTopic];
 
           if (webhookEntry) {
             try {
@@ -369,8 +369,8 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   isWebhookPath(path: string): boolean {
-    for (const topic in Context.WEBHOOK_REGISTRY) {
-      if (Context.WEBHOOK_REGISTRY[topic].path === path) {
+    for (const topic in Context.WEBHOOKS_REGISTRY) {
+      if (Context.WEBHOOKS_REGISTRY[topic].path === path) {
         return true;
       }
     }

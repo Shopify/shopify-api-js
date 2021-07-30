@@ -8,7 +8,7 @@ import {WebhookRegistry} from './webhooks/types';
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;
   SCOPES: AuthScopes;
-  WEBHOOK_REGISTRY: WebhookRegistry;
+  WEBHOOKS_REGISTRY: WebhookRegistry;
 
   /**
    * Sets up the Shopify API Library to be able to integrate with Shopify and run authenticated commands.
@@ -37,7 +37,7 @@ const Context: ContextInterface = {
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
   SESSION_STORAGE: new MemorySessionStorage(),
-  WEBHOOK_REGISTRY: {},
+  WEBHOOKS_REGISTRY: {},
 
   initialize(params: ContextParams): void {
     let scopes: AuthScopes;
@@ -95,10 +95,10 @@ const Context: ContextInterface = {
       this.SESSION_STORAGE = new MemorySessionStorage();
     }
 
-    if (params.WEBHOOK_REGISTRY) {
-      this.WEBHOOK_REGISTRY = params.WEBHOOK_REGISTRY;
+    if (params.WEBHOOKS_REGISTRY) {
+      this.WEBHOOKS_REGISTRY = params.WEBHOOKS_REGISTRY;
     } else {
-      this.WEBHOOK_REGISTRY = {};
+      this.WEBHOOKS_REGISTRY = {};
     }
 
     if (params.LOG_FILE) {
