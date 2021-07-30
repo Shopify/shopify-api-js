@@ -208,53 +208,50 @@ const WebhooksRegistry: RegistryInterface = {
     const topics = Object.keys(Context.WEBHOOK_REGISTRY);
     const registerReturn: RegisterReturn = {};
 
-    await Promise.all(
-      topics.map(async (topic) => {
-        const {path, deliveryMethod = DeliveryMethod.Http} = Context.WEBHOOK_REGISTRY[topic];
-        const address =
-        deliveryMethod === DeliveryMethod.Http
-          ? `https://${Context.HOST_NAME}${path}`
-          : path;
-        const checkResult = (await client.query({
-          data: buildCheckQuery(topic),
-        })) as {body: WebhookCheckResponse | WebhookCheckResponseLegacy;};
-        let webhookId: string | undefined;
-        let mustRegister = true;
-        if (checkResult.body.data.webhookSubscriptions.edges.length) {
-          const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
-          let endpointAddress = '';
-          if ('endpoint' in node) {
-            if (node.endpoint.__typename === 'WebhookHttpEndpoint') {
-              endpointAddress = node.endpoint.callbackUrl;
-            } else if (node.endpoint.__typename === 'WebhookEventBridgeEndpoint') {
-              endpointAddress = node.endpoint.arn;
-            }
-          } else {
-            endpointAddress = node.callbackUrl;
+    for (const topic of topics) {
+      const {path, deliveryMethod = DeliveryMethod.Http} = Context.WEBHOOK_REGISTRY[topic];
+      const address = deliveryMethod === DeliveryMethod.Http
+        ? `https://${Context.HOST_NAME}${path}`
+        : path;
+      const checkResult = (await client.query({
+        data: buildCheckQuery(topic),
+      })) as {body: WebhookCheckResponse | WebhookCheckResponseLegacy;};
+      let webhookId: string | undefined;
+      let mustRegister = true;
+      if (checkResult.body.data.webhookSubscriptions.edges.length) {
+        const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
+        let endpointAddress = '';
+        if ('endpoint' in node) {
+          if (node.endpoint.__typename === 'WebhookHttpEndpoint') {
+            endpointAddress = node.endpoint.callbackUrl;
+          } else if (node.endpoint.__typename === 'WebhookEventBridgeEndpoint') {
+            endpointAddress = node.endpoint.arn;
           }
-          webhookId = node.id;
-          if (endpointAddress === address) {
-            mustRegister = false;
-          }
-        }
-
-        let success: boolean;
-        let body: unknown;
-        if (mustRegister) {
-          const result = await client.query({
-            data: buildQuery(topic, address, deliveryMethod, webhookId),
-          });
-
-          success = isSuccess(result.body, deliveryMethod, webhookId);
-          body = result.body;
         } else {
-          success = true;
-          body = {};
+          endpointAddress = node.callbackUrl;
         }
+        webhookId = node.id;
+        if (endpointAddress === address) {
+          mustRegister = false;
+        }
+      }
 
-        registerReturn[topic] = {success, result: body};
-      }),
-    );
+      let success: boolean;
+      let body: unknown;
+      if (mustRegister) {
+        const result = await client.query({
+          data: buildQuery(topic, address, deliveryMethod, webhookId),
+        });
+
+        success = isSuccess(result.body, deliveryMethod, webhookId);
+        body = result.body;
+      } else {
+        success = true;
+        body = {};
+      }
+
+      registerReturn[topic] = {success, result: body};
+    }
 
     return registerReturn;
   },

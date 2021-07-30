@@ -170,6 +170,18 @@ describe('ShopifyWebhooks.Registry.register', () => {
     Context.WEBHOOK_REGISTRY = {};
   });
 
+  it('does nothing if there is no webhook to register', async () => {
+    Context.WEBHOOK_REGISTRY = {};
+    const webhook: RegisterOptions = {
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+    };
+
+    const result = await ShopifyWebhooks.Registry.register(webhook);
+    expect(result).toEqual({});
+    expect(fetchMock.mock.calls.length).toBe(0);
+  });
+
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
@@ -212,6 +224,51 @@ describe('ShopifyWebhooks.Registry.register', () => {
     expect(fetchMock.mock.calls.length).toBe(2);
     assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
     assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE');
+  });
+
+  it('can register multiple webhooks', async () => {
+    fetchMock.mockResponse(async (req) => {
+      const body = await req.text();
+
+      if (body.includes('webhookSubscriptions(first: 1')) {
+        return JSON.stringify(webhookCheckEmptyResponse);
+      }
+      if (body.includes('webhookSubscriptionCreate(topic: PRODUCTS_CREATE')) {
+        return JSON.stringify(successResponse);
+      }
+      if (body.includes('pubSubWebhookSubscriptionCreate(topic: APP_UNINSTALLED')) {
+        return JSON.stringify(pubSubSuccessResponse);
+      }
+      return JSON.stringify({});
+    });
+
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+      APP_UNINSTALLED: {
+        path: 'pubsub://my-project-id:my-topic-id',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: DeliveryMethod.PubSub,
+      },
+    };
+    const webhook: RegisterOptions = {
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+    };
+
+    const result = await ShopifyWebhooks.Registry.register(webhook);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(successResponse);
+    expect(result.APP_UNINSTALLED.success).toBe(true);
+    expect(result.APP_UNINSTALLED.result).toEqual(pubSubSuccessResponse);
+    expect(fetchMock.mock.calls.length).toBe(4);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookCheckRequest(webhook, 'APP_UNINSTALLED');
+    assertWebhookRegistrationRequest(webhook, 'APP_UNINSTALLED');
+    fetchMock.resetMocks();
   });
 
   it('sends an eventbridge registration GraphQL query for an eventbridge webhook registration', async () => {
@@ -330,6 +387,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
     assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE', webhookId);
   });
 
+  // FIX
   it('fully skips registering a webhook if it is already registered with Shopify and its callback is the same', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
     Context.WEBHOOK_REGISTRY = {
@@ -384,6 +442,10 @@ describe('ShopifyWebhooks.Registry.register', () => {
           webhookHandler: genericWebhookHandler,
           deliveryMethod: DeliveryMethod.EventBridge,
         },
+        APP_UNINSTALLED: {
+          path: '/webhooks',
+          webhookHandler: genericWebhookHandler,
+        },
       };
       const webhook: RegisterOptions = {
         accessToken: 'some token',
@@ -402,6 +464,10 @@ describe('ShopifyWebhooks.Registry.register', () => {
           path: 'pubsub://my-project-id:my-topic-id',
           webhookHandler: genericWebhookHandler,
           deliveryMethod: DeliveryMethod.PubSub,
+        },
+        APP_UNINSTALLED: {
+          path: '/webhooks',
+          webhookHandler: genericWebhookHandler,
         },
       };
       const webhook: RegisterOptions = {
@@ -431,6 +497,43 @@ describe('ShopifyWebhooks.Registry.register', () => {
       webhook as RegisterOptions,
     );
     expect(result.PRODUCTS_CREATE.success).toBe(false);
+  });
+
+  it('only fails the invalid webhooks', async () => {
+    fetchMock.mockResponse(async (req) => {
+      const body = await req.text();
+
+      if (body.includes('webhookSubscriptions(first: 1')) {
+        return JSON.stringify(webhookCheckEmptyResponse);
+      }
+      if (body.includes('webhookSubscriptionCreate(topic: PRODUCTS_CREATE')) {
+        return JSON.stringify(successResponse);
+      }
+      return JSON.stringify({});
+    });
+
+    Context.WEBHOOK_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+      APP_UNINSTALLED: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: 'Something else' as DeliveryMethod,
+      },
+    };
+    const webhook: RegisterOptions = {
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+    };
+
+    const result = await ShopifyWebhooks.Registry.register(webhook);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(successResponse);
+    expect(result.APP_UNINSTALLED.success).toBe(false);
+    expect(result.APP_UNINSTALLED.result).toEqual({});
+    fetchMock.resetMocks();
   });
 });
 

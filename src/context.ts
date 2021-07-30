@@ -69,7 +69,6 @@ const Context: ContextInterface = {
     }
 
     if (missing.length) {
-      console.log(missing);
       throw new ShopifyErrors.ShopifyError(
         `Cannot initialize Shopify API Library. Missing values for: ${missing.join(
           ', ',
