@@ -10,7 +10,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Don't include extra params when calculating local hmac [#196](https://github.com/Shopify/shopify-node-api/pull/196)
-- [Breaking] Move the Webhooks registry to the Context [#222](https://github.com/Shopify/shopify-node-api/pull/222)
+- [Breaking] Move the Webhooks registry to the Context [#226](https://github.com/Shopify/shopify-node-api/pull/226)
 
 ## [1.4.0] - 2021-05-21
 
