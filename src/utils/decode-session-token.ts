@@ -5,6 +5,8 @@ import * as ShopifyErrors from '../error';
 
 import validateShop from './shop-validator';
 
+const JWT_PERMITTED_CLOCK_TOLERANCE = 5;
+
 interface JwtPayload {
   iss: string;
   dest: string;
@@ -27,6 +29,7 @@ function decodeSessionToken(token: string): JwtPayload {
   try {
     payload = jwt.verify(token, Context.API_SECRET_KEY, {
       algorithms: ['HS256'],
+      clockTolerance: JWT_PERMITTED_CLOCK_TOLERANCE,
     }) as JwtPayload;
   } catch (error) {
     throw new ShopifyErrors.InvalidJwtError(
