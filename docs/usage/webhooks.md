@@ -39,7 +39,7 @@ type WEBHOOKS_REGISTRY = {
   [topic: string]: {
     path: string;
     webhookHandler: (topic: string, shop: string, body: Buffer) => Promise<void>;
-    deliveryMethod?: 'http' | 'eventbridge' | 'pubsub';
+    deliveryMethod?: DeliveryMethod;
   }
 }
 ```
@@ -49,12 +49,12 @@ type WEBHOOKS_REGISTRY = {
 <details>
 <summary>Parameters</summary>
 
-| Parameter        | Type                                                            | Required? | Default Value | Notes                                                                                                                    |
-| ---------------- | --------------------------------------------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------ |
-| `topic`          | `string`                                                        |   True    |     none      | See the [list of available topics](https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic) |
-| `path`           | `string`                                                        |   True    |     none      | The path to call depending on the `deliveryMethod`                                                                       |
-| `webhookHandler` | `(topic: string, shop: string, body: Buffer) => Promise<void>`  |   True    |     none      | The handler to execute when the Webhook is called                                                                        |
-| `deliveryMethod` | <code>'http' &#124; 'eventbridge' &#124; 'pubsub'</code>        |   False   |     `'http'`  | See [Delivery methods](#delivery-methods) below for more de details                                                      |
+| Parameter        | Type                                                            | Required? | Default Value              | Notes                                                                                                                    |
+| ---------------- | --------------------------------------------------------------- | :-------: | :------------------------: | ------------------------------------------------------------------------------------------------------------------------ |
+| `topic`          | `string`                                                        |   True    |     none                   | See the [list of available topics](https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic) |
+| `path`           | `string`                                                        |   True    |     none                   | The path to call depending on the `deliveryMethod`                                                                       |
+| `webhookHandler` | `(topic: string, shop: string, body: Buffer) => Promise<void>`  |   True    |     none                   | The handler to execute when the Webhook is called                                                                        |
+| `deliveryMethod` | `DeliveryMethod`                                                |   False   |     `DeliveryMethod.Http`  | See [Delivery methods](#delivery-methods) below for more de details                                                      |
 
 </details>
 
@@ -121,19 +121,19 @@ app.get('/auth/callback', async (req, res) => {
 
 ## Delivery methods
 
-The default delivery method is `http`. With this method, Shopify will deliver the Webhook payload to an endpoint on your app that you specified in the `path` parameter (eg: `/webhooks`).
+The default delivery method is `DeliveryMethod.Http`. With this method, Shopify will deliver the Webhook payload to an endpoint on your app that you specified in the `path` parameter (eg: `/webhooks`).
 
 However, if you need to manage large volumes of event notifications, then you can configure subscriptions to send Webhooks to [Amazon EventBridge](https://shopify.dev/apps/webhooks/eventbridge) and [Google Cloud Pub/Sub](https://shopify.dev/apps/webhooks/google-cloud).
 
 In this case the `path` parameter to needs to be of a specific form.
 
-For `eventbridge`, the `path` must be the [ARN of the partner event source](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_EventSource.html).
+For `eventbridge`, the `path` must be the [ARN of the partner event source](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_EventSource.html) and the `deliveryMethod` must be `DeliveryMethod.EventBridge`
 
-For `pubsub`, the `path` must be of the form `pubsub://[PROJECT-ID]:[PUB-SUB-TOPIC-ID]`. For example, if you created a topic with id `red` in the project `blue`, then the value of `path` would be `pubsub://blue:red`.
+For `pubsub`, the `path` must be of the form `pubsub://[PROJECT-ID]:[PUB-SUB-TOPIC-ID]` and the `deliveryMethod` must be `DeliveryMethod.PubSub`. For example, if you created a topic with id `red` in the project `blue`, then the value of `path` would be `pubsub://blue:red`.
 
 ## Process Webhooks
 
-To process the Webhooks that use the `http` delivery method, you need to listen on the endpoint(s) you provided in the `path` parameter of your Webhooks in the `Shopify.Context.WEBHOOKS_REGISTRY`. The library provides a convenient `process` method that acts as a middleware to handle Webhooks. It takes care of calling the correct handler for the registered Webhook topics.
+To process the Webhooks that use the `DeliveryMethod.Http` delivery method, you need to listen on the endpoint(s) you provided in the `path` parameter of your Webhooks in the `Shopify.Context.WEBHOOKS_REGISTRY`. The library provides a convenient `process` method that acts as a middleware to handle Webhooks. It takes care of calling the correct handler for the registered Webhook topics.
 
 **Note**: The `process` method will always respond to Shopify, even if your call throws an error. You can catch and log errors, but you can't change the response.
 
