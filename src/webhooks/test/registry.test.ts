@@ -271,6 +271,63 @@ describe('ShopifyWebhooks.Registry.register', () => {
     fetchMock.resetMocks();
   });
 
+  it('only register optional webhooks', async () => {
+    fetchMock.mockResponse(async (req) => {
+      const body = await req.text();
+
+      if (body.includes('webhookSubscriptions(first: 1')) {
+        return JSON.stringify(webhookCheckEmptyResponse);
+      }
+      if (body.includes('webhookSubscriptionCreate(topic: PRODUCTS_CREATE')) {
+        return JSON.stringify(successResponse);
+      }
+      if (body.includes('pubSubWebhookSubscriptionCreate(topic: APP_UNINSTALLED')) {
+        return JSON.stringify(pubSubSuccessResponse);
+      }
+      return JSON.stringify({});
+    });
+
+    Context.WEBHOOKS_REGISTRY = {
+      PRODUCTS_CREATE: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+      APP_UNINSTALLED: {
+        path: 'pubsub://my-project-id:my-topic-id',
+        webhookHandler: genericWebhookHandler,
+        deliveryMethod: DeliveryMethod.PubSub,
+      },
+      CUSTOMERS_DATA_REQUEST: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+      CUSTOMERS_REDACT: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+      SHOP_REDACT: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+    };
+    const webhook: RegisterOptions = {
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+    };
+
+    const result = await ShopifyWebhooks.Registry.register(webhook);
+    expect(result.PRODUCTS_CREATE.success).toBe(true);
+    expect(result.PRODUCTS_CREATE.result).toEqual(successResponse);
+    expect(result.APP_UNINSTALLED.success).toBe(true);
+    expect(result.APP_UNINSTALLED.result).toEqual(pubSubSuccessResponse);
+    expect(fetchMock.mock.calls.length).toBe(4);
+    assertWebhookCheckRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookRegistrationRequest(webhook, 'PRODUCTS_CREATE');
+    assertWebhookCheckRequest(webhook, 'APP_UNINSTALLED');
+    assertWebhookRegistrationRequest(webhook, 'APP_UNINSTALLED');
+    fetchMock.resetMocks();
+  });
+
   it('sends an eventbridge registration GraphQL query for an eventbridge webhook registration', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));

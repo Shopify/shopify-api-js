@@ -199,13 +199,15 @@ function buildQuery(
   `;
 }
 
+const MANDATORY_WEBHOOKS = ['CUSTOMERS_DATA_REQUEST', 'CUSTOMERS_REDACT', 'SHOP_REDACT'];
+
 const WebhooksRegistry: RegistryInterface = {
   async register({
     accessToken,
     shop,
   }: RegisterOptions): Promise<RegisterReturn> {
     const client = new GraphqlClient(shop, accessToken);
-    const topics = Object.keys(Context.WEBHOOKS_REGISTRY);
+    const topics = Object.keys(Context.WEBHOOKS_REGISTRY).filter((topic) => !MANDATORY_WEBHOOKS.includes(topic));
     const registerReturn: RegisterReturn = {};
 
     for (const topic of topics) {
