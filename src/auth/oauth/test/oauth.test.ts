@@ -2,9 +2,9 @@ import '../../../test/test_helper';
 
 import querystring from 'querystring';
 import http from 'http';
+import http2 from 'http2';
 
 import jwt from 'jsonwebtoken';
-import Cookies from 'cookies';
 
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
@@ -15,36 +15,41 @@ import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
 import {CustomSessionStorage, Session} from '../../session';
 
-jest.mock('cookies');
-
 let shop: string;
 
 beforeEach(() => {
   shop = 'someshop.myshopify.io';
-  (Cookies as any).mockClear();
 });
 
 describe('beginAuth', () => {
   let cookies = {
     id: '',
   };
-  let req: http.IncomingMessage;
-  let res: http.ServerResponse;
+  let req: http.IncomingMessage | http2.Http2ServerRequest;
+  let res: http.ServerResponse | http2.Http2ServerResponse;
 
   beforeEach(() => {
     cookies = {
       id: '',
     };
 
-    req = {} as http.IncomingMessage;
-    res = {} as http.ServerResponse;
+    req = {headers: {}} as http.IncomingMessage | http2.Http2ServerRequest;
+    res = {
+      setHeader(name, value) {
+        expect(name).toBe('Set-Cookie');
 
-    Cookies.prototype.set.mockImplementation(
-      (cookieName: string, cookieValue: string) => {
-        expect(cookieName).toBe('shopify_app_session');
-        cookies.id = cookieValue;
+        const sessionId = new RegExp(/shopify_app_session=(.*?);/).exec(
+          value.toString(),
+        )?.[1];
+
+        expect(sessionId).toBeTruthy();
+
+        if (sessionId) {
+          cookies.id = sessionId;
+          req.headers.cookie = `${ShopifyOAuth.SESSION_COOKIE_NAME}=${sessionId}`;
+        }
       },
-    );
+    } as http.ServerResponse | http2.Http2ServerResponse;
   });
 
   test('throws Context error when not properly initialized', async () => {
@@ -77,8 +82,6 @@ describe('beginAuth', () => {
     );
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
-    expect(Cookies).toHaveBeenCalledTimes(1);
-    expect(Cookies.prototype.set).toHaveBeenCalledTimes(1);
     expect(authRoute).toBeDefined();
     expect(session).toBeDefined();
     expect(session).toHaveProperty('id');
@@ -158,25 +161,33 @@ describe('validateAuthCallback', () => {
   let cookies = {
     id: '',
   };
-  let req: http.IncomingMessage;
-  let res: http.ServerResponse;
+  let req: http.IncomingMessage | http2.Http2ServerRequest;
+  let res: http.ServerResponse | http2.Http2ServerResponse;
 
   beforeEach(() => {
     cookies = {
       id: '',
     };
 
-    req = {} as http.IncomingMessage;
-    res = {} as http.ServerResponse;
+    req = {
+      headers: {},
+    } as http.IncomingMessage | http2.Http2ServerRequest;
+    res = {
+      setHeader(name, value) {
+        expect(name).toBe('Set-Cookie');
 
-    Cookies.prototype.set.mockImplementation(
-      (cookieName: string, cookieValue: string) => {
-        expect(cookieName).toBe('shopify_app_session');
-        cookies.id = cookieValue;
+        const sessionId = new RegExp(/shopify_app_session=(.*?);/).exec(
+          value.toString(),
+        )?.[1];
+
+        expect(sessionId).toBeTruthy();
+
+        if (sessionId) {
+          cookies.id = sessionId;
+          req.headers.cookie = `${ShopifyOAuth.SESSION_COOKIE_NAME}=${sessionId}`;
+        }
       },
-    );
-
-    Cookies.prototype.get.mockImplementation(() => cookies.id);
+    } as http.ServerResponse | http2.Http2ServerResponse;
   });
 
   test('throws Context error when not properly initialized', async () => {

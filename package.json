@@ -43,7 +43,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/node-fetch": "^2.5.7",
     "@types/supertest": "^2.0.10",
-    "cookies": "^0.8.0",
+    "cookie": "0.4.1",
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.1",
     "tslib": "^2.0.3",
@@ -52,7 +52,7 @@
   "devDependencies": {
     "@shopify/eslint-plugin": "^39.0.3",
     "@shopify/prettier-config": "^1.1.2",
-    "@types/cookies": "^0.7.5",
+    "@types/cookie": "0.4.1",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.1",
     "@types/uuid": "^8.3.0",

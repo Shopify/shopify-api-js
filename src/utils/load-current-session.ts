@@ -1,4 +1,5 @@
 import http from 'http';
+import http2 from 'http2';
 
 import {Context} from '../context';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
@@ -12,8 +13,8 @@ import {Session} from '../auth/session';
  * @param isOnline Whether to load online (default) or offline sessions (optional)
  */
 export default async function loadCurrentSession(
-  request: http.IncomingMessage,
-  response: http.ServerResponse,
+  request: http.IncomingMessage | http2.Http2ServerRequest,
+  response: http.ServerResponse | http2.Http2ServerResponse,
   isOnline = true,
 ): Promise<Session | undefined> {
   Context.throwIfUninitialized();

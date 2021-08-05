@@ -1,8 +1,9 @@
 import http from 'http';
+import http2 from 'http2';
 import querystring from 'querystring';
 
 import {v4 as uuidv4} from 'uuid';
-import Cookies from 'cookies';
+import cookie from 'cookie';
 
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
@@ -37,19 +38,14 @@ const ShopifyOAuth = {
    *                 Defaults to offline access.
    */
   async beginAuth(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: http.IncomingMessage | http2.Http2ServerRequest,
+    response: http.ServerResponse | http2.Http2ServerResponse,
     shop: string,
     redirectPath: string,
     isOnline = false,
   ): Promise<string> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
-
-    const cookies = new Cookies(request, response, {
-      keys: [Context.API_SECRET_KEY],
-      secure: true,
-    });
 
     const state = nonce();
 
@@ -68,12 +64,12 @@ const ShopifyOAuth = {
       );
     }
 
-    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
-      signed: true,
-      expires: new Date(Date.now() + 60000),
-      sameSite: 'lax',
-      secure: true,
-    });
+    this.setCookieSessionId(
+      request,
+      response,
+      session.id,
+      new Date(Date.now() + 60000),
+    );
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
@@ -101,17 +97,12 @@ const ShopifyOAuth = {
    *              Depending on framework, this may need to be cast as "unknown" before being passed.
    */
   async validateAuthCallback(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: http.IncomingMessage | http2.Http2ServerRequest,
+    response: http.ServerResponse | http2.Http2ServerResponse,
     query: AuthQuery,
   ): Promise<void> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
-
-    const cookies = new Cookies(request, response, {
-      keys: [Context.API_SECRET_KEY],
-      secure: true,
-    });
 
     const sessionCookie = this.getCookieSessionId(request, response);
     if (!sessionCookie) {
@@ -187,12 +178,12 @@ const ShopifyOAuth = {
       currentSession.expires = oauthSessionExpiration;
     }
 
-    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
-      signed: true,
-      expires: oauthSessionExpiration,
-      sameSite: 'lax',
-      secure: true,
-    });
+    this.setCookieSessionId(
+      request,
+      response,
+      currentSession.id,
+      oauthSessionExpiration,
+    );
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(
       currentSession,
@@ -212,14 +203,40 @@ const ShopifyOAuth = {
    * @param response HTTP response object
    */
   getCookieSessionId(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: http.IncomingMessage | http2.Http2ServerRequest,
+    // @ts-ignore unused variable
+    response: http.ServerResponse | http2.Http2ServerResponse,
   ): string | undefined {
-    const cookies = new Cookies(request, response, {
-      secure: true,
-      keys: [Context.API_SECRET_KEY],
-    });
-    return cookies.get(this.SESSION_COOKIE_NAME, {signed: true});
+    try {
+      return cookie.parse(request.headers.cookie ?? '')[
+        ShopifyOAuth.SESSION_COOKIE_NAME
+      ];
+    } catch (error) {
+      return undefined;
+    }
+  },
+
+  /**
+   * Sets the session id to the session cookie.
+   *
+   * @param request HTTP request object
+   * @param response HTTP response object
+   */
+  setCookieSessionId(
+    // @ts-ignore unused variable
+    request: http.IncomingMessage | http2.Http2ServerRequest,
+    response: http.ServerResponse | http2.Http2ServerResponse,
+    sessionId: string,
+    expires?: Date,
+  ) {
+    response.setHeader(
+      'Set-Cookie',
+      cookie.serialize(ShopifyOAuth.SESSION_COOKIE_NAME, sessionId, {
+        secure: true,
+        httpOnly: true,
+        expires,
+      }),
+    );
   },
 
   /**
@@ -249,8 +266,8 @@ const ShopifyOAuth = {
    * @param isOnline Whether to load online (default) or offline sessions (optional)
    */
   getCurrentSessionId(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: http.IncomingMessage | http2.Http2ServerRequest,
+    response: http.ServerResponse | http2.Http2ServerResponse,
     isOnline = true,
   ): string | undefined {
     let currentSessionId: string | undefined;

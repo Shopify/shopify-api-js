@@ -1,9 +1,9 @@
 import '../../test/test_helper';
 
 import http from 'http';
+import http2 from 'http2';
 
 import jwt from 'jsonwebtoken';
-import Cookies from 'cookies';
 
 import {Session} from '../../auth/session';
 import OAuth, {ShopifyOAuth} from '../../auth/oauth';
@@ -13,8 +13,6 @@ import {RestWithSession, GraphqlWithSession} from '../types';
 import {RestClient} from '../../clients/rest';
 import {GraphqlClient} from '../../clients/graphql';
 import * as ShopifyErrors from '../../error';
-
-jest.mock('cookies');
 
 describe('withSession', () => {
   const shop = 'fake-shop.myshopify.io';
@@ -48,7 +46,7 @@ describe('withSession', () => {
   });
 
   it('throws an error when there is no session matching the params requested', async () => {
-    const req = {} as http.IncomingMessage;
+    const req = {} as http.IncomingMessage | http2.Http2ServerRequest;
     const res = {} as http.ServerResponse;
 
     await expect(
@@ -110,12 +108,14 @@ describe('withSession', () => {
     session.accessToken = 'gimme-access';
     await Context.SESSION_STORAGE.storeSession(session);
 
-    const req = {} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
-
     const cookieId = '12345';
 
-    Cookies.prototype.get.mockImplementation(() => cookieId);
+    const req = {
+      headers: {
+        cookie: `${ShopifyOAuth.SESSION_COOKIE_NAME}=${cookieId}`,
+      },
+    } as http.IncomingMessage | http2.Http2ServerRequest;
+    const res = {} as http.ServerResponse;
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',
@@ -171,7 +171,7 @@ describe('withSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
+    } as http.IncomingMessage | http2.Http2ServerRequest;
     const res = {} as http.ServerResponse;
 
     const restRequestCtx = (await withSession({

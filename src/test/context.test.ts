@@ -1,12 +1,8 @@
 import './test_helper';
 
-import Cookies from 'cookies';
-
 import * as ShopifyErrors from '../error';
 import {Context} from '../context';
 import {ApiVersion, ContextParams} from '../base_types';
-
-jest.mock('cookies');
 
 const validParams: ContextParams = {
   API_KEY: 'api_key',
@@ -24,7 +20,6 @@ const originalWarn = console.warn;
 describe('Context object', () => {
   afterEach(() => {
     console.warn = originalWarn;
-    (Cookies as any).mockClear();
   });
 
   it('can initialize and update context', () => {

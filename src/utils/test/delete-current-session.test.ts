@@ -1,9 +1,9 @@
 import '../../test/test_helper';
 
 import http from 'http';
+import http2 from 'http2';
 
 import jwt from 'jsonwebtoken';
-import Cookies from 'cookies';
 
 import {Context} from '../../context';
 import * as ShopifyErrors from '../../error';
@@ -12,8 +12,6 @@ import {JwtPayload} from '../decode-session-token';
 import deleteCurrentSession from '../delete-current-session';
 import loadCurrentSession from '../load-current-session';
 import {ShopifyOAuth} from '../../auth/oauth/oauth';
-
-jest.mock('cookies');
 
 describe('deleteCurrenSession', () => {
   let jwtPayload: JwtPayload;
@@ -35,9 +33,6 @@ describe('deleteCurrenSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
-
     const cookieId = '1234-this-is-a-cookie-session-id';
 
     const session = new Session(cookieId);
@@ -45,10 +40,19 @@ describe('deleteCurrenSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    Cookies.prototype.get.mockImplementation(() => cookieId);
+    const req = {
+      headers: {
+        cookie: `${ShopifyOAuth.SESSION_COOKIE_NAME}=${cookieId}`,
+      },
+    } as http.IncomingMessage | http2.Http2ServerRequest;
+    const res = {} as http.ServerResponse;
 
-    await expect(deleteCurrentSession(req, res)).resolves.toBe(true);
-    await expect(loadCurrentSession(req, res)).resolves.toBe(undefined);
+    await expect(
+      deleteCurrentSession(req as http.IncomingMessage, res),
+    ).resolves.toBe(true);
+    await expect(
+      loadCurrentSession(req as http.IncomingMessage, res),
+    ).resolves.toBe(undefined);
   });
 
   it('finds and deletes the current session when using JWT', async () => {
@@ -62,7 +66,7 @@ describe('deleteCurrenSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
+    } as http.IncomingMessage | http2.Http2ServerRequest;
     const res = {} as http.ServerResponse;
 
     const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`);
@@ -78,9 +82,6 @@ describe('deleteCurrenSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
-
     const cookieId = ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io');
 
     const session = new Session(cookieId);
@@ -88,7 +89,12 @@ describe('deleteCurrenSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    Cookies.prototype.get.mockImplementation(() => cookieId);
+    const req = {
+      headers: {
+        cookie: `${ShopifyOAuth.SESSION_COOKIE_NAME}=${cookieId}`,
+      },
+    } as http.IncomingMessage | http2.Http2ServerRequest;
+    const res = {} as http.ServerResponse;
 
     await expect(deleteCurrentSession(req, res, false)).resolves.toBe(true);
     await expect(loadCurrentSession(req, res, false)).resolves.toBe(undefined);
@@ -105,7 +111,7 @@ describe('deleteCurrenSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
+    } as http.IncomingMessage | http2.Http2ServerRequest;
     const res = {} as http.ServerResponse;
 
     const session = new Session(
@@ -123,10 +129,8 @@ describe('deleteCurrenSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as http.IncomingMessage;
+    const req = {} as http.IncomingMessage | http2.Http2ServerRequest;
     const res = {} as http.ServerResponse;
-
-    Cookies.prototype.get.mockImplementation(() => null);
 
     await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(
       ShopifyErrors.SessionNotFound,
@@ -141,7 +145,7 @@ describe('deleteCurrenSession', () => {
       headers: {
         authorization: "What's a bearer token?",
       },
-    } as http.IncomingMessage;
+    } as http.IncomingMessage | http2.Http2ServerRequest;
     const res = {} as http.ServerResponse;
 
     await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(
