@@ -1,3 +1,4 @@
+import '../../../test/test_helper';
 
 import querystring from 'querystring';
 import http from 'http';
@@ -5,7 +6,6 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
 
-import {compareTime} from '../../../test/test_helper';
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
 import * as ShopifyErrors from '../../../error';
@@ -15,7 +15,6 @@ import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
 import {CustomSessionStorage, Session} from '../../session';
 
-
 jest.mock('cookies');
 
 let shop: string;
@@ -23,6 +22,31 @@ let shop: string;
 beforeEach(() => {
   shop = 'someshop.myshopify.io';
   (Cookies as any).mockClear();
+});
+
+declare global {
+  interface Matchers<R> {
+    toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+  }
+}
+
+expect.extend({
+  toBeWithinSecondsOf(received: number, compareDate: number, seconds) {
+    const pass = received && compareDate && Math.abs(received - compareDate) <= seconds * 1000;
+    if (pass) {
+      return {
+        message: () =>
+          `expected ${received} not to be within ${seconds} seconds of ${compareDate}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${received} to be within ${seconds} seconds of ${compareDate}`,
+        pass: false,
+      };
+    }
+  },
 });
 
 describe('beginAuth', () => {
@@ -409,8 +433,7 @@ describe('validateAuthCallback', () => {
     const actualJwtExpiration = actualJwtSession?.expires
       ? actualJwtSession.expires.getTime() / 1000
       : 0;
-    // 1-second grace period
-    expect(Math.abs(actualJwtExpiration - jwtPayload.exp)).toBeLessThan(1);
+    expect(actualJwtExpiration).toBeWithinSecondsOf(jwtPayload.exp, 1);
 
     // Simulate a subsequent JWT request to see if the session is loaded as the current one
 
@@ -427,7 +450,7 @@ describe('validateAuthCallback', () => {
     const currentSession = await loadCurrentSession(jwtReq, jwtRes);
     expect(currentSession).not.toBe(null);
     expect(currentSession?.id).toEqual(jwtSessionId);
-    expect(compareTime(cookies?.expires?.getTime() as number, new Date().getTime())).toBeTruthy();
+    expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(new Date().getTime(), 1);
   });
 
   test('properly updates the Oauth cookie for online, non-embedded apps', async () => {
@@ -468,10 +491,7 @@ describe('validateAuthCallback', () => {
     const returnedSession = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     expect(returnedSession.id).toEqual(cookies.id);
 
-    expect(compareTime(
-      returnedSession?.expires?.getTime() as number,
-      new Date(Date.now() + successResponse.expires_in * 1000).getTime(),
-    )).toBeTruthy();
+    expect(returnedSession?.expires?.getTime() as number).toBeWithinSecondsOf(new Date(Date.now() + successResponse.expires_in * 1000).getTime(), 1);
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
@@ -517,8 +537,7 @@ describe('validateAuthCallback', () => {
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
-    expect(compareTime(cookies?.expires?.getTime() as number, new Date().getTime())).toBeTruthy();
-
+    expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(new Date().getTime(), 1);
   });
 
   test('properly updates the Oauth cookie for offline, non-embedded apps', async () => {
