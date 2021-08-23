@@ -25,8 +25,10 @@ beforeEach(() => {
 });
 
 declare global {
-  interface Matchers<R> {
-    toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+    }
   }
 }
 
@@ -534,6 +536,7 @@ describe('validateAuthCallback', () => {
     fetchMock.mockResponse(JSON.stringify(successResponse));
     const returnedSession = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     expect(returnedSession.id).toEqual(cookies.id);
+    expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
