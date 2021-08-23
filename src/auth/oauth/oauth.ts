@@ -163,9 +163,8 @@ const ShopifyOAuth = {
       currentSession.scope = scope;
       currentSession.onlineAccessInfo = rest;
 
-      // If this is an offline session, we're no longer interested in the cookie. If it is online in an embedded app, we
-      // want the cookie session to expire a few seconds from now to give the app time to load itself to set up a JWT.
-      // Otherwise, we want to leave the cookie session alone until the actual expiration.
+      // For embedded online sessions w no longer want the cookie session so we delete it
+      // Offline sessions (embedded / non-embedded) will use the same id so they don't need to be updated
       if (Context.IS_EMBEDDED_APP) {
         // If this is an online session for an embedded app, replace the online session with a JWT session
         const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
