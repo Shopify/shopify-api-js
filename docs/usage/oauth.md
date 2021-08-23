@@ -56,7 +56,7 @@ http.createServer(onRequest).listen(3000);
 
 ```ts
 app.get('/login', async (req, res) => {
-  let authRoute = await Shopify.Auth.beginAuth(req, res, SHOP, '/auth/callback');
+  let authRoute = await Shopify.Auth.beginAuth(req, res, SHOP, '/auth/callback', false);
   return res.redirect(authRoute);
 });
 ```
