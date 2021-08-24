@@ -21,3 +21,30 @@ beforeEach(() => {
 
   fetchMock.mockRestore();
 });
+
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+    }
+  }
+}
+
+expect.extend({
+  toBeWithinSecondsOf(received: number, compareDate: number, seconds) {
+    const pass = received && compareDate && Math.abs(received - compareDate) <= seconds * 1000;
+    if (pass) {
+      return {
+        message: () =>
+          `expected ${received} not to be within ${seconds} seconds of ${compareDate}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${received} to be within ${seconds} seconds of ${compareDate}`,
+        pass: false,
+      };
+    }
+  },
+});

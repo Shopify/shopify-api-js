@@ -164,7 +164,6 @@ const ShopifyOAuth = {
       currentSession.onlineAccessInfo = rest;
 
       // For an online session in an embedded app, we no longer want the cookie session so we delete it
-      // Offline sessions (embedded / non-embedded) will use the same id so they don't need to be updated
       if (Context.IS_EMBEDDED_APP) {
         // If this is an online session for an embedded app, replace the online session with a JWT session
         const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
@@ -183,6 +182,7 @@ const ShopifyOAuth = {
         currentSession = jwtSession;
       }
     } else {
+      // Offline sessions (embedded / non-embedded) will use the same id so they don't need to be updated
       const responseBody = postResponse.body as AccessTokenResponse;
       currentSession.accessToken = responseBody.access_token;
       currentSession.scope = responseBody.scope;

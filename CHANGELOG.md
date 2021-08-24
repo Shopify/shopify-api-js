@@ -20,7 +20,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## [1.4.1] - 2021-06-11
 
 - Don't include extra params when calculating local hmac [#196](https://github.com/Shopify/shopify-node-api/pull/196)
-- [Breaking] Change default for OAuth.beginAuth to online sessions [#203](https://github.com/Shopify/shopify-node-api/pull/203)
+- [Breaking] Return and delete session in `validateAuthCallback` [#217](https://github.com/Shopify/shopify-node-api/pull/217)
 
 ## [1.4.0] - 2021-05-21
 
