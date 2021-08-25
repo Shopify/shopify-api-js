@@ -470,6 +470,7 @@ describe('validateAuthCallback', () => {
     expect(returnedSession.id).toEqual(cookies.id);
 
     expect(returnedSession?.expires?.getTime() as number).toBeWithinSecondsOf(new Date(Date.now() + successResponse.expires_in * 1000).getTime(), 1);
+    expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(returnedSession?.expires?.getTime() as number, 1);
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
@@ -517,6 +518,7 @@ describe('validateAuthCallback', () => {
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
     expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(new Date().getTime(), 1);
+    expect(returnedSession?.expires?.getTime()).toBeUndefined();
   });
 
   test('properly updates the Oauth cookie for offline, non-embedded apps', async () => {
@@ -557,6 +559,8 @@ describe('validateAuthCallback', () => {
     const returnedSession = await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     expect(returnedSession.id).toEqual(cookies.id);
     expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
+    expect(cookies?.expires?.getTime()).toBeUndefined();
+    expect(returnedSession?.expires?.getTime()).toBeUndefined();
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(cookieSession).not.toBeUndefined();
