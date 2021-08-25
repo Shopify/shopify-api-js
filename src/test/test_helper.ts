@@ -22,8 +22,13 @@ beforeEach(() => {
   fetchMock.mockRestore();
 });
 
-export interface Matchers<R> {
-  toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+    }
+  }
 }
 
 /**
