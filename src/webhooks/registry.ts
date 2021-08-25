@@ -29,6 +29,13 @@ interface RegistryInterface {
   addHandler(options: WebhookRegistryEntry): void;
 
   /**
+   * Sets a list of handlers for the given topics using the `addHandler` function
+   *
+   * @param webhookRegistryEntries Array of the webhookRegistryEntry interface
+   */
+  addHandlers(webhookRegistryEntries: WebhookRegistryEntry[]): void;
+
+  /**
    * Fetches the handler for the given topic. Returns null if no handler was registered.
    *
    * @param topic The topic to check
@@ -220,6 +227,12 @@ const WebhooksRegistry: RegistryInterface = {
 
   addHandler({path, topic, webhookHandler}: WebhookRegistryEntry): void {
     WebhooksRegistry.webhookRegistry[topic] = {path, topic, webhookHandler};
+  },
+
+  addHandlers(webhookRegistryEntries: WebhookRegistryEntry[]): void {
+    for (let i = 0, topicsLength = webhookRegistryEntries.length; i < topicsLength; i++) {
+      WebhooksRegistry.addHandler(webhookRegistryEntries[i]);
+    }
   },
 
   getHandler(topic: string): WebhookRegistryEntry | null {

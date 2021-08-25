@@ -636,14 +636,6 @@ describe('ShopifyWebhooks.Registry.addHandler', () => {
     expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(2);
   });
 
-  it('adds a handler and deletes it', async () => {
-    await ShopifyWebhooks.Registry.addHandler({path: '/webhooks', topic: 'PRODUCTS_CREATE', webhookHandler: genericWebhookHandler});
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(1);
-
-    await ShopifyWebhooks.Registry.addHandler({path: '/webhooks', topic: 'PRODUCTS', webhookHandler: genericWebhookHandler});
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(2);
-  });
-
   it('adds a handler and replaces it with a new one', async () => {
     await ShopifyWebhooks.Registry.addHandler({path: '/webhooks', topic: 'PRODUCTS', webhookHandler: genericWebhookHandler});
     expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(1);
@@ -653,6 +645,32 @@ describe('ShopifyWebhooks.Registry.addHandler', () => {
 
     expect(ShopifyWebhooks.Registry.webhookRegistry.PRODUCTS.path).toBe('/webhookspath');
     expect(ShopifyWebhooks.Registry.webhookRegistry.PRODUCTS.topic).toBe('PRODUCTS');
+  });
+});
+
+describe('ShopifyWebhooks.Registry.addHandlers', () => {
+  beforeEach(async () => {
+    ShopifyWebhooks.Registry.webhookRegistry = {};
+  });
+
+  it('adds two unique handlers to the webhook registry', async () => {
+    await ShopifyWebhooks.Registry.addHandlers([
+      {path: '/webhooks', topic: 'PRODUCTS_CREATE', webhookHandler: genericWebhookHandler},
+      {path: '/webhooks', topic: 'PRODUCTS', webhookHandler: genericWebhookHandler},
+    ]);
+    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(2);
+    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toEqual(['PRODUCTS_CREATE', 'PRODUCTS']);
+  });
+
+  it('adds multiple handlers with duplicates', async () => {
+    await ShopifyWebhooks.Registry.addHandlers([
+      {path: '/webhooks', topic: 'PRODUCTS_CREATE', webhookHandler: genericWebhookHandler},
+      {path: '/newpath', topic: 'PRODUCTS', webhookHandler: genericWebhookHandler},
+      {path: '/newerpath', topic: 'PRODUCTS', webhookHandler: genericWebhookHandler},
+    ]);
+    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(2);
+    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toEqual(['PRODUCTS_CREATE', 'PRODUCTS']);
+    expect(ShopifyWebhooks.Registry.webhookRegistry.PRODUCTS.path).toBe('/newerpath');
   });
 });
 
