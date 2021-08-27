@@ -87,7 +87,7 @@ describe('beginAuth', () => {
     expect(session).toHaveProperty('expires', undefined);
   });
 
-  test('sets session id and cookie to shop name with "_offline" for offline access requests', async () => {
+  test('sets session id and cookie to shop name prefixed with "offline_" for offline access requests', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
 
     expect(cookies.id).toBe(`offline_${shop}`);
