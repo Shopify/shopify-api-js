@@ -35,7 +35,6 @@ export interface RegisterReturn {
 
 export interface WebhookRegistryEntry {
   path: string;
-  topic: string;
   webhookHandler: WebhookHandlerFunction;
 }
 
