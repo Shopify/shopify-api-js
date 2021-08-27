@@ -25,16 +25,18 @@ interface RegistryInterface {
   /**
    * Sets the handler for the given topic. If a handler was previously set for the same topic, it will be overridden.
    *
-   * @param options Paramters to add a handler which are path, topic and webHookHandler
+   * @param topic String used to add a handler
+   * @param options Paramters to add a handler which are path and webHookHandler
    */
-  addHandler(options: WebhookRegistryEntry): void;
+  addHandler(topic: string, options: WebhookRegistryEntry): void;
 
   /**
    * Sets a list of handlers for the given topics using the `addHandler` function
    *
+   * @param topics Array of topic strings used to add a handler
    * @param webhookRegistryEntries Array of the webhookRegistryEntry interface
    */
-  addHandlers(webhookRegistryEntries: WebhookRegistryEntry[]): void;
+  addHandlers(topics: string[], webhookRegistryEntries: WebhookRegistryEntry[]): void;
 
   /**
    * Fetches the handler for the given topic. Returns null if no handler was registered.
@@ -238,13 +240,13 @@ function buildQuery(
 const WebhooksRegistry: RegistryInterface = {
   webhookRegistry: {},
 
-  addHandler({path, topic, webhookHandler}: WebhookRegistryEntry): void {
-    WebhooksRegistry.webhookRegistry[topic] = {path, topic, webhookHandler};
+  addHandler(topic: string, {path, webhookHandler}: WebhookRegistryEntry): void {
+    WebhooksRegistry.webhookRegistry[topic] = {path, webhookHandler};
   },
 
-  addHandlers(webhookRegistryEntries: WebhookRegistryEntry[]): void {
+  addHandlers(topic: string[], webhookRegistryEntries: WebhookRegistryEntry[]): void {
     for (let i = 0, topicsLength = webhookRegistryEntries.length; i < topicsLength; i++) {
-      WebhooksRegistry.addHandler(webhookRegistryEntries[i]);
+      WebhooksRegistry.addHandler(topic[i], webhookRegistryEntries[i]);
     }
   },
 
