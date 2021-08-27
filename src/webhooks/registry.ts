@@ -16,6 +16,7 @@ import {
   WebhookRegistryEntry,
   WebhookCheckResponse,
   WebhookCheckResponseLegacy,
+  ShortenedRegisterOptions,
 } from './types';
 
 interface RegistryInterface {
@@ -43,11 +44,23 @@ interface RegistryInterface {
   getHandler(topic: string): WebhookRegistryEntry | null;
 
   /**
+   * Gets all topics
+   */
+  getTopics(): string[];
+
+  /**
    * Registers a Webhook Handler function for a given topic.
    *
    * @param options Parameters to register a handler, including topic, listening address, delivery method
    */
   register(options: RegisterOptions): Promise<RegisterReturn>;
+
+  /**
+   * Registers multiple Webhook Handler functions.
+   *
+   * @param options Parameters to register a handler, including topic, listening address, delivery method
+   */
+  registerAll(options: ShortenedRegisterOptions): Promise<RegisterReturn>;
 
   /**
    * Processes the webhook request received from the Shopify API
@@ -239,6 +252,10 @@ const WebhooksRegistry: RegistryInterface = {
     return topic in WebhooksRegistry.webhookRegistry ? WebhooksRegistry.webhookRegistry[topic] : null;
   },
 
+  getTopics(): string[] {
+    return Object.keys(WebhooksRegistry.webhookRegistry);
+  },
+
   async register({
     path,
     topic,
@@ -246,6 +263,7 @@ const WebhooksRegistry: RegistryInterface = {
     shop,
     deliveryMethod = DeliveryMethod.Http,
   }: RegisterOptions): Promise<RegisterReturn> {
+    const registerReturn: RegisterReturn = {};
     validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
     const address =
@@ -275,21 +293,47 @@ const WebhooksRegistry: RegistryInterface = {
       }
     }
 
-    let success: boolean;
-    let body: unknown;
     if (mustRegister) {
       const result = await client.query({
         data: buildQuery(topic, address, deliveryMethod, webhookId),
       });
-
-      success = isSuccess(result.body, deliveryMethod, webhookId);
-      body = result.body;
+      registerReturn[topic] = {
+        success: isSuccess(result.body, deliveryMethod, webhookId),
+        result: result.body,
+      };
     } else {
-      success = true;
-      body = {};
+      registerReturn[topic] = {
+        success: true,
+        result: {},
+      };
     }
+    return registerReturn;
+  },
 
-    return {success, result: body};
+  async registerAll({
+    accessToken,
+    shop,
+    deliveryMethod = DeliveryMethod.Http,
+  }: ShortenedRegisterOptions): Promise<RegisterReturn> {
+    let registerReturn = {};
+    const topics = WebhooksRegistry.getTopics();
+
+    for (const topic of topics) {
+      const handler = WebhooksRegistry.getHandler(topic);
+      if (handler) {
+        const {path} = handler;
+        const webhook: RegisterOptions = {
+          path,
+          topic,
+          accessToken,
+          shop,
+          deliveryMethod,
+        };
+        const returnedRegister: RegisterReturn = await WebhooksRegistry.register(webhook);
+        registerReturn = {...registerReturn, ...returnedRegister};
+      }
+    }
+    return registerReturn;
   },
 
   async process(
