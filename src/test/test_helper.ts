@@ -21,3 +21,37 @@ beforeEach(() => {
 
   fetchMock.mockRestore();
 });
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+    }
+  }
+}
+
+/**
+ * Checks if two dates in the form of numbers are within seconds of each other
+ *
+ * @param received First date
+ * @param compareDate Second date
+ * @param seconds The number of seconds the first and second date should be within
+*/
+expect.extend({
+  toBeWithinSecondsOf(received: number, compareDate: number, seconds: number) {
+    if (received && compareDate && Math.abs(received - compareDate) <= seconds * 1000) {
+      return {
+        message: () =>
+          `expected ${received} not to be within ${seconds} seconds of ${compareDate}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${received} to be within ${seconds} seconds of ${compareDate}`,
+        pass: false,
+      };
+    }
+  },
+});
