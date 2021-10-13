@@ -6,7 +6,16 @@ To do that, you can follow the steps below.
 
 ## Add a route to start OAuth
 
-The route for starting the OAuth process (in this case `/login`) will use the library's `beginAuth` method. The `beginAuth` method takes in the request and response objects (from the `http` module), along with the target shop _(string)_, redirect route _(string)_, and whether or not you are requesting [online access](https://shopify.dev/concepts/about-apis/authentication#api-access-modes) _(boolean)_. The method will return a URI that will be used for redirecting the user to the Shopify Authentication screen.
+The route for starting the OAuth process (in this case `/login`) will use the library's `beginAuth` method. The method will return a URI that will be used for redirecting the user to the Shopify Authentication screen.
+
+| Parameter | Type | Required? | Default Value | Notes |
+| --- | --- | :---: | :---: | --- |
+| `request` | `http.IncomingMessage` | Yes | - | The HTTP Request. |
+| `response` | `http.ServerResponse` | Yes | - | The HTTP Response. |
+| `shop` | `string` | Yes | - | A Shopify domain name in the form `{exampleshop}.myshopify.com`. |
+| `redirectPath` | `string` | Yes | - | The redirect path used for callback with a leading `/`. The route should be allowed under the app settings. |
+| `isOnline` | `bool` | No | `true` | `true` if the session is online and `false` otherwise. |
+
 
 <details>
 <summary>Node.js</summary>
@@ -17,7 +26,7 @@ The route for starting the OAuth process (in this case `/login`) will use the li
   if (pathName === '/login') {
     // process login action
     try {
-      const authRoute = await Shopify.Auth.beginAuth(request, response, SHOP, '/auth/callback');
+      const authRoute = await Shopify.Auth.beginAuth(request, response, SHOP, '/auth/callback', false);
 
       response.writeHead(302, { 'Location': authRoute });
       response.end();
@@ -47,13 +56,7 @@ http.createServer(onRequest).listen(3000);
 
 ```ts
 app.get('/login', async (req, res) => {
-  let authRoute = await Shopify.Auth.beginAuth(
-    req,
-    res,
-    SHOP,
-    '/auth/callback',
-    true,
-  );
+  let authRoute = await Shopify.Auth.beginAuth(req, res, SHOP, '/auth/callback', false);
   return res.redirect(authRoute);
 });
 ```

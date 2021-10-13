@@ -65,10 +65,7 @@ app.get('/auth/callback', async (req, res) => {
       // this handler is triggered when a webhook is sent by the Shopify platform to your application
     };
 
-    const currentSession = await Shopify.Utils.loadCurrentSession(
-      req,
-      res,
-    );
+    const currentSession = await Shopify.Utils.loadCurrentSession(req, res);
 
     // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
     const resp = await Shopify.Webhooks.Registry.register({

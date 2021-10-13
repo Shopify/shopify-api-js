@@ -35,14 +35,14 @@ const ShopifyOAuth = {
    * @param redirect Redirect url for callback
    * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token.
    *                 During final oauth request, will receive back the online access token and current online session information.
-   *                 Defaults to offline access.
+   *                 Defaults to online access.
    */
   async beginAuth(
     request: http.IncomingMessage,
     response: http.ServerResponse,
     shop: string,
     redirectPath: string,
-    isOnline = false,
+    isOnline = true,
   ): Promise<string> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
