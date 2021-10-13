@@ -16,13 +16,17 @@ class RestClient extends HttpClient {
     super(domain);
 
     if (!Context.IS_PRIVATE_APP && !accessToken) {
-      throw new ShopifyErrors.MissingRequiredArgument('Missing access token when creating REST client');
+      throw new ShopifyErrors.MissingRequiredArgument(
+        'Missing access token when creating REST client',
+      );
     }
   }
 
   protected async request(params: RequestParams): Promise<RestRequestReturn> {
     params.extraHeaders = {
-      [ShopifyHeader.AccessToken]: Context.IS_PRIVATE_APP ? Context.API_SECRET_KEY : this.accessToken as string,
+      [ShopifyHeader.AccessToken]: Context.IS_PRIVATE_APP
+        ? Context.API_SECRET_KEY
+        : (this.accessToken as string),
       ...params.extraHeaders,
     };
 
@@ -33,7 +37,9 @@ class RestClient extends HttpClient {
     const link = ret.headers.get('link');
     if (params.query && link !== undefined) {
       const pageInfo: PageInfo = {
-        limit: params.query.limit ? params.query.limit.toString() : RestClient.DEFAULT_LIMIT,
+        limit: params.query.limit
+          ? params.query.limit.toString()
+          : RestClient.DEFAULT_LIMIT,
       };
 
       if (link) {
@@ -84,7 +90,9 @@ class RestClient extends HttpClient {
 
     const url = new URL(newPageUrl);
     const path = url.pathname.replace(new RegExp(pattern), '$1');
-    const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as Record<string, string | number>;
+    const query = querystring.decode(
+      url.search.replace(/^\?(.*)/, '$1'),
+    ) as Record<string, string | number>;
     return {
       path,
       query,

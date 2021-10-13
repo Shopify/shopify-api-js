@@ -27,7 +27,9 @@ describe('Storefront GraphQL client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.query({data: QUERY})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
 
     const headers: Record<string, unknown> = {};
     headers[ShopifyHeader.StorefrontAccessToken] = 'bork';
@@ -49,7 +51,9 @@ describe('Storefront GraphQL client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(buildExpectedResponse(successResponse));
+    await expect(client.query({data: QUERY})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
 
     const headers: Record<string, unknown> = {};
     headers[ShopifyHeader.StorefrontAccessToken] = 'private_token';

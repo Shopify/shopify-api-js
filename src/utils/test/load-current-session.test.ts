@@ -64,7 +64,9 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -92,7 +94,9 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -114,7 +118,9 @@ describe('loadCurrentSession', () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
+    await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(
+      ShopifyErrors.MissingJwtTokenError,
+    );
   });
 
   it('falls back to the cookie session for embedded apps', async () => {
@@ -159,7 +165,9 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,

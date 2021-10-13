@@ -1,6 +1,7 @@
 # `@shopify/shopify-api`
 
 <!-- ![Build Status]() -->
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 [![npm version](https://badge.fury.io/js/%40shopify%2Fshopify-api.svg)](https://badge.fury.io/js/%40shopify%2Fshopify-api)
 
@@ -18,6 +19,7 @@ This library can be used in any application that has a Node.js backend, since it
 # Requirements
 
 To follow these usage guides, you will need to:
+
 - have a basic understanding of [Node.js](https://nodejs.org)
 - have a Shopify Partner account and development store
 - _OR_ have a test store where you can create a private app
@@ -27,6 +29,7 @@ To follow these usage guides, you will need to:
 - have [yarn](https://yarnpkg.com) installed
 
 <!-- Make sure this section is in sync with docs/README.md -->
+
 # Getting started
 
 You can follow our [getting started guide](docs/), which will provide instructions on how to create an app using plain Node.js code, or the [Express](https://expressjs.com/) framework. Both examples are written in Typescript.

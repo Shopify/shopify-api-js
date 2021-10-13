@@ -62,6 +62,25 @@ const eventBridgeWebhookCheckResponse = {
   },
 };
 
+const pubSubWebhookCheckResponse = {
+  data: {
+    webhookSubscriptions: {
+      edges: [
+        {
+          node: {
+            id: webhookId,
+            endpoint: {
+              __typename: 'WebhookPubSubEndpoint',
+              pubSubProject: 'my-project-id',
+              pubSubTopic: 'my-topic-id',
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+
 const webhookCheckResponseLegacy = {
   data: {
     webhookSubscriptions: {
@@ -95,6 +114,15 @@ const eventBridgeSuccessResponse = {
   },
 };
 
+const pubSubSuccessResponse = {
+  data: {
+    pubSubWebhookSubscriptionCreate: {
+      userErrors: [],
+      webhookSubscription: {id: webhookId},
+    },
+  },
+};
+
 const successUpdateResponse = {
   data: {
     webhookSubscriptionUpdate: {
@@ -113,11 +141,24 @@ const eventBridgeSuccessUpdateResponse = {
   },
 };
 
+const pubSubSuccessUpdateResponse = {
+  data: {
+    pubSubWebhookSubscriptionUpdate: {
+      userErrors: [],
+      webhookSubscription: {id: webhookId},
+    },
+  },
+};
+
 const failResponse = {
   data: {},
 };
 
-async function genericWebhookHandler(topic: string, shopDomain: string, body: string): Promise<void> {
+async function genericWebhookHandler(
+  topic: string,
+  shopDomain: string,
+  body: string,
+): Promise<void> {
   if (!topic || !shopDomain || !body) {
     throw new Error('Missing webhook parameters');
   }
@@ -187,6 +228,26 @@ describe('ShopifyWebhooks.Registry.register', () => {
     assertWebhookRegistrationRequest(webhook);
   });
 
+  it('sends a pubsub registration GraphQL query for a pubsub webhook registration', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(pubSubSuccessResponse));
+    const webhook: RegisterOptions = {
+      path: 'pubsub://my-project-id:my-topic-id',
+      topic: 'PRODUCTS_CREATE',
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+      deliveryMethod: DeliveryMethod.PubSub,
+      webhookHandler: genericWebhookHandler,
+    };
+
+    const result = await ShopifyWebhooks.Registry.register(webhook);
+    expect(result.success).toBe(true);
+    expect(result.result).toEqual(pubSubSuccessResponse);
+    expect(fetchMock.mock.calls.length).toBe(2);
+    assertWebhookCheckRequest(webhook);
+    assertWebhookRegistrationRequest(webhook);
+  });
+
   it('updates a pre-existing webhook even if it is already registered with Shopify', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
     fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
@@ -208,7 +269,9 @@ describe('ShopifyWebhooks.Registry.register', () => {
 
   it('updates a pre-existing eventbridge webhook even if it is already registered with Shopify', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeWebhookCheckResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessUpdateResponse));
+    fetchMock.mockResponseOnce(
+      JSON.stringify(eventBridgeSuccessUpdateResponse),
+    );
     const webhook: RegisterOptions = {
       path: 'arn:test-new',
       topic: 'PRODUCTS_CREATE',
@@ -221,6 +284,26 @@ describe('ShopifyWebhooks.Registry.register', () => {
     const result = await ShopifyWebhooks.Registry.register(webhook);
     expect(result.success).toBe(true);
     expect(result.result).toEqual(eventBridgeSuccessUpdateResponse);
+    expect(fetchMock.mock.calls.length).toBe(2);
+    assertWebhookCheckRequest(webhook);
+    assertWebhookRegistrationRequest(webhook, webhookId);
+  });
+
+  it('updates a pre-existing pubsub webhook even if it is already registered with Shopify', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify(pubSubWebhookCheckResponse));
+    fetchMock.mockResponseOnce(JSON.stringify(pubSubSuccessUpdateResponse));
+    const webhook: RegisterOptions = {
+      path: 'pubsub://my-project-id:my-topic-id',
+      topic: 'PRODUCTS_CREATE',
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+      deliveryMethod: DeliveryMethod.PubSub,
+      webhookHandler: genericWebhookHandler,
+    };
+
+    const result = await ShopifyWebhooks.Registry.register(webhook);
+    expect(result.success).toBe(true);
+    expect(result.result).toEqual(pubSubSuccessUpdateResponse);
     expect(fetchMock.mock.calls.length).toBe(2);
     assertWebhookCheckRequest(webhook);
     assertWebhookRegistrationRequest(webhook, webhookId);
@@ -280,6 +363,22 @@ describe('ShopifyWebhooks.Registry.register', () => {
     }).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
   });
 
+  it('throws if a pubsub webhook is registered with an unsupported API version', async () => {
+    expect(async () => {
+      fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
+      Context.API_VERSION = ApiVersion.April21;
+      const webhook: RegisterOptions = {
+        path: 'pubsub://my-project-id:my-topic-id',
+        topic: 'PRODUCTS_CREATE',
+        accessToken: 'some token',
+        shop: 'shop1.myshopify.io',
+        deliveryMethod: DeliveryMethod.PubSub,
+        webhookHandler: genericWebhookHandler,
+      };
+      await ShopifyWebhooks.Registry.register(webhook);
+    }).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
+  });
+
   it('fails if given an invalid DeliveryMethod', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
@@ -292,7 +391,9 @@ describe('ShopifyWebhooks.Registry.register', () => {
       webhookHandler: genericWebhookHandler,
     };
 
-    const result = await ShopifyWebhooks.Registry.register(webhook as RegisterOptions);
+    const result = await ShopifyWebhooks.Registry.register(
+      webhook as RegisterOptions,
+    );
     expect(result.success).toBe(false);
   });
 
@@ -382,7 +483,12 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(Context.API_SECRET_KEY, rawBody), lowercase: true}))
+      .set(
+        headers({
+          hmac: hmac(Context.API_SECRET_KEY, rawBody),
+          lowercase: true,
+        }),
+      )
       .send(rawBody)
       .expect(StatusCode.Ok);
   });
@@ -568,11 +674,18 @@ function headers({
   topic = 'products',
   domain = 'shop1.myshopify.io',
   lowercase = false,
-}: {hmac?: string; topic?: string; domain?: string; lowercase?: boolean;} = {}) {
+}: {
+  hmac?: string;
+  topic?: string;
+  domain?: string;
+  lowercase?: boolean;
+} = {}) {
   return {
     [lowercase ? ShopifyHeader.Hmac.toLowerCase() : ShopifyHeader.Hmac]: hmac,
-    [lowercase ? ShopifyHeader.Topic.toLowerCase() : ShopifyHeader.Topic]: topic,
-    [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]: domain,
+    [lowercase ? ShopifyHeader.Topic.toLowerCase() : ShopifyHeader.Topic]:
+      topic,
+    [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]:
+      domain,
   };
 }
 
@@ -593,11 +706,14 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
   });
 }
 
-function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: string) {
+function assertWebhookRegistrationRequest(
+  webhook: RegisterOptions,
+  webhookId?: string,
+) {
   const address =
-    webhook.deliveryMethod && webhook.deliveryMethod === DeliveryMethod.EventBridge
-      ? webhook.path
-      : `https://${Context.HOST_NAME}${webhook.path}`;
+    !webhook.deliveryMethod || webhook.deliveryMethod === DeliveryMethod.Http
+      ? `https://${Context.HOST_NAME}${webhook.path}`
+      : webhook.path;
   assertHttpRequest({
     method: Method.Post.toString(),
     domain: webhook.shop,
@@ -606,6 +722,11 @@ function assertWebhookRegistrationRequest(webhook: RegisterOptions, webhookId?: 
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
     },
-    data: createWebhookQuery(webhook.topic, address, webhook.deliveryMethod, webhookId),
+    data: createWebhookQuery(
+      webhook.topic,
+      address,
+      webhook.deliveryMethod,
+      webhookId,
+    ),
   });
 }

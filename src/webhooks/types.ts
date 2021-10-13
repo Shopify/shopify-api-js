@@ -1,12 +1,13 @@
 export enum DeliveryMethod {
   Http = 'http',
   EventBridge = 'eventbridge',
+  PubSub = 'pubsub',
 }
 
 type WebhookHandlerFunction = (
   topic: string,
   shop_domain: string,
-  body: string
+  body: string,
 ) => Promise<void>;
 
 export interface RegisterOptions {
@@ -30,15 +31,24 @@ export interface WebhookRegistryEntry {
   webhookHandler: WebhookHandlerFunction;
 }
 
-interface WebhookCheckResponseNode<T = {
-  endpoint: {
-    __typename: 'WebhookHttpEndpoint';
-    callbackUrl: string;
-  } | {
-    __typename: 'WebhookEventBridgeEndpoint';
-    arn: string;
-  };
-}> {
+interface WebhookCheckResponseNode<
+  T = {
+    endpoint:
+      | {
+          __typename: 'WebhookHttpEndpoint';
+          callbackUrl: string;
+        }
+      | {
+          __typename: 'WebhookEventBridgeEndpoint';
+          arn: string;
+        }
+      | {
+          __typename: 'WebhookPubSubEndpoint';
+          pubSubProject: string;
+          pubSubTopic: string;
+        };
+  },
+> {
   node: {
     id: string;
   } & T;
@@ -56,4 +66,5 @@ export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
   };
 }
 
-export type WebhookCheckResponseLegacy = WebhookCheckResponse<WebhookCheckLegacyResponseNode>;
+export type WebhookCheckResponseLegacy =
+  WebhookCheckResponse<WebhookCheckLegacyResponseNode>;

@@ -53,7 +53,9 @@ describe('deleteCurrenSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -90,7 +92,9 @@ describe('deleteCurrenSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -119,7 +123,9 @@ describe('deleteCurrenSession', () => {
 
     Cookies.prototype.get.mockImplementation(() => null);
 
-    await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
+    await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(
+      ShopifyErrors.SessionNotFound,
+    );
   });
 
   it('throws an error when authorization header is not a bearer token', async () => {
@@ -133,6 +139,8 @@ describe('deleteCurrenSession', () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
+    await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(
+      ShopifyErrors.MissingJwtTokenError,
+    );
   });
 });
