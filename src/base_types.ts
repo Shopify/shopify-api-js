@@ -26,6 +26,7 @@ export enum ApiVersion {
   January21 = '2021-01',
   April21 = '2021-04',
   July21 = '2021-07',
+  October21 = '2021-10',
   Unstable = 'unstable',
   Unversioned = 'unversioned',
 }
