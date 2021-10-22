@@ -664,6 +664,57 @@ describe('HTTP client', () => {
     );
     expect(fileContent).toContain(`Stack Trace: Error:`);
   });
+
+  it('properly encodes strings in the error message', async () => {
+    setRestClientRetryTime(0);
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponses(
+      [
+        JSON.stringify({errors: 'Something went wrong'}),
+        {status: 500, statusText: 'Did not work'},
+      ],
+    );
+
+    let caught = false;
+    await client.get({path: '/url/path'}).then(() => fail('Expected request to fail')).catch((error) => {
+      caught = true;
+      expect(error).toBeInstanceOf(ShopifyErrors.HttpInternalError);
+      expect(error.message).toEqual(
+        `Shopify internal error:` +
+        `\n"Something went wrong"`,
+      );
+    });
+    expect(caught).toEqual(true);
+    assertHttpRequest({method: 'GET', domain, path: '/url/path'});
+  });
+
+  it('properly encodes objects in the error message', async () => {
+    setRestClientRetryTime(0);
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponses(
+      [
+        JSON.stringify({errors: {title: 'Invalid title', description: 'Invalid description'}}),
+        {status: 500, statusText: 'Did not work'},
+      ],
+    );
+
+    let caught = false;
+    await client.get({path: '/url/path'}).then(() => fail('Expected request to fail')).catch((error) => {
+      caught = true;
+      expect(error).toBeInstanceOf(ShopifyErrors.HttpInternalError);
+      expect(error.message).toEqual(
+        `Shopify internal error:` +
+        `\n{` +
+        `\n  "title": "Invalid title",` +
+        `\n  "description": "Invalid description"` +
+        `\n}`,
+      );
+    });
+    expect(caught).toEqual(true);
+    assertHttpRequest({method: 'GET', domain, path: '/url/path'});
+  });
 });
 
 function setRestClientRetryTime(time: number) {
