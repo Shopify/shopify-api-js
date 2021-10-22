@@ -1,6 +1,6 @@
 {
   "name": "@shopify/shopify-api",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

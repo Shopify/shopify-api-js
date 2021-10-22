@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [1.4.3] - 2021-10-22
+
 ### Fixed
 
 - Fixed the HTTP client error messages to expand objects [#252](https://github.com/Shopify/shopify-node-api/pull/252)
