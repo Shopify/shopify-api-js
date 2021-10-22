@@ -223,7 +223,7 @@ class HttpClient {
         } else {
           const errorMessages: string[] = [];
           if (body.errors) {
-            errorMessages.push(body.errors);
+            errorMessages.push(JSON.stringify(body.errors, null, 2));
           }
           if (response.headers && response.headers.get('x-request-id')) {
             errorMessages.push(
@@ -234,7 +234,7 @@ class HttpClient {
           }
 
           const errorMessage = errorMessages.length
-            ? `: ${errorMessages.join('. ')}`
+            ? `:\n${errorMessages.join('\n')}`
             : '';
           switch (true) {
             case response.status === StatusCode.TooManyRequests: {
