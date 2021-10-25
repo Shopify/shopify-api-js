@@ -56,10 +56,10 @@ const ShopifyOAuth = {
 
     const session = new Session(
       isOnline ? uuidv4() : this.getOfflineSessionId(shop),
+      shop,
+      state,
+      isOnline,
     );
-    session.shop = shop;
-    session.state = state;
-    session.isOnline = isOnline;
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(session);
 
@@ -173,7 +173,9 @@ const ShopifyOAuth = {
         );
         const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
 
-        const sessionDeleted = await Context.SESSION_STORAGE.deleteSession(currentSession.id);
+        const sessionDeleted = await Context.SESSION_STORAGE.deleteSession(
+          currentSession.id,
+        );
         if (!sessionDeleted) {
           throw new ShopifyErrors.SessionStorageError(
             'OAuth Session could not be deleted. Please check your session storage functionality.',
@@ -195,7 +197,9 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    const sessionStored = await Context.SESSION_STORAGE.storeSession(currentSession);
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(
+      currentSession,
+    );
     if (!sessionStored) {
       throw new ShopifyErrors.SessionStorageError(
         'OAuth Session could not be saved. Please check your session storage functionality.',
