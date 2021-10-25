@@ -6,7 +6,9 @@ import * as ShopifyErrors from '../../../error';
 export class CustomSessionStorage implements SessionStorage {
   constructor(
     readonly storeCallback: (session: SessionInterface) => Promise<boolean>,
-    readonly loadCallback: (id: string) => Promise<SessionInterface | Record<string, unknown> | undefined>,
+    readonly loadCallback: (
+      id: string,
+    ) => Promise<SessionInterface | Record<string, unknown> | undefined>,
     readonly deleteCallback: (id: string) => Promise<boolean>,
   ) {
     this.storeCallback = storeCallback;
@@ -47,7 +49,7 @@ export class CustomSessionStorage implements SessionStorage {
           result.state as string,
           result.isOnline as boolean,
         );
-        session = {...session, ...result as SessionInterface};
+        session = {...session, ...(result as SessionInterface)};
 
         if (session.expires && typeof session.expires === 'string') {
           session.expires = new Date(session.expires);
@@ -56,7 +58,9 @@ export class CustomSessionStorage implements SessionStorage {
         return session as SessionInterface;
       } else {
         throw new ShopifyErrors.SessionStorageError(
-          `Expected return to be instanceof Session, but received instanceof ${result!.constructor.name}.`,
+          `Expected return to be instanceof Session, but received instanceof ${
+            result!.constructor.name
+          }.`,
         );
       }
     } else {

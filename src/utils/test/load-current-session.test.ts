@@ -40,8 +40,15 @@ describe('loadCurrentSession', () => {
 
     const cookieId = '1234-this-is-a-cookie-session-id';
 
-    const session = new Session(cookieId, 'test-shop.myshopify.io', 'state', true);
-    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
+    const session = new Session(
+      cookieId,
+      'test-shop.myshopify.io',
+      'state',
+      true,
+    );
+    await expect(
+      Context.SESSION_STORAGE.storeSession(session),
+    ).resolves.toEqual(true);
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -64,7 +71,9 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -72,8 +81,15 @@ describe('loadCurrentSession', () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`, 'test-shop.myshopify.io', 'state', true);
-    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
+    const session = new Session(
+      `test-shop.myshopify.io_${jwtPayload.sub}`,
+      'test-shop.myshopify.io',
+      'state',
+      true,
+    );
+    await expect(
+      Context.SESSION_STORAGE.storeSession(session),
+    ).resolves.toEqual(true);
 
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });
@@ -92,7 +108,9 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -114,7 +132,9 @@ describe('loadCurrentSession', () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
+    await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(
+      ShopifyErrors.MissingJwtTokenError,
+    );
   });
 
   it('falls back to the cookie session for embedded apps', async () => {
@@ -130,8 +150,15 @@ describe('loadCurrentSession', () => {
 
     const cookieId = '1234-this-is-a-cookie-session-id';
 
-    const session = new Session(cookieId, 'test-shop.myshopify.io', 'state', true);
-    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
+    const session = new Session(
+      cookieId,
+      'test-shop.myshopify.io',
+      'state',
+      true,
+    );
+    await expect(
+      Context.SESSION_STORAGE.storeSession(session),
+    ).resolves.toEqual(true);
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -147,8 +174,15 @@ describe('loadCurrentSession', () => {
 
     const cookieId = ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io');
 
-    const session = new Session(cookieId, 'test-shop.myshopify.io', 'state', false);
-    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
+    const session = new Session(
+      cookieId,
+      'test-shop.myshopify.io',
+      'state',
+      false,
+    );
+    await expect(
+      Context.SESSION_STORAGE.storeSession(session),
+    ).resolves.toEqual(true);
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -159,7 +193,9 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -173,7 +209,9 @@ describe('loadCurrentSession', () => {
       'state',
       false,
     );
-    await expect(Context.SESSION_STORAGE.storeSession(session)).resolves.toEqual(true);
+    await expect(
+      Context.SESSION_STORAGE.storeSession(session),
+    ).resolves.toEqual(true);
 
     await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
   });

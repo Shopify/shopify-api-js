@@ -1,4 +1,3 @@
-
 class AuthScopes {
   public static SCOPE_DELIMITER = ',';
 
@@ -8,19 +7,25 @@ class AuthScopes {
   constructor(scopes: string | string[] | undefined) {
     let scopesArray: string[] = [];
     if (typeof scopes === 'string') {
-      scopesArray = scopes.split(new RegExp(`${AuthScopes.SCOPE_DELIMITER}\\s*`));
+      scopesArray = scopes.split(
+        new RegExp(`${AuthScopes.SCOPE_DELIMITER}\\s*`),
+      );
     } else if (scopes) {
       scopesArray = scopes;
     }
 
-    scopesArray = scopesArray.map((scope) => scope.trim()).filter((scope) => scope.length);
+    scopesArray = scopesArray
+      .map((scope) => scope.trim())
+      .filter((scope) => scope.length);
 
     const impliedScopes = this.getImpliedScopes(scopesArray);
 
     const scopeSet = new Set(scopesArray);
     const impliedSet = new Set(impliedScopes);
 
-    this.compressedScopes = new Set([...scopeSet].filter((x) => !impliedSet.has(x)));
+    this.compressedScopes = new Set(
+      [...scopeSet].filter((x) => !impliedSet.has(x)),
+    );
     this.expandedScopes = new Set([...scopeSet, ...impliedSet]);
   }
 
@@ -33,7 +38,9 @@ class AuthScopes {
       other = new AuthScopes(scope);
     }
 
-    return other.toArray().filter((x) => !this.expandedScopes.has(x)).length === 0;
+    return (
+      other.toArray().filter((x) => !this.expandedScopes.has(x)).length === 0
+    );
   }
 
   public equals(otherScopes: string | string[] | AuthScopes | undefined) {

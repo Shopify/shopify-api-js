@@ -58,14 +58,19 @@ describe('GraphQL proxy with session', () => {
     const session = new Session(`shop.myshopify.com_${jwtPayload.sub}`, shop, 'state', true);
     session.accessToken = accessToken;
     await Context.SESSION_STORAGE.storeSession(session);
-    token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
   });
 
   it('can forward query and return response', async () => {
     const app = express();
     app.post('/proxy', graphqlProxy);
 
-    fetchMock.mockResponses(JSON.stringify(successResponse), JSON.stringify(successResponse));
+    fetchMock.mockResponses(
+      JSON.stringify(successResponse),
+      JSON.stringify(successResponse),
+    );
 
     const firstResponse = await request(app)
       .post('/proxy')
@@ -113,7 +118,9 @@ describe('GraphQL proxy', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+      algorithm: 'HS256',
+    });
     const req = {
       headers: {
         authorization: `Bearer ${token}`,

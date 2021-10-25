@@ -20,13 +20,17 @@ export default async function withSession({
   let session: Session | undefined;
   if (isOnline) {
     if (!req || !res) {
-      throw new ShopifyErrors.MissingRequiredArgument('Please pass in both the "request" and "response" objects.');
+      throw new ShopifyErrors.MissingRequiredArgument(
+        'Please pass in both the "request" and "response" objects.',
+      );
     }
 
     session = await loadCurrentSession(req, res);
   } else {
     if (!shop) {
-      throw new ShopifyErrors.MissingRequiredArgument('Please pass in a value for "shop"');
+      throw new ShopifyErrors.MissingRequiredArgument(
+        'Please pass in a value for "shop"',
+      );
     }
 
     session = await loadOfflineSession(shop);
@@ -35,7 +39,9 @@ export default async function withSession({
   if (!session) {
     throw new ShopifyErrors.SessionNotFound('No session found.');
   } else if (!session.accessToken) {
-    throw new ShopifyErrors.InvalidSession('Requested session does not contain an accessToken.');
+    throw new ShopifyErrors.InvalidSession(
+      'Requested session does not contain an accessToken.',
+    );
   }
 
   let client: RestClient | GraphqlClient;

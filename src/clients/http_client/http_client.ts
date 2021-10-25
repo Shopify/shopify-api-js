@@ -66,7 +66,9 @@ class HttpClient {
   protected async request(params: RequestParams): Promise<RequestReturn> {
     const maxTries = params.tries ? params.tries : 1;
     if (maxTries <= 0) {
-      throw new ShopifyErrors.HttpRequestError(`Number of tries must be >= 0, got ${maxTries}`);
+      throw new ShopifyErrors.HttpRequestError(
+        `Number of tries must be >= 0, got ${maxTries}`,
+      );
     }
 
     let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
@@ -97,7 +99,10 @@ class HttpClient {
             body = typeof data === 'string' ? data : JSON.stringify(data);
             break;
           case DataType.URLEncoded:
-            body = typeof data === 'string' ? data : querystring.stringify(data as ParsedUrlQueryInput);
+            body =
+              typeof data === 'string'
+                ? data
+                : querystring.stringify(data as ParsedUrlQueryInput);
             break;
           case DataType.GraphQL:
             body = data as string;
@@ -111,7 +116,9 @@ class HttpClient {
       }
     }
 
-    const queryString = params.query ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}` : '';
+    const queryString = params.query
+      ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}`
+      : '';
 
     const url = `https://${this.domain}${params.path}${queryString}`;
     const options: RequestInit = {
@@ -134,7 +141,10 @@ class HttpClient {
           // We're not out of tries yet, use them
           if (tries < maxTries) {
             let waitTime = HttpClient.RETRY_WAIT_TIME;
-            if (error instanceof ShopifyErrors.HttpThrottlingError && error.retryAfter) {
+            if (
+              error instanceof ShopifyErrors.HttpThrottlingError &&
+              error.retryAfter
+            ) {
               waitTime = error.retryAfter * 1000;
             }
             await sleep(waitTime);
@@ -156,26 +166,38 @@ class HttpClient {
 
     // We're never supposed to come this far, this is here only for the benefit of Typescript
     /* istanbul ignore next */
-    throw new ShopifyErrors.ShopifyError(`Unexpected flow, reached maximum HTTP tries but did not throw an error`);
+    throw new ShopifyErrors.ShopifyError(
+      `Unexpected flow, reached maximum HTTP tries but did not throw an error`,
+    );
   }
 
-  private async doRequest(url: string, options: RequestInit): Promise<RequestReturn> {
+  private async doRequest(
+    url: string,
+    options: RequestInit,
+  ): Promise<RequestReturn> {
     return fetch(url, options)
       .then(async (response: Response) => {
         const body = await response.json();
 
         if (response.ok) {
-          if (response.headers && response.headers.has('X-Shopify-API-Deprecated-Reason')) {
+          if (
+            response.headers &&
+            response.headers.has('X-Shopify-API-Deprecated-Reason')
+          ) {
             const deprecation = {
               message: response.headers.get('X-Shopify-API-Deprecated-Reason'),
               path: url,
             };
 
-            const depHash = crypto.createHash('md5').update(JSON.stringify(deprecation)).digest('hex');
+            const depHash = crypto
+              .createHash('md5')
+              .update(JSON.stringify(deprecation))
+              .digest('hex');
 
             if (
               !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
-              Date.now() - this.LOGGED_DEPRECATIONS[depHash] >= HttpClient.DEPRECATION_ALERT_DELAY
+              Date.now() - this.LOGGED_DEPRECATIONS[depHash] >=
+                HttpClient.DEPRECATION_ALERT_DELAY
             ) {
               this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
@@ -184,7 +206,10 @@ class HttpClient {
                 const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
                   deprecation,
                 )}\n    Stack Trace: ${stack}\n`;
-                fs.writeFileSync(Context.LOG_FILE, log, {flag: 'a', encoding: 'utf-8'});
+                fs.writeFileSync(Context.LOG_FILE, log, {
+                  flag: 'a',
+                  encoding: 'utf-8',
+                });
               } else {
                 console.warn('API Deprecation Notice:', deprecation);
               }
@@ -202,11 +227,15 @@ class HttpClient {
           }
           if (response.headers && response.headers.get('x-request-id')) {
             errorMessages.push(
-              `If you report this error, please include this id: ${response.headers.get('x-request-id')}`,
+              `If you report this error, please include this id: ${response.headers.get(
+                'x-request-id',
+              )}`,
             );
           }
 
-          const errorMessage = errorMessages.length ? `: ${errorMessages.join('. ')}` : '';
+          const errorMessage = errorMessages.length
+            ? `: ${errorMessages.join('. ')}`
+            : '';
           switch (true) {
             case response.status === StatusCode.TooManyRequests: {
               const retryAfter = response.headers.get('Retry-After');
@@ -216,7 +245,9 @@ class HttpClient {
               );
             }
             case response.status >= StatusCode.InternalServerError:
-              throw new ShopifyErrors.HttpInternalError(`Shopify internal error${errorMessage}`);
+              throw new ShopifyErrors.HttpInternalError(
+                `Shopify internal error${errorMessage}`,
+              );
             default:
               throw new ShopifyErrors.HttpResponseError(
                 `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
@@ -230,7 +261,9 @@ class HttpClient {
         if (error instanceof ShopifyErrors.ShopifyError) {
           throw error;
         } else {
-          throw new ShopifyErrors.HttpRequestError(`Failed to make Shopify HTTP request: ${error}`);
+          throw new ShopifyErrors.HttpRequestError(
+            `Failed to make Shopify HTTP request: ${error}`,
+          );
         }
       });
   }

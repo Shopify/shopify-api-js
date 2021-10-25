@@ -4,6 +4,7 @@ export interface AuthQuery {
   timestamp: string;
   state: string;
   shop: string;
+  host?: string;
   hmac?: string;
 }
 
