@@ -22,6 +22,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - Don't include extra params when calculating local hmac [#196](https://github.com/Shopify/shopify-node-api/pull/196)
 - [Breaking] Return and delete session in `validateAuthCallback` [#217](https://github.com/Shopify/shopify-node-api/pull/217)
 - [Breaking] Extract `addHandler` and `getHandler` methods for webhooks out of `register` [#205](https://github.com/Shopify/shopify-node-api/pull/205)
+- [Breaking] Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+- Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+- Allow `undefined` in `AuthScopes` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
 
 ## [1.4.0] - 2021-05-21
 
@@ -36,12 +39,6 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - Added Storefront API client under `Shopify.Clients.Storefront`
 - Add `isActive()` method to `Session` class to check if session is active, replace `Session` with `SessionInterface` when used as a type [#153](https://github.com/Shopify/shopify-node-api/pull/153)
-- Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
-
-### Fixed
-
-- Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-node-api/pull/169)
-- Allow `undefined` in `AuthScopes` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
 
 ## [1.2.1] - 2021-03-26
 
