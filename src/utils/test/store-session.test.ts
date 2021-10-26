@@ -36,7 +36,7 @@ describe('storeSession', () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`);
+    const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`, 'test-shop.myshopify.io', 'state', false);
     await storeSession(session);
 
     let loadedSession = await loadCurrentSession(req, res);

@@ -4,9 +4,9 @@ export interface SessionInterface {
   readonly id: string;
   shop: string;
   state: string;
-  scope: string;
+  isOnline: boolean;
+  scope?: string;
   expires?: Date;
-  isOnline?: boolean;
   accessToken?: string;
   onlineAccessInfo?: OnlineAccessInfo;
   isActive(): boolean;

@@ -55,8 +55,7 @@ describe('GraphQL proxy with session', () => {
       sid: 'abc123',
     };
 
-    const session = new Session(`shop.myshopify.com_${jwtPayload.sub}`);
-    session.shop = shop;
+    const session = new Session(`shop.myshopify.com_${jwtPayload.sub}`, shop, 'state', true);
     session.accessToken = accessToken;
     await Context.SESSION_STORAGE.storeSession(session);
     token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
@@ -128,7 +127,7 @@ describe('GraphQL proxy', () => {
       },
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
-    const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`);
+    const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`, shop, 'state', true);
     Context.SESSION_STORAGE.storeSession(session);
 
     await expect(graphqlProxy(req, res)).rejects.toThrow(InvalidSession);

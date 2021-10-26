@@ -14,7 +14,7 @@ describe('loadOfflineSession', () => {
 
   it('loads offline sessions by shop', async () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
-    const offlineSession = new Session(offlineId);
+    const offlineSession = new Session(offlineId, shop, 'state', false);
     Context.SESSION_STORAGE.storeSession(offlineSession);
 
     expect(await loadOfflineSession(shop)).toBe(offlineSession);
@@ -22,7 +22,7 @@ describe('loadOfflineSession', () => {
 
   it('returns undefined for expired sessions by default', async () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
-    const offlineSession = new Session(offlineId);
+    const offlineSession = new Session(offlineId, shop, 'state', false);
     offlineSession.expires = new Date('2020-01-01');
     Context.SESSION_STORAGE.storeSession(offlineSession);
 
@@ -31,7 +31,7 @@ describe('loadOfflineSession', () => {
 
   it('returns expired sessions when includeExpired is true', async () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
-    const offlineSession = new Session(offlineId);
+    const offlineSession = new Session(offlineId, shop, 'state', false);
     offlineSession.expires = new Date('2020-01-01');
     Context.SESSION_STORAGE.storeSession(offlineSession);
 
