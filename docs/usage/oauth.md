@@ -8,43 +8,46 @@ To do that, you can follow the steps below.
 
 The route for starting the OAuth process (in this case `/login`) will use the library's `beginAuth` method. The method will return a URI that will be used for redirecting the user to the Shopify Authentication screen.
 
-| Parameter | Type | Required? | Default Value | Notes |
-| --- | --- | :---: | :---: | --- |
-| `request` | `http.IncomingMessage` | Yes | - | The HTTP Request. |
-| `response` | `http.ServerResponse` | Yes | - | The HTTP Response. |
-| `shop` | `string` | Yes | - | A Shopify domain name in the form `{exampleshop}.myshopify.com`. |
-| `redirectPath` | `string` | Yes | - | The redirect path used for callback with a leading `/`. The route should be allowed under the app settings. |
-| `isOnline` | `bool` | No | `true` | `true` if the session is online and `false` otherwise. |
-
+| Parameter      | Type                   | Required? | Default Value | Notes                                                                                                       |
+| -------------- | ---------------------- | :-------: | :-----------: | ----------------------------------------------------------------------------------------------------------- |
+| `request`      | `http.IncomingMessage` |    Yes    |       -       | The HTTP Request.                                                                                           |
+| `response`     | `http.ServerResponse`  |    Yes    |       -       | The HTTP Response.                                                                                          |
+| `shop`         | `string`               |    Yes    |       -       | A Shopify domain name in the form `{exampleshop}.myshopify.com`.                                            |
+| `redirectPath` | `string`               |    Yes    |       -       | The redirect path used for callback with a leading `/`. The route should be allowed under the app settings. |
+| `isOnline`     | `bool`                 |    No     |    `true`     | `true` if the session is online and `false` otherwise.                                                      |
 
 <details>
 <summary>Node.js</summary>
 
 ```typescript
-  } // end of if(pathName === '/')
-
-  if (pathName === '/login') {
+switch (pathName) {
+  case '/login':
     // process login action
     try {
-      const authRoute = await Shopify.Auth.beginAuth(request, response, SHOP, '/auth/callback', false);
+      const authRoute = await Shopify.Auth.beginAuth(
+        request,
+        response,
+        SHOP,
+        '/auth/callback',
+        false,
+      );
 
-      response.writeHead(302, { 'Location': authRoute });
+      response.writeHead(302, {Location: authRoute});
       response.end();
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
 
       response.writeHead(500);
       if (e instanceof Shopify.Errors.ShopifyError) {
         response.end(e.message);
-      }
-      else {
+      } else {
         response.end(`Failed to complete OAuth process: ${e.message}`);
       }
     }
-    return;
-  } // end of if (pathName === '/login')
-} // end of onRequest()
+    break;
+  // end of if (pathName === '/login')
+  default:
+}
 
 http.createServer(onRequest).listen(3000);
 ```
@@ -56,7 +59,13 @@ http.createServer(onRequest).listen(3000);
 
 ```ts
 app.get('/login', async (req, res) => {
-  let authRoute = await Shopify.Auth.beginAuth(req, res, SHOP, '/auth/callback', false);
+  let authRoute = await Shopify.Auth.beginAuth(
+    req,
+    res,
+    SHOP,
+    '/auth/callback',
+    false,
+  );
   return res.redirect(authRoute);
 });
 ```
@@ -65,20 +74,24 @@ app.get('/login', async (req, res) => {
 
 ## Add your OAuth callback route
 
-After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route (which you provided as a parameter to `beginAuth`, above). Your app will now use the provided `validateAuthCallback` method to finalize the OAuth process. This method _has no return value_, so you should `catch` any errors it may throw.
+After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route (which you provided as a parameter to `beginAuth`, above). Your app will now use the provided `validateAuthCallback` method to finalize the OAuth process. This method returns the `session` object.
 
 <details>
 <summary>Node.js</summary>
 
 ```typescript
-  } // end of if (pathName === '/login')
-
-  if (pathName === '/auth/callback') {
+  // end of if (pathName === '/login')
+  case "/auth/callback":
     try {
-      await Shopify.Auth.validateAuthCallback(request, response, query as AuthQuery);
+      const session = await Shopify.Auth.validateAuthCallback(request, response, query as AuthQuery);
+      ACTIVE_SHOPIFY_SHOPS[SHOP] = session.scope;
 
+      console.log(session.accessToken);
       // all good, redirect to '/'
-      response.writeHead(302, { 'Location': '/' });
+      const searchParams = new URLSearchParams(request.url);
+      const host = searchParams.get("host");
+      const shop = searchParams.get("shop");
+      response.writeHead(302, { Location: `/?host=${host}&shop=${shop}` });
       response.end();
     }
     catch (e) {
@@ -92,9 +105,10 @@ After the app is authenticated with Shopify, the Shopify platform will send a re
         response.end(`Failed to complete OAuth process: ${e.message}`);
       }
     }
-    return;
-  } // end of if (pathName === '/auth/callback'')
-}  // end of onRequest()
+    break;
+  // end of if (pathName === '/auth/callback'')
+  default:
+}
 
 http.createServer(onRequest).listen(3000);
 ```
@@ -107,15 +121,17 @@ http.createServer(onRequest).listen(3000);
 ```ts
 app.get('/auth/callback', async (req, res) => {
   try {
-    await Shopify.Auth.validateAuthCallback(
+    const session = await Shopify.Auth.validateAuthCallback(
       req,
       res,
       req.query as unknown as AuthQuery,
     ); // req.query must be cast to unkown and then AuthQuery in order to be accepted
+    ACTIVE_SHOPIFY_SHOPS[SHOP] = session.scope;
+    console.log(session.accessToken);
   } catch (error) {
     console.error(error); // in practice these should be handled more gracefully
   }
-  return res.redirect('/'); // wherever you want your user to end up after OAuth completes
+  return res.redirect(`/?host=${req.query.host}&shop=${req.query.shop}`); // wherever you want your user to end up after OAuth completes
 });
 ```
 

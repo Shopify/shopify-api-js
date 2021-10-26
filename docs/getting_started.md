@@ -111,6 +111,8 @@ First of all, in your `src/index.ts` file, you'll need to set up your applicatio
 
 While setting up `Context`, you'll be able to set [which version of the Admin API](https://shopify.dev/concepts/about-apis/versioning) your app will be using. All supported versions are available in `ApiVersion`, including `'unstable'`. The `Context.API_VERSION` setting will be applied to all requests made by the library.
 
+(See [oauth](./usage/oauth.md#add-your-oauth-callback-route) for use of `ACTIVE_SHOPIFY_SHOPS`)
+
 <details>
   <summary>Node.js</summary>
 
@@ -128,10 +130,14 @@ Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
-  HOST_NAME: HOST,
+  HOST_NAME: process.env.HOST.replace(/https:\/\//, ""),
   IS_EMBEDDED_APP: {boolean},
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 });
+
+// Storing the currently active shops in memory will force them to re-login when your server restarts. You should
+// persist this object in your app.
+const ACTIVE_SHOPIFY_SHOPS: { [key: string]: string | undefined } = {};
 ```
 
 You will also need to set up a basic router to be able to process requests:
@@ -146,21 +152,19 @@ async function onRequest(
   const queryString: string = String(url.parse(req_url).query);
   const query: Record<string, any> = querystring.parse(queryString);
 
-  if (pathName === '/') {
-    // check if we're logged in/authorized
-    const currentSession = await Shopify.Utils.loadCurrentSession(
-      request,
-      response,
-    );
-    if (!currentSession) {
-      // not logged in, redirect to login
-      response.writeHead(302, {Location: `/login`});
-      response.end();
-    } else {
-      // do something amazing with your application!
-    }
-    return;
-  } // end of if(pathName === '/')
+  switch (pathName) {
+    default:
+      // This shop hasn't been seen yet, go through OAuth to create a session
+      if (ACTIVE_SHOPIFY_SHOPS[SHOP] === undefined) {
+        // not logged in, redirect to login
+        response.writeHead(302, {Location: `/login`});
+        response.end();
+      } else {
+        response.write('Hello world!');
+        // Load your app skeleton page with App Bridge, and do something amazing!
+      }
+      return;
+  } // end of default path
 } // end of onRequest()
 
 http.createServer(onRequest).listen(3000);
@@ -185,12 +189,27 @@ Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
-  HOST_NAME: HOST,
+  HOST_NAME: process.env.HOST.replace(/https:\/\//, ""),
   IS_EMBEDDED_APP: {boolean},
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 });
+// Storing the currently active shops in memory will force them to re-login when your server restarts. You should
+// persist this object in your app.
+const ACTIVE_SHOPIFY_SHOPS: { [key: string]: string | undefined } = {};
 
 // the rest of the example code goes here
+
+app.get("/", async (req, res) => {
+   // This shop hasn't been seen yet, go through OAuth to create a session
+  if (ACTIVE_SHOPIFY_SHOPS[SHOP] === undefined) {
+     // not logged in, redirect to login
+    res.redirect(`/login`);
+  } else {
+    res.send("Hello world!");
+    // Load your app skeleton page with App Bridge, and do something amazing!
+    response.end();
+  }
+});
 
 app.listen(3000, () => {
   console.log('your app is now listening on port 3000');
