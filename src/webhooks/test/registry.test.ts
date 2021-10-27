@@ -657,27 +657,25 @@ describe('ShopifyWebhooks.Registry.addHandlers', () => {
 
   it('adds two unique handlers to the webhook registry', async () => {
     await ShopifyWebhooks.Registry.addHandlers(
-      ['PRODUCTS_CREATE', 'PRODUCTS'],
-      [
-      {path: '/webhooks', webhookHandler: genericWebhookHandler},
-      {path: '/webhooks', webhookHandler: genericWebhookHandler},
-      ],
+      {
+        PRODUCTS_CREATE: {path: '/webhooks', webhookHandler: genericWebhookHandler},
+        PRODUCTS: {path: '/webhooks', webhookHandler: genericWebhookHandler},
+      },
     );
     expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(2);
     expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toEqual(['PRODUCTS_CREATE', 'PRODUCTS']);
   });
 
   it('adds multiple handlers with duplicates', async () => {
+    await ShopifyWebhooks.Registry.addHandler('PRODUCTS', {path: '/webhooks', webhookHandler: genericWebhookHandler});
     await ShopifyWebhooks.Registry.addHandlers(
-      ['PRODUCTS_CREATE', 'PRODUCTS', 'PRODUCTS'],
-      [
-        {path: '/webhooks', webhookHandler: genericWebhookHandler},
-        {path: '/newpath', webhookHandler: genericWebhookHandler},
-        {path: '/newerpath', webhookHandler: genericWebhookHandler},
-      ],
+      {
+        PRODUCTS_CREATE: {path: '/webhooks', webhookHandler: genericWebhookHandler},
+        PRODUCTS: {path: '/newerpath', webhookHandler: genericWebhookHandler},
+      },
     );
     expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(2);
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toEqual(['PRODUCTS_CREATE', 'PRODUCTS']);
+    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry).sort()).toEqual(['PRODUCTS_CREATE', 'PRODUCTS'].sort());
     expect(ShopifyWebhooks.Registry.webhookRegistry.PRODUCTS.path).toBe('/newerpath');
   });
 });

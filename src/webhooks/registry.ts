@@ -19,6 +19,10 @@ import {
   ShortenedRegisterOptions,
 } from './types';
 
+interface AddHandlersProps {
+  [topic: string]: WebhookRegistryEntry;
+}
+
 interface RegistryInterface {
   webhookRegistry: {[topic: string]: WebhookRegistryEntry;};
 
@@ -33,10 +37,9 @@ interface RegistryInterface {
   /**
    * Sets a list of handlers for the given topics using the `addHandler` function
    *
-   * @param topics Array of topic strings used to add a handler
-   * @param webhookRegistryEntries Array of the webhookRegistryEntry interface
+   * @param handlers Object in format {topic: WebhookRegistryEntry}
    */
-  addHandlers(topics: string[], webhookRegistryEntries: WebhookRegistryEntry[]): void;
+  addHandlers(handlers: AddHandlersProps): void;
 
   /**
    * Fetches the handler for the given topic. Returns null if no handler was registered.
@@ -244,9 +247,11 @@ const WebhooksRegistry: RegistryInterface = {
     WebhooksRegistry.webhookRegistry[topic] = {path, webhookHandler};
   },
 
-  addHandlers(topic: string[], webhookRegistryEntries: WebhookRegistryEntry[]): void {
-    for (let i = 0, topicsLength = webhookRegistryEntries.length; i < topicsLength; i++) {
-      WebhooksRegistry.addHandler(topic[i], webhookRegistryEntries[i]);
+  addHandlers(handlers: AddHandlersProps): void {
+    for (const topic in handlers) {
+      if ({}.hasOwnProperty.call(handlers, topic)) {
+        WebhooksRegistry.addHandler(topic, handlers[topic]);
+      }
     }
   },
 
