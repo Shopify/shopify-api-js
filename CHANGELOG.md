@@ -7,6 +7,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [2.0.0] - 2021-10-28
+
+### Added
+
 - Add a 5 second `clockTolerance` to fix `jwt not active` error [#227](https://github.com/Shopify/shopify-node-api/pull/227)
 - [Breaking] Change default for OAuth.beginAuth to online sessions [#203](https://github.com/Shopify/shopify-node-api/pull/203)
   - see [oauth.md](https://github.com/Shopify/shopify-node-api/blob/main/docs/usage/oauth.md) for updated docs
