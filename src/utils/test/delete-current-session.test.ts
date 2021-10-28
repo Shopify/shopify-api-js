@@ -40,7 +40,12 @@ describe('deleteCurrenSession', () => {
 
     const cookieId = '1234-this-is-a-cookie-session-id';
 
-    const session = new Session(cookieId);
+    const session = new Session(
+      cookieId,
+      'test-shop.myshopify.io',
+      'state',
+      true,
+    );
     await expect(
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
@@ -65,7 +70,12 @@ describe('deleteCurrenSession', () => {
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
 
-    const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`);
+    const session = new Session(
+      `test-shop.myshopify.io_${jwtPayload.sub}`,
+      'test-shop.myshopify.io',
+      'state',
+      true,
+    );
     await expect(
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
@@ -83,7 +93,12 @@ describe('deleteCurrenSession', () => {
 
     const cookieId = ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io');
 
-    const session = new Session(cookieId);
+    const session = new Session(
+      cookieId,
+      'test-shop.myshopify.io',
+      'state',
+      false,
+    );
     await expect(
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
@@ -110,6 +125,9 @@ describe('deleteCurrenSession', () => {
 
     const session = new Session(
       ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io'),
+      'test-shop.myshopify.io',
+      'state',
+      false,
     );
     await expect(
       Context.SESSION_STORAGE.storeSession(session),

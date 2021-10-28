@@ -1,16 +1,17 @@
+
 class AuthScopes {
   public static SCOPE_DELIMITER = ',';
 
   private compressedScopes: Set<string>;
   private expandedScopes: Set<string>;
 
-  constructor(scopes: string | string[]) {
+  constructor(scopes: string | string[] | undefined) {
     let scopesArray: string[] = [];
     if (typeof scopes === 'string') {
       scopesArray = scopes.split(
         new RegExp(`${AuthScopes.SCOPE_DELIMITER}\\s*`),
       );
-    } else {
+    } else if (scopes) {
       scopesArray = scopes;
     }
 
@@ -29,7 +30,7 @@ class AuthScopes {
     this.expandedScopes = new Set([...scopeSet, ...impliedSet]);
   }
 
-  public has(scope: string | string[] | AuthScopes) {
+  public has(scope: string | string[] | AuthScopes | undefined) {
     let other: AuthScopes;
 
     if (scope instanceof AuthScopes) {
@@ -43,7 +44,7 @@ class AuthScopes {
     );
   }
 
-  public equals(otherScopes: string | string[] | AuthScopes) {
+  public equals(otherScopes: string | string[] | AuthScopes | undefined) {
     let other: AuthScopes;
 
     if (otherScopes instanceof AuthScopes) {

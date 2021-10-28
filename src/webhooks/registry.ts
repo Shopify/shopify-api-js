@@ -16,17 +16,56 @@ import {
   WebhookRegistryEntry,
   WebhookCheckResponse,
   WebhookCheckResponseLegacy,
+  ShortenedRegisterOptions,
 } from './types';
 
+interface AddHandlersProps {
+  [topic: string]: WebhookRegistryEntry;
+}
+
 interface RegistryInterface {
-  webhookRegistry: WebhookRegistryEntry[];
+  webhookRegistry: {[topic: string]: WebhookRegistryEntry;};
+
+  /**
+   * Sets the handler for the given topic. If a handler was previously set for the same topic, it will be overridden.
+   *
+   * @param topic String used to add a handler
+   * @param options Paramters to add a handler which are path and webHookHandler
+   */
+  addHandler(topic: string, options: WebhookRegistryEntry): void;
+
+  /**
+   * Sets a list of handlers for the given topics using the `addHandler` function
+   *
+   * @param handlers Object in format {topic: WebhookRegistryEntry}
+   */
+  addHandlers(handlers: AddHandlersProps): void;
+
+  /**
+   * Fetches the handler for the given topic. Returns null if no handler was registered.
+   *
+   * @param topic The topic to check
+   */
+  getHandler(topic: string): WebhookRegistryEntry | null;
+
+  /**
+   * Gets all topics
+   */
+  getTopics(): string[];
 
   /**
    * Registers a Webhook Handler function for a given topic.
    *
-   * @param options Parameters to register a handler, including topic, listening address, handler function
+   * @param options Parameters to register a handler, including topic, listening address, delivery method
    */
   register(options: RegisterOptions): Promise<RegisterReturn>;
+
+  /**
+   * Registers multiple Webhook Handler functions.
+   *
+   * @param options Parameters to register a handler, including topic, listening address, delivery method
+   */
+  registerAll(options: ShortenedRegisterOptions): Promise<RegisterReturn>;
 
   /**
    * Processes the webhook request received from the Shopify API
@@ -202,7 +241,27 @@ function buildQuery(
 }
 
 const WebhooksRegistry: RegistryInterface = {
-  webhookRegistry: [],
+  webhookRegistry: {},
+
+  addHandler(topic: string, {path, webhookHandler}: WebhookRegistryEntry): void {
+    WebhooksRegistry.webhookRegistry[topic] = {path, webhookHandler};
+  },
+
+  addHandlers(handlers: AddHandlersProps): void {
+    for (const topic in handlers) {
+      if ({}.hasOwnProperty.call(handlers, topic)) {
+        WebhooksRegistry.addHandler(topic, handlers[topic]);
+      }
+    }
+  },
+
+  getHandler(topic: string): WebhookRegistryEntry | null {
+    return topic in WebhooksRegistry.webhookRegistry ? WebhooksRegistry.webhookRegistry[topic] : null;
+  },
+
+  getTopics(): string[] {
+    return Object.keys(WebhooksRegistry.webhookRegistry);
+  },
 
   async register({
     path,
@@ -210,8 +269,8 @@ const WebhooksRegistry: RegistryInterface = {
     accessToken,
     shop,
     deliveryMethod = DeliveryMethod.Http,
-    webhookHandler,
   }: RegisterOptions): Promise<RegisterReturn> {
+    const registerReturn: RegisterReturn = {};
     validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
     const address =
@@ -241,28 +300,47 @@ const WebhooksRegistry: RegistryInterface = {
       }
     }
 
-    let success: boolean;
-    let body: unknown;
     if (mustRegister) {
       const result = await client.query({
         data: buildQuery(topic, address, deliveryMethod, webhookId),
       });
-
-      success = isSuccess(result.body, deliveryMethod, webhookId);
-      body = result.body;
+      registerReturn[topic] = {
+        success: isSuccess(result.body, deliveryMethod, webhookId),
+        result: result.body,
+      };
     } else {
-      success = true;
-      body = {};
+      registerReturn[topic] = {
+        success: true,
+        result: {},
+      };
     }
+    return registerReturn;
+  },
 
-    if (success) {
-      // Remove this topic from the registry if it is already there
-      WebhooksRegistry.webhookRegistry =
-        WebhooksRegistry.webhookRegistry.filter((item) => item.topic !== topic);
-      WebhooksRegistry.webhookRegistry.push({path, topic, webhookHandler});
+  async registerAll({
+    accessToken,
+    shop,
+    deliveryMethod = DeliveryMethod.Http,
+  }: ShortenedRegisterOptions): Promise<RegisterReturn> {
+    let registerReturn = {};
+    const topics = WebhooksRegistry.getTopics();
+
+    for (const topic of topics) {
+      const handler = WebhooksRegistry.getHandler(topic);
+      if (handler) {
+        const {path} = handler;
+        const webhook: RegisterOptions = {
+          path,
+          topic,
+          accessToken,
+          shop,
+          deliveryMethod,
+        };
+        const returnedRegister: RegisterReturn = await WebhooksRegistry.register(webhook);
+        registerReturn = {...registerReturn, ...returnedRegister};
+      }
     }
-
-    return {success, result: body};
+    return registerReturn;
   },
 
   async process(
@@ -336,12 +414,8 @@ const WebhooksRegistry: RegistryInterface = {
           .digest('base64');
 
         if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
-          const graphqlTopic = (topic as string)
-            .toUpperCase()
-            .replace(/\//g, '_');
-          const webhookEntry = WebhooksRegistry.webhookRegistry.find(
-            (entry) => entry.topic === graphqlTopic,
-          );
+          const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
+          const webhookEntry = WebhooksRegistry.getHandler(graphqlTopic);
 
           if (webhookEntry) {
             try {
@@ -382,9 +456,12 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   isWebhookPath(path: string): boolean {
-    return Boolean(
-      WebhooksRegistry.webhookRegistry.find((entry) => entry.path === path),
-    );
+    for (const key in WebhooksRegistry.webhookRegistry) {
+      if (WebhooksRegistry.webhookRegistry[key].path === path) {
+        return true;
+      }
+    }
+    return false;
   },
 };
 

@@ -41,16 +41,21 @@ export class CustomSessionStorage implements SessionStorage {
           result.expires = new Date(result.expires);
         }
 
-        return result;
+        return result as SessionInterface;
       } else if (result instanceof Object && 'id' in result) {
-        let session = new Session(result.id as string);
+        let session = new Session(
+          result.id as string,
+          result.shop as string,
+          result.state as string,
+          result.isOnline as boolean,
+        );
         session = {...session, ...(result as SessionInterface)};
 
         if (session.expires && typeof session.expires === 'string') {
           session.expires = new Date(session.expires);
         }
 
-        return session;
+        return session as SessionInterface;
       } else {
         throw new ShopifyErrors.SessionStorageError(
           `Expected return to be instanceof Session, but received instanceof ${
