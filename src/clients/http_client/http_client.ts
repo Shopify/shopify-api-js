@@ -263,6 +263,8 @@ class HttpClient {
       .catch((error) => {
         if (error instanceof ShopifyErrors.ShopifyError) {
           throw error;
+        } else if (typeof error === 'object' && error.name === 'FetchError' && error.type === 'invalid-json') {
+          throw new ShopifyErrors.HttpRetriableError(`Failed to parse Shopify response as json: ${error}`);
         } else {
           throw new ShopifyErrors.HttpRequestError(
             `Failed to make Shopify HTTP request: ${error}`,

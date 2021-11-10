@@ -297,12 +297,17 @@ describe('HTTP client', () => {
         JSON.stringify({}),
         {status: 500, statusText, headers: {'x-request-id': requestId}},
       ],
+      [
+        '<not a json response>',
+        {status: 500, statusText: 'Did not work'},
+      ],
     );
 
     await testErrorResponse(403, ShopifyErrors.HttpResponseError, true);
     await testErrorResponse(404, ShopifyErrors.HttpResponseError, false);
     await testErrorResponse(429, ShopifyErrors.HttpThrottlingError, true);
     await testErrorResponse(500, ShopifyErrors.HttpInternalError, true);
+    await testErrorResponse(500, ShopifyErrors.HttpRetriableError, false);
 
     fetchMock.mockRejectOnce(() => Promise.reject());
     await testErrorResponse(null, ShopifyErrors.HttpRequestError, false);

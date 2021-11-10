@@ -54,6 +54,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - [Breaking] Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
 - Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-node-api/pull/169)
 - Allow `undefined` in `AuthScopes` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+- Fix transient invalid (non json) response reported as request error instead of retriable erro [#257](https://github.com/Shopify/shopify-node-api/pull/258)
 
 ## [1.4.3] - 2021-10-22
 
