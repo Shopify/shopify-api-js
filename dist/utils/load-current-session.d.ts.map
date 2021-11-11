@@ -1,0 +1,1 @@
+{"version":3,"file":"load-current-session.d.ts","sourceRoot":"","sources":["../../src/utils/load-current-session.ts"],"names":[],"mappings":";AAAA,OAAO,IAAI,MAAM,MAAM,CAAC;AAIxB,OAAO,EAAC,OAAO,EAAC,MAAM,iBAAiB,CAAC;AAExC;;;;;;GAMG;AACH,wBAA8B,kBAAkB,CAC9C,OAAO,EAAE,IAAI,CAAC,eAAe,EAC7B,QAAQ,EAAE,IAAI,CAAC,cAAc,EAC7B,QAAQ,UAAO,GACd,OAAO,CAAC,OAAO,GAAG,SAAS,CAAC,CAa9B"}

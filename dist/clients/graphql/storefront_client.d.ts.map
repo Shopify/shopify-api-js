@@ -1,0 +1,1 @@
+{"version":3,"file":"storefront_client.d.ts","sourceRoot":"","sources":["../../../src/clients/graphql/storefront_client.ts"],"names":[],"mappings":"AAGA,OAAO,EAAC,aAAa,EAAE,iBAAiB,EAAC,MAAM,kBAAkB,CAAC;AAElE,qBAAa,gBAAiB,SAAQ,aAAa;IACjD,SAAS,CAAC,WAAW,SAAU;IAE/B,SAAS,CAAC,oBAAoB,IAAI,iBAAiB;CAQpD"}

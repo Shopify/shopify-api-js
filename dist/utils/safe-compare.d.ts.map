@@ -1,0 +1,1 @@
+{"version":3,"file":"safe-compare.d.ts","sourceRoot":"","sources":["../../src/utils/safe-compare.ts"],"names":[],"mappings":"AAIA;;;;;GAKG;AACH,MAAM,CAAC,OAAO,UAAU,WAAW,CACjC,IAAI,EAAE,MAAM,GAAG,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,GAAG,MAAM,EAAE,GAAG,MAAM,EAAE,EAC3D,IAAI,EAAE,MAAM,GAAG,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,GAAG,MAAM,EAAE,GAAG,MAAM,EAAE,GAC1D,OAAO,CAsBT"}
