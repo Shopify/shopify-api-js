@@ -13,7 +13,7 @@ export interface AccessTokenHeader {
 }
 
 export class GraphqlClient {
-  protected baseApiPath = '/admin/api';
+  protected baseApiPath = '/payments_apps/api';
 
   private readonly client: HttpClient;
 
