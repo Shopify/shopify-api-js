@@ -148,7 +148,7 @@ describe('REST client', () => {
   it('merges custom headers with the default ones', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    const customHeaders: Record<string, string> = {
+    const customHeaders: {[key: string]: string;} = {
       'X-Not-A-Real-Header': 'some_value',
     };
 
@@ -326,7 +326,7 @@ describe('REST client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const customHeaders: Record<string, string> = {};
+    const customHeaders: {[key: string]: string;} = {};
     customHeaders[ShopifyHeader.AccessToken] = 'test_secret_key';
 
     assertHttpRequest({

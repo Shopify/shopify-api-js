@@ -9,7 +9,7 @@ interface AssertHttpRequestParams {
   method: string;
   domain: string;
   path: string;
-  headers?: Record<string, unknown>;
+  headers?: {[key: string]: unknown;};
   data?: string | null;
   tries?: number;
 }

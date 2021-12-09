@@ -25,9 +25,11 @@ beforeEach(() => {
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
+    /* eslint-disable @typescript-eslint/naming-convention */
     interface Matchers<R> {
       toBeWithinSecondsOf(compareDate: number, seconds: number): R;
     }
+    /* eslint-enable @typescript-eslint/naming-convention */
   }
 }
 

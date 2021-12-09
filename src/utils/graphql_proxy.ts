@@ -24,14 +24,13 @@ export default async function graphqlProxy(
   const token: string = session.accessToken;
   let reqBodyString = '';
 
-  // eslint-disable-next-line promise/param-names
   const promise: Promise<void> = new Promise((resolve, _reject) => {
     userReq.on('data', (chunk) => {
       reqBodyString += chunk;
     });
 
     userReq.on('end', async () => {
-      let reqBodyObject: Record<string, unknown> | undefined;
+      let reqBodyObject: {[key: string]: unknown;} | undefined;
       try {
         reqBodyObject = JSON.parse(reqBodyString);
       } catch (err) {

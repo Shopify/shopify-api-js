@@ -31,7 +31,7 @@ describe('Storefront GraphQL client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const headers: Record<string, unknown> = {};
+    const headers: {[key: string]: unknown;} = {};
     headers[ShopifyHeader.StorefrontAccessToken] = 'bork';
     assertHttpRequest({
       method: 'POST',
@@ -55,7 +55,7 @@ describe('Storefront GraphQL client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const headers: Record<string, unknown> = {};
+    const headers: {[key: string]: unknown;} = {};
     headers[ShopifyHeader.StorefrontAccessToken] = 'private_token';
     assertHttpRequest({
       method: 'POST',
