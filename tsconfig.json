@@ -34,14 +34,5 @@
     "rootDir": "src"
   },
   "include": ["./src/**/*.ts", "./src/**/*.tsx"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test/*"],
-  "typedocOptions": {
-    "inputFiles": ["./src"],
-    "mode": "file",
-    "out": "tsdocs",
-    "exclude": "**/test/**",
-    "excludeNotExported": true,
-    "excludePrivate": true,
-    "disableSources": true
-  }
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test/*"]
 }
