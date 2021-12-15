@@ -298,7 +298,7 @@ describe('validateAuthCallback', () => {
   });
 
   test('requests access token for valid callbacks with offline access and updates session', async () => {
-    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
     let session = await Context.SESSION_STORAGE.loadSession(
       ShopifyOAuth.getOfflineSessionId(shop),
     );
@@ -320,10 +320,10 @@ describe('validateAuthCallback', () => {
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
     Cookies.prototype.set.mockImplementation(() => {
-      throw new Error("offline sessions should not depend on cookies");
+      throw new Error('offline sessions should not depend on cookies');
     });
     Cookies.prototype.get.mockImplementation(() => {
-      throw new Error("offline sessions should not depend on cookies");
+      throw new Error('offline sessions should not depend on cookies');
     });
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery, false);
     session = await Context.SESSION_STORAGE.loadSession(

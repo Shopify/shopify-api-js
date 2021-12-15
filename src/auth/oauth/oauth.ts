@@ -124,11 +124,8 @@ const ShopifyOAuth = {
         sessionCookie,
       );
     } else {
-      currentSession = new Session(
-        this.getOfflineSessionId(query.shop),
-        query.shop,
-        query.state,
-        false,
+      currentSession = await Context.SESSION_STORAGE.loadSession(
+        ShopifyOAuth.getOfflineSessionId(query.shop),
       );
     }
 
