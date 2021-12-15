@@ -156,7 +156,7 @@ const ShopifyOAuth = {
     const client = new HttpClient(currentSession.shop);
     const postResponse = await client.post(postParams);
 
-    if (isOnline) {
+    if (currentSession.isOnline) {
       const responseBody = postResponse.body as OnlineAccessResponse;
       const {access_token, scope, ...rest} = responseBody; // eslint-disable-line @typescript-eslint/naming-convention
       const sessionExpiration = new Date(
