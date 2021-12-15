@@ -105,7 +105,7 @@ const ShopifyOAuth = {
     request: http.IncomingMessage,
     response: http.ServerResponse,
     query: AuthQuery,
-    isOnline: boolean = true,
+    isOnline = true,
   ): Promise<SessionInterface> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
