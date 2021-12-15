@@ -156,7 +156,7 @@ const ShopifyOAuth = {
     const client = new HttpClient(currentSession.shop);
     const postResponse = await client.post(postParams);
 
-    if (currentSession.isOnline) {
+    if (isOnline) {
       const responseBody = postResponse.body as OnlineAccessResponse;
       const {access_token, scope, ...rest} = responseBody; // eslint-disable-line @typescript-eslint/naming-convention
       const sessionExpiration = new Date(
@@ -187,14 +187,6 @@ const ShopifyOAuth = {
         }
         currentSession = jwtSession;
       }
-    } else {
-      // Offline sessions (embedded / non-embedded) will use the same id so they don't need to be updated
-      const responseBody = postResponse.body as AccessTokenResponse;
-      currentSession.accessToken = responseBody.access_token;
-      currentSession.scope = responseBody.scope;
-    }
-
-    if (isOnline) {
       const cookies = new Cookies(request, response, {
         keys: [Context.API_SECRET_KEY],
         secure: true,
@@ -206,6 +198,11 @@ const ShopifyOAuth = {
         sameSite: 'lax',
         secure: true,
       });
+    } else {
+      // Offline sessions (embedded / non-embedded) will use the same id so they don't need to be updated
+      const responseBody = postResponse.body as AccessTokenResponse;
+      currentSession.accessToken = responseBody.access_token;
+      currentSession.scope = responseBody.scope;
     }
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(
