@@ -207,7 +207,7 @@ app.get("/", async (req, res) => {
   } else {
     res.send("Hello world!");
     // Load your app skeleton page with App Bridge, and do something amazing!
-    response.end();
+    res.end();
   }
 });
 
