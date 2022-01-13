@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+Add support for January 2022 API version [#285](https://github.com/Shopify/shopify-node-api/pull/285)
 
 ## [2.0.0] - 2021-10-28
 
