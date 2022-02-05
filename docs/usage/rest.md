@@ -44,7 +44,8 @@ We can run the code below in any endpoint where we have access to the request an
 
 ```ts
 // Load the current session to get the `accessToken`.
-const session = await Shopify.Utils.loadCurrentSession(req, res);
+const id = Shopify.Auth.getCurrentSessionId(req,res)
+const session = await Shopify.Context.SESSION_STORAGE.loadSession(id)
 // Create a new client for the specified shop.
 const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
 // Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
