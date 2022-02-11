@@ -715,6 +715,17 @@ describe('HTTP client', () => {
     expect(caught).toEqual(true);
     assertHttpRequest({method: 'GET', domain, path: '/url/path'});
   });
+
+  it('adds missing slashes to paths', async () => {
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+
+    await expect(client.get({path: 'url/path'})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
+    assertHttpRequest({method: 'GET', domain, path: '/url/path'});
+  });
 });
 
 function setRestClientRetryTime(time: number) {

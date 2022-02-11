@@ -8,6 +8,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## Unreleased
 
 ### Added
+
+- Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-node-api/pull/301)
+
 ### Fixed
 
 ## [2.1.0] - 2022-02-03

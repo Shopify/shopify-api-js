@@ -120,7 +120,7 @@ class HttpClient {
       ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}`
       : '';
 
-    const url = `https://${this.domain}${params.path}${queryString}`;
+    const url = `https://${this.domain}${this.getRequestPath(params.path)}${queryString}`;
     const options: RequestInit = {
       method: params.method.toString(),
       headers,
@@ -169,6 +169,10 @@ class HttpClient {
     throw new ShopifyErrors.ShopifyError(
       `Unexpected flow, reached maximum HTTP tries but did not throw an error`,
     );
+  }
+
+  protected getRequestPath(path: string): string {
+    return `/${path.replace(/^\//, '')}`;
   }
 
   private async doRequest(

@@ -342,6 +342,36 @@ describe('REST client', () => {
       ShopifyErrors.MissingRequiredArgument,
     );
   });
+
+  it('allows paths with .json', async () => {
+    const client = new RestClient(domain, 'dummy-token');
+
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+
+    await expect(client.get({path: 'products.json'})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/admin/api/unstable/products.json',
+    });
+  });
+
+  it('allows full paths', async () => {
+    const client = new RestClient(domain, 'dummy-token');
+
+    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+
+    await expect(client.get({path: '/admin/some-path.json'})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
+    assertHttpRequest({
+      method: 'GET',
+      domain,
+      path: '/admin/some-path.json',
+    });
+  });
 });
 
 function getDefaultPageInfo(): PageInfo {
