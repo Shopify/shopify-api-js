@@ -30,8 +30,6 @@ class RestClient extends HttpClient {
       ...params.extraHeaders,
     };
 
-    params.path = this.getRestPath(params.path);
-
     const ret = (await super.request(params)) as RestRequestReturn;
 
     const link = ret.headers.get('link');
@@ -81,8 +79,13 @@ class RestClient extends HttpClient {
     return ret;
   }
 
-  private getRestPath(path: string): string {
-    return `/admin/api/${Context.API_VERSION}/${path}.json`;
+  protected getRequestPath(path: string): string {
+    const cleanPath = super.getRequestPath(path);
+    if (cleanPath.startsWith('/admin')) {
+      return `${cleanPath.replace(/\.json$/, '')}.json`;
+    } else {
+      return `/admin/api/${Context.API_VERSION}${cleanPath.replace(/\.json$/, '')}.json`;
+    }
   }
 
   private buildRequestParams(newPageUrl: string): GetRequestParams {
