@@ -10,7 +10,7 @@ import safeCompare from './safe-compare';
 export function stringifyQuery(query: AuthQuery): string {
   const orderedObj = Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
-    .reduce((obj: Record<string, string | undefined>, key: keyof AuthQuery) => {
+    .reduce((obj: {[key: string]: string | undefined;}, key: keyof AuthQuery) => {
       obj[key] = query[key];
       return obj;
     }, {});

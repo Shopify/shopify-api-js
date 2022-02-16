@@ -730,7 +730,7 @@ describe('HTTP client', () => {
 
 function setRestClientRetryTime(time: number) {
   // We de-type HttpClient here so we can alter its readonly time property
-  (HttpClient as unknown as Record<string, number>).RETRY_WAIT_TIME = time;
+  (HttpClient as unknown as {[key: string]: number;}).RETRY_WAIT_TIME = time;
 }
 
 function buildMockResponse(obj: unknown): string {

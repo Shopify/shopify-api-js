@@ -95,7 +95,7 @@ class RestClient extends HttpClient {
     const path = url.pathname.replace(new RegExp(pattern), '$1');
     const query = querystring.decode(
       url.search.replace(/^\?(.*)/, '$1'),
-    ) as Record<string, string | number>;
+    ) as {[key: string]: string | number;};
     return {
       path,
       query,

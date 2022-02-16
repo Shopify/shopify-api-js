@@ -41,7 +41,7 @@ describe('GraphQL client', () => {
 
   it('merges custom headers with default', async () => {
     const client: GraphqlClient = new GraphqlClient(DOMAIN, 'bork');
-    const customHeader: Record<string, string> = {
+    const customHeader: {[key: string]: string;} = {
       'X-Glib-Glob': 'goobers',
     };
 
@@ -72,7 +72,7 @@ describe('GraphQL client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const customHeaders: Record<string, string> = {};
+    const customHeaders: {[key: string]: string;} = {};
     customHeaders[ShopifyHeader.AccessToken] = 'test_secret_key';
 
     assertHttpRequest({

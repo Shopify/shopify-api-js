@@ -50,7 +50,7 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
-    "@shopify/eslint-plugin": "^39.0.3",
+    "@shopify/eslint-plugin": "^41.0.1",
     "@shopify/prettier-config": "^1.1.2",
     "@types/cookies": "^0.7.5",
     "@types/jest": "^26.0.15",

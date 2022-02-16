@@ -8,7 +8,7 @@ export class CustomSessionStorage implements SessionStorage {
     readonly storeCallback: (session: SessionInterface) => Promise<boolean>,
     readonly loadCallback: (
       id: string,
-    ) => Promise<SessionInterface | Record<string, unknown> | undefined>,
+    ) => Promise<SessionInterface | {[key: string]: unknown;} | undefined>,
     readonly deleteCallback: (id: string) => Promise<boolean>,
   ) {
     this.storeCallback = storeCallback;
@@ -27,7 +27,7 @@ export class CustomSessionStorage implements SessionStorage {
   }
 
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
-    let result: SessionInterface | Record<string, unknown> | undefined;
+    let result: SessionInterface | {[key: string]: unknown;} | undefined;
     try {
       result = await this.loadCallback(id);
     } catch (error) {

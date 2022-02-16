@@ -25,7 +25,7 @@ class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000;
   // 5 minutes
   static readonly DEPRECATION_ALERT_DELAY = 300000;
-  private LOGGED_DEPRECATIONS: Record<string, number> = {};
+  private LOGGED_DEPRECATIONS: {[key: string]: number;} = {};
 
   public constructor(private domain: string) {
     if (!validateShop(domain)) {
