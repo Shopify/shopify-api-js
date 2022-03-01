@@ -6,4 +6,5 @@ module.exports = {
   testRegex: '.*\\.test\\.tsx?$',
   coverageDirectory: './coverage/',
   collectCoverage: true,
+  setupFilesAfterEnv: ['<rootDir>/src/utils/setup-jest.ts'],
 };

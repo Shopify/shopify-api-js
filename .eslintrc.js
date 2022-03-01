@@ -3,8 +3,7 @@ module.exports = {
     browser: false,
     es2021: true,
   },
-  plugins: ['@shopify', 'prettier'],
-  extends: ['plugin:@shopify/typescript', 'prettier'],
+  extends: ['plugin:@shopify/typescript', 'plugin:@shopify/prettier'],
   ignorePatterns: ['dist/'],
   rules: {
     'import/no-named-as-default': 0,
@@ -14,9 +13,9 @@ module.exports = {
   overrides: [
     {
       files: [
-        'src/clients/rest/test/*.ts',
-        'src/clients/rest/base.ts',
-        'src/clients/rest/admin*/*.ts',
+        'src/rest_resources/__tests__/*.ts',
+        'src/rest_resources/base.ts',
+        'src/rest_resources/admin*/*.ts',
       ],
       rules: {
         '@typescript-eslint/naming-convention': [

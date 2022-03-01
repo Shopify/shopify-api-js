@@ -30,7 +30,7 @@ export default async function graphqlProxy(
     });
 
     userReq.on('end', async () => {
-      let reqBodyObject: {[key: string]: unknown;} | undefined;
+      let reqBodyObject: {[key: string]: unknown} | undefined;
       try {
         reqBodyObject = JSON.parse(reqBodyString);
       } catch (err) {

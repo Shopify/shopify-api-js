@@ -2,7 +2,7 @@ import {Method} from '@shopify/network';
 import {Headers} from 'node-fetch';
 
 export interface HeaderParams {
- [key: string]: string | number;
+  [key: string]: string | number;
 }
 
 export enum DataType {
@@ -14,15 +14,15 @@ export enum DataType {
 export interface GetRequestParams {
   path: string;
   type?: DataType;
-  data?: {[key: string]: unknown;} | string;
-  query?: {[key: string]: string | number;};
+  data?: {[key: string]: unknown} | string;
+  query?: {[key: string]: string | number};
   extraHeaders?: HeaderParams;
   tries?: number;
 }
 
 export type PostRequestParams = GetRequestParams & {
   type: DataType;
-  data: {[key: string]: unknown;} | string;
+  data: {[key: string]: unknown} | string;
 };
 
 export type PutRequestParams = PostRequestParams;

@@ -23,7 +23,7 @@ interface AddHandlersProps {
 }
 
 interface RegistryInterface {
-  webhookRegistry: {[topic: string]: WebhookRegistryEntry;};
+  webhookRegistry: {[topic: string]: WebhookRegistryEntry};
 
   /**
    * Sets the handler for the given topic. If a handler was previously set for the same topic, it will be overridden.
@@ -253,7 +253,7 @@ const WebhooksRegistry: RegistryInterface = {
         : path;
     const checkResult = (await client.query({
       data: buildCheckQuery(topic),
-    })) as {body: WebhookCheckResponse;};
+    })) as {body: WebhookCheckResponse};
     let webhookId: string | undefined;
     let mustRegister = true;
     if (checkResult.body.data.webhookSubscriptions.edges.length) {
