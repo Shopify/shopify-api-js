@@ -9,6 +9,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- ⚠️ [Breaking] Update supported Admin API versions [#310](https://github.com/Shopify/shopify-node-api/pull/310)
 - Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-node-api/pull/301)
 
 ### Fixed

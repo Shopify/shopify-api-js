@@ -115,7 +115,7 @@ function isSuccess(
 
 // 2020-07 onwards
 function versionSupportsEndpointField() {
-  return ShopifyUtilities.versionCompatible(ApiVersion.July20);
+  return ShopifyUtilities.versionCompatible('2020-07' as unknown as ApiVersion);
 }
 
 function versionSupportsPubSub() {
@@ -243,7 +243,10 @@ function buildQuery(
 const WebhooksRegistry: RegistryInterface = {
   webhookRegistry: {},
 
-  addHandler(topic: string, {path, webhookHandler}: WebhookRegistryEntry): void {
+  addHandler(
+    topic: string,
+    {path, webhookHandler}: WebhookRegistryEntry,
+  ): void {
     WebhooksRegistry.webhookRegistry[topic] = {path, webhookHandler};
   },
 
@@ -256,7 +259,9 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   getHandler(topic: string): WebhookRegistryEntry | null {
-    return topic in WebhooksRegistry.webhookRegistry ? WebhooksRegistry.webhookRegistry[topic] : null;
+    return topic in WebhooksRegistry.webhookRegistry
+      ? WebhooksRegistry.webhookRegistry[topic]
+      : null;
   },
 
   getTopics(): string[] {
@@ -336,7 +341,8 @@ const WebhooksRegistry: RegistryInterface = {
           shop,
           deliveryMethod,
         };
-        const returnedRegister: RegisterReturn = await WebhooksRegistry.register(webhook);
+        const returnedRegister: RegisterReturn =
+          await WebhooksRegistry.register(webhook);
         registerReturn = {...registerReturn, ...returnedRegister};
       }
     }
@@ -414,7 +420,9 @@ const WebhooksRegistry: RegistryInterface = {
           .digest('base64');
 
         if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
-          const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
+          const graphqlTopic = (topic as string)
+            .toUpperCase()
+            .replace(/\//g, '_');
           const webhookEntry = WebhooksRegistry.getHandler(graphqlTopic);
 
           if (webhookEntry) {
