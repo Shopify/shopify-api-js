@@ -61,10 +61,6 @@ interface WebhookCheckResponseNode<
   } & T;
 }
 
-type WebhookCheckLegacyResponseNode = WebhookCheckResponseNode<{
-  callbackUrl: string;
-}>;
-
 export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
   data: {
     webhookSubscriptions: {
@@ -72,6 +68,3 @@ export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
     };
   };
 }
-
-export type WebhookCheckResponseLegacy =
-  WebhookCheckResponse<WebhookCheckLegacyResponseNode>;
