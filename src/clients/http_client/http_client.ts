@@ -25,7 +25,7 @@ class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000;
   // 5 minutes
   static readonly DEPRECATION_ALERT_DELAY = 300000;
-  private LOGGED_DEPRECATIONS: {[key: string]: number;} = {};
+  private LOGGED_DEPRECATIONS: {[key: string]: number} = {};
 
   public constructor(private domain: string) {
     if (!validateShop(domain)) {
@@ -116,11 +116,33 @@ class HttpClient {
       }
     }
 
-    const queryString = params.query
-      ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}`
-      : '';
+    let queryString = '';
+    if (params.query && Object.keys(params.query).length > 0) {
+      const processedQuery: {
+        [key: string]: string | number | (string | number)[];
+      } = {};
+      Object.entries(params.query).forEach(([key, value]: [string, any]) => {
+        if (Array.isArray(value)) {
+          processedQuery[`${key}[]`] = value;
+        } else if (value.constructor === Object) {
+          Object.entries(value).forEach(
+            ([entry, entryValue]: [string, string | number]) => {
+              processedQuery[`${key}[${entry}]`] = entryValue;
+            },
+          );
+        } else {
+          processedQuery[key] = value;
+        }
+      });
 
-    const url = `https://${this.domain}${this.getRequestPath(params.path)}${queryString}`;
+      queryString = `?${querystring.stringify(
+        processedQuery as ParsedUrlQueryInput,
+      )}`;
+    }
+
+    const url = `https://${this.domain}${this.getRequestPath(
+      params.path,
+    )}${queryString}`;
     const options: RequestInit = {
       method: params.method.toString(),
       headers,

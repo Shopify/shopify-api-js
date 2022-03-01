@@ -148,7 +148,7 @@ describe('REST client', () => {
   it('merges custom headers with the default ones', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
-    const customHeaders: {[key: string]: string;} = {
+    const customHeaders: {[key: string]: string} = {
       'X-Not-A-Real-Header': 'some_value',
     };
 
@@ -326,7 +326,7 @@ describe('REST client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const customHeaders: {[key: string]: string;} = {};
+    const customHeaders: {[key: string]: string} = {};
     customHeaders[ShopifyHeader.AccessToken] = 'test_secret_key';
 
     assertHttpRequest({
@@ -388,7 +388,6 @@ function getDefaultPageInfo(): PageInfo {
     query: {
       fields: fields.join(','),
       limit: `${limit}`,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       page_info: 'previousToken',
     },
   };
@@ -397,7 +396,6 @@ function getDefaultPageInfo(): PageInfo {
     query: {
       fields: fields.join(','),
       limit: `${limit}`,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       page_info: 'nextToken',
     },
   };

@@ -33,6 +33,9 @@ class HttpThrottlingError extends HttpRetriableError {
   }
 }
 
+class RestResourceError extends ShopifyError {}
+class RestResourceRequestError extends HttpResponseError {}
+
 class InvalidOAuthError extends ShopifyError {}
 class SessionNotFound extends ShopifyError {}
 class CookieNotFound extends ShopifyError {}
@@ -57,6 +60,8 @@ export {
   HttpRetriableError,
   HttpInternalError,
   HttpThrottlingError,
+  RestResourceError,
+  RestResourceRequestError,
   UninitializedContextError,
   InvalidOAuthError,
   SessionNotFound,

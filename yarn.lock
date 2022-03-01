@@ -939,21 +939,6 @@
   resolved "https://registry.yarnpkg.com/@microsoft/fetch-event-source/-/fetch-event-source-2.0.1.tgz#9ceecc94b49fbaa15666e38ae8587f64acce007d"
   integrity sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==
 
-"@microsoft/tsdoc-config@0.13.6":
-  version "0.13.6"
-  resolved "https://registry.yarnpkg.com/@microsoft/tsdoc-config/-/tsdoc-config-0.13.6.tgz"
-  integrity sha512-VJjV35PnrNISoX2WMemZjnCIdOUPTRpCz6pu8inISotLd3SgoDSJygGaE7+lOYdCtDl+4c8PWJdZivxxXgOnLw==
-  dependencies:
-    "@microsoft/tsdoc" "0.12.21"
-    ajv "~6.12.3"
-    jju "~1.4.0"
-    resolve "~1.12.0"
-
-"@microsoft/tsdoc@0.12.21":
-  version "0.12.21"
-  resolved "https://registry.yarnpkg.com/@microsoft/tsdoc/-/tsdoc-0.12.21.tgz"
-  integrity sha512-j+9OJ0A0buZZaUn6NxeHUVpoa05tY2PgVs7kXJhJQiKRB0G1zQqbJxer3T7jWtzpqQWP89OBDluyIeyTsMk8Sg==
-
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -975,10 +960,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@shopify/eslint-plugin@^41.0.1":
-  version "41.0.1"
-  resolved "https://registry.yarnpkg.com/@shopify/eslint-plugin/-/eslint-plugin-41.0.1.tgz#9279aee0d8b090ebf05be24031473852ae4022e1"
-  integrity sha512-LpjAfKPxZCvCNSGrODOn+BqsA2YCQR1XkRhxtMKDlpu0A9GR2rorE5yolb0eekHpi2ZpNWccWOXd9oACsOXosQ==
+"@shopify/eslint-plugin@^41.1.0":
+  version "41.1.0"
+  resolved "https://registry.yarnpkg.com/@shopify/eslint-plugin/-/eslint-plugin-41.1.0.tgz#c0b0e7e2259252316d1559c38e1fcc90e695e76d"
+  integrity sha512-DEFoJJjsTJBpKsfXdC2/UYqKrQtWKcwZIYDL2OZSMbvDr6/++vz2v41qlf+NCfQBQN9szNsQivhCUJsZxZaajw==
   dependencies:
     "@babel/eslint-parser" "^7.16.3"
     "@babel/eslint-plugin" "^7.14.5"
@@ -1441,16 +1426,6 @@ ajv@^8.0.1:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"
     require-from-string "^2.0.2"
-    uri-js "^4.2.2"
-
-ajv@~6.12.3:
-  version "6.12.6"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz"
-  integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
-  dependencies:
-    fast-deep-equal "^3.1.1"
-    fast-json-stable-stringify "^2.0.0"
-    json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
 ansi-colors@^4.1.1:
@@ -2451,14 +2426,6 @@ eslint-plugin-sort-class-members@^1.14.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-sort-class-members/-/eslint-plugin-sort-class-members-1.14.1.tgz#e701d6341e267ed0d0bf44c8293ff1e15b324e3c"
   integrity sha512-/Q/cm3h4N9DBNYvJMQMhluucSmr3Yydr9U0BgGcXUQe/rgWdXKSymZ5Ewcf4vmAG0bbTmAYmekuMnYYrqlu9Rg==
-
-eslint-plugin-tsdoc@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-tsdoc/-/eslint-plugin-tsdoc-0.2.7.tgz"
-  integrity sha512-GAbNpwNfwnolagP6mCQT8wY4usifnAE/iuCz15L3BcEca0xAidctU61h7w40mOuNiSp78DYPUl5gwN89nJ8+8Q==
-  dependencies:
-    "@microsoft/tsdoc" "0.12.21"
-    "@microsoft/tsdoc-config" "0.13.6"
 
 eslint-rule-composer@^0.3.0:
   version "0.3.0"
@@ -3800,11 +3767,6 @@ jest@^27.4.3:
     import-local "^3.0.2"
     jest-cli "^27.4.3"
 
-jju@~1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/jju/-/jju-1.4.0.tgz"
-  integrity sha1-o6vicYryQaKykE+EpiWXDzia4yo=
-
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -4602,10 +4564,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.2.tgz#ef280a05ec253712e486233db5c6f23441e7342d"
-  integrity sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==
+prettier@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"
+  integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
 
 pretty-format@^26.0.0, pretty-format@^26.6.0:
   version "26.6.0"
@@ -4797,13 +4759,6 @@ resolve@^2.0.0-next.3:
   integrity sha512-W8LucSynKUIDu9ylraa7ueVZ7hc0uAgJBxVsQSKOXOyle8a93qXhcz+XAXZ8bIq2d6i4Ehddn6Evt+0/UwKk6Q==
   dependencies:
     is-core-module "^2.2.0"
-    path-parse "^1.0.6"
-
-resolve@~1.12.0:
-  version "1.12.3"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.12.3.tgz"
-  integrity sha512-hF6+hAPlxjqHWrw4p1rF3Wztbgxd4AjA5VlUzY5zcTb4J8D3JK4/1RjU48pHz2PJWzGVsLB1VWZkvJzhK2CCOA==
-  dependencies:
     path-parse "^1.0.6"
 
 reusify@^1.0.4:
