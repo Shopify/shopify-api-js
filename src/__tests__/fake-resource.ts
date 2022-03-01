@@ -1,5 +1,5 @@
-import Base, {ParamSet, ResourcePath} from '../base';
-import {SessionInterface} from '../../auth/session/types';
+import Base, {ParamSet, ResourcePath} from '../base-rest-resource';
+import {SessionInterface} from '../auth/session/types';
 
 interface FakeResourceFindArgs {
   params?: ParamSet;

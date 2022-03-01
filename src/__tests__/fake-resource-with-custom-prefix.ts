@@ -1,5 +1,5 @@
-import Base, {ResourcePath} from '../base';
-import {SessionInterface} from '../../auth/session/types';
+import Base, {ResourcePath} from '../base-rest-resource';
+import {SessionInterface} from '../auth/session/types';
 
 interface FakeResourceWithCustomPrefixFindArgs {
   session: SessionInterface;

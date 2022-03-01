@@ -2,7 +2,7 @@ import Cookies from 'cookies';
 
 import * as ShopifyErrors from '../error';
 import {Context} from '../context';
-import {ApiVersion, ContextParams} from '../base_types';
+import {ApiVersion, ContextParams} from '../base-types';
 
 jest.mock('cookies');
 

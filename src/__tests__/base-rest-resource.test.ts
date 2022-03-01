@@ -1,8 +1,8 @@
-import {Session} from '../../auth/session';
-import {RestResourceRequestError} from '../../error';
+import {Session} from '../auth/session';
+import {RestResourceRequestError} from '../error';
 
-import FakeResource from './fake_resource';
-import FakeResourceWithCustomPrefix from './fake_resource_with_custom_prefix';
+import FakeResource from './fake-resource';
+import FakeResourceWithCustomPrefix from './fake-resource-with-custom-prefix';
 
 describe('Base REST resource', () => {
   const domain = 'test-shop.myshopify.io';

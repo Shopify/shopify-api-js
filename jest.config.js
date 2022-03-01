@@ -1,5 +1,10 @@
 module.exports = {
-  preset: 'ts-jest',
+  preset: 'ts-jest/presets/default-esm', // or other ESM presets
+  globals: {
+    'ts-jest': {
+      useESM: true,
+    },
+  },
   testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'js', 'json'],
   watchPathIgnorePatterns: ['<rootDir>/node_modules/'],

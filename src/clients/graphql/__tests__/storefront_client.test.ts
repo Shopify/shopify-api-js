@@ -1,4 +1,4 @@
-import {ShopifyHeader} from '../../../base_types';
+import {ShopifyHeader} from '../../../base-types';
 import {StorefrontClient} from '../storefront_client';
 import {Context} from '../../../context';
 

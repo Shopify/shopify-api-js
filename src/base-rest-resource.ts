@@ -2,11 +2,11 @@ import {
   HttpResponseError,
   RestResourceError,
   RestResourceRequestError,
-} from '../error';
-import {SessionInterface} from '../auth/session/types';
-import {RestClient} from '../clients/rest';
-import {RestRequestReturn} from '../clients/rest/types';
-import {DataType, GetRequestParams} from '../clients/http_client/types';
+} from './error';
+import {SessionInterface} from './auth/session/types';
+import {RestClient} from './clients/rest';
+import {RestRequestReturn} from './clients/rest/types';
+import {DataType, GetRequestParams} from './clients/http_client/types';
 
 export interface IdSet {
   [id: string]: string | number | null;
