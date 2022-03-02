@@ -1,7 +1,7 @@
 import http from 'http';
 
 import jwt from 'jsonwebtoken';
-import express from 'express';
+import express, {Request, Response} from 'express';
 import request from 'supertest';
 
 import {Session} from '../../auth/session';
@@ -39,6 +39,17 @@ const accessToken = 'dangit';
 let token = '';
 
 describe('GraphQL proxy with session', () => {
+  const app = express();
+  app.post('/proxy', async (req: Request, res: Response) => {
+    try {
+      const response = await graphqlProxy(req, res);
+      res.send(response.body);
+    } catch (err) {
+      res.status(400);
+      res.send(JSON.stringify(err.message));
+    }
+  });
+
   beforeEach(async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
@@ -68,9 +79,6 @@ describe('GraphQL proxy with session', () => {
   });
 
   it('can forward query and return response', async () => {
-    const app = express();
-    app.post('/proxy', graphqlProxy);
-
     fetchMock.mockResponses(
       JSON.stringify(successResponse),
       JSON.stringify(successResponse),
@@ -94,9 +102,6 @@ describe('GraphQL proxy with session', () => {
   });
 
   it('rejects if no query', async () => {
-    const app = express();
-    app.post('/proxy', graphqlProxy);
-
     const response = await request(app)
       .post('/proxy')
       .set('authorization', `Bearer ${token}`)
