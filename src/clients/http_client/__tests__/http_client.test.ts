@@ -767,6 +767,7 @@ describe('HTTP client', () => {
       path: '/url/path',
       query: {
         array: ['a', 'b', 'c'],
+        // eslint-disable-next-line id-length
         hash: {a: 'b', c: 'd'},
       },
     });

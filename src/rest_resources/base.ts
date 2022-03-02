@@ -82,14 +82,8 @@ class Base {
       params,
     });
 
-    this.NEXT_PAGE_INFO = undefined;
-    this.PREV_PAGE_INFO = undefined;
-    if (response.pageInfo?.nextPage) {
-      this.NEXT_PAGE_INFO = response.pageInfo.nextPage;
-    }
-    if (response.pageInfo?.prevPage) {
-      this.PREV_PAGE_INFO = response.pageInfo.prevPage;
-    }
+    this.NEXT_PAGE_INFO = response.pageInfo?.nextPage ?? undefined;
+    this.PREV_PAGE_INFO = response.pageInfo?.prevPage ?? undefined;
 
     return this.createInstancesFromResponse(session, response.body as Body);
   }
@@ -137,7 +131,7 @@ class Base {
         case 'delete':
           return await client.delete({path, query: cleanParams});
         default:
-          throw new Error('Unrecognized HTTP method "' + http_method + '"');
+          throw new Error(`Unrecognized HTTP method "${http_method}"`);
       }
     } catch (error) {
       if (error instanceof HttpResponseError) {

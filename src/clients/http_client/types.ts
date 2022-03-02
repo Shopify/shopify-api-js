@@ -11,13 +11,18 @@ export enum DataType {
   URLEncoded = 'application/x-www-form-urlencoded', // eslint-disable-line @shopify/typescript/prefer-pascal-case-enums
 }
 
-export type QueryParams = string | number | string[] | number[] | {[key: string]: QueryParams};
+export type QueryParams =
+  | string
+  | number
+  | string[]
+  | number[]
+  | {[key: string]: QueryParams};
 
 export interface GetRequestParams {
   path: string;
   type?: DataType;
   data?: {[key: string]: unknown} | string;
-  query?: {[key: string]: QueryParams}
+  query?: {[key: string]: QueryParams};
   extraHeaders?: HeaderParams;
   tries?: number;
 }

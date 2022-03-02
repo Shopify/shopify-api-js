@@ -9,6 +9,7 @@ import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
 import {Context} from '../../context';
+import ProcessedQuery from '../../utils/processed-query';
 
 import {
   DataType,
@@ -19,7 +20,6 @@ import {
   RequestParams,
   RequestReturn,
 } from './types';
-import ProcessedQuery from '../../utils/processed-query';
 
 class HttpClient {
   // 1 second
