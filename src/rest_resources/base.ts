@@ -117,35 +117,28 @@ class Base {
     }
 
     try {
-      let response: RestRequestReturn | null = null;
       switch (http_method) {
         case 'get':
-          response = await client.get({path, query: cleanParams});
-          break;
+          return await client.get({path, query: cleanParams});
         case 'post':
-          response = await client.post({
+          return await client.post({
             path,
             query: cleanParams,
             data: body!,
             type: DataType.JSON,
           });
-          break;
         case 'put':
-          response = await client.put({
+          return await client.put({
             path,
             query: cleanParams,
             data: body!,
             type: DataType.JSON,
           });
-          break;
         case 'delete':
-          response = await client.delete({path, query: cleanParams});
-          break;
+          return await client.delete({path, query: cleanParams});
         default:
-          throw new Error('Unrecognized HTTP method');
+          throw new Error('Unrecognized HTTP method "' + http_method + '"');
       }
-
-      return response;
     } catch (error) {
       if (error instanceof HttpResponseError) {
         throw new RestResourceRequestError(
