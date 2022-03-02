@@ -12,13 +12,14 @@ import {Context} from '../../context';
 
 import {
   DataType,
+  DeleteRequestParams,
   GetRequestParams,
   PostRequestParams,
   PutRequestParams,
-  DeleteRequestParams,
   RequestParams,
   RequestReturn,
 } from './types';
+import ProcessedQuery from '../../utils/processed-query';
 
 class HttpClient {
   // 1 second
@@ -116,33 +117,9 @@ class HttpClient {
       }
     }
 
-    let queryString = '';
-    if (params.query && Object.keys(params.query).length > 0) {
-      const processedQuery: {
-        [key: string]: string | number | (string | number)[];
-      } = {};
-      Object.entries(params.query).forEach(([key, value]: [string, any]) => {
-        if (Array.isArray(value)) {
-          processedQuery[`${key}[]`] = value;
-        } else if (value.constructor === Object) {
-          Object.entries(value).forEach(
-            ([entry, entryValue]: [string, string | number]) => {
-              processedQuery[`${key}[${entry}]`] = entryValue;
-            },
-          );
-        } else {
-          processedQuery[key] = value;
-        }
-      });
-
-      queryString = `?${querystring.stringify(
-        processedQuery as ParsedUrlQueryInput,
-      )}`;
-    }
-
     const url = `https://${this.domain}${this.getRequestPath(
       params.path,
-    )}${queryString}`;
+    )}${ProcessedQuery.stringify(params.query)}`;
     const options: RequestInit = {
       method: params.method.toString(),
       headers,

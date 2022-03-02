@@ -758,6 +758,26 @@ describe('HTTP client', () => {
     );
     expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
   });
+
+  it('properly formats arrays and hashes in query strings', async () => {
+    fetchMock.mockResponse(JSON.stringify({}));
+    const client = new HttpClient(domain);
+
+    await client.get({
+      path: '/url/path',
+      query: {
+        array: ['a', 'b', 'c'],
+        hash: {a: 'b', c: 'd'},
+      },
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/url/path',
+      query: encodeURI('array[]=a&array[]=b&array[]=c&hash[a]=b&hash[c]=d'),
+    }).toMatchMadeHttpRequest();
+  });
 });
 
 function setRestClientRetryTime(time: number) {
