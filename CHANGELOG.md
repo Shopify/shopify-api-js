@@ -7,11 +7,15 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [2.2.0] - 2022-03-03
+
 ### Added
 
 - Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-node-api/pull/301)
 
 ### Fixed
+
+- Updated `node-fetch` to v2.6.7 to fix vulnerability [#295](https://github.com/Shopify/shopify-node-api/pull/295)
 
 ## [2.1.0] - 2022-02-03
 
