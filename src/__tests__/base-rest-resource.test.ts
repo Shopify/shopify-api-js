@@ -1,5 +1,7 @@
 import {Session} from '../auth/session';
-import {RestResourceRequestError} from '../error';
+import {ApiVersion} from '../base-types';
+import {Context} from '../context';
+import {RestResourceRequestError, RestResourceError} from '../error';
 
 import FakeResource from './fake-resource';
 import FakeResourceWithCustomPrefix from './fake-resource-with-custom-prefix';
@@ -392,5 +394,15 @@ describe('Base REST resource', () => {
       path: `/admin/custom_prefix/fake_resource_with_custom_prefix/1.json`,
       headers,
     }).toMatchMadeHttpRequest();
+  });
+
+  it('throws an error if the API versions mismatch', async () => {
+    Context.API_VERSION = ApiVersion.January22;
+
+    await expect(FakeResource.all({session})).rejects.toThrowError(
+      new RestResourceError(
+        `Current Context.API_VERSION '${ApiVersion.January22}' does not match resource version ${ApiVersion.Unstable}`,
+      ),
+    );
   });
 });

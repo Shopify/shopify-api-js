@@ -1,5 +1,6 @@
 import Base, {ResourcePath} from '../base-rest-resource';
 import {SessionInterface} from '../auth/session/types';
+import {ApiVersion} from '../base-types';
 
 interface FakeResourceWithCustomPrefixFindArgs {
   session: SessionInterface;
@@ -7,6 +8,7 @@ interface FakeResourceWithCustomPrefixFindArgs {
 }
 
 export default class FakeResourceWithCustomPrefix extends Base {
+  public static API_VERSION = ApiVersion.Unstable;
   protected static NAME = 'fake_resource_with_custom_prefix';
   protected static PLURAL_NAME = 'fake_resource_with_custom_prefixes';
   protected static CUSTOM_PREFIX = '/admin/custom_prefix';

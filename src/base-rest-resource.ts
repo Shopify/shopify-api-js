@@ -7,6 +7,8 @@ import {SessionInterface} from './auth/session/types';
 import {RestClient} from './clients/rest';
 import {RestRequestReturn} from './clients/rest/types';
 import {DataType, GetRequestParams} from './clients/http_client/types';
+import {ApiVersion} from './base-types';
+import {Context} from './context';
 
 export interface IdSet {
   [id: string]: string | number | null;
@@ -56,6 +58,7 @@ class Base {
   // For instance attributes
   [key: string]: any;
 
+  public static API_VERSION: ApiVersion;
   public static NEXT_PAGE_INFO: GetRequestParams | undefined;
   public static PREV_PAGE_INFO: GetRequestParams | undefined;
 
@@ -97,6 +100,12 @@ class Base {
     body,
     entity,
   }: RequestArgs): Promise<RestRequestReturn> {
+    if (Context.API_VERSION !== this.API_VERSION) {
+      throw new RestResourceError(
+        `Current Context.API_VERSION '${Context.API_VERSION}' does not match resource version ${this.API_VERSION}`,
+      );
+    }
+
     const client = new RestClient(session.shop, session.accessToken);
 
     const path = this.getPath({http_method, operation, urlIds, entity});

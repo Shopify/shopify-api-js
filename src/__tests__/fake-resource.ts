@@ -1,5 +1,6 @@
 import Base, {ParamSet, ResourcePath} from '../base-rest-resource';
 import {SessionInterface} from '../auth/session/types';
+import {ApiVersion} from '../base-types';
 
 interface FakeResourceFindArgs {
   params?: ParamSet;
@@ -20,6 +21,7 @@ interface FakeResourceCustomArgs {
 }
 
 export default class FakeResource extends Base {
+  public static API_VERSION = ApiVersion.Unstable;
   protected static NAME = 'fake_resource';
   protected static PLURAL_NAME = 'fake_resources';
 
