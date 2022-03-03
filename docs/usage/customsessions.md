@@ -31,7 +31,7 @@ _(**Tip**: Mac users should be able to just run `brew install redis` to install 
 Once you have Redis installed globally, you will need to add the `redis` client to your project by running:
 
 ```shell
-$ yarn add redis
+$ npm install redis@4
 ```
 
 ### Create a RedisStore class
@@ -41,24 +41,17 @@ Then, create a new class for our `redis` solution in `redis-store.ts`:
 ```ts
 /* redis-store.ts */
 
-// Import the Session type from the library, along with the Node redis package, and `promisify` from Node
-import {Session} from '@shopify/shopify-api/dist/auth/session';
-import redis from 'redis';
-import {promisify} from 'util';
+// Import the Node redis package
+import {createClient} from 'redis';
 
 class RedisStore {
-  private client: redis.RedisClient;
-  private getAsync;
-  private setAsync;
-  private delAsync;
-
   constructor() {
-    // Create a new redis client
-    this.client = redis.createClient();
-    // Use Node's `promisify` to have redis return a promise from the client methods
-    this.getAsync = promisify(this.client.get).bind(this.client);
-    this.setAsync = promisify(this.client.set).bind(this.client);
-    this.delAsync = promisify(this.client.del).bind(this.client);
+    // Create a new redis client and connect to the server
+    this.client = createClient({
+      url: 'redis://localhost:6379',
+    });
+    this.client.on('error', (err) => console.log('Redis Client Error', err));
+    this.client.connect();
   }
 
   /*
@@ -67,28 +60,28 @@ class RedisStore {
     If the session can be stored, return true
     Otherwise, return false
   */
-  storeCallback = async (session: Session) => {
+  async storeCallback(session) {
     try {
       // Inside our try, we use the `setAsync` method to save our session.
       // This method returns a boolean (true if successful, false if not)
-      return await this.setAsync(session.id, JSON.stringify(session));
+      return await this.client.set(session.id, JSON.stringify(session));
     } catch (err) {
       // throw errors, and handle them gracefully in your application
       throw new Error(err);
     }
-  };
+  }
 
   /*
     The loadCallback takes in the id, and uses the getAsync method to access the session data
      If a stored session exists, it's parsed and returned
      Otherwise, return undefined
   */
-  loadCallback = async (id: string) => {
+  async loadCallback(id) {
     try {
       // Inside our try, we use `getAsync` to access the method by id
       // If we receive data back, we parse and return it
       // If not, we return `undefined`
-      let reply = await this.getAsync(id);
+      let reply = await this.client.get(id);
       if (reply) {
         return JSON.parse(reply);
       } else {
@@ -97,22 +90,22 @@ class RedisStore {
     } catch (err) {
       throw new Error(err);
     }
-  };
+  }
 
   /*
     The deleteCallback takes in the id, and uses the redis `del` method to delete it from the store
     If the session can be deleted, return true
     Otherwise, return false
   */
-  deleteCallback = async (id: string) => {
+  async deleteCallback(id) {
     try {
       // Inside our try, we use the `delAsync` method to delete our session.
       // This method returns a boolean (true if successful, false if not)
-      return await this.delAsync(id);
+      return await this.client.del(id);
     } catch (err) {
       throw new Error(err);
     }
-  };
+  }
 }
 
 // Export the class
@@ -126,16 +119,16 @@ Now we can import our custom storage class into our `index.ts` and use it to set
 ```ts
 /* index.ts */
 
-import Shopify, {ApiVersion, AuthQuery} from '@shopify/shopify-api/dist';
+import Shopify, {ApiVersion, AuthQuery} from '@shopify/shopify-api';
 // Import our custom storage class
 import RedisStore from './redis-store';
 
 require('dotenv').config();
 
+const {API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST} = process.env;
+
 // Create a new instance of the custom storage class
 const sessionStorage = new RedisStore();
-
-const {API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST} = process.env;
 
 // Setup Shopify.Context with CustomSessionStorage
 Shopify.Context.initialize({
@@ -147,9 +140,9 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.unstable,
   // Pass the sessionStorage methods to pass into a new instance of `CustomSessionStorage`
   SESSION_STORAGE: new Shopify.Session.CustomSessionStorage(
-    sessionStorage.storeCallback,
-    sessionStorage.loadCallback,
-    sessionStorage.deleteCallback,
+    sessionStorage.storeCallback.bind(sessionStorage),
+    sessionStorage.loadCallback.bind(sessionStorage),
+    sessionStorage.deleteCallback.bind(sessionStorage),
   ),
 });
 

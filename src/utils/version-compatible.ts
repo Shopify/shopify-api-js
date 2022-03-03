@@ -9,10 +9,7 @@ export default function versionCompatible(
   currentVersion: ApiVersion = Context.API_VERSION,
 ): boolean {
   // Return true if not using a dated version
-  if (
-    currentVersion === ApiVersion.Unstable ||
-    currentVersion === ApiVersion.Unversioned
-  ) {
+  if (currentVersion === ApiVersion.Unstable) {
     return true;
   }
   const numericVersion = (version: string) =>

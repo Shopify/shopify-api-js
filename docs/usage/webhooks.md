@@ -1,45 +1,110 @@
 # Webhooks
 
-If your application's functionality depends on knowing when events occur on a given store, you need to register a Webhook. You need an access token to register webhooks, so you should complete the OAuth process beforehand.
+If your application's functionality depends on knowing when events occur on a given shop, you need to register a webhook. You need an access token to register webhooks, so you should complete the OAuth process beforehand.
 
-The Shopify library enables you to handle all Webhooks in a single endpoint (see [Process a Webhook](#process-a-webhook) below), but you are not restricted to a single endpoint. Each topic you register can only be mapped to a single endpoint.
+The Shopify library enables you to handle all webhooks in a single endpoint (see [Webhook processing](#webhook-processing)
+) below), but you are not restricted to a single endpoint. You can only register each topic once per shop, but the library will ensure your handler is up to date if you call `register` more than once.
 
-**Note**: The webhooks you register with Shopify are saved in the Shopify platform, but your handlers need to be reloaded whenever your server restarts. It is recommended to store your Webhooks in a persistent manner (for example, in a database) so that you can reload previously registered webhooks when your app restarts.
+To subscribe to webhooks using this library, there are 3 main steps to take:
 
-## Register a Webhook
+1. [Load your handlers](#load-your-handlers)
+1. [Register webhooks with Shopify](#webhook-registration)
+1. [Process incoming webhooks](#webhook-processing)
 
-In this example the webhook is being registered as soon as the authentication is completed.
+## Load your handlers
+
+The first step to process webhooks in your app is telling the library how you expect to handle them. To do that, you can call the `Shopify.Webhooks.Registry.addHandler` method to set the callback you want the library to trigger when a certain topic is received. We also provide a similar `addHandlers` method for convenience, which takes in a hash of topic => `WebhookRegistryEntry`.
+
+The parameters this method accepts are:
+
+| Parameter | Type | Required? | Default Value | Notes |
+| --- | --- | :---: | :---: | --- |
+| `topic` | `string` | Yes | - | The topic to subscribe to, [see the full list](https://shopify.dev/api/admin-graphql/latest/enums/WebhookSubscriptionTopic). |
+| `handler` | `WebhookRegistryEntry` | Yes | - | The handler for this topic, contains a path and the `async` callback to call. |
+
+When a shop triggers an event you subscribed to, the `process` method below will call your handler with the following arguments:
+
+| Parameter | Type | Notes |
+| --- | --- | --- |
+| `topic` | `string` | The webhook topic. |
+| `shop` | `string` | The shop for which the webhook was triggered. |
+| `webhookRequestBody` | `string` | The payload of the POST request made by Shopify. |
+
+For example, you can load one or more handlers when setting up your app's `Context` (or any other location, as long as it happens before the call to `process`) by running:
+
+```typescript
+Shopify.Context.initialize({ ... });
+
+const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: string) => {
+  // handler triggered when a webhook is sent by the Shopify platform to your application
+}
+
+Shopify.Webhooks.Registry.addHandler("PRODUCTS_CREATE", {
+  path: "/webhooks",
+  webhookHandler: handleWebhookRequest,
+});
+```
+
+**Note**: you only need to add handlers for webhooks delivered to your app via HTTPS. [Learn more about webhook configuration](https://shopify.dev/apps/webhooks/configuration).
+
+## Webhook Registration
+
+After loading your handlers, you need to register which topics you want your app to listen to with Shopify. This can only happen after the merchant has installed your app, so the best place to register webhooks is after OAuth completes.
+
+In your OAuth callback action, you can use the `Shopify.Webhooks.Registry.register` method to subscribe to any topic allowed by your app's scopes. You can safely call this method multiple times for a shop, as it will add or update subscriptions as necessary.
+
+**Note**: if you want to register all your webhook topics, you can call the `Shopify.Webhooks.Registry.registerAll({accessToken, shop, deliveryMethod})` method, which will iterate over your handlers and set them all up.
+
+The parameters this method accepts are:
+
+| Parameter | Type | Required? | Default Value | Notes |
+|:---|:---|:---:|:---:|:---|
+| `path` | `string` | Yes | - | The URL path for the callback for HTTPS delivery, EventBridge or Pub/Sub URLs |
+| `topic` | `string` | Yes | - | The topic to subscribe to. |
+| `shop` | `string` | Yes | - | The shop to use for requests. |
+| `accessToken` | `string` | Yes | - | The access token to use for requests. |
+| `deliveryMethod` | `string` | No | `DeliveryMethod.Http` | The delivery method for this webhook. |
+
+This method will return a `RegisterReturn` object, which holds the following data:
+
+| Method | Return type | Notes |
+| --- | --- | --- |
+| `success` | `bool` | Whether the registration was successful. |
+| `result` | `array` | The body from the Shopify request to register the webhook. May be null even when successful if no request was needed. |
+
+For example, to subscribe to the `PRODUCTS_CREATE` event, you can run this code in your OAuth callback action:
 
 <details>
 <summary>Node.js</summary>
 
 ```typescript
-  } // end of if (pathName === '/login')
+} // end of if (pathName === '/login')
 
-  // Register webhooks after OAuth completes
-  if (pathName === '/auth/callback') {
-    try {
-      await Shopify.Auth.validateAuthCallback(request, response, query as AuthQuery);
+// Register webhooks after OAuth completes
+if (pathName === '/auth/callback') {
+  try {
+    const currentSession = await Shopify.Auth.validateAuthCallback(request, response, query as AuthQuery);
 
-      const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: Buffer) => {
-        // this handler is triggered when a webhook is sent by the Shopify platform to your application
-      }
+    const response = await Shopify.Webhooks.Registry.register({
+      path: '/webhooks',
+      topic: 'PRODUCTS_CREATE',
+      accessToken: currentSession.accessToken,
+      shop: currentSession.shop,
+    });
 
-      const currentSession = await Shopify.Utils.loadCurrentSession(request, response);
-
-      // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
-      const resp = await Shopify.Webhooks.Registry.register({
-        path: '/webhooks',
-        topic: 'PRODUCTS_CREATE',
-        accessToken: currentSession.accessToken,
-        shop: currentSession.shop,
-        webhookHandler: handleWebhookRequest
-      });
-      response.writeHead(302, { 'Location': '/' });
-      response.end();
+    if (!response['PRODUCTS_CREATE'].success) {
+      console.log(
+        `Failed to register PRODUCTS_CREATE webhook: ${response.result}`
+      );
     }
-    catch (e) {
-      ...
+
+    response.writeHead(302, { 'Location': '/' });
+    response.end();
+  }
+  catch (e) {
+    ...
+  }
+}
 ```
 
 </details>
@@ -51,30 +116,24 @@ In this example the webhook is being registered as soon as the authentication is
 // Register webhooks after OAuth completes
 app.get('/auth/callback', async (req, res) => {
   try {
-    await Shopify.Auth.validateAuthCallback(
+    const currentSession = await Shopify.Auth.validateAuthCallback(
       req,
       res,
       req.query as unknown as AuthQuery,
     ); // req.query must be cast to unkown and then AuthQuery in order to be accepted
 
-    const handleWebhookRequest = async (
-      topic: string,
-      shop: string,
-      webhookRequestBody: Buffer,
-    ) => {
-      // this handler is triggered when a webhook is sent by the Shopify platform to your application
-    };
-
-    const currentSession = await Shopify.Utils.loadCurrentSession(req, res);
-
-    // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for a list of available topics
-    const resp = await Shopify.Webhooks.Registry.register({
+    const response = await Shopify.Webhooks.Registry.register({
       path: '/webhooks',
       topic: 'PRODUCTS_CREATE',
       accessToken: currentSession.accessToken,
       shop: currentSession.shop,
-      webhookHandler: handleWebhookRequest,
     });
+
+    if (!response['PRODUCTS_CREATE'].success) {
+      console.log(
+        `Failed to register PRODUCTS_CREATE webhook: ${response.result}`
+      );
+    }
   } catch (error) {
     console.error(error); // in practice these should be handled more gracefully
   }
@@ -88,7 +147,7 @@ app.get('/auth/callback', async (req, res) => {
 
 You can also register webhooks for delivery to Amazon EventBridge or Google Cloud
 Pub/Sub. In this case the `path` argument to
-`Shopify.Webhooks.Registry.register` needs to be of a specific form.
+`register` needs to be of a specific form.
 
 For EventBridge, the `path` must be the [ARN of the partner event
 source](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_EventSource.html).
@@ -98,9 +157,11 @@ For Pub/Sub, the `path` must be of the form
 with id `red` in the project `blue`, then the value of `path` would be
 `pubsub://blue:red`.
 
-## Process a Webhook
+## Webhook Processing
 
-To process a webhook, you need to listen on the route(s) you provided during the Webhook registration process, then call the appropriate handler. The library provides a convenient `process` method that acts as a middleware to handle webhooks. It takes care of calling the correct handler for the registered Webhook topics.
+To process an HTTPS webhook, you need to listen on the route(s) you provided during the webhook registration process, then call the appropriate handler. The library provides a convenient method that acts as a middleware to handle webhooks. It takes care of validating the request, and calling the correct handler for registered webhook topics.
+
+The `process` method will handle extracting the necessary information from your request and response objects, and triggering the appropriate handler with the parameters detailed above. If it can't find a handler for a topic, it will raise an error.
 
 **Note**: The `process` method will always respond to Shopify, even if your call throws an error. You can catch and log errors, but you can't change the response.
 
@@ -116,7 +177,7 @@ To process a webhook, you need to listen on the route(s) you provided during the
     } catch (error) {
       console.log(error);
     }
-  } // end of if (Shopify.Webhooks.Registry.isWebhookPath(pathName))
+  }
 }  // end of onRequest()
 
 http.createServer(onRequest).listen(3000);

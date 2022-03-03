@@ -7,6 +7,21 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added
+
+- ⚠️ [Breaking] Update supported Admin API versions [#310](https://github.com/Shopify/shopify-node-api/pull/310)
+- Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-node-api/pull/301)
+
+### Fixed
+
+- ⚠️ [Breaking] Stop responding to the request in the GraphQL Proxy function, returning Shopify's response instead [#312](https://github.com/Shopify/shopify-node-api/pull/312)
+
+## [2.1.0] - 2022-02-03
+
+### Added
+
+- Add support for January 2022 API version [#285](https://github.com/Shopify/shopify-node-api/pull/285)
+
 ## [2.0.0] - 2021-10-28
 
 ### Added

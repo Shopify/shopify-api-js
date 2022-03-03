@@ -2,6 +2,8 @@
 
 The library also allows you to send GraphQL requests to the [Shopify Storefront API](https://shopify.dev/docs/storefront-api). To do that, you can use the `StorefrontClient` using the current shop URL and an `accessToken`.
 
+⚠️ This API limits request rates based on the IP address that calls it, which will be your server's address for all requests made by the library. The API uses a leaky bucket algorithm, with a default bucket size of 60 seconds of request processing time (minimum 0.5s per request), with a leak rate of 1/s. Learn more about [rate limits](https://shopify.dev/api/usage/rate-limits).
+
 You can obtain Storefront API access tokens for both private apps and sales channels. Please read [our documentation](https://shopify.dev/docs/storefront-api/getting-started) to learn more about Storefront Access Tokens. For example, public apps can create new Storefront Access Tokens by running the following code **with an offline Admin API session**:
 
 ```ts
