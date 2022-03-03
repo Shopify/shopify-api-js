@@ -2,7 +2,6 @@ import {enableFetchMocks} from 'jest-fetch-mock';
 
 import {Context} from '../context';
 import {ApiVersion} from '../base_types';
-import {MemorySessionStorage} from '../auth/session';
 
 enableFetchMocks();
 
@@ -17,7 +16,6 @@ beforeEach(() => {
     API_VERSION: ApiVersion.Unstable,
     IS_EMBEDDED_APP: false,
     IS_PRIVATE_APP: false,
-    SESSION_STORAGE: new MemorySessionStorage(),
   });
 
   fetchMock.mockReset();

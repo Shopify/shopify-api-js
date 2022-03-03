@@ -1,5 +1,4 @@
 import {AuthScopes} from './auth/scopes';
-import {SessionStorage} from './auth/session/session_storage';
 
 export interface ContextParams {
   API_KEY: string;
@@ -9,7 +8,6 @@ export interface ContextParams {
   API_VERSION: ApiVersion;
   IS_EMBEDDED_APP: boolean;
   IS_PRIVATE_APP?: boolean;
-  SESSION_STORAGE?: SessionStorage;
   LOG_FILE?: string;
   USER_AGENT_PREFIX?: string;
   PRIVATE_APP_STOREFRONT_ACCESS_TOKEN?: string;

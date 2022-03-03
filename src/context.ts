@@ -1,11 +1,8 @@
 import * as ShopifyErrors from './error';
-import {SessionStorage} from './auth/session/session_storage';
-import {MemorySessionStorage} from './auth/session/storage/memory';
 import {ApiVersion, ContextParams} from './base_types';
 import {AuthScopes} from './auth/scopes';
 
 interface ContextInterface extends ContextParams {
-  SESSION_STORAGE: SessionStorage;
   SCOPES: AuthScopes;
 
   /**
@@ -34,7 +31,6 @@ const Context: ContextInterface = {
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
-  SESSION_STORAGE: new MemorySessionStorage(),
 
   initialize(params: ContextParams): void {
     let scopes: AuthScopes;
@@ -74,10 +70,6 @@ const Context: ContextInterface = {
     this.API_VERSION = params.API_VERSION;
     this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
     this.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
-
-    if (params.SESSION_STORAGE) {
-      this.SESSION_STORAGE = params.SESSION_STORAGE;
-    }
 
     if (params.USER_AGENT_PREFIX) {
       this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
