@@ -4,7 +4,6 @@ import ShopifyAuth from './auth/oauth';
 import ShopifySession from './auth/session';
 import ShopifyClients from './clients';
 import ShopifyUtils from './utils';
-import ShopifyWebhooks from './webhooks';
 
 export const Shopify = {
   Context,
@@ -12,7 +11,6 @@ export const Shopify = {
   Session: ShopifySession,
   Clients: ShopifyClients,
   Utils: ShopifyUtils,
-  Webhooks: ShopifyWebhooks,
   Errors: ShopifyErrors,
 };
 

@@ -1,7 +1,6 @@
 import * as ShopifyErrors from '../error';
 import {Session} from '../auth/session';
 import {GraphqlClient} from '../clients/graphql';
-import {RestClient} from '../clients/rest';
 import {Context} from '../context';
 
 import {WithSessionParams, WithSessionResponse} from './types';
@@ -44,14 +43,8 @@ export default async function withSession({
     );
   }
 
-  let client: RestClient | GraphqlClient;
+  let client: GraphqlClient;
   switch (clientType) {
-    case 'rest':
-      client = new RestClient(session.shop, session.accessToken);
-      return {
-        client,
-        session,
-      };
     case 'graphql':
       client = new GraphqlClient(session.shop, session.accessToken);
       return {
