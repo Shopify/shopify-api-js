@@ -1,6 +1,7 @@
 import http from 'http';
 
 import {GraphqlClient} from '../clients/graphql';
+import {RequestReturn} from '../clients/http_client/types';
 import * as ShopifyErrors from '../error';
 
 import loadCurrentSession from './load-current-session';
@@ -8,7 +9,7 @@ import loadCurrentSession from './load-current-session';
 export default async function graphqlProxy(
   userReq: http.IncomingMessage,
   userRes: http.ServerResponse,
-): Promise<void> {
+): Promise<RequestReturn> {
   const session = await loadCurrentSession(userReq, userRes);
   if (!session) {
     throw new ShopifyErrors.SessionNotFound(
@@ -24,21 +25,18 @@ export default async function graphqlProxy(
   const token: string = session.accessToken;
   let reqBodyString = '';
 
-  const promise: Promise<void> = new Promise((resolve, _reject) => {
+  return new Promise((resolve, reject) => {
     userReq.on('data', (chunk) => {
       reqBodyString += chunk;
     });
 
     userReq.on('end', async () => {
-      let reqBodyObject: {[key: string]: unknown;} | undefined;
+      let reqBodyObject: {[key: string]: unknown} | undefined;
       try {
         reqBodyObject = JSON.parse(reqBodyString);
       } catch (err) {
         // we can just continue and attempt to pass the string
       }
-
-      let status = 200;
-      let body: unknown = '';
 
       try {
         const options = {
@@ -46,28 +44,10 @@ export default async function graphqlProxy(
         };
         const client = new GraphqlClient(shopName, token);
         const response = await client.query(options);
-        body = response.body;
+        return resolve(response);
       } catch (err) {
-        switch (err.constructor.name) {
-          case 'MissingRequiredArgument':
-            status = 400;
-            break;
-          case 'HttpResponseError':
-            status = err.code;
-            break;
-          case 'HttpThrottlingError':
-            status = 429;
-            break;
-          default:
-            status = 500;
-        }
-        body = err.message;
-      } finally {
-        userRes.statusCode = status;
-        userRes.end(JSON.stringify(body));
+        return reject(err);
       }
-      return resolve();
     });
   });
-  return promise;
 }

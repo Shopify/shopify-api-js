@@ -9,13 +9,14 @@ import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
 import {Context} from '../../context';
+import ProcessedQuery from '../../utils/processed-query';
 
 import {
   DataType,
+  DeleteRequestParams,
   GetRequestParams,
   PostRequestParams,
   PutRequestParams,
-  DeleteRequestParams,
   RequestParams,
   RequestReturn,
 } from './types';
@@ -25,7 +26,7 @@ class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000;
   // 5 minutes
   static readonly DEPRECATION_ALERT_DELAY = 300000;
-  private LOGGED_DEPRECATIONS: {[key: string]: number;} = {};
+  private LOGGED_DEPRECATIONS: {[key: string]: number} = {};
 
   public constructor(private domain: string) {
     if (!validateShop(domain)) {
@@ -116,11 +117,9 @@ class HttpClient {
       }
     }
 
-    const queryString = params.query
-      ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}`
-      : '';
-
-    const url = `https://${this.domain}${this.getRequestPath(params.path)}${queryString}`;
+    const url = `https://${this.domain}${this.getRequestPath(
+      params.path,
+    )}${ProcessedQuery.stringify(params.query)}`;
     const options: RequestInit = {
       method: params.method.toString(),
       headers,

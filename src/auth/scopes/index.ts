@@ -1,4 +1,3 @@
-
 class AuthScopes {
   public static SCOPE_DELIMITER = ',';
 

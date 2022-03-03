@@ -33,10 +33,10 @@ class RestClient extends HttpClient {
     const ret = (await super.request(params)) as RestRequestReturn;
 
     const link = ret.headers.get('link');
-    if (params.query && link !== undefined) {
+    if (link !== undefined) {
       const pageInfo: PageInfo = {
-        limit: params.query.limit
-          ? params.query.limit.toString()
+        limit: params.query?.limit
+          ? params.query?.limit.toString()
           : RestClient.DEFAULT_LIMIT,
       };
 
@@ -84,7 +84,10 @@ class RestClient extends HttpClient {
     if (cleanPath.startsWith('/admin')) {
       return `${cleanPath.replace(/\.json$/, '')}.json`;
     } else {
-      return `/admin/api/${Context.API_VERSION}${cleanPath.replace(/\.json$/, '')}.json`;
+      return `/admin/api/${Context.API_VERSION}${cleanPath.replace(
+        /\.json$/,
+        '',
+      )}.json`;
     }
   }
 
@@ -93,9 +96,9 @@ class RestClient extends HttpClient {
 
     const url = new URL(newPageUrl);
     const path = url.pathname.replace(new RegExp(pattern), '$1');
-    const query = querystring.decode(
-      url.search.replace(/^\?(.*)/, '$1'),
-    ) as {[key: string]: string | number;};
+    const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as {
+      [key: string]: string | number;
+    };
     return {
       path,
       query,
