@@ -1,6 +1,5 @@
 import querystring, {ParsedUrlQueryInput} from 'querystring';
 import crypto from 'crypto';
-import fs from 'fs';
 
 import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
@@ -8,7 +7,6 @@ import {Method, StatusCode} from '@shopify/network';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
-import {Context} from '../../context';
 import ProcessedQuery from '../../utils/processed-query';
 
 import {
@@ -74,9 +72,6 @@ class HttpClient {
 
     let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
 
-    if (Context.USER_AGENT_PREFIX) {
-      userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
-    }
 
     if (params.extraHeaders) {
       if (params.extraHeaders['user-agent']) {
@@ -203,19 +198,7 @@ class HttpClient {
                 HttpClient.DEPRECATION_ALERT_DELAY
             ) {
               this.LOGGED_DEPRECATIONS[depHash] = Date.now();
-
-              if (Context.LOG_FILE) {
-                const stack = new Error().stack;
-                const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
-                  deprecation,
-                )}\n    Stack Trace: ${stack}\n`;
-                fs.writeFileSync(Context.LOG_FILE, log, {
-                  flag: 'a',
-                  encoding: 'utf-8',
-                });
-              } else {
-                console.warn('API Deprecation Notice:', deprecation);
-              }
+              console.warn('API Deprecation Notice:', deprecation);
             }
           }
 

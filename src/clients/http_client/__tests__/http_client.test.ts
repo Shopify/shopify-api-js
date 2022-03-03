@@ -2,9 +2,8 @@ import querystring from 'querystring';
 import fs from 'fs';
 
 import {HttpClient} from '../http_client';
-import {DataType, HeaderParams, RequestReturn} from '../../types';
+import {DataType, RequestReturn} from '../../types';
 import * as ShopifyErrors from '../../../error';
-import {Context} from '../../../context';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
@@ -328,87 +327,6 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('extends User-Agent if it is provided', async () => {
-    const client = new HttpClient(domain);
-
-    let customHeaders: HeaderParams = {'User-Agent': 'My agent'};
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
-
-    await expect(
-      client.get({path: '/url/path', extraHeaders: customHeaders}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
-    expect({
-      method: 'GET',
-      domain,
-      path: '/url/path',
-      headers: {
-        'User-Agent': expect.stringContaining(
-          'My agent | Shopify API Library v',
-        ),
-      },
-    }).toMatchMadeHttpRequest();
-
-    customHeaders = {'user-agent': 'My lowercase agent'};
-
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
-
-    await expect(
-      client.get({path: '/url/path', extraHeaders: customHeaders}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
-    expect({
-      method: 'GET',
-      domain,
-      path: '/url/path',
-      headers: {
-        'User-Agent': expect.stringContaining(
-          'My lowercase agent | Shopify API Library v',
-        ),
-      },
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('extends a User-Agent provided by Context', async () => {
-    Context.USER_AGENT_PREFIX = 'Context Agent';
-    Context.initialize(Context);
-
-    const client = new HttpClient(domain);
-
-    fetchMock.mockResponses(
-      buildMockResponse(successResponse),
-      buildMockResponse(successResponse),
-    );
-
-    await expect(client.get({path: '/url/path'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
-    expect({
-      method: 'GET',
-      domain,
-      path: '/url/path',
-      headers: {
-        'User-Agent': expect.stringContaining(
-          'Context Agent | Shopify API Library v',
-        ),
-      },
-    }).toMatchMadeHttpRequest();
-
-    const customHeaders: HeaderParams = {'User-Agent': 'Headers Agent'};
-
-    await expect(
-      client.get({path: '/url/path', extraHeaders: customHeaders}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
-    expect({
-      method: 'GET',
-      domain,
-      path: '/url/path',
-      headers: {
-        'User-Agent': expect.stringContaining(
-          'Headers Agent | Context Agent | Shopify API Library v',
-        ),
-      },
-    }).toMatchMadeHttpRequest();
-  });
-
   it('fails with invalid retry count', async () => {
     const client = new HttpClient(domain);
 
@@ -658,40 +576,6 @@ describe('HTTP client', () => {
     await client.get({path: '/url/path'});
 
     expect(console.warn).toHaveBeenCalledTimes(2);
-  });
-
-  it('writes deprecation notices to log file if one is specified in Context', async () => {
-    Context.LOG_FILE = logFilePath;
-    Context.initialize(Context);
-
-    const client = new HttpClient(domain);
-
-    fetchMock.mockResponse(
-      JSON.stringify({
-        message: 'Some deprecated request',
-      }),
-      {
-        status: 200,
-        headers: {
-          'X-Shopify-API-Deprecated-Reason':
-            'This API endpoint has been deprecated',
-        },
-      },
-    );
-
-    await client.get({path: '/url/path'});
-
-    // open and read test log file
-    const fileContent = fs.readFileSync(logFilePath, {
-      encoding: 'utf-8',
-      flag: 'r',
-    });
-
-    expect(fileContent).toContain('API Deprecation Notice');
-    expect(fileContent).toContain(
-      ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
-    );
-    expect(fileContent).toContain(`Stack Trace: Error:`);
   });
 
   it('properly encodes strings in the error message', async () => {
