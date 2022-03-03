@@ -38,6 +38,9 @@
     "Admin API",
     "Storefront API"
   ],
+  "resolutions": {
+    "node-fetch": "^2.6.7"
+  },
   "dependencies": {
     "@shopify/network": "^1.5.1",
     "@types/jsonwebtoken": "^8.5.0",
