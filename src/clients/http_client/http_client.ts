@@ -181,13 +181,13 @@ class HttpClient {
     return fetch(url, options)
       .then(async (response: Response) => {
         let body;
-      
+
         try {
           body = await response.json();
         } catch {
           body = {};
         }
-        
+
         if (response.ok) {
           if (
             response.headers &&
