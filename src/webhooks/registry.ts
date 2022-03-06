@@ -413,6 +413,7 @@ const WebhooksRegistry: RegistryInterface = {
           responseError = new ShopifyErrors.InvalidWebhookError(
             `Could not validate request for topic ${topic}`,
           );
+          console.log('reqBody', reqBody,'\n generatedHash', generatedHash, '\n hmac', hmac);
         }
 
         response.writeHead(statusCode, headers);
