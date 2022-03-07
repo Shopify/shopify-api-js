@@ -4,18 +4,19 @@ module.exports = {
     es2021: true,
   },
   extends: ['plugin:@shopify/typescript', 'plugin:@shopify/prettier'],
-  ignorePatterns: ['dist/'],
+  ignorePatterns: ['dist/', 'src/rest-resources'],
   rules: {
     'import/no-named-as-default': 0,
     'no-mixed-operators': 0,
     'no-console': 0,
+    'lines-around-comment': 0,
   },
   overrides: [
     {
       files: [
-        'src/rest_resources/__tests__/*.ts',
-        'src/rest_resources/base.ts',
-        'src/rest_resources/admin*/*.ts',
+        'src/__tests__/*.ts',
+        'src/base-rest-resource.ts',
+        'src/rest-resources/*',
       ],
       rules: {
         '@typescript-eslint/naming-convention': [

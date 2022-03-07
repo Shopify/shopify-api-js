@@ -5,7 +5,7 @@ import request from 'supertest';
 import {Method, Header, StatusCode} from '@shopify/network';
 
 import {DeliveryMethod, RegisterOptions, RegisterReturn} from '../types';
-import {ApiVersion, ShopifyHeader} from '../../base_types';
+import {ApiVersion, ShopifyHeader} from '../../base-types';
 import {Context} from '../../context';
 import {DataType} from '../../clients/types';
 import ShopifyWebhooks from '..';

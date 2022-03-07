@@ -1,6 +1,6 @@
 import querystring from 'querystring';
 
-import {ShopifyHeader} from '../../../base_types';
+import {ShopifyHeader} from '../../../base-types';
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestClient} from '../rest_client';
 import {RestRequestReturn, PageInfo} from '../types';

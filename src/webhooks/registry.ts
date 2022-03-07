@@ -4,7 +4,7 @@ import http from 'http';
 import {StatusCode} from '@shopify/network';
 
 import {GraphqlClient} from '../clients/graphql/graphql_client';
-import {ApiVersion, ShopifyHeader} from '../base_types';
+import {ApiVersion, ShopifyHeader} from '../base-types';
 import ShopifyUtilities from '../utils';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';

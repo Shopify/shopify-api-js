@@ -1,7 +1,7 @@
 import querystring from 'querystring';
 
 import {Context} from '../../context';
-import {ShopifyHeader} from '../../base_types';
+import {ShopifyHeader} from '../../base-types';
 import {HttpClient} from '../http_client/http_client';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';

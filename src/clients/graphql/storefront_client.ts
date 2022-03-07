@@ -1,5 +1,5 @@
 import {Context} from '../../context';
-import {ShopifyHeader} from '../../base_types';
+import {ShopifyHeader} from '../../base-types';
 
 import {GraphqlClient, AccessTokenHeader} from './graphql_client';
 

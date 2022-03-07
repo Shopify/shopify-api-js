@@ -14,3 +14,5 @@ jobs:
         run: yarn lint
       - name: Test
         run: yarn test
+      - name: Test REST resources
+        run: yarn test_rest_resources
