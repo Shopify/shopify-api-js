@@ -16,6 +16,25 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - ⚠️ [Breaking] Stop responding to the request in the GraphQL Proxy function, returning Shopify's response instead [#312](https://github.com/Shopify/shopify-node-api/pull/312)
 
+  The examples below are in [express](https://expressjs.com/); you will now need to handle the response yourself.
+  
+  Before:
+  
+  ```js
+  app.post('/graphql', async (req, res) => {
+    await Shopify.Utils.graphqlProxy(req, res);
+  });
+  ```
+  
+  After:
+  
+  ```js
+  app.post('/graphql', async (req, res) => {
+    const response = await Shopify.Utils.graphqlProxy(req, res);
+    res.status(200).send(response.body);
+  });
+  ```
+
 ## [2.1.0] - 2022-02-03
 
 ### Added
