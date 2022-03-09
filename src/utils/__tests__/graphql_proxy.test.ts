@@ -1,4 +1,4 @@
-import http from 'http';
+import type {IncomingMessage, ServerResponse} from 'http';
 
 import jwt from 'jsonwebtoken';
 import express, {Request, Response} from 'express';
@@ -134,8 +134,8 @@ describe('GraphQL proxy', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    } as IncomingMessage;
+    const res = {} as ServerResponse;
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop,
@@ -148,8 +148,8 @@ describe('GraphQL proxy', () => {
   });
 
   it('throws an error if no session', async () => {
-    const req = {headers: {}} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    const req = {headers: {}} as IncomingMessage;
+    const res = {} as ServerResponse;
     await expect(graphqlProxy(req, res)).rejects.toThrow(SessionNotFound);
   });
 });

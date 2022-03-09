@@ -1,4 +1,4 @@
-import http from 'http';
+import type {IncomingMessage, ServerResponse} from 'http';
 import querystring from 'querystring';
 
 import {v4 as uuidv4} from 'uuid';
@@ -38,8 +38,8 @@ const ShopifyOAuth = {
    *                 Defaults to online access.
    */
   async beginAuth(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: IncomingMessage,
+    response: ServerResponse,
     shop: string,
     redirectPath: string,
     isOnline = true,
@@ -103,8 +103,8 @@ const ShopifyOAuth = {
    * @returns SessionInterface
    */
   async validateAuthCallback(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: IncomingMessage,
+    response: ServerResponse,
     query: AuthQuery,
   ): Promise<SessionInterface> {
     Context.throwIfUninitialized();
@@ -216,8 +216,8 @@ const ShopifyOAuth = {
    * @param response HTTP response object
    */
   getCookieSessionId(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: IncomingMessage,
+    response: ServerResponse,
   ): string | undefined {
     const cookies = new Cookies(request, response, {
       secure: true,
@@ -253,8 +253,8 @@ const ShopifyOAuth = {
    * @param isOnline Whether to load online (default) or offline sessions (optional)
    */
   getCurrentSessionId(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: IncomingMessage,
+    response: ServerResponse,
     isOnline = true,
   ): string | undefined {
     let currentSessionId: string | undefined;

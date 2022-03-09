@@ -1,5 +1,5 @@
 import {createHmac} from 'crypto';
-import http from 'http';
+import type {IncomingMessage, ServerResponse} from 'http';
 
 import {StatusCode} from '@shopify/network';
 
@@ -73,8 +73,8 @@ interface RegistryInterface {
    * @param response HTTP response to the request
    */
   process(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: IncomingMessage,
+    response: ServerResponse,
   ): Promise<void>;
 
   /**
@@ -315,8 +315,8 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
   async process(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
+    request: IncomingMessage,
+    response: ServerResponse,
   ): Promise<void> {
     let reqBody = '';
 
