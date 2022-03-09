@@ -31,15 +31,15 @@ export class FulfillmentEvent extends Base {
   protected static NAME = 'fulfillment_event';
   protected static PLURAL_NAME = 'fulfillment_events';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    country: Country,
-    province: Province
+    "country": Country,
+    "province": Province
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["order_id", "fulfillment_id"], path: "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"},
-    {http_method: "post", operation: "post", ids: ["order_id", "fulfillment_id"], path: "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"},
-    {http_method: "get", operation: "get", ids: ["order_id", "fulfillment_id", "id"], path: "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["order_id", "fulfillment_id", "id"], path: "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id", "id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["order_id", "fulfillment_id", "id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"}
   ];
 
   protected static getJsonBodyName(): string
@@ -58,8 +58,8 @@ export class FulfillmentEvent extends Base {
   ): Promise<FulfillmentEvent | null> {
     const result = await FulfillmentEvent.baseFind({
       session: session,
-      urlIds: {id: id, order_id: order_id, fulfillment_id: fulfillment_id},
-      params: {event_id: event_id},
+      urlIds: {"id": id, "order_id": order_id, "fulfillment_id": fulfillment_id},
+      params: {"event_id": event_id},
     });
     return result ? result[0] as FulfillmentEvent : null;
   }
@@ -76,7 +76,7 @@ export class FulfillmentEvent extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id, order_id: order_id, fulfillment_id: fulfillment_id},
+      urlIds: {"id": id, "order_id": order_id, "fulfillment_id": fulfillment_id},
       params: {},
     });
 
@@ -93,7 +93,7 @@ export class FulfillmentEvent extends Base {
   ): Promise<FulfillmentEvent[]> {
     const response = await FulfillmentEvent.baseFind({
       session: session,
-      urlIds: {order_id: order_id, fulfillment_id: fulfillment_id},
+      urlIds: {"order_id": order_id, "fulfillment_id": fulfillment_id},
       params: {...otherArgs},
     });
 

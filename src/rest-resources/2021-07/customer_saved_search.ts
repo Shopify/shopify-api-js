@@ -40,13 +40,13 @@ export class CustomerSavedSearch extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "customer_saved_searches.json"},
-    {http_method: "post", operation: "post", ids: [], path: "customer_saved_searches.json"},
-    {http_method: "get", operation: "count", ids: [], path: "customer_saved_searches/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "customer_saved_searches/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "customer_saved_searches/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "customer_saved_searches/<id>.json"},
-    {http_method: "get", operation: "customers", ids: ["id"], path: "customer_saved_searches/<id>/customers.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "customer_saved_searches.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "customer_saved_searches.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "customer_saved_searches/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
+    {"http_method": "get", "operation": "customers", "ids": ["id"], "path": "customer_saved_searches/<id>/customers.json"}
   ];
 
   public static async find(
@@ -58,8 +58,8 @@ export class CustomerSavedSearch extends Base {
   ): Promise<CustomerSavedSearch | null> {
     const result = await CustomerSavedSearch.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as CustomerSavedSearch : null;
   }
@@ -74,7 +74,7 @@ export class CustomerSavedSearch extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -93,7 +93,7 @@ export class CustomerSavedSearch extends Base {
     const response = await CustomerSavedSearch.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, fields: fields, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as CustomerSavedSearch[];
@@ -111,7 +111,7 @@ export class CustomerSavedSearch extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {since_id: since_id, ...otherArgs},
+      params: {"since_id": since_id, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -133,8 +133,8 @@ export class CustomerSavedSearch extends Base {
       http_method: "get",
       operation: "customers",
       session: session,
-      urlIds: {id: id},
-      params: {order: order, limit: limit, fields: fields, ...otherArgs},
+      urlIds: {"id": id},
+      params: {"order": order, "limit": limit, "fields": fields, ...otherArgs},
       body: {},
       entity: null,
     });

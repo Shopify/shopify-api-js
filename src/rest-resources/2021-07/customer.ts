@@ -2,17 +2,12 @@ import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 
-import {Currency} from './currency';
 import {Metafield} from './metafield';
 
 interface FindArgs {
   session: SessionInterface;
   id: number | string;
   fields?: unknown;
-}
-interface DeleteArgs {
-  session: SessionInterface;
-  id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
@@ -58,21 +53,19 @@ export class Customer extends Base {
   protected static NAME = 'customer';
   protected static PLURAL_NAME = 'customers';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    currency: Currency,
-    metafield: Metafield
+    "metafield": Metafield
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "customers.json"},
-    {http_method: "post", operation: "post", ids: [], path: "customers.json"},
-    {http_method: "get", operation: "search", ids: [], path: "customers/search.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "customers/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "customers/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "customers/<id>.json"},
-    {http_method: "post", operation: "account_activation_url", ids: ["id"], path: "customers/<id>/account_activation_url.json"},
-    {http_method: "post", operation: "send_invite", ids: ["id"], path: "customers/<id>/send_invite.json"},
-    {http_method: "get", operation: "count", ids: [], path: "customers/count.json"},
-    {http_method: "get", operation: "orders", ids: ["id"], path: "customers/<id>/orders.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "customers/search.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "post", "operation": "account_activation_url", "ids": ["id"], "path": "customers/<id>/account_activation_url.json"},
+    {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
+    {"http_method": "get", "operation": "orders", "ids": ["id"], "path": "customers/<id>/orders.json"}
   ];
 
   public static async find(
@@ -84,27 +77,10 @@ export class Customer extends Base {
   ): Promise<Customer | null> {
     const result = await Customer.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Customer : null;
-  }
-
-  public static async delete(
-    {
-      session,
-      id
-    }: DeleteArgs
-  ): Promise<unknown> {
-    const response = await Customer.request({
-      http_method: "delete",
-      operation: "delete",
-      session: session,
-      urlIds: {id: id},
-      params: {},
-    });
-
-    return response ? response.body : null;
   }
 
   public static async all(
@@ -124,7 +100,7 @@ export class Customer extends Base {
     const response = await Customer.baseFind({
       session: session,
       urlIds: {},
-      params: {ids: ids, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, limit: limit, fields: fields, ...otherArgs},
+      params: {"ids": ids, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "limit": limit, "fields": fields, ...otherArgs},
     });
 
     return response as Customer[];
@@ -145,7 +121,7 @@ export class Customer extends Base {
       operation: "search",
       session: session,
       urlIds: {},
-      params: {order: order, query: query, limit: limit, fields: fields, ...otherArgs},
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -183,7 +159,7 @@ export class Customer extends Base {
       http_method: "get",
       operation: "orders",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {...otherArgs},
       body: {},
       entity: null,
@@ -202,7 +178,7 @@ export class Customer extends Base {
       http_method: "post",
       operation: "account_activation_url",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -221,7 +197,7 @@ export class Customer extends Base {
       http_method: "post",
       operation: "send_invite",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -234,7 +210,7 @@ export class Customer extends Base {
   public accepts_marketing_updated_at: string | null;
   public addresses: {[key: string]: unknown}[] | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public default_address: {[key: string]: unknown} | null;
   public email: string | null;
   public first_name: string | null;

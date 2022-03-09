@@ -21,9 +21,9 @@ export class GiftCardAdjustment extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["gift_card_id"], path: "gift_cards/<gift_card_id>/adjustments.json"},
-    {http_method: "post", operation: "post", ids: ["gift_card_id"], path: "gift_cards/<gift_card_id>/adjustments.json"},
-    {http_method: "get", operation: "get", ids: ["gift_card_id", "id"], path: "gift_cards/<gift_card_id>/adjustments/9.json"}
+    {"http_method": "get", "operation": "get", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"},
+    {"http_method": "post", "operation": "post", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"},
+    {"http_method": "get", "operation": "get", "ids": ["gift_card_id", "id"], "path": "gift_cards/<gift_card_id>/adjustments/9.json"}
   ];
 
   protected static getJsonBodyName(): string
@@ -40,7 +40,7 @@ export class GiftCardAdjustment extends Base {
   ): Promise<GiftCardAdjustment | null> {
     const result = await GiftCardAdjustment.baseFind({
       session: session,
-      urlIds: {id: id, gift_card_id: gift_card_id},
+      urlIds: {"id": id, "gift_card_id": gift_card_id},
       params: {},
     });
     return result ? result[0] as GiftCardAdjustment : null;
@@ -55,7 +55,7 @@ export class GiftCardAdjustment extends Base {
   ): Promise<GiftCardAdjustment[]> {
     const response = await GiftCardAdjustment.baseFind({
       session: session,
-      urlIds: {gift_card_id: gift_card_id},
+      urlIds: {"gift_card_id": gift_card_id},
       params: {...otherArgs},
     });
 

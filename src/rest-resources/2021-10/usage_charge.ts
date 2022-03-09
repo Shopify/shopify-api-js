@@ -23,9 +23,9 @@ export class UsageCharge extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: ["recurring_application_charge_id"], path: "recurring_application_charges/<recurring_application_charge_id>/usage_charges.json"},
-    {http_method: "get", operation: "get", ids: ["recurring_application_charge_id"], path: "recurring_application_charges/<recurring_application_charge_id>/usage_charges.json"},
-    {http_method: "get", operation: "get", ids: ["recurring_application_charge_id", "id"], path: "recurring_application_charges/<recurring_application_charge_id>/usage_charges/<id>.json"}
+    {"http_method": "post", "operation": "post", "ids": ["recurring_application_charge_id"], "path": "recurring_application_charges/<recurring_application_charge_id>/usage_charges.json"},
+    {"http_method": "get", "operation": "get", "ids": ["recurring_application_charge_id"], "path": "recurring_application_charges/<recurring_application_charge_id>/usage_charges.json"},
+    {"http_method": "get", "operation": "get", "ids": ["recurring_application_charge_id", "id"], "path": "recurring_application_charges/<recurring_application_charge_id>/usage_charges/<id>.json"}
   ];
 
   public static async find(
@@ -38,8 +38,8 @@ export class UsageCharge extends Base {
   ): Promise<UsageCharge | null> {
     const result = await UsageCharge.baseFind({
       session: session,
-      urlIds: {id: id, recurring_application_charge_id: recurring_application_charge_id},
-      params: {fields: fields},
+      urlIds: {"id": id, "recurring_application_charge_id": recurring_application_charge_id},
+      params: {"fields": fields},
     });
     return result ? result[0] as UsageCharge : null;
   }
@@ -54,8 +54,8 @@ export class UsageCharge extends Base {
   ): Promise<UsageCharge[]> {
     const response = await UsageCharge.baseFind({
       session: session,
-      urlIds: {recurring_application_charge_id: recurring_application_charge_id},
-      params: {fields: fields, ...otherArgs},
+      urlIds: {"recurring_application_charge_id": recurring_application_charge_id},
+      params: {"fields": fields, ...otherArgs},
     });
 
     return response as UsageCharge[];

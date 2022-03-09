@@ -15,7 +15,7 @@ export class DeprecatedApiCall extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "deprecated_api_calls.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "deprecated_api_calls.json"}
   ];
 
   public static async all(

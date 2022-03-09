@@ -39,16 +39,16 @@ export class ProductListing extends Base {
   protected static PLURAL_NAME = 'product_listings';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    images: Image,
-    variants: Variant
+    "images": Image,
+    "variants": Variant
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "product_listings.json"},
-    {http_method: "get", operation: "product_ids", ids: [], path: "product_listings/product_ids.json"},
-    {http_method: "get", operation: "count", ids: [], path: "product_listings/count.json"},
-    {http_method: "get", operation: "get", ids: ["product_id"], path: "product_listings/<product_id>.json"},
-    {http_method: "put", operation: "put", ids: ["product_id"], path: "product_listings/<product_id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["product_id"], path: "product_listings/<product_id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "product_listings.json"},
+    {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "product_listings/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
   ];
   protected static PRIMARY_KEY: string = "product_id";
 
@@ -60,7 +60,7 @@ export class ProductListing extends Base {
   ): Promise<ProductListing | null> {
     const result = await ProductListing.baseFind({
       session: session,
-      urlIds: {product_id: product_id},
+      urlIds: {"product_id": product_id},
       params: {},
     });
     return result ? result[0] as ProductListing : null;
@@ -76,7 +76,7 @@ export class ProductListing extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {product_id: product_id},
+      urlIds: {"product_id": product_id},
       params: {},
     });
 
@@ -97,7 +97,7 @@ export class ProductListing extends Base {
     const response = await ProductListing.baseFind({
       session: session,
       urlIds: {},
-      params: {product_ids: product_ids, limit: limit, collection_id: collection_id, updated_at_min: updated_at_min, handle: handle, ...otherArgs},
+      params: {"product_ids": product_ids, "limit": limit, "collection_id": collection_id, "updated_at_min": updated_at_min, "handle": handle, ...otherArgs},
     });
 
     return response as ProductListing[];
@@ -115,7 +115,7 @@ export class ProductListing extends Base {
       operation: "product_ids",
       session: session,
       urlIds: {},
-      params: {limit: limit, ...otherArgs},
+      params: {"limit": limit, ...otherArgs},
       body: {},
       entity: null,
     });

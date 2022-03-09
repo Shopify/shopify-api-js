@@ -35,12 +35,12 @@ export class Image extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["product_id"], path: "products/<product_id>/images.json"},
-    {http_method: "post", operation: "post", ids: ["product_id"], path: "products/<product_id>/images.json"},
-    {http_method: "get", operation: "count", ids: ["product_id"], path: "products/<product_id>/images/count.json"},
-    {http_method: "get", operation: "get", ids: ["product_id", "id"], path: "products/<product_id>/images/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["product_id", "id"], path: "products/<product_id>/images/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["product_id", "id"], path: "products/<product_id>/images/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/images.json"},
+    {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/images.json"},
+    {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/images/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["product_id", "id"], "path": "products/<product_id>/images/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["product_id", "id"], "path": "products/<product_id>/images/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/images/<id>.json"}
   ];
 
   public static async find(
@@ -53,8 +53,8 @@ export class Image extends Base {
   ): Promise<Image | null> {
     const result = await Image.baseFind({
       session: session,
-      urlIds: {id: id, product_id: product_id},
-      params: {fields: fields},
+      urlIds: {"id": id, "product_id": product_id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Image : null;
   }
@@ -70,7 +70,7 @@ export class Image extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id, product_id: product_id},
+      urlIds: {"id": id, "product_id": product_id},
       params: {},
     });
 
@@ -88,8 +88,8 @@ export class Image extends Base {
   ): Promise<Image[]> {
     const response = await Image.baseFind({
       session: session,
-      urlIds: {product_id: product_id},
-      params: {since_id: since_id, fields: fields, ...otherArgs},
+      urlIds: {"product_id": product_id},
+      params: {"since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as Image[];
@@ -107,8 +107,8 @@ export class Image extends Base {
       http_method: "get",
       operation: "count",
       session: session,
-      urlIds: {product_id: product_id},
-      params: {since_id: since_id, ...otherArgs},
+      urlIds: {"product_id": product_id},
+      params: {"since_id": since_id, ...otherArgs},
       body: {},
       entity: null,
     });

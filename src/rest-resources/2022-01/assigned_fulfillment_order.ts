@@ -17,7 +17,7 @@ export class AssignedFulfillmentOrder extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "assigned_fulfillment_orders.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "assigned_fulfillment_orders.json"}
   ];
 
   public static async all(
@@ -31,7 +31,7 @@ export class AssignedFulfillmentOrder extends Base {
     const response = await AssignedFulfillmentOrder.baseFind({
       session: session,
       urlIds: {},
-      params: {assignment_status: assignment_status, location_ids: location_ids, ...otherArgs},
+      params: {"assignment_status": assignment_status, "location_ids": location_ids, ...otherArgs},
     });
 
     return response as AssignedFulfillmentOrder[];

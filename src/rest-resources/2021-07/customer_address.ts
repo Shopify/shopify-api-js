@@ -36,13 +36,13 @@ export class CustomerAddress extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["customer_id"], path: "customers/<customer_id>/addresses.json"},
-    {http_method: "post", operation: "post", ids: ["customer_id"], path: "customers/<customer_id>/addresses.json"},
-    {http_method: "get", operation: "get", ids: ["customer_id", "id"], path: "customers/<customer_id>/addresses/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["customer_id", "id"], path: "customers/<customer_id>/addresses/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["customer_id", "id"], path: "customers/<customer_id>/addresses/<id>.json"},
-    {http_method: "put", operation: "set", ids: ["customer_id"], path: "customers/<customer_id>/addresses/set.json"},
-    {http_method: "put", operation: "default", ids: ["customer_id", "id"], path: "customers/<customer_id>/addresses/<id>/default.json"}
+    {"http_method": "get", "operation": "get", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
+    {"http_method": "post", "operation": "post", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
+    {"http_method": "get", "operation": "get", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
+    {"http_method": "put", "operation": "set", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses/set.json"},
+    {"http_method": "put", "operation": "default", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>/default.json"}
   ];
 
   protected static getJsonBodyName(): string
@@ -59,7 +59,7 @@ export class CustomerAddress extends Base {
   ): Promise<CustomerAddress | null> {
     const result = await CustomerAddress.baseFind({
       session: session,
-      urlIds: {id: id, customer_id: customer_id},
+      urlIds: {"id": id, "customer_id": customer_id},
       params: {},
     });
     return result ? result[0] as CustomerAddress : null;
@@ -76,7 +76,7 @@ export class CustomerAddress extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id, customer_id: customer_id},
+      urlIds: {"id": id, "customer_id": customer_id},
       params: {},
     });
 
@@ -92,7 +92,7 @@ export class CustomerAddress extends Base {
   ): Promise<CustomerAddress[]> {
     const response = await CustomerAddress.baseFind({
       session: session,
-      urlIds: {customer_id: customer_id},
+      urlIds: {"customer_id": customer_id},
       params: {...otherArgs},
     });
 
@@ -111,8 +111,8 @@ export class CustomerAddress extends Base {
       http_method: "put",
       operation: "set",
       session: this.session,
-      urlIds: {customer_id: this.customer_id},
-      params: {address_ids: address_ids, operation: operation, ...otherArgs},
+      urlIds: {"customer_id": this.customer_id},
+      params: {"address_ids": address_ids, "operation": operation, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -130,7 +130,7 @@ export class CustomerAddress extends Base {
       http_method: "put",
       operation: "default",
       session: this.session,
-      urlIds: {id: this.id, customer_id: this.customer_id},
+      urlIds: {"id": this.id, "customer_id": this.customer_id},
       params: {...otherArgs},
       body: body,
       entity: this,

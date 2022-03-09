@@ -23,10 +23,10 @@ export class Asset extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["theme_id"], path: "themes/<theme_id>/assets.json"},
-    {http_method: "put", operation: "put", ids: ["theme_id"], path: "themes/<theme_id>/assets.json"},
-    {http_method: "get", operation: "get", ids: ["theme_id"], path: "themes/<theme_id>/assets.json"},
-    {http_method: "delete", operation: "delete", ids: ["theme_id"], path: "themes/<theme_id>/assets.json"}
+    {"http_method": "get", "operation": "get", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
+    {"http_method": "put", "operation": "put", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
+    {"http_method": "get", "operation": "get", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"}
   ];
   protected static PRIMARY_KEY: string = "key";
 
@@ -41,8 +41,8 @@ export class Asset extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {theme_id: theme_id},
-      params: {asset: asset},
+      urlIds: {"theme_id": theme_id},
+      params: {"asset": asset},
     });
 
     return response ? response.body : null;
@@ -59,8 +59,8 @@ export class Asset extends Base {
   ): Promise<Asset[]> {
     const response = await Asset.baseFind({
       session: session,
-      urlIds: {theme_id: theme_id},
-      params: {fields: fields, asset: asset, ...otherArgs},
+      urlIds: {"theme_id": theme_id},
+      params: {"fields": fields, "asset": asset, ...otherArgs},
     });
 
     return response as Asset[];

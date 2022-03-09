@@ -15,7 +15,7 @@ describe('AccessScope resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"access_scopes": [{"handle": "read_products"}, {"handle": "write_orders"}, {"handle": "read_orders"}]}));
 
     await AccessScope.all({
       session: test_session,

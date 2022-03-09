@@ -23,11 +23,11 @@ export class CarrierService extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "carrier_services.json"},
-    {http_method: "get", operation: "get", ids: [], path: "carrier_services.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "carrier_services/<id>.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "carrier_services/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "carrier_services/<id>.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "carrier_services.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "carrier_services.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "carrier_services/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "carrier_services/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "carrier_services/<id>.json"}
   ];
 
   public static async find(
@@ -38,7 +38,7 @@ export class CarrierService extends Base {
   ): Promise<CarrierService | null> {
     const result = await CarrierService.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as CarrierService : null;
@@ -54,7 +54,7 @@ export class CarrierService extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 

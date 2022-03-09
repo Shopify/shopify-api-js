@@ -33,15 +33,15 @@ export class Blog extends Base {
   protected static PLURAL_NAME = 'blogs';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    metafields: Metafield
+    "metafields": Metafield
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "blogs.json"},
-    {http_method: "post", operation: "post", ids: [], path: "blogs.json"},
-    {http_method: "get", operation: "count", ids: [], path: "blogs/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "blogs/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "blogs/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "blogs/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "blogs.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "blogs.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "blogs/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "blogs/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "blogs/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "blogs/<id>.json"}
   ];
 
   public static async find(
@@ -53,8 +53,8 @@ export class Blog extends Base {
   ): Promise<Blog | null> {
     const result = await Blog.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Blog : null;
   }
@@ -69,7 +69,7 @@ export class Blog extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -89,7 +89,7 @@ export class Blog extends Base {
     const response = await Blog.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, handle: handle, fields: fields, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "handle": handle, "fields": fields, ...otherArgs},
     });
 
     return response as Blog[];
