@@ -1,4 +1,4 @@
-import http from 'http';
+import type {IncomingMessage, ServerResponse} from 'http';
 
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
@@ -43,8 +43,8 @@ describe('withSession', () => {
   });
 
   it('throws an error when there is no session matching the params requested', async () => {
-    const req = {} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    const req = {} as IncomingMessage;
+    const res = {} as ServerResponse;
 
     await expect(
       withSession({clientType: 'rest', isOnline: false, shop}),
@@ -99,8 +99,8 @@ describe('withSession', () => {
     session.accessToken = 'gimme-access';
     await Context.SESSION_STORAGE.storeSession(session);
 
-    const req = {} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    const req = {} as IncomingMessage;
+    const res = {} as ServerResponse;
 
     const cookieId = '12345';
 
@@ -158,8 +158,8 @@ describe('withSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    } as IncomingMessage;
+    const res = {} as ServerResponse;
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',

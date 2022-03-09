@@ -1,4 +1,4 @@
-import http from 'http';
+import type {IncomingMessage, ServerResponse} from 'http';
 
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
@@ -33,8 +33,8 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    const req = {} as IncomingMessage;
+    const res = {} as ServerResponse;
 
     const cookieId = '1234-this-is-a-cookie-session-id';
 
@@ -57,8 +57,8 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    const req = {} as IncomingMessage;
+    const res = {} as ServerResponse;
 
     Cookies.prototype.get.mockImplementation(() => null);
 
@@ -76,8 +76,8 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    } as IncomingMessage;
+    const res = {} as ServerResponse;
 
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
@@ -96,8 +96,8 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const req = {headers: {}} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    const req = {headers: {}} as IncomingMessage;
+    const res = {} as ServerResponse;
 
     await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
   });
@@ -113,8 +113,8 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    } as IncomingMessage;
+    const res = {} as ServerResponse;
 
     await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
   });
@@ -127,8 +127,8 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: 'Not a Bearer token!',
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    } as IncomingMessage;
+    const res = {} as ServerResponse;
 
     await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(
       ShopifyErrors.MissingJwtTokenError,
@@ -143,8 +143,8 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: '',
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    } as IncomingMessage;
+    const res = {} as ServerResponse;
 
     const cookieId = '1234-this-is-a-cookie-session-id';
 
@@ -167,8 +167,8 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    const req = {} as IncomingMessage;
+    const res = {} as ServerResponse;
 
     const cookieId = ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io');
 
@@ -198,8 +198,8 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    } as IncomingMessage;
+    const res = {} as ServerResponse;
 
     const session = new Session(
       ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io'),

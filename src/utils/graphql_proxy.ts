@@ -1,4 +1,4 @@
-import http from 'http';
+import type {IncomingMessage, ServerResponse} from 'http';
 
 import {GraphqlClient} from '../clients/graphql';
 import {RequestReturn} from '../clients/http_client/types';
@@ -7,8 +7,8 @@ import * as ShopifyErrors from '../error';
 import loadCurrentSession from './load-current-session';
 
 export default async function graphqlProxy(
-  userReq: http.IncomingMessage,
-  userRes: http.ServerResponse,
+  userReq: IncomingMessage,
+  userRes: ServerResponse,
 ): Promise<RequestReturn> {
   const session = await loadCurrentSession(userReq, userRes);
   if (!session) {

@@ -1,4 +1,4 @@
-import http from 'http';
+import type {IncomingMessage, ServerResponse} from 'http';
 
 import jwt from 'jsonwebtoken';
 
@@ -31,8 +31,8 @@ describe('storeSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+    } as IncomingMessage;
+    const res = {} as ServerResponse;
 
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
