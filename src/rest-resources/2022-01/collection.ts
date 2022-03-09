@@ -22,12 +22,12 @@ export class Collection extends Base {
   protected static NAME = 'collection';
   protected static PLURAL_NAME = 'collections';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    image: Image
+    "image": Image
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["id"], path: "collections/<id>.json"},
-    {http_method: "get", operation: "products", ids: ["id"], path: "collections/<id>/products.json"}
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collections/<id>.json"},
+    {"http_method": "get", "operation": "products", "ids": ["id"], "path": "collections/<id>/products.json"}
   ];
 
   public static async find(
@@ -39,8 +39,8 @@ export class Collection extends Base {
   ): Promise<Collection | null> {
     const result = await Collection.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Collection : null;
   }
@@ -57,8 +57,8 @@ export class Collection extends Base {
       http_method: "get",
       operation: "products",
       session: session,
-      urlIds: {id: id},
-      params: {limit: limit, ...otherArgs},
+      urlIds: {"id": id},
+      params: {"limit": limit, ...otherArgs},
       body: {},
       entity: null,
     });

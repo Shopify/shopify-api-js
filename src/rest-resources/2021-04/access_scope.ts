@@ -16,7 +16,7 @@ export class AccessScope extends Base {
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static CUSTOM_PREFIX: string | null = "/admin/oauth";
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "access_scopes.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "access_scopes.json"}
   ];
 
   public static async all(

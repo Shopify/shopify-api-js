@@ -2,8 +2,6 @@ import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 
-import {Currency} from './currency';
-
 interface FindArgs {
   session: SessionInterface;
   id: number | string;
@@ -24,13 +22,11 @@ export class Payout extends Base {
 
   protected static NAME = 'payout';
   protected static PLURAL_NAME = 'payouts';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
-    currency: Currency
-  };
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "shopify_payments/payouts.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "shopify_payments/payouts/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/payouts.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/payouts/<id>.json"}
   ];
 
   public static async find(
@@ -41,7 +37,7 @@ export class Payout extends Base {
   ): Promise<Payout | null> {
     const result = await Payout.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as Payout : null;
@@ -62,14 +58,14 @@ export class Payout extends Base {
     const response = await Payout.baseFind({
       session: session,
       urlIds: {},
-      params: {since_id: since_id, last_id: last_id, date_min: date_min, date_max: date_max, date: date, status: status, ...otherArgs},
+      params: {"since_id": since_id, "last_id": last_id, "date_min": date_min, "date_max": date_max, "date": date, "status": status, ...otherArgs},
     });
 
     return response as Payout[];
   }
 
   public amount: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public date: string | null;
   public id: number | null;
   public status: string | null;

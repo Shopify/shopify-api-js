@@ -15,7 +15,7 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 1054381140, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-02-03T16:43:10-05:00", "updated_at": "2022-02-03T16:43:10-05:00"}}));
 
     const discount_code = new DiscountCode({session: test_session});
     discount_code.price_rule_id = 507328175;
@@ -28,12 +28,12 @@ describe('DiscountCode resource', () => {
       path: '/admin/api/2021-10/price_rules/507328175/discount_codes.json',
       query: '',
       headers,
-      data: { "discount_code": {code: "SUMMERSALE10OFF"} }
+      data: { "discount_code": {"code": "SUMMERSALE10OFF"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_codes": [{"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-02-03T16:32:42-05:00", "updated_at": "2022-02-03T16:32:42-05:00"}]}));
 
     await DiscountCode.all({
       session: test_session,
@@ -51,7 +51,7 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "WINTERSALE20OFF", "usage_count": 0, "created_at": "2022-02-03T16:32:42-05:00", "updated_at": "2022-02-03T16:43:11-05:00"}}));
 
     const discount_code = new DiscountCode({session: test_session});
     discount_code.price_rule_id = 507328175;
@@ -65,12 +65,12 @@ describe('DiscountCode resource', () => {
       path: '/admin/api/2021-10/price_rules/507328175/discount_codes/507328175.json',
       query: '',
       headers,
-      data: { "discount_code": {id: 507328175, code: "WINTERSALE20OFF"} }
+      data: { "discount_code": {"id": 507328175, "code": "WINTERSALE20OFF"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-02-03T16:32:42-05:00", "updated_at": "2022-02-03T16:32:42-05:00"}}));
 
     await DiscountCode.find({
       session: test_session,
@@ -108,7 +108,7 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_6', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"count": 2}));
 
     await DiscountCode.count({
       session: test_session,
@@ -125,12 +125,12 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_7', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code_creation": {"id": 989355120, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2022-02-03T16:43:23-05:00", "updated_at": "2022-02-03T16:43:23-05:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
 
     const discount_code = new DiscountCode({session: test_session});
     discount_code.price_rule_id = 507328175;
     await discount_code.batch({
-      body: {discount_codes: [{code: "SUMMER1"}, {code: "SUMMER2"}, {code: "SUMMER3"}]},
+      body: {"discount_codes": [{"code": "SUMMER1"}, {"code": "SUMMER2"}, {"code": "SUMMER3"}]},
     });
 
     expect({
@@ -139,12 +139,12 @@ describe('DiscountCode resource', () => {
       path: '/admin/api/2021-10/price_rules/507328175/batch.json',
       query: '',
       headers,
-      data: {discount_codes: [{code: "SUMMER1"}, {code: "SUMMER2"}, {code: "SUMMER3"}]}
+      data: {"discount_codes": [{"code": "SUMMER1"}, {"code": "SUMMER2"}, {"code": "SUMMER3"}]}
     }).toMatchMadeHttpRequest();
   });
 
   it('test_8', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code_creation": {"id": 173232803, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2022-02-03T16:32:42-05:00", "updated_at": "2022-02-03T16:32:42-05:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
 
     await DiscountCode.get_all({
       session: test_session,
@@ -163,7 +163,7 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_9', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_codes": [{"id": null, "code": "foo", "errors": {}}, {"id": null, "code": "", "errors": {}}, {"id": null, "code": "bar", "errors": {}}]}));
 
     await DiscountCode.all({
       session: test_session,

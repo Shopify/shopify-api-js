@@ -2,9 +2,6 @@ import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 
-import {Balance} from './balance';
-import {Currency} from './currency';
-
 interface FindArgs {
   session: SessionInterface;
   id: number | string;
@@ -40,19 +37,16 @@ export class GiftCard extends Base {
 
   protected static NAME = 'gift_card';
   protected static PLURAL_NAME = 'gift_cards';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
-    balance: Balance,
-    currency: Currency
-  };
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "gift_cards.json"},
-    {http_method: "post", operation: "post", ids: [], path: "gift_cards.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "gift_cards/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "gift_cards/<id>.json"},
-    {http_method: "get", operation: "count", ids: [], path: "gift_cards/count.json"},
-    {http_method: "post", operation: "disable", ids: ["id"], path: "gift_cards/<id>/disable.json"},
-    {http_method: "get", operation: "search", ids: [], path: "gift_cards/search.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
+    {"http_method": "post", "operation": "disable", "ids": ["id"], "path": "gift_cards/<id>/disable.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "gift_cards/search.json"}
   ];
 
   public static async find(
@@ -63,7 +57,7 @@ export class GiftCard extends Base {
   ): Promise<GiftCard | null> {
     const result = await GiftCard.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as GiftCard : null;
@@ -82,7 +76,7 @@ export class GiftCard extends Base {
     const response = await GiftCard.baseFind({
       session: session,
       urlIds: {},
-      params: {status: status, limit: limit, since_id: since_id, fields: fields, ...otherArgs},
+      params: {"status": status, "limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as GiftCard[];
@@ -100,7 +94,7 @@ export class GiftCard extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {status: status, ...otherArgs},
+      params: {"status": status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -123,7 +117,7 @@ export class GiftCard extends Base {
       operation: "search",
       session: session,
       urlIds: {},
-      params: {order: order, query: query, limit: limit, fields: fields, ...otherArgs},
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -141,7 +135,7 @@ export class GiftCard extends Base {
       http_method: "post",
       operation: "disable",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -151,10 +145,10 @@ export class GiftCard extends Base {
   }
 
   public api_client_id: number | null;
-  public balance: Balance | null | {[key: string]: any};
+  public balance: number | null;
   public code: string | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public customer_id: number | null;
   public disabled_at: string | null;
   public expires_on: string | null;

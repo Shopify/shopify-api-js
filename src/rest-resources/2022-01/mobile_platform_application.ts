@@ -23,11 +23,11 @@ export class MobilePlatformApplication extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "mobile_platform_applications.json"},
-    {http_method: "post", operation: "post", ids: [], path: "mobile_platform_applications.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "mobile_platform_applications/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "mobile_platform_applications/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "mobile_platform_applications/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "mobile_platform_applications.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "mobile_platform_applications.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"}
   ];
 
   public static async find(
@@ -38,7 +38,7 @@ export class MobilePlatformApplication extends Base {
   ): Promise<MobilePlatformApplication | null> {
     const result = await MobilePlatformApplication.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as MobilePlatformApplication : null;
@@ -54,7 +54,7 @@ export class MobilePlatformApplication extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 

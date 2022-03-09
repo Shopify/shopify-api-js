@@ -16,7 +16,7 @@ export class LocationsForMove extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["fulfillment_order_id"], path: "fulfillment_orders/<fulfillment_order_id>/locations_for_move.json"}
+    {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/locations_for_move.json"}
   ];
 
   public static async all(
@@ -28,7 +28,7 @@ export class LocationsForMove extends Base {
   ): Promise<LocationsForMove[]> {
     const response = await LocationsForMove.baseFind({
       session: session,
-      urlIds: {fulfillment_order_id: fulfillment_order_id},
+      urlIds: {"fulfillment_order_id": fulfillment_order_id},
       params: {...otherArgs},
     });
 

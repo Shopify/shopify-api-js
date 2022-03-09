@@ -24,11 +24,11 @@ export class ApplePayCertificate extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "apple_pay_certificates.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "apple_pay_certificates/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "apple_pay_certificates/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "apple_pay_certificates/<id>.json"},
-    {http_method: "get", operation: "csr", ids: ["id"], path: "apple_pay_certificates/<id>/csr.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "apple_pay_certificates.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"},
+    {"http_method": "get", "operation": "csr", "ids": ["id"], "path": "apple_pay_certificates/<id>/csr.json"}
   ];
 
   public static async find(
@@ -39,7 +39,7 @@ export class ApplePayCertificate extends Base {
   ): Promise<ApplePayCertificate | null> {
     const result = await ApplePayCertificate.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as ApplePayCertificate : null;
@@ -55,7 +55,7 @@ export class ApplePayCertificate extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -73,7 +73,7 @@ export class ApplePayCertificate extends Base {
       http_method: "get",
       operation: "csr",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {...otherArgs},
       body: {},
       entity: null,

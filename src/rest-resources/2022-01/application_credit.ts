@@ -21,9 +21,9 @@ export class ApplicationCredit extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "application_credits.json"},
-    {http_method: "get", operation: "get", ids: [], path: "application_credits.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "application_credits/<id>.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "application_credits.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "application_credits.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_credits/<id>.json"}
   ];
 
   public static async find(
@@ -35,8 +35,8 @@ export class ApplicationCredit extends Base {
   ): Promise<ApplicationCredit | null> {
     const result = await ApplicationCredit.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as ApplicationCredit : null;
   }
@@ -51,7 +51,7 @@ export class ApplicationCredit extends Base {
     const response = await ApplicationCredit.baseFind({
       session: session,
       urlIds: {},
-      params: {fields: fields, ...otherArgs},
+      params: {"fields": fields, ...otherArgs},
     });
 
     return response as ApplicationCredit[];
