@@ -20,11 +20,11 @@ export class PaymentTransaction extends Base {
   protected static NAME = 'payment_transaction';
   protected static PLURAL_NAME = 'payment_transactions';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    currency: Currency
+    "currency": Currency
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "transactions", ids: [], path: "shopify_payments/balance/transactions.json"}
+    {"http_method": "get", "operation": "transactions", "ids": [], "path": "shopify_payments/balance/transactions.json"}
   ];
 
   public static async transactions(
@@ -43,7 +43,7 @@ export class PaymentTransaction extends Base {
       operation: "transactions",
       session: session,
       urlIds: {},
-      params: {since_id: since_id, last_id: last_id, test: test, payout_id: payout_id, payout_status: payout_status, ...otherArgs},
+      params: {"since_id": since_id, "last_id": last_id, "test": test, "payout_id": payout_id, "payout_status": payout_status, ...otherArgs},
       body: {},
       entity: null,
     });

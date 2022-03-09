@@ -24,11 +24,11 @@ export class FulfillmentService extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "fulfillment_services.json"},
-    {http_method: "post", operation: "post", ids: [], path: "fulfillment_services.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "fulfillment_services/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "fulfillment_services/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "fulfillment_services/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "fulfillment_services.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillment_services.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_services/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "fulfillment_services/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "fulfillment_services/<id>.json"}
   ];
 
   public static async find(
@@ -39,7 +39,7 @@ export class FulfillmentService extends Base {
   ): Promise<FulfillmentService | null> {
     const result = await FulfillmentService.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as FulfillmentService : null;
@@ -55,7 +55,7 @@ export class FulfillmentService extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -72,7 +72,7 @@ export class FulfillmentService extends Base {
     const response = await FulfillmentService.baseFind({
       session: session,
       urlIds: {},
-      params: {scope: scope, ...otherArgs},
+      params: {"scope": scope, ...otherArgs},
     });
 
     return response as FulfillmentService[];

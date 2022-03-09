@@ -3,7 +3,6 @@ import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 
 import {Customer} from './customer';
-import {Currency} from './currency';
 
 interface FindArgs {
   session: SessionInterface;
@@ -49,19 +48,18 @@ export class DraftOrder extends Base {
   protected static NAME = 'draft_order';
   protected static PLURAL_NAME = 'draft_orders';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    customer: Customer,
-    currency: Currency
+    "customer": Customer
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "draft_orders.json"},
-    {http_method: "get", operation: "get", ids: [], path: "draft_orders.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "draft_orders/<id>.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "draft_orders/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "draft_orders/<id>.json"},
-    {http_method: "get", operation: "count", ids: [], path: "draft_orders/count.json"},
-    {http_method: "post", operation: "send_invoice", ids: ["id"], path: "draft_orders/<id>/send_invoice.json"},
-    {http_method: "put", operation: "complete", ids: ["id"], path: "draft_orders/<id>/complete.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
+    {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
+    {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"}
   ];
 
   public static async find(
@@ -73,8 +71,8 @@ export class DraftOrder extends Base {
   ): Promise<DraftOrder | null> {
     const result = await DraftOrder.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as DraftOrder : null;
   }
@@ -89,7 +87,7 @@ export class DraftOrder extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -112,7 +110,7 @@ export class DraftOrder extends Base {
     const response = await DraftOrder.baseFind({
       session: session,
       urlIds: {},
-      params: {fields: fields, limit: limit, since_id: since_id, updated_at_min: updated_at_min, updated_at_max: updated_at_max, ids: ids, status: status, ...otherArgs},
+      params: {"fields": fields, "limit": limit, "since_id": since_id, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "ids": ids, "status": status, ...otherArgs},
     });
 
     return response as DraftOrder[];
@@ -133,7 +131,7 @@ export class DraftOrder extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {since_id: since_id, status: status, updated_at_max: updated_at_max, updated_at_min: updated_at_min, ...otherArgs},
+      params: {"since_id": since_id, "status": status, "updated_at_max": updated_at_max, "updated_at_min": updated_at_min, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -151,7 +149,7 @@ export class DraftOrder extends Base {
       http_method: "post",
       operation: "send_invoice",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -171,8 +169,8 @@ export class DraftOrder extends Base {
       http_method: "put",
       operation: "complete",
       session: this.session,
-      urlIds: {id: this.id},
-      params: {payment_pending: payment_pending, ...otherArgs},
+      urlIds: {"id": this.id},
+      params: {"payment_pending": payment_pending, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -184,7 +182,7 @@ export class DraftOrder extends Base {
   public billing_address: {[key: string]: unknown} | null;
   public completed_at: string | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public customer: Customer | null | {[key: string]: any};
   public email: string | null;
   public id: number | null;

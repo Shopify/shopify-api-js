@@ -64,18 +64,18 @@ export class Article extends Base {
   protected static PLURAL_NAME = 'articles';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    metafields: Metafield
+    "metafields": Metafield
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["blog_id"], path: "blogs/<blog_id>/articles.json"},
-    {http_method: "post", operation: "post", ids: ["blog_id"], path: "blogs/<blog_id>/articles.json"},
-    {http_method: "get", operation: "count", ids: ["blog_id"], path: "blogs/<blog_id>/articles/count.json"},
-    {http_method: "get", operation: "get", ids: ["blog_id", "id"], path: "blogs/<blog_id>/articles/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["blog_id", "id"], path: "blogs/<blog_id>/articles/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["blog_id", "id"], path: "blogs/<blog_id>/articles/<id>.json"},
-    {http_method: "get", operation: "authors", ids: [], path: "articles/authors.json"},
-    {http_method: "get", operation: "tags", ids: ["blog_id"], path: "blogs/<blog_id>/articles/tags.json"},
-    {http_method: "get", operation: "tags", ids: [], path: "articles/tags.json"}
+    {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
+    {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
+    {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "get", "operation": "authors", "ids": [], "path": "articles/authors.json"},
+    {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
+    {"http_method": "get", "operation": "tags", "ids": [], "path": "articles/tags.json"}
   ];
 
   public static async find(
@@ -88,8 +88,8 @@ export class Article extends Base {
   ): Promise<Article | null> {
     const result = await Article.baseFind({
       session: session,
-      urlIds: {id: id, blog_id: blog_id},
-      params: {fields: fields},
+      urlIds: {"id": id, "blog_id": blog_id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Article : null;
   }
@@ -105,7 +105,7 @@ export class Article extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id, blog_id: blog_id},
+      urlIds: {"id": id, "blog_id": blog_id},
       params: {},
     });
 
@@ -134,8 +134,8 @@ export class Article extends Base {
   ): Promise<Article[]> {
     const response = await Article.baseFind({
       session: session,
-      urlIds: {blog_id: blog_id},
-      params: {limit: limit, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, handle: handle, tag: tag, author: author, fields: fields, ...otherArgs},
+      urlIds: {"blog_id": blog_id},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "handle": handle, "tag": tag, "author": author, "fields": fields, ...otherArgs},
     });
 
     return response as Article[];
@@ -159,8 +159,8 @@ export class Article extends Base {
       http_method: "get",
       operation: "count",
       session: session,
-      urlIds: {blog_id: blog_id},
-      params: {created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, ...otherArgs},
+      urlIds: {"blog_id": blog_id},
+      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -200,8 +200,8 @@ export class Article extends Base {
       http_method: "get",
       operation: "tags",
       session: session,
-      urlIds: {blog_id: blog_id},
-      params: {limit: limit, popular: popular, ...otherArgs},
+      urlIds: {"blog_id": blog_id},
+      params: {"limit": limit, "popular": popular, ...otherArgs},
       body: {},
       entity: null,
     });

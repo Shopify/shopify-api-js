@@ -25,11 +25,11 @@ export class Theme extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "themes.json"},
-    {http_method: "post", operation: "post", ids: [], path: "themes.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "themes/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "themes/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "themes/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "themes.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "themes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "themes/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "themes/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "themes/<id>.json"}
   ];
 
   public static async find(
@@ -41,8 +41,8 @@ export class Theme extends Base {
   ): Promise<Theme | null> {
     const result = await Theme.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Theme : null;
   }
@@ -57,7 +57,7 @@ export class Theme extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -74,7 +74,7 @@ export class Theme extends Base {
     const response = await Theme.baseFind({
       session: session,
       urlIds: {},
-      params: {fields: fields, ...otherArgs},
+      params: {"fields": fields, ...otherArgs},
     });
 
     return response as Theme[];

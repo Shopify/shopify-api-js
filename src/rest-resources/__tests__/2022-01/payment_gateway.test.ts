@@ -15,7 +15,7 @@ describe('PaymentGateway resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"payment_gateways": [{"disabled": false, "id": 431363653, "name": "shopify_payments", "provider_id": 87, "sandbox": false, "supports_network_tokenization": null, "type": "DirectPaymentGateway", "enabled_card_brands": ["visa", "master", "american_express", "discover", "diners_club"], "processing_method": "direct", "service_name": "Shopify Payments", "metadata": {"google_pay_merchant_id": 548380009}, "created_at": "2011-12-31T19:00:00-05:00", "updated_at": "2022-02-03T17:15:09-05:00", "credential4": null, "attachment": null}, {"disabled": true, "id": 170508070, "name": "Cash on Delivery (COD)", "provider_id": 140, "sandbox": false, "supports_network_tokenization": null, "type": "ManualPaymentGateway", "enabled_card_brands": [], "processing_method": "manual", "service_name": "Cash on Delivery (COD)", "metadata": {}, "created_at": "2022-02-03T17:14:40-05:00", "updated_at": "2022-02-03T17:14:40-05:00"}]}));
 
     await PaymentGateway.all({
       session: test_session,
@@ -32,7 +32,7 @@ describe('PaymentGateway resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"payment_gateways": [{"disabled": false, "id": 431363653, "name": "shopify_payments", "provider_id": 87, "sandbox": false, "supports_network_tokenization": null, "type": "DirectPaymentGateway", "enabled_card_brands": ["visa", "master", "american_express", "discover", "diners_club"], "processing_method": "direct", "service_name": "Shopify Payments", "metadata": {"google_pay_merchant_id": 548380009}, "created_at": "2011-12-31T19:00:00-05:00", "updated_at": "2022-02-03T17:15:10-05:00", "credential4": null, "attachment": null}]}));
 
     await PaymentGateway.all({
       session: test_session,
@@ -50,7 +50,7 @@ describe('PaymentGateway resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"payment_gateway": {"disabled": false, "id": 1048196723, "name": "authorize_net", "provider_id": 7, "sandbox": false, "supports_network_tokenization": null, "type": "DirectPaymentGateway", "enabled_card_brands": ["visa", "master", "american_express", "discover", "diners_club", "jcb"], "processing_method": "direct", "service_name": "Authorize.net", "metadata": {}, "created_at": "2022-02-03T17:15:15-05:00", "updated_at": "2022-02-03T17:15:15-05:00", "credential1": "someone@example.com", "credential3": null, "credential4": null, "attachment": null}}));
 
     const payment_gateway = new PaymentGateway({session: test_session});
     payment_gateway.credential1 = "someone@example.com";
@@ -63,12 +63,12 @@ describe('PaymentGateway resource', () => {
       path: '/admin/api/2022-01/payment_gateways.json',
       query: '',
       headers,
-      data: { "payment_gateway": {credential1: "someone@example.com", provider_id: 7} }
+      data: { "payment_gateway": {"credential1": "someone@example.com", "provider_id": 7} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"payment": {"disabled": false, "id": 431363653, "name": "shopify_payments", "provider_id": 87, "sandbox": false, "supports_network_tokenization": null, "type": "DirectPaymentGateway", "enabled_card_brands": ["visa", "master", "american_express", "discover", "diners_club"], "processing_method": "direct", "service_name": "Shopify Payments", "metadata": {"google_pay_merchant_id": 548380009}, "created_at": "2011-12-31T19:00:00-05:00", "updated_at": "2022-02-03T17:15:12-05:00", "credential4": null, "attachment": null}}));
 
     await PaymentGateway.find({
       session: test_session,
@@ -86,7 +86,7 @@ describe('PaymentGateway resource', () => {
   });
 
   it('test_5', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"payment_gateway": {"disabled": false, "id": 170508070, "name": "Cash on Delivery (COD)", "provider_id": 140, "sandbox": true, "supports_network_tokenization": null, "type": "ManualPaymentGateway", "enabled_card_brands": [], "processing_method": "manual", "service_name": "Cash on Delivery (COD)", "metadata": {}, "created_at": "2022-02-03T17:14:40-05:00", "updated_at": "2022-02-03T17:15:17-05:00"}}));
 
     const payment_gateway = new PaymentGateway({session: test_session});
     payment_gateway.id = 170508070;
@@ -99,7 +99,7 @@ describe('PaymentGateway resource', () => {
       path: '/admin/api/2022-01/payment_gateways/170508070.json',
       query: '',
       headers,
-      data: { "payment_gateway": {id: 170508070, sandbox: true} }
+      data: { "payment_gateway": {"id": 170508070, "sandbox": true} }
     }).toMatchMadeHttpRequest();
   });
 

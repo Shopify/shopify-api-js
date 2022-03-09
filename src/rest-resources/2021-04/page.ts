@@ -48,16 +48,16 @@ export class Page extends Base {
   protected static NAME = 'page';
   protected static PLURAL_NAME = 'pages';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    metafield: Metafield
+    "metafield": Metafield
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "pages.json"},
-    {http_method: "post", operation: "post", ids: [], path: "pages.json"},
-    {http_method: "get", operation: "count", ids: [], path: "pages/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "pages/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "pages/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "pages/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "pages.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "pages/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "pages/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "pages/<id>.json"}
   ];
 
   public static async find(
@@ -69,8 +69,8 @@ export class Page extends Base {
   ): Promise<Page | null> {
     const result = await Page.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Page : null;
   }
@@ -85,7 +85,7 @@ export class Page extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -113,7 +113,7 @@ export class Page extends Base {
     const response = await Page.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, title: title, handle: handle, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, fields: fields, published_status: published_status, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "title": title, "handle": handle, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "fields": fields, "published_status": published_status, ...otherArgs},
     });
 
     return response as Page[];
@@ -138,7 +138,7 @@ export class Page extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {title: title, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, ...otherArgs},
+      params: {"title": title, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
       body: {},
       entity: null,
     });

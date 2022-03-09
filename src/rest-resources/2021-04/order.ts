@@ -70,23 +70,23 @@ export class Order extends Base {
   protected static NAME = 'order';
   protected static PLURAL_NAME = 'orders';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    customer: Customer
+    "customer": Customer
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    discount_codes: DiscountCode,
-    fulfillments: Fulfillment,
-    refunds: Refund
+    "discount_codes": DiscountCode,
+    "fulfillments": Fulfillment,
+    "refunds": Refund
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "orders.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "orders/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "orders/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "orders/<id>.json"},
-    {http_method: "get", operation: "count", ids: [], path: "orders/count.json"},
-    {http_method: "post", operation: "close", ids: ["id"], path: "orders/<id>/close.json"},
-    {http_method: "post", operation: "open", ids: ["id"], path: "orders/<id>/open.json"},
-    {http_method: "post", operation: "cancel", ids: ["id"], path: "orders/<id>/cancel.json"},
-    {http_method: "post", operation: "post", ids: [], path: "orders.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "orders.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "orders/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "orders/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "orders/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "orders/count.json"},
+    {"http_method": "post", "operation": "close", "ids": ["id"], "path": "orders/<id>/close.json"},
+    {"http_method": "post", "operation": "open", "ids": ["id"], "path": "orders/<id>/open.json"},
+    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "orders/<id>/cancel.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "orders.json"}
   ];
 
   public static async find(
@@ -98,8 +98,8 @@ export class Order extends Base {
   ): Promise<Order | null> {
     const result = await Order.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Order : null;
   }
@@ -114,7 +114,7 @@ export class Order extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -144,7 +144,7 @@ export class Order extends Base {
     const response = await Order.baseFind({
       session: session,
       urlIds: {},
-      params: {ids: ids, limit: limit, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, processed_at_min: processed_at_min, processed_at_max: processed_at_max, attribution_app_id: attribution_app_id, status: status, financial_status: financial_status, fulfillment_status: fulfillment_status, fields: fields, ...otherArgs},
+      params: {"ids": ids, "limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "processed_at_min": processed_at_min, "processed_at_max": processed_at_max, "attribution_app_id": attribution_app_id, "status": status, "financial_status": financial_status, "fulfillment_status": fulfillment_status, "fields": fields, ...otherArgs},
     });
 
     return response as Order[];
@@ -168,7 +168,7 @@ export class Order extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, status: status, financial_status: financial_status, fulfillment_status: fulfillment_status, ...otherArgs},
+      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, "financial_status": financial_status, "fulfillment_status": fulfillment_status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -186,7 +186,7 @@ export class Order extends Base {
       http_method: "post",
       operation: "close",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -205,7 +205,7 @@ export class Order extends Base {
       http_method: "post",
       operation: "open",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -230,8 +230,8 @@ export class Order extends Base {
       http_method: "post",
       operation: "cancel",
       session: this.session,
-      urlIds: {id: this.id},
-      params: {amount: amount, currency: currency, restock: restock, reason: reason, email: email, refund: refund, ...otherArgs},
+      urlIds: {"id": this.id},
+      params: {"amount": amount, "currency": currency, "restock": restock, "reason": reason, "email": email, "refund": refund, ...otherArgs},
       body: body,
       entity: this,
     });

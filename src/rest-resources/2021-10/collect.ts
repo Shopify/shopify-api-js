@@ -31,11 +31,11 @@ export class Collect extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "collects.json"},
-    {http_method: "get", operation: "get", ids: [], path: "collects.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "collects/<id>.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "collects/<id>.json"},
-    {http_method: "get", operation: "count", ids: [], path: "collects/count.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "collects.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "collects.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "collects/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collects/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "collects/count.json"}
   ];
 
   public static async find(
@@ -47,8 +47,8 @@ export class Collect extends Base {
   ): Promise<Collect | null> {
     const result = await Collect.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Collect : null;
   }
@@ -63,7 +63,7 @@ export class Collect extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -82,7 +82,7 @@ export class Collect extends Base {
     const response = await Collect.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, fields: fields, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as Collect[];

@@ -30,11 +30,11 @@ export class Report extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "reports.json"},
-    {http_method: "post", operation: "post", ids: [], path: "reports.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "reports/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "reports/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "reports/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "reports.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "reports.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "reports/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "reports/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "reports/<id>.json"}
   ];
 
   public static async find(
@@ -46,8 +46,8 @@ export class Report extends Base {
   ): Promise<Report | null> {
     const result = await Report.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Report : null;
   }
@@ -62,7 +62,7 @@ export class Report extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -84,7 +84,7 @@ export class Report extends Base {
     const response = await Report.baseFind({
       session: session,
       urlIds: {},
-      params: {ids: ids, limit: limit, since_id: since_id, updated_at_min: updated_at_min, updated_at_max: updated_at_max, fields: fields, ...otherArgs},
+      params: {"ids": ids, "limit": limit, "since_id": since_id, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "fields": fields, ...otherArgs},
     });
 
     return response as Report[];

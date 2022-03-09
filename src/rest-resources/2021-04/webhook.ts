@@ -39,12 +39,12 @@ export class Webhook extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "webhooks.json"},
-    {http_method: "post", operation: "post", ids: [], path: "webhooks.json"},
-    {http_method: "get", operation: "count", ids: [], path: "webhooks/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "webhooks/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "webhooks/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "webhooks/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "webhooks.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "webhooks.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "webhooks/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "webhooks/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "webhooks/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "webhooks/<id>.json"}
   ];
 
   public static async find(
@@ -56,8 +56,8 @@ export class Webhook extends Base {
   ): Promise<Webhook | null> {
     const result = await Webhook.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Webhook : null;
   }
@@ -72,7 +72,7 @@ export class Webhook extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -97,7 +97,7 @@ export class Webhook extends Base {
     const response = await Webhook.baseFind({
       session: session,
       urlIds: {},
-      params: {address: address, created_at_max: created_at_max, created_at_min: created_at_min, fields: fields, limit: limit, since_id: since_id, topic: topic, updated_at_min: updated_at_min, updated_at_max: updated_at_max, ...otherArgs},
+      params: {"address": address, "created_at_max": created_at_max, "created_at_min": created_at_min, "fields": fields, "limit": limit, "since_id": since_id, "topic": topic, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
     });
 
     return response as Webhook[];
@@ -116,7 +116,7 @@ export class Webhook extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {address: address, topic: topic, ...otherArgs},
+      params: {"address": address, "topic": topic, ...otherArgs},
       body: {},
       entity: null,
     });
