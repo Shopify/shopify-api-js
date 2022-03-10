@@ -1,10 +1,10 @@
-import {enableFetchMocks} from 'jest-fetch-mock';
+import fetchMock from 'jest-fetch-mock';
 
 import {Context} from '../context';
-import {ApiVersion} from '../base_types';
+import {ApiVersion} from '../base-types';
 import {MemorySessionStorage} from '../auth/session';
 
-enableFetchMocks();
+fetchMock.enableMocks();
 
 let currentCall = 0;
 beforeEach(() => {

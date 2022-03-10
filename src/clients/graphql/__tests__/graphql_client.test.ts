@@ -1,4 +1,4 @@
-import {ShopifyHeader} from '../../../base_types';
+import {ShopifyHeader} from '../../../base-types';
 import {GraphqlClient} from '../graphql_client';
 import {Context} from '../../../context';
 import * as ShopifyErrors from '../../../error';

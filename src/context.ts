@@ -1,7 +1,7 @@
 import * as ShopifyErrors from './error';
 import {SessionStorage} from './auth/session/session_storage';
 import {MemorySessionStorage} from './auth/session/storage/memory';
-import {ApiVersion, ContextParams} from './base_types';
+import {ApiVersion, ContextParams} from './base-types';
 import {AuthScopes} from './auth/scopes';
 
 interface ContextInterface extends ContextParams {

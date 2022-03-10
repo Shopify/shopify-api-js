@@ -1,5 +1,5 @@
 import {Context} from '../context';
-import {ApiVersion} from '../base_types';
+import {ApiVersion} from '../base-types';
 
 /**
  * Check if the current or optionally supplied version is compatible with a given version
