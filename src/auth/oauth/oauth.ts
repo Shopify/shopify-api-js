@@ -185,8 +185,7 @@ const ShopifyOAuth = {
       }
     } else {
       // Offline sessions (embedded / non-embedded) will use the same id so they don't need to be updated
-      const responseBody = postResponse.body as AccessTokenResponse;
-      currentSession.accessToken = responseBody.access_token;
+      const responseBody = postResponse.body as AccessTokenResponse; currentSession.accessToken = responseBody.access_token;
       currentSession.scope = responseBody.scope;
     }
 

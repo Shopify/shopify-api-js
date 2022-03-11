@@ -1,47 +1,29 @@
-import querystring from 'querystring';
-import fs from 'fs';
-
+import { getHeader, Request } from '../../../adapters/abstract-http';
+import Shopify from '../../../index-node';
 import {HttpClient} from '../http_client';
-import {DataType, HeaderParams, RequestReturn} from '../../types';
-import * as ShopifyErrors from '../../../error';
-import {Context} from '../../../context';
+import { DataType } from '../types';
 
-const domain = 'test-shop.myshopify.io';
-const successResponse = {message: 'Your HTTP request was successful!'};
-const logFilePath = `${process.cwd()}/src/clients/http_client/__tests__/test_logs.txt`;
+const server = process.env.SERVER!;
 
-const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
-  beforeEach(() => {
-    fs.writeFileSync(logFilePath, '');
-  });
-
-  afterAll(() => {
-    setRestClientRetryTime(originalRetryTime);
-    fs.writeFileSync(logFilePath, '');
-  });
-
   it('validates the given domain', () => {
     expect(() => new HttpClient('invalid domain')).toThrow(
-      ShopifyErrors.InvalidShopError,
+      Shopify.Errors.InvalidShopError,
     );
   });
 
   it('can make GET request', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient(server);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
-
-    await expect(client.get({path: '/url/path'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
-    expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
+    const resp = await client.get({path: '/mirror/url/path'});
+    const originalRequest = resp.body as Request;
+    expect(originalRequest).toHaveProperty("method", "GET");
+    expect(originalRequest).toHaveProperty("url", "/mirror/url/path");
+    expect(originalRequest).toHaveProperty("body", "");
   });
 
   it('can make POST request with type JSON', async () => {
-    const client = new HttpClient(domain);
-
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    const client = new HttpClient(server);
 
     const postData = {
       title: 'Test product',
@@ -49,27 +31,21 @@ describe('HTTP client', () => {
     };
 
     const postParams = {
-      path: '/url/path',
+      path: '/mirror/url/path',
       type: DataType.JSON,
       data: postData,
     };
 
-    await expect(client.post(postParams)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
-    expect({
-      method: 'POST',
-      domain,
-      path: '/url/path',
-      headers: {'Content-Type': DataType.JSON.toString()},
-      data: JSON.stringify(postData),
-    }).toMatchMadeHttpRequest();
+    const resp = await client.post(postParams);
+    const originalRequest = resp.body as Request;
+    expect(originalRequest).toHaveProperty("method", "POST");
+    expect(originalRequest).toHaveProperty("url", "/mirror/url/path");
+    expect(getHeader(originalRequest.headers, 'Content-Type')).toEqual(DataType.JSON.toString());
+    expect(JSON.parse(originalRequest.body!)).toEqual(postData);
   });
 
   it('can make POST request with type JSON and data is already formatted', async () => {
-    const client = new HttpClient(domain);
-
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    const client = new HttpClient(server);
 
     const postData = {
       title: 'Test product',
@@ -77,24 +53,20 @@ describe('HTTP client', () => {
     };
 
     const postParams = {
-      path: '/url/path',
+      path: '/mirror/url/path',
       type: DataType.JSON,
       data: JSON.stringify(postData),
     };
 
-    await expect(client.post(postParams)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
-    expect({
-      method: 'POST',
-      domain,
-      path: '/url/path',
-      headers: {'Content-Type': DataType.JSON.toString()},
-      data: JSON.stringify(postData),
-    }).toMatchMadeHttpRequest();
+    const resp = await client.post(postParams);
+    const originalRequest = resp.body as Request;
+    expect(originalRequest).toHaveProperty("method", "POST");
+    expect(originalRequest).toHaveProperty("url", "/mirror/url/path");
+    expect(getHeader(originalRequest.headers, 'Content-Type')).toEqual(DataType.JSON.toString());
+    expect(JSON.parse(originalRequest.body!)).toEqual(postData);
   });
 
-  it('can make POST request with zero-length JSON', async () => {
+  /* it('can make POST request with zero-length JSON', async () => {
     const client = new HttpClient(domain);
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
@@ -778,23 +750,23 @@ describe('HTTP client', () => {
       path: '/url/path',
       query: encodeURI('array[]=a&array[]=b&array[]=c&hash[a]=b&hash[c]=d'),
     }).toMatchMadeHttpRequest();
-  });
+  });*/
 });
 
-function setRestClientRetryTime(time: number) {
-  // We de-type HttpClient here so we can alter its readonly time property
-  (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
-}
+// function setRestClientRetryTime(time: number) {
+//   // We de-type HttpClient here so we can alter its readonly time property
+//   (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
+// }
 
-function buildMockResponse(obj: unknown): string {
-  return JSON.stringify(obj);
-}
+// function buildMockResponse(obj: unknown): string {
+//   return JSON.stringify(obj);
+// }
 
-function buildExpectedResponse(obj: unknown): RequestReturn {
-  const expectedResponse: RequestReturn = {
-    body: obj,
-    headers: expect.objectContaining({}),
-  };
+// function buildExpectedResponse(obj: unknown): RequestReturn {
+//   const expectedResponse: RequestReturn = {
+//     body: obj,
+//     headers: expect.objectContaining({}),
+//   };
 
-  return expect.objectContaining(expectedResponse);
-}
+//   return expect.objectContaining(expectedResponse);
+// }
