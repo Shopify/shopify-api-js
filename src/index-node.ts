@@ -1,3 +1,7 @@
+import {setAbstractFetchFunc} from './adapters/abstract-http';
+import {abstractFetch} from './adapters/node-adapter';
+setAbstractFetchFunc(abstractFetch);
+
 import {Context} from './context';
 import * as ShopifyErrors from './error';
 import ShopifyAuth from './auth/oauth';

@@ -6,7 +6,10 @@ import {HttpClient} from '../http_client/http_client';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
 
+
 import {RestRequestReturn, PageInfo} from './types';
+import { getHeader } from '../../adapters/abstract-http';
+
 
 class RestClient extends HttpClient {
   private static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
@@ -32,7 +35,7 @@ class RestClient extends HttpClient {
 
     const ret = (await super.request(params)) as RestRequestReturn;
 
-    const link = ret.headers.get('link');
+    const link = getHeader(ret.headers, 'link');
     if (link !== undefined) {
       const pageInfo: PageInfo = {
         limit: params.query?.limit

@@ -2,7 +2,8 @@ import querystring, {ParsedUrlQueryInput} from 'querystring';
 import crypto from 'crypto';
 import fs from 'fs';
 
-import fetch, {RequestInit, Response} from 'node-fetch';
+// import fetch, {RequestInit, Response} from 'node-fetch';
+import {getHeader, isOK, abstractFetch, Headers, Request, Response} from '../../adapters/abstract-http';
 import {Method, StatusCode} from '@shopify/network';
 
 import * as ShopifyErrors from '../../error';
@@ -72,26 +73,28 @@ class HttpClient {
       );
     }
 
+    const extraHeaders = params.extraHeaders ?? {};
+
     let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
 
     if (Context.USER_AGENT_PREFIX) {
       userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
     }
 
-    if (params.extraHeaders) {
-      if (params.extraHeaders['user-agent']) {
-        userAgent = `${params.extraHeaders['user-agent']} | ${userAgent}`;
-        delete params.extraHeaders['user-agent'];
-      } else if (params.extraHeaders['User-Agent']) {
-        userAgent = `${params.extraHeaders['User-Agent']} | ${userAgent}`;
+    if (extraHeaders) {
+      if (extraHeaders['user-agent']) {
+        userAgent = `${extraHeaders['user-agent']} | ${userAgent}`;
+        delete extraHeaders['user-agent'];
+      } else if (extraHeaders['User-Agent']) {
+        userAgent = `${extraHeaders['User-Agent']} | ${userAgent}`;
       }
     }
 
-    let headers: typeof params.extraHeaders = {
-      ...params.extraHeaders,
+    let headers: Headers = {
+      ...extraHeaders,
       'User-Agent': userAgent,
     };
-    let body = null;
+    let body;
     if (params.method === Method.Post || params.method === Method.Put) {
       const {type, data} = params as PostRequestParams;
       if (data) {
@@ -111,20 +114,20 @@ class HttpClient {
         }
         headers = {
           'Content-Type': type,
-          'Content-Length': Buffer.byteLength(body as string),
-          ...params.extraHeaders,
+          'Content-Length': Buffer.byteLength(body as string).toString(),
+          ...extraHeaders,
         };
       }
     }
 
-    const url = `https://${this.domain}${this.getRequestPath(
-      params.path,
-    )}${ProcessedQuery.stringify(params.query)}`;
-    const options: RequestInit = {
+    const url = `https://${this.domain}${this.getRequestPath( params.path)}${ProcessedQuery.stringify(params.query)}`;
+
+    const req: Request = {
+      url,
       method: params.method.toString(),
       headers,
       body,
-    } as RequestInit;
+    };
 
     async function sleep(waitTime: number): Promise<void> {
       return new Promise((resolve) => setTimeout(resolve, waitTime));
@@ -133,7 +136,7 @@ class HttpClient {
     let tries = 0;
     while (tries < maxTries) {
       try {
-        return await this.doRequest(url, options);
+        return await this.doRequest(req);
       } catch (error) {
         tries++;
         if (error instanceof ShopifyErrors.HttpRetriableError) {
@@ -174,101 +177,93 @@ class HttpClient {
     return `/${path.replace(/^\//, '')}`;
   }
 
+  private throwFailedRequest(response: Response) {
+    const body = JSON.parse(response.body!);
+    const errorMessages: string[] = [];
+    if (body.errors) {
+      errorMessages.push(JSON.stringify(body.errors, null, 2));
+    }
+    const requestId = getHeader(response.headers, 'x-request-id');
+    if (requestId) {
+      errorMessages.push(
+        `If you report this error, please include this id: ${requestId}`
+      );
+    }
+
+    const errorMessage = errorMessages.length
+      ? `:\n${errorMessages.join('\n')}`
+      : '';
+    switch (true) {
+      case response.statusCode === StatusCode.TooManyRequests: {
+        const retryAfter = getHeader(response.headers, 'Retry-After');
+        throw new ShopifyErrors.HttpThrottlingError(
+          `Shopify is throttling requests${errorMessage}`,
+          retryAfter ? parseFloat(retryAfter) : undefined,
+        );
+      }
+      case response.statusCode >= StatusCode.InternalServerError:
+        throw new ShopifyErrors.HttpInternalError(
+          `Shopify internal error${errorMessage}`,
+        );
+      default:
+        throw new ShopifyErrors.HttpResponseError(
+          `Received an error response (${response.statusCode} ${response.statusText}) from Shopify${errorMessage}`,
+          response.statusCode,
+          response.statusText,
+        );
+    }
+    // Unreachable. We’ll have *definitely* thrown by this point.
+    // return;
+  }
+
   private async doRequest(
-    url: string,
-    options: RequestInit,
+    req: Request,
   ): Promise<RequestReturn> {
-    return fetch(url, options)
-      .then(async (response: Response) => {
-        const body = await response.json();
+    const response = await abstractFetch(req);
 
-        if (response.ok) {
-          if (
-            response.headers &&
-            response.headers.has('X-Shopify-API-Deprecated-Reason')
-          ) {
-            const deprecation = {
-              message: response.headers.get('X-Shopify-API-Deprecated-Reason'),
-              path: url,
-            };
+    if (!isOK(response)) {
+      this.throwFailedRequest(response);
+    }
 
-            const depHash = crypto
-              .createHash('md5')
-              .update(JSON.stringify(deprecation))
-              .digest('hex');
+    const body = JSON.parse(response.body!);
+    const deprecationReason = getHeader(response.headers, 'X-Shopify-API-Deprecated-Reason');
+    if (deprecationReason) {
+      const deprecation = {
+        message: deprecationReason,
+        path: req.url,
+      };
 
-            if (
-              !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
-              Date.now() - this.LOGGED_DEPRECATIONS[depHash] >=
-                HttpClient.DEPRECATION_ALERT_DELAY
-            ) {
-              this.LOGGED_DEPRECATIONS[depHash] = Date.now();
+      const depHash = crypto
+        .createHash('md5')
+        .update(JSON.stringify(deprecation))
+        .digest('hex');
 
-              if (Context.LOG_FILE) {
-                const stack = new Error().stack;
-                const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
-                  deprecation,
-                )}\n    Stack Trace: ${stack}\n`;
-                fs.writeFileSync(Context.LOG_FILE, log, {
-                  flag: 'a',
-                  encoding: 'utf-8',
-                });
-              } else {
-                console.warn('API Deprecation Notice:', deprecation);
-              }
-            }
-          }
+      if (
+        !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
+        Date.now() - this.LOGGED_DEPRECATIONS[depHash] >=
+          HttpClient.DEPRECATION_ALERT_DELAY
+      ) {
+        this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
-          return {
-            body,
-            headers: response.headers,
-          };
+        if (Context.LOG_FILE) {
+          const stack = new Error().stack;
+          const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
+            deprecation,
+          )}\n    Stack Trace: ${stack}\n`;
+          fs.writeFileSync(Context.LOG_FILE, log, {
+            flag: 'a',
+            encoding: 'utf-8',
+          });
         } else {
-          const errorMessages: string[] = [];
-          if (body.errors) {
-            errorMessages.push(JSON.stringify(body.errors, null, 2));
-          }
-          if (response.headers && response.headers.get('x-request-id')) {
-            errorMessages.push(
-              `If you report this error, please include this id: ${response.headers.get(
-                'x-request-id',
-              )}`,
-            );
-          }
+          console.warn('API Deprecation Notice:', deprecation);
+        }
+      }
+    }
 
-          const errorMessage = errorMessages.length
-            ? `:\n${errorMessages.join('\n')}`
-            : '';
-          switch (true) {
-            case response.status === StatusCode.TooManyRequests: {
-              const retryAfter = response.headers.get('Retry-After');
-              throw new ShopifyErrors.HttpThrottlingError(
-                `Shopify is throttling requests${errorMessage}`,
-                retryAfter ? parseFloat(retryAfter) : undefined,
-              );
-            }
-            case response.status >= StatusCode.InternalServerError:
-              throw new ShopifyErrors.HttpInternalError(
-                `Shopify internal error${errorMessage}`,
-              );
-            default:
-              throw new ShopifyErrors.HttpResponseError(
-                `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
-                response.status,
-                response.statusText,
-              );
-          }
-        }
-      })
-      .catch((error) => {
-        if (error instanceof ShopifyErrors.ShopifyError) {
-          throw error;
-        } else {
-          throw new ShopifyErrors.HttpRequestError(
-            `Failed to make Shopify HTTP request: ${error}`,
-          );
-        }
-      });
+    return {
+      body,
+      headers: response.headers ?? {},
+    };
   }
 }
 

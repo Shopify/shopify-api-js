@@ -122,7 +122,8 @@ export default class FakeResource extends Base {
       urlIds: {id, other_resource_id},
     });
 
-    return response.body as Body;
+    // FIXME
+    return response.body as any;
   };
 
   id?: number | string | null;

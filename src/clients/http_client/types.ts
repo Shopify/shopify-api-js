@@ -1,9 +1,5 @@
-import {Method} from '@shopify/network';
-import {Headers} from 'node-fetch';
-
-export interface HeaderParams {
-  [key: string]: string | number;
-}
+import type {Method} from '@shopify/network';
+import type {Headers} from '../../adapters/abstract-http';
 
 export enum DataType {
   JSON = 'application/json', // eslint-disable-line @shopify/typescript/prefer-pascal-case-enums
@@ -23,7 +19,7 @@ export interface GetRequestParams {
   type?: DataType;
   data?: {[key: string]: unknown} | string;
   query?: {[key: string]: QueryParams};
-  extraHeaders?: HeaderParams;
+  extraHeaders?: Headers;
   tries?: number;
 }
 
