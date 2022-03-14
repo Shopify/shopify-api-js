@@ -3,9 +3,16 @@ import crypto from 'crypto';
 import fs from 'fs';
 
 // import fetch, {RequestInit, Response} from 'node-fetch';
-import {getHeader, isOK, abstractFetch, Headers, Request, Response} from '../../adapters/abstract-http';
 import {Method, StatusCode} from '@shopify/network';
 
+import {
+  getHeader,
+  isOK,
+  abstractFetch,
+  Headers,
+  Request,
+  Response,
+} from '../../adapters/abstract-http';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
@@ -120,7 +127,9 @@ class HttpClient {
       }
     }
 
-    const url = `https://${this.domain}${this.getRequestPath( params.path)}${ProcessedQuery.stringify(params.query)}`;
+    const url = `https://${this.domain}${this.getRequestPath(
+      params.path,
+    )}${ProcessedQuery.stringify(params.query)}`;
 
     const req: Request = {
       url,
@@ -186,7 +195,7 @@ class HttpClient {
     const requestId = getHeader(response.headers, 'x-request-id');
     if (requestId) {
       errorMessages.push(
-        `If you report this error, please include this id: ${requestId}`
+        `If you report this error, please include this id: ${requestId}`,
       );
     }
 
@@ -216,9 +225,7 @@ class HttpClient {
     // return;
   }
 
-  private async doRequest(
-    req: Request,
-  ): Promise<RequestReturn> {
+  private async doRequest(req: Request): Promise<RequestReturn> {
     const response = await abstractFetch(req);
 
     if (!isOK(response)) {
@@ -226,7 +233,10 @@ class HttpClient {
     }
 
     const body = JSON.parse(response.body!);
-    const deprecationReason = getHeader(response.headers, 'X-Shopify-API-Deprecated-Reason');
+    const deprecationReason = getHeader(
+      response.headers,
+      'X-Shopify-API-Deprecated-Reason',
+    );
     if (deprecationReason) {
       const deprecation = {
         message: deprecationReason,

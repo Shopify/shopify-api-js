@@ -88,7 +88,7 @@ expect.extend({
     for (let i = currentCall; i < maxCall; i++) {
       currentCall++;
 
-      const mockCall = [{body: ''}]; //fetchMock.mock.calls[i];
+      const mockCall = [{body: ''}]; // fetchMock.mock.calls[i];
       expect(mockCall).not.toBeUndefined();
 
       if (bodyObject && mockCall[1]) {

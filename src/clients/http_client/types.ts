@@ -1,4 +1,5 @@
 import type {Method} from '@shopify/network';
+
 import type {Headers} from '../../adapters/abstract-http';
 
 export enum DataType {
