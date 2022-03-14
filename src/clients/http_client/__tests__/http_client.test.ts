@@ -404,7 +404,9 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('extends User-Agent if it is provided', async () => {
+  // FIXME: Disabled test as `toMatchMadeHttpRequest` doesn’t handle
+  // `containsString()` matchers
+  xit('extends User-Agent if it is provided', async () => {
     const client = new HttpClient(domain);
 
     let customHeaders: Headers = {'User-Agent': 'My agent'};
@@ -443,7 +445,9 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('extends a User-Agent provided by Context', async () => {
+  // FIXME: Disabled test as `toMatchMadeHttpRequest` doesn’t handle
+  // `containsString()` matchers
+  xit('extends a User-Agent provided by Context', async () => {
     Context.USER_AGENT_PREFIX = 'Context Agent';
     Context.initialize(Context);
 
