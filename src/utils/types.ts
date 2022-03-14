@@ -1,4 +1,4 @@
-import type {IncomingMessage, ServerResponse} from 'http';
+import {Request, Response} from '../adapters/abstract-http';
 
 import {Session} from '../auth/session';
 import {GraphqlClient} from '../clients/graphql';
@@ -7,8 +7,8 @@ import {RestClient} from '../clients/rest';
 export interface WithSessionParams {
   clientType: 'rest' | 'graphql';
   isOnline: boolean;
-  req?: IncomingMessage;
-  res?: ServerResponse;
+  req?: Request;
+  res?: Response;
   shop?: string;
 }
 
