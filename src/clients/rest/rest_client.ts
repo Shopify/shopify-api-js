@@ -5,11 +5,9 @@ import {ShopifyHeader} from '../../base-types';
 import {HttpClient} from '../http_client/http_client';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
-
+import {getHeader} from '../../adapters/abstract-http';
 
 import {RestRequestReturn, PageInfo} from './types';
-import { getHeader } from '../../adapters/abstract-http';
-
 
 class RestClient extends HttpClient {
   private static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;

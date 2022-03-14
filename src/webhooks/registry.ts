@@ -72,10 +72,7 @@ interface RegistryInterface {
    * @param request HTTP request received from Shopify
    * @param response HTTP response to the request
    */
-  process(
-    request: IncomingMessage,
-    response: ServerResponse,
-  ): Promise<void>;
+  process(request: IncomingMessage, response: ServerResponse): Promise<void>;
 
   /**
    * Confirms that the given path is a webhook path

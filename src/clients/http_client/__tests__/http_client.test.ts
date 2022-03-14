@@ -1,11 +1,101 @@
-import { getHeader, Request } from '../../../adapters/abstract-http';
+import querystring from 'querystring';
+import fs from 'fs';
+
 import Shopify from '../../../index-node';
+import {
+  setAbstractFetchFunc,
+  Response,
+  Headers,
+} from '../../../adapters/abstract-http';
+import * as mockAdapter from '../../../adapters/mock-adapter';
+import {Context} from '../../../context';
+import {DataType} from '../types';
 import {HttpClient} from '../http_client';
-import { DataType } from '../types';
 
-const server = process.env.SERVER!;
+setAbstractFetchFunc(mockAdapter.abstractFetch);
+// import {DataType, HeaderParams, RequestReturn} from '../../types';
+// import * as Shopify.Errors from '../../../error';
+// import {Context} from '../../../context';
 
+const domain = 'test-shop.myshopify.io';
+const successResponseBody = JSON.stringify({
+  message: 'Your HTTP request was successful!',
+});
+const logFilePath = `${process.cwd()}/src/clients/http_client/__tests__/test_logs.txt`;
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    interface Matchers<R> {
+      toMatchMadeHttpRequest(): R;
+    }
+    /* eslint-enable @typescript-eslint/naming-convention */
+  }
+}
+
+expect.extend({
+  toMatchMadeHttpRequest(received: any) {
+    // FIXME
+    // I had to re-invent object equality here. There’s probably
+    // a more jest-idiomatic way to do this, especially because I’m
+    // not handling `objectContaining` and stuff like that at all.
+    const lastRequest: any = mockAdapter.getLastRequest();
+    const parsedURL = new URL(lastRequest.url);
+    lastRequest.path = parsedURL.pathname;
+    lastRequest.domain = parsedURL.hostname;
+    lastRequest.query = parsedURL.search.slice(1);
+    lastRequest.data = lastRequest.body;
+    console.log({lastRequest});
+    for (const [key, expected] of Object.entries(received)) {
+      // Header check is handled beloww.
+      if (key === 'headers') continue;
+      const got: any = (lastRequest as any)[key];
+      if (got !== expected) {
+        return {
+          message: () =>
+            `${JSON.stringify(key)} does not match. Expected ${JSON.stringify(
+              expected,
+            )}, got ${JSON.stringify(got)}`,
+          pass: false,
+        };
+      }
+    }
+    if ('headers' in received) {
+      for (const [key, expected] of Object.entries(received.headers)) {
+        const got: any = (lastRequest as any).headers[key];
+        if (got !== expected) {
+          return {
+            message: () =>
+              `Header ${JSON.stringify(
+                key,
+              )} does not match. Expected ${JSON.stringify(
+                expected,
+              )}, got ${JSON.stringify(got)}`,
+            pass: false,
+          };
+        }
+      }
+    }
+    return {
+      message: () => 'WTF',
+      pass: true,
+    };
+  },
+});
+
+const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
+  beforeEach(() => {
+    mockAdapter.reset();
+    fs.writeFileSync(logFilePath, '');
+  });
+
+  afterAll(() => {
+    setRestClientRetryTime(originalRetryTime);
+    fs.writeFileSync(logFilePath, '');
+  });
+
   it('validates the given domain', () => {
     expect(() => new HttpClient('invalid domain')).toThrow(
       Shopify.Errors.InvalidShopError,
@@ -13,17 +103,20 @@ describe('HTTP client', () => {
   });
 
   it('can make GET request', async () => {
-    const client = new HttpClient(server);
+    const client = new HttpClient(domain);
 
-    const resp = await client.get({path: '/mirror/url/path'});
-    const originalRequest = resp.body as Request;
-    expect(originalRequest).toHaveProperty("method", "GET");
-    expect(originalRequest).toHaveProperty("url", "/mirror/url/path");
-    expect(originalRequest).toHaveProperty("body", "");
+    queueMockResponse(successResponseBody);
+
+    await expect(client.get({path: '/url/path'})).resolves.toEqual(
+      buildExpectedResponse(successResponseBody),
+    );
+    expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with type JSON', async () => {
-    const client = new HttpClient(server);
+    const client = new HttpClient(domain);
+
+    queueMockResponse(successResponseBody);
 
     const postData = {
       title: 'Test product',
@@ -31,21 +124,27 @@ describe('HTTP client', () => {
     };
 
     const postParams = {
-      path: '/mirror/url/path',
+      path: '/url/path',
       type: DataType.JSON,
       data: postData,
     };
 
-    const resp = await client.post(postParams);
-    const originalRequest = resp.body as Request;
-    expect(originalRequest).toHaveProperty("method", "POST");
-    expect(originalRequest).toHaveProperty("url", "/mirror/url/path");
-    expect(getHeader(originalRequest.headers, 'Content-Type')).toEqual(DataType.JSON.toString());
-    expect(JSON.parse(originalRequest.body!)).toEqual(postData);
+    await expect(client.post(postParams)).resolves.toEqual(
+      buildExpectedResponse(successResponseBody),
+    );
+    expect({
+      method: 'POST',
+      domain,
+      path: '/url/path',
+      headers: {'Content-Type': DataType.JSON.toString()},
+      data: JSON.stringify(postData),
+    }).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with type JSON and data is already formatted', async () => {
-    const client = new HttpClient(server);
+    const client = new HttpClient(domain);
+
+    queueMockResponse(successResponseBody);
 
     const postData = {
       title: 'Test product',
@@ -53,23 +152,27 @@ describe('HTTP client', () => {
     };
 
     const postParams = {
-      path: '/mirror/url/path',
+      path: '/url/path',
       type: DataType.JSON,
       data: JSON.stringify(postData),
     };
 
-    const resp = await client.post(postParams);
-    const originalRequest = resp.body as Request;
-    expect(originalRequest).toHaveProperty("method", "POST");
-    expect(originalRequest).toHaveProperty("url", "/mirror/url/path");
-    expect(getHeader(originalRequest.headers, 'Content-Type')).toEqual(DataType.JSON.toString());
-    expect(JSON.parse(originalRequest.body!)).toEqual(postData);
+    await expect(client.post(postParams)).resolves.toEqual(
+      buildExpectedResponse(successResponseBody),
+    );
+    expect({
+      method: 'POST',
+      domain,
+      path: '/url/path',
+      headers: {'Content-Type': DataType.JSON.toString()},
+      data: JSON.stringify(postData),
+    }).toMatchMadeHttpRequest();
   });
 
-  /* it('can make POST request with zero-length JSON', async () => {
+  it('can make POST request with zero-length JSON', async () => {
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     const postParams = {
       path: '/url/path',
@@ -78,7 +181,7 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'POST',
@@ -90,7 +193,7 @@ describe('HTTP client', () => {
   it('can make POST request with form-data type', async () => {
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     const postData = {
       title: 'Test product',
@@ -104,7 +207,7 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'POST',
@@ -118,7 +221,7 @@ describe('HTTP client', () => {
   it('can make POST request with form-data type and data is already formatted', async () => {
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     const postData = {
       title: 'Test product',
@@ -132,7 +235,7 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'POST',
@@ -146,7 +249,7 @@ describe('HTTP client', () => {
   it('can make POST request with GraphQL type', async () => {
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     const graphqlQuery = `
       query {
@@ -168,7 +271,7 @@ describe('HTTP client', () => {
     };
 
     await expect(client.post(postParams)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'POST',
@@ -182,7 +285,7 @@ describe('HTTP client', () => {
   it('can make PUT request with type JSON', async () => {
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     const putData = {
       title: 'Test product',
@@ -196,7 +299,7 @@ describe('HTTP client', () => {
     };
 
     await expect(client.put(putParams)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'PUT',
@@ -210,10 +313,10 @@ describe('HTTP client', () => {
   it('can make DELETE request', async () => {
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     await expect(client.delete({path: '/url/path/123'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'DELETE',
@@ -229,7 +332,7 @@ describe('HTTP client', () => {
     const requestId = 'Request id header';
 
     const testErrorResponse = async (
-      status: number | null,
+      code: number | null,
       expectedError: NewableFunction,
       expectRequestId: boolean,
     ) => {
@@ -237,8 +340,8 @@ describe('HTTP client', () => {
       await client.get({path: '/url/path'}).catch((error) => {
         caught = true;
         expect(error).toBeInstanceOf(expectedError);
-        if (expectedError === ShopifyErrors.HttpResponseError) {
-          expect(error).toHaveProperty('code', status);
+        if (expectedError === Shopify.Errors.HttpResponseError) {
+          expect(error).toHaveProperty('code', code);
           expect(error).toHaveProperty('statusText', statusText);
         }
         if (expectRequestId) {
@@ -255,29 +358,30 @@ describe('HTTP client', () => {
       expect(caught).toEqual(true);
     };
 
-    fetchMock.mockResponses(
+    buildMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 403, statusText, headers: {'x-request-id': requestId}},
+        {statusCode: 403, statusText, headers: {'x-request-id': requestId}},
       ],
-      [JSON.stringify({}), {status: 404, statusText, headers: {}}],
+      [JSON.stringify({}), {statusCode: 404, statusText, headers: {}}],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 429, statusText, headers: {'x-request-id': requestId}},
+        {statusCode: 429, statusText, headers: {'x-request-id': requestId}},
       ],
       [
         JSON.stringify({}),
-        {status: 500, statusText, headers: {'x-request-id': requestId}},
+        {statusCode: 500, statusText, headers: {'x-request-id': requestId}},
       ],
     );
 
-    await testErrorResponse(403, ShopifyErrors.HttpResponseError, true);
-    await testErrorResponse(404, ShopifyErrors.HttpResponseError, false);
-    await testErrorResponse(429, ShopifyErrors.HttpThrottlingError, true);
-    await testErrorResponse(500, ShopifyErrors.HttpInternalError, true);
+    await testErrorResponse(403, Shopify.Errors.HttpResponseError, true);
+    await testErrorResponse(404, Shopify.Errors.HttpResponseError, false);
+    await testErrorResponse(429, Shopify.Errors.HttpThrottlingError, true);
+    await testErrorResponse(500, Shopify.Errors.HttpInternalError, true);
 
-    fetchMock.mockRejectOnce(() => Promise.reject());
-    await testErrorResponse(null, ShopifyErrors.HttpRequestError, false);
+    // FIXME
+    // fetchMock.mockRejectOnce(() => Promise.reject());
+    // await testErrorResponse(null, Shopify.Errors.HttpRequestError, false);
   });
 
   it('allows custom headers', async () => {
@@ -287,11 +391,11 @@ describe('HTTP client', () => {
       'X-Not-A-Real-Header': 'some_value',
     };
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    ).resolves.toEqual(buildExpectedResponse(successResponseBody));
     expect({
       method: 'GET',
       domain,
@@ -303,12 +407,12 @@ describe('HTTP client', () => {
   it('extends User-Agent if it is provided', async () => {
     const client = new HttpClient(domain);
 
-    let customHeaders: HeaderParams = {'User-Agent': 'My agent'};
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    let customHeaders: Headers = {'User-Agent': 'My agent'};
+    queueMockResponse(successResponseBody);
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    ).resolves.toEqual(buildExpectedResponse(successResponseBody));
     expect({
       method: 'GET',
       domain,
@@ -322,11 +426,11 @@ describe('HTTP client', () => {
 
     customHeaders = {'user-agent': 'My lowercase agent'};
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    ).resolves.toEqual(buildExpectedResponse(successResponseBody));
     expect({
       method: 'GET',
       domain,
@@ -345,13 +449,11 @@ describe('HTTP client', () => {
 
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponses(
-      buildMockResponse(successResponse),
-      buildMockResponse(successResponse),
-    );
+    queueMockResponse(successResponseBody);
+    queueMockResponse(successResponseBody);
 
     await expect(client.get({path: '/url/path'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'GET',
@@ -364,11 +466,11 @@ describe('HTTP client', () => {
       },
     }).toMatchMadeHttpRequest();
 
-    const customHeaders: HeaderParams = {'User-Agent': 'Headers Agent'};
+    const customHeaders: Headers = {'User-Agent': 'Headers Agent'};
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    ).resolves.toEqual(buildExpectedResponse(successResponseBody));
     expect({
       method: 'GET',
       domain,
@@ -384,31 +486,31 @@ describe('HTTP client', () => {
   it('fails with invalid retry count', async () => {
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     await expect(
       client.get({path: '/url/path', tries: -1}),
-    ).rejects.toBeInstanceOf(ShopifyErrors.HttpRequestError);
+    ).rejects.toBeInstanceOf(Shopify.Errors.HttpRequestError);
   });
 
   it('retries failed requests but returns success', async () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponses(
+    buildMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 429, statusText: 'Did not work'},
+        {statusCode: 429, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 429, statusText: 'Did not work'},
+        {statusCode: 429, statusText: 'Did not work'},
       ],
-      [buildMockResponse(successResponse), {status: 200}],
+      [successResponseBody, {statusCode: 200}],
     );
 
     await expect(client.get({path: '/url/path', tries: 3})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'GET',
@@ -422,21 +524,21 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponses(
+    buildMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 500, statusText: 'Did not work'},
+        {statusCode: 500, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 403, statusText: 'Did not work'},
+        {statusCode: 403, statusText: 'Did not work'},
       ],
-      [buildMockResponse(successResponse), {status: 200}],
+      [successResponseBody, {statusCode: 200}],
     );
 
     await expect(
       client.get({path: '/url/path', tries: 3}),
-    ).rejects.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    ).rejects.toBeInstanceOf(Shopify.Errors.HttpResponseError);
     // The second call resulted in a non-retriable error
     expect({
       method: 'GET',
@@ -450,28 +552,28 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponses(
+    buildMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 500, statusText: 'Did not work'},
+        {statusCode: 500, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 500, statusText: 'Did not work'},
+        {statusCode: 500, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 500, statusText: 'Did not work'},
+        {statusCode: 500, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {status: 500, statusText: 'Did not work'},
+        {statusCode: 500, statusText: 'Did not work'},
       ],
     );
 
     await expect(
       client.get({path: '/url/path', tries: 3}),
-    ).rejects.toBeInstanceOf(ShopifyErrors.HttpMaxRetriesError);
+    ).rejects.toBeInstanceOf(Shopify.Errors.HttpMaxRetriesError);
     expect({
       method: 'GET',
       domain,
@@ -487,16 +589,16 @@ describe('HTTP client', () => {
 
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponses(
+    buildMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
         {
-          status: 429,
+          statusCode: 429,
           statusText: 'Did not work',
           headers: {'Retry-After': realWaitTime.toString()},
         },
       ],
-      [JSON.stringify(successResponse), {status: 200}],
+      [successResponseBody, {statusCode: 200}],
     );
 
     // If we don't retry within an acceptable amount of time, we assume to be paused for longer than Retry-After
@@ -507,7 +609,7 @@ describe('HTTP client', () => {
     }, 4000);
 
     await expect(client.get({path: '/url/path', tries: 2})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'GET',
@@ -522,13 +624,13 @@ describe('HTTP client', () => {
     const client = new HttpClient(domain);
     console.warn = jest.fn();
 
-    fetchMock.mockResponses(
+    buildMockResponses(
       [
         JSON.stringify({
           message: 'Some deprecated request',
         }),
         {
-          status: 200,
+          statusCode: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -543,7 +645,7 @@ describe('HTTP client', () => {
           },
         }),
         {
-          status: 200,
+          statusCode: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -577,13 +679,13 @@ describe('HTTP client', () => {
     const client = new HttpClient(domain);
     console.warn = jest.fn();
 
-    fetchMock.mockResponses(
+    buildMockResponses(
       [
         JSON.stringify({
           message: 'Some deprecated request',
         }),
         {
-          status: 200,
+          statusCode: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -595,7 +697,7 @@ describe('HTTP client', () => {
           message: 'Some deprecated request',
         }),
         {
-          status: 200,
+          statusCode: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -607,7 +709,7 @@ describe('HTTP client', () => {
           message: 'Some deprecated request',
         }),
         {
-          status: 200,
+          statusCode: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -638,12 +740,12 @@ describe('HTTP client', () => {
 
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponse(
+    queueMockResponse(
       JSON.stringify({
         message: 'Some deprecated request',
       }),
       {
-        status: 200,
+        statusCode: 200,
         headers: {
           'X-Shopify-API-Deprecated-Reason':
             'This API endpoint has been deprecated',
@@ -670,9 +772,9 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponses([
+    buildMockResponses([
       JSON.stringify({errors: 'Something went wrong'}),
-      {status: 500, statusText: 'Did not work'},
+      {statusCode: 500, statusText: 'Did not work'},
     ]);
 
     let caught = false;
@@ -681,7 +783,7 @@ describe('HTTP client', () => {
       .then(() => fail('Expected request to fail'))
       .catch((error) => {
         caught = true;
-        expect(error).toBeInstanceOf(ShopifyErrors.HttpInternalError);
+        expect(error).toBeInstanceOf(Shopify.Errors.HttpInternalError);
         expect(error.message).toEqual(
           `Shopify internal error:\n"Something went wrong"`,
         );
@@ -694,11 +796,11 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponses([
+    buildMockResponses([
       JSON.stringify({
         errors: {title: 'Invalid title', description: 'Invalid description'},
       }),
-      {status: 500, statusText: 'Did not work'},
+      {statusCode: 500, statusText: 'Did not work'},
     ]);
 
     let caught = false;
@@ -707,7 +809,7 @@ describe('HTTP client', () => {
       .then(() => fail('Expected request to fail'))
       .catch((error) => {
         caught = true;
-        expect(error).toBeInstanceOf(ShopifyErrors.HttpInternalError);
+        expect(error).toBeInstanceOf(Shopify.Errors.HttpInternalError);
         expect(error.message).toEqual(
           `Shopify internal error:` +
             `\n{` +
@@ -723,16 +825,16 @@ describe('HTTP client', () => {
   it('adds missing slashes to paths', async () => {
     const client = new HttpClient(domain);
 
-    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+    queueMockResponse(successResponseBody);
 
     await expect(client.get({path: 'url/path'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
   });
 
   it('properly formats arrays and hashes in query strings', async () => {
-    fetchMock.mockResponse(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
     const client = new HttpClient(domain);
 
     await client.get({
@@ -750,23 +852,37 @@ describe('HTTP client', () => {
       path: '/url/path',
       query: encodeURI('array[]=a&array[]=b&array[]=c&hash[a]=b&hash[c]=d'),
     }).toMatchMadeHttpRequest();
-  });*/
+  });
 });
 
-// function setRestClientRetryTime(time: number) {
-//   // We de-type HttpClient here so we can alter its readonly time property
-//   (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
-// }
+function setRestClientRetryTime(time: number) {
+  // We de-type HttpClient here so we can alter its readonly time property
+  (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
+}
 
-// function buildMockResponse(obj: unknown): string {
-//   return JSON.stringify(obj);
-// }
+function queueMockResponse(body: string, partial: Partial<Response> = {}) {
+  mockAdapter.queueResponse({
+    statusCode: 200,
+    statusText: 'OK',
+    headers: {},
+    ...partial,
+    body,
+  });
+}
 
-// function buildExpectedResponse(obj: unknown): RequestReturn {
-//   const expectedResponse: RequestReturn = {
-//     body: obj,
-//     headers: expect.objectContaining({}),
-//   };
+function buildMockResponses(
+  ...responses: Parameters<typeof queueMockResponse>[]
+) {
+  for (const [body, response] of responses) {
+    queueMockResponse(body, response);
+  }
+}
 
-//   return expect.objectContaining(expectedResponse);
-// }
+function buildExpectedResponse(body: string): Response {
+  const expectedResponse: Partial<Response> = {
+    headers: expect.objectContaining({}),
+    body: JSON.parse(body),
+  };
+
+  return expect.objectContaining(expectedResponse);
+}
