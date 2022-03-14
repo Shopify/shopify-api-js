@@ -13,9 +13,6 @@ import {DataType} from '../types';
 import {HttpClient} from '../http_client';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
-// import {DataType, HeaderParams, RequestReturn} from '../../types';
-// import * as Shopify.Errors from '../../../error';
-// import {Context} from '../../../context';
 
 const domain = 'test-shop.myshopify.io';
 const successResponseBody = JSON.stringify({
