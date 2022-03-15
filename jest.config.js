@@ -8,7 +8,7 @@ module.exports = {
   testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'js', 'json'],
   watchPathIgnorePatterns: ['<rootDir>/node_modules/'],
-  testRegex: 'src/(clients/(http_client|rest)|auth)/.*\\.test\\.tsx?$',
+  testRegex: 'src/(clients|auth)/.*\\.test\\.tsx?$',
   coverageDirectory: './coverage/',
   collectCoverage: true,
   setupFilesAfterEnv: ['<rootDir>/src/utils/setup-jest.ts'],

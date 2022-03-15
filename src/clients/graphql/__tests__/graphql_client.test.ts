@@ -1,7 +1,11 @@
 import {ShopifyHeader} from '../../../base-types';
 import {GraphqlClient} from '../graphql_client';
 import {Context} from '../../../context';
-import * as ShopifyErrors from '../../../error';
+import {setAbstractFetchFunc, Response} from '../../../adapters/abstract-http';
+import Shopify from '../../../index-node';
+import * as mockAdapter from '../../../adapters/mock-adapter';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 const DOMAIN = 'shop.myshopify.io';
 const QUERY = `
@@ -12,18 +16,18 @@ const QUERY = `
 }
 `;
 
-const successResponse = {
+const successResponse = JSON.stringify({
   data: {
     shop: {
       name: 'Shoppity Shop',
     },
   },
-};
+});
 
 describe('GraphQL client', () => {
   it('can return response', async () => {
     const client: GraphqlClient = new GraphqlClient(DOMAIN, 'bork');
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(successResponse);
 
     const response = await client.query({data: QUERY});
 
@@ -42,7 +46,7 @@ describe('GraphQL client', () => {
       'X-Glib-Glob': 'goobers',
     };
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(successResponse);
 
     await expect(
       client.query({extraHeaders: customHeader, data: QUERY}),
@@ -63,7 +67,7 @@ describe('GraphQL client', () => {
     Context.initialize(Context);
 
     const client: GraphqlClient = new GraphqlClient(DOMAIN);
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(successResponse);
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -83,7 +87,7 @@ describe('GraphQL client', () => {
 
   it('fails to instantiate without access token', () => {
     expect(() => new GraphqlClient(DOMAIN)).toThrow(
-      ShopifyErrors.MissingRequiredArgument,
+      Shopify.Errors.MissingRequiredArgument,
     );
   });
 
@@ -103,7 +107,7 @@ describe('GraphQL client', () => {
         'first': 2,
       }`,
     };
-    const expectedResponse = {
+    const expectedResponse = JSON.stringify({
       data: {
         products: {
           edges: [
@@ -120,9 +124,9 @@ describe('GraphQL client', () => {
           ],
         },
       },
-    };
+    });
 
-    fetchMock.mockResponseOnce(JSON.stringify(expectedResponse));
+    queueMockResponse(expectedResponse);
 
     await expect(client.query({data: queryWithVariables})).resolves.toEqual(
       buildExpectedResponse(expectedResponse),
@@ -133,7 +137,7 @@ describe('GraphQL client', () => {
       domain: DOMAIN,
       path: '/admin/api/unstable/graphql.json',
       headers: {
-        'Content-Length': 219,
+        'Content-Length': '219',
         'Content-Type': 'application/json',
         'X-Shopify-Access-Token': 'bork',
       },
@@ -142,10 +146,21 @@ describe('GraphQL client', () => {
   });
 });
 
-function buildExpectedResponse(obj: unknown) {
-  const expectedResponse = {
-    body: obj,
+function queueMockResponse(body: string, partial: Partial<Response> = {}) {
+  mockAdapter.queueResponse({
+    statusCode: 200,
+    statusText: 'OK',
+    headers: {},
+    ...partial,
+    body,
+  });
+}
+
+function buildExpectedResponse(body: string): Response {
+  const expectedResponse: Partial<Response> = {
     headers: expect.objectContaining({}),
+    body: JSON.parse(body),
   };
+
   return expect.objectContaining(expectedResponse);
 }
