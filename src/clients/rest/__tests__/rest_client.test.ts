@@ -5,13 +5,10 @@ import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestClient} from '../rest_client';
 import {RestRequestReturn, PageInfo} from '../types';
 import {Context} from '../../../context';
-
-import {
-  setAbstractFetchFunc,
-  Response,
-} from '../../../adapters/abstract-http';
+import {setAbstractFetchFunc, Response} from '../../../adapters/abstract-http';
 import Shopify from '../../../index-node';
 import * as mockAdapter from '../../../adapters/mock-adapter';
+
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 const domain = 'test-shop.myshopify.io';
@@ -204,18 +201,9 @@ describe('REST client', () => {
     ];
 
     queueMockResponses(
-      [
-        successResponseBody,
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
-      [
-        successResponseBody,
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
-      [
-        successResponseBody,
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
     );
 
     const initialResponse = (await client.get({
@@ -246,14 +234,8 @@ describe('REST client', () => {
     ];
 
     queueMockResponses(
-      [
-        successResponseBody,
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
-      [
-        successResponseBody,
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
       [
         successResponseBody,
         {headers: {link: `<${params.previousPageUrl}>; rel="previous"`}},
@@ -285,14 +267,8 @@ describe('REST client', () => {
     ];
 
     queueMockResponses(
-      [
-        successResponseBody,
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
-      [
-        successResponseBody,
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
       [
         successResponseBody,
         {headers: {link: `<${params.previousPageUrl}>; rel="next"`}},
@@ -416,22 +392,6 @@ function getDefaultPageInfo(): PageInfo {
     nextPage,
   };
 }
-
-// function buildExpectedResponse(
-//   obj: unknown,
-//   pageInfo?: PageInfo,
-// ): RestRequestReturn {
-//   const expectedResponse: RestRequestReturn = {
-//     body: obj,
-//     headers: expect.objectContaining({}),
-//   };
-
-//   if (pageInfo) {
-//     expectedResponse.pageInfo = pageInfo;
-//   }
-
-//   return expect.objectContaining(expectedResponse);
-// }
 
 function queueMockResponse(body: string, partial: Partial<Response> = {}) {
   mockAdapter.queueResponse({
