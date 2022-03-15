@@ -297,10 +297,7 @@ describe('HTTP client', () => {
         JSON.stringify({}),
         {status: 500, statusText, headers: {'x-request-id': requestId}},
       ],
-      [
-        '<not a json response>',
-        {status: 500, statusText: 'Did not work'},
-      ],
+      ['<not a json response>', {status: 500, statusText: 'Did not work'}],
     );
 
     await testErrorResponse(403, ShopifyErrors.HttpResponseError, true);
