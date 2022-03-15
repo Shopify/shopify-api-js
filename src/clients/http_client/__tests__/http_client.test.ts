@@ -25,6 +25,7 @@ declare global {
   namespace jest {
     /* eslint-disable @typescript-eslint/naming-convention */
     interface Matchers<R> {
+      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
       toMatchMadeHttpRequest(): R;
     }
     /* eslint-enable @typescript-eslint/naming-convention */
@@ -402,7 +403,7 @@ describe('HTTP client', () => {
 
   // FIXME: Disabled test as `toMatchMadeHttpRequest` doesn’t handle
   // `containsString()` matchers
-  xit('extends User-Agent if it is provided', async () => {
+  it('extends User-Agent if it is provided', async () => {
     const client = new HttpClient(domain);
 
     let customHeaders: Headers = {'User-Agent': 'My agent'};
@@ -443,7 +444,7 @@ describe('HTTP client', () => {
 
   // FIXME: Disabled test as `toMatchMadeHttpRequest` doesn’t handle
   // `containsString()` matchers
-  xit('extends a User-Agent provided by Context', async () => {
+  it('extends a User-Agent provided by Context', async () => {
     Context.USER_AGENT_PREFIX = 'Context Agent';
     Context.initialize(Context);
 
