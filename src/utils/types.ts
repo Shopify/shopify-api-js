@@ -1,5 +1,4 @@
 import {Request, Response} from '../adapters/abstract-http';
-
 import {Session} from '../auth/session';
 import {GraphqlClient} from '../clients/graphql';
 import {RestClient} from '../clients/rest';

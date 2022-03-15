@@ -1,19 +1,17 @@
 import querystring from 'querystring';
 
 import jwt from 'jsonwebtoken';
+
 import {
   setAbstractFetchFunc,
   Request,
   Response,
   Cookies,
-  getHeader,
   CookieJar,
+  getHeaders,
 } from '../../../adapters/abstract-http';
-import * as mockAdapter from '../../../adapters/mock-adapter';
-setAbstractFetchFunc(mockAdapter.abstractFetch);
-
 import Shopify from '../../../index-node';
-
+import * as mockAdapter from '../../../adapters/mock-adapter';
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
 // import * as Shopify.Errors from '../../../error';
@@ -21,8 +19,9 @@ import {AuthQuery} from '../types';
 import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
-
 import {CustomSessionStorage, Session} from '../../session';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
@@ -33,8 +32,6 @@ declare global {
     /* eslint-enable @typescript-eslint/naming-convention */
   }
 }
-
-
 
 let shop: string;
 
@@ -80,7 +77,9 @@ describe('beginAuth', () => {
       shop,
       '/some-callback',
     );
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
 
     expect(authRoute).toBeDefined();
     expect(session).toBeDefined();
@@ -103,7 +102,9 @@ describe('beginAuth', () => {
       '/some-callback',
       false,
     );
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
@@ -129,7 +130,9 @@ describe('beginAuth', () => {
       '/some-callback',
       true,
     );
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
@@ -190,7 +193,9 @@ describe('validateAuthCallback', () => {
 
   test('throws Context error when not properly initialized', async () => {
     Context.API_KEY = '';
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
     const testCallbackQuery: AuthQuery = {
       shop,
       state: session ? session.state : '',
@@ -240,9 +245,11 @@ describe('validateAuthCallback', () => {
     ).rejects.toThrow(Shopify.Errors.InvalidOAuthError);
   });
 
-  test.only('throws a SessionStorageError when storeSession returns false', async () => {
+  test('throws a SessionStorageError when storeSession returns false', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
 
     const testCallbackQuery: AuthQuery = {
       shop,
@@ -260,7 +267,9 @@ describe('validateAuthCallback', () => {
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    mockAdapter.queueResponse(buildMockResponse(JSON.stringify(successResponse)));
+    mockAdapter.queueResponse(
+      buildMockResponse(JSON.stringify(successResponse)),
+    );
 
     // create new storage with broken storeCallback for validateAuthCallback to use
     Context.SESSION_STORAGE = new CustomSessionStorage(
@@ -276,7 +285,9 @@ describe('validateAuthCallback', () => {
 
   test('requests access token for valid callbacks with offline access and updates session', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
-    let session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    let session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
     const testCallbackQuery: AuthQuery = {
       shop,
       state: session ? session.state : '',
@@ -293,7 +304,9 @@ describe('validateAuthCallback', () => {
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    mockAdapter.queueResponse(buildMockResponse(JSON.stringify(successResponse)));
+    mockAdapter.queueResponse(
+      buildMockResponse(JSON.stringify(successResponse)),
+    );
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
 
@@ -302,7 +315,9 @@ describe('validateAuthCallback', () => {
 
   test('requests access token for valid callbacks with online access and updates session with expiration and onlineAccessInfo', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    let session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    let session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
     const testCallbackQuery: AuthQuery = {
       shop,
       state: session ? session.state : '',
@@ -337,7 +352,9 @@ describe('validateAuthCallback', () => {
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    mockAdapter.queueResponse(buildMockResponse(JSON.stringify(successResponse)));
+    mockAdapter.queueResponse(
+      buildMockResponse(JSON.stringify(successResponse)),
+    );
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
 
@@ -360,7 +377,9 @@ describe('validateAuthCallback', () => {
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
     expect(session).not.toBe(null);
 
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -390,7 +409,9 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
-    mockAdapter.queueResponse(buildMockResponse(JSON.stringify(successResponse)));
+    mockAdapter.queueResponse(
+      buildMockResponse(JSON.stringify(successResponse)),
+    );
     const returnedSession = await ShopifyOAuth.validateAuthCallback(
       req,
       res,
@@ -428,7 +449,7 @@ describe('validateAuthCallback', () => {
       algorithm: 'HS256',
     });
     const jwtReq = {
-      method: "GET",
+      method: 'GET',
       url: `https://${shop}`,
       headers: {
         authorization: `Bearer ${token}`,
@@ -439,7 +460,9 @@ describe('validateAuthCallback', () => {
     const currentSession = await loadCurrentSession(jwtReq, jwtRes);
     expect(currentSession).not.toBe(null);
     expect(currentSession?.id).toEqual(jwtSessionId);
-    expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(
+    const jar = currentCookieJar(res);
+    const sessionCookie = jar[Shopify.Auth.SESSION_COOKIE_NAME];
+    expect(sessionCookie?.expires?.getTime() as number).toBeWithinSecondsOf(
       new Date().getTime(),
       1,
     );
@@ -450,7 +473,9 @@ describe('validateAuthCallback', () => {
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -479,7 +504,9 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
-    mockAdapter.queueResponse(buildMockResponse(JSON.stringify(successResponse)));
+    mockAdapter.queueResponse(
+      buildMockResponse(JSON.stringify(successResponse)),
+    );
     const returnedSession = await ShopifyOAuth.validateAuthCallback(
       req,
       res,
@@ -491,12 +518,16 @@ describe('validateAuthCallback', () => {
       new Date(Date.now() + successResponse.expires_in * 1000).getTime(),
       1,
     );
-    expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(
+    const jar = currentCookieJar(res);
+    const sessionCookie = jar[Shopify.Auth.SESSION_COOKIE_NAME];
+    expect(sessionCookie?.expires?.getTime() as number).toBeWithinSecondsOf(
       returnedSession?.expires?.getTime() as number,
       1,
     );
 
-    const cookieSession = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const cookieSession = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
     expect(cookieSession).not.toBeUndefined();
   });
 
@@ -505,7 +536,9 @@ describe('validateAuthCallback', () => {
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -534,7 +567,9 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
-    mockAdapter.queueResponse(buildMockResponse(JSON.stringify(successResponse)));
+    mockAdapter.queueResponse(
+      buildMockResponse(JSON.stringify(successResponse)),
+    );
     const returnedSession = await ShopifyOAuth.validateAuthCallback(
       req,
       res,
@@ -543,9 +578,13 @@ describe('validateAuthCallback', () => {
     expect(returnedSession.id).toEqual(currentSessionId(res));
     expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
 
-    const cookieSession = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const cookieSession = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
     expect(cookieSession).not.toBeUndefined();
-    expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(
+    const jar = currentCookieJar(res);
+    const sessionCookie = jar[Shopify.Auth.SESSION_COOKIE_NAME];
+    expect(sessionCookie?.expires?.getTime() as number).toBeWithinSecondsOf(
       new Date().getTime(),
       1,
     );
@@ -557,7 +596,9 @@ describe('validateAuthCallback', () => {
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
-    const session = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const session = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -586,7 +627,9 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
-    mockAdapter.queueResponse(buildMockResponse(JSON.stringify(successResponse)));
+    mockAdapter.queueResponse(
+      buildMockResponse(JSON.stringify(successResponse)),
+    );
     const returnedSession = await ShopifyOAuth.validateAuthCallback(
       req,
       res,
@@ -597,7 +640,9 @@ describe('validateAuthCallback', () => {
     expect(cookies?.expires?.getTime()).toBeUndefined();
     expect(returnedSession?.expires?.getTime()).toBeUndefined();
 
-    const cookieSession = await Context.SESSION_STORAGE.loadSession(currentSessionId(res));
+    const cookieSession = await Context.SESSION_STORAGE.loadSession(
+      currentSessionId(res),
+    );
     expect(cookieSession).not.toBeUndefined();
   });
 });
@@ -605,14 +650,14 @@ describe('validateAuthCallback', () => {
 function buildMockResponse(body: string): Response {
   return {
     statusCode: 200,
-    statusText: "OK",
+    statusText: 'OK',
     headers: {},
-    body
-  }
+    body,
+  };
 }
 
 function currentCookieJar(res: Response): CookieJar {
-  return Cookies.parseHeader(getHeader(res.headers, 'Set-Cookie') ?? '');
+  return Cookies.parseCookies(getHeaders(res.headers, 'Set-Cookie') ?? []);
 }
 
 function currentSessionId(res: Response): string {

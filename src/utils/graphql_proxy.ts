@@ -1,5 +1,4 @@
 import {Request, Response} from '../adapters/abstract-http';
-
 import {GraphqlClient} from '../clients/graphql';
 import {RequestReturn} from '../clients/http_client/types';
 import * as ShopifyErrors from '../error';
@@ -23,7 +22,7 @@ export default async function graphqlProxy(
 
   const shopName: string = session.shop;
   const token: string = session.accessToken;
-  let reqBodyString = userReq.body!;
+  const reqBodyString = userReq.body!;
   let reqBodyObject: {[key: string]: unknown} | undefined;
   try {
     reqBodyObject = JSON.parse(reqBodyString);
@@ -31,10 +30,10 @@ export default async function graphqlProxy(
     // we can just continue and attempt to pass the string
   }
 
-    const options = {
-      data: reqBodyObject ? reqBodyObject : reqBodyString,
-    };
-    const client = new GraphqlClient(shopName, token);
-    const response = await client.query(options);
-    return response;
+  const options = {
+    data: reqBodyObject ? reqBodyObject : reqBodyString,
+  };
+  const client = new GraphqlClient(shopName, token);
+  const response = await client.query(options);
+  return response;
 }
