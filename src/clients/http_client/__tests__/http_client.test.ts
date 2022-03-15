@@ -25,61 +25,12 @@ declare global {
   namespace jest {
     /* eslint-disable @typescript-eslint/naming-convention */
     interface Matchers<R> {
+      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
       toMatchMadeHttpRequest(): R;
     }
     /* eslint-enable @typescript-eslint/naming-convention */
   }
 }
-
-expect.extend({
-  toMatchMadeHttpRequest(received: any) {
-    // FIXME
-    // I had to re-invent object equality here. There’s probably
-    // a more jest-idiomatic way to do this, especially because I’m
-    // not handling `objectContaining` and stuff like that at all.
-    const lastRequest: any = mockAdapter.getLastRequest();
-    const parsedURL = new URL(lastRequest.url);
-    lastRequest.path = parsedURL.pathname;
-    lastRequest.domain = parsedURL.hostname;
-    lastRequest.query = parsedURL.search.slice(1);
-    lastRequest.data = lastRequest.body;
-    console.log({lastRequest});
-    for (const [key, expected] of Object.entries(received)) {
-      // Header check is handled beloww.
-      if (key === 'headers') continue;
-      const got: any = (lastRequest as any)[key];
-      if (got !== expected) {
-        return {
-          message: () =>
-            `${JSON.stringify(key)} does not match. Expected ${JSON.stringify(
-              expected,
-            )}, got ${JSON.stringify(got)}`,
-          pass: false,
-        };
-      }
-    }
-    if ('headers' in received) {
-      for (const [key, expected] of Object.entries(received.headers)) {
-        const got: any = (lastRequest as any).headers[key];
-        if (got !== expected) {
-          return {
-            message: () =>
-              `Header ${JSON.stringify(
-                key,
-              )} does not match. Expected ${JSON.stringify(
-                expected,
-              )}, got ${JSON.stringify(got)}`,
-            pass: false,
-          };
-        }
-      }
-    }
-    return {
-      message: () => 'WTF',
-      pass: true,
-    };
-  },
-});
 
 const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
@@ -403,7 +354,7 @@ describe('HTTP client', () => {
 
   // FIXME: Disabled test as `toMatchMadeHttpRequest` doesn’t handle
   // `containsString()` matchers
-  xit('extends User-Agent if it is provided', async () => {
+  it('extends User-Agent if it is provided', async () => {
     const client = new HttpClient(domain);
 
     let customHeaders: Headers = {'User-Agent': 'My agent'};
@@ -444,7 +395,7 @@ describe('HTTP client', () => {
 
   // FIXME: Disabled test as `toMatchMadeHttpRequest` doesn’t handle
   // `containsString()` matchers
-  xit('extends a User-Agent provided by Context', async () => {
+  it('extends a User-Agent provided by Context', async () => {
     Context.USER_AGENT_PREFIX = 'Context Agent';
     Context.initialize(Context);
 

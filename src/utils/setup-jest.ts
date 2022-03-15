@@ -3,10 +3,11 @@
 import {Context} from '../context';
 import {ApiVersion} from '../base-types';
 import {MemorySessionStorage} from '../auth/session';
+import * as mockAdapter from '../adapters/mock-adapter';
 
 // fetchMock.enableMocks();
 
-let currentCall = 0;
+// let currentCall = 0;
 beforeEach(() => {
   // We want to reset the Context object on every run so that tests start with a consistent state
   Context.initialize({
@@ -22,7 +23,7 @@ beforeEach(() => {
 
   // fetchMock.mockReset();
 
-  currentCall = 0;
+  // currentCall = 0;
 });
 
 interface AssertHttpRequestParams {
@@ -76,32 +77,16 @@ expect.extend({
   },
   toMatchMadeHttpRequest({
     method,
-    domain,
-    path,
-    query = '',
     headers = {},
-    data = null,
-    tries = 1,
+    data,
   }: AssertHttpRequestParams) {
-    const bodyObject = data && typeof data !== 'string';
-    const maxCall = currentCall + tries;
-    for (let i = currentCall; i < maxCall; i++) {
-      currentCall++;
-
-      const mockCall = [{body: ''}]; // fetchMock.mock.calls[i];
-      expect(mockCall).not.toBeUndefined();
-
-      if (bodyObject && mockCall[1]) {
-        mockCall[1].body = JSON.parse(mockCall[1].body as string);
-      }
-
-      expect(mockCall[0]).toEqual(
-        `https://${domain}${path}${
-          query ? `?${query.replace(/\+/g, '%20')}` : ''
-        }`,
-      );
-      expect(mockCall[1]).toMatchObject({method, headers, body: data});
-    }
+    const lastRequest: any = mockAdapter.getLastRequest();
+    const parsedURL = new URL(lastRequest.url);
+    lastRequest.path = parsedURL.pathname;
+    lastRequest.domain = parsedURL.hostname;
+    lastRequest.query = parsedURL.search.slice(1);
+    lastRequest.data = lastRequest.body;
+    expect(lastRequest).toMatchObject({method, headers, body: data});
 
     return {
       message: () => `expected to have seen the right HTTP requests`,
