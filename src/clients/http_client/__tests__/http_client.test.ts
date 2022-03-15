@@ -34,55 +34,54 @@ declare global {
   }
 }
 
-expect.extend({
-  toMatchMadeHttpRequest(received: any) {
-    // FIXME
-    // I had to re-invent object equality here. There’s probably
-    // a more jest-idiomatic way to do this, especially because I’m
-    // not handling `objectContaining` and stuff like that at all.
-    const lastRequest: any = mockAdapter.getLastRequest();
-    const parsedURL = new URL(lastRequest.url);
-    lastRequest.path = parsedURL.pathname;
-    lastRequest.domain = parsedURL.hostname;
-    lastRequest.query = parsedURL.search.slice(1);
-    lastRequest.data = lastRequest.body;
-    console.log({lastRequest});
-    for (const [key, expected] of Object.entries(received)) {
-      // Header check is handled beloww.
-      if (key === 'headers') continue;
-      const got: any = (lastRequest as any)[key];
-      if (got !== expected) {
-        return {
-          message: () =>
-            `${JSON.stringify(key)} does not match. Expected ${JSON.stringify(
-              expected,
-            )}, got ${JSON.stringify(got)}`,
-          pass: false,
-        };
-      }
-    }
-    if ('headers' in received) {
-      for (const [key, expected] of Object.entries(received.headers)) {
-        const got: any = (lastRequest as any).headers[key];
-        if (got !== expected) {
-          return {
-            message: () =>
-              `Header ${JSON.stringify(
-                key,
-              )} does not match. Expected ${JSON.stringify(
-                expected,
-              )}, got ${JSON.stringify(got)}`,
-            pass: false,
-          };
-        }
-      }
-    }
-    return {
-      message: () => 'WTF',
-      pass: true,
-    };
-  },
-});
+// expect.extend({
+//   toMatchMadeHttpRequest(received: any) {
+//     // FIXME
+//     // I had to re-invent object equality here. There’s probably
+//     // a more jest-idiomatic way to do this, especially because I’m
+//     // not handling `objectContaining` and stuff like that at all.
+//     const lastRequest: any = mockAdapter.getLastRequest();
+//     const parsedURL = new URL(lastRequest.url);
+//     lastRequest.path = parsedURL.pathname;
+//     lastRequest.domain = parsedURL.hostname;
+//     lastRequest.query = parsedURL.search.slice(1);
+//     lastRequest.data = lastRequest.body;
+//     for (const [key, expected] of Object.entries(received)) {
+//       // Header check is handled beloww.
+//       if (key === 'headers') continue;
+//       const got: any = (lastRequest as any)[key];
+//       if (got !== expected) {
+//         return {
+//           message: () =>
+//             `${JSON.stringify(key)} does not match. Expected ${JSON.stringify(
+//               expected,
+//             )}, got ${JSON.stringify(got)}`,
+//           pass: false,
+//         };
+//       }
+//     }
+//     if ('headers' in received) {
+//       for (const [key, expected] of Object.entries(received.headers)) {
+//         const got: any = (lastRequest as any).headers[key];
+//         if (got !== expected) {
+//           return {
+//             message: () =>
+//               `Header ${JSON.stringify(
+//                 key,
+//               )} does not match. Expected ${JSON.stringify(
+//                 expected,
+//               )}, got ${JSON.stringify(got)}`,
+//             pass: false,
+//           };
+//         }
+//       }
+//     }
+//     return {
+//       message: () => 'WTF',
+//       pass: true,
+//     };
+//   },
+// });
 
 const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
@@ -358,7 +357,7 @@ describe('HTTP client', () => {
       expect(caught).toEqual(true);
     };
 
-    buildMockResponses(
+    queueMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
         {statusCode: 403, statusText, headers: {'x-request-id': requestId}},
@@ -501,7 +500,7 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    buildMockResponses(
+    queueMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
         {statusCode: 429, statusText: 'Did not work'},
@@ -528,7 +527,7 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    buildMockResponses(
+    queueMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
         {statusCode: 500, statusText: 'Did not work'},
@@ -556,7 +555,7 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    buildMockResponses(
+    queueMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
         {statusCode: 500, statusText: 'Did not work'},
@@ -593,7 +592,7 @@ describe('HTTP client', () => {
 
     const client = new HttpClient(domain);
 
-    buildMockResponses(
+    queueMockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
         {
@@ -628,7 +627,7 @@ describe('HTTP client', () => {
     const client = new HttpClient(domain);
     console.warn = jest.fn();
 
-    buildMockResponses(
+    queueMockResponses(
       [
         JSON.stringify({
           message: 'Some deprecated request',
@@ -683,7 +682,7 @@ describe('HTTP client', () => {
     const client = new HttpClient(domain);
     console.warn = jest.fn();
 
-    buildMockResponses(
+    queueMockResponses(
       [
         JSON.stringify({
           message: 'Some deprecated request',
@@ -776,7 +775,7 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    buildMockResponses([
+    queueMockResponses([
       JSON.stringify({errors: 'Something went wrong'}),
       {statusCode: 500, statusText: 'Did not work'},
     ]);
@@ -800,7 +799,7 @@ describe('HTTP client', () => {
     setRestClientRetryTime(0);
     const client = new HttpClient(domain);
 
-    buildMockResponses([
+    queueMockResponses([
       JSON.stringify({
         errors: {title: 'Invalid title', description: 'Invalid description'},
       }),
@@ -874,7 +873,7 @@ function queueMockResponse(body: string, partial: Partial<Response> = {}) {
   });
 }
 
-function buildMockResponses(
+function queueMockResponses(
   ...responses: Parameters<typeof queueMockResponse>[]
 ) {
   for (const [body, response] of responses) {
