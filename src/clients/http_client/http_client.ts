@@ -26,6 +26,15 @@ class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000;
   // 5 minutes
   static readonly DEPRECATION_ALERT_DELAY = 300000;
+
+  private static isInvalidJsonError(error: any): boolean {
+    return (
+      typeof error === 'object' &&
+      error.name === 'FetchError' &&
+      error.type === 'invalid-json'
+    );
+  }
+
   private LOGGED_DEPRECATIONS: {[key: string]: number} = {};
 
   public constructor(private domain: string) {
@@ -263,7 +272,7 @@ class HttpClient {
       .catch((error) => {
         if (error instanceof ShopifyErrors.ShopifyError) {
           throw error;
-        } else if (typeof error === 'object' && error.name === 'FetchError' && error.type === 'invalid-json') {
+        } else if (HttpClient.isInvalidJsonError(error)) {
           throw new ShopifyErrors.HttpRetriableError(`Failed to parse Shopify response as json: ${error}`);
         } else {
           throw new ShopifyErrors.HttpRequestError(
