@@ -56,7 +56,6 @@ expect.extend({
    * @param seconds The number of seconds the first and second date should be within
    */
   toBeWithinSecondsOf(received: number, compareDate: number, seconds: number) {
-    console.log({received, compareDate, seconds});
     if (
       received &&
       compareDate &&
