@@ -25,7 +25,7 @@ const successResponseBody = JSON.stringify({
 });
 
 describe('REST client', () => {
-  it.only('can make GET request', async () => {
+  it('can make GET request', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
     queueMockResponse(successResponseBody);
