@@ -4,7 +4,6 @@ import {v4 as uuidv4} from 'uuid';
 // import Cookies from 'cookies';
 
 import {Request, Response, Cookies} from '../../adapters/abstract-http';
-
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
@@ -152,7 +151,6 @@ const ShopifyOAuth = {
 
     const client = new HttpClient(currentSession.shop);
     const postResponse = await client.post(postParams);
-
     if (currentSession.isOnline) {
       const responseBody = postResponse.body as OnlineAccessResponse;
       const {access_token, scope, ...rest} = responseBody; // eslint-disable-line @typescript-eslint/naming-convention
@@ -216,10 +214,7 @@ const ShopifyOAuth = {
    * @param request HTTP request object
    * @param response HTTP response object
    */
-  getCookieSessionId(
-    request: Request,
-    response: Response,
-  ): string | undefined {
+  getCookieSessionId(request: Request, response: Response): string | undefined {
     const cookies = new Cookies(request, response, {
       secure: true,
       keys: [Context.API_SECRET_KEY],

@@ -1,5 +1,4 @@
 import {Request, Response} from '../adapters/abstract-http';
-
 import {Context} from '../context';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
 import {Session} from '../auth/session';

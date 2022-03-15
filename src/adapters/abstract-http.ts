@@ -29,15 +29,23 @@ export function isOK(resp: Response) {
   return resp.statusCode >= 200 && resp.statusCode <= 299;
 }
 
-export function getHeader(
+export function getHeaders(
   headers: Headers | undefined,
   needle_: string,
-): string | undefined {
+): string[] | undefined {
   if (!headers) return;
   const needle = needle_.toLowerCase();
-  return Object.entries(headers).find(
-    ([key]) => key.toLowerCase() === needle,
-  )?.[1];
+  return Object.entries(headers)
+    .filter(([key]) => key.toLowerCase() === needle)
+    .map(([_key, value]) => value);
+}
+
+export function getHeader(
+  headers: Headers | undefined,
+  needle: string,
+): string | undefined {
+  if (!headers) return;
+  return getHeaders(headers, needle)?.[0];
 }
 
 export interface CookieData {
@@ -80,55 +88,76 @@ export interface CookieData {
   signed?: boolean;
 }
 
-export type CookieJar = Record<string, CookieData>;
+export interface CookieJar {
+  [key: string]: CookieData;
+}
 export class Cookies {
-  private receivedJar: CookieJar = {};
-  private newCookieJar: CookieJar = {};
-  // TODO: Signing & credential rotation
-  constructor(req: Request, public response: Response, _opts: any) {
-    const cookieReqHdr = getHeader(req.headers, 'Cookie') ?? '';
-    this.receivedJar = Cookies.parseHeader(cookieReqHdr);
-    const cookieResHdr = getHeader(response.headers, 'Set-Cookie') ?? '';
-    this.newCookieJar = Cookies.parseHeader(cookieResHdr);
-  }
-
-  static parseHeader(hdr: string): CookieJar {
-    const entries = hdr.split(",").filter(h => h.trim().length > 0).map(cookieDef =>{
-      const [keyval, ...opts] = cookieDef.split(";");
-      const [name, value] = splitN(keyval, "=", 2).map(v => v.trim());
+  static parseCookies(hdrs: string[]): CookieJar {
+    const entries = hdrs.map((cookieDef) => {
+      const [keyval, ...opts] = cookieDef.split(';');
+      const [name, value] = splitN(keyval, '=', 2).map((value) => value.trim());
       return [
         name,
         {
           name,
           value,
-          ...Object.fromEntries(opts.map(opt => splitN(opt, "=", 2).map(v => v.trim()))),
-        }
-      ]
+          ...Object.fromEntries(
+            opts.map((opt) => splitN(opt, '=', 2).map((value) => value.trim())),
+          ),
+        },
+      ];
     });
-    return Object.fromEntries(entries);
+    const jar = Object.fromEntries(entries) as CookieJar;
+    for (const cookie of Object.values(jar)) {
+      if (typeof cookie.expires === 'string') {
+        cookie.expires = new Date(cookie.expires);
+      }
+    }
+    return jar;
+  }
+
+  private receivedJar: CookieJar = {};
+  private newCookieJar: CookieJar = {};
+
+  // TODO: Signing & credential rotation
+  constructor(req: Request, public response: Response, _opts: any) {
+    const cookieReqHdr = getHeader(req.headers, 'Cookie') ?? '';
+    this.receivedJar = Cookies.parseCookies(cookieReqHdr.split(','));
+    const cookieResHdr = getHeaders(response.headers, 'Set-Cookie') ?? [];
+    this.newCookieJar = Cookies.parseCookies(cookieResHdr);
   }
 
   toHeader(): string {
-    let header = "";
-    for(const [name, data] of Object.entries(this.newCookieJar)) {
+    let header = '';
+    for (const [name, data] of Object.entries(this.newCookieJar)) {
       header += `${name}=${data.value};`;
-      header += Object.entries(data).filter(([key]) => !["name", "value"].includes(key)).map(([key, value]) => `${key}=${value}`).join("; ");
-      header += ",";
+      header += Object.entries(data)
+        .filter(([key]) => !['name', 'value', 'expires'].includes(key))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('; ');
+      if (data.expires) {
+        header += ';';
+        header += `expires=${data.expires.toUTCString()}`;
+      }
+      header += ',';
     }
-    return header;
+    return header.slice(0, -1);
   }
 
   updateHeader() {
-    if(!this.response.headers) {
+    if (!this.response.headers) {
       this.response.headers = {};
     }
-    this.response.headers["Set-Cookie"] = this.toHeader();
+    this.response.headers['Set-Cookie'] = this.toHeader();
   }
 
   // FIXME: Signing
-  get(name: string, _opts: Partial<{signed: boolean}> ={}): string| undefined {
+  get(
+    name: string,
+    _opts: Partial<{signed: boolean}> = {},
+  ): string | undefined {
     const oldCookie = this.receivedJar[name]?.value;
-    if(oldCookie) return oldCookie;
+    if (oldCookie) return oldCookie;
     return this.newCookieJar[name]?.value;
   }
 
@@ -136,13 +165,16 @@ export class Cookies {
     this.newCookieJar[name] = {
       ...opts,
       name,
-      value
+      value,
     };
     this.updateHeader();
   }
 }
 
-function splitN(v: string, sep: string, n: number): string[] {
-  const parts = v.split(sep);
-  return [...parts.slice(0, n-1), parts.slice(n-1).join(sep)];
+function splitN(str: string, sep: string, maxNumParts: number): string[] {
+  const parts = str.split(sep);
+  return [
+    ...parts.slice(0, maxNumParts - 1),
+    parts.slice(maxNumParts - 1).join(sep),
+  ];
 }
