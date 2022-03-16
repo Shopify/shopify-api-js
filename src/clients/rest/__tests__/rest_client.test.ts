@@ -22,6 +22,10 @@ const successResponseBody = JSON.stringify({
 });
 
 describe('REST client', () => {
+  beforeEach(() => {
+    mockAdapter.reset();
+  });
+
   it('can make GET request', async () => {
     const client = new RestClient(domain, 'dummy-token');
 
