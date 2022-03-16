@@ -22,6 +22,7 @@ describe('loadCurrentSession', () => {
   let jwtPayload: JwtPayload;
 
   beforeEach(() => {
+    mockAdapter.reset();
     jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
@@ -39,13 +40,14 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as Request;
+    const sessionId = '1234-this-is-a-cookie-session-id';
+    const req = {
+      headers: createSessionCookieHeader(sessionId),
+    } as Request;
     const res = {} as Response;
 
-    const cookieId = '1234-this-is-a-cookie-session-id';
-
     const session = new Session(
-      cookieId,
+      sessionId,
       'test-shop.myshopify.io',
       'state',
       true,
@@ -141,17 +143,17 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
+    const sessionId = '1234-this-is-a-cookie-session-id';
     const req = {
       headers: {
         authorization: '',
+        ...createSessionCookieHeader(sessionId),
       },
     } as any as Request;
     const res = {} as Response;
 
-    const cookieId = '1234-this-is-a-cookie-session-id';
-
     const session = new Session(
-      cookieId,
+      sessionId,
       'test-shop.myshopify.io',
       'state',
       true,
@@ -167,13 +169,16 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as Request;
+    const sessionId = ShopifyOAuth.getOfflineSessionId(
+      'test-shop.myshopify.io',
+    );
+    const req = {
+      headers: createSessionCookieHeader(sessionId),
+    } as Request;
     const res = {} as Response;
 
-    const cookieId = ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io');
-
     const session = new Session(
-      cookieId,
+      sessionId,
       'test-shop.myshopify.io',
       'state',
       false,
@@ -212,3 +217,9 @@ describe('loadCurrentSession', () => {
     await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
   });
 });
+
+function createSessionCookieHeader(sessionId: string): Headers {
+  return {
+    Cookie: `${Shopify.Auth.SESSION_COOKIE_NAME}=${sessionId}`,
+  };
+}
