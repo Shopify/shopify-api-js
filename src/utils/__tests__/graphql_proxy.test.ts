@@ -1,14 +1,23 @@
-import type {IncomingMessage, ServerResponse} from 'http';
-
 import jwt from 'jsonwebtoken';
-import express, {Request, Response} from 'express';
+import express, {
+  Request as ExpressRequest,
+  Response as ExpressResponse,
+} from 'express';
 import request from 'supertest';
 
+import * as mockAdapter from '../../adapters/mock-adapter';
+import {
+  setAbstractFetchFunc,
+  Request,
+  Response,
+} from '../../adapters/abstract-http';
 import {Session} from '../../auth/session';
 import {InvalidSession, SessionNotFound} from '../../error';
 import graphqlProxy from '../graphql_proxy';
 import {Context} from '../../context';
 import {JwtPayload} from '../decode-session-token';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 const successResponse = {
   data: {
@@ -40,17 +49,27 @@ let token = '';
 
 describe('GraphQL proxy with session', () => {
   const app = express();
-  app.post('/proxy', async (req: Request, res: Response) => {
+  app.post('/proxy', async (req: ExpressRequest, res: ExpressResponse) => {
     try {
-      const response = await graphqlProxy(req, res);
-      res.send(response.body);
+      const internalResponse = {
+        statusCode: 200,
+        statusText: 'OK',
+      } as Response;
+      const response = await graphqlProxy(
+        await convertRequest(req),
+        internalResponse,
+      );
+      internalResponse.body = JSON.stringify(response.body);
+      convertResponse(internalResponse, res);
     } catch (err) {
       res.status(400);
+      console.log(err.message);
       res.send(JSON.stringify(err.message));
     }
   });
 
   beforeEach(async () => {
+    mockAdapter.reset();
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
     const jwtPayload: JwtPayload = {
@@ -79,10 +98,8 @@ describe('GraphQL proxy with session', () => {
   });
 
   it('can forward query and return response', async () => {
-    fetchMock.mockResponses(
-      JSON.stringify(successResponse),
-      JSON.stringify(successResponse),
-    );
+    queueMockResponse(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const firstResponse = await request(app)
       .post('/proxy')
@@ -134,8 +151,8 @@ describe('GraphQL proxy', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as IncomingMessage;
-    const res = {} as ServerResponse;
+    } as any as Request;
+    const res = {} as Response;
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop,
@@ -148,8 +165,45 @@ describe('GraphQL proxy', () => {
   });
 
   it('throws an error if no session', async () => {
-    const req = {headers: {}} as IncomingMessage;
-    const res = {} as ServerResponse;
+    const req = {headers: {}} as Request;
+    const res = {} as Response;
     await expect(graphqlProxy(req, res)).rejects.toThrow(SessionNotFound);
   });
 });
+
+async function convertRequest(req: ExpressRequest): Promise<Request> {
+  const body = await new Promise<string>((resolve, reject) => {
+    let str = '';
+    req.on('data', (chunk) => {
+      str += chunk.toString();
+    });
+    req.on('error', (error) => reject(error));
+    req.on('end', () => resolve(str));
+  });
+  return {
+    headers: req.headers as any,
+    method: req.method,
+    url: req.url,
+    body,
+  };
+}
+
+function convertResponse(
+  internalResponse: Response,
+  response: ExpressResponse,
+) {
+  response.statusCode = internalResponse.statusCode;
+  response.statusMessage = internalResponse.statusText;
+  Object.assign(response.header, internalResponse.headers);
+  response.end(internalResponse.body);
+}
+
+function queueMockResponse(body: string, partial: Partial<Response> = {}) {
+  mockAdapter.queueResponse({
+    statusCode: 200,
+    statusText: 'OK',
+    headers: {},
+    ...partial,
+    body,
+  });
+}
