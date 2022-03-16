@@ -3,7 +3,12 @@ import querystring from 'querystring';
 import {v4 as uuidv4} from 'uuid';
 // import Cookies from 'cookies';
 
-import {Request, Response, Cookies} from '../../adapters/abstract-http';
+import {
+  Request,
+  Response,
+  Cookies,
+  getHeader,
+} from '../../adapters/abstract-http';
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
@@ -256,7 +261,7 @@ const ShopifyOAuth = {
     let currentSessionId: string | undefined;
 
     if (Context.IS_EMBEDDED_APP) {
-      const authHeader = request.headers.authorization;
+      const authHeader = getHeader(request.headers, 'Authorization');
       if (authHeader) {
         const matches = authHeader.match(/^Bearer (.+)$/);
         if (!matches) {
