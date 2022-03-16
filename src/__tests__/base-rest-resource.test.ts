@@ -2,9 +2,25 @@ import {Session} from '../auth/session';
 import {ApiVersion} from '../base-types';
 import {Context} from '../context';
 import {RestResourceRequestError, RestResourceError} from '../error';
+import * as mockAdapter from '../adapters/mock-adapter';
+import {setAbstractFetchFunc, Response} from '../adapters/abstract-http';
 
 import FakeResource from './fake-resource';
 import FakeResourceWithCustomPrefix from './fake-resource-with-custom-prefix';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    interface Matchers<R> {
+      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+      toMatchMadeHttpRequest(): R;
+    }
+    /* eslint-enable @typescript-eslint/naming-convention */
+  }
+}
 
 describe('Base REST resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -13,9 +29,13 @@ describe('Base REST resource', () => {
   const session = new Session('1234', domain, '1234', true);
   session.accessToken = 'access-token';
 
+  beforeEach(() => {
+    mockAdapter.reset();
+  });
+
   it('finds resource by id', async () => {
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
     const got = await FakeResource.find({id: 1, session} as any);
 
@@ -30,7 +50,7 @@ describe('Base REST resource', () => {
 
   it('finds resource with param', async () => {
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
     const got = await FakeResource.find({
       id: 1,
@@ -56,7 +76,7 @@ describe('Base REST resource', () => {
         has_many_attribute: [{id: 3, attribute: 'attribute3'}],
       },
     };
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
     const got = await FakeResource.find({id: 1, session} as any);
 
@@ -84,8 +104,8 @@ describe('Base REST resource', () => {
 
   it('fails on finding nonexistent resource by id', async () => {
     const body = {errors: 'Not Found'};
-    fetchMock.mockResponseOnce(JSON.stringify(body), {
-      status: 404,
+    queueMockResponse(JSON.stringify(body), {
+      statusCode: 404,
       statusText: 'Not Found',
     });
 
@@ -108,7 +128,7 @@ describe('Base REST resource', () => {
         {id: 2, attribute: 'attribute2'},
       ],
     };
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
     const got = await FakeResource.all({session});
 
@@ -125,7 +145,7 @@ describe('Base REST resource', () => {
   it('saves', async () => {
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+    queueMockResponse(JSON.stringify(responseBody));
 
     const resource = new FakeResource({session});
     resource.attribute = 'attribute';
@@ -144,7 +164,7 @@ describe('Base REST resource', () => {
   it('saves and updates', async () => {
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+    queueMockResponse(JSON.stringify(responseBody));
 
     const resource = new FakeResource({session});
     resource.attribute = 'attribute';
@@ -165,7 +185,7 @@ describe('Base REST resource', () => {
       fake_resource: {id: 1, attribute: 'attribute'},
     };
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+    queueMockResponse(JSON.stringify(responseBody));
 
     const resource = new FakeResource({session});
     resource.id = 1;
@@ -191,7 +211,7 @@ describe('Base REST resource', () => {
         has_many_attribute: [{attribute: 'attribute2'}],
       },
     };
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
     const child1 = new FakeResource({session});
     child1.attribute = 'attribute1';
@@ -218,7 +238,7 @@ describe('Base REST resource', () => {
 
   it('saves with unknown attribute', async () => {
     const expectedRequestBody = {fake_resource: {unknown: 'some-value'}};
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
     const resource = new FakeResource({session});
     resource.unknown = 'some-value';
@@ -237,7 +257,7 @@ describe('Base REST resource', () => {
     const expectedRequestBody = {
       fake_resource: {id: 1, has_one_attribute: null},
     };
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
     const resource = new FakeResource({session});
     resource.id = 1;
@@ -254,7 +274,7 @@ describe('Base REST resource', () => {
   });
 
   it('deletes existing resource', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
     const resource = new FakeResource({session});
     resource.id = 1;
@@ -270,7 +290,7 @@ describe('Base REST resource', () => {
   });
 
   it('deletes with other resource', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
     const resource = new FakeResource({session});
     resource.id = 1;
@@ -288,8 +308,8 @@ describe('Base REST resource', () => {
 
   it('fails to delete nonexistent resource', async () => {
     const body = {errors: 'Not Found'};
-    fetchMock.mockResponseOnce(JSON.stringify(body), {
-      status: 404,
+    queueMockResponse(JSON.stringify(body), {
+      statusCode: 404,
       statusText: 'Not Found',
     });
 
@@ -310,7 +330,7 @@ describe('Base REST resource', () => {
 
   it('makes custom request', async () => {
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
     const got = await FakeResource.custom({
       session,
@@ -332,7 +352,7 @@ describe('Base REST resource', () => {
     const nextUrl = `https://${domain}/admin/api/unstable/fake_resources.json?page_info=nextToken`;
 
     const body = {fake_resources: []};
-    fetchMock.mockResponses(
+    queueMockResponses(
       [JSON.stringify(body), {headers: {link: `<${nextUrl}>; rel="next"`}}],
       [
         JSON.stringify(body),
@@ -383,7 +403,7 @@ describe('Base REST resource', () => {
     const body = {
       fake_resource_with_custom_prefix: {id: 1, attribute: 'attribute'},
     };
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
     const got = await FakeResourceWithCustomPrefix.find({id: 1, session});
 
@@ -406,3 +426,21 @@ describe('Base REST resource', () => {
     );
   });
 });
+
+function queueMockResponse(body: string, partial: Partial<Response> = {}) {
+  mockAdapter.queueResponse({
+    statusCode: 200,
+    statusText: 'OK',
+    headers: {},
+    ...partial,
+    body,
+  });
+}
+
+function queueMockResponses(
+  ...responses: Parameters<typeof queueMockResponse>[]
+) {
+  for (const [body, response] of responses) {
+    queueMockResponse(body, response);
+  }
+}
