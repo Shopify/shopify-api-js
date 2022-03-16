@@ -1,11 +1,17 @@
-import type {IncomingMessage, ServerResponse} from 'http';
-
 import jwt from 'jsonwebtoken';
 
+import {
+  setAbstractFetchFunc,
+  Request,
+  Response,
+} from '../../adapters/abstract-http';
+import * as mockAdapter from '../../adapters/mock-adapter';
 import {Session} from '../../auth/session';
 import {Context} from '../../context';
 import loadCurrentSession from '../load-current-session';
 import storeSession from '../store-session';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 describe('storeSession', () => {
   it('can store the current session after a change', async () => {
@@ -31,8 +37,8 @@ describe('storeSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as IncomingMessage;
-    const res = {} as ServerResponse;
+    } as any as Request;
+    const res = {} as Response;
 
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,

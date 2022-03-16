@@ -116,6 +116,20 @@ export class Cookies {
     return jar;
   }
 
+  static encodeCookie(data: CookieData): string {
+    let result = '';
+    result += `${data.name}=${data.value};`;
+    result += Object.entries(data)
+      .filter(([key]) => !['name', 'value', 'expires'].includes(key))
+      .map(([key, value]) => `${key}=${value}`)
+      .join('; ');
+    if (data.expires) {
+      result += ';';
+      result += `expires=${data.expires.toUTCString()}`;
+    }
+    return result;
+  }
+
   private receivedJar: CookieJar = {};
   private newCookieJar: CookieJar = {};
 
@@ -128,20 +142,9 @@ export class Cookies {
   }
 
   toHeader(): string {
-    let header = '';
-    for (const [name, data] of Object.entries(this.newCookieJar)) {
-      header += `${name}=${data.value};`;
-      header += Object.entries(data)
-        .filter(([key]) => !['name', 'value', 'expires'].includes(key))
-        .map(([key, value]) => `${key}=${value}`)
-        .join('; ');
-      if (data.expires) {
-        header += ';';
-        header += `expires=${data.expires.toUTCString()}`;
-      }
-      header += ',';
-    }
-    return header.slice(0, -1);
+    return Object.values(this.newCookieJar)
+      .map((cookie) => Cookies.encodeCookie(cookie))
+      .join(',');
   }
 
   updateHeader() {
