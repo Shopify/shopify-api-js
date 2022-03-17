@@ -1,14 +1,20 @@
-import type {IncomingMessage, ServerResponse} from 'http';
-
 import jwt from 'jsonwebtoken';
-import Cookies from 'cookies';
 
+import {
+  setAbstractFetchFunc,
+  Headers,
+  Request,
+  Response,
+} from '../../adapters/abstract-http';
+import Shopify from '../../index-node';
+import * as mockAdapter from '../../adapters/mock-adapter';
 import {Context} from '../../context';
-import * as ShopifyErrors from '../../error';
 import {Session} from '../../auth/session';
 import {JwtPayload} from '../decode-session-token';
 import loadCurrentSession from '../load-current-session';
 import {ShopifyOAuth} from '../../auth/oauth/oauth';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 jest.mock('cookies');
 
@@ -16,6 +22,7 @@ describe('loadCurrentSession', () => {
   let jwtPayload: JwtPayload;
 
   beforeEach(() => {
+    mockAdapter.reset();
     jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
@@ -33,13 +40,14 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as IncomingMessage;
-    const res = {} as ServerResponse;
-
-    const cookieId = '1234-this-is-a-cookie-session-id';
+    const sessionId = '1234-this-is-a-cookie-session-id';
+    const req = {
+      headers: createSessionCookieHeader(sessionId),
+    } as Request;
+    const res = {} as Response;
 
     const session = new Session(
-      cookieId,
+      sessionId,
       'test-shop.myshopify.io',
       'state',
       true,
@@ -48,8 +56,6 @@ describe('loadCurrentSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    Cookies.prototype.get.mockImplementation(() => cookieId);
-
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });
 
@@ -57,10 +63,8 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as IncomingMessage;
-    const res = {} as ServerResponse;
-
-    Cookies.prototype.get.mockImplementation(() => null);
+    const req = {} as Request;
+    const res = {} as Response;
 
     await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
   });
@@ -76,8 +80,8 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as IncomingMessage;
-    const res = {} as ServerResponse;
+    } as any as Request;
+    const res = {} as Response;
 
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
@@ -96,8 +100,8 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const req = {headers: {}} as IncomingMessage;
-    const res = {} as ServerResponse;
+    const req = {headers: {}} as Request;
+    const res = {} as Response;
 
     await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
   });
@@ -113,8 +117,8 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as IncomingMessage;
-    const res = {} as ServerResponse;
+    } as any as Request;
+    const res = {} as Response;
 
     await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
   });
@@ -127,11 +131,11 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: 'Not a Bearer token!',
       },
-    } as IncomingMessage;
-    const res = {} as ServerResponse;
+    } as any as Request;
+    const res = {} as Response;
 
     await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(
-      ShopifyErrors.MissingJwtTokenError,
+      Shopify.Errors.MissingJwtTokenError,
     );
   });
 
@@ -139,17 +143,17 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
+    const sessionId = '1234-this-is-a-cookie-session-id';
     const req = {
       headers: {
         authorization: '',
+        ...createSessionCookieHeader(sessionId),
       },
-    } as IncomingMessage;
-    const res = {} as ServerResponse;
-
-    const cookieId = '1234-this-is-a-cookie-session-id';
+    } as any as Request;
+    const res = {} as Response;
 
     const session = new Session(
-      cookieId,
+      sessionId,
       'test-shop.myshopify.io',
       'state',
       true,
@@ -158,8 +162,6 @@ describe('loadCurrentSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    Cookies.prototype.get.mockImplementation(() => cookieId);
-
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });
 
@@ -167,13 +169,16 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const req = {} as IncomingMessage;
-    const res = {} as ServerResponse;
-
-    const cookieId = ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io');
+    const sessionId = ShopifyOAuth.getOfflineSessionId(
+      'test-shop.myshopify.io',
+    );
+    const req = {
+      headers: createSessionCookieHeader(sessionId),
+    } as Request;
+    const res = {} as Response;
 
     const session = new Session(
-      cookieId,
+      sessionId,
       'test-shop.myshopify.io',
       'state',
       false,
@@ -181,8 +186,6 @@ describe('loadCurrentSession', () => {
     await expect(
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
-
-    Cookies.prototype.get.mockImplementation(() => cookieId);
 
     await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
   });
@@ -198,8 +201,8 @@ describe('loadCurrentSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as IncomingMessage;
-    const res = {} as ServerResponse;
+    } as any as Request;
+    const res = {} as Response;
 
     const session = new Session(
       ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io'),
@@ -214,3 +217,9 @@ describe('loadCurrentSession', () => {
     await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
   });
 });
+
+function createSessionCookieHeader(sessionId: string): Headers {
+  return {
+    Cookie: `${Shopify.Auth.SESSION_COOKIE_NAME}=${sessionId}`,
+  };
+}

@@ -1,8 +1,12 @@
-import type {IncomingMessage, ServerResponse} from 'http';
-
 import jwt from 'jsonwebtoken';
-import Cookies from 'cookies';
 
+import {
+  setAbstractFetchFunc,
+  Request,
+  Response,
+} from '../../adapters/abstract-http';
+import Shopify from '../../index-node';
+import * as mockAdapter from '../../adapters/mock-adapter';
 import {Session} from '../../auth/session';
 import OAuth, {ShopifyOAuth} from '../../auth/oauth';
 import withSession from '../with-session';
@@ -10,9 +14,8 @@ import {Context} from '../../context';
 import {RestWithSession, GraphqlWithSession} from '../types';
 import {RestClient} from '../../clients/rest';
 import {GraphqlClient} from '../../clients/graphql';
-import * as ShopifyErrors from '../../error';
 
-jest.mock('cookies');
+setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 describe('withSession', () => {
   const shop = 'fake-shop.myshopify.io';
@@ -20,13 +23,13 @@ describe('withSession', () => {
   it('throws an error for missing shop when !isOnline', async () => {
     await expect(
       withSession({clientType: 'rest', isOnline: false}),
-    ).rejects.toThrow(ShopifyErrors.MissingRequiredArgument);
+    ).rejects.toThrow(Shopify.Errors.MissingRequiredArgument);
   });
 
   it('throws an error for missing request and response objects when isOnline', async () => {
     await expect(
       withSession({clientType: 'graphql', isOnline: true}),
-    ).rejects.toThrow(ShopifyErrors.MissingRequiredArgument);
+    ).rejects.toThrow(Shopify.Errors.MissingRequiredArgument);
   });
 
   it('throws an error for unsupported clientTypes', async () => {
@@ -39,19 +42,19 @@ describe('withSession', () => {
 
     await expect(
       withSession({clientType: 'blah' as any, isOnline: false, shop}),
-    ).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
+    ).rejects.toThrow(Shopify.Errors.UnsupportedClientType);
   });
 
   it('throws an error when there is no session matching the params requested', async () => {
-    const req = {} as IncomingMessage;
-    const res = {} as ServerResponse;
+    const req = {} as Request;
+    const res = {} as Response;
 
     await expect(
       withSession({clientType: 'rest', isOnline: false, shop}),
-    ).rejects.toThrow(ShopifyErrors.SessionNotFound);
+    ).rejects.toThrow(Shopify.Errors.SessionNotFound);
     await expect(
       withSession({clientType: 'graphql', isOnline: true, req, res}),
-    ).rejects.toThrowError(ShopifyErrors.SessionNotFound);
+    ).rejects.toThrowError(Shopify.Errors.SessionNotFound);
   });
 
   it('throws an error when the session is not yet authenticated', async () => {
@@ -61,7 +64,7 @@ describe('withSession', () => {
 
     await expect(
       withSession({clientType: 'rest', isOnline: false, shop}),
-    ).rejects.toThrow(ShopifyErrors.InvalidSession);
+    ).rejects.toThrow(Shopify.Errors.InvalidSession);
   });
 
   it('returns an object containing the appropriate client and session for offline sessions', async () => {
@@ -95,16 +98,17 @@ describe('withSession', () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
-    const session = new Session(`12345`, shop, 'state', true);
+    const sessionId = '12345';
+    const session = new Session(sessionId, shop, 'state', true);
     session.accessToken = 'gimme-access';
     await Context.SESSION_STORAGE.storeSession(session);
 
-    const req = {} as IncomingMessage;
-    const res = {} as ServerResponse;
-
-    const cookieId = '12345';
-
-    Cookies.prototype.get.mockImplementation(() => cookieId);
+    const req = {
+      headers: {
+        Cookie: `${Shopify.Auth.SESSION_COOKIE_NAME}=${sessionId}`,
+      },
+    } as any as Request;
+    const res = {} as Response;
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',
@@ -158,8 +162,8 @@ describe('withSession', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-    } as IncomingMessage;
-    const res = {} as ServerResponse;
+    } as any as Request;
+    const res = {} as Response;
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',

@@ -1,5 +1,4 @@
-import type {IncomingMessage, ServerResponse} from 'http';
-
+import {Request, Response} from '../adapters/abstract-http';
 import {Context} from '../context';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
 import * as ShopifyErrors from '../error';
@@ -12,8 +11,8 @@ import * as ShopifyErrors from '../error';
  * @param isOnline Whether to load online (default) or offline sessions (optional)
  */
 export default async function deleteCurrentSession(
-  request: IncomingMessage,
-  response: ServerResponse,
+  request: Request,
+  response: Response,
   isOnline = true,
 ): Promise<boolean | never> {
   Context.throwIfUninitialized();

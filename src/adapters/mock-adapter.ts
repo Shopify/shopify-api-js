@@ -1,11 +1,11 @@
 import type {Request, Response} from './abstract-http';
 
-let lastRequest: (Request & {tries: number}) | null = null;
+let requestList: (Request & {tries: number})[] = [];
 let responseQueue: Response[] = [];
 
 export function getLastRequest(): Request {
-  if (!lastRequest) throw Error('No request has been made yet');
-  return lastRequest;
+  if (requestList.length <= 0) throw Error('No request has been made yet');
+  return requestList.shift()!;
 }
 
 export function queueResponse(resp: Response) {
@@ -13,16 +13,21 @@ export function queueResponse(resp: Response) {
 }
 
 export async function abstractFetch(req: Request): Promise<Response> {
-  let tries = 0;
-  if (req.url === lastRequest?.url) {
-    tries = lastRequest.tries;
+  const lastRequest = requestList?.[0];
+  if (
+    lastRequest &&
+    lastRequest.url === req.url &&
+    lastRequest.body === req.body
+  ) {
+    lastRequest.tries += 1;
+  } else {
+    requestList.push({...req, tries: 1});
   }
-  lastRequest = {...req, tries: tries + 1};
   if (responseQueue.length <= 0) throw Error('No response prepared');
   return responseQueue.shift()!;
 }
 
 export function reset() {
-  lastRequest = null;
+  requestList = [];
   responseQueue = [];
 }

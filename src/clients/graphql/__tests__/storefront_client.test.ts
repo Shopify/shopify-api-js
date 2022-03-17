@@ -1,6 +1,10 @@
 import {ShopifyHeader} from '../../../base-types';
 import {StorefrontClient} from '../storefront_client';
 import {Context} from '../../../context';
+import {setAbstractFetchFunc, Response} from '../../../adapters/abstract-http';
+import * as mockAdapter from '../../../adapters/mock-adapter';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 const DOMAIN = 'shop.myshopify.io';
 const QUERY = `
@@ -11,19 +15,19 @@ const QUERY = `
 }
 `;
 
-const successResponse = {
+const successResponse = JSON.stringify({
   data: {
     shop: {
       name: 'Shoppity Shop',
     },
   },
-};
+});
 
 describe('Storefront GraphQL client', () => {
   it('can return response from specific access token', async () => {
     const client: StorefrontClient = new StorefrontClient(DOMAIN, 'bork');
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(successResponse);
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -47,7 +51,7 @@ describe('Storefront GraphQL client', () => {
 
     const client: StorefrontClient = new StorefrontClient(DOMAIN);
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(successResponse);
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -65,10 +69,21 @@ describe('Storefront GraphQL client', () => {
   });
 });
 
-function buildExpectedResponse(obj: unknown) {
-  const expectedResponse = {
-    body: obj,
+function buildExpectedResponse(body: string): Response {
+  const expectedResponse: Partial<Response> = {
     headers: expect.objectContaining({}),
+    body: JSON.parse(body),
   };
+
   return expect.objectContaining(expectedResponse);
+}
+
+function queueMockResponse(body: string, partial: Partial<Response> = {}) {
+  mockAdapter.queueResponse({
+    statusCode: 200,
+    statusText: 'OK',
+    headers: {},
+    ...partial,
+    body,
+  });
 }
