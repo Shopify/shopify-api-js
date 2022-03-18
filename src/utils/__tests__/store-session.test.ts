@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-
 import {
   setAbstractFetchFunc,
   Request,
@@ -10,6 +8,7 @@ import {Session} from '../../auth/session';
 import {Context} from '../../context';
 import loadCurrentSession from '../load-current-session';
 import storeSession from '../store-session';
+import {signJWT} from '../setup-jest';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -30,9 +29,7 @@ describe('storeSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
