@@ -17,7 +17,7 @@ export default async function loadCurrentSession(
 ): Promise<Session | undefined> {
   Context.throwIfUninitialized();
 
-  const sessionId = ShopifyOAuth.getCurrentSessionId(
+  const sessionId = await ShopifyOAuth.getCurrentSessionId(
     request,
     response,
     isOnline,

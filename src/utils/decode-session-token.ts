@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken';
+import * as jose from 'jose';
 
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
-
+import {getHMACKey} from './get-hmac-key';
 import validateShop from './shop-validator';
 
 const JWT_PERMITTED_CLOCK_TOLERANCE = 5;
@@ -24,13 +24,17 @@ interface JwtPayload {
  *
  * @param token Received session token
  */
-function decodeSessionToken(token: string): JwtPayload {
+export default async function decodeSessionToken(
+  token: string,
+): Promise<JwtPayload> {
   let payload: JwtPayload;
   try {
-    payload = jwt.verify(token, Context.API_SECRET_KEY, {
-      algorithms: ['HS256'],
-      clockTolerance: JWT_PERMITTED_CLOCK_TOLERANCE,
-    }) as JwtPayload;
+    payload = (
+      await jose.jwtVerify(token, getHMACKey(Context.API_SECRET_KEY), {
+        algorithms: ['HS256'],
+        clockTolerance: JWT_PERMITTED_CLOCK_TOLERANCE,
+      })
+    ).payload as unknown as JwtPayload;
   } catch (error) {
     throw new ShopifyErrors.InvalidJwtError(
       `Failed to parse session token '${token}': ${error.message}`,
@@ -51,7 +55,5 @@ function decodeSessionToken(token: string): JwtPayload {
 
   return payload;
 }
-
-export default decodeSessionToken;
 
 export {decodeSessionToken, JwtPayload};

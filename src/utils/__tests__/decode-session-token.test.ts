@@ -1,8 +1,7 @@
-import jwt from 'jsonwebtoken';
-
 import decodeSessionToken, {JwtPayload} from '../decode-session-token';
 import {Context} from '../../context';
 import * as ShopifyErrors from '../../error';
+import {signJWT} from '../setup-jest';
 
 let payload: JwtPayload;
 
@@ -23,65 +22,55 @@ beforeEach(() => {
   };
 });
 
-test('JWT session token can verify valid tokens', () => {
-  const token = jwt.sign(payload, Context.API_SECRET_KEY, {
-    algorithm: 'HS256',
-  });
+test('JWT session token can verify valid tokens', async () => {
+  const token = await signJWT(payload);
 
-  const actualPayload = decodeSessionToken(token);
+  const actualPayload = await decodeSessionToken(token);
   expect(actualPayload).toStrictEqual(payload);
 });
 
-test('JWT session token fails with invalid tokens', () => {
-  expect(() => decodeSessionToken('not_a_valid_token')).toThrow(
+test('JWT session token fails with invalid tokens', async () => {
+  await expect(() => decodeSessionToken('not_a_valid_token')).rejects.toThrow(
     ShopifyErrors.InvalidJwtError,
   );
 });
 
-test('JWT session token fails if the token is expired', () => {
+test('JWT session token fails if the token is expired', async () => {
   const invalidPayload = {...payload};
   invalidPayload.exp = new Date().getTime() / 1000 - 60;
 
-  const token = jwt.sign(invalidPayload, Context.API_SECRET_KEY, {
-    algorithm: 'HS256',
-  });
-  expect(() => decodeSessionToken(token)).toThrow(
+  const token = await signJWT(invalidPayload);
+  await expect(() => decodeSessionToken(token)).rejects.toThrow(
     ShopifyErrors.InvalidJwtError,
   );
 });
 
-test('JWT session token fails if the token is not activated yet', () => {
+test('JWT session token fails if the token is not activated yet', async () => {
   const invalidPayload = {...payload};
   invalidPayload.nbf = new Date().getTime() / 1000 + 60;
 
-  const token = jwt.sign(invalidPayload, Context.API_SECRET_KEY, {
-    algorithm: 'HS256',
-  });
-  expect(() => decodeSessionToken(token)).toThrow(
+  const token = await signJWT(invalidPayload);
+  await expect(() => decodeSessionToken(token)).rejects.toThrow(
     ShopifyErrors.InvalidJwtError,
   );
 });
 
-test('JWT session token fails if the API key is wrong', () => {
+test('JWT session token fails if the API key is wrong', async () => {
   // The token is signed with a key that is not the current value
-  const token = jwt.sign(payload, Context.API_SECRET_KEY, {
-    algorithm: 'HS256',
-  });
+  const token = await signJWT(payload);
   Context.API_KEY = 'something_else';
 
-  expect(() => decodeSessionToken(token)).toThrow(
+  await expect(() => decodeSessionToken(token)).rejects.toThrow(
     ShopifyErrors.InvalidJwtError,
   );
 });
 
-test('JWT session token fails if the domain is invalid', () => {
+test('JWT session token fails if the domain is invalid', async () => {
   const invalidPayload = {...payload};
   invalidPayload.dest = 'https://not-a-domain';
 
-  const token = jwt.sign(invalidPayload, Context.API_SECRET_KEY, {
-    algorithm: 'HS256',
-  });
-  expect(() => decodeSessionToken(token)).toThrow(
+  const token = await signJWT(invalidPayload);
+  await expect(() => decodeSessionToken(token)).rejects.toThrow(
     ShopifyErrors.InvalidJwtError,
   );
 });

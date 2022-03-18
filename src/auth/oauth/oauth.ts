@@ -248,11 +248,11 @@ const ShopifyOAuth = {
    * @param response HTTP response object
    * @param isOnline Whether to load online (default) or offline sessions (optional)
    */
-  getCurrentSessionId(
+  async getCurrentSessionId(
     request: Request,
     response: Response,
     isOnline = true,
-  ): string | undefined {
+  ): Promise<string | undefined> {
     let currentSessionId: string | undefined;
 
     if (Context.IS_EMBEDDED_APP) {
@@ -265,7 +265,7 @@ const ShopifyOAuth = {
           );
         }
 
-        const jwtPayload = decodeSessionToken(matches[1]);
+        const jwtPayload = await decodeSessionToken(matches[1]);
         const shop = jwtPayload.dest.replace(/^https:\/\//, '');
         if (isOnline) {
           currentSessionId = this.getJwtSessionId(shop, jwtPayload.sub);
