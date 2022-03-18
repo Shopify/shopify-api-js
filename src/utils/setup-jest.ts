@@ -4,6 +4,7 @@ import {Context} from '../context';
 import {ApiVersion} from '../base-types';
 import {MemorySessionStorage} from '../auth/session';
 import * as mockAdapter from '../adapters/mock-adapter';
+import {canonicalizeHeaders} from '../adapters/abstract-http';
 
 // fetchMock.enableMocks();
 
@@ -86,6 +87,8 @@ expect.extend({
     lastRequest.domain = parsedURL.hostname;
     lastRequest.query = parsedURL.search.slice(1);
     lastRequest.data = lastRequest.body;
+    canonicalizeHeaders(lastRequest.headers);
+    canonicalizeHeaders(headers as any);
     expect(lastRequest).toMatchObject({method, headers, body: data});
 
     return {

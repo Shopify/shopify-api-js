@@ -1,8 +1,19 @@
-import {Cookies, getHeaders, Request, Response} from '../abstract-http';
+import {
+  addHeader,
+  canonicalizeHeaderName,
+  canonicalizeHeaders,
+  Cookies,
+  getHeaders,
+  Headers,
+  removeHeader,
+  Request,
+  Response,
+  setHeader,
+} from '../abstract-http';
 
-let req: Request;
-let res: Response;
 describe('Cookies', () => {
+  let req: Request;
+  let res: Response;
   beforeEach(() => {
     req = {
       method: 'GET',
@@ -37,5 +48,79 @@ describe('Cookies', () => {
     cookieJar.set('new_session', 'lol');
     cookieJar.set('other_session', 'lol');
     expect(getHeaders(res.headers, 'Set-Cookie').length).toEqual(2);
+  });
+});
+
+describe('Header operations', () => {
+  let headers: Headers;
+  beforeEach(() => {
+    headers = {};
+  });
+
+  it('can canonicalize a header name', async () => {
+    expect(canonicalizeHeaderName('x-my-header')).toEqual('X-My-Header');
+    expect(canonicalizeHeaderName('x-my-hEader')).toEqual('X-My-Header');
+  });
+
+  it('can get a header from a non-canon header object', async () => {
+    headers = {
+      'x-my-header': 'a',
+    };
+    expect(getHeaders(headers, 'X-My-Header')).toEqual(['a']);
+  });
+
+  it('can accumulate headers from a non-canon header object', async () => {
+    headers = {
+      'X-My-Header': 'a',
+      'x-my-header': ['b', 'c'],
+      'x-My-header': 'd',
+    };
+    expect(getHeaders(headers, 'X-My-Header')).toEqual(['a', 'b', 'c', 'd']);
+  });
+
+  it('can overwrite headers', async () => {
+    setHeader(headers, 'X-My-Header', 'a');
+    setHeader(headers, 'X-My-Header', 'b');
+    expect(getHeaders(headers, 'X-My-Header')).toEqual(['b']);
+  });
+
+  it('can overwrite headers with mismatching case', async () => {
+    setHeader(headers, 'X-My-Header', 'a');
+    setHeader(headers, 'x-my-header', 'b');
+    expect(getHeaders(headers, 'X-My-Header')).toEqual(['b']);
+  });
+
+  it('can add headers', async () => {
+    addHeader(headers, 'X-My-Header', 'a');
+    expect(getHeaders(headers, 'X-My-Header')).toEqual(['a']);
+  });
+
+  it('can add multiple headers', async () => {
+    addHeader(headers, 'X-My-Header', 'a');
+    addHeader(headers, 'X-My-Header', 'b');
+    expect(getHeaders(headers, 'X-My-Header')).toEqual(['a', 'b']);
+  });
+
+  it('can delete headers', async () => {
+    addHeader(headers, 'X-My-Header', 'a');
+    addHeader(headers, 'X-My-Header', 'b');
+    removeHeader(headers, 'X-My-Header');
+    addHeader(headers, 'X-My-Header', 'c');
+    expect(getHeaders(headers, 'X-My-Header')).toEqual(['c']);
+  });
+
+  it('can canonicalize a header object', async () => {
+    headers = {
+      'x-My-header': 'a',
+      'x-my-header': ['b', 'c'],
+      'X-My-Header': 'd',
+      'x-my-hEader': 'e',
+    };
+    canonicalizeHeaders(headers);
+    ['a', 'b', 'c', 'd', 'e'].forEach((letter) =>
+      expect(headers['X-My-Header']).toContain(letter),
+    );
+    expect(headers['X-My-Header']).toHaveLength(5);
+    expect(Object.keys(headers)).toHaveLength(1);
   });
 });

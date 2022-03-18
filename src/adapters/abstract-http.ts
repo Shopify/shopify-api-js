@@ -29,47 +29,75 @@ export function isOK(resp: Response) {
   return resp.statusCode >= 200 && resp.statusCode <= 299;
 }
 
+export function canonicalizeHeaderName(hdr: string): string {
+  return hdr.replace(
+    /(^|-)(\w+)/g,
+    (_fullMatch, start, letters) =>
+      start +
+      letters.slice(0, 1).toUpperCase() +
+      letters.slice(1).toLowerCase(),
+  );
+}
+
 export function getHeaders(
   headers: Headers | undefined,
   needle_: string,
 ): string[] {
-  if (!headers) return [];
-  const needle = needle_.toLowerCase();
-  return Object.entries(headers)
-    .filter(([key]) => key.toLowerCase() === needle)
-    .flatMap(([_key, value]) => value);
+  const result: string[] = [];
+  if (!headers) return result;
+  const needle = canonicalizeHeaderName(needle_);
+  for (const [key, values] of Object.entries(headers)) {
+    if (canonicalizeHeaderName(key) !== needle) continue;
+    if (Array.isArray(values)) {
+      result.push(...values);
+    } else {
+      result.push(values);
+    }
+  }
+  return result;
 }
 
 export function getHeader(
   headers: Headers | undefined,
   needle: string,
 ): string | undefined {
-  if (!headers) return;
+  if (!headers) return undefined;
   return getHeaders(headers, needle)?.[0];
 }
 
 export function setHeader(headers: Headers, key: string, value: string) {
-  headers[key] = [value];
+  canonicalizeHeaders(headers);
+  headers[canonicalizeHeaderName(key)] = [value];
 }
 
 export function addHeader(headers: Headers, key: string, value: string) {
-  let list = headers[key];
+  canonicalizeHeaders(headers);
+  const canonKey = canonicalizeHeaderName(key);
+  let list = headers[canonKey];
   if (!list) {
     list = [];
   } else if (!Array.isArray(list)) {
     list = [list];
   }
-  headers[key] = list;
+  headers[canonKey] = list;
   list.push(value);
 }
 
-export function removeHeader(headers: Headers, needle: string) {
-  const sanitizedNeedle = needle.toLowerCase();
-  for (const key of Object.keys(headers)) {
-    if (key.toLowerCase() === sanitizedNeedle) {
-      delete headers[key];
-    }
+export function canonicalizeHeaders(hdr: Headers) {
+  for (const [key, values] of Object.entries(hdr)) {
+    const canonKey = canonicalizeHeaderName(key);
+    if (!hdr[canonKey]) hdr[canonKey] = [];
+    if (!Array.isArray(hdr[canonKey])) hdr[canonKey] = [hdr[canonKey] as any];
+    if (key === canonKey) continue;
+    delete hdr[key];
+    (hdr[canonKey] as any).push(...[values].flat());
   }
+}
+
+export function removeHeader(headers: Headers, needle: string) {
+  canonicalizeHeaders(headers);
+  const canonKey = canonicalizeHeaderName(needle);
+  delete headers[canonKey];
 }
 
 export interface CookieData {

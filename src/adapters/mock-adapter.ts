@@ -1,4 +1,5 @@
 import type {Request, Response} from './abstract-http';
+import {canonicalizeHeaders} from './abstract-http';
 
 let requestList: (Request & {tries: number})[] = [];
 let responseQueue: Response[] = [];
@@ -13,6 +14,7 @@ export function queueResponse(resp: Response) {
 }
 
 export async function abstractFetch(req: Request): Promise<Response> {
+  canonicalizeHeaders(req.headers);
   const lastRequest = requestList?.[0];
   if (
     lastRequest &&
