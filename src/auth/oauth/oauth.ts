@@ -1,7 +1,4 @@
-import querystring from 'querystring';
-
 import {v4 as uuidv4} from 'uuid';
-// import Cookies from 'cookies';
 
 import {
   Request,
@@ -91,7 +88,8 @@ const ShopifyOAuth = {
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    const queryString = querystring.stringify(query);
+    // const queryString = querystring.stringify(query);
+    const queryString = new URLSearchParams(query).toString();
 
     return `https://${shop}/admin/oauth/authorize?${queryString}`;
   },

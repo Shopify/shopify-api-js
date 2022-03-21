@@ -1,10 +1,12 @@
-import querystring, {ParsedUrlQueryInput} from 'querystring';
+// import querystring, {ParsedUrlQueryInput} from 'querystring';
+
+import {QueryParams} from 'src/types';
 
 export default class ProcessedQuery {
-  static stringify(keyValuePairs?: {[key: string]: any}): string {
-    if (!keyValuePairs || Object.keys(keyValuePairs).length === 0) return '';
-
-    return new ProcessedQuery().putAll(keyValuePairs).stringify();
+  static stringify(keyValuePairs: {[key: string]: QueryParams} = {}): string {
+    const processedQuery = new ProcessedQuery();
+    processedQuery.putAll(keyValuePairs);
+    return processedQuery.stringify();
   }
 
   processedQuery: {
@@ -15,17 +17,17 @@ export default class ProcessedQuery {
     this.processedQuery = {};
   }
 
-  putAll(keyValuePairs: {[key: string]: any}): ProcessedQuery {
-    Object.entries(keyValuePairs).forEach(([key, value]: [string, any]) =>
-      this.put(key, value),
-    );
+  putAll(keyValuePairs: {[key: string]: QueryParams}): ProcessedQuery {
+    for (const [key, value] of Object.entries(keyValuePairs)) {
+      this.put(key, value);
+    }
     return this;
   }
 
-  put(key: string, value: any): void {
+  put(key: string, value: QueryParams): void {
     if (Array.isArray(value)) {
       this.putArray(key, value);
-    } else if (value.constructor === Object) {
+    } else if (typeof value === 'object') {
       this.putObject(key, value);
     } else {
       this.putSimple(key, value);
@@ -49,8 +51,15 @@ export default class ProcessedQuery {
   }
 
   stringify(): string {
-    return `?${querystring.stringify(
-      this.processedQuery as ParsedUrlQueryInput,
-    )}`;
+    const entries = Object.entries(this.processedQuery).flatMap<
+      [string, number | string]
+      // Using `any` because I’m not sure what TypeScript is on about here.
+    >(([key, value]: any): any => {
+      if (Array.isArray(value)) {
+        return value.map((value) => [key, value]);
+      }
+      return [[key, value]];
+    });
+    return new URLSearchParams(entries as any).toString();
   }
 }

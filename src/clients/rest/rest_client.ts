@@ -1,5 +1,3 @@
-import querystring from 'querystring';
-
 import {Context} from '../../context';
 import {ShopifyHeader} from '../../base-types';
 import {HttpClient} from '../http_client/http_client';
@@ -97,9 +95,7 @@ class RestClient extends HttpClient {
 
     const url = new URL(newPageUrl);
     const path = url.pathname.replace(new RegExp(pattern), '$1');
-    const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as {
-      [key: string]: string | number;
-    };
+    const query = Object.fromEntries(new URLSearchParams(url.search).entries());
     return {
       path,
       query,

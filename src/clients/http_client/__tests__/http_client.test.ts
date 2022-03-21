@@ -162,7 +162,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: new URLSearchParams(postData as any).toString(),
     }).toMatchMadeHttpRequest();
   });
 

@@ -76,6 +76,7 @@ expect.extend({
       };
     }
   },
+  // FIXME: Add `path` and `domain` back in!
   toMatchMadeHttpRequest({
     method,
     headers = {},

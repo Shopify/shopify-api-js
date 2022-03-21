@@ -83,7 +83,7 @@ export function addHeader(headers: Headers, key: string, value: string) {
   list.push(value);
 }
 
-export function canonicalizeHeaders(hdr: Headers) {
+export function canonicalizeHeaders(hdr: Headers): Headers {
   for (const [key, values] of Object.entries(hdr)) {
     const canonKey = canonicalizeHeaderName(key);
     if (!hdr[canonKey]) hdr[canonKey] = [];
@@ -92,6 +92,7 @@ export function canonicalizeHeaders(hdr: Headers) {
     delete hdr[key];
     (hdr[canonKey] as any).push(...[values].flat());
   }
+  return hdr;
 }
 
 export function removeHeader(headers: Headers, needle: string) {

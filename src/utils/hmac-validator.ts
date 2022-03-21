@@ -1,23 +1,16 @@
-import crypto from 'crypto';
-import querystring from 'querystring';
+// import crypto from 'crypto';
+// import querystring from 'querystring';
 
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
-import {Context} from '../context';
 
 import safeCompare from './safe-compare';
 
 export function stringifyQuery(query: AuthQuery): string {
-  const orderedObj = Object.keys(query)
-    .sort((val1, val2) => val1.localeCompare(val2))
-    .reduce(
-      (obj: {[key: string]: string | undefined}, key: keyof AuthQuery) => ({
-        ...obj,
-        [key]: query[key],
-      }),
-      {},
-    );
-  return querystring.stringify(orderedObj);
+  const orderedObj = Object.fromEntries(
+    Object.entries(query).sort((val1, val2) => val1[0].localeCompare(val2[0])),
+  );
+  return new URLSearchParams(orderedObj).toString();
 }
 
 export function generateLocalHmac({
@@ -34,10 +27,11 @@ export function generateLocalHmac({
     shop,
     ...(host && {host}),
   });
-  return crypto
-    .createHmac('sha256', Context.API_SECRET_KEY)
-    .update(queryString)
-    .digest('hex');
+  throw Error(queryString && 'Not implemented');
+  // return crypto
+  //   .createHmac('sha256', Context.API_SECRET_KEY)
+  //   .update(queryString)
+  //   .digest('hex');
 }
 
 /**
