@@ -20,8 +20,8 @@ export default function safeCompare(
       buffA = Buffer.from(JSON.stringify(strA));
       buffB = Buffer.from(JSON.stringify(strB));
     } else {
-      buffA = Buffer.from(strA);
-      buffB = Buffer.from(strB);
+      buffA = Buffer.from(strA as any);
+      buffB = Buffer.from(strB as any);
     }
 
     if (buffA.length === buffB.length) {

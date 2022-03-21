@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import express, {
   Request as ExpressRequest,
   Response as ExpressResponse,
@@ -16,6 +15,7 @@ import {InvalidSession, SessionNotFound} from '../../error';
 import graphqlProxy from '../graphql_proxy';
 import {Context} from '../../context';
 import {JwtPayload} from '../decode-session-token';
+import {signJWT} from '../setup-jest';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -63,7 +63,6 @@ describe('GraphQL proxy with session', () => {
       convertResponse(internalResponse, res);
     } catch (err) {
       res.status(400);
-      console.log(err.message);
       res.send(JSON.stringify(err.message));
     }
   });
@@ -92,9 +91,7 @@ describe('GraphQL proxy with session', () => {
     );
     session.accessToken = accessToken;
     await Context.SESSION_STORAGE.storeSession(session);
-    token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    token = await signJWT(jwtPayload);
   });
 
   it('can forward query and return response', async () => {
@@ -144,9 +141,7 @@ describe('GraphQL proxy', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,

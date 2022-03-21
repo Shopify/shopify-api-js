@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-
 import {
   setAbstractFetchFunc,
   Headers,
@@ -13,6 +11,7 @@ import {Session} from '../../auth/session';
 import {JwtPayload} from '../decode-session-token';
 import loadCurrentSession from '../load-current-session';
 import {ShopifyOAuth} from '../../auth/oauth/oauth';
+import {signJWT} from '../setup-jest';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -73,9 +72,7 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -110,9 +107,7 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -194,9 +189,7 @@ describe('loadCurrentSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
