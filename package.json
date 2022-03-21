@@ -8,7 +8,7 @@
   "scripts": {
     "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__ --testPathIgnorePatterns=src/clients/http_client/__e2etests__",
     "test_http_server": "node src/clients/http_client/__e2etests__/http_server.js",
-    "e2etests": "jest --no-coverage --testPathPattern=src/clients/http_client/__e2etests__",
+    "e2etests": "E2ETESTS=1 jest --no-coverage --testPathPattern=src/clients/http_client/__e2etests__",
     "test_network": "concurrently \"yarn test_http_server\" \"yarn e2etests\" --prefix-colors 'yellow,blue'",
     "test_rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
     "build": "tsc",
