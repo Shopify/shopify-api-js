@@ -14,7 +14,7 @@ import storeSession from '../store-session';
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 describe('storeSession', () => {
-  it('can store the current session after a change', async () => {
+  it.only('can store the current session after a change', async () => {
     const jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',

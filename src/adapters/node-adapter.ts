@@ -2,7 +2,7 @@ import type {IncomingMessage, ServerResponse} from 'http';
 
 import fetch from 'node-fetch';
 
-import type {Request, Response} from './abstract-http';
+import {flatHeaders, Request, Response} from './abstract-http';
 
 export async function convertRequest(req: IncomingMessage): Promise<Request> {
   const body = await new Promise<string>((resolve, reject) => {
@@ -47,7 +47,7 @@ export async function abstractFetch({
   headers = {},
   body,
 }: Request): Promise<Response> {
-  const resp = await fetch(url, {method, headers, body});
+  const resp = await fetch(url, {method, headers: flatHeaders(headers), body});
   const respBody = await resp.text();
   return {
     statusCode: resp.status,
