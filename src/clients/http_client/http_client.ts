@@ -127,7 +127,8 @@ class HttpClient {
     if (query.length > 0) {
       query = `?${query}`;
     }
-    const url = `https://${this.domain}${this.getRequestPath(
+    const schema = process.env.NODE_ENV === 'test' ? 'http' : 'https';
+    const url = `${schema}://${this.domain}${this.getRequestPath(
       params.path,
     )}${query}`;
 
