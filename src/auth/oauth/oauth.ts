@@ -1,10 +1,9 @@
-import {v4 as uuidv4} from 'uuid';
-
 import {
   Request,
   Response,
   Cookies,
   getHeader,
+  crypto,
 } from '../../adapters/abstract-http';
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
@@ -134,7 +133,7 @@ const ShopifyOAuth = {
       );
     }
 
-    if (!validQuery(query, currentSession)) {
+    if (!(await validQuery(query, currentSession))) {
       throw new ShopifyErrors.InvalidOAuthError('Invalid OAuth callback.');
     }
 
@@ -296,12 +295,19 @@ const ShopifyOAuth = {
  * @param query Current HTTP Request Query
  * @param session Current session
  */
-function validQuery(query: AuthQuery, session: Session): boolean {
+async function validQuery(
+  query: AuthQuery,
+  session: Session,
+): Promise<boolean> {
   return (
-    validateHmac(query) &&
+    (await validateHmac(query)) &&
     validateShop(query.shop) &&
     safeCompare(query.state, session.state as string)
   );
 }
 
 export {ShopifyOAuth};
+
+function uuidv4() {
+  return crypto.randomUUID();
+}

@@ -202,7 +202,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     await expect(
@@ -257,7 +257,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -294,7 +294,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -324,7 +324,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -406,7 +406,7 @@ describe('validateAuthCallback', () => {
       code: 'some random auth code',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     mockAdapter.queueResponse(
@@ -501,7 +501,7 @@ describe('validateAuthCallback', () => {
       code: 'some random auth code',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     mockAdapter.queueResponse(
@@ -564,7 +564,7 @@ describe('validateAuthCallback', () => {
       code: 'some random auth code',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     mockAdapter.queueResponse(
@@ -624,7 +624,7 @@ describe('validateAuthCallback', () => {
       code: 'some random auth code',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     mockAdapter.queueResponse(
