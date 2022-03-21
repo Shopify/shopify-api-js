@@ -21,3 +21,5 @@ describe('ProcessedQuery', () => {
     );
   });
 });
+
+/* eslint-enable @typescript-eslint/naming-convention */

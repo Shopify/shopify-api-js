@@ -11,6 +11,7 @@ import * as mockAdapter from '../../../adapters/mock-adapter';
 import {Context} from '../../../context';
 import {DataType} from '../types';
 import {HttpClient} from '../http_client';
+import {LogSeverity} from '../../../base-types';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -687,7 +688,10 @@ describe('HTTP client', () => {
   });
 
   it('writes deprecation notices to log file if one is specified in Context', async () => {
-    Context.LOG_FILE = logFilePath;
+    const logs: [LogSeverity, string][] = [];
+    Context.LOG_FUNCTION = async (sev, msg) => {
+      logs.push([sev, msg]);
+    };
     Context.initialize(Context);
 
     const client = new HttpClient(domain);
@@ -707,17 +711,11 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    // open and read test log file
-    const fileContent = fs.readFileSync(logFilePath, {
-      encoding: 'utf-8',
-      flag: 'r',
-    });
-
-    expect(fileContent).toContain('API Deprecation Notice');
-    expect(fileContent).toContain(
+    expect(logs[0][1]).toContain('API Deprecation Notice');
+    expect(logs[0][1]).toContain(
       ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
     );
-    expect(fileContent).toContain(`Stack Trace: Error:`);
+    expect(logs[0][1]).toContain(`Stack Trace: Error:`);
   });
 
   it('properly encodes strings in the error message', async () => {
