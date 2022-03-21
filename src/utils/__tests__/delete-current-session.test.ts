@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-
 import {
   setAbstractFetchFunc,
   Headers,
@@ -14,6 +12,7 @@ import {JwtPayload} from '../decode-session-token';
 import deleteCurrentSession from '../delete-current-session';
 import loadCurrentSession from '../load-current-session';
 import {ShopifyOAuth} from '../../auth/oauth/oauth';
+import {signJWT} from '../setup-jest';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -64,9 +63,7 @@ describe('deleteCurrenSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
@@ -118,9 +115,7 @@ describe('deleteCurrenSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,

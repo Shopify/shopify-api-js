@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-
 import {
   setAbstractFetchFunc,
   Request,
@@ -14,6 +12,7 @@ import {Context} from '../../context';
 import {RestWithSession, GraphqlWithSession} from '../types';
 import {RestClient} from '../../clients/rest';
 import {GraphqlClient} from '../../clients/graphql';
+import {signJWT} from '../setup-jest';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -155,9 +154,7 @@ describe('withSession', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,

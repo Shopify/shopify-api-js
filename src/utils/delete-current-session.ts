@@ -17,7 +17,7 @@ export default async function deleteCurrentSession(
 ): Promise<boolean | never> {
   Context.throwIfUninitialized();
 
-  const sessionId = ShopifyOAuth.getCurrentSessionId(
+  const sessionId = await ShopifyOAuth.getCurrentSessionId(
     request,
     response,
     isOnline,

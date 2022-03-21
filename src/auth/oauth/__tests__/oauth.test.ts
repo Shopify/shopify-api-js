@@ -1,7 +1,5 @@
 import querystring from 'querystring';
 
-import jwt from 'jsonwebtoken';
-
 import {
   setAbstractFetchFunc,
   Request,
@@ -20,6 +18,7 @@ import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
 import {CustomSessionStorage, Session} from '../../session';
+import {signJWT} from '../../../utils/setup-jest';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 declare global {
@@ -445,9 +444,7 @@ describe('validateAuthCallback', () => {
 
     // Simulate a subsequent JWT request to see if the session is loaded as the current one
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const jwtReq = {
       method: 'GET',
       url: `https://${shop}`,
