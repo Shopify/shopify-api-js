@@ -1,5 +1,4 @@
 import querystring from 'querystring';
-import fs from 'fs';
 
 import Shopify from '../../../index-node';
 import {
@@ -11,6 +10,7 @@ import * as mockAdapter from '../../../adapters/mock-adapter';
 import {Context} from '../../../context';
 import {DataType} from '../types';
 import {HttpClient} from '../http_client';
+import {LogSeverity} from '../../../base-types';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -18,7 +18,6 @@ const domain = 'test-shop.myshopify.io';
 const successResponseBody = JSON.stringify({
   message: 'Your HTTP request was successful!',
 });
-const logFilePath = `${process.cwd()}/src/clients/http_client/__tests__/test_logs.txt`;
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -36,12 +35,10 @@ const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
   beforeEach(() => {
     mockAdapter.reset();
-    fs.writeFileSync(logFilePath, '');
   });
 
   afterAll(() => {
     setRestClientRetryTime(originalRetryTime);
-    fs.writeFileSync(logFilePath, '');
   });
 
   it('validates the given domain', () => {
@@ -162,7 +159,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: new URLSearchParams(postData as any).toString(),
     }).toMatchMadeHttpRequest();
   });
 
@@ -687,7 +684,10 @@ describe('HTTP client', () => {
   });
 
   it('writes deprecation notices to log file if one is specified in Context', async () => {
-    Context.LOG_FILE = logFilePath;
+    const logs: [LogSeverity, string][] = [];
+    Context.LOG_FUNCTION = async (sev, msg) => {
+      logs.push([sev, msg]);
+    };
     Context.initialize(Context);
 
     const client = new HttpClient(domain);
@@ -707,17 +707,11 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    // open and read test log file
-    const fileContent = fs.readFileSync(logFilePath, {
-      encoding: 'utf-8',
-      flag: 'r',
-    });
-
-    expect(fileContent).toContain('API Deprecation Notice');
-    expect(fileContent).toContain(
+    expect(logs[0][1]).toContain('API Deprecation Notice');
+    expect(logs[0][1]).toContain(
       ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
     );
-    expect(fileContent).toContain(`Stack Trace: Error:`);
+    expect(logs[0][1]).toContain(`Stack Trace: Error:`);
   });
 
   it('properly encodes strings in the error message', async () => {

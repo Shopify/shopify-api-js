@@ -24,6 +24,13 @@ export function setAbstractFetchFunc(func: AbstractFetchFunc) {
   abstractFetch = func;
 }
 
+// The mutable export is the whole key to the adapter architecture.
+// eslint-disable-next-line import/no-mutable-exports
+export let crypto: Crypto;
+export function setCrypto(providedCrypto: Crypto) {
+  crypto = providedCrypto;
+}
+
 export function isOK(resp: Response) {
   // https://fetch.spec.whatwg.org/#ok-status
   return resp.statusCode >= 200 && resp.statusCode <= 299;

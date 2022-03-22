@@ -1,6 +1,12 @@
 import {AuthScopes} from './auth/scopes';
 import {SessionStorage} from './auth/session/session_storage';
 
+export enum LogSeverity {
+  Error,
+  Warning,
+  Info,
+}
+
 export interface ContextParams {
   API_KEY: string;
   API_SECRET_KEY: string;
@@ -10,7 +16,7 @@ export interface ContextParams {
   IS_EMBEDDED_APP: boolean;
   IS_PRIVATE_APP?: boolean;
   SESSION_STORAGE?: SessionStorage;
-  LOG_FILE?: string;
+  LOG_FUNCTION?: (severity: LogSeverity, msg: string) => Promise<void>;
   USER_AGENT_PREFIX?: string;
   PRIVATE_APP_STOREFRONT_ACCESS_TOKEN?: string;
 }

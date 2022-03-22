@@ -1,7 +1,5 @@
-import crypto from 'crypto';
-
-import {setAbstractFetchFunc, setCrypto} from './adapters/abstract-http';
-import {abstractFetch} from './adapters/node-adapter';
+import {setAbstractFetchFunc} from './adapters/abstract-http';
+import {abstractFetch} from './adapters/cf-worker-adapter';
 import {Context} from './context';
 import * as ShopifyErrors from './error';
 import ShopifyAuth from './auth/oauth';
@@ -11,7 +9,6 @@ import ShopifyUtils from './utils';
 import ShopifyWebhooks from './webhooks';
 
 setAbstractFetchFunc(abstractFetch);
-setCrypto((crypto as any).webcrypto);
 
 export const Shopify = {
   Context,

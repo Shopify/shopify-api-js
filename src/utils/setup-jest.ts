@@ -1,4 +1,3 @@
-// import fetchMock from 'jest-fetch-mock';
 import * as jose from 'jose';
 
 import {Context} from '../context';
@@ -10,9 +9,6 @@ import {canonicalizeHeaders} from '../adapters/abstract-http';
 import {JwtPayload} from './decode-session-token';
 import {getHMACKey} from './get-hmac-key';
 
-// fetchMock.enableMocks();
-
-// let currentCall = 0;
 beforeEach(() => {
   // We want to reset the Context object on every run so that tests start with a consistent state
   Context.initialize({
@@ -25,10 +21,6 @@ beforeEach(() => {
     IS_PRIVATE_APP: false,
     SESSION_STORAGE: new MemorySessionStorage(),
   });
-
-  // fetchMock.mockReset();
-
-  // currentCall = 0;
 });
 
 interface AssertHttpRequestParams {
@@ -80,6 +72,7 @@ expect.extend({
       };
     }
   },
+  // FIXME: Add `path` and `domain` back in!
   toMatchMadeHttpRequest({
     method,
     headers = {},

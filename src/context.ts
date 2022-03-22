@@ -1,8 +1,10 @@
 import * as ShopifyErrors from './error';
 import {SessionStorage} from './auth/session/session_storage';
 import {MemorySessionStorage} from './auth/session/storage/memory';
-import {ApiVersion, ContextParams} from './base-types';
+import {ApiVersion, ContextParams, LogSeverity} from './base-types';
 import {AuthScopes} from './auth/scopes';
+
+export {LogSeverity as LOG_SEVERITY};
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;
@@ -83,8 +85,8 @@ const Context: ContextInterface = {
       this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
     }
 
-    if (params.LOG_FILE) {
-      this.LOG_FILE = params.LOG_FILE;
+    if (params.LOG_FUNCTION) {
+      this.LOG_FUNCTION = params.LOG_FUNCTION;
     }
 
     if (params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN) {

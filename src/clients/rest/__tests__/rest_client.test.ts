@@ -1,5 +1,3 @@
-import querystring from 'querystring';
-
 import {ShopifyHeader} from '../../../base-types';
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestClient} from '../rest_client';
@@ -108,7 +106,7 @@ describe('REST client', () => {
       domain,
       path: '/admin/api/unstable/products.json',
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: new URLSearchParams(postData as any).toString(),
     }).toMatchMadeHttpRequest();
   });
 

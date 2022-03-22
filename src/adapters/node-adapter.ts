@@ -2,7 +2,12 @@ import type {IncomingMessage, ServerResponse} from 'http';
 
 import fetch from 'node-fetch';
 
-import {flatHeaders, Request, Response} from './abstract-http';
+import {
+  canonicalizeHeaders,
+  flatHeaders,
+  Request,
+  Response,
+} from './abstract-http';
 
 export async function convertRequest(req: IncomingMessage): Promise<Request> {
   const body = await new Promise<string>((resolve, reject) => {
@@ -53,6 +58,6 @@ export async function abstractFetch({
     statusCode: resp.status,
     statusText: resp.statusText,
     body: respBody,
-    headers: Object.fromEntries(resp.headers.entries()),
+    headers: canonicalizeHeaders(Object.fromEntries(resp.headers.entries())),
   };
 }

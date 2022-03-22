@@ -1,7 +1,3 @@
-import querystring, {ParsedUrlQueryInput} from 'querystring';
-import crypto from 'crypto';
-import fs from 'fs';
-
 import {Method, StatusCode} from '@shopify/network';
 
 import {
@@ -15,7 +11,7 @@ import {
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
-import {Context} from '../../context';
+import {Context, LOG_SEVERITY} from '../../context';
 import ProcessedQuery from '../../utils/processed-query';
 
 import {
@@ -112,7 +108,7 @@ class HttpClient {
             body =
               typeof data === 'string'
                 ? data
-                : querystring.stringify(data as ParsedUrlQueryInput);
+                : new URLSearchParams(data as any).toString();
             break;
           case DataType.GraphQL:
             body = data as string;
@@ -242,10 +238,12 @@ class HttpClient {
         path: req.url,
       };
 
-      const depHash = crypto
-        .createHash('md5')
-        .update(JSON.stringify(deprecation))
-        .digest('hex');
+      // FIXME
+      // const depHash = crypto
+      //   .createHash('md5')
+      //   .update(JSON.stringify(deprecation))
+      //   .digest('hex');
+      const depHash = JSON.stringify(deprecation);
 
       if (
         !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
@@ -254,15 +252,12 @@ class HttpClient {
       ) {
         this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
-        if (Context.LOG_FILE) {
+        if (Context.LOG_FUNCTION) {
           const stack = new Error().stack;
           const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
             deprecation,
           )}\n    Stack Trace: ${stack}\n`;
-          fs.writeFileSync(Context.LOG_FILE, log, {
-            flag: 'a',
-            encoding: 'utf-8',
-          });
+          await Context.LOG_FUNCTION(LOG_SEVERITY.Warning, log);
         } else {
           console.warn('API Deprecation Notice:', deprecation);
         }

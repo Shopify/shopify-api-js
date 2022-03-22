@@ -1,7 +1,6 @@
-import {createHmac} from 'crypto';
-
 import {StatusCode} from '@shopify/network';
 
+import {createSHA256HMAC} from '../utils/hmac';
 import {Request, Response, flatHeaders} from '../adapters/abstract-http';
 import {GraphqlClient} from '../clients/graphql/graphql_client';
 import {ApiVersion, ShopifyHeader} from '../base-types';
@@ -362,9 +361,10 @@ const WebhooksRegistry: RegistryInterface = {
     let responseError: Error | undefined;
     const headers = {};
 
-    const generatedHash = createHmac('sha256', Context.API_SECRET_KEY)
-      .update(reqBody, 'utf8')
-      .digest('base64');
+    const generatedHash = await createSHA256HMAC(
+      Context.API_SECRET_KEY,
+      reqBody,
+    );
 
     if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
       const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');

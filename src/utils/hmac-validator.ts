@@ -1,32 +1,24 @@
-import crypto from 'crypto';
-import querystring from 'querystring';
-
+import {Context} from '../context';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
-import {Context} from '../context';
 
 import safeCompare from './safe-compare';
+import {createSHA256HMAC} from './hmac';
 
 export function stringifyQuery(query: AuthQuery): string {
-  const orderedObj = Object.keys(query)
-    .sort((val1, val2) => val1.localeCompare(val2))
-    .reduce(
-      (obj: {[key: string]: string | undefined}, key: keyof AuthQuery) => ({
-        ...obj,
-        [key]: query[key],
-      }),
-      {},
-    );
-  return querystring.stringify(orderedObj);
+  const orderedObj = Object.fromEntries(
+    Object.entries(query).sort((val1, val2) => val1[0].localeCompare(val2[0])),
+  );
+  return new URLSearchParams(orderedObj).toString();
 }
 
-export function generateLocalHmac({
+export async function generateLocalHmac({
   code,
   timestamp,
   state,
   shop,
   host,
-}: AuthQuery): string {
+}: AuthQuery): Promise<string> {
   const queryString = stringifyQuery({
     code,
     timestamp,
@@ -34,10 +26,7 @@ export function generateLocalHmac({
     shop,
     ...(host && {host}),
   });
-  return crypto
-    .createHmac('sha256', Context.API_SECRET_KEY)
-    .update(queryString)
-    .digest('hex');
+  return createSHA256HMAC(Context.API_SECRET_KEY, queryString);
 }
 
 /**
@@ -45,14 +34,14 @@ export function generateLocalHmac({
  *
  * @param query HTTP Request Query, containing the information to be validated.
  */
-export default function validateHmac(query: AuthQuery): boolean {
+export default async function validateHmac(query: AuthQuery): Promise<boolean> {
   if (!query.hmac) {
     throw new ShopifyErrors.InvalidHmacError(
       'Query does not contain an HMAC value.',
     );
   }
   const {hmac} = query;
-  const localHmac = generateLocalHmac(query);
+  const localHmac = await generateLocalHmac(query);
 
   return safeCompare(hmac as string, localHmac);
 }

@@ -1,4 +1,9 @@
+import crypto from 'crypto';
+
+import {setCrypto} from '../../adapters/abstract-http';
 import nonce from '../nonce';
+
+setCrypto(crypto.webcrypto as any);
 
 test('nonce always returns a new 15 digit random number as a string', () => {
   const firstNonce = nonce();
