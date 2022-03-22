@@ -1,9 +1,9 @@
 import {Context} from '../context';
-import {crypto} from '../adapters/abstract-http';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
 
 import safeCompare from './safe-compare';
+import {createSHA256HMAC} from './hmac';
 
 export function stringifyQuery(query: AuthQuery): string {
   const orderedObj = Object.fromEntries(
@@ -26,26 +26,7 @@ export async function generateLocalHmac({
     shop,
     ...(host && {host}),
   });
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    'raw',
-    enc.encode(Context.API_SECRET_KEY),
-    {
-      name: 'HMAC',
-      hash: {name: 'SHA-256'},
-    },
-    false,
-    ['sign'],
-  );
-
-  const signature = await crypto.subtle.sign(
-    'HMAC',
-    key,
-    enc.encode(queryString),
-  );
-  return [...new Uint8Array(signature)]
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+  return createSHA256HMAC(Context.API_SECRET_KEY, queryString);
 }
 
 /**

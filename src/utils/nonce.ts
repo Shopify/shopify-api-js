@@ -1,14 +1,10 @@
-import crypto from 'crypto';
+import {crypto} from '../adapters/abstract-http';
+
+import {asHex} from './hmac';
 
 export default function nonce(): string {
-  const length = 15;
-  const bytes = crypto.randomBytes(length);
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
 
-  const nonce = bytes
-    .map((byte) => {
-      return byte % 10;
-    })
-    .join('');
-
-  return nonce;
+  return asHex(bytes).slice(0, 15);
 }

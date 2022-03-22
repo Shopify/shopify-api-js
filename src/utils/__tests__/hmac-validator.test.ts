@@ -5,8 +5,8 @@ import validateHmac from '../hmac-validator';
 import {AuthQuery} from '../../auth/oauth/types';
 import * as ShopifyErrors from '../../error';
 import {Context} from '../../context';
-// @ts-ignore
-setCrypto(crypto.webcrypto);
+
+setCrypto(crypto.webcrypto as any);
 
 test('correctly validates query objects', async () => {
   Context.API_SECRET_KEY = 'my super secret key';
@@ -21,7 +21,7 @@ test('correctly validates query objects', async () => {
   const localHmac = crypto
     .createHmac('sha256', Context.API_SECRET_KEY)
     .update(queryString)
-    .digest('hex');
+    .digest('base64');
 
   const testQuery: AuthQuery = Object.assign(queryObjectWithoutHmac, {
     hmac: localHmac,
@@ -65,7 +65,7 @@ test('queries with extra keys are not included in hmac querystring', async () =>
   const localHmac = crypto
     .createHmac('sha256', Context.API_SECRET_KEY)
     .update(queryString)
-    .digest('hex');
+    .digest('base64');
 
   const testQueryWithExtraParam = Object.assign(queryObjectWithoutHmac, {
     hmac: localHmac,
