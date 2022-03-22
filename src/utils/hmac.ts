@@ -43,8 +43,9 @@ export function asBase64(buffer: ArrayBuffer): string {
     let enc4 = byte3 & 0b00111111;
 
     if (isNaN(byte2)) {
-      enc3 = enc4 = 64;
-    } else if (isNaN(byte3)) {
+      enc3 = 64;
+    }
+    if (isNaN(byte3)) {
       enc4 = 64;
     }
 

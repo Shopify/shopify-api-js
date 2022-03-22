@@ -1,6 +1,4 @@
-// import querystring, {ParsedUrlQueryInput} from 'querystring';
-
-import {QueryParams} from 'src/types';
+import type {QueryParams} from '../types';
 
 export default class ProcessedQuery {
   static stringify(keyValuePairs: {[key: string]: QueryParams} = {}): string {

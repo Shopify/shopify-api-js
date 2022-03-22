@@ -1,5 +1,4 @@
 import querystring from 'querystring';
-import fs from 'fs';
 
 import Shopify from '../../../index-node';
 import {
@@ -19,7 +18,6 @@ const domain = 'test-shop.myshopify.io';
 const successResponseBody = JSON.stringify({
   message: 'Your HTTP request was successful!',
 });
-const logFilePath = `${process.cwd()}/src/clients/http_client/__tests__/test_logs.txt`;
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -37,12 +35,10 @@ const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
   beforeEach(() => {
     mockAdapter.reset();
-    fs.writeFileSync(logFilePath, '');
   });
 
   afterAll(() => {
     setRestClientRetryTime(originalRetryTime);
-    fs.writeFileSync(logFilePath, '');
   });
 
   it('validates the given domain', () => {
