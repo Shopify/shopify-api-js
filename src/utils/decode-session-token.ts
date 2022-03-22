@@ -2,6 +2,7 @@ import * as jose from 'jose';
 
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
+
 import {getHMACKey} from './get-hmac-key';
 import validateShop from './shop-validator';
 

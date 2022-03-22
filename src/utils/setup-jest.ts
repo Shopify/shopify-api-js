@@ -4,9 +4,10 @@ import * as jose from 'jose';
 import {Context} from '../context';
 import {ApiVersion} from '../base-types';
 import {MemorySessionStorage} from '../auth/session';
-import {JwtPayload} from '../utils/decode-session-token';
 import * as mockAdapter from '../adapters/mock-adapter';
 import {canonicalizeHeaders} from '../adapters/abstract-http';
+
+import {JwtPayload} from './decode-session-token';
 import {getHMACKey} from './get-hmac-key';
 
 // fetchMock.enableMocks();
@@ -102,7 +103,7 @@ expect.extend({
 });
 
 export async function signJWT(payload: JwtPayload): Promise<string> {
-  return await new jose.SignJWT(payload as any)
+  return new jose.SignJWT(payload as any)
     .setProtectedHeader({alg: 'HS256'})
     .sign(getHMACKey(Context.API_SECRET_KEY));
 }
