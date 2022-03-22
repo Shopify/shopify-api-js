@@ -1,3 +1,5 @@
+// import { createSHA256HMAC } from "../utils/hmac";
+
 export interface Headers {
   [key: string]: string | string[];
 }
@@ -151,6 +153,11 @@ export interface CookieData {
 export interface CookieJar {
   [key: string]: CookieData;
 }
+interface CookiesOptions {
+  keys: string[];
+  // Ignored. Only for type-compatibility with the node package for now.
+  secure: boolean;
+}
 export class Cookies {
   static parseCookies(hdrs: string[]): CookieJar {
     const entries = hdrs
@@ -198,9 +205,17 @@ export class Cookies {
 
   private receivedJar: CookieJar = {};
   private newCookieJar: CookieJar = {};
+  private keys: string[] = [];
 
   // TODO: Signing & credential rotation
-  constructor(req: Request, public response: Response, _opts: any = {}) {
+  constructor(
+    req: Request,
+    public response: Response,
+    {keys = []}: Partial<CookiesOptions> = {},
+  ) {
+    if (keys) this.keys = keys;
+    console.log(this.keys);
+
     const cookieReqHdr = getHeader(req.headers, 'Cookie') ?? '';
     this.receivedJar = Cookies.parseCookies(cookieReqHdr.split(','));
     const cookieResHdr = getHeaders(response.headers, 'Set-Cookie') ?? [];
@@ -223,24 +238,50 @@ export class Cookies {
     );
   }
 
-  // FIXME: Signing
   get(
     name: string,
     _opts: Partial<{signed: boolean}> = {},
   ): string | undefined {
-    const oldCookie = this.receivedJar[name]?.value;
-    if (oldCookie) return oldCookie;
-    return this.newCookieJar[name]?.value;
+    return this.receivedJar[name]?.value;
   }
 
-  set(name: string, value: string, opts: Partial<CookieData> = {}) {
+  async set(
+    name: string,
+    value: string,
+    opts: Partial<CookieData> = {},
+  ): Promise<void> {
     this.newCookieJar[name] = {
       ...opts,
       name,
       value,
     };
+    // if(opts.signed) {
+    //   const sigName = `${name}.sig`;
+    //   this.newCookieJar[sigName] = {
+    //     ...opts,
+    //     name: sigName,
+    //     value: await createSHA256HMAC(this.keys[0], value)
+    //   }
+    // }
     this.updateHeader();
   }
+
+  // async verifySignedCookies() {
+  //   for(const [signedCookieName, signature] of Object.entries(this.receivedJar)) {
+  //     if(!signedCookieName.endsWith(".sig")) continue;
+  //     const cookieName = signedCookieName.slice(0, ".sig".length * -1);
+  //     if(!this.get(cookieName)) {
+  //       this.deleteCookie(signedCookieName);
+  //       continue;
+  //     }
+  //     const value = this.get(cookieName);
+  //     const allSignatures = await Promise.all(this.keys.map(key => createSHA256HMAC(key, value)));
+  //     if(allSignatures.includes(signatures)) {
+  //       this.deleteCookie(signedCookieName);
+  //       continue;
+  //     }
+  //   }
+  // }
 }
 
 function splitN(str: string, sep: string, maxNumParts: number): string[] {
