@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import {
   addHeader,
   canonicalizeHeaderName,
@@ -9,7 +11,10 @@ import {
   Request,
   Response,
   setHeader,
+  setCrypto,
 } from '../abstract-http';
+
+setCrypto(crypto.webcrypto as any);
 
 describe('Cookies', () => {
   let req: Request;
@@ -47,6 +52,13 @@ describe('Cookies', () => {
     const cookieJar = new Cookies(req, res);
     cookieJar.set('new_session', 'lol');
     cookieJar.set('other_session', 'lol');
+    expect(getHeaders(res.headers, 'Set-Cookie').length).toEqual(2);
+  });
+
+  it('can sign cookies', async () => {
+    const keys = [crypto.randomUUID()];
+    const cookieJar = new Cookies(req, res, {keys});
+    await cookieJar.setAndSign('new_session', 'lol');
     expect(getHeaders(res.headers, 'Set-Cookie').length).toEqual(2);
   });
 });

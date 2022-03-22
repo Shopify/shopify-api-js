@@ -1,5 +1,3 @@
-// import { createSHA256HMAC } from "../utils/hmac";
-
 export interface Headers {
   [key: string]: string | string[];
 }
@@ -145,9 +143,6 @@ export interface CookieData {
    * This can be set to 'strict', 'lax', or true (which maps to 'strict').
    */
   sameSite?: 'strict' | 'lax' | 'none';
-  // FIXME: Signing
-  // Ignored for now
-  signed?: boolean;
 }
 
 export interface CookieJar {
@@ -203,8 +198,8 @@ export class Cookies {
     return result;
   }
 
-  private receivedJar: CookieJar = {};
-  private newCookieJar: CookieJar = {};
+  receivedCookieJar: CookieJar = {};
+  outgoingCookieJar: CookieJar = {};
   private keys: string[] = [];
 
   // TODO: Signing & credential rotation
@@ -217,13 +212,13 @@ export class Cookies {
     console.log(this.keys);
 
     const cookieReqHdr = getHeader(req.headers, 'Cookie') ?? '';
-    this.receivedJar = Cookies.parseCookies(cookieReqHdr.split(','));
+    this.receivedCookieJar = Cookies.parseCookies(cookieReqHdr.split(','));
     const cookieResHdr = getHeaders(response.headers, 'Set-Cookie') ?? [];
-    this.newCookieJar = Cookies.parseCookies(cookieResHdr);
+    this.outgoingCookieJar = Cookies.parseCookies(cookieResHdr);
   }
 
   toHeaders(): string[] {
-    return Object.values(this.newCookieJar).map((cookie) =>
+    return Object.values(this.outgoingCookieJar).map((cookie) =>
       Cookies.encodeCookie(cookie),
     );
   }
@@ -238,50 +233,76 @@ export class Cookies {
     );
   }
 
-  get(
-    name: string,
-    _opts: Partial<{signed: boolean}> = {},
-  ): string | undefined {
-    return this.receivedJar[name]?.value;
+  get(name: string): string | undefined {
+    return this.receivedCookieJar[name]?.value;
   }
 
-  async set(
-    name: string,
-    value: string,
-    opts: Partial<CookieData> = {},
-  ): Promise<void> {
-    this.newCookieJar[name] = {
+  deleteCookie(name: string) {
+    this.set(name, '', {
+      path: '/',
+      expires: new Date(0),
+    });
+  }
+
+  async getAndVerify(name: string): Promise<string | undefined> {
+    const value = this.get(name);
+    if (!value) return undefined;
+    if (!(await this.isSignedCookieValid(name))) {
+      return undefined;
+    }
+    return value;
+  }
+
+  private get canSign() {
+    return this.keys?.length > 0;
+  }
+
+  set(name: string, value: string, opts: Partial<CookieData> = {}): void {
+    this.outgoingCookieJar[name] = {
       ...opts,
       name,
       value,
     };
-    // if(opts.signed) {
-    //   const sigName = `${name}.sig`;
-    //   this.newCookieJar[sigName] = {
-    //     ...opts,
-    //     name: sigName,
-    //     value: await createSHA256HMAC(this.keys[0], value)
-    //   }
-    // }
     this.updateHeader();
   }
 
-  // async verifySignedCookies() {
-  //   for(const [signedCookieName, signature] of Object.entries(this.receivedJar)) {
-  //     if(!signedCookieName.endsWith(".sig")) continue;
-  //     const cookieName = signedCookieName.slice(0, ".sig".length * -1);
-  //     if(!this.get(cookieName)) {
-  //       this.deleteCookie(signedCookieName);
-  //       continue;
-  //     }
-  //     const value = this.get(cookieName);
-  //     const allSignatures = await Promise.all(this.keys.map(key => createSHA256HMAC(key, value)));
-  //     if(allSignatures.includes(signatures)) {
-  //       this.deleteCookie(signedCookieName);
-  //       continue;
-  //     }
-  //   }
-  // }
+  async setAndSign(
+    name: string,
+    value: string,
+    opts: Partial<CookieData> = {},
+  ): Promise<void> {
+    if (!this.canSign) {
+      throw Error('No keys provided for signing.');
+    }
+    this.set(name, value, opts);
+    const sigName = `${name}.sig`;
+    const signature = await createSHA256HMAC(this.keys[0], value);
+    this.set(sigName, signature, opts);
+    this.updateHeader();
+  }
+
+  async isSignedCookieValid(cookieName: string): Promise<boolean> {
+    const signedCookieName = `${cookieName}.sig`;
+    // No cookie or no signature cookie makes the cookie it invalid.
+    if (!this.get(cookieName) || !this.get(signedCookieName)) {
+      this.deleteCookie(signedCookieName);
+      this.deleteCookie(cookieName);
+      return false;
+    }
+
+    const value = this.get(cookieName)!;
+    const signature = this.get(signedCookieName)!;
+    const allCheckSignatures = await Promise.all(
+      this.keys.map((key) => createSHA256HMAC(key, value)),
+    );
+    if (!allCheckSignatures.includes(signature)) {
+      this.deleteCookie(signedCookieName);
+      this.deleteCookie(cookieName);
+      return false;
+    }
+    // TODO: Credential rotation.
+    return true;
+  }
 }
 
 function splitN(str: string, sep: string, maxNumParts: number): string[] {
@@ -306,4 +327,62 @@ export function flatHeaders(headers: Headers): string[][] {
       ? values.map((value) => [header, value])
       : [[header, values]],
   );
+}
+
+export async function createSHA256HMAC(
+  secret: string,
+  payload: string,
+): Promise<string> {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    enc.encode(secret),
+    {
+      name: 'HMAC',
+      hash: {name: 'SHA-256'},
+    },
+    false,
+    ['sign'],
+  );
+
+  const signature = await crypto.subtle.sign('HMAC', key, enc.encode(payload));
+  return asBase64(signature);
+}
+
+export function asHex(buffer: ArrayBuffer): string {
+  return [...new Uint8Array(buffer)]
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+const LookupTable =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+export function asBase64(buffer: ArrayBuffer): string {
+  let output = '';
+
+  const input = new Uint8Array(buffer);
+  for (let i = 0; i < input.length; ) {
+    const byte1 = input[i++];
+    const byte2 = input[i++];
+    const byte3 = input[i++];
+
+    const enc1 = byte1 >> 2;
+    const enc2 = ((byte1 & 0b00000011) << 4) | (byte2 >> 4);
+    let enc3 = ((byte2 & 0b00001111) << 2) | (byte3 >> 6);
+    let enc4 = byte3 & 0b00111111;
+
+    if (isNaN(byte2)) {
+      enc3 = 64;
+    }
+    if (isNaN(byte3)) {
+      enc4 = 64;
+    }
+
+    output +=
+      LookupTable[enc1] +
+      LookupTable[enc2] +
+      LookupTable[enc3] +
+      LookupTable[enc4];
+  }
+  return output;
 }

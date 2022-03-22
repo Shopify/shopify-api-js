@@ -1,9 +1,9 @@
 import {Context} from '../context';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
+import {createSHA256HMAC} from '../adapters/abstract-http';
 
 import safeCompare from './safe-compare';
-import {createSHA256HMAC} from './hmac';
 
 export function stringifyQuery(query: AuthQuery): string {
   const orderedObj = Object.fromEntries(
