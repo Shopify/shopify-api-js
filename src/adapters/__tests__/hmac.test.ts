@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 
-import {setCrypto} from '../../adapters/abstract-http';
-import {createSHA256HMAC, asBase64} from '../hmac';
+import {createSHA256HMAC, asBase64, setCrypto} from '../abstract-http';
 
 setCrypto(crypto.webcrypto as any);
 

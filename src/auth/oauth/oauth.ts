@@ -70,8 +70,7 @@ const ShopifyOAuth = {
       );
     }
 
-    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
-      signed: true,
+    await cookies.setAndSign(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
       expires: new Date(Date.now() + 60000),
       sameSite: 'lax',
       secure: true,
@@ -117,7 +116,7 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    const sessionCookie = this.getCookieSessionId(request, response);
+    const sessionCookie = await this.getCookieSessionId(request, response);
     if (!sessionCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
@@ -191,12 +190,15 @@ const ShopifyOAuth = {
       currentSession.scope = responseBody.scope;
     }
 
-    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
-      signed: true,
-      expires: Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
-      sameSite: 'lax',
-      secure: true,
-    });
+    await cookies.setAndSign(
+      ShopifyOAuth.SESSION_COOKIE_NAME,
+      currentSession.id,
+      {
+        expires: Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
+        sameSite: 'lax',
+        secure: true,
+      },
+    );
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(
       currentSession,
@@ -216,12 +218,15 @@ const ShopifyOAuth = {
    * @param request HTTP request object
    * @param response HTTP response object
    */
-  getCookieSessionId(request: Request, response: Response): string | undefined {
+  getCookieSessionId(
+    request: Request,
+    response: Response,
+  ): Promise<string | undefined> {
     const cookies = new Cookies(request, response, {
       secure: true,
       keys: [Context.API_SECRET_KEY],
     });
-    return cookies.get(this.SESSION_COOKIE_NAME, {signed: true});
+    return cookies.getAndVerify(this.SESSION_COOKIE_NAME);
   },
 
   /**
@@ -282,7 +287,7 @@ const ShopifyOAuth = {
     // JWT.
     if (!currentSessionId) {
       // We still want to get the offline session id from the cookie to make sure it's validated
-      currentSessionId = this.getCookieSessionId(request, response);
+      currentSessionId = await this.getCookieSessionId(request, response);
     }
 
     return currentSessionId;

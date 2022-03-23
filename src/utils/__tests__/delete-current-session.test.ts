@@ -3,6 +3,7 @@ import {
   Headers,
   Request,
   Response,
+  Cookies,
 } from '../../adapters/abstract-http';
 import Shopify from '../../index-node';
 import * as mockAdapter from '../../adapters/mock-adapter';
@@ -41,7 +42,10 @@ describe('deleteCurrenSession', () => {
 
     const sessionId = '1234-this-is-a-cookie-session-id';
     const req = {
-      headers: createSessionCookieHeader(sessionId),
+      headers: await createSessionCookieHeader(
+        sessionId,
+        Context.API_SECRET_KEY,
+      ),
     } as any as Request;
     const res = {} as Response;
 
@@ -93,7 +97,10 @@ describe('deleteCurrenSession', () => {
       'test-shop.myshopify.io',
     );
     const req = {
-      headers: createSessionCookieHeader(sessionId),
+      headers: await createSessionCookieHeader(
+        sessionId,
+        Context.API_SECRET_KEY,
+      ),
     } as any as Request;
     const res = {} as Response;
 
@@ -166,8 +173,18 @@ describe('deleteCurrenSession', () => {
   });
 });
 
-function createSessionCookieHeader(sessionId: string): Headers {
+async function createSessionCookieHeader(
+  sessionId: string,
+  key: string,
+): Promise<Headers> {
+  const req = {} as Request;
+  const res = {} as Response;
+  const cookies = new Cookies(req, res, {keys: [key]});
+  await cookies.setAndSign(Shopify.Auth.SESSION_COOKIE_NAME, sessionId);
+
   return {
-    Cookie: `${Shopify.Auth.SESSION_COOKIE_NAME}=${sessionId}`,
+    Cookie: Object.values(cookies.outgoingCookieJar)
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join(','),
   };
 }

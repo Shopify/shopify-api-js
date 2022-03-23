@@ -1,7 +1,11 @@
 import {StatusCode} from '@shopify/network';
 
-import {createSHA256HMAC} from '../utils/hmac';
-import {Request, Response, flatHeaders} from '../adapters/abstract-http';
+import {
+  Request,
+  Response,
+  flatHeaders,
+  createSHA256HMAC,
+} from '../adapters/abstract-http';
 import {GraphqlClient} from '../clients/graphql/graphql_client';
 import {ApiVersion, ShopifyHeader} from '../base-types';
 import ShopifyUtilities from '../utils';

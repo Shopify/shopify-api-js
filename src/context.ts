@@ -85,10 +85,6 @@ const Context: ContextInterface = {
       this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
     }
 
-    if (params.LOG_FUNCTION) {
-      this.LOG_FUNCTION = params.LOG_FUNCTION;
-    }
-
     if (params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN) {
       this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN =
         params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;

@@ -2,6 +2,8 @@ import {
   setAbstractFetchFunc,
   Request,
   Response,
+  Cookies,
+  Headers,
 } from '../../adapters/abstract-http';
 import Shopify from '../../index-node';
 import * as mockAdapter from '../../adapters/mock-adapter';
@@ -103,9 +105,10 @@ describe('withSession', () => {
     await Context.SESSION_STORAGE.storeSession(session);
 
     const req = {
-      headers: {
-        Cookie: `${Shopify.Auth.SESSION_COOKIE_NAME}=${sessionId}`,
-      },
+      headers: await createSessionCookieHeader(
+        sessionId,
+        Context.API_SECRET_KEY,
+      ),
     } as any as Request;
     const res = {} as Response;
 
@@ -185,3 +188,19 @@ describe('withSession', () => {
     expect(gqlRequestCtx.client).toBeInstanceOf(GraphqlClient);
   });
 });
+
+async function createSessionCookieHeader(
+  sessionId: string,
+  key: string,
+): Promise<Headers> {
+  const req = {} as Request;
+  const res = {} as Response;
+  const cookies = new Cookies(req, res, {keys: [key]});
+  await cookies.setAndSign(Shopify.Auth.SESSION_COOKIE_NAME, sessionId);
+
+  return {
+    Cookie: Object.values(cookies.outgoingCookieJar)
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join(','),
+  };
+}
