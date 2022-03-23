@@ -324,9 +324,14 @@ describe('HTTP client', () => {
     await testErrorResponse(429, Shopify.Errors.HttpThrottlingError, true);
     await testErrorResponse(500, Shopify.Errors.HttpInternalError, true);
 
-    // FIXME
-    // fetchMock.mockRejectOnce(() => Promise.reject());
-    // await testErrorResponse(null, Shopify.Errors.HttpRequestError, false);
+    class MyError extends Error {
+      constructor(...args: any) {
+        super(...args);
+        Object.setPrototypeOf(this, new.target.prototype);
+      }
+    }
+    mockAdapter.queueError(new MyError());
+    await testErrorResponse(null, MyError, false);
   });
 
   it('allows custom headers', async () => {
@@ -349,8 +354,6 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  // FIXME: Disabled test as `toMatchMadeHttpRequest` doesn’t handle
-  // `containsString()` matchers
   it('extends User-Agent if it is provided', async () => {
     const client = new HttpClient(domain);
 
@@ -390,8 +393,6 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  // FIXME: Disabled test as `toMatchMadeHttpRequest` doesn’t handle
-  // `containsString()` matchers
   it('extends a User-Agent provided by Context', async () => {
     Context.USER_AGENT_PREFIX = 'Context Agent';
     Context.initialize(Context);
