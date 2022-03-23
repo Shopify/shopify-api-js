@@ -391,3 +391,9 @@ export function asBase64(buffer: ArrayBuffer): string {
   }
   return output;
 }
+
+export async function hashStringWithSHA256(input: string): Promise<string> {
+  const buffer = new TextEncoder().encode(input);
+  const hash = await crypto.subtle.digest({name: 'SHA-256'}, buffer);
+  return asHex(hash);
+}
