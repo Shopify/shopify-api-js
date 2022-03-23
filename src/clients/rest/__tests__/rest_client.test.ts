@@ -56,7 +56,8 @@ describe('REST client', () => {
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/unstable/products.json?path=some_path',
+      path: '/admin/api/unstable/products.json',
+      query: 'path=some_path',
     }).toMatchMadeHttpRequest();
   });
 

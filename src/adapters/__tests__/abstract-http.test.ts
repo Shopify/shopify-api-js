@@ -127,12 +127,24 @@ describe('Header operations', () => {
       'x-my-header': ['b', 'c'],
       'X-My-Header': 'd',
       'x-my-hEader': 'e',
+      'other-header': 4 as any,
+      'other-heaDer': 5 as any,
+      'yet-another-header': [3, 5] as any,
     };
     canonicalizeHeaders(headers);
+
+    expect(Object.keys(headers)).toHaveLength(3);
+
     ['a', 'b', 'c', 'd', 'e'].forEach((letter) =>
       expect(headers['X-My-Header']).toContain(letter),
     );
     expect(headers['X-My-Header']).toHaveLength(5);
-    expect(Object.keys(headers)).toHaveLength(1);
+
+    expect(headers['Yet-Another-Header']).toEqual(['3', '5']);
+    ['4', '5'].forEach((letter) =>
+      expect(headers['Other-Header']).toContain(letter),
+    );
+
+    expect(headers['Other-Header']).toHaveLength(2);
   });
 });

@@ -72,10 +72,12 @@ expect.extend({
       };
     }
   },
-  // FIXME: Add `path` and `domain` back in!
+
   toMatchMadeHttpRequest({
     method,
     headers = {},
+    path,
+    domain,
     data,
   }: AssertHttpRequestParams) {
     const lastRequest: any = mockAdapter.getLastRequest();
@@ -86,7 +88,13 @@ expect.extend({
     lastRequest.data = lastRequest.body;
     canonicalizeHeaders(lastRequest.headers);
     canonicalizeHeaders(headers as any);
-    expect(lastRequest).toMatchObject({method, headers, body: data});
+    expect(lastRequest).toMatchObject({
+      method,
+      headers,
+      path,
+      domain,
+      body: data,
+    });
 
     return {
       message: () => `expected to have seen the right HTTP requests`,

@@ -114,7 +114,7 @@ export default class FakeResource extends Base {
     session,
     id,
     other_resource_id,
-  }: FakeResourceCustomArgs): Promise<Body> => {
+  }: FakeResourceCustomArgs): Promise<string> => {
     const response = await FakeResource.request({
       http_method: 'get',
       operation: 'custom',
@@ -122,8 +122,7 @@ export default class FakeResource extends Base {
       urlIds: {id, other_resource_id},
     });
 
-    // FIXME
-    return response.body as any;
+    return response.body as string;
   };
 
   id?: number | string | null;

@@ -219,7 +219,6 @@ describe('validateAuthCallback', () => {
     testCallbackQuery.hmac = 'definitely the wrong hmac';
 
     copySessionCookieToRequest(req, res);
-    console.log(req, req.headers);
     await expect(
       ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery),
     ).rejects.toThrow(Shopify.Errors.InvalidOAuthError);

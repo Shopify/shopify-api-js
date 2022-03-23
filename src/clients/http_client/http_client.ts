@@ -7,6 +7,7 @@ import {
   Headers,
   Request,
   Response,
+  hashStringWithSHA256,
 } from '../../adapters/abstract-http';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
@@ -122,9 +123,13 @@ class HttpClient {
       }
     }
 
+    let query = ProcessedQuery.stringify(params.query);
+    if (query.length > 0) {
+      query = `?${query}`;
+    }
     const url = `https://${this.domain}${this.getRequestPath(
       params.path,
-    )}${ProcessedQuery.stringify(params.query)}`;
+    )}${query}`;
 
     const req: Request = {
       url,
@@ -238,12 +243,7 @@ class HttpClient {
         path: req.url,
       };
 
-      // FIXME
-      // const depHash = crypto
-      //   .createHash('md5')
-      //   .update(JSON.stringify(deprecation))
-      //   .digest('hex');
-      const depHash = JSON.stringify(deprecation);
+      const depHash = await hashStringWithSHA256(JSON.stringify(deprecation));
 
       if (
         !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
