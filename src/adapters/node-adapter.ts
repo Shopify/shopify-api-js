@@ -19,9 +19,7 @@ export async function convertRequest(req: IncomingMessage): Promise<Request> {
     req.on('end', () => resolve(str));
   });
   return {
-    // FIXME: Should do a safe conversion here
-    // between `IncomingMessage.headers` and `Headers`
-    headers: req.headers as any,
+    headers: canonicalizeHeaders({...req.headers} as any),
     method: req.method ?? 'GET',
     url: req.url!,
     body,

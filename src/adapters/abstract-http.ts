@@ -90,14 +90,22 @@ export function addHeader(headers: Headers, key: string, value: string) {
   list.push(value);
 }
 
+function canonicalizeValue(value: any): any {
+  if (typeof value === 'number') return value.toString();
+  return value;
+}
+
 export function canonicalizeHeaders(hdr: Headers): Headers {
   for (const [key, values] of Object.entries(hdr)) {
     const canonKey = canonicalizeHeaderName(key);
     if (!hdr[canonKey]) hdr[canonKey] = [];
-    if (!Array.isArray(hdr[canonKey])) hdr[canonKey] = [hdr[canonKey] as any];
+    if (!Array.isArray(hdr[canonKey]))
+      hdr[canonKey] = [canonicalizeValue(hdr[canonKey])];
     if (key === canonKey) continue;
     delete hdr[key];
-    (hdr[canonKey] as any).push(...[values].flat());
+    (hdr[canonKey] as any).push(
+      ...[values].flat().map((value) => canonicalizeValue(value)),
+    );
   }
   return hdr;
 }
@@ -202,14 +210,12 @@ export class Cookies {
   outgoingCookieJar: CookieJar = {};
   private keys: string[] = [];
 
-  // TODO: Signing & credential rotation
   constructor(
     req: Request,
     public response: Response,
     {keys = []}: Partial<CookiesOptions> = {},
   ) {
     if (keys) this.keys = keys;
-    console.log(this.keys);
 
     const cookieReqHdr = getHeader(req.headers, 'Cookie') ?? '';
     this.receivedCookieJar = Cookies.parseCookies(cookieReqHdr.split(','));
@@ -300,7 +306,6 @@ export class Cookies {
       this.deleteCookie(cookieName);
       return false;
     }
-    // TODO: Credential rotation.
     return true;
   }
 }
