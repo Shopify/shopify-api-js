@@ -123,9 +123,13 @@ class HttpClient {
       }
     }
 
+    let query = ProcessedQuery.stringify(params.query);
+    if (query.length > 0) {
+      query = `?${query}`;
+    }
     const url = `https://${this.domain}${this.getRequestPath(
       params.path,
-    )}${ProcessedQuery.stringify(params.query)}`;
+    )}${query}`;
 
     const req: Request = {
       url,

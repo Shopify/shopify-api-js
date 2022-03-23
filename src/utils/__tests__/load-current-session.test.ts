@@ -58,7 +58,6 @@ describe('loadCurrentSession', () => {
     await expect(
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
-    console.log({req, res});
 
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });

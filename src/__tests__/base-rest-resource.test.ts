@@ -60,7 +60,8 @@ describe('Base REST resource', () => {
     expect({
       method: 'GET',
       domain,
-      path: `${prefix}/fake_resources/1.json?param=value`,
+      path: `${prefix}/fake_resources/1.json`,
+      query: 'param=value',
       headers,
     }).toMatchMadeHttpRequest();
   });
@@ -386,13 +387,15 @@ describe('Base REST resource', () => {
     expect({
       method: 'GET',
       domain,
-      path: `${prefix}/fake_resources.json?page_info=nextToken`,
+      path: `${prefix}/fake_resources.json`,
+      query: 'page_info=nextToken',
       headers,
     }).toMatchMadeHttpRequest();
     expect({
       method: 'GET',
       domain,
-      path: `${prefix}/fake_resources.json?page_info=previousToken`,
+      path: `${prefix}/fake_resources.json`,
+      query: 'page_info=previousToken',
       headers,
     }).toMatchMadeHttpRequest();
   });
