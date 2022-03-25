@@ -180,7 +180,13 @@ class HttpClient {
   ): Promise<RequestReturn> {
     return fetch(url, options)
       .then(async (response: Response) => {
-        const body = await response.json();
+        let body: any;
+        try {
+          body = await response.json();
+        } catch {
+          // This just means the body is not a JSON object
+          body = response.body.toString();
+        }
 
         if (response.ok) {
           if (
@@ -239,24 +245,38 @@ class HttpClient {
           const errorMessage = errorMessages.length
             ? `:\n${errorMessages.join('\n')}`
             : '';
+          const headers = response.headers.raw();
+          const code = response.status;
+          const statusText = response.statusText;
+
           switch (true) {
             case response.status === StatusCode.TooManyRequests: {
               const retryAfter = response.headers.get('Retry-After');
-              throw new ShopifyErrors.HttpThrottlingError(
-                `Shopify is throttling requests${errorMessage}`,
-                retryAfter ? parseFloat(retryAfter) : undefined,
-              );
+              throw new ShopifyErrors.HttpThrottlingError({
+                message: `Shopify is throttling requests${errorMessage}`,
+                code,
+                statusText,
+                body,
+                headers,
+                retryAfter: retryAfter ? parseFloat(retryAfter) : undefined,
+              });
             }
             case response.status >= StatusCode.InternalServerError:
-              throw new ShopifyErrors.HttpInternalError(
-                `Shopify internal error${errorMessage}`,
-              );
+              throw new ShopifyErrors.HttpInternalError({
+                message: `Shopify internal error${errorMessage}`,
+                code,
+                statusText,
+                body,
+                headers,
+              });
             default:
-              throw new ShopifyErrors.HttpResponseError(
-                `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
-                response.status,
-                response.statusText,
-              );
+              throw new ShopifyErrors.HttpResponseError({
+                message: `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
+                code,
+                statusText,
+                body,
+                headers,
+              });
           }
         }
       })
