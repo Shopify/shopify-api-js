@@ -117,23 +117,23 @@ class Base {
 
     switch (http_method) {
       case 'get':
-        return await client.get({path, query: cleanParams});
+        return client.get({path, query: cleanParams});
       case 'post':
-        return await client.post({
+        return client.post({
           path,
           query: cleanParams,
           data: body!,
           type: DataType.JSON,
         });
       case 'put':
-        return await client.put({
+        return client.put({
           path,
           query: cleanParams,
           data: body!,
           type: DataType.JSON,
         });
       case 'delete':
-        return await client.delete({path, query: cleanParams});
+        return client.delete({path, query: cleanParams});
       default:
         throw new Error(`Unrecognized HTTP method "${http_method}"`);
     }
