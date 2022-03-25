@@ -146,8 +146,8 @@ class Base {
       if (error instanceof HttpResponseError) {
         throw new RestResourceRequestError({
           message: error.message,
-          code: error.code,
-          statusText: error.statusText,
+          code: error.response.code,
+          statusText: error.response.statusText,
         });
       } else {
         throw error;

@@ -17,18 +17,17 @@ export class PrivateAppError extends ShopifyError {}
 export class HttpRequestError extends ShopifyError {}
 export class HttpMaxRetriesError extends ShopifyError {}
 
-interface HttpResponseErrorParams {
-  message: string;
+interface HttpResponseData {
   code: number;
   statusText: string;
-  body?: string | {[key: string]: unknown};
+  body?: {[key: string]: unknown};
   headers?: {[key: string]: unknown};
 }
+interface HttpResponseErrorParams extends HttpResponseData {
+  message: string;
+}
 export class HttpResponseError extends ShopifyError {
-  readonly code: number;
-  readonly statusText: string;
-  readonly body?: string | {[key: string]: unknown};
-  readonly headers?: {[key: string]: unknown};
+  readonly response: HttpResponseData;
 
   public constructor({
     message,
@@ -38,24 +37,29 @@ export class HttpResponseError extends ShopifyError {
     headers,
   }: HttpResponseErrorParams) {
     super(message);
-    this.code = code;
-    this.statusText = statusText;
-    this.body = body;
-    this.headers = headers;
+    this.response = {
+      code,
+      statusText,
+      body,
+      headers,
+    };
   }
 }
 export class HttpRetriableError extends HttpResponseError {}
 export class HttpInternalError extends HttpRetriableError {}
 
-interface HttpThrottlingErrorParams extends HttpResponseErrorParams {
+interface HttpThrottlingErrorData extends HttpResponseData {
   retryAfter?: number;
 }
+interface HttpThrottlingErrorParams extends HttpThrottlingErrorData {
+  message: string;
+}
 export class HttpThrottlingError extends HttpRetriableError {
-  readonly retryAfter?: number;
+  readonly response: HttpThrottlingErrorData;
 
   public constructor({retryAfter, ...params}: HttpThrottlingErrorParams) {
     super(params);
-    this.retryAfter = retryAfter;
+    this.response.retryAfter = retryAfter;
   }
 }
 

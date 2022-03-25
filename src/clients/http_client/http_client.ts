@@ -142,9 +142,9 @@ class HttpClient {
             let waitTime = HttpClient.RETRY_WAIT_TIME;
             if (
               error instanceof ShopifyErrors.HttpThrottlingError &&
-              error.retryAfter
+              error.response.retryAfter
             ) {
-              waitTime = error.retryAfter * 1000;
+              waitTime = error.response.retryAfter * 1000;
             }
             await sleep(waitTime);
             continue;
@@ -180,13 +180,7 @@ class HttpClient {
   ): Promise<RequestReturn> {
     return fetch(url, options)
       .then(async (response: Response) => {
-        let body: any;
-        try {
-          body = await response.json();
-        } catch {
-          // This just means the body is not a JSON object
-          body = response.body.toString();
-        }
+        const body = await response.json();
 
         if (response.ok) {
           if (
