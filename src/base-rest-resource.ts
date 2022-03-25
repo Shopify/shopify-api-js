@@ -1,8 +1,4 @@
-import {
-  HttpResponseError,
-  RestResourceError,
-  RestResourceRequestError,
-} from './error';
+import {RestResourceError} from './error';
 import {SessionInterface} from './auth/session/types';
 import {RestClient} from './clients/rest';
 import {RestRequestReturn} from './clients/rest/types';
@@ -119,39 +115,27 @@ class Base {
       }
     }
 
-    try {
-      switch (http_method) {
-        case 'get':
-          return await client.get({path, query: cleanParams});
-        case 'post':
-          return await client.post({
-            path,
-            query: cleanParams,
-            data: body!,
-            type: DataType.JSON,
-          });
-        case 'put':
-          return await client.put({
-            path,
-            query: cleanParams,
-            data: body!,
-            type: DataType.JSON,
-          });
-        case 'delete':
-          return await client.delete({path, query: cleanParams});
-        default:
-          throw new Error(`Unrecognized HTTP method "${http_method}"`);
-      }
-    } catch (error) {
-      if (error instanceof HttpResponseError) {
-        throw new RestResourceRequestError({
-          message: error.message,
-          code: error.response.code,
-          statusText: error.response.statusText,
+    switch (http_method) {
+      case 'get':
+        return await client.get({path, query: cleanParams});
+      case 'post':
+        return await client.post({
+          path,
+          query: cleanParams,
+          data: body!,
+          type: DataType.JSON,
         });
-      } else {
-        throw error;
-      }
+      case 'put':
+        return await client.put({
+          path,
+          query: cleanParams,
+          data: body!,
+          type: DataType.JSON,
+        });
+      case 'delete':
+        return await client.delete({path, query: cleanParams});
+      default:
+        throw new Error(`Unrecognized HTTP method "${http_method}"`);
     }
   }
 

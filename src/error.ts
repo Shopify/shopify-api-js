@@ -64,7 +64,6 @@ export class HttpThrottlingError extends HttpRetriableError {
 }
 
 export class RestResourceError extends ShopifyError {}
-export class RestResourceRequestError extends HttpResponseError {}
 
 export class InvalidOAuthError extends ShopifyError {}
 export class SessionNotFound extends ShopifyError {}

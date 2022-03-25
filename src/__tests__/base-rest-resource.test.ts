@@ -1,7 +1,7 @@
 import {Session} from '../auth/session';
 import {ApiVersion} from '../base-types';
 import {Context} from '../context';
-import {RestResourceRequestError, RestResourceError} from '../error';
+import {RestResourceError, HttpResponseError} from '../error';
 
 import FakeResource from './fake-resource';
 import FakeResourceWithCustomPrefix from './fake-resource-with-custom-prefix';
@@ -87,11 +87,21 @@ describe('Base REST resource', () => {
     fetchMock.mockResponseOnce(JSON.stringify(body), {
       status: 404,
       statusText: 'Not Found',
+      headers: {'X-Test-Header': 'value'},
     });
 
-    await expect(
+    const expectedError = await expect(
       FakeResource.find({id: 1, session} as any),
-    ).rejects.toThrowError(RestResourceRequestError);
+    ).rejects;
+    expectedError.toThrowError(HttpResponseError);
+    expectedError.toMatchObject({
+      response: {
+        body: {errors: 'Not Found'},
+        code: 404,
+        statusText: 'Not Found',
+        headers: {'X-Test-Header': ['value']},
+      },
+    });
 
     expect({
       method: 'GET',
@@ -296,9 +306,7 @@ describe('Base REST resource', () => {
     const resource = new FakeResource({session});
     resource.id = 1;
 
-    await expect(resource.delete()).rejects.toThrowError(
-      RestResourceRequestError,
-    );
+    await expect(resource.delete()).rejects.toThrowError(HttpResponseError);
 
     expect({
       method: 'DELETE',
