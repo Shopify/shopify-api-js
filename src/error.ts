@@ -1,75 +1,77 @@
-class ShopifyError extends Error {
+export class ShopifyError extends Error {
   constructor(...args: any) {
     super(...args);
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
 
-class InvalidHmacError extends ShopifyError {}
-class InvalidShopError extends ShopifyError {}
-class InvalidJwtError extends ShopifyError {}
-class MissingJwtTokenError extends ShopifyError {}
+export class InvalidHmacError extends ShopifyError {}
+export class InvalidShopError extends ShopifyError {}
+export class InvalidJwtError extends ShopifyError {}
+export class MissingJwtTokenError extends ShopifyError {}
 
-class SafeCompareError extends ShopifyError {}
-class UninitializedContextError extends ShopifyError {}
-class PrivateAppError extends ShopifyError {}
+export class SafeCompareError extends ShopifyError {}
+export class UninitializedContextError extends ShopifyError {}
+export class PrivateAppError extends ShopifyError {}
 
-class HttpRequestError extends ShopifyError {}
-class HttpMaxRetriesError extends ShopifyError {}
-class HttpResponseError extends ShopifyError {
-  public constructor(
-    message: string,
-    readonly code: number,
-    readonly statusText: string,
-  ) {
+export class HttpRequestError extends ShopifyError {}
+export class HttpMaxRetriesError extends ShopifyError {}
+
+interface HttpResponseData {
+  code: number;
+  statusText: string;
+  body?: {[key: string]: unknown};
+  headers?: {[key: string]: unknown};
+}
+interface HttpResponseErrorParams extends HttpResponseData {
+  message: string;
+}
+export class HttpResponseError extends ShopifyError {
+  readonly response: HttpResponseData;
+
+  public constructor({
+    message,
+    code,
+    statusText,
+    body,
+    headers,
+  }: HttpResponseErrorParams) {
     super(message);
+    this.response = {
+      code,
+      statusText,
+      body,
+      headers,
+    };
   }
 }
-class HttpRetriableError extends ShopifyError {}
-class HttpInternalError extends HttpRetriableError {}
-class HttpThrottlingError extends HttpRetriableError {
-  public constructor(message: string, readonly retryAfter?: number) {
-    super(message);
+export class HttpRetriableError extends HttpResponseError {}
+export class HttpInternalError extends HttpRetriableError {}
+
+interface HttpThrottlingErrorData extends HttpResponseData {
+  retryAfter?: number;
+}
+interface HttpThrottlingErrorParams extends HttpThrottlingErrorData {
+  message: string;
+}
+export class HttpThrottlingError extends HttpRetriableError {
+  readonly response: HttpThrottlingErrorData;
+
+  public constructor({retryAfter, ...params}: HttpThrottlingErrorParams) {
+    super(params);
+    this.response.retryAfter = retryAfter;
   }
 }
 
-class RestResourceError extends ShopifyError {}
-class RestResourceRequestError extends HttpResponseError {}
+export class RestResourceError extends ShopifyError {}
 
-class InvalidOAuthError extends ShopifyError {}
-class SessionNotFound extends ShopifyError {}
-class CookieNotFound extends ShopifyError {}
-class InvalidSession extends ShopifyError {}
+export class InvalidOAuthError extends ShopifyError {}
+export class SessionNotFound extends ShopifyError {}
+export class CookieNotFound extends ShopifyError {}
+export class InvalidSession extends ShopifyError {}
 
-class InvalidWebhookError extends ShopifyError {}
-class SessionStorageError extends ShopifyError {}
+export class InvalidWebhookError extends ShopifyError {}
+export class SessionStorageError extends ShopifyError {}
 
-class MissingRequiredArgument extends ShopifyError {}
-class UnsupportedClientType extends ShopifyError {}
-
-export {
-  ShopifyError,
-  InvalidHmacError,
-  InvalidShopError,
-  InvalidJwtError,
-  MissingJwtTokenError,
-  SafeCompareError,
-  HttpRequestError,
-  HttpMaxRetriesError,
-  HttpResponseError,
-  HttpRetriableError,
-  HttpInternalError,
-  HttpThrottlingError,
-  RestResourceError,
-  RestResourceRequestError,
-  UninitializedContextError,
-  InvalidOAuthError,
-  SessionNotFound,
-  CookieNotFound,
-  InvalidSession,
-  InvalidWebhookError,
-  MissingRequiredArgument,
-  UnsupportedClientType,
-  SessionStorageError,
-  PrivateAppError,
-};
+export class MissingRequiredArgument extends ShopifyError {}
+export class UnsupportedClientType extends ShopifyError {}

@@ -9,6 +9,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- ⚠️ [Breaking] The `HttpResponseError` error and its flavours (all returned from HTTP requests) have been slightly altered:
+  - They now take in a hash of values, and will always include the response code, body (as a string if the response is not JSON), and headers
+  - All response fields are now contained within a `response` object, to make it easier to access them
 - ⚠️ [Breaking] Update supported Admin API versions [#310](https://github.com/Shopify/shopify-node-api/pull/310)
 - Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-node-api/pull/301)
 
@@ -17,17 +20,17 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - ⚠️ [Breaking] Stop responding to the request in the GraphQL Proxy function, returning Shopify's response instead [#312](https://github.com/Shopify/shopify-node-api/pull/312)
 
   The examples below are in [express](https://expressjs.com/); you will now need to handle the response yourself.
-  
+
   Before:
-  
+
   ```js
   app.post('/graphql', async (req, res) => {
     await Shopify.Utils.graphqlProxy(req, res);
   });
   ```
-  
+
   After:
-  
+
   ```js
   app.post('/graphql', async (req, res) => {
     const response = await Shopify.Utils.graphqlProxy(req, res);

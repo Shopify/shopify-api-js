@@ -266,8 +266,8 @@ describe('HTTP client', () => {
         caught = true;
         expect(error).toBeInstanceOf(expectedError);
         if (expectedError === ShopifyErrors.HttpResponseError) {
-          expect(error).toHaveProperty('code', status);
-          expect(error).toHaveProperty('statusText', statusText);
+          expect(error).toHaveProperty('response.code', status);
+          expect(error).toHaveProperty('response.statusText', statusText);
         }
         if (expectRequestId) {
           expect(error.message).toContain(requestId);
@@ -778,6 +778,72 @@ describe('HTTP client', () => {
       path: '/url/path',
       query: encodeURI('array[]=a&array[]=b&array[]=c&hash[a]=b&hash[c]=d'),
     }).toMatchMadeHttpRequest();
+  });
+
+  it('throws exceptions with response details on internal errors', async () => {
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponse(JSON.stringify({errors: 'Error 500'}), {
+      status: 500,
+      statusText: 'Error 500',
+      headers: {'X-Text-Header': 'Error 500'},
+    });
+
+    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpInternalError);
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    expectedError.toMatchObject({
+      response: {
+        body: {errors: 'Error 500'},
+        code: 500,
+        statusText: 'Error 500',
+        headers: {'X-Text-Header': ['Error 500']},
+      },
+    });
+  });
+
+  it('throws exceptions with response details on throttled requests', async () => {
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponse(JSON.stringify({errors: 'Error 429'}), {
+      status: 429,
+      statusText: 'Error 429',
+      headers: {'X-Text-Header': 'Error 429', 'Retry-After': '100'},
+    });
+
+    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpThrottlingError);
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    expectedError.toMatchObject({
+      response: {
+        body: {errors: 'Error 429'},
+        code: 429,
+        statusText: 'Error 429',
+        headers: {'X-Text-Header': ['Error 429'], 'Retry-After': ['100']},
+        retryAfter: 100,
+      },
+    });
+  });
+
+  it('throws exceptions with response details on any other errors', async () => {
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponse(JSON.stringify({errors: 'Error 403'}), {
+      status: 403,
+      statusText: 'Error 403',
+      headers: {'X-Text-Header': 'Error 403'},
+    });
+
+    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    expectedError.toMatchObject({
+      response: {
+        body: {errors: 'Error 403'},
+        code: 403,
+        statusText: 'Error 403',
+        headers: {'X-Text-Header': ['Error 403']},
+      },
+    });
   });
 });
 
