@@ -4,7 +4,7 @@ import http from 'http';
 import {StatusCode} from '@shopify/network';
 
 import {GraphqlClient} from '../clients/graphql/graphql_client';
-import {ApiVersion, ShopifyHeader} from '../base-types';
+import {ShopifyHeader} from '../base-types';
 import ShopifyUtilities from '../utils';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
@@ -112,16 +112,8 @@ function isSuccess(
   );
 }
 
-function versionSupportsPubSub() {
-  return ShopifyUtilities.versionCompatible(ApiVersion.July21);
-}
-
-function validateDeliveryMethod(deliveryMethod: DeliveryMethod) {
-  if (deliveryMethod === DeliveryMethod.PubSub && !versionSupportsPubSub()) {
-    throw new ShopifyErrors.UnsupportedClientType(
-      `Pub/Sub webhooks are not supported in API version "${Context.API_VERSION}".`,
-    );
-  }
+function validateDeliveryMethod(_deliveryMethod: DeliveryMethod) {
+  return true;
 }
 
 function buildCheckQuery(topic: string): string {
@@ -138,13 +130,9 @@ function buildCheckQuery(topic: string): string {
             ... on WebhookEventBridgeEndpoint {
               arn
             }
-            ${
-              versionSupportsPubSub()
-                ? '... on WebhookPubSubEndpoint { \
-                    pubSubProject \
-                    pubSubTopic \
-                  }'
-                : ''
+            ... on WebhookPubSubEndpoint {
+              pubSubProject
+              pubSubTopic
             }
           }
         }
