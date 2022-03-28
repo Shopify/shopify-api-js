@@ -15,7 +15,7 @@ describe('Theme resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"themes": [{"id": 828155753, "name": "Comfort", "created_at": "2022-03-01T11:12:09-05:00", "updated_at": "2022-03-01T11:12:09-05:00", "role": "main", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/828155753"}, {"id": 976877075, "name": "Preview of Parallax", "created_at": "2022-03-01T11:12:09-05:00", "updated_at": "2022-03-01T11:12:09-05:00", "role": "demo", "theme_store_id": 688, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/976877075"}, {"id": 752253240, "name": "Sandbox", "created_at": "2022-03-01T11:12:09-05:00", "updated_at": "2022-03-01T11:12:09-05:00", "role": "unpublished", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/752253240"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"themes": [{"id": 828155753, "name": "Comfort", "created_at": "2022-03-11T10:52:46-05:00", "updated_at": "2022-03-11T10:52:46-05:00", "role": "main", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/828155753"}, {"id": 976877075, "name": "Preview of Parallax", "created_at": "2022-03-11T10:52:46-05:00", "updated_at": "2022-03-11T10:52:46-05:00", "role": "demo", "theme_store_id": 688, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/976877075"}, {"id": 752253240, "name": "Sandbox", "created_at": "2022-03-11T10:52:46-05:00", "updated_at": "2022-03-11T10:52:46-05:00", "role": "unpublished", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/752253240"}]}));
 
     await Theme.all({
       session: test_session,
@@ -32,7 +32,7 @@ describe('Theme resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"theme": {"id": 1049083724, "name": "Lemongrass", "created_at": "2022-03-01T11:57:11-05:00", "updated_at": "2022-03-01T11:57:11-05:00", "role": "unpublished", "theme_store_id": null, "previewable": false, "processing": true, "admin_graphql_api_id": "gid://shopify/Theme/1049083724"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"theme": {"id": 1049083723, "name": "Lemongrass", "created_at": "2022-03-11T10:53:20-05:00", "updated_at": "2022-03-11T10:53:20-05:00", "role": "unpublished", "theme_store_id": null, "previewable": false, "processing": true, "admin_graphql_api_id": "gid://shopify/Theme/1049083723"}}));
 
     const theme = new Theme({session: test_session});
     theme.name = "Lemongrass";
@@ -51,7 +51,7 @@ describe('Theme resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"theme": {"id": 828155753, "name": "Comfort", "created_at": "2022-03-01T11:12:09-05:00", "updated_at": "2022-03-01T11:12:09-05:00", "role": "main", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/828155753"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"theme": {"id": 828155753, "name": "Comfort", "created_at": "2022-03-11T10:52:46-05:00", "updated_at": "2022-03-11T10:52:46-05:00", "role": "main", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/828155753"}}));
 
     await Theme.find({
       session: test_session,
@@ -69,25 +69,7 @@ describe('Theme resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"theme": {"name": "Experimental", "role": "unpublished", "id": 752253240, "created_at": "2022-03-01T11:12:09-05:00", "updated_at": "2022-03-01T11:57:13-05:00", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/752253240"}}));
-
-    const theme = new Theme({session: test_session});
-    theme.id = 752253240;
-    theme.name = "Experimental";
-    await theme.save({});
-
-    expect({
-      method: 'PUT',
-      domain,
-      path: '/admin/api/2021-10/themes/752253240.json',
-      query: '',
-      headers,
-      data: { "theme": {"id": 752253240, "name": "Experimental"} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_5', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"theme": {"role": "main", "id": 752253240, "name": "Sandbox", "created_at": "2022-03-01T11:12:09-05:00", "updated_at": "2022-03-01T11:57:14-05:00", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/752253240"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"theme": {"role": "main", "id": 752253240, "name": "Sandbox", "created_at": "2022-03-11T10:52:46-05:00", "updated_at": "2022-03-11T10:53:11-05:00", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/752253240"}}));
 
     const theme = new Theme({session: test_session});
     theme.id = 752253240;
@@ -104,8 +86,26 @@ describe('Theme resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('test_5', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"theme": {"name": "Experimental", "role": "unpublished", "id": 752253240, "created_at": "2022-03-11T10:52:46-05:00", "updated_at": "2022-03-11T10:53:22-05:00", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/752253240"}}));
+
+    const theme = new Theme({session: test_session});
+    theme.id = 752253240;
+    theme.name = "Experimental";
+    await theme.save({});
+
+    expect({
+      method: 'PUT',
+      domain,
+      path: '/admin/api/2021-10/themes/752253240.json',
+      query: '',
+      headers,
+      data: { "theme": {"id": 752253240, "name": "Experimental"} }
+    }).toMatchMadeHttpRequest();
+  });
+
   it('test_6', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"id": 752253240, "name": "Sandbox", "created_at": "2022-03-01T11:12:09-05:00", "updated_at": "2022-03-01T11:12:09-05:00", "role": "unpublished", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/752253240"}));
+    fetchMock.mockResponseOnce(JSON.stringify({"id": 752253240, "name": "Sandbox", "created_at": "2022-03-11T10:52:46-05:00", "updated_at": "2022-03-11T10:52:46-05:00", "role": "unpublished", "theme_store_id": null, "previewable": true, "processing": false, "admin_graphql_api_id": "gid://shopify/Theme/752253240"}));
 
     await Theme.delete({
       session: test_session,

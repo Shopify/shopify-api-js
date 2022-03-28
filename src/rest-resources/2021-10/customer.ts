@@ -21,14 +21,6 @@ interface AllArgs {
   limit?: unknown;
   fields?: unknown;
 }
-interface SearchArgs {
-  [key: string]: unknown;
-  session: SessionInterface;
-  order?: unknown;
-  query?: unknown;
-  limit?: unknown;
-  fields?: unknown;
-}
 interface CountArgs {
   [key: string]: unknown;
   session: SessionInterface;
@@ -37,6 +29,14 @@ interface OrdersArgs {
   [key: string]: unknown;
   session: SessionInterface;
   id: number | string;
+}
+interface SearchArgs {
+  [key: string]: unknown;
+  session: SessionInterface;
+  order?: unknown;
+  query?: unknown;
+  limit?: unknown;
+  fields?: unknown;
 }
 interface AccountActivationUrlArgs {
   [key: string]: unknown;
@@ -57,15 +57,15 @@ export class Customer extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
-    {"http_method": "get", "operation": "search", "ids": [], "path": "customers/search.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"},
-    {"http_method": "post", "operation": "account_activation_url", "ids": ["id"], "path": "customers/<id>/account_activation_url.json"},
-    {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
-    {"http_method": "get", "operation": "orders", "ids": ["id"], "path": "customers/<id>/orders.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "get", "operation": "orders", "ids": ["id"], "path": "customers/<id>/orders.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "customers/search.json"},
+    {"http_method": "post", "operation": "account_activation_url", "ids": ["id"], "path": "customers/<id>/account_activation_url.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
+    {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"}
   ];
 
   public static async find(
@@ -106,29 +106,6 @@ export class Customer extends Base {
     return response as Customer[];
   }
 
-  public static async search(
-    {
-      session,
-      order = null,
-      query = null,
-      limit = null,
-      fields = null,
-      ...otherArgs
-    }: SearchArgs
-  ): Promise<unknown> {
-    const response = await Customer.request({
-      http_method: "get",
-      operation: "search",
-      session: session,
-      urlIds: {},
-      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
-      body: {},
-      entity: null,
-    });
-
-    return response ? response.body : null;
-  }
-
   public static async count(
     {
       session,
@@ -161,6 +138,29 @@ export class Customer extends Base {
       session: session,
       urlIds: {"id": id},
       params: {...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public static async search(
+    {
+      session,
+      order = null,
+      query = null,
+      limit = null,
+      fields = null,
+      ...otherArgs
+    }: SearchArgs
+  ): Promise<unknown> {
+    const response = await Customer.request({
+      http_method: "get",
+      operation: "search",
+      session: session,
+      urlIds: {},
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
       body: {},
       entity: null,
     });

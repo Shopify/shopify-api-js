@@ -35,9 +35,9 @@ export class Event extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "count", "ids": [], "path": "events/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "events.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "events/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "events/count.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/events.json"},
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/events.json"}
   ];

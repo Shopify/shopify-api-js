@@ -33,11 +33,11 @@ export class Checkout extends Base {
     "gift_cards": GiftCard
   };
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
-    {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
     {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"},
-    {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"}
+    {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"},
+    {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
+    {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
   ];
   protected static PRIMARY_KEY: string = "token";
 

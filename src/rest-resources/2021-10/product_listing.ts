@@ -22,14 +22,14 @@ interface AllArgs {
   updated_at_min?: unknown;
   handle?: unknown;
 }
+interface CountArgs {
+  [key: string]: unknown;
+  session: SessionInterface;
+}
 interface ProductIdsArgs {
   [key: string]: unknown;
   session: SessionInterface;
   limit?: unknown;
-}
-interface CountArgs {
-  [key: string]: unknown;
-  session: SessionInterface;
 }
 
 export class ProductListing extends Base {
@@ -43,12 +43,12 @@ export class ProductListing extends Base {
     "variants": Variant
   };
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "product_listings.json"},
-    {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "product_listings/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "product_listings.json"},
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
+    {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
+    {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
   ];
   protected static PRIMARY_KEY: string = "product_id";
 
@@ -103,6 +103,25 @@ export class ProductListing extends Base {
     return response as ProductListing[];
   }
 
+  public static async count(
+    {
+      session,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
+    const response = await ProductListing.request({
+      http_method: "get",
+      operation: "count",
+      session: session,
+      urlIds: {},
+      params: {...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
   public static async product_ids(
     {
       session,
@@ -116,25 +135,6 @@ export class ProductListing extends Base {
       session: session,
       urlIds: {},
       params: {"limit": limit, ...otherArgs},
-      body: {},
-      entity: null,
-    });
-
-    return response ? response.body : null;
-  }
-
-  public static async count(
-    {
-      session,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
-    const response = await ProductListing.request({
-      http_method: "get",
-      operation: "count",
-      session: session,
-      urlIds: {},
-      params: {...otherArgs},
       body: {},
       entity: null,
     });

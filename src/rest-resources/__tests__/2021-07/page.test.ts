@@ -50,7 +50,7 @@ describe('Page resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"page": {"id": 1025371372, "title": "Warranty information", "shop_id": 548380009, "handle": "warranty-information", "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", "author": "Shopify API", "created_at": "2022-02-08T14:49:34-05:00", "updated_at": "2022-02-08T14:49:34-05:00", "published_at": "2022-02-08T14:49:34-05:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/1025371372"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"page": {"id": 1025371371, "title": "Warranty information", "shop_id": 548380009, "handle": "warranty-information", "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", "author": "Shopify API", "created_at": "2022-03-11T10:57:24-05:00", "updated_at": "2022-03-11T10:57:24-05:00", "published_at": "2022-03-11T10:57:24-05:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/1025371371"}}));
 
     const page = new Page({session: test_session});
     page.title = "Warranty information";
@@ -68,7 +68,7 @@ describe('Page resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"page": {"id": 1025371373, "title": "Warranty information", "shop_id": 548380009, "handle": "warranty-information", "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", "author": "Shopify API", "created_at": "2022-02-08T14:49:36-05:00", "updated_at": "2022-02-08T14:49:36-05:00", "published_at": null, "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/1025371373"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"page": {"id": 1025371372, "title": "Warranty information", "shop_id": 548380009, "handle": "warranty-information", "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", "author": "Shopify API", "created_at": "2022-03-11T10:57:25-05:00", "updated_at": "2022-03-11T10:57:25-05:00", "published_at": null, "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/1025371372"}}));
 
     const page = new Page({session: test_session});
     page.title = "Warranty information";
@@ -87,7 +87,7 @@ describe('Page resource', () => {
   });
 
   it('test_5', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"page": {"id": 1025371374, "title": "Warranty information", "shop_id": 548380009, "handle": "warranty-information", "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", "author": "Shopify API", "created_at": "2022-02-08T14:49:39-05:00", "updated_at": "2022-02-08T14:49:39-05:00", "published_at": "2022-02-08T14:49:39-05:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/1025371374"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"page": {"id": 1025371373, "title": "Warranty information", "shop_id": 548380009, "handle": "warranty-information", "body_html": "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", "author": "Shopify API", "created_at": "2022-03-11T10:57:27-05:00", "updated_at": "2022-03-11T10:57:27-05:00", "published_at": "2022-03-11T10:57:27-05:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/1025371373"}}));
 
     const page = new Page({session: test_session});
     page.title = "Warranty information";
@@ -148,7 +148,7 @@ describe('Page resource', () => {
   });
 
   it('test_8', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "body_html": "<p>Returns accepted if we receive the items 14 days after purchase.</p>", "title": "Terms of Services", "handle": "tos", "id": 131092082, "author": "Dennis", "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-02-08T14:49:48-05:00", "published_at": "2008-07-15T20:00:00-04:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "body_html": "<p>Returns accepted if we receive the items 14 days after purchase.</p>", "title": "Terms of Services", "handle": "tos", "id": 131092082, "author": "Dennis", "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-03-11T10:57:34-05:00", "published_at": "2008-07-15T20:00:00-04:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
 
     const page = new Page({session: test_session});
     page.id = 131092082;
@@ -166,7 +166,7 @@ describe('Page resource', () => {
   });
 
   it('test_9', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "author": "Christopher Gorski", "body_html": "<p>Returns accepted if we receive the items <strong>14 days</strong> after purchase.</p>", "handle": "new-warranty", "title": "New warranty", "id": 131092082, "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-02-08T14:49:49-05:00", "published_at": "2008-07-15T20:00:00-04:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "author": "Christopher Gorski", "body_html": "<p>Returns accepted if we receive the items <strong>14 days</strong> after purchase.</p>", "handle": "new-warranty", "title": "New warranty", "id": 131092082, "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-03-11T10:57:35-05:00", "published_at": "2008-07-15T20:00:00-04:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
 
     const page = new Page({session: test_session});
     page.id = 131092082;
@@ -187,7 +187,7 @@ describe('Page resource', () => {
   });
 
   it('test_10', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "published_at": "2022-02-08T14:49:51-05:00", "title": "Terms of Services", "handle": "tos", "body_html": "<p>We make <strong>perfect</strong> stuff, we don't need a warranty.</p>", "id": 131092082, "author": "Dennis", "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-02-08T14:49:51-05:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "published_at": "2022-03-11T10:57:36-05:00", "title": "Terms of Services", "handle": "tos", "body_html": "<p>We make <strong>perfect</strong> stuff, we don't need a warranty.</p>", "id": 131092082, "author": "Dennis", "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-03-11T10:57:36-05:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
 
     const page = new Page({session: test_session});
     page.id = 131092082;
@@ -205,7 +205,7 @@ describe('Page resource', () => {
   });
 
   it('test_11', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "published_at": null, "title": "Terms of Services", "handle": "tos", "body_html": "<p>We make <strong>perfect</strong> stuff, we don't need a warranty.</p>", "id": 131092082, "author": "Dennis", "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-02-08T14:49:53-05:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "published_at": null, "title": "Terms of Services", "handle": "tos", "body_html": "<p>We make <strong>perfect</strong> stuff, we don't need a warranty.</p>", "id": 131092082, "author": "Dennis", "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-03-11T10:57:37-05:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
 
     const page = new Page({session: test_session});
     page.id = 131092082;
@@ -223,7 +223,7 @@ describe('Page resource', () => {
   });
 
   it('test_12', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "title": "Terms of Services", "handle": "tos", "body_html": "<p>We make <strong>perfect</strong> stuff, we don't need a warranty.</p>", "id": 131092082, "author": "Dennis", "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-02-08T14:49:54-05:00", "published_at": "2008-07-15T20:00:00-04:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"page": {"shop_id": 548380009, "title": "Terms of Services", "handle": "tos", "body_html": "<p>We make <strong>perfect</strong> stuff, we don't need a warranty.</p>", "id": 131092082, "author": "Dennis", "created_at": "2008-07-15T20:00:00-04:00", "updated_at": "2022-03-11T10:57:39-05:00", "published_at": "2008-07-15T20:00:00-04:00", "template_suffix": null, "admin_graphql_api_id": "gid://shopify/OnlineStorePage/131092082"}}));
 
     const page = new Page({session: test_session});
     page.id = 131092082;

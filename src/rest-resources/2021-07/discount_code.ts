@@ -18,11 +18,6 @@ interface AllArgs {
   price_rule_id?: number | string | null;
   batch_id?: number | string | null;
 }
-interface LookupArgs {
-  [key: string]: unknown;
-  session: SessionInterface;
-  code?: unknown;
-}
 interface CountArgs {
   [key: string]: unknown;
   session: SessionInterface;
@@ -35,6 +30,11 @@ interface GetAllArgs {
   session: SessionInterface;
   price_rule_id?: number | string | null;
   batch_id?: number | string | null;
+}
+interface LookupArgs {
+  [key: string]: unknown;
+  session: SessionInterface;
+  code?: unknown;
 }
 interface BatchArgs {
   [key: string]: unknown;
@@ -49,16 +49,16 @@ export class DiscountCode extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "post", "operation": "post", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
-    {"http_method": "get", "operation": "get", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
-    {"http_method": "put", "operation": "put", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
-    {"http_method": "get", "operation": "lookup", "ids": [], "path": "discount_codes/lookup.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "discount_codes/count.json"},
-    {"http_method": "post", "operation": "batch", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/batch.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
     {"http_method": "get", "operation": "get_all", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>.json"},
-    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"}
+    {"http_method": "get", "operation": "lookup", "ids": [], "path": "discount_codes/lookup.json"},
+    {"http_method": "post", "operation": "batch", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/batch.json"},
+    {"http_method": "post", "operation": "post", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
+    {"http_method": "put", "operation": "put", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"}
   ];
 
   public static async find(
@@ -111,26 +111,6 @@ export class DiscountCode extends Base {
     return response as DiscountCode[];
   }
 
-  public static async lookup(
-    {
-      session,
-      code = null,
-      ...otherArgs
-    }: LookupArgs
-  ): Promise<unknown> {
-    const response = await DiscountCode.request({
-      http_method: "get",
-      operation: "lookup",
-      session: session,
-      urlIds: {},
-      params: {"code": code, ...otherArgs},
-      body: {},
-      entity: null,
-    });
-
-    return response ? response.body : null;
-  }
-
   public static async count(
     {
       session,
@@ -167,6 +147,26 @@ export class DiscountCode extends Base {
       session: session,
       urlIds: {"price_rule_id": price_rule_id, "batch_id": batch_id},
       params: {...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public static async lookup(
+    {
+      session,
+      code = null,
+      ...otherArgs
+    }: LookupArgs
+  ): Promise<unknown> {
+    const response = await DiscountCode.request({
+      http_method: "get",
+      operation: "lookup",
+      session: session,
+      urlIds: {},
+      params: {"code": code, ...otherArgs},
       body: {},
       entity: null,
     });

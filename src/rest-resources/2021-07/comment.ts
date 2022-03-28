@@ -34,15 +34,11 @@ interface CountArgs {
   published_status?: unknown;
   status?: unknown;
 }
-interface SpamArgs {
+interface ApproveArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
 interface NotSpamArgs {
-  [key: string]: unknown;
-  body?: {[key: string]: unknown} | null;
-}
-interface ApproveArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
@@ -51,6 +47,10 @@ interface RemoveArgs {
   body?: {[key: string]: unknown} | null;
 }
 interface RestoreArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
+interface SpamArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
@@ -63,16 +63,16 @@ export class Comment extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "comments.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "comments/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "comments.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "comments/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "comments.json"},
-    {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
-    {"http_method": "post", "operation": "not_spam", "ids": ["id"], "path": "comments/<id>/not_spam.json"},
     {"http_method": "post", "operation": "approve", "ids": ["id"], "path": "comments/<id>/approve.json"},
+    {"http_method": "post", "operation": "not_spam", "ids": ["id"], "path": "comments/<id>/not_spam.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "comments.json"},
     {"http_method": "post", "operation": "remove", "ids": ["id"], "path": "comments/<id>/remove.json"},
-    {"http_method": "post", "operation": "restore", "ids": ["id"], "path": "comments/<id>/restore.json"}
+    {"http_method": "post", "operation": "restore", "ids": ["id"], "path": "comments/<id>/restore.json"},
+    {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"}
   ];
 
   public static async find(
@@ -143,15 +143,15 @@ export class Comment extends Base {
     return response ? response.body : null;
   }
 
-  public async spam(
+  public async approve(
     {
       body = null,
       ...otherArgs
-    }: SpamArgs
+    }: ApproveArgs
   ): Promise<unknown> {
     const response = await Comment.request({
       http_method: "post",
-      operation: "spam",
+      operation: "approve",
       session: this.session,
       urlIds: {"id": this.id},
       params: {...otherArgs},
@@ -171,25 +171,6 @@ export class Comment extends Base {
     const response = await Comment.request({
       http_method: "post",
       operation: "not_spam",
-      session: this.session,
-      urlIds: {"id": this.id},
-      params: {...otherArgs},
-      body: body,
-      entity: this,
-    });
-
-    return response ? response.body : null;
-  }
-
-  public async approve(
-    {
-      body = null,
-      ...otherArgs
-    }: ApproveArgs
-  ): Promise<unknown> {
-    const response = await Comment.request({
-      http_method: "post",
-      operation: "approve",
       session: this.session,
       urlIds: {"id": this.id},
       params: {...otherArgs},
@@ -228,6 +209,25 @@ export class Comment extends Base {
     const response = await Comment.request({
       http_method: "post",
       operation: "restore",
+      session: this.session,
+      urlIds: {"id": this.id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async spam(
+    {
+      body = null,
+      ...otherArgs
+    }: SpamArgs
+  ): Promise<unknown> {
+    const response = await Comment.request({
+      http_method: "post",
+      operation: "spam",
       session: this.session,
       urlIds: {"id": this.id},
       params: {...otherArgs},

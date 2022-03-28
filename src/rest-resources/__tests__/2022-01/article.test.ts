@@ -15,7 +15,7 @@ describe('Article resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"articles": [{"id": 1051293780, "title": "Welcome to the world of tomorrow!", "created_at": "2013-11-06T19:00:00-05:00", "body_html": "Good news, everybody!", "blog_id": 241253187, "author": "dennis", "user_id": null, "published_at": null, "updated_at": "2022-02-03T17:14:40-05:00", "summary_html": null, "template_suffix": null, "handle": "welcome-to-the-world-of-tomorrow", "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293780"}, {"id": 989034056, "title": "Some crazy article I'm coming up with", "created_at": "2008-12-31T19:00:00-05:00", "body_html": "I have no idea what to write about, but it's going to rock!", "blog_id": 241253187, "author": "John", "user_id": null, "published_at": null, "updated_at": "2009-01-31T19:00:00-05:00", "summary_html": null, "template_suffix": null, "handle": "some-crazy-article-im-coming-up-with", "tags": "Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/989034056"}, {"id": 294160202, "title": "Just us bots here", "created_at": "2013-11-06T19:00:00-05:00", "body_html": "beep boop", "blog_id": 241253187, "author": "dennis", "user_id": null, "published_at": null, "updated_at": "2022-02-03T17:14:40-05:00", "summary_html": null, "template_suffix": null, "handle": "just-us-bots-here", "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/294160202"}, {"id": 134645308, "title": "get on the train now", "created_at": "2008-07-31T20:00:00-04:00", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "blog_id": 241253187, "author": "Dennis", "user_id": 548380009, "published_at": "2008-07-31T20:00:00-04:00", "updated_at": "2008-07-31T20:00:00-04:00", "summary_html": null, "template_suffix": null, "handle": "get-on-the-train-now", "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-02-03T17:14:40-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1643926480"}}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"articles": [{"id": 1051293780, "title": "Welcome to the world of tomorrow!", "created_at": "2013-11-06T19:00:00-05:00", "body_html": "Good news, everybody!", "blog_id": 241253187, "author": "dennis", "user_id": null, "published_at": null, "updated_at": "2022-03-11T11:02:04-05:00", "summary_html": null, "template_suffix": null, "handle": "welcome-to-the-world-of-tomorrow", "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293780"}, {"id": 989034056, "title": "Some crazy article I'm coming up with", "created_at": "2008-12-31T19:00:00-05:00", "body_html": "I have no idea what to write about, but it's going to rock!", "blog_id": 241253187, "author": "John", "user_id": null, "published_at": null, "updated_at": "2009-01-31T19:00:00-05:00", "summary_html": null, "template_suffix": null, "handle": "some-crazy-article-im-coming-up-with", "tags": "Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/989034056"}, {"id": 294160202, "title": "Just us bots here", "created_at": "2013-11-06T19:00:00-05:00", "body_html": "beep boop", "blog_id": 241253187, "author": "dennis", "user_id": null, "published_at": null, "updated_at": "2022-03-11T11:02:04-05:00", "summary_html": null, "template_suffix": null, "handle": "just-us-bots-here", "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/294160202"}, {"id": 134645308, "title": "get on the train now", "created_at": "2008-07-31T20:00:00-04:00", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "blog_id": 241253187, "author": "Dennis", "user_id": 548380009, "published_at": "2008-07-31T20:00:00-04:00", "updated_at": "2008-07-31T20:00:00-04:00", "summary_html": null, "template_suffix": null, "handle": "get-on-the-train-now", "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-03-11T11:02:04-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1647014524"}}]}));
 
     await Article.all({
       session: test_session,
@@ -33,7 +33,7 @@ describe('Article resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"articles": [{"id": 294160202, "title": "Just us bots here", "created_at": "2013-11-06T19:00:00-05:00", "body_html": "beep boop", "blog_id": 241253187, "author": "dennis", "user_id": null, "published_at": null, "updated_at": "2022-02-03T17:14:40-05:00", "summary_html": null, "template_suffix": null, "handle": "just-us-bots-here", "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/294160202"}, {"id": 989034056, "title": "Some crazy article I'm coming up with", "created_at": "2008-12-31T19:00:00-05:00", "body_html": "I have no idea what to write about, but it's going to rock!", "blog_id": 241253187, "author": "John", "user_id": null, "published_at": null, "updated_at": "2009-01-31T19:00:00-05:00", "summary_html": null, "template_suffix": null, "handle": "some-crazy-article-im-coming-up-with", "tags": "Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/989034056"}, {"id": 1051293780, "title": "Welcome to the world of tomorrow!", "created_at": "2013-11-06T19:00:00-05:00", "body_html": "Good news, everybody!", "blog_id": 241253187, "author": "dennis", "user_id": null, "published_at": null, "updated_at": "2022-02-03T17:14:40-05:00", "summary_html": null, "template_suffix": null, "handle": "welcome-to-the-world-of-tomorrow", "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293780"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"articles": [{"id": 294160202, "title": "Just us bots here", "created_at": "2013-11-06T19:00:00-05:00", "body_html": "beep boop", "blog_id": 241253187, "author": "dennis", "user_id": null, "published_at": null, "updated_at": "2022-03-11T11:02:04-05:00", "summary_html": null, "template_suffix": null, "handle": "just-us-bots-here", "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/294160202"}, {"id": 989034056, "title": "Some crazy article I'm coming up with", "created_at": "2008-12-31T19:00:00-05:00", "body_html": "I have no idea what to write about, but it's going to rock!", "blog_id": 241253187, "author": "John", "user_id": null, "published_at": null, "updated_at": "2009-01-31T19:00:00-05:00", "summary_html": null, "template_suffix": null, "handle": "some-crazy-article-im-coming-up-with", "tags": "Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/989034056"}, {"id": 1051293780, "title": "Welcome to the world of tomorrow!", "created_at": "2013-11-06T19:00:00-05:00", "body_html": "Good news, everybody!", "blog_id": 241253187, "author": "dennis", "user_id": null, "published_at": null, "updated_at": "2022-03-11T11:02:04-05:00", "summary_html": null, "template_suffix": null, "handle": "welcome-to-the-world-of-tomorrow", "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293780"}]}));
 
     await Article.all({
       session: test_session,
@@ -52,7 +52,7 @@ describe('Article resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293804, "title": "My new Article title", "created_at": "2022-02-03T17:24:24-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": "2011-03-24T11:45:47-04:00", "updated_at": "2022-02-03T17:24:24-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293804"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293786, "title": "My new Article title", "created_at": "2022-03-11T11:02:39-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": "2011-03-24T11:45:47-04:00", "updated_at": "2022-03-11T11:02:39-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293786"}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -74,7 +74,7 @@ describe('Article resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293805, "title": "My new Article title", "created_at": "2022-02-03T17:24:26-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": null, "updated_at": "2022-02-03T17:24:26-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293805"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293787, "title": "My new Article title", "created_at": "2022-03-11T11:02:41-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": null, "updated_at": "2022-03-11T11:02:41-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293787"}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -96,7 +96,7 @@ describe('Article resource', () => {
   });
 
   it('test_5', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293806, "title": "My new Article title", "created_at": "2022-02-03T17:24:27-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": "2011-03-24T11:45:47-04:00", "updated_at": "2022-02-03T17:24:27-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293806", "image": {"created_at": "2022-02-03T17:24:27-05:00", "alt": null, "width": 1, "height": 1, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/df3e567d6f16d040326c7a0ea29a4f41.gif?v=1643927067"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293788, "title": "My new Article title", "created_at": "2022-03-11T11:02:43-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": "2011-03-24T11:45:47-04:00", "updated_at": "2022-03-11T11:02:43-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293788", "image": {"created_at": "2022-03-11T11:02:43-05:00", "alt": null, "width": 1, "height": 1, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/df3e567d6f16d040326c7a0ea29a4f41.gif?v=1647014563"}}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -121,7 +121,7 @@ describe('Article resource', () => {
   });
 
   it('test_6', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293807, "title": "My new Article title", "created_at": "2022-02-03T17:24:29-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": "2011-03-24T11:45:47-04:00", "updated_at": "2022-02-03T17:24:29-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293807", "image": {"created_at": "2022-02-03T17:24:29-05:00", "alt": "Rails logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/rails_logo20220203-1526776-zvmlka.gif?v=1643927069"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293789, "title": "My new Article title", "created_at": "2022-03-11T11:02:44-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": "2011-03-24T11:45:47-04:00", "updated_at": "2022-03-11T11:02:44-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293789", "image": {"created_at": "2022-03-11T11:02:44-05:00", "alt": "Rails logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/rails_logo20220311-2376577-v0abf5.gif?v=1647014564"}}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -147,7 +147,7 @@ describe('Article resource', () => {
   });
 
   it('test_7', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293808, "title": "My new Article title", "created_at": "2022-02-03T17:24:31-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": "2011-03-24T11:45:47-04:00", "updated_at": "2022-02-03T17:24:31-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293808"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 1051293790, "title": "My new Article title", "created_at": "2022-03-11T11:02:46-05:00", "body_html": "<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>", "blog_id": 241253187, "author": "John Smith", "user_id": 548380009, "published_at": "2011-03-24T11:45:47-04:00", "updated_at": "2022-03-11T11:02:46-05:00", "summary_html": null, "template_suffix": null, "handle": "my-new-article-title", "tags": "Has Been Tagged, This Post", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/1051293790"}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -195,7 +195,7 @@ describe('Article resource', () => {
   });
 
   it('test_9', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 134645308, "title": "get on the train now", "created_at": "2008-07-31T20:00:00-04:00", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "blog_id": 241253187, "author": "Dennis", "user_id": 548380009, "published_at": "2008-07-31T20:00:00-04:00", "updated_at": "2008-07-31T20:00:00-04:00", "summary_html": null, "template_suffix": null, "handle": "get-on-the-train-now", "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-02-03T17:14:40-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1643926480"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"id": 134645308, "title": "get on the train now", "created_at": "2008-07-31T20:00:00-04:00", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "blog_id": 241253187, "author": "Dennis", "user_id": 548380009, "published_at": "2008-07-31T20:00:00-04:00", "updated_at": "2008-07-31T20:00:00-04:00", "summary_html": null, "template_suffix": null, "handle": "get-on-the-train-now", "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-03-11T11:02:04-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1647014524"}}}));
 
     await Article.find({
       session: test_session,
@@ -214,7 +214,7 @@ describe('Article resource', () => {
   });
 
   it('test_10', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "author": "Your name", "body_html": "<p>Look, I can even update through a web service.</p>", "published_at": "2011-03-24T11:45:47-04:00", "title": "My new Title", "handle": "get-on-the-train-now", "user_id": null, "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "updated_at": "2022-02-03T17:24:46-05:00", "summary_html": null, "template_suffix": null, "tags": "Tags, Updated, Will Be", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-02-03T17:14:40-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1643926480"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "author": "Your name", "body_html": "<p>Look, I can even update through a web service.</p>", "published_at": "2011-03-24T11:45:47-04:00", "title": "My new Title", "handle": "get-on-the-train-now", "user_id": null, "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "updated_at": "2022-03-11T11:02:58-05:00", "summary_html": null, "template_suffix": null, "tags": "Tags, Updated, Will Be", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-03-11T11:02:04-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1647014524"}}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -237,7 +237,7 @@ describe('Article resource', () => {
   });
 
   it('test_11', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "published_at": "2022-02-03T17:24:47-05:00", "title": "get on the train now", "handle": "get-on-the-train-now", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "author": "Dennis", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": 548380009, "updated_at": "2022-02-03T17:24:47-05:00", "summary_html": null, "template_suffix": null, "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-02-03T17:14:40-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1643926480"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "published_at": "2022-03-11T11:02:59-05:00", "title": "get on the train now", "handle": "get-on-the-train-now", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "author": "Dennis", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": 548380009, "updated_at": "2022-03-11T11:02:59-05:00", "summary_html": null, "template_suffix": null, "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-03-11T11:02:04-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1647014524"}}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -256,7 +256,7 @@ describe('Article resource', () => {
   });
 
   it('test_12', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "published_at": null, "title": "get on the train now", "handle": "get-on-the-train-now", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "author": "Dennis", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": 548380009, "updated_at": "2022-02-03T17:24:48-05:00", "summary_html": null, "template_suffix": null, "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-02-03T17:14:40-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1643926480"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "published_at": null, "title": "get on the train now", "handle": "get-on-the-train-now", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "author": "Dennis", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": 548380009, "updated_at": "2022-03-11T11:03:00-05:00", "summary_html": null, "template_suffix": null, "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-03-11T11:02:04-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1647014524"}}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -275,7 +275,7 @@ describe('Article resource', () => {
   });
 
   it('test_13', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "author": "Your name", "body_html": "<p>Look, I can even update through a web service.</p>", "published_at": "2011-03-24T11:45:47-04:00", "title": "My new Title", "updated_at": "2022-02-03T17:24:51-05:00", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": null, "summary_html": null, "template_suffix": null, "handle": "get-on-the-train-now", "tags": "Tags, Updated, Will Be", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-02-03T17:24:51-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/fd43f2c8883f6e9b680e3295fd990d2c.gif?v=1643927091"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "author": "Your name", "body_html": "<p>Look, I can even update through a web service.</p>", "published_at": "2011-03-24T11:45:47-04:00", "title": "My new Title", "updated_at": "2022-03-11T11:03:03-05:00", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": null, "summary_html": null, "template_suffix": null, "handle": "get-on-the-train-now", "tags": "Tags, Updated, Will Be", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-03-11T11:03:02-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/fd43f2c8883f6e9b680e3295fd990d2c.gif?v=1647014582"}}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -301,7 +301,7 @@ describe('Article resource', () => {
   });
 
   it('test_14', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "author": "Your name", "body_html": "<p>Look, I can even update through a web service.</p>", "published_at": "2011-03-24T11:45:47-04:00", "title": "My new Title", "handle": "get-on-the-train-now", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": null, "updated_at": "2022-02-03T17:24:53-05:00", "summary_html": null, "template_suffix": null, "tags": "Tags, Updated, Will Be", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-02-03T17:24:53-05:00", "alt": "Rails logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/rails_logo20220203-1526776-tp3xk9.gif?v=1643927093"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "author": "Your name", "body_html": "<p>Look, I can even update through a web service.</p>", "published_at": "2011-03-24T11:45:47-04:00", "title": "My new Title", "handle": "get-on-the-train-now", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": null, "updated_at": "2022-03-11T11:03:04-05:00", "summary_html": null, "template_suffix": null, "tags": "Tags, Updated, Will Be", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-03-11T11:03:04-05:00", "alt": "Rails logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/rails_logo20220311-2376577-nr6uso.gif?v=1647014584"}}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -327,7 +327,7 @@ describe('Article resource', () => {
   });
 
   it('test_15', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "updated_at": "2022-02-03T17:24:55-05:00", "id": 134645308, "title": "get on the train now", "created_at": "2008-07-31T20:00:00-04:00", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "author": "Dennis", "user_id": 548380009, "published_at": "2008-07-31T20:00:00-04:00", "summary_html": null, "template_suffix": null, "handle": "get-on-the-train-now", "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "updated_at": "2022-03-11T11:03:06-05:00", "id": 134645308, "title": "get on the train now", "created_at": "2008-07-31T20:00:00-04:00", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "author": "Dennis", "user_id": 548380009, "published_at": "2008-07-31T20:00:00-04:00", "summary_html": null, "template_suffix": null, "handle": "get-on-the-train-now", "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308"}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -346,7 +346,7 @@ describe('Article resource', () => {
   });
 
   it('test_16', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "title": "get on the train now", "handle": "get-on-the-train-now", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "author": "Dennis", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": 548380009, "published_at": "2008-07-31T20:00:00-04:00", "updated_at": "2022-02-03T17:24:57-05:00", "summary_html": null, "template_suffix": null, "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-02-03T17:14:40-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1643926480"}}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"article": {"blog_id": 241253187, "title": "get on the train now", "handle": "get-on-the-train-now", "body_html": "<p>Do <em>you</em> have an <strong>IPod</strong> yet?</p>", "author": "Dennis", "id": 134645308, "created_at": "2008-07-31T20:00:00-04:00", "user_id": 548380009, "published_at": "2008-07-31T20:00:00-04:00", "updated_at": "2022-03-11T11:03:07-05:00", "summary_html": null, "template_suffix": null, "tags": "Announcing", "admin_graphql_api_id": "gid://shopify/OnlineStoreArticle/134645308", "image": {"created_at": "2022-03-11T11:02:04-05:00", "alt": "iMac", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/articles/imac.jpg?v=1647014524"}}}));
 
     const article = new Article({session: test_session});
     article.blog_id = 241253187;
@@ -402,80 +402,6 @@ describe('Article resource', () => {
       domain,
       path: '/admin/api/2022-01/articles/authors.json',
       query: '',
-      headers,
-      data: null
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_19', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"tags": ["Announcing"]}));
-
-    await Article.tags({
-      session: test_session,
-      blog_id: 241253187,
-      limit: "1",
-      popular: "1",
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-01/blogs/241253187/articles/tags.json',
-      query: 'limit=1&popular=1',
-      headers,
-      data: null
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_20', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"tags": ["Announcing", "Mystery"]}));
-
-    await Article.tags({
-      session: test_session,
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-01/articles/tags.json',
-      query: '',
-      headers,
-      data: null
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_21', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"tags": ["Announcing", "Mystery"]}));
-
-    await Article.tags({
-      session: test_session,
-      blog_id: 241253187,
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-01/blogs/241253187/articles/tags.json',
-      query: '',
-      headers,
-      data: null
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_22', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"tags": ["Announcing"]}));
-
-    await Article.tags({
-      session: test_session,
-      limit: "1",
-      popular: "1",
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-01/articles/tags.json',
-      query: 'limit=1&popular=1',
       headers,
       data: null
     }).toMatchMadeHttpRequest();

@@ -53,13 +53,13 @@ export class SmartCollection extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "smart_collections.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "smart_collections.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "smart_collections/count.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "smart_collections/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "smart_collections/<id>.json"},
-    {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"}
+    {"http_method": "get", "operation": "count", "ids": [], "path": "smart_collections/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "smart_collections.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "smart_collections.json"},
+    {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"}
   ];
 
   public static async find(

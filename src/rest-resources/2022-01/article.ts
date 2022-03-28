@@ -33,6 +33,10 @@ interface AllArgs {
   author?: unknown;
   fields?: unknown;
 }
+interface AuthorsArgs {
+  [key: string]: unknown;
+  session: SessionInterface;
+}
 interface CountArgs {
   [key: string]: unknown;
   session: SessionInterface;
@@ -45,16 +49,9 @@ interface CountArgs {
   published_at_max?: unknown;
   published_status?: unknown;
 }
-interface AuthorsArgs {
-  [key: string]: unknown;
-  session: SessionInterface;
-}
 interface TagsArgs {
   [key: string]: unknown;
   session: SessionInterface;
-  blog_id?: number | string | null;
-  limit?: unknown;
-  popular?: unknown;
 }
 
 export class Article extends Base {
@@ -67,15 +64,14 @@ export class Article extends Base {
     "metafields": Metafield
   };
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
-    {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
-    {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
-    {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
     {"http_method": "get", "operation": "authors", "ids": [], "path": "articles/authors.json"},
-    {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
-    {"http_method": "get", "operation": "tags", "ids": [], "path": "articles/tags.json"}
+    {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
+    {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "get", "operation": "tags", "ids": [], "path": "articles/tags.json"},
+    {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
+    {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"}
   ];
 
   public static async find(
@@ -141,6 +137,25 @@ export class Article extends Base {
     return response as Article[];
   }
 
+  public static async authors(
+    {
+      session,
+      ...otherArgs
+    }: AuthorsArgs
+  ): Promise<unknown> {
+    const response = await Article.request({
+      http_method: "get",
+      operation: "authors",
+      session: session,
+      urlIds: {},
+      params: {...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
   public static async count(
     {
       session,
@@ -168,31 +183,9 @@ export class Article extends Base {
     return response ? response.body : null;
   }
 
-  public static async authors(
-    {
-      session,
-      ...otherArgs
-    }: AuthorsArgs
-  ): Promise<unknown> {
-    const response = await Article.request({
-      http_method: "get",
-      operation: "authors",
-      session: session,
-      urlIds: {},
-      params: {...otherArgs},
-      body: {},
-      entity: null,
-    });
-
-    return response ? response.body : null;
-  }
-
   public static async tags(
     {
       session,
-      blog_id = null,
-      limit = null,
-      popular = null,
       ...otherArgs
     }: TagsArgs
   ): Promise<unknown> {
@@ -200,8 +193,8 @@ export class Article extends Base {
       http_method: "get",
       operation: "tags",
       session: session,
-      urlIds: {"blog_id": blog_id},
-      params: {"limit": limit, "popular": popular, ...otherArgs},
+      urlIds: {},
+      params: {...otherArgs},
       body: {},
       entity: null,
     });

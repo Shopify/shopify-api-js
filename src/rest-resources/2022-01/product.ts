@@ -62,12 +62,12 @@ export class Product extends Base {
     "variants": Variant
   };
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "products.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "products/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "products/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "products.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "products/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "products/<id>.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"}
   ];
 
   public static async find(

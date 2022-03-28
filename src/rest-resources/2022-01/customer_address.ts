@@ -17,14 +17,14 @@ interface AllArgs {
   session: SessionInterface;
   customer_id?: number | string | null;
 }
+interface DefaultArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
 interface SetArgs {
   [key: string]: unknown;
   address_ids?: unknown[] | number | string | null;
   operation?: unknown;
-  body?: {[key: string]: unknown} | null;
-}
-interface DefaultArgs {
-  [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
 
@@ -36,13 +36,13 @@ export class CustomerAddress extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
-    {"http_method": "post", "operation": "post", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
-    {"http_method": "get", "operation": "get", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
-    {"http_method": "put", "operation": "set", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses/set.json"},
-    {"http_method": "put", "operation": "default", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>/default.json"}
+    {"http_method": "get", "operation": "get", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
+    {"http_method": "get", "operation": "get", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
+    {"http_method": "put", "operation": "default", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>/default.json"},
+    {"http_method": "put", "operation": "put", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
+    {"http_method": "put", "operation": "set", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses/set.json"}
   ];
 
   protected static getJsonBodyName(): string
@@ -99,6 +99,25 @@ export class CustomerAddress extends Base {
     return response as CustomerAddress[];
   }
 
+  public async default(
+    {
+      body = null,
+      ...otherArgs
+    }: DefaultArgs
+  ): Promise<unknown> {
+    const response = await CustomerAddress.request({
+      http_method: "put",
+      operation: "default",
+      session: this.session,
+      urlIds: {"id": this.id, "customer_id": this.customer_id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
   public async set(
     {
       address_ids = null,
@@ -113,25 +132,6 @@ export class CustomerAddress extends Base {
       session: this.session,
       urlIds: {"customer_id": this.customer_id},
       params: {"address_ids": address_ids, "operation": operation, ...otherArgs},
-      body: body,
-      entity: this,
-    });
-
-    return response ? response.body : null;
-  }
-
-  public async default(
-    {
-      body = null,
-      ...otherArgs
-    }: DefaultArgs
-  ): Promise<unknown> {
-    const response = await CustomerAddress.request({
-      http_method: "put",
-      operation: "default",
-      session: this.session,
-      urlIds: {"id": this.id, "customer_id": this.customer_id},
-      params: {...otherArgs},
       body: body,
       entity: this,
     });

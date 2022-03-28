@@ -15,17 +15,17 @@ describe('CancellationRequest resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_order": {"id": 1046000837, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "cancellation_requested", "status": "in_progress", "supported_actions": ["cancel_fulfillment_order", "create_fulfillment"], "destination": {"id": 1046000824, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@hostmail.com", "first_name": "Bob", "last_name": "Norman", "phone": "555-625-1199", "province": "Kentucky", "zip": "40202"}, "origin": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "line_items": [{"id": 1058737575, "shop_id": 548380009, "fulfillment_order_id": 1046000837, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "outgoing_requests": [], "fulfillment_service_handle": "shipwire-app"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_order": {"id": 1046000777, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "cancellation_requested", "status": "in_progress", "supported_actions": ["cancel_fulfillment_order", "create_fulfillment"], "destination": {"id": 1046000777, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@hostmail.com", "first_name": "Bob", "last_name": "Norman", "phone": "555-625-1199", "province": "Kentucky", "zip": "40202"}, "origin": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "line_items": [{"id": 1058737481, "shop_id": 548380009, "fulfillment_order_id": 1046000777, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "outgoing_requests": [], "fulfillment_service_handle": "shipwire-app"}}));
 
     const cancellation_request = new CancellationRequest({session: test_session});
-    cancellation_request.fulfillment_order_id = 1046000837;
+    cancellation_request.fulfillment_order_id = 1046000777;
     cancellation_request.message = "The customer changed his mind.";
     await cancellation_request.save({});
 
     expect({
       method: 'POST',
       domain,
-      path: '/admin/api/2021-07/fulfillment_orders/1046000837/cancellation_request.json',
+      path: '/admin/api/2021-07/fulfillment_orders/1046000777/cancellation_request.json',
       query: '',
       headers,
       data: { "cancellation_request": {"message": "The customer changed his mind."} }
@@ -33,10 +33,10 @@ describe('CancellationRequest resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_order": {"id": 1046000838, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "cancellation_accepted", "status": "cancelled", "supported_actions": ["request_fulfillment", "create_fulfillment"], "destination": {"id": 1046000825, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@hostmail.com", "first_name": "Bob", "last_name": "Norman", "phone": "555-625-1199", "province": "Kentucky", "zip": "40202"}, "origin": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "line_items": [{"id": 1058737576, "shop_id": 548380009, "fulfillment_order_id": 1046000838, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "outgoing_requests": [], "fulfillment_service_handle": "shipwire-app"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_order": {"id": 1046000778, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "cancellation_accepted", "status": "cancelled", "supported_actions": ["request_fulfillment", "create_fulfillment"], "destination": {"id": 1046000778, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@hostmail.com", "first_name": "Bob", "last_name": "Norman", "phone": "555-625-1199", "province": "Kentucky", "zip": "40202"}, "origin": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "line_items": [{"id": 1058737482, "shop_id": 548380009, "fulfillment_order_id": 1046000778, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "outgoing_requests": [], "fulfillment_service_handle": "shipwire-app"}}));
 
     const cancellation_request = new CancellationRequest({session: test_session});
-    cancellation_request.fulfillment_order_id = 1046000838;
+    cancellation_request.fulfillment_order_id = 1046000778;
     await cancellation_request.accept({
       body: {"cancellation_request": {"message": "We had not started any processing yet."}},
     });
@@ -44,7 +44,7 @@ describe('CancellationRequest resource', () => {
     expect({
       method: 'POST',
       domain,
-      path: '/admin/api/2021-07/fulfillment_orders/1046000838/cancellation_request/accept.json',
+      path: '/admin/api/2021-07/fulfillment_orders/1046000778/cancellation_request/accept.json',
       query: '',
       headers,
       data: { "cancellation_request": {"message": "We had not started any processing yet."} }
@@ -52,10 +52,10 @@ describe('CancellationRequest resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_order": {"id": 1046000839, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "cancellation_rejected", "status": "in_progress", "supported_actions": ["create_fulfillment"], "destination": {"id": 1046000826, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@hostmail.com", "first_name": "Bob", "last_name": "Norman", "phone": "555-625-1199", "province": "Kentucky", "zip": "40202"}, "origin": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "line_items": [{"id": 1058737577, "shop_id": 548380009, "fulfillment_order_id": 1046000839, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "outgoing_requests": [], "fulfillment_service_handle": "shipwire-app"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_order": {"id": 1046000779, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "cancellation_rejected", "status": "in_progress", "supported_actions": ["create_fulfillment"], "destination": {"id": 1046000779, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@hostmail.com", "first_name": "Bob", "last_name": "Norman", "phone": "555-625-1199", "province": "Kentucky", "zip": "40202"}, "origin": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "line_items": [{"id": 1058737483, "shop_id": 548380009, "fulfillment_order_id": 1046000779, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "outgoing_requests": [], "fulfillment_service_handle": "shipwire-app"}}));
 
     const cancellation_request = new CancellationRequest({session: test_session});
-    cancellation_request.fulfillment_order_id = 1046000839;
+    cancellation_request.fulfillment_order_id = 1046000779;
     await cancellation_request.reject({
       body: {"cancellation_request": {"message": "We have already send the shipment out."}},
     });
@@ -63,7 +63,7 @@ describe('CancellationRequest resource', () => {
     expect({
       method: 'POST',
       domain,
-      path: '/admin/api/2021-07/fulfillment_orders/1046000839/cancellation_request/reject.json',
+      path: '/admin/api/2021-07/fulfillment_orders/1046000779/cancellation_request/reject.json',
       query: '',
       headers,
       data: { "cancellation_request": {"message": "We have already send the shipment out."} }

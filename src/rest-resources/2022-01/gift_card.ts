@@ -40,13 +40,13 @@ export class GiftCard extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "gift_cards/search.json"},
     {"http_method": "post", "operation": "disable", "ids": ["id"], "path": "gift_cards/<id>/disable.json"},
-    {"http_method": "get", "operation": "search", "ids": [], "path": "gift_cards/search.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"}
   ];
 
   public static async find(

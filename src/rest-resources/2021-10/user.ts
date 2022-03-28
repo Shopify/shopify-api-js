@@ -25,9 +25,9 @@ export class User extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "current", "ids": [], "path": "users/current.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "users.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "users/<id>.json"},
-    {"http_method": "get", "operation": "current", "ids": [], "path": "users/current.json"}
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "users/<id>.json"}
   ];
 
   public static async find(

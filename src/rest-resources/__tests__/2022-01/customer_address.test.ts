@@ -52,7 +52,7 @@ describe('CustomerAddress resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"customer_address": {"id": 1053317334, "customer_id": 207119551, "first_name": "Samuel", "last_name": "de Champlain", "company": "Fancy Co.", "address1": "1 Rue des Carrieres", "address2": "Suite 1234", "city": "Montreal", "province": "Quebec", "country": "Canada", "zip": "G1R 4P5", "phone": "819-555-5555", "name": "Samuel de Champlain", "province_code": "QC", "country_code": "CA", "country_name": "Canada", "default": false}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"customer_address": {"id": 1053317287, "customer_id": 207119551, "first_name": "Samuel", "last_name": "de Champlain", "company": "Fancy Co.", "address1": "1 Rue des Carrieres", "address2": "Suite 1234", "city": "Montreal", "province": "Quebec", "country": "Canada", "zip": "G1R 4P5", "phone": "819-555-5555", "name": "Samuel de Champlain", "province_code": "QC", "country_code": "CA", "country_name": "Canada", "default": false}}));
 
     const customer_address = new CustomerAddress({session: test_session});
     customer_address.customer_id = 207119551;
@@ -126,13 +126,13 @@ describe('CustomerAddress resource', () => {
     await CustomerAddress.delete({
       session: test_session,
       customer_id: 207119551,
-      id: 1053317335,
+      id: 1053317288,
     });
 
     expect({
       method: 'DELETE',
       domain,
-      path: '/admin/api/2022-01/customers/207119551/addresses/1053317335.json',
+      path: '/admin/api/2022-01/customers/207119551/addresses/1053317288.json',
       query: '',
       headers,
       data: null
@@ -145,7 +145,7 @@ describe('CustomerAddress resource', () => {
     const customer_address = new CustomerAddress({session: test_session});
     customer_address.customer_id = 207119551;
     await customer_address.set({
-      address_ids: ["1053317336"],
+      address_ids: ["1053317289"],
       operation: "destroy",
     });
 
@@ -153,24 +153,24 @@ describe('CustomerAddress resource', () => {
       method: 'PUT',
       domain,
       path: '/admin/api/2022-01/customers/207119551/addresses/set.json',
-      query: 'address_ids%5B%5D=1053317336&operation=destroy',
+      query: 'address_ids%5B%5D=1053317289&operation=destroy',
       headers,
       data: null
     }).toMatchMadeHttpRequest();
   });
 
   it('test_8', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"customer_address": {"id": 1053317337, "customer_id": 207119551, "first_name": "Bob", "last_name": "Norman", "company": null, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "province": "Kentucky", "country": "United States", "zip": "40202", "phone": "555-625-1199", "name": "Bob Norman", "province_code": "KY", "country_code": "US", "country_name": "United States", "default": true}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"customer_address": {"id": 1053317290, "customer_id": 207119551, "first_name": "Bob", "last_name": "Norman", "company": null, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "province": "Kentucky", "country": "United States", "zip": "40202", "phone": "555-625-1199", "name": "Bob Norman", "province_code": "KY", "country_code": "US", "country_name": "United States", "default": true}}));
 
     const customer_address = new CustomerAddress({session: test_session});
     customer_address.customer_id = 207119551;
-    customer_address.id = 1053317337;
+    customer_address.id = 1053317290;
     await customer_address.default({});
 
     expect({
       method: 'PUT',
       domain,
-      path: '/admin/api/2022-01/customers/207119551/addresses/1053317337/default.json',
+      path: '/admin/api/2022-01/customers/207119551/addresses/1053317290/default.json',
       query: '',
       headers,
       data: null
