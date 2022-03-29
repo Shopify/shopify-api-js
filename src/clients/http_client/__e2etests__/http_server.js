@@ -1,4 +1,4 @@
-/* global process */
+/* global process, console */
 // import http from 'http';
 const http = require('http');
 

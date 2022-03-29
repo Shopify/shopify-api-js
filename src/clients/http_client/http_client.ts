@@ -12,6 +12,8 @@ import {
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
+import runningNetworkTests from '../../utils/network-tests';
+import platform from '../../utils/platform';
 import {Context, LOG_SEVERITY} from '../../context';
 import ProcessedQuery from '../../utils/processed-query';
 
@@ -78,7 +80,7 @@ class HttpClient {
 
     const extraHeaders = params.extraHeaders ?? {};
 
-    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
+    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | ${platform()}`;
 
     if (Context.USER_AGENT_PREFIX) {
       userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
@@ -117,7 +119,7 @@ class HttpClient {
         }
         headers = {
           'Content-Type': type,
-          'Content-Length': Buffer.byteLength(body as string).toString(),
+          'Content-Length': (body as string).length.toString(),
           ...extraHeaders,
         };
       }
@@ -127,7 +129,7 @@ class HttpClient {
     if (query.length > 0) {
       query = `?${query}`;
     }
-    const schema = process.env.E2ETESTS === '1' ? 'http' : 'https';
+    const schema = runningNetworkTests() ? 'http' : 'https';
     const url = `${schema}://${this.domain}${this.getRequestPath(
       params.path,
     )}${query}`;
