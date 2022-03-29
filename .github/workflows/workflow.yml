@@ -14,5 +14,7 @@ jobs:
         run: yarn lint
       - name: Test
         run: yarn test
+      - name: Test network adapters
+        run: yarn e2etests:test
       # - name: Test REST resources
       #   run: yarn test_rest_resources
