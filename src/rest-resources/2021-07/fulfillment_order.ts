@@ -42,8 +42,8 @@ export class FulfillmentOrder extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_orders/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
     {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillment_orders/<id>/cancel.json"},
     {"http_method": "post", "operation": "close", "ids": ["id"], "path": "fulfillment_orders/<id>/close.json"},
     {"http_method": "post", "operation": "move", "ids": ["id"], "path": "fulfillment_orders/<id>/move.json"},

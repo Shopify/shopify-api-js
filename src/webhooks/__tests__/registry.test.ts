@@ -178,21 +178,6 @@ describe('ShopifyWebhooks.Registry.register', () => {
     expect(webhook[topic].result).toEqual({});
   });
 
-  it('throws if a pubsub webhook is registered with an unsupported API version', async () => {
-    expect(async () => {
-      Context.API_VERSION = ApiVersion.April21;
-
-      const topic = 'PRODUCTS_CREATE';
-      await registerWebhook({
-        topic,
-        path: 'pubsub://my-project-id:my-new-topic-id',
-        checkMockResponse: webhookCheckEmptyResponse,
-        deliveryMethod: DeliveryMethod.PubSub,
-        expectRegistrationQuery: false,
-      });
-    }).rejects.toThrow(ShopifyErrors.UnsupportedClientType);
-  });
-
   it('fails if given an invalid DeliveryMethod', async () => {
     fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
     fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));

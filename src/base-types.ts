@@ -16,7 +16,6 @@ export interface ContextParams {
 }
 
 export enum ApiVersion {
-  April21 = '2021-04',
   July21 = '2021-07',
   October21 = '2021-10',
   January22 = '2022-01',

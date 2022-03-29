@@ -52,14 +52,14 @@ export class DraftOrder extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "post", "operation": "post", "ids": [], "path": "draft_orders.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "draft_orders/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "draft_orders.json"},
     {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
-    {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"}
+    {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"}
   ];
 
   public static async find(

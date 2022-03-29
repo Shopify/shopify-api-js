@@ -20,6 +20,13 @@ interface CloseArgs {
   message?: unknown;
   body?: {[key: string]: unknown} | null;
 }
+interface HoldArgs {
+  [key: string]: unknown;
+  reason?: unknown;
+  reason_notes?: unknown;
+  notify_merchant?: unknown;
+  body?: {[key: string]: unknown} | null;
+}
 interface MoveArgs {
   [key: string]: unknown;
   new_location_id?: unknown;
@@ -29,18 +36,11 @@ interface OpenArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
-interface RescheduleArgs {
-  [key: string]: unknown;
-  body?: {[key: string]: unknown} | null;
-}
-interface HoldArgs {
-  [key: string]: unknown;
-  reason?: unknown;
-  reason_notes?: unknown;
-  notify_merchant?: unknown;
-  body?: {[key: string]: unknown} | null;
-}
 interface ReleaseHoldArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
+interface RescheduleArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
@@ -53,15 +53,15 @@ export class FulfillmentOrder extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_orders/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
     {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillment_orders/<id>/cancel.json"},
     {"http_method": "post", "operation": "close", "ids": ["id"], "path": "fulfillment_orders/<id>/close.json"},
+    {"http_method": "post", "operation": "hold", "ids": ["id"], "path": "fulfillment_orders/<id>/hold.json"},
     {"http_method": "post", "operation": "move", "ids": ["id"], "path": "fulfillment_orders/<id>/move.json"},
     {"http_method": "post", "operation": "open", "ids": ["id"], "path": "fulfillment_orders/<id>/open.json"},
-    {"http_method": "post", "operation": "reschedule", "ids": ["id"], "path": "fulfillment_orders/<id>/reschedule.json"},
-    {"http_method": "post", "operation": "hold", "ids": ["id"], "path": "fulfillment_orders/<id>/hold.json"},
-    {"http_method": "post", "operation": "release_hold", "ids": ["id"], "path": "fulfillment_orders/<id>/release_hold.json"}
+    {"http_method": "post", "operation": "release_hold", "ids": ["id"], "path": "fulfillment_orders/<id>/release_hold.json"},
+    {"http_method": "post", "operation": "reschedule", "ids": ["id"], "path": "fulfillment_orders/<id>/reschedule.json"}
   ];
 
   public static async find(
@@ -133,6 +133,28 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
+  public async hold(
+    {
+      reason = null,
+      reason_notes = null,
+      notify_merchant = null,
+      body = null,
+      ...otherArgs
+    }: HoldArgs
+  ): Promise<unknown> {
+    const response = await FulfillmentOrder.request({
+      http_method: "post",
+      operation: "hold",
+      session: this.session,
+      urlIds: {"id": this.id},
+      params: {"reason": reason, "reason_notes": reason_notes, "notify_merchant": notify_merchant, ...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
   public async move(
     {
       new_location_id = null,
@@ -172,15 +194,15 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async reschedule(
+  public async release_hold(
     {
       body = null,
       ...otherArgs
-    }: RescheduleArgs
+    }: ReleaseHoldArgs
   ): Promise<unknown> {
     const response = await FulfillmentOrder.request({
       http_method: "post",
-      operation: "reschedule",
+      operation: "release_hold",
       session: this.session,
       urlIds: {"id": this.id},
       params: {...otherArgs},
@@ -191,37 +213,15 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async hold(
-    {
-      reason = null,
-      reason_notes = null,
-      notify_merchant = null,
-      body = null,
-      ...otherArgs
-    }: HoldArgs
-  ): Promise<unknown> {
-    const response = await FulfillmentOrder.request({
-      http_method: "post",
-      operation: "hold",
-      session: this.session,
-      urlIds: {"id": this.id},
-      params: {"reason": reason, "reason_notes": reason_notes, "notify_merchant": notify_merchant, ...otherArgs},
-      body: body,
-      entity: this,
-    });
-
-    return response ? response.body : null;
-  }
-
-  public async release_hold(
+  public async reschedule(
     {
       body = null,
       ...otherArgs
-    }: ReleaseHoldArgs
+    }: RescheduleArgs
   ): Promise<unknown> {
     const response = await FulfillmentOrder.request({
       http_method: "post",
-      operation: "release_hold",
+      operation: "reschedule",
       session: this.session,
       urlIds: {"id": this.id},
       params: {...otherArgs},

@@ -15,7 +15,7 @@ describe('Image resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"images": [{"id": 850703190, "product_id": 632910392, "position": 1, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1643925216", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}, {"id": 562641783, "product_id": 632910392, "position": 2, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano-2.png?v=1643925216", "variant_ids": [808950810], "admin_graphql_api_id": "gid://shopify/ProductImage/562641783"}, {"id": 378407906, "product_id": 632910392, "position": 3, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1643925216", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/378407906"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"images": [{"id": 850703190, "product_id": 632910392, "position": 1, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:02:04-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1647014524", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}, {"id": 562641783, "product_id": 632910392, "position": 2, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:02:04-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano-2.png?v=1647014524", "variant_ids": [808950810], "admin_graphql_api_id": "gid://shopify/ProductImage/562641783"}, {"id": 378407906, "product_id": 632910392, "position": 3, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:02:04-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1647014524", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/378407906"}]}));
 
     await Image.all({
       session: test_session,
@@ -33,7 +33,7 @@ describe('Image resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"images": [{"id": 1001473915, "product_id": 632910392, "position": 4, "created_at": "2022-02-03T17:08:04-05:00", "updated_at": "2022-02-03T17:08:04-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1643926084", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473915"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"images": [{"id": 1001473896, "product_id": 632910392, "position": 4, "created_at": "2022-03-11T11:16:36-05:00", "updated_at": "2022-03-11T11:16:36-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1647015396", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473896"}]}));
 
     await Image.all({
       session: test_session,
@@ -52,7 +52,7 @@ describe('Image resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 1001473921, "product_id": 632910392, "position": 4, "created_at": "2022-02-03T17:08:19-05:00", "updated_at": "2022-02-03T17:08:19-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1643926099", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473921"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 1001473902, "product_id": 632910392, "position": 4, "created_at": "2022-03-11T11:16:51-05:00", "updated_at": "2022-03-11T11:16:51-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1647015411", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473902"}}));
 
     const image = new Image({session: test_session});
     image.product_id = 632910392;
@@ -71,7 +71,7 @@ describe('Image resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 1001473922, "product_id": 632910392, "position": 4, "created_at": "2022-02-03T17:08:21-05:00", "updated_at": "2022-02-03T17:08:21-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo20220203-1526776-st8564.gif?v=1643926101", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473922"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 1001473903, "product_id": 632910392, "position": 4, "created_at": "2022-03-11T11:16:52-05:00", "updated_at": "2022-03-11T11:16:52-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo20220311-2376577-d1t024.gif?v=1647015412", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473903"}}));
 
     const image = new Image({session: test_session});
     image.product_id = 632910392;
@@ -89,7 +89,7 @@ describe('Image resource', () => {
   });
 
   it('test_5', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"position": 1, "width": 110, "height": 140, "alt": null, "id": 1001473923, "product_id": 632910392, "created_at": "2022-02-03T17:08:22-05:00", "updated_at": "2022-02-03T17:08:22-05:00", "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1643926102", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473923"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"position": 1, "width": 110, "height": 140, "alt": null, "id": 1001473904, "product_id": 632910392, "created_at": "2022-03-11T11:16:53-05:00", "updated_at": "2022-03-11T11:16:53-05:00", "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1647015413", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473904"}}));
 
     const image = new Image({session: test_session});
     image.product_id = 632910392;
@@ -109,7 +109,7 @@ describe('Image resource', () => {
   });
 
   it('test_6', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 1001473924, "product_id": 632910392, "position": 4, "created_at": "2022-02-03T17:08:24-05:00", "updated_at": "2022-02-03T17:08:24-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1643926104", "variant_ids": [457924702, 808950810], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473924"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 1001473905, "product_id": 632910392, "position": 4, "created_at": "2022-03-11T11:16:55-05:00", "updated_at": "2022-03-11T11:16:55-05:00", "alt": null, "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1647015415", "variant_ids": [457924702, 808950810], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473905"}}));
 
     const image = new Image({session: test_session});
     image.product_id = 632910392;
@@ -132,7 +132,7 @@ describe('Image resource', () => {
   });
 
   it('test_7', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"width": 110, "height": 140, "position": 1, "alt": null, "id": 1001473925, "product_id": 632910392, "created_at": "2022-02-03T17:08:26-05:00", "updated_at": "2022-02-03T17:08:26-05:00", "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1643926106", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473925"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"width": 110, "height": 140, "position": 1, "alt": null, "id": 1001473906, "product_id": 632910392, "created_at": "2022-03-11T11:16:56-05:00", "updated_at": "2022-03-11T11:16:56-05:00", "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/rails_logo.gif?v=1647015416", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/1001473906"}}));
 
     const image = new Image({session: test_session});
     image.product_id = 632910392;
@@ -197,7 +197,7 @@ describe('Image resource', () => {
   });
 
   it('test_10', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 850703190, "product_id": 632910392, "position": 1, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1643925216", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 850703190, "product_id": 632910392, "position": 1, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:02:04-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1647014524", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}}));
 
     await Image.find({
       session: test_session,
@@ -216,7 +216,7 @@ describe('Image resource', () => {
   });
 
   it('test_11', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 850703190, "product_id": 632910392, "position": 2, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T17:08:32-05:00", "alt": "new alt tag content", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1643926112", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 850703190, "product_id": 632910392, "position": 2, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:17:01-05:00", "alt": "new alt tag content", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1647015421", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}}));
 
     const image = new Image({session: test_session});
     image.product_id = 632910392;
@@ -236,7 +236,7 @@ describe('Image resource', () => {
   });
 
   it('test_12', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 850703190, "product_id": 632910392, "position": 1, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1643925216", "variant_ids": [457924702, 808950810], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"id": 850703190, "product_id": 632910392, "position": 1, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:02:04-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1647014524", "variant_ids": [457924702, 808950810], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}}));
 
     const image = new Image({session: test_session});
     image.product_id = 632910392;
@@ -258,7 +258,7 @@ describe('Image resource', () => {
   });
 
   it('test_13', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"image": {"updated_at": "2022-02-03T17:08:35-05:00", "id": 850703190, "product_id": 632910392, "position": 1, "created_at": "2022-02-03T16:53:36-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1643926115", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"image": {"updated_at": "2022-03-11T11:17:04-05:00", "id": 850703190, "product_id": 632910392, "position": 1, "created_at": "2022-03-11T11:02:04-05:00", "alt": null, "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1647015424", "variant_ids": [], "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"}}));
 
     const image = new Image({session: test_session});
     image.product_id = 632910392;

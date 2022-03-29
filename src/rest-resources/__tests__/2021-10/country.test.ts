@@ -50,7 +50,7 @@ describe('Country resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"country": {"id": 1070231513, "name": "France", "code": "FR", "tax_name": "TVA", "tax": 0.2, "provinces": []}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"country": {"id": 1070231510, "name": "France", "code": "FR", "tax_name": "TVA", "tax": 0.2, "provinces": []}}));
 
     const country = new Country({session: test_session});
     country.code = "FR";
@@ -67,7 +67,7 @@ describe('Country resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"country": {"id": 1070231514, "name": "France", "code": "FR", "tax_name": "TVA", "tax": 0.2, "provinces": []}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"country": {"id": 1070231511, "name": "France", "code": "FR", "tax_name": "TVA", "tax": 0.2, "provinces": []}}));
 
     const country = new Country({session: test_session});
     country.code = "FR";

@@ -46,9 +46,9 @@ export class InventoryLevel extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": [], "path": "inventory_levels.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_levels.json"},
     {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
-    {"http_method": "delete", "operation": "delete", "ids": [], "path": "inventory_levels.json"},
     {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
     {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
   ];

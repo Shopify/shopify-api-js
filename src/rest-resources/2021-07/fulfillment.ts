@@ -11,8 +11,8 @@ interface FindArgs {
 interface AllArgs {
   [key: string]: unknown;
   session: SessionInterface;
-  order_id?: number | string | null;
   fulfillment_order_id?: number | string | null;
+  order_id?: number | string | null;
   created_at_max?: unknown;
   created_at_min?: unknown;
   fields?: unknown;
@@ -30,7 +30,7 @@ interface CountArgs {
   updated_at_min?: unknown;
   updated_at_max?: unknown;
 }
-interface UpdateTrackingArgs {
+interface CancelArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
@@ -42,7 +42,7 @@ interface OpenArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
-interface CancelArgs {
+interface UpdateTrackingArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
@@ -55,18 +55,18 @@ export class Fulfillment extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
-    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
-    {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
     {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
-    {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"},
+    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillments/<id>/cancel.json"},
+    {"http_method": "post", "operation": "cancel", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/cancel.json"},
     {"http_method": "post", "operation": "complete", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/complete.json"},
     {"http_method": "post", "operation": "open", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/open.json"},
-    {"http_method": "post", "operation": "cancel", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/cancel.json"},
-    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillments/<id>/cancel.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
+    {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"},
+    {"http_method": "put", "operation": "put", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"}
   ];
 
   public static async find(
@@ -88,8 +88,8 @@ export class Fulfillment extends Base {
   public static async all(
     {
       session,
-      order_id = null,
       fulfillment_order_id = null,
+      order_id = null,
       created_at_max = null,
       created_at_min = null,
       fields = null,
@@ -102,7 +102,7 @@ export class Fulfillment extends Base {
   ): Promise<Fulfillment[]> {
     const response = await Fulfillment.baseFind({
       session: session,
-      urlIds: {"order_id": order_id, "fulfillment_order_id": fulfillment_order_id},
+      urlIds: {"fulfillment_order_id": fulfillment_order_id, "order_id": order_id},
       params: {"created_at_max": created_at_max, "created_at_min": created_at_min, "fields": fields, "limit": limit, "since_id": since_id, "updated_at_max": updated_at_max, "updated_at_min": updated_at_min, ...otherArgs},
     });
 
@@ -133,17 +133,17 @@ export class Fulfillment extends Base {
     return response ? response.body : null;
   }
 
-  public async update_tracking(
+  public async cancel(
     {
       body = null,
       ...otherArgs
-    }: UpdateTrackingArgs
+    }: CancelArgs
   ): Promise<unknown> {
     const response = await Fulfillment.request({
       http_method: "post",
-      operation: "update_tracking",
+      operation: "cancel",
       session: this.session,
-      urlIds: {"id": this.id},
+      urlIds: {"id": this.id, "order_id": this.order_id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -190,17 +190,17 @@ export class Fulfillment extends Base {
     return response ? response.body : null;
   }
 
-  public async cancel(
+  public async update_tracking(
     {
       body = null,
       ...otherArgs
-    }: CancelArgs
+    }: UpdateTrackingArgs
   ): Promise<unknown> {
     const response = await Fulfillment.request({
       http_method: "post",
-      operation: "cancel",
+      operation: "update_tracking",
       session: this.session,
-      urlIds: {"id": this.id, "order_id": this.order_id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

@@ -15,7 +15,7 @@ describe('Metafield resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 721389482, "namespace": "affiliates", "key": "app_key", "value": "app_key", "value_type": "string", "description": null, "owner_id": 548380009, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "owner_resource": "shop", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 721389482, "namespace": "affiliates", "key": "app_key", "value": "app_key", "value_type": "string", "description": null, "owner_id": 548380009, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:02:04-05:00", "owner_resource": "shop", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}]}));
 
     await Metafield.all({
       session: test_session,
@@ -32,7 +32,7 @@ describe('Metafield resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 1063298241, "namespace": "inventory", "key": "warehouse", "value": 25, "value_type": "integer", "description": null, "owner_id": 548380009, "created_at": "2022-02-03T17:01:04-05:00", "updated_at": "2022-02-03T17:01:04-05:00", "owner_resource": "shop", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/1063298241"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 1063298190, "namespace": "inventory", "key": "warehouse", "value": 25, "value_type": "integer", "description": null, "owner_id": 548380009, "created_at": "2022-03-11T11:14:56-05:00", "updated_at": "2022-03-11T11:14:56-05:00", "owner_resource": "shop", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/1063298190"}]}));
 
     await Metafield.all({
       session: test_session,
@@ -50,7 +50,7 @@ describe('Metafield resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"id": 1063298244, "namespace": "inventory", "key": "warehouse", "value": 25, "value_type": "integer", "description": null, "owner_id": 548380009, "created_at": "2022-02-03T17:01:25-05:00", "updated_at": "2022-02-03T17:01:25-05:00", "owner_resource": "shop", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/1063298244"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"id": 1063298193, "namespace": "inventory", "key": "warehouse", "value": 25, "value_type": "integer", "description": null, "owner_id": 548380009, "created_at": "2022-03-11T11:15:11-05:00", "updated_at": "2022-03-11T11:15:11-05:00", "owner_resource": "shop", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/1063298193"}}));
 
     const metafield = new Metafield({session: test_session});
     metafield.namespace = "inventory";
@@ -70,7 +70,7 @@ describe('Metafield resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 625663657, "namespace": "translation", "key": "title_fr", "value": "tbn", "description": "French product image title", "owner_id": 850703190, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "owner_resource": "product_image", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/625663657"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 625663657, "namespace": "translation", "key": "title_fr", "value": "tbn", "description": "French product image title", "owner_id": 850703190, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:02:04-05:00", "owner_resource": "product_image", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/625663657"}]}));
 
     await Metafield.all({
       session: test_session,
@@ -105,7 +105,7 @@ describe('Metafield resource', () => {
   });
 
   it('test_6', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"id": 721389482, "namespace": "affiliates", "key": "app_key", "value": "app_key", "value_type": "string", "description": null, "owner_id": 548380009, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "owner_resource": "shop", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"id": 721389482, "namespace": "affiliates", "key": "app_key", "value": "app_key", "value_type": "string", "description": null, "owner_id": 548380009, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:02:04-05:00", "owner_resource": "shop", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}}));
 
     await Metafield.find({
       session: test_session,
@@ -123,7 +123,7 @@ describe('Metafield resource', () => {
   });
 
   it('test_7', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"value": "something new", "value_type": "string", "namespace": "affiliates", "key": "app_key", "id": 721389482, "description": null, "owner_id": 548380009, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T17:01:32-05:00", "owner_resource": "shop", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"value": "something new", "value_type": "string", "namespace": "affiliates", "key": "app_key", "id": 721389482, "description": null, "owner_id": 548380009, "created_at": "2022-03-11T11:02:04-05:00", "updated_at": "2022-03-11T11:15:17-05:00", "owner_resource": "shop", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}}));
 
     const metafield = new Metafield({session: test_session});
     metafield.id = 721389482;

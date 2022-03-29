@@ -30,10 +30,10 @@ export class RecurringApplicationCharge extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "post", "operation": "post", "ids": [], "path": "recurring_application_charges.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "recurring_application_charges.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "recurring_application_charges.json"},
     {"http_method": "put", "operation": "customize", "ids": ["id"], "path": "recurring_application_charges/<id>/customize.json"}
   ];
 

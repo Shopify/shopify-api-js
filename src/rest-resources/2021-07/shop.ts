@@ -86,6 +86,7 @@ export class Shop extends Base {
   public tax_shipping: string | null;
   public taxes_included: string | null;
   public timezone: string | null;
+  public transactional_sms_disabled: boolean | null;
   public updated_at: string | null;
   public weight_unit: string | null;
   public zip: string | null;

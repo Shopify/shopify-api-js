@@ -50,7 +50,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"id": 984542201, "path": "/ipod", "target": "/pages/itunes"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"id": 984542199, "path": "/ipod", "target": "/pages/itunes"}}));
 
     const redirect = new Redirect({session: test_session});
     redirect.path = "/ipod";
@@ -68,7 +68,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"id": 984542202, "path": "/forums", "target": "http://forums.apple.com/"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"id": 984542200, "path": "/forums", "target": "http://forums.apple.com/"}}));
 
     const redirect = new Redirect({session: test_session});
     redirect.path = "http://www.apple.com/forums";

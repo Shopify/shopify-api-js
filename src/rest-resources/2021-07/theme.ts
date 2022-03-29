@@ -25,11 +25,11 @@ export class Theme extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "themes/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "themes.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "themes.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "themes/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "themes/<id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "themes/<id>.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "themes.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "themes/<id>.json"}
   ];
 
   public static async find(

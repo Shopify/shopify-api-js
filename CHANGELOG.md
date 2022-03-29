@@ -9,6 +9,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- ⚠️ [Breaking] Removing API version `2021-04` [#343](https://github.com/Shopify/shopify-node-api/pull/343)
 - ⚠️ [Breaking] The `HttpResponseError` error and its flavours (all returned from HTTP requests) have been slightly altered:
   - They now take in a hash of values, and will always include the response code, body (as a string if the response is not JSON), and headers
   - All response fields are now contained within a `response` object, to make it easier to access them

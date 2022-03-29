@@ -47,12 +47,12 @@ export class CustomCollection extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "custom_collections.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "custom_collections.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "custom_collections/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "custom_collections/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "custom_collections.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "custom_collections/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "custom_collections/<id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "custom_collections/<id>.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "custom_collections.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "custom_collections/<id>.json"}
   ];
 
   public static async find(
