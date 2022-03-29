@@ -1,4 +1,4 @@
-import runningNetworkTests from "./network-tests";
+import runningNetworkTests from './network-tests';
 
 /**
  * Validates myshopify.com urls

@@ -79,6 +79,7 @@ describe('REST client', () => {
       method: 'POST',
       domain,
       path: '/admin/api/unstable/products.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
@@ -106,6 +107,7 @@ describe('REST client', () => {
       method: 'POST',
       domain,
       path: '/admin/api/unstable/products.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.URLEncoded.toString()},
       data: new URLSearchParams(postData as any).toString(),
     }).toMatchMadeHttpRequest();
@@ -129,6 +131,7 @@ describe('REST client', () => {
       method: 'PUT',
       domain,
       path: '/admin/api/unstable/products/123.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(putData),
     }).toMatchMadeHttpRequest();
@@ -154,6 +157,7 @@ describe('REST client', () => {
     const client = new RestClient(domain, 'dummy-token');
 
     const customHeaders: {[key: string]: string} = {
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'X-Not-A-Real-Header': 'some_value',
     };
 

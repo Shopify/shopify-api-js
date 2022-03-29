@@ -221,6 +221,7 @@ describe('HTTP client', () => {
   it('allows custom headers', async () => {
     const client = new HttpClient(domain);
     const customHeaders = {
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'X-Not-A-Real-Header': 'some_value',
     };
 
@@ -232,12 +233,14 @@ describe('HTTP client', () => {
   it('extends User-Agent if it is provided', async () => {
     const client = new HttpClient(domain);
 
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
     let customHeaders: Headers = {'User-Agent': 'My agent'};
 
     await expect(
       client.get({path: '/url/path/uppercaseua', extraHeaders: customHeaders}),
     ).resolves.toEqual(buildExpectedResponse(successResponseBody));
 
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
     customHeaders = {'user-agent': 'My lowercase agent'};
 
     await expect(
@@ -255,6 +258,7 @@ describe('HTTP client', () => {
       buildExpectedResponse(successResponseBody),
     );
 
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
     const customHeaders: Headers = {'User-Agent': 'Headers Agent'};
 
     await expect(

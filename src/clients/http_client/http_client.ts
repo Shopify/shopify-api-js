@@ -97,6 +97,7 @@ class HttpClient {
 
     let headers: Headers = {
       ...extraHeaders,
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'User-Agent': userAgent,
     };
     let body;
@@ -118,8 +119,10 @@ class HttpClient {
             break;
         }
         headers = {
+          /* eslint-disable @typescript-eslint/naming-convention */
           'Content-Type': type,
           'Content-Length': (body as string).length.toString(),
+          /* eslint-enable @typescript-eslint/naming-convention */
           ...extraHeaders,
         };
       }

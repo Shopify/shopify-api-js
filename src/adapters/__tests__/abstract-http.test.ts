@@ -63,6 +63,7 @@ describe('Cookies', () => {
   });
 });
 
+/* eslint-disable @typescript-eslint/naming-convention */
 describe('Header operations', () => {
   let headers: Headers;
   beforeEach(() => {
@@ -148,3 +149,4 @@ describe('Header operations', () => {
     expect(headers['Other-Header']).toHaveLength(2);
   });
 });
+/* eslint-enable @typescript-eslint/naming-convention */
