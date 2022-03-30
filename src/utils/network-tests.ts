@@ -9,9 +9,9 @@ export default function runningNetworkTests(): boolean {
   }
   if (typeof globalThis !== 'undefined') {
     // not in node, therefore CF worker or miniflare
-    return (
-      (globalThis as any).E2ETESTS !== 'undefined' &&
-      (globalThis as any).E2ETESTS === '1'
+    return ( (globalThis as any).MINIFLARE
+      // (globalThis as any).E2ETESTS !== 'undefined' &&
+      // (globalThis as any).E2ETESTS === '1'
     );
   }
   return false;

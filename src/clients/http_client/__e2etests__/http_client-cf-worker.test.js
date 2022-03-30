@@ -475,6 +475,7 @@ export default {
 
     await client.get({path: '/url/path/deprecatedget'});
 
+    // console.log(logs);
     let includesNotice = logs[0][1].includes('API Deprecation Notice');
     let includesMessage = logs[0][1].includes(
       ': {"message":"This API endpoint has been deprecated","path":"http://localhost:3000/url/path/deprecatedget"}',
@@ -583,7 +584,7 @@ export default {
     if (allPassed) {
       return new Response('All tests passed!', { status: 200 });
     } else {
-      return new Response('Tests failed :(', { status: 200 });
+      return new Response('Tests failed :(', { status: 500 });
     }
   },
 }
