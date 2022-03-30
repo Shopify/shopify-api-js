@@ -1,5 +1,5 @@
-/* global process, console */
-// import http from 'http';
+/* global process */
+/* eslint-disable-next-line no-undef */
 const http = require('http');
 
 // eslint-disable-next-line no-process-env

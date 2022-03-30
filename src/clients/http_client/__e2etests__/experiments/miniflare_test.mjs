@@ -1,4 +1,3 @@
-
 // const Miniflare = require('miniflare');
 import { Miniflare } from "miniflare";
 

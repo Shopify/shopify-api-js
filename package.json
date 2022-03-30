@@ -18,7 +18,7 @@
     "e2etests:test": "yarn e2etests:node && yarn e2etests:cf_worker",
     "test_rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
     "build": "tsc",
-    "lint": "eslint '**/*.{ts,tsx}' --max-warnings 0",
+    "lint": "eslint '**/*.{js,ts,tsx}' --max-warnings 0",
     "clean": "rimraf ./dist tsconfig.tsbuildinfo",
     "prepublishOnly": "yarn run build",
     "preversion": "yarn run test",

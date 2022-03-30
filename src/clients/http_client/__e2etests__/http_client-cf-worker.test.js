@@ -21,7 +21,6 @@ function setRestClientRetryTime(time) {
   HttpClient.RETRY_WAIT_TIME = time;
 }
 
-
 function buildExpectedResponse(body) {
   const expectedResponse = {
     headers: {},
@@ -33,14 +32,18 @@ function buildExpectedResponse(body) {
 
 function logResultToConsole(testDescription, passed) {
   if (passed) {
+    /* eslint-disable-next-line no-undef */
     console.log(`\x1b[32mPASSED\x1b[0m: ${testDescription}`);
   } else {
+    /* eslint-disable-next-line no-undef */
     console.log(`\x1b[31mFAILED\x1b[0m: ${testDescription}`);
   }
 }
 
+/* eslint-disable-next-line import/no-anonymous-default-export */
 export default {
-  async fetch(req, env, ctx) {
+  /* eslint-disable-next-line no-unused-vars */
+  async fetch(_req, env, _ctx) {
     /**
      * SETUP
      */
@@ -60,14 +63,16 @@ export default {
      * 1. 'can make GET request'
      */
     let response = await client.get({path: '/url/path'});
-    let expectedResponse = buildExpectedResponse(successResponseBody);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    const expectedResponse = buildExpectedResponse(successResponseBody);
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
 
     // console.log(expectedResponse.body);
     // console.log(response.body);
     logResultToConsole(
       ' 1. can make GET request',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -85,10 +90,13 @@ export default {
     };
 
     response = await client.post(postParams);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+
     logResultToConsole(
       ' 2. can make POST request with type JSON',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -101,10 +109,13 @@ export default {
     };
 
     response = await client.post(postParams);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+
     logResultToConsole(
       ' 3. can make POST request with type JSON and data is already formatted',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -117,10 +128,13 @@ export default {
     };
 
     response = await client.post(postParams);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+
     logResultToConsole(
       ' 4. can make POST request with zero-length JSON',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -133,10 +147,13 @@ export default {
     };
 
     response = await client.post(postParams);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+
     logResultToConsole(
       ' 5. can make POST request with form-data type',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -149,10 +166,13 @@ export default {
     };
 
     response = await client.post(postParams);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+
     logResultToConsole(
       ' 6. can make POST request with form-data type and data is already formatted',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -178,10 +198,13 @@ export default {
     };
 
     response = await client.post(postParams);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+
     logResultToConsole(
       ' 7. can make POST request with GraphQL type',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -199,21 +222,25 @@ export default {
     };
 
     response = await client.put(putParams);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
     logResultToConsole(
       ' 8. can make PUT request with type JSON',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
      * 9. 'can make DELETE request'
      */
-     response = await client.delete({path: '/url/path/123'});
-     allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
-     logResultToConsole(
-       ' 9. can make DELETE request',
-       JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
-     );
+    response = await client.delete({path: '/url/path/123'});
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+    logResultToConsole(
+      ' 9. can make DELETE request',
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
+    );
 
     /**
      * 10. 'gracefully handles errors'
@@ -235,7 +262,8 @@ export default {
         retVal = retVal && caught && correctError;
         if (expectedError === Shopify.Errors.HttpResponseError) {
           codePropertyPresent = 'code' in error && error.code === code;
-          statusTextPropertyPresent = 'statusText' in error && error.statusText === statusText;
+          statusTextPropertyPresent =
+            'statusText' in error && error.statusText === statusText;
           retVal = retVal && codePropertyPresent && statusTextPropertyPresent;
         }
         if (expectRequestId) {
@@ -247,17 +275,40 @@ export default {
       return retVal;
     };
 
-    const fourZeroThreePassed = await testErrorResponse(403, Shopify.Errors.HttpResponseError, true);
-    const fourZeroFourPassed = await testErrorResponse(404, Shopify.Errors.HttpResponseError, false);
-    const fourTwoNinePassed = await testErrorResponse(429, Shopify.Errors.HttpThrottlingError, true);
-    const fiveZeroZeroPassed = await testErrorResponse(500, Shopify.Errors.HttpInternalError, true);
-
-    allPassed = allPassed && (fourZeroThreePassed && fourZeroFourPassed && fourTwoNinePassed && fiveZeroZeroPassed);
-    logResultToConsole(
-      '10. gracefully handles errors',
-      fourZeroThreePassed && fourZeroFourPassed && fourTwoNinePassed && fiveZeroZeroPassed
+    const fourZeroThreePassed = await testErrorResponse(
+      403,
+      Shopify.Errors.HttpResponseError,
+      true,
+    );
+    const fourZeroFourPassed = await testErrorResponse(
+      404,
+      Shopify.Errors.HttpResponseError,
+      false,
+    );
+    const fourTwoNinePassed = await testErrorResponse(
+      429,
+      Shopify.Errors.HttpThrottlingError,
+      true,
+    );
+    const fiveZeroZeroPassed = await testErrorResponse(
+      500,
+      Shopify.Errors.HttpInternalError,
+      true,
     );
 
+    allPassed =
+      allPassed &&
+      fourZeroThreePassed &&
+      fourZeroFourPassed &&
+      fourTwoNinePassed &&
+      fiveZeroZeroPassed;
+    logResultToConsole(
+      '10. gracefully handles errors',
+      fourZeroThreePassed &&
+        fourZeroFourPassed &&
+        fourTwoNinePassed &&
+        fiveZeroZeroPassed,
+    );
 
     /**
      * 11. 'allows custom headers'
@@ -267,15 +318,15 @@ export default {
       'X-Not-A-Real-Header': 'some_value',
     };
 
-    response = await client.get({path: '/url/path/custom', extraHeaders: customHeaders});
-    const customuaPassed = JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+    response = await client.get({
+      path: '/url/path/custom',
+      extraHeaders: customHeaders,
+    });
+    const customuaPassed =
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
 
     allPassed = allPassed && customuaPassed;
-    logResultToConsole(
-      '11. allows custom headers',
-      customuaPassed
-    );
-
+    logResultToConsole('11. allows custom headers', customuaPassed);
 
     /**
      * 12. 'extends User-Agent if it is provided'
@@ -283,20 +334,27 @@ export default {
     // FIXME: change http_server.js to check that the headers were actually sent across
     customHeaders = {'User-Agent': 'My agent'};
 
-    response = await client.get({path: '/url/path/uppercaseua', extraHeaders: customHeaders});
-    const uppercaseuaPassed = JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+    response = await client.get({
+      path: '/url/path/uppercaseua',
+      extraHeaders: customHeaders,
+    });
+    const uppercaseuaPassed =
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
 
     customHeaders = {'user-agent': 'My lowercase agent'};
 
-    response = await client.get({path: '/url/path/lowercaseua', extraHeaders: customHeaders});
-    const lowercaseuaPassed = JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+    response = await client.get({
+      path: '/url/path/lowercaseua',
+      extraHeaders: customHeaders,
+    });
+    const lowercaseuaPassed =
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
 
-    allPassed = allPassed && (uppercaseuaPassed && lowercaseuaPassed);
+    allPassed = allPassed && uppercaseuaPassed && lowercaseuaPassed;
     logResultToConsole(
       '12. extends User-Agent if it is provided',
-      uppercaseuaPassed && lowercaseuaPassed
+      uppercaseuaPassed && lowercaseuaPassed,
     );
-
 
     /**
      * 13. 'extends a User-Agent provided by Context'
@@ -306,7 +364,8 @@ export default {
     Context.initialize(Context);
 
     response = await client.get({path: '/url/path/contextua'});
-    const contextuaPassed = JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+    const contextuaPassed =
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
 
     customHeaders = {'User-Agent': 'Headers Agent'};
 
@@ -314,13 +373,13 @@ export default {
       path: '/url/path/contextandheadersua',
       extraHeaders: customHeaders,
     });
-    const contextandheadersuaPassed = JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
-    allPassed = allPassed && (contextuaPassed && contextandheadersuaPassed);
+    const contextandheadersuaPassed =
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
+    allPassed = allPassed && contextuaPassed && contextandheadersuaPassed;
     logResultToConsole(
       '13. extends a User-Agent provided by Context',
-      contextuaPassed && contextandheadersuaPassed
+      contextuaPassed && contextandheadersuaPassed,
     );
-
 
     /**
      * 14. 'fails with invalid retry count'
@@ -331,15 +390,14 @@ export default {
 
     try {
       await client.get({path: '/url/path', tries: -1});
-    }
-    catch(error) {
+    } catch (error) {
       caught = true;
-      correctError = (error instanceof Shopify.Errors.HttpRequestError);
+      correctError = error instanceof Shopify.Errors.HttpRequestError;
     }
-    allPassed = allPassed && (caught && correctError);
+    allPassed = allPassed && caught && correctError;
     logResultToConsole(
       '14. fails with invalid retry count',
-      caught && correctError
+      caught && correctError,
     );
 
     /**
@@ -348,10 +406,12 @@ export default {
     setRestClientRetryTime(0);
 
     response = await client.get({path: '/url/path/retries', tries: 3});
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
     logResultToConsole(
       '15. retries failed requests but returns success',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -363,17 +423,15 @@ export default {
 
     try {
       await client.get({path: '/url/path/retrythenfail', tries: 3});
-    }
-    catch(error) {
+    } catch (error) {
       caught = true;
-      correctError = (error instanceof Shopify.Errors.HttpResponseError);
+      correctError = error instanceof Shopify.Errors.HttpResponseError;
     }
-    allPassed = allPassed && (caught && correctError);
+    allPassed = allPassed && caught && correctError;
     logResultToConsole(
       '16. retries failed requests and stops on non-retriable errors',
-      caught && correctError
+      caught && correctError,
     );
-
 
     /**
      * 17. 'stops retrying after reaching the limit'
@@ -384,17 +442,15 @@ export default {
 
     try {
       await client.get({path: '/url/path/maxretries', tries: 3});
-    }
-    catch(error) {
+    } catch (error) {
       caught = true;
-      correctError = (error instanceof Shopify.Errors.HttpMaxRetriesError);
+      correctError = error instanceof Shopify.Errors.HttpMaxRetriesError;
     }
-    allPassed = allPassed && (caught && correctError);
+    allPassed = allPassed && caught && correctError;
     logResultToConsole(
       '17. stops retrying after reaching the limit',
-      caught && correctError
+      caught && correctError,
     );
-
 
     /**
      * 18. 'waits for the amount of time defined by the Retry-After header'
@@ -403,6 +459,7 @@ export default {
     setRestClientRetryTime(4000);
 
     // If we don't retry within an acceptable amount of time, we assume to be paused for longer than Retry-After
+    /* eslint-disable-next-line no-undef */
     const retryTimeout = setTimeout(() => {
       throw new Error(
         '18. Request was not retried within the interval defined by Retry-After, test failed',
@@ -410,13 +467,15 @@ export default {
     }, 4000);
 
     response = await client.get({path: '/url/path/retrythensuccess', tries: 2});
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
     logResultToConsole(
       '18. waits for the amount of time defined by the Retry-After header',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
+    /* eslint-disable-next-line no-undef */
     clearTimeout(retryTimeout);
-
 
     /**
      * 19. 'logs deprecation headers to the console when they are present'
@@ -440,7 +499,6 @@ export default {
     //     path: 'http://localhost:3000/url/path/deprecatedpost',
     //   });
 
-
     /**
      * 20. 'will wait 5 minutes before logging repeat deprecation alerts'
      */
@@ -463,11 +521,11 @@ export default {
 
     //   expect(console.warn).toHaveBeenCalledTimes(2);
 
-
     /**
      * 21. 'writes deprecation notices to log file if one is specified in Context'
      */
     const logs = [];
+    /* eslint-disable-next-line require-await */
     Context.LOG_FUNCTION = async (sev, msg) => {
       logs.push([sev, msg]);
     };
@@ -476,18 +534,18 @@ export default {
     await client.get({path: '/url/path/deprecatedget'});
 
     // console.log(logs);
-    let includesNotice = logs[0][1].includes('API Deprecation Notice');
-    let includesMessage = logs[0][1].includes(
+    const includesNotice = logs[0][1].includes('API Deprecation Notice');
+    const includesMessage = logs[0][1].includes(
       ': {"message":"This API endpoint has been deprecated","path":"http://localhost:3000/url/path/deprecatedget"}',
     );
-    let includesStackTrack = logs[0][1].includes(`Stack Trace: Error`);
-    allPassed = allPassed && (includesNotice && includesMessage && includesStackTrack);
+    const includesStackTrack = logs[0][1].includes(`Stack Trace: Error`);
+    allPassed =
+      allPassed && includesNotice && includesMessage && includesStackTrack;
 
     logResultToConsole(
       '21. writes deprecation notices to log file if one is specified in Context',
-      includesNotice && includesMessage && includesStackTrack
+      includesNotice && includesMessage && includesStackTrack,
     );
-
 
     /**
      * 22. 'properly encodes strings in the error message'
@@ -498,19 +556,19 @@ export default {
 
     try {
       response = await client.get({path: 'url/path/error'});
-    }
-    catch(error) {
+    } catch (error) {
       caught = true;
-      correctError = (error instanceof Shopify.Errors.HttpInternalError);
-      correctMsg = (error.message === `Shopify internal error:\n"Something went wrong"`);
+      correctError = error instanceof Shopify.Errors.HttpInternalError;
+      correctMsg =
+        error.message === `Shopify internal error:\n"Something went wrong"`;
     }
-    allPassed = allPassed && (caught && correctError && correctMsg);
+
+    allPassed = allPassed && caught && correctError && correctMsg;
 
     logResultToConsole(
       '22. properly encodes strings in the error message',
-      caught && correctError && correctMsg
+      caught && correctError && correctMsg,
     );
-
 
     /**
      * 23. 'properly encodes objects in the error message'
@@ -521,37 +579,37 @@ export default {
 
     try {
       response = await client.get({path: 'url/path/detailederror'});
-    }
-    catch(error) {
+    } catch (error) {
       caught = true;
-      correctError = (error instanceof Shopify.Errors.HttpInternalError);
-      correctMsg = (error.message ===
+      correctError = error instanceof Shopify.Errors.HttpInternalError;
+      correctMsg =
+        error.message ===
         `Shopify internal error:` +
           `\n{` +
           `\n  "title": "Invalid title",` +
           `\n  "description": "Invalid description"` +
-          `\n}`
-      );
+          `\n}`;
     }
-    allPassed = allPassed && (caught && correctError && correctMsg);
+    allPassed = allPassed && caught && correctError && correctMsg;
 
     logResultToConsole(
       '23. properly encodes objects in the error message',
-      caught && correctError && correctMsg
+      caught && correctError && correctMsg,
     );
 
     /**
      * 24. 'adds missing slashes to paths'
      */
     response = await client.get({path: 'url/path'});
-    expectedResponse = buildExpectedResponse(successResponseBody);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
 
     // console.log(expectedResponse.body);
     // console.log(response.body);
     logResultToConsole(
       '24. adds missing slashes to paths',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
     /**
@@ -565,26 +623,28 @@ export default {
         hash: {a: 'b', c: 'd'},
       },
     });
-    expectedResponse = buildExpectedResponse(successResponseBody);
-    allPassed = allPassed && (JSON.stringify(response.body) === JSON.stringify(expectedResponse.body));
+    allPassed =
+      allPassed &&
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
 
     // console.log(expectedResponse.body);
     // console.log(response.body);
     logResultToConsole(
       '25. properly formats arrays and hashes in query strings',
-      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body)
+      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
     );
 
-
-    /***
+    /**
      * END: Shut down the test server, respond to the triggering request
      */
     await client.get({path: '/url/path/endtest'});
 
     if (allPassed) {
-      return new Response('All tests passed!', { status: 200 });
+      /* eslint-disable-next-line no-undef */
+      return new Response('All tests passed!', {status: 200});
     } else {
-      return new Response('Tests failed :(', { status: 500 });
+      /* eslint-disable-next-line no-undef */
+      return new Response('Tests failed :(', {status: 500});
     }
   },
-}
+};
