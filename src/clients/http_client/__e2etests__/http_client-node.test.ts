@@ -383,7 +383,7 @@ describe('HTTP client', () => {
     expect(logs[0][1]).toContain(
       ': {"message":"This API endpoint has been deprecated","path":"http://localhost:3000/url/path/deprecatedget"}',
     );
-    expect(logs[0][1]).toContain(`Stack Trace: Error:`);
+    expect(logs[0][1]).toContain(`Stack Trace: Error`);
   });
 
   it('properly encodes strings in the error message', async () => {

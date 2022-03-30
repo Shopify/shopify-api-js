@@ -480,7 +480,7 @@ export default {
     let includesMessage = logs[0][1].includes(
       ': {"message":"This API endpoint has been deprecated","path":"http://localhost:3000/url/path/deprecatedget"}',
     );
-    let includesStackTrack = logs[0][1].includes(`Stack Trace: Error:`);
+    let includesStackTrack = logs[0][1].includes(`Stack Trace: Error`);
     allPassed = allPassed && (includesNotice && includesMessage && includesStackTrack);
 
     logResultToConsole(

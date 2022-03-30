@@ -121,7 +121,7 @@ class HttpClient {
         headers = {
           /* eslint-disable @typescript-eslint/naming-convention */
           'Content-Type': type,
-          'Content-Length': (body as string).length.toString(),
+          'Content-Length': new TextEncoder().encode(body).length.toString(),
           /* eslint-enable @typescript-eslint/naming-convention */
           ...extraHeaders,
         };
