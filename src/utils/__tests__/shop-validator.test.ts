@@ -23,3 +23,27 @@ test("returns false for invalid shop urls, even if they contain the string 'mysh
   const shopUrl = 'notshopify.myshopify.io.org/potato';
   expect(validateShop(shopUrl)).toBe(false);
 });
+
+test('returns true for spin shop urls', () => {
+  const shopUrlUS = 'shop1.shopify.workspace.namespace.us.spin.dev';
+  const shopUrlAsia = 'shop1.shopify.workspace.namespace.asia.spin.dev';
+  const shopUrlEU = 'shop1.shopify.workspace.namespace.eu.spin.dev';
+  expect(validateShop(shopUrlUS)).toBe(true);
+  expect(validateShop(shopUrlAsia)).toBe(true);
+  expect(validateShop(shopUrlEU)).toBe(true);
+});
+
+test('returns false for missing workspace', () => {
+  const shopUrl = 'shop1.shopify.namespace.us.spin.dev';
+  expect(validateShop(shopUrl)).toBe(false);
+});
+
+test('returns false for missing workspace', () => {
+  const shopUrl = 'shop1.shopify.workspace.us.spin.dev';
+  expect(validateShop(shopUrl)).toBe(false);
+});
+
+test('returns false for wrong region', () => {
+  const shopUrl = 'shop1.shopify.workspace.namespace.ca.spin.dev';
+  expect(validateShop(shopUrl)).toBe(false);
+});
