@@ -313,6 +313,7 @@ export default {
     /**
      * 11. 'allows custom headers'
      */
+    /* eslint-disable-next-line no-warning-comments */
     // FIXME: change http_server.js to check that the headers were actually sent across
     let customHeaders = {
       'X-Not-A-Real-Header': 'some_value',
@@ -331,6 +332,7 @@ export default {
     /**
      * 12. 'extends User-Agent if it is provided'
      */
+    /* eslint-disable-next-line no-warning-comments */
     // FIXME: change http_server.js to check that the headers were actually sent across
     customHeaders = {'User-Agent': 'My agent'};
 
@@ -359,6 +361,7 @@ export default {
     /**
      * 13. 'extends a User-Agent provided by Context'
      */
+    /* eslint-disable-next-line no-warning-comments */
     // FIXME: change http_server.js to check that the headers were actually sent across
     Context.USER_AGENT_PREFIX = 'Context Agent';
     Context.initialize(Context);
