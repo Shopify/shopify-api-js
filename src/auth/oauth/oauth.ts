@@ -4,7 +4,7 @@ import {
   Cookies,
   getHeader,
   crypto,
-} from '../../adapters/abstract-http';
+} from '../../runtime/http/';
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';

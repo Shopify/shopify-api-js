@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import {setCrypto} from '../../adapters/abstract-http';
+import {setCrypto} from '../../runtime/http/';
 import nonce from '../nonce';
 
 setCrypto(crypto.webcrypto as any);

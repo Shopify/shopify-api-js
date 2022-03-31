@@ -9,7 +9,7 @@ import {
   setAbstractFetchFunc,
   Request,
   Response,
-} from '../../adapters/abstract-http';
+} from '../../runtime/http/';
 import {Session} from '../../auth/session';
 import {InvalidSession, SessionNotFound} from '../../error';
 import graphqlProxy from '../graphql_proxy';

@@ -5,7 +5,7 @@ import {
   Response,
   flatHeaders,
   createSHA256HMAC,
-} from '../adapters/abstract-http';
+} from '../runtime/http/';
 import {GraphqlClient} from '../clients/graphql/graphql_client';
 import {ApiVersion, ShopifyHeader} from '../base-types';
 import ShopifyUtilities from '../utils';

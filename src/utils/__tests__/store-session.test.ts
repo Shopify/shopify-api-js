@@ -2,7 +2,7 @@ import {
   setAbstractFetchFunc,
   Request,
   Response,
-} from '../../adapters/abstract-http';
+} from '../../runtime/http/';
 import * as mockAdapter from '../../adapters/mock-adapter';
 import {Session} from '../../auth/session';
 import {Context} from '../../context';

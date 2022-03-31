@@ -3,7 +3,7 @@ import {ApiVersion} from '../base-types';
 import {Context} from '../context';
 import {RestResourceRequestError, RestResourceError} from '../error';
 import * as mockAdapter from '../adapters/mock-adapter';
-import {setAbstractFetchFunc, Response} from '../adapters/abstract-http';
+import {setAbstractFetchFunc, Response} from '../runtime/http/';
 
 import FakeResource from './fake-resource';
 import FakeResourceWithCustomPrefix from './fake-resource-with-custom-prefix';

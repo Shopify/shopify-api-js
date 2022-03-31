@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import {setAbstractFetchFunc, setCrypto} from './adapters/abstract-http';
+import {setAbstractFetchFunc, setCrypto} from './runtime/http/';
 import {abstractFetch} from './adapters/node-adapter';
 import {Context} from './context';
 import * as ShopifyErrors from './error';

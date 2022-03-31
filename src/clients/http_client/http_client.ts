@@ -8,7 +8,7 @@ import {
   Request,
   Response,
   hashStringWithSHA256,
-} from '../../adapters/abstract-http';
+} from '../../runtime/http/';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';

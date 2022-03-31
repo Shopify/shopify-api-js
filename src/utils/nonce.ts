@@ -1,4 +1,4 @@
-import {crypto, asHex} from '../adapters/abstract-http';
+import {crypto, asHex} from '../runtime/http/';
 
 export default function nonce(): string {
   const bytes = new Uint8Array(8);

@@ -5,7 +5,7 @@ import {
   setAbstractFetchFunc,
   Response,
   Headers,
-} from '../../../adapters/abstract-http';
+} from '../../../runtime/http/';
 import * as mockAdapter from '../../../adapters/mock-adapter';
 import {Context} from '../../../context';
 import {DataType} from '../types';
