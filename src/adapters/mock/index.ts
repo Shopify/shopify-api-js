@@ -1,5 +1,5 @@
-import type {Request, Response} from '../runtime/http';
-import {canonicalizeHeaders} from '../runtime/http';
+import type {Request, Response} from '../../runtime/http';
+import {canonicalizeHeaders} from '../../runtime/http';
 
 let requestList: (Request & {tries: number})[] = [];
 let responseQueue: (Response | Error)[] = [];

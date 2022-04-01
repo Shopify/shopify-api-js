@@ -4,7 +4,7 @@ import {
   Request as AbstractRequest,
   Response as AbstractResponse,
   addHeader,
-} from '../runtime/http';
+} from '../../runtime/http';
 
 export async function convertRequest(req: Request): Promise<AbstractRequest> {
   const body = await new Response(req.body).text();

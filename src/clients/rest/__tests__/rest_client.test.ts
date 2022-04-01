@@ -3,9 +3,9 @@ import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestClient} from '../rest_client';
 import {RestRequestReturn, PageInfo} from '../types';
 import {Context} from '../../../context';
-import {setAbstractFetchFunc, Response} from '../../../runtime/http/';
-import Shopify from '../../../index-node';
-import * as mockAdapter from '../../../adapters/mock-adapter';
+import {setAbstractFetchFunc, Response} from '../../../runtime/http';
+import Shopify from '../../../adapters/node';
+import * as mockAdapter from '../../../adapters/mock';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 

@@ -4,12 +4,8 @@ import express, {
 } from 'express';
 import request from 'supertest';
 
-import * as mockAdapter from '../../adapters/mock-adapter';
-import {
-  setAbstractFetchFunc,
-  Request,
-  Response,
-} from '../../runtime/http/';
+import * as mockAdapter from '../../adapters/mock';
+import {setAbstractFetchFunc, Request, Response} from '../../runtime/http';
 import {Session} from '../../auth/session';
 import {InvalidSession, SessionNotFound} from '../../error';
 import graphqlProxy from '../graphql_proxy';

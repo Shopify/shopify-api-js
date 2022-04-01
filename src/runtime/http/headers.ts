@@ -82,7 +82,6 @@ export function removeHeader(headers: Headers, needle: string) {
   delete headers[canonKey];
 }
 
-
 /*
   Turns a Headers object into a array of tuples, as expected by web standards to
 	handle headers that can be specified multiple times.

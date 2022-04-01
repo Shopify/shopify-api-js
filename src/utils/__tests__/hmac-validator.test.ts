@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import {setCrypto} from '../../runtime/http/';
+import {setCrypto} from '../../runtime/crypto';
 import validateHmac from '../hmac-validator';
 import {AuthQuery} from '../../auth/oauth/types';
 import * as ShopifyErrors from '../../error';

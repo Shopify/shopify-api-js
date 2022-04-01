@@ -1,4 +1,4 @@
-import {Request, Response} from '../runtime/http/';
+import {Request, Response} from '../runtime/http';
 import {GraphqlClient} from '../clients/graphql';
 import {RequestReturn} from '../clients/http_client/types';
 import * as ShopifyErrors from '../error';

@@ -1,8 +1,8 @@
 import {ShopifyHeader} from '../../../base-types';
 import {StorefrontClient} from '../storefront_client';
 import {Context} from '../../../context';
-import {setAbstractFetchFunc, Response} from '../../../runtime/http/';
-import * as mockAdapter from '../../../adapters/mock-adapter';
+import {setAbstractFetchFunc, Response} from '../../../runtime/http';
+import * as mockAdapter from '../../../adapters/mock';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 

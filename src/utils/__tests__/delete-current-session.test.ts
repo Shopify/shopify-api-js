@@ -4,9 +4,9 @@ import {
   Request,
   Response,
   Cookies,
-} from '../../runtime/http/';
-import Shopify from '../../index-node';
-import * as mockAdapter from '../../adapters/mock-adapter';
+} from '../../runtime/http';
+import Shopify from '../../adapters/node';
+import * as mockAdapter from '../../adapters/mock';
 import {Context} from '../../context';
 import {Session} from '../../auth/session';
 import {JwtPayload} from '../decode-session-token';

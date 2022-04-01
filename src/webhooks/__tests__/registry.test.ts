@@ -14,9 +14,9 @@ import {
   Response,
   flatHeaders,
   canonicalizeHeaders,
-} from '../../runtime/http/';
-import Shopify from '../../index-node';
-import * as mockAdapter from '../../adapters/mock-adapter';
+} from '../../runtime/http';
+import Shopify from '../../adapters/node';
+import * as mockAdapter from '../../adapters/mock';
 import ShopifyWebhooks from '..';
 import {
   buildQuery as createWebhookQuery,

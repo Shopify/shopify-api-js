@@ -1,12 +1,8 @@
 import querystring from 'querystring';
 
-import Shopify from '../../../index-node';
-import {
-  setAbstractFetchFunc,
-  Response,
-  Headers,
-} from '../../../runtime/http/';
-import * as mockAdapter from '../../../adapters/mock-adapter';
+import Shopify from '../../../adapters/node';
+import {setAbstractFetchFunc, Response, Headers} from '../../../runtime/http';
+import * as mockAdapter from '../../../adapters/mock';
 import {Context} from '../../../context';
 import {DataType} from '../types';
 import {HttpClient} from '../http_client';

@@ -1,4 +1,4 @@
-import {Request, Response} from '../runtime/http/';
+import {Request, Response} from '../runtime/http';
 import {Context} from '../context';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
 import * as ShopifyErrors from '../error';

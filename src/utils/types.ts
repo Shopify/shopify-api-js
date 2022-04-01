@@ -1,4 +1,4 @@
-import {Request, Response} from '../runtime/http/';
+import {Request, Response} from '../runtime/http';
 import {Session} from '../auth/session';
 import {GraphqlClient} from '../clients/graphql';
 import {RestClient} from '../clients/rest';

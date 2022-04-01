@@ -7,8 +7,8 @@ import {
   Headers,
   Request,
   Response,
-  hashStringWithSHA256,
-} from '../../runtime/http/';
+} from '../../runtime/http';
+import {hashStringWithSHA256} from '../../runtime/crypto';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';

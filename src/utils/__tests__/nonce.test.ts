@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import {setCrypto} from '../../runtime/http/';
+import {setCrypto} from '../../runtime/crypto';
 import nonce from '../nonce';
 
 setCrypto(crypto.webcrypto as any);

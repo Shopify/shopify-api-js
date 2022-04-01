@@ -1,8 +1,10 @@
-import type {Request, Response} from ".";
 // import type {Headers} from "./headers";
-import {splitN} from "../../utils/spitn";
-import {getHeader, getHeaders, removeHeader, addHeader} from "./headers";
-import {createSHA256HMAC} from "../crypto/utils";
+import {splitN} from '../../utils/spitn';
+import {createSHA256HMAC} from '../crypto/utils';
+
+import {getHeader, getHeaders, removeHeader, addHeader} from './headers';
+
+import type {Request, Response} from '.';
 
 export interface CookieData {
   name: string;

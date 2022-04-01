@@ -11,8 +11,8 @@ import {
   Request,
   Response,
   setHeader,
-  setCrypto,
-} from '../abstract-http';
+} from '..';
+import {setCrypto} from '../../crypto';
 
 setCrypto(crypto.webcrypto as any);
 

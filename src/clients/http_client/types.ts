@@ -1,6 +1,6 @@
 import type {Method} from '@shopify/network';
 
-import type {Headers} from '../../runtime/http/';
+import type {Headers} from '../../runtime/http';
 
 export enum DataType {
   JSON = 'application/json', // eslint-disable-line @shopify/typescript/prefer-pascal-case-enums

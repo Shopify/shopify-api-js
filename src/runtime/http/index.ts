@@ -1,8 +1,7 @@
-import type {Headers} from "./headers";
+import type {Headers} from './headers';
 
-export * from "./cookies";
-export * from "./headers";
-
+export * from './cookies';
+export * from './headers';
 
 export interface Request {
   method: string;

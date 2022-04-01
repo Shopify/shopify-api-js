@@ -1,7 +1,7 @@
 import {Context} from '../context';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
-import {createSHA256HMAC} from '../runtime/http/';
+import {createSHA256HMAC} from '../runtime/crypto';
 
 import safeCompare from './safe-compare';
 

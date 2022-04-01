@@ -1,9 +1,5 @@
-import {
-  setAbstractFetchFunc,
-  Request,
-  Response,
-} from '../../runtime/http/';
-import * as mockAdapter from '../../adapters/mock-adapter';
+import {setAbstractFetchFunc, Request, Response} from '../../runtime/http';
+import * as mockAdapter from '../../adapters/mock';
 import {Session} from '../../auth/session';
 import {Context} from '../../context';
 import loadCurrentSession from '../load-current-session';

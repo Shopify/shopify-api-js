@@ -1,3 +1,4 @@
+import {crypto} from './set-crypto';
 
 export async function createSHA256HMAC(
   secret: string,
