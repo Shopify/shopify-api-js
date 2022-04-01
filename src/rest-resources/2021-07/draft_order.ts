@@ -195,6 +195,7 @@ export class DraftOrder extends Base {
   public order_id: number | null;
   public shipping_address: {[key: string]: unknown} | null;
   public shipping_line: {[key: string]: unknown} | null;
+  public source_name: string | null;
   public status: string | null;
   public subtotal_price: number | null;
   public tags: string | null;

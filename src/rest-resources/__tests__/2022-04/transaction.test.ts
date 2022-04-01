@@ -33,7 +33,7 @@ describe('Transaction resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"transactions": [{"id": 1068278468, "order_id": 450789469, "kind": "capture", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-11T11:03:40-05:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-11T11:03:40-05:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "10.00", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278468"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"transactions": [{"id": 1068278492, "order_id": 450789469, "kind": "capture", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-30T19:53:20-04:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-30T19:53:20-04:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "10.00", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278492"}]}));
 
     await Transaction.all({
       session: test_session,
@@ -52,7 +52,28 @@ describe('Transaction resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"transaction": {"id": 1068278465, "order_id": 450789469, "kind": "void", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-11T11:03:34-05:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-11T11:03:34-05:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "0.00", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278465"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"transaction": {"id": 1068278488, "order_id": 450789469, "kind": "capture", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-30T19:53:13-04:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-30T19:53:13-04:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "10.00", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278488"}}));
+
+    const transaction = new Transaction({session: test_session});
+    transaction.order_id = 450789469;
+    transaction.currency = "USD";
+    transaction.amount = "10.00";
+    transaction.kind = "capture";
+    transaction.parent_id = 389404469;
+    await transaction.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-04/orders/450789469/transactions.json',
+      query: '',
+      headers,
+      data: { "transaction": {"currency": "USD", "amount": "10.00", "kind": "capture", "parent_id": 389404469} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_4', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"transaction": {"id": 1068278489, "order_id": 450789469, "kind": "void", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-30T19:53:15-04:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-30T19:53:15-04:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "0.00", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278489"}}));
 
     const transaction = new Transaction({session: test_session});
     transaction.order_id = 450789469;
@@ -72,8 +93,8 @@ describe('Transaction resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"transaction": {"id": 1068278466, "order_id": 450789469, "kind": "capture", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-11T11:03:36-05:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-11T11:03:36-05:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "10.00", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278466"}}));
+  it('test_5', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"transaction": {"id": 1068278490, "order_id": 450789469, "kind": "capture", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-30T19:53:17-04:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-30T19:53:17-04:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "10.00", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278490"}}));
 
     const transaction = new Transaction({session: test_session});
     transaction.order_id = 450789469;
@@ -94,8 +115,8 @@ describe('Transaction resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_5', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"transaction": {"id": 1068278467, "order_id": 450789469, "kind": "capture", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-11T11:03:38-05:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-11T11:03:38-05:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "598.94", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278467"}}));
+  it('test_6', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"transaction": {"id": 1068278491, "order_id": 450789469, "kind": "capture", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-30T19:53:18-04:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-30T19:53:18-04:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "598.94", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278491"}}));
 
     const transaction = new Transaction({session: test_session});
     transaction.order_id = 450789469;
@@ -110,27 +131,6 @@ describe('Transaction resource', () => {
       query: '',
       headers,
       data: { "transaction": {"kind": "capture", "authorization": "authorization-key"} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_6', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"transaction": {"id": 1068278469, "order_id": 450789469, "kind": "capture", "gateway": "bogus", "status": "success", "message": "Bogus Gateway: Forced success", "created_at": "2022-03-11T11:03:47-05:00", "test": true, "authorization": null, "location_id": null, "user_id": null, "parent_id": 389404469, "processed_at": "2022-03-11T11:03:47-05:00", "device_id": null, "error_code": null, "source_name": "755357713", "payment_details": {"credit_card_bin": null, "avs_result_code": null, "cvv_result_code": null, "credit_card_number": "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company": "Visa", "credit_card_name": null, "credit_card_wallet": null, "credit_card_expiration_month": null, "credit_card_expiration_year": null}, "receipt": {}, "currency_exchange_adjustment": null, "amount": "10.00", "currency": "USD", "admin_graphql_api_id": "gid://shopify/OrderTransaction/1068278469"}}));
-
-    const transaction = new Transaction({session: test_session});
-    transaction.order_id = 450789469;
-    transaction.currency = "USD";
-    transaction.amount = "10.00";
-    transaction.kind = "capture";
-    transaction.parent_id = 389404469;
-    await transaction.save({});
-
-    expect({
-      method: 'POST',
-      domain,
-      path: '/admin/api/2022-04/orders/450789469/transactions.json',
-      query: '',
-      headers,
-      data: { "transaction": {"currency": "USD", "amount": "10.00", "kind": "capture", "parent_id": 389404469} }
     }).toMatchMadeHttpRequest();
   });
 

@@ -292,7 +292,9 @@ export class Order extends Base {
   public refunds: Refund[] | null | {[key: string]: any};
   public shipping_address: {[key: string]: unknown} | null;
   public shipping_lines: {[key: string]: unknown}[] | null;
+  public source_identifier: string | null;
   public source_name: string | null;
+  public source_url: string | null;
   public subtotal_price: number | null;
   public subtotal_price_set: {[key: string]: unknown} | null;
   public tags: string | null;

@@ -29,6 +29,7 @@ interface OrdersArgs {
   [key: string]: unknown;
   session: SessionInterface;
   id: number | string;
+  status?: unknown;
 }
 interface SearchArgs {
   [key: string]: unknown;
@@ -129,6 +130,7 @@ export class Customer extends Base {
     {
       session,
       id,
+      status = null,
       ...otherArgs
     }: OrdersArgs
   ): Promise<unknown> {
@@ -137,7 +139,7 @@ export class Customer extends Base {
       operation: "orders",
       session: session,
       urlIds: {"id": id},
-      params: {...otherArgs},
+      params: {"status": status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -213,6 +215,7 @@ export class Customer extends Base {
   public currency: string | null;
   public default_address: {[key: string]: unknown} | null;
   public email: string | null;
+  public email_marketing_consent: {[key: string]: unknown} | null;
   public first_name: string | null;
   public id: number | null;
   public last_name: string | null;

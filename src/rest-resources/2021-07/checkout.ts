@@ -115,7 +115,9 @@ export class Checkout extends Base {
   public shipping_address: {[key: string]: unknown} | null;
   public shipping_line: {[key: string]: unknown} | null;
   public shipping_rate: {[key: string]: unknown} | null;
+  public source_identifier: string | null;
   public source_name: string | null;
+  public source_url: string | null;
   public subtotal_price: string | null;
   public tax_lines: {[key: string]: unknown}[] | null;
   public taxes_included: boolean | null;
