@@ -1,12 +1,19 @@
 /* global process */
 /* eslint-disable-next-line no-undef */
-const http = require('http');
+import {createServer, IncomingMessage, ServerResponse} from 'http';
+
+interface Response {
+  statusCode: number;
+  statusText: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
 
 // eslint-disable-next-line no-process-env
-const port = process.env.PORT || 3000;
-const errorStatusText = 'Did not work';
-const requestId = 'Request id header';
-const responses = {
+const port: number = parseInt(process.env.PORT || '3000');
+const errorStatusText: string = 'Did not work';
+const requestId: string = 'Request id header';
+const responses: Record<string|number, Response> = {
   200: {
     statusCode: 200,
     statusText: 'OK',
@@ -114,11 +121,11 @@ const responses = {
 
 let retryCount = 0;
 
-const server = http.createServer((req, res) => {
+const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   // console.log(req.method, req.url, req.headers);
-  const lookup = req.url.match(/^\/url\/path\/([a-z0-9]*)$/);
+  const lookup = req.url?.match(/^\/url\/path\/([a-z0-9]*)$/);
   const code = lookup ? lookup[1] : '200';
-  let response = responses[code] || responses['200'];
+  let response: Response = responses[code] || responses['200'];
   if (code === 'retries' && retryCount < 2) {
     // console.log(`retries: retryCount = ${retryCount}`);
     response = responses['429'];
@@ -161,7 +168,7 @@ const server = http.createServer((req, res) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-function handle(_signal) {
+function handle(_signal: any): void {
   process.exit(0);
 }
 

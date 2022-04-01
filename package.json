@@ -7,7 +7,10 @@
   "prettier": "@shopify/prettier-config",
   "scripts": {
     "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__ --testPathIgnorePatterns=src/clients/http_client/__e2etests__",
+    "e2etests:build:http_server": "tsc src/clients/http_client/__e2etests__/experiments/framework/http_server.ts",
     "e2etests:build:cf_worker": "rollup -c src/clients/http_client/__e2etests__/rollup.http_client-cf-worker.test.config.js",
+    "e2etests:build:cf_worker2": "rollup -c src/clients/http_client/__e2etests__/experiments/framework/rollup.cf-worker.test.config.js",
+    "e2etests:cf_worker2": "yarn e2etests:build:http_server && yarn e2etests:build:cf_worker2 && yarn jest --no-coverage --detectOpenHandles --testPathPattern=\\\"src/.*e2e-runner.test.ts\\\"",
     "e2etests:node": "yarn node src/clients/http_client/__e2etests__/node.e2e-runner.mjs",
     "e2etests:cf_worker": "yarn e2etests:build:cf_worker && yarn node src/clients/http_client/__e2etests__/miniflare.e2e-runner.mjs",
     "e2etests:test": "yarn e2etests:node && yarn e2etests:cf_worker",
