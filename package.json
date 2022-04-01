@@ -13,7 +13,7 @@
     "e2etests:cf_worker2": "yarn e2etests:build:http_server && yarn e2etests:build:cf_worker2 && yarn jest --no-coverage --detectOpenHandles --testPathPattern=\\\"src/.*e2e-runner.test.ts\\\"",
     "e2etests:node": "yarn node src/clients/http_client/__e2etests__/node.e2e-runner.mjs",
     "e2etests:cf_worker": "yarn e2etests:build:cf_worker && yarn node src/clients/http_client/__e2etests__/miniflare.e2e-runner.mjs",
-    "e2etests:test": "yarn e2etests:node && yarn e2etests:cf_worker",
+    "e2etests:test": "yarn e2etests:node && yarn e2etests:cf_worker2",
     "test_rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
     "build": "tsc",
     "lint": "eslint '**/*.{js,ts,tsx}' --max-warnings 0",
