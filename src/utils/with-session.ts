@@ -12,20 +12,19 @@ export default async function withSession({
   clientType,
   isOnline,
   req,
-  res,
   shop,
 }: WithSessionParams): Promise<WithSessionResponse> {
   Context.throwIfUninitialized();
 
   let session: Session | undefined;
   if (isOnline) {
-    if (!req || !res) {
+    if (!req) {
       throw new ShopifyErrors.MissingRequiredArgument(
-        'Please pass in both the "request" and "response" objects.',
+        'Please pass in both the "request" object.',
       );
     }
 
-    session = await loadCurrentSession(req, res);
+    session = await loadCurrentSession(req);
   } else {
     if (!shop) {
       throw new ShopifyErrors.MissingRequiredArgument(

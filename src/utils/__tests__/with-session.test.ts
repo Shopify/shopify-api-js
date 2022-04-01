@@ -48,13 +48,12 @@ describe('withSession', () => {
 
   it('throws an error when there is no session matching the params requested', async () => {
     const req = {} as Request;
-    const res = {} as Response;
 
     await expect(
       withSession({clientType: 'rest', isOnline: false, shop}),
     ).rejects.toThrow(Shopify.Errors.SessionNotFound);
     await expect(
-      withSession({clientType: 'graphql', isOnline: true, req, res}),
+      withSession({clientType: 'graphql', isOnline: true, req}),
     ).rejects.toThrowError(Shopify.Errors.SessionNotFound);
   });
 
@@ -110,13 +109,11 @@ describe('withSession', () => {
         Context.API_SECRET_KEY,
       ),
     } as any as Request;
-    const res = {} as Response;
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',
       isOnline: true,
       req,
-      res,
     })) as RestWithSession;
 
     expect(restRequestCtx).toBeDefined();
@@ -127,7 +124,6 @@ describe('withSession', () => {
       clientType: 'graphql',
       isOnline: true,
       req,
-      res,
     })) as GraphqlWithSession;
 
     expect(gqlRequestCtx).toBeDefined();
@@ -163,13 +159,11 @@ describe('withSession', () => {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',
       isOnline: true,
       req,
-      res,
     })) as RestWithSession;
 
     expect(restRequestCtx).toBeDefined();
@@ -180,7 +174,6 @@ describe('withSession', () => {
       clientType: 'graphql',
       isOnline: true,
       req,
-      res,
     })) as GraphqlWithSession;
 
     expect(gqlRequestCtx).toBeDefined();
