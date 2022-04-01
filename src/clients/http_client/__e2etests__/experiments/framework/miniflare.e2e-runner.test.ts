@@ -32,8 +32,7 @@ const miniflareServer: child_process.ChildProcess = child_process.spawn(
 //   console.log(`miniflare exited with code ${code}`);
 // });
 
-// const httpServer: child_process.ChildProcess = 
-child_process.spawn(
+const httpServer: child_process.ChildProcess = child_process.spawn(
   'yarn',
   [
     'node',
@@ -96,9 +95,9 @@ function buildExpectedResponse(): Response {
 }
 
 async function killChildProcesses(): Promise<void> {
-  // if (typeof httpServer.pid !== 'undefined' ) {
-  //   process.kill(-httpServer.pid);
-  // }
+  if (typeof httpServer.pid !== 'undefined' ) {
+    process.kill(-httpServer.pid);
+  }
   if (typeof miniflareServer.pid !== 'undefined' ) {
     process.kill(-miniflareServer.pid);
   }

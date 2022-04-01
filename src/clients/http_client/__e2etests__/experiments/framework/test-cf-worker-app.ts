@@ -137,7 +137,7 @@ export default {
     /**
      * END: Shut down the test server, respond to the triggering request
      */
-    await client.get({path: '/url/path/endtest'});
+    // await client.get({path: '/url/path/endtest'});
 
     if (allPassed) {
       /* eslint-disable-next-line no-undef */
