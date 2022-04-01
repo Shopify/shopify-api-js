@@ -12,7 +12,7 @@ const miniflareServer: child_process.ChildProcess = child_process.spawn(
     '--global',
     'E2ETESTS=1',
     '--modules',
-    'bundle/cf-worker.test.js',
+    'bundle/test-cf-worker-app.js',
   ],
   {
     detached: true,
@@ -37,7 +37,7 @@ child_process.spawn(
   'yarn',
   [
     'node',
-    'src/clients/http_client/__e2etests__/experiments/framework/http_server.js',
+    'dist/clients/http_client/__e2etests__/experiments/framework/http_server.js',
   ],
   {
     detached: true,
