@@ -18,11 +18,11 @@ export class ShippingZone extends Base {
   protected static PLURAL_NAME = 'shipping_zones';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    countries: Country,
-    provinces: Province
+    "countries": Country,
+    "provinces": Province
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "shipping_zones.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shipping_zones.json"}
   ];
 
   public static async all(
@@ -35,7 +35,7 @@ export class ShippingZone extends Base {
     const response = await ShippingZone.baseFind({
       session: session,
       urlIds: {},
-      params: {fields: fields, ...otherArgs},
+      params: {"fields": fields, ...otherArgs},
     });
 
     return response as ShippingZone[];

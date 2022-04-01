@@ -46,11 +46,11 @@ export class InventoryLevel extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "inventory_levels.json"},
-    {http_method: "post", operation: "adjust", ids: [], path: "inventory_levels/adjust.json"},
-    {http_method: "delete", operation: "delete", ids: [], path: "inventory_levels.json"},
-    {http_method: "post", operation: "connect", ids: [], path: "inventory_levels/connect.json"},
-    {http_method: "post", operation: "set", ids: [], path: "inventory_levels/set.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_levels.json"},
+    {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
+    {"http_method": "delete", "operation": "delete", "ids": [], "path": "inventory_levels.json"},
+    {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
+    {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
   ];
 
   public static async delete(
@@ -65,7 +65,7 @@ export class InventoryLevel extends Base {
       operation: "delete",
       session: session,
       urlIds: {},
-      params: {inventory_item_id: inventory_item_id, location_id: location_id},
+      params: {"inventory_item_id": inventory_item_id, "location_id": location_id},
     });
 
     return response ? response.body : null;
@@ -84,7 +84,7 @@ export class InventoryLevel extends Base {
     const response = await InventoryLevel.baseFind({
       session: session,
       urlIds: {},
-      params: {inventory_item_ids: inventory_item_ids, location_ids: location_ids, limit: limit, updated_at_min: updated_at_min, ...otherArgs},
+      params: {"inventory_item_ids": inventory_item_ids, "location_ids": location_ids, "limit": limit, "updated_at_min": updated_at_min, ...otherArgs},
     });
 
     return response as InventoryLevel[];
@@ -104,7 +104,7 @@ export class InventoryLevel extends Base {
       operation: "adjust",
       session: this.session,
       urlIds: {},
-      params: {inventory_item_id: inventory_item_id, location_id: location_id, available_adjustment: available_adjustment, ...otherArgs},
+      params: {"inventory_item_id": inventory_item_id, "location_id": location_id, "available_adjustment": available_adjustment, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -126,7 +126,7 @@ export class InventoryLevel extends Base {
       operation: "connect",
       session: this.session,
       urlIds: {},
-      params: {inventory_item_id: inventory_item_id, location_id: location_id, relocate_if_necessary: relocate_if_necessary, ...otherArgs},
+      params: {"inventory_item_id": inventory_item_id, "location_id": location_id, "relocate_if_necessary": relocate_if_necessary, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -149,7 +149,7 @@ export class InventoryLevel extends Base {
       operation: "set",
       session: this.session,
       urlIds: {},
-      params: {inventory_item_id: inventory_item_id, location_id: location_id, available: available, disconnect_if_necessary: disconnect_if_necessary, ...otherArgs},
+      params: {"inventory_item_id": inventory_item_id, "location_id": location_id, "available": available, "disconnect_if_necessary": disconnect_if_necessary, ...otherArgs},
       body: body,
       entity: this,
     });

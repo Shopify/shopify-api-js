@@ -38,12 +38,12 @@ export class PriceRule extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "price_rules.json"},
-    {http_method: "get", operation: "get", ids: [], path: "price_rules.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "price_rules/<id>.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "price_rules/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "price_rules/<id>.json"},
-    {http_method: "get", operation: "count", ids: [], path: "price_rules/count.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "price_rules.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "price_rules/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "price_rules/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "price_rules/count.json"}
   ];
 
   public static async find(
@@ -54,7 +54,7 @@ export class PriceRule extends Base {
   ): Promise<PriceRule | null> {
     const result = await PriceRule.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as PriceRule : null;
@@ -70,7 +70,7 @@ export class PriceRule extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -97,7 +97,7 @@ export class PriceRule extends Base {
     const response = await PriceRule.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, starts_at_min: starts_at_min, starts_at_max: starts_at_max, ends_at_min: ends_at_min, ends_at_max: ends_at_max, times_used: times_used, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "starts_at_min": starts_at_min, "starts_at_max": starts_at_max, "ends_at_min": ends_at_min, "ends_at_max": ends_at_max, "times_used": times_used, ...otherArgs},
     });
 
     return response as PriceRule[];

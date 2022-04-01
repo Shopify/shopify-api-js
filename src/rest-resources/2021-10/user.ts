@@ -25,9 +25,9 @@ export class User extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "users.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "users/<id>.json"},
-    {http_method: "get", operation: "current", ids: [], path: "users/current.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "users.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "users/<id>.json"},
+    {"http_method": "get", "operation": "current", "ids": [], "path": "users/current.json"}
   ];
 
   public static async find(
@@ -38,7 +38,7 @@ export class User extends Base {
   ): Promise<User | null> {
     const result = await User.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as User : null;
@@ -55,7 +55,7 @@ export class User extends Base {
     const response = await User.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, page_info: page_info, ...otherArgs},
+      params: {"limit": limit, "page_info": page_info, ...otherArgs},
     });
 
     return response as User[];

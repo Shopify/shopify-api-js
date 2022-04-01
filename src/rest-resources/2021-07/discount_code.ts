@@ -49,16 +49,16 @@ export class DiscountCode extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: ["price_rule_id"], path: "price_rules/<price_rule_id>/discount_codes.json"},
-    {http_method: "get", operation: "get", ids: ["price_rule_id"], path: "price_rules/<price_rule_id>/discount_codes.json"},
-    {http_method: "put", operation: "put", ids: ["price_rule_id", "id"], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
-    {http_method: "get", operation: "get", ids: ["price_rule_id", "id"], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["price_rule_id", "id"], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
-    {http_method: "get", operation: "lookup", ids: [], path: "discount_codes/lookup.json"},
-    {http_method: "get", operation: "count", ids: [], path: "discount_codes/count.json"},
-    {http_method: "post", operation: "batch", ids: ["price_rule_id"], path: "price_rules/<price_rule_id>/batch.json"},
-    {http_method: "get", operation: "get_all", ids: ["price_rule_id", "batch_id"], path: "price_rules/<price_rule_id>/batch/<batch_id>.json"},
-    {http_method: "get", operation: "get", ids: ["price_rule_id", "batch_id"], path: "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"}
+    {"http_method": "post", "operation": "post", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
+    {"http_method": "put", "operation": "put", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
+    {"http_method": "get", "operation": "lookup", "ids": [], "path": "discount_codes/lookup.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "discount_codes/count.json"},
+    {"http_method": "post", "operation": "batch", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/batch.json"},
+    {"http_method": "get", "operation": "get_all", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"}
   ];
 
   public static async find(
@@ -70,7 +70,7 @@ export class DiscountCode extends Base {
   ): Promise<DiscountCode | null> {
     const result = await DiscountCode.baseFind({
       session: session,
-      urlIds: {id: id, price_rule_id: price_rule_id},
+      urlIds: {"id": id, "price_rule_id": price_rule_id},
       params: {},
     });
     return result ? result[0] as DiscountCode : null;
@@ -87,7 +87,7 @@ export class DiscountCode extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id, price_rule_id: price_rule_id},
+      urlIds: {"id": id, "price_rule_id": price_rule_id},
       params: {},
     });
 
@@ -104,7 +104,7 @@ export class DiscountCode extends Base {
   ): Promise<DiscountCode[]> {
     const response = await DiscountCode.baseFind({
       session: session,
-      urlIds: {price_rule_id: price_rule_id, batch_id: batch_id},
+      urlIds: {"price_rule_id": price_rule_id, "batch_id": batch_id},
       params: {...otherArgs},
     });
 
@@ -123,7 +123,7 @@ export class DiscountCode extends Base {
       operation: "lookup",
       session: session,
       urlIds: {},
-      params: {code: code, ...otherArgs},
+      params: {"code": code, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -145,7 +145,7 @@ export class DiscountCode extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {times_used: times_used, times_used_min: times_used_min, times_used_max: times_used_max, ...otherArgs},
+      params: {"times_used": times_used, "times_used_min": times_used_min, "times_used_max": times_used_max, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -165,7 +165,7 @@ export class DiscountCode extends Base {
       http_method: "get",
       operation: "get_all",
       session: session,
-      urlIds: {price_rule_id: price_rule_id, batch_id: batch_id},
+      urlIds: {"price_rule_id": price_rule_id, "batch_id": batch_id},
       params: {...otherArgs},
       body: {},
       entity: null,
@@ -184,7 +184,7 @@ export class DiscountCode extends Base {
       http_method: "post",
       operation: "batch",
       session: this.session,
-      urlIds: {price_rule_id: this.price_rule_id},
+      urlIds: {"price_rule_id": this.price_rule_id},
       params: {...otherArgs},
       body: body,
       entity: this,

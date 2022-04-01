@@ -226,8 +226,8 @@ class Base {
     session: SessionInterface,
     data: Body,
   ): Base[] {
-    if (data[this.PLURAL_NAME]) {
-      return data[this.PLURAL_NAME].reduce(
+    if (data[this.PLURAL_NAME] || Array.isArray(data[this.NAME])) {
+      return (data[this.PLURAL_NAME] || data[this.NAME]).reduce(
         (acc: Base[], entry: Body) =>
           acc.concat(this.createInstance(session, entry)),
         [],

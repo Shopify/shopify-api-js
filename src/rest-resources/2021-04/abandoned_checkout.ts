@@ -24,15 +24,15 @@ export class AbandonedCheckout extends Base {
   protected static NAME = 'abandoned_checkout';
   protected static PLURAL_NAME = 'abandoned_checkouts';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    currency: Currency,
-    customer: Customer
+    "currency": Currency,
+    "customer": Customer
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    discount_codes: DiscountCode
+    "discount_codes": DiscountCode
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "checkouts", ids: [], path: "checkouts.json"},
-    {http_method: "get", operation: "checkouts", ids: [], path: "checkouts.json"}
+    {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
+    {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];
 
   public static async checkouts(
@@ -53,7 +53,7 @@ export class AbandonedCheckout extends Base {
       operation: "checkouts",
       session: session,
       urlIds: {},
-      params: {since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, status: status, limit: limit, ...otherArgs},
+      params: {"since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, "limit": limit, ...otherArgs},
       body: {},
       entity: null,
     });

@@ -27,15 +27,15 @@ export class Payment extends Base {
   protected static NAME = 'payment';
   protected static PLURAL_NAME = 'payments';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    transaction: Transaction,
-    checkout: Checkout
+    "transaction": Transaction,
+    "checkout": Checkout
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: ["checkout_id"], path: "checkouts/<checkout_id>/payments.json"},
-    {http_method: "get", operation: "get", ids: ["checkout_id"], path: "checkouts/<checkout_id>/payments.json"},
-    {http_method: "get", operation: "get", ids: ["checkout_id", "id"], path: "checkouts/<checkout_id>/payments/<id>.json"},
-    {http_method: "get", operation: "count", ids: ["checkout_id"], path: "checkouts/<checkout_id>/payments/count.json"}
+    {"http_method": "post", "operation": "post", "ids": ["checkout_id"], "path": "checkouts/<checkout_id>/payments.json"},
+    {"http_method": "get", "operation": "get", "ids": ["checkout_id"], "path": "checkouts/<checkout_id>/payments.json"},
+    {"http_method": "get", "operation": "get", "ids": ["checkout_id", "id"], "path": "checkouts/<checkout_id>/payments/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": ["checkout_id"], "path": "checkouts/<checkout_id>/payments/count.json"}
   ];
 
   public static async find(
@@ -47,7 +47,7 @@ export class Payment extends Base {
   ): Promise<Payment | null> {
     const result = await Payment.baseFind({
       session: session,
-      urlIds: {id: id, checkout_id: checkout_id},
+      urlIds: {"id": id, "checkout_id": checkout_id},
       params: {},
     });
     return result ? result[0] as Payment : null;
@@ -62,7 +62,7 @@ export class Payment extends Base {
   ): Promise<Payment[]> {
     const response = await Payment.baseFind({
       session: session,
-      urlIds: {checkout_id: checkout_id},
+      urlIds: {"checkout_id": checkout_id},
       params: {...otherArgs},
     });
 
@@ -80,7 +80,7 @@ export class Payment extends Base {
       http_method: "get",
       operation: "count",
       session: session,
-      urlIds: {checkout_id: checkout_id},
+      urlIds: {"checkout_id": checkout_id},
       params: {...otherArgs},
       body: {},
       entity: null,

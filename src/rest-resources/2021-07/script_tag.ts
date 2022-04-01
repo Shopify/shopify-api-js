@@ -37,12 +37,12 @@ export class ScriptTag extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "script_tags.json"},
-    {http_method: "post", operation: "post", ids: [], path: "script_tags.json"},
-    {http_method: "get", operation: "count", ids: [], path: "script_tags/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "script_tags/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "script_tags/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "script_tags/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "script_tags.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "script_tags.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "script_tags/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "script_tags/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "script_tags/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "script_tags/<id>.json"}
   ];
 
   public static async find(
@@ -54,8 +54,8 @@ export class ScriptTag extends Base {
   ): Promise<ScriptTag | null> {
     const result = await ScriptTag.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as ScriptTag : null;
   }
@@ -70,7 +70,7 @@ export class ScriptTag extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -94,7 +94,7 @@ export class ScriptTag extends Base {
     const response = await ScriptTag.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, src: src, fields: fields, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "src": src, "fields": fields, ...otherArgs},
     });
 
     return response as ScriptTag[];
@@ -112,7 +112,7 @@ export class ScriptTag extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {src: src, ...otherArgs},
+      params: {"src": src, ...otherArgs},
       body: {},
       entity: null,
     });

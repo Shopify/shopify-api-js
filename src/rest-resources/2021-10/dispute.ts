@@ -2,8 +2,6 @@ import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 
-import {Currency} from './currency';
-
 interface FindArgs {
   session: SessionInterface;
   id: number | string;
@@ -22,13 +20,11 @@ export class Dispute extends Base {
 
   protected static NAME = 'dispute';
   protected static PLURAL_NAME = 'disputes';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
-    currency: Currency
-  };
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "shopify_payments/disputes.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "shopify_payments/disputes/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/disputes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/disputes/<id>.json"}
   ];
 
   public static async find(
@@ -39,7 +35,7 @@ export class Dispute extends Base {
   ): Promise<Dispute | null> {
     const result = await Dispute.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as Dispute : null;
@@ -58,14 +54,14 @@ export class Dispute extends Base {
     const response = await Dispute.baseFind({
       session: session,
       urlIds: {},
-      params: {since_id: since_id, last_id: last_id, status: status, initiated_at: initiated_at, ...otherArgs},
+      params: {"since_id": since_id, "last_id": last_id, "status": status, "initiated_at": initiated_at, ...otherArgs},
     });
 
     return response as Dispute[];
   }
 
   public amount: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public evidence_due_by: string | null;
   public evidence_sent_on: string | null;
   public finalized_on: string | null;

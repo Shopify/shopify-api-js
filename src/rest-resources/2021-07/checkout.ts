@@ -2,7 +2,6 @@ import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 
-import {Currency} from './currency';
 import {DiscountCode} from './discount_code';
 import {Order} from './order';
 import {GiftCard} from './gift_card';
@@ -27,19 +26,18 @@ export class Checkout extends Base {
   protected static NAME = 'checkout';
   protected static PLURAL_NAME = 'checkouts';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    currency: Currency,
-    discount_code: DiscountCode,
-    order: Order
+    "discount_code": DiscountCode,
+    "order": Order
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    gift_cards: GiftCard
+    "gift_cards": GiftCard
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "checkouts.json"},
-    {http_method: "post", operation: "complete", ids: ["token"], path: "checkouts/<token>/complete.json"},
-    {http_method: "get", operation: "get", ids: ["token"], path: "checkouts/<token>.json"},
-    {http_method: "put", operation: "put", ids: ["token"], path: "checkouts/<token>.json"},
-    {http_method: "get", operation: "shipping_rates", ids: ["token"], path: "checkouts/<token>/shipping_rates.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
+    {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
+    {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"},
+    {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"}
   ];
   protected static PRIMARY_KEY: string = "token";
 
@@ -51,7 +49,7 @@ export class Checkout extends Base {
   ): Promise<Checkout | null> {
     const result = await Checkout.baseFind({
       session: session,
-      urlIds: {token: token},
+      urlIds: {"token": token},
       params: {},
     });
     return result ? result[0] as Checkout : null;
@@ -68,7 +66,7 @@ export class Checkout extends Base {
       http_method: "get",
       operation: "shipping_rates",
       session: session,
-      urlIds: {token: token},
+      urlIds: {"token": token},
       params: {...otherArgs},
       body: {},
       entity: null,
@@ -87,7 +85,7 @@ export class Checkout extends Base {
       http_method: "post",
       operation: "complete",
       session: this.session,
-      urlIds: {token: this.token},
+      urlIds: {"token": this.token},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -101,7 +99,7 @@ export class Checkout extends Base {
   public applied_discount: {[key: string]: unknown} | null;
   public buyer_accepts_marketing: boolean | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public customer_id: number | null;
   public discount_code: DiscountCode | null | {[key: string]: any};
   public email: string | null;

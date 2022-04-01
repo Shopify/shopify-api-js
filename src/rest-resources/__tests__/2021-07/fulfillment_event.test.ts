@@ -15,7 +15,7 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_events": [{"id": 944956398, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-02-03T16:32:07-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-02-03T16:32:07-05:00", "updated_at": "2022-02-03T16:32:07-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956398"}]}));
 
     await FulfillmentEvent.all({
       session: test_session,
@@ -34,7 +34,7 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_event": {"id": 944956396, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-02-03T16:32:04-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-02-03T16:32:04-05:00", "updated_at": "2022-02-03T16:32:04-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956396"}}));
 
     const fulfillment_event = new FulfillmentEvent({session: test_session});
     fulfillment_event.order_id = 450789469;
@@ -48,12 +48,12 @@ describe('FulfillmentEvent resource', () => {
       path: '/admin/api/2021-07/orders/450789469/fulfillments/255858046/events.json',
       query: '',
       headers,
-      data: { "event": {status: "in_transit"} }
+      data: { "event": {"status": "in_transit"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_event": {"id": 944956395, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-02-03T16:31:55-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-02-03T16:31:55-05:00", "updated_at": "2022-02-03T16:31:55-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956395"}}));
 
     await FulfillmentEvent.find({
       session: test_session,

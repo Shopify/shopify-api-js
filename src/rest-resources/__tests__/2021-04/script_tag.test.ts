@@ -15,7 +15,7 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"script_tags": [{"id": 421379493, "src": "https://js-aplenty.com/bar.js", "event": "onload", "created_at": "2022-02-03T17:14:40-05:00", "updated_at": "2022-02-03T17:14:40-05:00", "display_scope": "all"}, {"id": 596726825, "src": "https://js-aplenty.com/foo.js", "event": "onload", "created_at": "2022-02-03T17:14:40-05:00", "updated_at": "2022-02-03T17:14:40-05:00", "display_scope": "all"}]}));
 
     await ScriptTag.all({
       session: test_session,
@@ -32,7 +32,7 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"script_tags": [{"id": 596726825, "src": "https://js-aplenty.com/foo.js", "event": "onload", "created_at": "2022-02-03T17:14:40-05:00", "updated_at": "2022-02-03T17:14:40-05:00", "display_scope": "all"}]}));
 
     await ScriptTag.all({
       session: test_session,
@@ -50,7 +50,7 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"script_tags": [{"id": 596726825, "src": "https://js-aplenty.com/foo.js", "event": "onload", "created_at": "2022-02-03T17:14:40-05:00", "updated_at": "2022-02-03T17:14:40-05:00", "display_scope": "all"}]}));
 
     await ScriptTag.all({
       session: test_session,
@@ -68,7 +68,7 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"script_tag": {"id": 870402691, "src": "https://djavaskripped.org/fancy.js", "event": "onload", "created_at": "2022-02-03T17:15:30-05:00", "updated_at": "2022-02-03T17:15:30-05:00", "display_scope": "all", "cache": false}}));
 
     const script_tag = new ScriptTag({session: test_session});
     script_tag.event = "onload";
@@ -81,12 +81,12 @@ describe('ScriptTag resource', () => {
       path: '/admin/api/2021-04/script_tags.json',
       query: '',
       headers,
-      data: { "script_tag": {event: "onload", src: "https://djavaskripped.org/fancy.js"} }
+      data: { "script_tag": {"event": "onload", "src": "https://djavaskripped.org/fancy.js"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_5', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"count": 2}));
 
     await ScriptTag.count({
       session: test_session,
@@ -103,7 +103,7 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_6', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"script_tag": {"id": 596726825, "src": "https://js-aplenty.com/foo.js", "event": "onload", "created_at": "2022-02-03T17:14:40-05:00", "updated_at": "2022-02-03T17:14:40-05:00", "display_scope": "all", "cache": false}}));
 
     await ScriptTag.find({
       session: test_session,
@@ -121,7 +121,7 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_7', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"script_tag": {"src": "https://somewhere-else.com/another.js", "cache": false, "id": 596726825, "event": "onload", "created_at": "2022-02-03T17:14:40-05:00", "updated_at": "2022-02-03T17:15:35-05:00", "display_scope": "all"}}));
 
     const script_tag = new ScriptTag({session: test_session});
     script_tag.id = 596726825;
@@ -134,7 +134,7 @@ describe('ScriptTag resource', () => {
       path: '/admin/api/2021-04/script_tags/596726825.json',
       query: '',
       headers,
-      data: { "script_tag": {id: 596726825, src: "https://somewhere-else.com/another.js"} }
+      data: { "script_tag": {"id": 596726825, "src": "https://somewhere-else.com/another.js"} }
     }).toMatchMadeHttpRequest();
   });
 

@@ -15,7 +15,7 @@ export class Balance extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "shopify_payments/balance.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/balance.json"}
   ];
 
   public static async all(

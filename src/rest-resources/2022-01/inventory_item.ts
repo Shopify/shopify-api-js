@@ -21,9 +21,9 @@ export class InventoryItem extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "inventory_items.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "inventory_items/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "inventory_items/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_items.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "inventory_items/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "inventory_items/<id>.json"}
   ];
 
   public static async find(
@@ -34,7 +34,7 @@ export class InventoryItem extends Base {
   ): Promise<InventoryItem | null> {
     const result = await InventoryItem.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as InventoryItem : null;
@@ -51,7 +51,7 @@ export class InventoryItem extends Base {
     const response = await InventoryItem.baseFind({
       session: session,
       urlIds: {},
-      params: {ids: ids, limit: limit, ...otherArgs},
+      params: {"ids": ids, "limit": limit, ...otherArgs},
     });
 
     return response as InventoryItem[];

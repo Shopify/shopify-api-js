@@ -15,7 +15,7 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"risk": {"id": 700140154, "order_id": 450789469, "checkout_id": 901414060, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order came from an anonymous proxy", "merchant_message": "This order came from an anonymous proxy"}}));
 
     const order_risk = new OrderRisk({session: test_session});
     order_risk.order_id = 450789469;
@@ -33,12 +33,12 @@ describe('OrderRisk resource', () => {
       path: '/admin/api/2021-07/orders/450789469/risks.json',
       query: '',
       headers,
-      data: { "risk": {message: "This order came from an anonymous proxy", recommendation: "cancel", score: 1.0, source: "External", cause_cancel: true, display: true} }
+      data: { "risk": {"message": "This order came from an anonymous proxy", "recommendation": "cancel", "score": 1.0, "source": "External", "cause_cancel": true, "display": true} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"risks": [{"id": 284138680, "order_id": 450789469, "checkout_id": null, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order was placed from a proxy IP", "merchant_message": "This order was placed from a proxy IP"}, {"id": 700140156, "order_id": 450789469, "checkout_id": 901414060, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order came from an anonymous proxy", "merchant_message": "This order came from an anonymous proxy"}]}));
 
     await OrderRisk.all({
       session: test_session,
@@ -56,7 +56,7 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"risk": {"id": 284138680, "order_id": 450789469, "checkout_id": null, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order was placed from a proxy IP", "merchant_message": "This order was placed from a proxy IP"}}));
 
     await OrderRisk.find({
       session: test_session,
@@ -75,7 +75,7 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"risk": {"order_id": 450789469, "cause_cancel": false, "message": "After further review, this is a legitimate order", "recommendation": "accept", "score": "0.0", "source": "External", "id": 284138680, "checkout_id": null, "display": true, "merchant_message": "After further review, this is a legitimate order"}}));
 
     const order_risk = new OrderRisk({session: test_session});
     order_risk.order_id = 450789469;
@@ -93,7 +93,7 @@ describe('OrderRisk resource', () => {
       path: '/admin/api/2021-07/orders/450789469/risks/284138680.json',
       query: '',
       headers,
-      data: { "risk": {id: 284138680, message: "After further review, this is a legitimate order", recommendation: "accept", source: "External", cause_cancel: false, score: 0.0} }
+      data: { "risk": {"id": 284138680, "message": "After further review, this is a legitimate order", "recommendation": "accept", "source": "External", "cause_cancel": false, "score": 0.0} }
     }).toMatchMadeHttpRequest();
   });
 

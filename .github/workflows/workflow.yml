@@ -7,12 +7,14 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '16.x'
       - name: Install
         run: yarn install
       - name: Lint
         run: yarn lint
       - name: Test
         run: yarn test
-      - name: Test REST resources
-        run: yarn test_rest_resources
+      - name: Test network adapters
+        run: yarn e2etests:test
+      # - name: Test REST resources
+      #   run: yarn test_rest_resources

@@ -30,15 +30,15 @@ export class CollectionListing extends Base {
   protected static NAME = 'collection_listing';
   protected static PLURAL_NAME = 'collection_listings';
   protected static HAS_ONE: {[key: string]: typeof Base} = {
-    image: Image
+    "image": Image
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "collection_listings.json"},
-    {http_method: "get", operation: "product_ids", ids: ["collection_id"], path: "collection_listings/<collection_id>/product_ids.json"},
-    {http_method: "get", operation: "get", ids: ["collection_id"], path: "collection_listings/<collection_id>.json"},
-    {http_method: "put", operation: "put", ids: ["collection_id"], path: "collection_listings/<collection_id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["collection_id"], path: "collection_listings/<collection_id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "collection_listings.json"},
+    {"http_method": "get", "operation": "product_ids", "ids": ["collection_id"], "path": "collection_listings/<collection_id>/product_ids.json"},
+    {"http_method": "get", "operation": "get", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"}
   ];
   protected static PRIMARY_KEY: string = "collection_id";
 
@@ -50,7 +50,7 @@ export class CollectionListing extends Base {
   ): Promise<CollectionListing | null> {
     const result = await CollectionListing.baseFind({
       session: session,
-      urlIds: {collection_id: collection_id},
+      urlIds: {"collection_id": collection_id},
       params: {},
     });
     return result ? result[0] as CollectionListing : null;
@@ -66,7 +66,7 @@ export class CollectionListing extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {collection_id: collection_id},
+      urlIds: {"collection_id": collection_id},
       params: {},
     });
 
@@ -83,7 +83,7 @@ export class CollectionListing extends Base {
     const response = await CollectionListing.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, ...otherArgs},
+      params: {"limit": limit, ...otherArgs},
     });
 
     return response as CollectionListing[];
@@ -101,8 +101,8 @@ export class CollectionListing extends Base {
       http_method: "get",
       operation: "product_ids",
       session: session,
-      urlIds: {collection_id: collection_id},
-      params: {limit: limit, ...otherArgs},
+      urlIds: {"collection_id": collection_id},
+      params: {"limit": limit, ...otherArgs},
       body: {},
       entity: null,
     });

@@ -2,8 +2,6 @@ import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 
-import {Currency} from './currency';
-
 interface AllArgs {
   [key: string]: unknown;
   session: SessionInterface;
@@ -20,12 +18,10 @@ export class TenderTransaction extends Base {
 
   protected static NAME = 'tender_transaction';
   protected static PLURAL_NAME = 'tender_transactions';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
-    currency: Currency
-  };
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "tender_transactions.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "tender_transactions.json"}
   ];
 
   public static async all(
@@ -43,14 +39,14 @@ export class TenderTransaction extends Base {
     const response = await TenderTransaction.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, processed_at_min: processed_at_min, processed_at_max: processed_at_max, processed_at: processed_at, order: order, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "processed_at_min": processed_at_min, "processed_at_max": processed_at_max, "processed_at": processed_at, "order": order, ...otherArgs},
     });
 
     return response as TenderTransaction[];
   }
 
   public amount: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public id: number | null;
   public order_id: number | null;
   public payment_details: {[key: string]: unknown} | null;

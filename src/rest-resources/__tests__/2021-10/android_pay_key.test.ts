@@ -15,7 +15,7 @@ describe('AndroidPayKey resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811899, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}));
 
     const android_pay_key = new AndroidPayKey({session: test_session});
 
@@ -32,7 +32,7 @@ describe('AndroidPayKey resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811897, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}));
 
     await AndroidPayKey.find({
       session: test_session,

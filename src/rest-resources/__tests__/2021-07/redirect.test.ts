@@ -15,7 +15,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirects": [{"id": 304339089, "path": "/products.php", "target": "/products"}, {"id": 668809255, "path": "/leopard", "target": "/pages/macosx"}, {"id": 950115854, "path": "/ibook", "target": "/products/macbook"}]}));
 
     await Redirect.all({
       session: test_session,
@@ -32,7 +32,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirects": [{"id": 950115854, "path": "/ibook", "target": "/products/macbook"}]}));
 
     await Redirect.all({
       session: test_session,
@@ -50,7 +50,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"id": 984542201, "path": "/ipod", "target": "/pages/itunes"}}));
 
     const redirect = new Redirect({session: test_session});
     redirect.path = "/ipod";
@@ -63,12 +63,12 @@ describe('Redirect resource', () => {
       path: '/admin/api/2021-07/redirects.json',
       query: '',
       headers,
-      data: { "redirect": {path: "/ipod", target: "/pages/itunes"} }
+      data: { "redirect": {"path": "/ipod", "target": "/pages/itunes"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"id": 984542202, "path": "/forums", "target": "http://forums.apple.com/"}}));
 
     const redirect = new Redirect({session: test_session});
     redirect.path = "http://www.apple.com/forums";
@@ -81,12 +81,12 @@ describe('Redirect resource', () => {
       path: '/admin/api/2021-07/redirects.json',
       query: '',
       headers,
-      data: { "redirect": {path: "http://www.apple.com/forums", target: "http://forums.apple.com"} }
+      data: { "redirect": {"path": "http://www.apple.com/forums", "target": "http://forums.apple.com"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_5', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"count": 3}));
 
     await Redirect.count({
       session: test_session,
@@ -103,7 +103,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_6', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"id": 668809255, "path": "/leopard", "target": "/pages/macosx"}}));
 
     await Redirect.find({
       session: test_session,
@@ -121,7 +121,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_7', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"path": "/tiger", "target": "/pages/macosx", "id": 668809255}}));
 
     const redirect = new Redirect({session: test_session});
     redirect.id = 668809255;
@@ -134,12 +134,12 @@ describe('Redirect resource', () => {
       path: '/admin/api/2021-07/redirects/668809255.json',
       query: '',
       headers,
-      data: { "redirect": {id: 668809255, path: "/tiger"} }
+      data: { "redirect": {"id": 668809255, "path": "/tiger"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_8', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"target": "/pages/macpro", "path": "/leopard", "id": 668809255}}));
 
     const redirect = new Redirect({session: test_session});
     redirect.id = 668809255;
@@ -152,12 +152,12 @@ describe('Redirect resource', () => {
       path: '/admin/api/2021-07/redirects/668809255.json',
       query: '',
       headers,
-      data: { "redirect": {id: 668809255, target: "/pages/macpro"} }
+      data: { "redirect": {"id": 668809255, "target": "/pages/macpro"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_9', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"redirect": {"path": "/powermac", "target": "/pages/macpro", "id": 950115854}}));
 
     const redirect = new Redirect({session: test_session});
     redirect.id = 950115854;
@@ -171,7 +171,7 @@ describe('Redirect resource', () => {
       path: '/admin/api/2021-07/redirects/950115854.json',
       query: '',
       headers,
-      data: { "redirect": {id: 950115854, path: "/powermac", target: "/pages/macpro"} }
+      data: { "redirect": {"id": 950115854, "path": "/powermac", "target": "/pages/macpro"} }
     }).toMatchMadeHttpRequest();
   });
 
