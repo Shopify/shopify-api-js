@@ -72,7 +72,7 @@ export default {
 
       switch(testRequest.method.toLowerCase()) {
         case 'get':
-          let response = await client.get({path: testRequest.url});
+          let response = await client.get({path: testRequest.url, extraHeaders: testRequest.headers});
           console.log(`response from http_server = ${JSON.stringify(response.body)}`);
 
           testPassed = JSON.stringify(response.body) === expectedResponse.body;

@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import {DataType} from '../../../types';
 
 import {ExpectedResponse, TestConfig} from './test_config';
+import ProcessedQuery from '../../../../../utils/processed-query';
 
 /* eslint-disable-next-line no-undef */
 // const jest = require('jest');
@@ -122,6 +123,120 @@ describe('CF Worker HTTP client', () => {
     );
   });
 
+  it('can make POST request with type JSON and data is already formatted', async () => {
+    const postData = {
+      title: 'Test product',
+      amount: 10,
+    };
+
+    const postTest: TestConfig = {
+      testRequest: {
+        method: 'post',
+        url: '/url/path',
+        headers: {},
+        bodyType: DataType.JSON,
+        body: JSON.stringify(JSON.stringify(postData)),
+      },
+      expectedResponse: expectedSuccessResponse,
+    };
+
+    await expect(fetch(testAppServer, fetchParams(postTest))).resolves.toEqual(
+      buildExpectedResponse(),
+    );
+  });
+
+  it('can make POST request with zero-length JSON', async () => {
+    const postTest: TestConfig = {
+      testRequest: {
+        method: 'post',
+        url: '/url/path',
+        headers: {},
+        bodyType: DataType.JSON,
+        body: JSON.stringify(''),
+      },
+      expectedResponse: expectedSuccessResponse,
+    };
+
+    await expect(fetch(testAppServer, fetchParams(postTest))).resolves.toEqual(
+      buildExpectedResponse(),
+    );
+  });
+
+  it('can make POST request with form-data type', async () => {
+    const postData = {
+      title: 'Test product',
+      amount: 10,
+    };
+
+    const postTest: TestConfig = {
+      testRequest: {
+        method: 'post',
+        url: '/url/path',
+        headers: {},
+        bodyType: DataType.URLEncoded,
+        body: JSON.stringify(postData),
+      },
+      expectedResponse: expectedSuccessResponse,
+    };
+
+    await expect(fetch(testAppServer, fetchParams(postTest))).resolves.toEqual(
+      buildExpectedResponse(),
+    );
+  });
+
+  it('can make POST request with form-data type and data is already formatted', async () => {
+    const postData = {
+      title: 'Test product',
+      amount: 10,
+    };
+
+    const postTest: TestConfig = {
+      testRequest: {
+        method: 'post',
+        url: '/url/path',
+        headers: {},
+        bodyType: DataType.URLEncoded,
+        body: ProcessedQuery.stringify(postData),
+      },
+      expectedResponse: expectedSuccessResponse,
+    };
+
+    await expect(fetch(testAppServer, fetchParams(postTest))).resolves.toEqual(
+      buildExpectedResponse(),
+    );
+  });
+
+  it('can make POST request with GraphQL type', async () => {
+    const graphqlQuery = `
+      query {
+        webhookSubscriptions(first:5) {
+          edges {
+            node {
+              id
+              endpoint
+            }
+          }
+        }
+      }
+    `;
+
+    const postTest: TestConfig = {
+      testRequest: {
+        method: 'post',
+        url: '/url/path',
+        headers: {},
+        bodyType: DataType.GraphQL,
+        body: graphqlQuery,
+      },
+      expectedResponse: expectedSuccessResponse,
+    };
+
+    await expect(fetch(testAppServer, fetchParams(postTest))).resolves.toEqual(
+      buildExpectedResponse(),
+    );
+  });
+
+
   it('can make PUT request with type JSON', async () => {
     const putData = {
       title: 'Test product',
@@ -144,13 +259,6 @@ describe('CF Worker HTTP client', () => {
     );
   });
 
-        /**
-       * 9. 'can make DELETE request'
-      //  */
-      //    response = await client.delete({path: '/url/path/123'});
-      //    allPassed =
-      //      allPassed &&
-      //      JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
   it('can make DELETE request', async () => {
     const deleteTest: TestConfig = {
       testRequest: {
@@ -162,6 +270,30 @@ describe('CF Worker HTTP client', () => {
     };
 
     await expect(fetch(testAppServer, fetchParams(deleteTest))).resolves.toEqual(
+      buildExpectedResponse(),
+    );
+  });
+
+  /**
+   * 10. 'gracefully handles errors'
+   */
+
+  it('allows custom headers', async () => {
+    /* eslint-disable-next-line no-warning-comments */
+    // FIXME: change http_server.js to check that the headers were actually sent across
+    let customHeaders = {
+      'X-Not-A-Real-Header': 'some_value',
+    };
+    const getTest: TestConfig = {
+      testRequest: {
+        method: 'get',
+        url: '/url/path',
+        headers: customHeaders,
+      },
+      expectedResponse: expectedSuccessResponse,
+    };
+
+    await expect(fetch(testAppServer, fetchParams(getTest))).resolves.toEqual(
       buildExpectedResponse(),
     );
   });
