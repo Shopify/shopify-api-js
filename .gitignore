@@ -7,4 +7,3 @@ yarn-error.log
 tsdocs/
 tsconfig.tsbuildinfo
 bundle/
-http_server.js
