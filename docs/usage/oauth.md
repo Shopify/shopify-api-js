@@ -143,7 +143,7 @@ You can use the `Shopify.Utils.loadCurrentSession()` method to load an online se
 
 ## Fetching sessions
 
-As mentioned in the previous sections, you can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `Context.SESSION_STORAGE` strategy, and can be retrieved with the below utitilies.
+As mentioned in the previous sections, you can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `Context.SESSION_STORAGE` strategy, and can be retrieved with the below utilities.
 
 - To load a session, you can use the following method. You can load both online and offline sessions from the current request / response objects.
 
