@@ -8,6 +8,7 @@ import graphqlProxy from './graphql_proxy';
 import safeCompare from './safe-compare';
 import storeSession from './store-session';
 import validateHmac from './hmac-validator';
+import validateShop from './shop-validator';
 import versionCompatible from './version-compatible';
 import withSession from './with-session';
 
@@ -22,6 +23,7 @@ const ShopifyUtils = {
   safeCompare,
   storeSession,
   validateHmac,
+  validateShop,
   versionCompatible,
   withSession,
 };
