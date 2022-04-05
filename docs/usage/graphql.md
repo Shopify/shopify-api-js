@@ -13,7 +13,7 @@ The `GraphQLClient`'s main method is `query`, which accepts a `GraphQLParams` ob
 
 ```ts
 // Load the current session to get the `accessToken`
-const session = await Shopify.Utils.loadCurrentSession(req, res);
+const session = await Shopify.Utils.loadCurrentSession(req);
 // GraphQLClient takes in the shop url and the accessToken for that shop.
 const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
 // Use client.query and pass your query as `data`

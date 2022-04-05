@@ -55,10 +55,7 @@ describe('GraphQL proxy with session', () => {
         statusCode: 200,
         statusText: 'OK',
       } as Response;
-      const response = await graphqlProxy(
-        await convertRequest(req),
-        internalResponse,
-      );
+      const response = await graphqlProxy(await convertRequest(req));
       internalResponse.body = JSON.stringify(response.body);
       convertResponse(internalResponse, res);
     } catch (err) {
@@ -147,7 +144,6 @@ describe('GraphQL proxy', () => {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop,
@@ -156,13 +152,12 @@ describe('GraphQL proxy', () => {
     );
     Context.SESSION_STORAGE.storeSession(session);
 
-    await expect(graphqlProxy(req, res)).rejects.toThrow(InvalidSession);
+    await expect(graphqlProxy(req)).rejects.toThrow(InvalidSession);
   });
 
   it('throws an error if no session', async () => {
     const req = {headers: {}} as Request;
-    const res = {} as Response;
-    await expect(graphqlProxy(req, res)).rejects.toThrow(SessionNotFound);
+    await expect(graphqlProxy(req)).rejects.toThrow(SessionNotFound);
   });
 });
 

@@ -116,7 +116,7 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    const sessionCookie = await this.getCookieSessionId(request, response);
+    const sessionCookie = await this.getCookieSessionId(request);
     if (!sessionCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
@@ -216,13 +216,9 @@ const ShopifyOAuth = {
    * Loads the current session id from the session cookie.
    *
    * @param request HTTP request object
-   * @param response HTTP response object
    */
-  getCookieSessionId(
-    request: Request,
-    response: Response,
-  ): Promise<string | undefined> {
-    const cookies = new Cookies(request, response, {
+  getCookieSessionId(request: Request): Promise<string | undefined> {
+    const cookies = new Cookies(request, {} as Response, {
       secure: true,
       keys: [Context.API_SECRET_KEY],
     });
@@ -252,12 +248,10 @@ const ShopifyOAuth = {
    * Extracts the current session id from the request / response pair.
    *
    * @param request  HTTP request object
-   * @param response HTTP response object
    * @param isOnline Whether to load online (default) or offline sessions (optional)
    */
   async getCurrentSessionId(
     request: Request,
-    response: Response,
     isOnline = true,
   ): Promise<string | undefined> {
     let currentSessionId: string | undefined;
@@ -287,7 +281,7 @@ const ShopifyOAuth = {
     // JWT.
     if (!currentSessionId) {
       // We still want to get the offline session id from the cookie to make sure it's validated
-      currentSessionId = await this.getCookieSessionId(request, response);
+      currentSessionId = await this.getCookieSessionId(request);
     }
 
     return currentSessionId;

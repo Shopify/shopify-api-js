@@ -35,7 +35,7 @@ Below is an example of how you may query the Storefront API:
 // Load the access token as per instructions above
 const storefrontAccessToken: string;
 // Load the current session
-const session = await Shopify.Utils.loadCurrentSession(req, res);
+const session = await Shopify.Utils.loadCurrentSession(req);
 // StorefrontClient takes in the shop url and the Storefront Access Token for that shop.
 const client = new Shopify.Clients.Storefront(
   session.shop,
