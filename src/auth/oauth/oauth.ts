@@ -7,7 +7,6 @@ import Cookies from 'cookies';
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
-import validateShop from '../../utils/shop-validator';
 import safeCompare from '../../utils/safe-compare';
 import decodeSessionToken from '../../utils/decode-session-token';
 import {Session} from '../session';
@@ -292,16 +291,14 @@ const ShopifyOAuth = {
 };
 
 /**
- * Uses the validation utils validateHmac, validateShop, and safeCompare to assess whether the callback is valid.
+ * Uses the validation utils validateHmac, and safeCompare to assess whether the callback is valid.
  *
  * @param query Current HTTP Request Query
  * @param session Current session
  */
 function validQuery(query: AuthQuery, session: Session): boolean {
   return (
-    validateHmac(query) &&
-    validateShop(query.shop) &&
-    safeCompare(query.state, session.state as string)
+    validateHmac(query) && safeCompare(query.state, session.state as string)
   );
 }
 

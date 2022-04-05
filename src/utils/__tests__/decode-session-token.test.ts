@@ -73,15 +73,3 @@ test('JWT session token fails if the API key is wrong', () => {
     ShopifyErrors.InvalidJwtError,
   );
 });
-
-test('JWT session token fails if the domain is invalid', () => {
-  const invalidPayload = {...payload};
-  invalidPayload.dest = 'https://not-a-domain';
-
-  const token = jwt.sign(invalidPayload, Context.API_SECRET_KEY, {
-    algorithm: 'HS256',
-  });
-  expect(() => decodeSessionToken(token)).toThrow(
-    ShopifyErrors.InvalidJwtError,
-  );
-});

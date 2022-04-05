@@ -21,12 +21,6 @@ describe('HTTP client', () => {
     fs.writeFileSync(logFilePath, '');
   });
 
-  it('validates the given domain', () => {
-    expect(() => new HttpClient('invalid domain')).toThrow(
-      ShopifyErrors.InvalidShopError,
-    );
-  });
-
   it('can make GET request', async () => {
     const client = new HttpClient(domain);
 
