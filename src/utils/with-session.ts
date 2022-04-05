@@ -20,7 +20,7 @@ export default async function withSession({
   if (isOnline) {
     if (!req) {
       throw new ShopifyErrors.MissingRequiredArgument(
-        'Please pass in both the "request" object.',
+        'Please pass in the "request" object.',
       );
     }
 
