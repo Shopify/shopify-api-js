@@ -15,6 +15,8 @@ export interface Response {
   statusText: string;
   headers?: Headers;
   body?: string;
+  extra?: {[key: string]: any};
+  continue?: boolean;
 }
 
 export type AbstractFetchFunc = (req: Request) => Promise<Response>;
@@ -23,6 +25,15 @@ export type AbstractFetchFunc = (req: Request) => Promise<Response>;
 export let abstractFetch: AbstractFetchFunc;
 export function setAbstractFetchFunc(func: AbstractFetchFunc) {
   abstractFetch = func;
+}
+
+export type AbstractConvertRequestFunc = (req: unknown) => Promise<Request>;
+// eslint-disable-next-line import/no-mutable-exports
+export let abstractConvertRequest: AbstractConvertRequestFunc;
+export function setAbstractConvertRequestFunc(
+  func: AbstractConvertRequestFunc,
+) {
+  abstractConvertRequest = func;
 }
 
 export function isOK(resp: Response) {

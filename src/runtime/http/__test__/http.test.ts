@@ -38,6 +38,14 @@ describe('Cookies', () => {
     expect(cookieJar.get('session')).toEqual('123');
   });
 
+  it.only('parses multiple Cookies in the Request', async () => {
+    req.headers.Cookie = 'session=123; other_cookie=321; and_another=456';
+    const cookieJar = new Cookies(req, res);
+    expect(cookieJar.get('session')).toEqual('123');
+    expect(cookieJar.get('other_cookie')).toEqual('321');
+    expect(cookieJar.get('and_another')).toEqual('456');
+  });
+
   it('generates cookie header', async () => {
     const cookieJar = new Cookies(req, res);
     cookieJar.set('new_session', 'lol');

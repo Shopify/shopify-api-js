@@ -1,4 +1,11 @@
-import {Request, Response, Cookies, getHeader} from '../../runtime/http';
+import {
+  Request,
+  Response,
+  Cookies,
+  getHeader,
+  setHeader,
+  abstractConvertRequest,
+} from '../../runtime/http';
 import {crypto} from '../../runtime/crypto';
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
@@ -10,7 +17,6 @@ import {Session} from '../session';
 import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
 import * as ShopifyErrors from '../../error';
-import {SessionInterface} from '../session/types';
 
 import {
   AuthQuery,
@@ -34,19 +40,28 @@ const ShopifyOAuth = {
    *                 Defaults to online access.
    */
   async beginAuth(
-    request: Request,
-    response: Response,
+    request: unknown,
     shop: string,
     redirectPath: string,
     isOnline = true,
-  ): Promise<string> {
+  ): Promise<Response> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
-    const cookies = new Cookies(request, response, {
-      keys: [Context.API_SECRET_KEY],
-      secure: true,
-    });
+    const response: Response = {
+      statusCode: 200,
+      statusText: 'OK',
+      headers: {},
+      continue: false,
+    };
+    const cookies = new Cookies(
+      await abstractConvertRequest(request),
+      response,
+      {
+        keys: [Context.API_SECRET_KEY],
+        secure: true,
+      },
+    );
 
     const state = nonce();
 
@@ -84,7 +99,14 @@ const ShopifyOAuth = {
     // const queryString = querystring.stringify(query);
     const queryString = new URLSearchParams(query).toString();
 
-    return `https://${shop}/admin/oauth/authorize?${queryString}`;
+    response.statusCode = 302;
+    response.statusText = 'Redirect';
+    setHeader(
+      response.headers!,
+      'location',
+      `https://${shop}/admin/oauth/authorize?${queryString}`,
+    );
+    return response;
   },
 
   /**
@@ -100,18 +122,28 @@ const ShopifyOAuth = {
    */
   async validateAuthCallback(
     request: Request,
-    response: Response,
     query: AuthQuery,
-  ): Promise<SessionInterface> {
+  ): Promise<Response> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
-    const cookies = new Cookies(request, response, {
+    const convertedRequest = await abstractConvertRequest(request);
+
+    const response: Response = {
+      statusCode: 200,
+      statusText: 'OK',
+      headers: {},
+      continue: true,
+    };
+    const cookies = new Cookies(convertedRequest, response, {
       keys: [Context.API_SECRET_KEY],
       secure: true,
     });
 
-    const sessionCookie = await this.getCookieSessionId(request, response);
+    const sessionCookie = await this.getCookieSessionId(
+      convertedRequest,
+      response,
+    );
     if (!sessionCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
@@ -204,7 +236,9 @@ const ShopifyOAuth = {
       );
     }
 
-    return currentSession;
+    response.extra = {session: currentSession};
+
+    return response;
   },
 
   /**

@@ -43,5 +43,6 @@ export default async function validateHmac(query: AuthQuery): Promise<boolean> {
   const {hmac} = query;
   const localHmac = await generateLocalHmac(query);
 
+  console.log(query, localHmac, hmac);
   return safeCompare(hmac as string, localHmac);
 }
