@@ -3,8 +3,6 @@ import jwt from 'jsonwebtoken';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
 
-import validateShop from './shop-validator';
-
 const JWT_PERMITTED_CLOCK_TOLERANCE = 5;
 
 interface JwtPayload {
@@ -43,10 +41,6 @@ function decodeSessionToken(token: string): JwtPayload {
     throw new ShopifyErrors.InvalidJwtError(
       'Session token had invalid API key',
     );
-  }
-
-  if (!validateShop(payload.dest.replace(/^https:\/\//, ''))) {
-    throw new ShopifyErrors.InvalidJwtError('Session token had invalid shop');
   }
 
   return payload;

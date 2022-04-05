@@ -7,7 +7,6 @@ import {Method, StatusCode} from '@shopify/network';
 
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
-import validateShop from '../../utils/shop-validator';
 import {Context} from '../../context';
 import ProcessedQuery from '../../utils/processed-query';
 
@@ -29,10 +28,6 @@ class HttpClient {
   private LOGGED_DEPRECATIONS: {[key: string]: number} = {};
 
   public constructor(private domain: string) {
-    if (!validateShop(domain)) {
-      throw new ShopifyErrors.InvalidShopError(`Domain ${domain} is not valid`);
-    }
-
     this.domain = domain;
   }
 
