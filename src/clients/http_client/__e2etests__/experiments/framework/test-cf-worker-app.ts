@@ -1,62 +1,18 @@
-import Shopify from '../../../../../index-cf-worker';
-import {
-  setAbstractFetchFunc,
-  // Response,
-  // Headers,
-} from '../../../../../adapters/abstract-http';
+// import Shopify from '../../../../../index-cf-worker';
+import {setAbstractFetchFunc} from '../../../../../adapters/abstract-http';
 import * as cfWorkerAdapter from '../../../../../adapters/cf-worker-adapter';
-// import {Context} from '../../../../../context';
 import {DataType} from '../../../types';
 import {HttpClient} from '../../../http_client';
-// import ProcessedQuery from '../../../../../utils/processed-query';
-import {ExpectedResponse, TestConfig, TestRequest} from './test_config';
+import {ExpectedResponse, TestConfig, TestRequest} from './test_config_types';
 
 setAbstractFetchFunc(cfWorkerAdapter.abstractFetch);
 
 const domain: string = 'localhost:3000';
-// const successResponseBody: string = JSON.stringify({
-//   message: 'Your HTTP request was successful!',
-// });
-
-// function setRestClientRetryTime(time) {
-//   HttpClient.RETRY_WAIT_TIME = time;
-// }
-
-// function buildExpectedResponse(body: string): Partial<Response> {
-//   const expectedResponse = {
-//     headers: {},
-//     body: JSON.parse(body),
-//   };
-
-//   return expectedResponse;
-// }
-
-// function logResultToConsole(testDescription: string, passed: boolean) {
-//   if (passed) {
-//     /* eslint-disable-next-line no-undef */
-//     console.log(`\x1b[32mPASSED\x1b[0m: ${testDescription}`);
-//   } else {
-//     /* eslint-disable-next-line no-undef */
-//     console.log(`\x1b[31mFAILED\x1b[0m: ${testDescription}`);
-//   }
-// }
 
 /* eslint-disable-next-line import/no-anonymous-default-export */
 export default {
   /* eslint-disable-next-line no-unused-vars */
-  async fetch(req: any, env: any, _ctx: any) {
-    /**
-     * SETUP
-     */
-    Shopify.Context.initialize({
-      API_KEY: env.API_KEY,
-      API_SECRET_KEY: env.API_SECRET_KEY,
-      SCOPES: 'write_products,write_customers,write_draft_orders'.split(','),
-      HOST_NAME: env.HOST?.replace(/https:\/\//, ''),
-      IS_EMBEDDED_APP: true,
-      API_VERSION: Shopify.Context.API_VERSION,
-    });
-
+  async fetch(req: any, _env: any, _ctx: any) {
     const client = new HttpClient(domain);
 
     /**

@@ -11,18 +11,18 @@ import ProcessedQuery from '../../../../../utils/processed-query';
 const testAppServer: string = "http://localhost:8787";
 
 const miniflareServer: child_process.ChildProcess = child_process.spawn(
-  'yarn', [
-    'miniflare',
-    '-e',
-    'src/clients/http_client/__e2etests__/experiments/framework/.env.test',
-    '--global',
-    'E2ETESTS=1',
-    '--modules',
-    'bundle/test-cf-worker-app.js',
+  'yarn',
+  [
+    'node',
+    'dist/clients/http_client/__e2etests__/experiments/framework/test-node-app.js',
   ],
   {
+    env: {
+      ...process.env,
+      E2ETESTS: '1',
+    },
     detached: true,
-  },
+  }
 );
 // miniflareServer.stdout?.on('data', (data) => {
 //   const trimmedOutput: string = String(data).trim();
@@ -68,7 +68,7 @@ function sleep(ms: number) {
   });
 }
 
-describe('CF Worker HTTP client', () => {
+describe('NodeJS HTTP client', () => {
   const expectedSuccessResponse: ExpectedResponse = {
     statusCode: 200,
     statusText: 'OK',
