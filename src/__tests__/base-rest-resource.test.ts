@@ -263,6 +263,26 @@ describe('Base REST resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('ignores unsaveable attribute', async () => {
+    const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
+    const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
+    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+
+    const resource = new FakeResource({session});
+    resource.attribute = 'attribute';
+    resource.unsaveable_attribute = 'unsaveable_attribute';
+    await resource.save();
+
+    expect(resource.id).toBeUndefined();
+    expect({
+      method: 'POST',
+      domain,
+      path: `${prefix}/fake_resources.json`,
+      headers,
+      data: JSON.stringify(expectedRequestBody),
+    }).toMatchMadeHttpRequest();
+  });
+
   it('deletes existing resource', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({}));
 

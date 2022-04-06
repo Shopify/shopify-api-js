@@ -25,6 +25,10 @@ export default class FakeResource extends Base {
   protected static NAME = 'fake_resource';
   protected static PLURAL_NAME = 'fake_resources';
 
+  protected static ATTRIBUTE_SAVE_DENY_LIST: string[] = [
+    'unsaveable_attribute',
+  ];
+
   protected static HAS_ONE = {
     has_one_attribute: FakeResource,
   };
