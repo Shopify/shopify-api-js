@@ -121,7 +121,7 @@ While setting up `Context`, you'll be able to set [which version of the Admin AP
 import http from 'http';
 import url from 'url';
 import querystring from 'querystring';
-import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
+import Shopify, { ApiVersion } from '@shopify/shopify-api';
 require('dotenv').config();
 
 const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST } = process.env
@@ -130,7 +130,7 @@ Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
-  HOST_NAME: process.env.HOST.replace(/https:\/\//, ""),
+  HOST_NAME: HOST.replace(/https:\/\//, ""),
   IS_EMBEDDED_APP: {boolean},
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 });
@@ -178,7 +178,7 @@ http.createServer(onRequest).listen(3000);
 ```ts
 // src/index.ts
 import express from 'express';
-import Shopify, { ApiVersion, AuthQuery } from '@shopify/shopify-api';
+import Shopify, { ApiVersion } from '@shopify/shopify-api';
 require('dotenv').config();
 
 const app = express();
@@ -189,7 +189,7 @@ Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
-  HOST_NAME: process.env.HOST.replace(/https:\/\//, ""),
+  HOST_NAME: HOST.replace(/https:\/\//, ""),
   IS_EMBEDDED_APP: {boolean},
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 });
