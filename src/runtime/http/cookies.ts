@@ -55,11 +55,15 @@ export class Cookies {
   static parseRequestCookies(hdrs: string[]): CookieJar {
     const cookieDefs = hdrs.filter((hdr) => hdr.trim().length > 0);
 
-    const entries = cookieDefs[0].split(';').map((keyval) => {
-      const [name, value] = splitN(keyval, '=', 2).map((value) => value.trim());
+    const entries = cookieDefs.flatMap((hdr) =>
+      hdr.split(';').map((keyval) => {
+        const [name, value] = splitN(keyval, '=', 2).map((value) =>
+          value.trim(),
+        );
 
-      return [name, {name, value}];
-    });
+        return [name, {name, value}];
+      }),
+    );
 
     return this.buildCookieJar(entries);
   }
