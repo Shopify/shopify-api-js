@@ -17,7 +17,7 @@ export async function createSHA256HMAC(
   );
 
   const signature = await crypto.subtle.sign('HMAC', key, enc.encode(payload));
-  return asBase64(signature);
+  return asHex(signature);
 }
 
 export function asHex(buffer: ArrayBuffer): string {
