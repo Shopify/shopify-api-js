@@ -1,14 +1,14 @@
-import Shopify from '../../../index-cf-worker';
+import Shopify from '../../../../../index-cf-worker';
 import {
   setAbstractFetchFunc,
   // Response as abstractResponse,
   // Headers,
-} from '../../../adapters/abstract-http';
-import * as cfWorkerAdapter from '../../../adapters/cf-worker-adapter';
-import {Context} from '../../../context';
-import {DataType} from '../types';
-import {HttpClient} from '../http_client';
-import ProcessedQuery from '../../../utils/processed-query';
+} from '../../../../../adapters/abstract-http';
+import * as cfWorkerAdapter from '../../../../../adapters/cf-worker-adapter';
+import {Context} from '../../../../../context';
+import {DataType} from '../../../types';
+import {HttpClient} from '../../../http_client';
+import ProcessedQuery from '../../../../../utils/processed-query';
 
 setAbstractFetchFunc(cfWorkerAdapter.abstractFetch);
 
