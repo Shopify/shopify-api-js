@@ -1,19 +1,19 @@
 /* global process */
-/* eslint-disable-next-line no-undef */
 import {createServer, IncomingMessage, ServerResponse} from 'http';
 
 interface Response {
   statusCode: number;
   statusText: string;
-  headers?: Record<string, string>;
+  headers?: {[key: string]: string};
   body?: string;
 }
 
 // eslint-disable-next-line no-process-env
-const port: number = parseInt(process.env.PORT || '3000');
-const errorStatusText: string = 'Did not work';
-const requestId: string = 'Request id header';
-const responses: Record<string|number, Response> = {
+const port: number = parseInt(process.env.HTTP_SERVER_PORT || '3000', 10);
+const errorStatusText = 'Did not work';
+const requestId = 'Request id header';
+const responses: {[key: string | number]: Response} = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   200: {
     statusCode: 200,
     statusText: 'OK',
@@ -23,30 +23,35 @@ const responses: Record<string|number, Response> = {
   custom: {
     statusCode: 200,
     statusText: 'OK',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'X-Not-A-Real-Header': 'some_value'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
   lowercaseua: {
     statusCode: 200,
     statusText: 'OK',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'user-agent': 'My lowercase agent'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
   uppercaseua: {
     statusCode: 200,
     statusText: 'OK',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'User-Agent': 'My agent'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
   contextua: {
     statusCode: 200,
     statusText: 'OK',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'User-Agent': 'Context Agent'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
   contextandheadersua: {
     statusCode: 200,
     statusText: 'OK',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'User-Agent': 'Headers Agent | Context Agent'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
@@ -54,6 +59,7 @@ const responses: Record<string|number, Response> = {
     statusCode: 200,
     statusText: 'OK',
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'X-Shopify-API-Deprecated-Reason':
         'This API endpoint has been deprecated',
     },
@@ -63,6 +69,7 @@ const responses: Record<string|number, Response> = {
     statusCode: 200,
     statusText: 'OK',
     headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'X-Shopify-API-Deprecated-Reason':
         'This API endpoint has been deprecated',
     },
@@ -73,33 +80,41 @@ const responses: Record<string|number, Response> = {
       },
     }),
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   403: {
     statusCode: 403,
     statusText: errorStatusText,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'x-request-id': requestId},
     body: JSON.stringify({errors: 'Something went wrong!'}),
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   404: {
     statusCode: 404,
     statusText: errorStatusText,
     headers: {},
     body: JSON.stringify({}),
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   429: {
     statusCode: 429,
     statusText: errorStatusText,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'x-request-id': requestId},
     body: JSON.stringify({errors: 'Something went wrong!'}),
   },
   wait: {
     statusCode: 429,
     statusText: errorStatusText,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'Retry-After': (0.05).toString()},
     body: JSON.stringify({errors: 'Something went wrong!'}),
   },
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   500: {
     statusCode: 500,
     statusText: errorStatusText,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'x-request-id': requestId},
     body: JSON.stringify({}),
   },
@@ -122,12 +137,10 @@ const responses: Record<string|number, Response> = {
 let retryCount = 0;
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-  // console.log(req.method, req.url, req.headers);
   const lookup = req.url?.match(/^\/url\/path\/([a-z0-9]*)$/);
   const code = lookup ? lookup[1] : '200';
   let response: Response = responses[code] || responses['200'];
   if (code === 'retries' && retryCount < 2) {
-    // console.log(`retries: retryCount = ${retryCount}`);
     response = responses['429'];
     retryCount += 1;
   }
@@ -167,7 +180,6 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   }
 });
 
-// eslint-disable-next-line no-unused-vars
 function handle(_signal: any): void {
   process.exit(0);
 }
@@ -175,5 +187,6 @@ function handle(_signal: any): void {
 process.on('SIGINT', handle);
 process.on('SIGTERM', handle);
 
-// eslint-disable-next-line no-empty-function
-server.listen(port, () => {});
+server.listen(port, () => {
+  console.log(`Listening on :${port}`);
+});

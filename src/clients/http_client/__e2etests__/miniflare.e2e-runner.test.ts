@@ -1,22 +1,26 @@
 import * as child_process from 'child_process';
+
 import fetch from 'node-fetch';
-import {DataType} from '../../../types';
+
+import {DataType} from '../types';
+import ProcessedQuery from '../../../utils/processed-query';
 
 import {ExpectedResponse, TestConfig} from './test_config_types';
-import ProcessedQuery from '../../../../../utils/processed-query';
 
-/* eslint-disable-next-line no-undef */
-// const jest = require('jest');
+const testAppPort = '8888';
+const testAppServer = `http://localhost:${testAppPort}`;
+const testHttpServerPort = '9999';
 
-const testAppServer: string = "http://localhost:8787";
-
-const miniflareServer: child_process.ChildProcess = child_process.spawn(
-  'yarn', [
+const miniflareAppServer: child_process.ChildProcess = child_process.spawn(
+  'yarn',
+  [
     'miniflare',
-    '-e',
-    'src/clients/http_client/__e2etests__/experiments/framework/.env.test',
+    '--env',
+    'src/clients/http_client/__e2etests__/.env.test',
     '--global',
     'E2ETESTS=1',
+    '--port',
+    `${testAppPort}`,
     '--modules',
     'bundle/test-cf-worker-app.js',
   ],
@@ -24,43 +28,23 @@ const miniflareServer: child_process.ChildProcess = child_process.spawn(
     detached: true,
   },
 );
-// miniflareServer.stdout?.on('data', (data) => {
-//   const trimmedOutput: string = String(data).trim();
-//   console.log(` miniflare: ${trimmedOutput}`);
-// });
-
-// miniflareServer.stderr?.on('data', (data) => {
-//   const trimmedOutput: string = String(data).trim();
-//   console.error(` miniflare: ${trimmedOutput}`);
-// });
-
-// miniflareServer.on('close', (code) => {
-//   console.log(`miniflare exited with code ${code}`);
-// });
 
 const httpServer: child_process.ChildProcess = child_process.spawn(
   'yarn',
-  [
-    'node',
-    'dist/clients/http_client/__e2etests__/experiments/framework/http_server.js',
-  ],
+  ['node', 'dist/clients/http_client/__e2etests__/http_server.js'],
   {
+    env: {
+      ...process.env, // eslint-disable-line no-process-env
+      HTTP_SERVER_PORT: testHttpServerPort,
+    },
     detached: true,
-  }
+  },
 );
-// httpServer.stdout?.on('data', (data) => {
-//   const trimmedOutput: string = String(data).trim();
-//   console.log(`httpServer: ${trimmedOutput}`);
-// });
 
-// httpServer.stderr?.on('data', (data) => {
-//   const trimmedOutput: string = String(data).trim();
-//   console.error(`httpServer: ${trimmedOutput}`);
-// });
-
-// httpServer.on('close', (code) => {
-//   console.log(`httpServer process exited with code ${code}`);
-// });
+// console.log(
+//   `miniflareAppServer = ${miniflareAppServer.pid}, ${miniflareAppServer.spawnargs}`,
+// );
+// console.log(`httpServer = ${httpServer.pid}, ${httpServer.spawnargs}`);
 
 function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -222,7 +206,6 @@ describe('CF Worker HTTP client', () => {
     checkTestResponse(await fetch(testAppServer, fetchParams(postTest)));
   });
 
-
   it('can make PUT request with type JSON', async () => {
     const putData = {
       title: 'Test product',
@@ -271,7 +254,9 @@ describe('CF Worker HTTP client', () => {
       },
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(fourZeroThreeTestConfig)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(fourZeroThreeTestConfig)),
+    );
   });
 
   it('gracefully handles 404 error', async () => {
@@ -288,7 +273,9 @@ describe('CF Worker HTTP client', () => {
       },
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(fourZeroFourTestConfig)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(fourZeroFourTestConfig)),
+    );
   });
 
   it('gracefully handles 429 error', async () => {
@@ -306,9 +293,10 @@ describe('CF Worker HTTP client', () => {
       },
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(fourTwoNineTestConfig)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(fourTwoNineTestConfig)),
+    );
   });
-
 
   it('gracefully handles 500 error', async () => {
     const fourTwoNineTestConfig: TestConfig = {
@@ -325,13 +313,16 @@ describe('CF Worker HTTP client', () => {
       },
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(fourTwoNineTestConfig)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(fourTwoNineTestConfig)),
+    );
   });
 
   it('allows custom headers', async () => {
     /* eslint-disable-next-line no-warning-comments */
     // FIXME: change http_server.js to check that the headers were actually sent across
     const customHeaders = {
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'X-Not-A-Real-Header': 'some_value',
     };
     const customHeaderTest: TestConfig = {
@@ -343,12 +334,15 @@ describe('CF Worker HTTP client', () => {
       expectedResponse: expectedSuccessResponse,
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(customHeaderTest)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(customHeaderTest)),
+    );
   });
 
   it('extends User-Agent if it is provided (capitalized)', async () => {
     /* eslint-disable-next-line no-warning-comments */
     // FIXME: change http_server.js to check that the headers were actually sent across
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
     const customHeaders = {'User-Agent': 'My agent'};
     const extendUATest: TestConfig = {
       testRequest: {
@@ -365,6 +359,7 @@ describe('CF Worker HTTP client', () => {
   it('extends User-Agent if it is provided (lowercase)', async () => {
     /* eslint-disable-next-line no-warning-comments */
     // FIXME: change http_server.js to check that the headers were actually sent across
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
     const customHeaders = {'user-agent': 'My lowercase agent'};
     const extendUATest: TestConfig = {
       testRequest: {
@@ -383,13 +378,10 @@ describe('CF Worker HTTP client', () => {
     // FIXME: implement this test
     // Context.USER_AGENT_PREFIX = 'Context Agent';
     // Context.initialize(Context);
-
     // response = await client.get({path: '/url/path/contextua'});
     // const contextuaPassed =
     //   JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
-
     // customHeaders = {'User-Agent': 'Headers Agent'};
-
     // response = await client.get({
     //   path: '/url/path/contextandheadersua',
     //   extraHeaders: customHeaders,
@@ -414,7 +406,9 @@ describe('CF Worker HTTP client', () => {
       },
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(invalidRetryCountTest)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(invalidRetryCountTest)),
+    );
   });
 
   it('retries failed requests but returns success', async () => {
@@ -428,7 +422,9 @@ describe('CF Worker HTTP client', () => {
       expectedResponse: expectedSuccessResponse,
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(retryThenSuccessTest)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(retryThenSuccessTest)),
+    );
   });
 
   it('retries failed requests and stops on non-retriable errors', async () => {
@@ -446,7 +442,9 @@ describe('CF Worker HTTP client', () => {
       },
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(retryThenFailTest)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(retryThenFailTest)),
+    );
   });
 
   it('stops retrying after reaching the limit', async () => {
@@ -472,15 +470,12 @@ describe('CF Worker HTTP client', () => {
     // FIXME: implement this test
     // Default to a lot longer than the time we actually expect to sleep for
     // setRestClientRetryTime(4000);
-
     // If we don't retry within an acceptable amount of time, we assume to be paused for longer than Retry-After
-    /* eslint-disable-next-line no-undef */
     // const retryTimeout = setTimeout(() => {
     // throw new Error(
     //   '18. Request was not retried within the interval defined by Retry-After, test failed',
     // );
     // }, 4000);
-
     // response = await client.get({path: '/url/path/retrythensuccess', tries: 2});
     // allPassed =
     // allPassed &&
@@ -496,43 +491,35 @@ describe('CF Worker HTTP client', () => {
   it.skip('logs deprecation headers to the console when they are present', async () => {
     //   console.warn = jest.fn();
     //   await client.get({path: '/url/path/deprecatedget'});
-
     //   expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
     //     message: 'This API endpoint has been deprecated',
     //     path: 'http://localhost:3000/url/path/deprecatedget',
     //   });
-
     //   await client.post({
     //     path: '/url/path/deprecatedpost',
     //     type: DataType.JSON,
     //     data: {query: 'some query'},
     //   });
-
     //   expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
     //     message: 'This API endpoint has been deprecated',
     //     path: 'http://localhost:3000/url/path/deprecatedpost',
     //   });
   });
 
-
   it.skip('will wait 5 minutes before logging repeat deprecation alerts', async () => {
     //   jest.useFakeTimers();
     //   console.warn = jest.fn();
-
     //   // first call should call console.warn
     //   await client.get({path: '/url/path/deprecatedget'});
     //   // this one should skip it
     //   await client.get({path: '/url/path/deprecatedget'});
     //   // one warn so far
     //   expect(console.warn).toHaveBeenCalledTimes(1);
-
     //   // use jest.fn() to advance time by 5 minutes
     //   const currentTime = Date.now();
     //   Date.now = jest.fn(() => currentTime + 300000);
-
     //   // should warn a second time since 5 mins have passed
     //   await client.get({path: '/url/path/deprecatedget'});
-
     //   expect(console.warn).toHaveBeenCalledTimes(2);
   });
 
@@ -543,9 +530,7 @@ describe('CF Worker HTTP client', () => {
     //   logs.push([sev, msg]);
     // };
     // Context.initialize(Context);
-
     // await client.get({path: '/url/path/deprecatedget'});
-
     // // console.log(logs);
     // const includesNotice = logs[0][1].includes('API Deprecation Notice');
     // const includesMessage = logs[0][1].includes(
@@ -571,7 +556,9 @@ describe('CF Worker HTTP client', () => {
       },
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(errorMessageTest)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(errorMessageTest)),
+    );
   });
 
   it('properly encodes objects in the error message', async () => {
@@ -585,7 +572,8 @@ describe('CF Worker HTTP client', () => {
         statusCode: 500,
         statusText: 'Did not work',
         errorType: 'HttpInternalError',
-        errorMessage: `Shopify internal error:` +
+        errorMessage:
+          `Shopify internal error:` +
           `\n{` +
           `\n  "title": "Invalid title",` +
           `\n  "description": "Invalid description"` +
@@ -593,7 +581,9 @@ describe('CF Worker HTTP client', () => {
       },
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(detailedErrorMessageTest)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(detailedErrorMessageTest)),
+    );
   });
 
   it('adds missing slashes to paths', async () => {
@@ -606,7 +596,9 @@ describe('CF Worker HTTP client', () => {
       expectedResponse: expectedSuccessResponse,
     };
 
-    checkTestResponse(await fetch(testAppServer, fetchParams(missingSlashesTest)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(missingSlashesTest)),
+    );
   });
 
   it('properly formats arrays and hashes in query strings', async () => {
@@ -617,12 +609,15 @@ describe('CF Worker HTTP client', () => {
         headers: {},
         query: JSON.stringify({
           array: ['a', 'b', 'c'],
+          // eslint-disable-next-line id-length
           hash: {a: 'b', c: 'd'},
         }),
       },
       expectedResponse: expectedSuccessResponse,
     };
-    checkTestResponse(await fetch(testAppServer, fetchParams(formatsArraysHashesTest)));
+    checkTestResponse(
+      await fetch(testAppServer, fetchParams(formatsArraysHashesTest)),
+    );
   });
 });
 
@@ -630,8 +625,9 @@ function fetchParams(testConfig: TestConfig): any {
   return {
     method: 'post',
     body: JSON.stringify(testConfig),
-    headers: { 'Content-Type': 'application/json' }
-  }
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
+    headers: {'Content-Type': 'application/json'},
+  };
 }
 
 async function checkTestResponse(response: any): Promise<void> {
@@ -639,16 +635,20 @@ async function checkTestResponse(response: any): Promise<void> {
     expect(response.status).toEqual(200);
   } catch (err) {
     const responseBody = await response.json();
-    err.message = `${err.message}\nfailing test debug: ${JSON.stringify(responseBody, undefined, 2)}`;
+    err.message = `TEST FAILED - debug from appServer: ${JSON.stringify(
+      responseBody,
+      undefined,
+      2,
+    )}`;
     throw err;
   }
 }
 
 async function killChildProcesses(): Promise<void> {
-  if (typeof httpServer.pid !== 'undefined' ) {
+  if (typeof httpServer.pid !== 'undefined') {
     process.kill(-httpServer.pid);
   }
-  if (typeof miniflareServer.pid !== 'undefined' ) {
-    process.kill(-miniflareServer.pid);
+  if (typeof miniflareAppServer.pid !== 'undefined') {
+    process.kill(-miniflareAppServer.pid);
   }
 }
