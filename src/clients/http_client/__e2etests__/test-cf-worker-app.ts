@@ -100,7 +100,7 @@ export default {
       }
 
       if (testPassed) {
-        return new Response('Test passed :)', {status: 200});
+        return new Response('Test passed!', {status: 200});
       } else {
         return new Response(testFailedDebug, {
           status: 500,
@@ -111,7 +111,7 @@ export default {
         });
       }
     } else {
-      return new Response('Not a POST request', {status: 500});
+      return new Response('Ready!', {status: 200});
     }
   },
 };

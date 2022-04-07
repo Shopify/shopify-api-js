@@ -104,15 +104,15 @@ const server = createServer(
 
       if (testPassed) {
         appResponse.statusCode = 200;
-        appResponse.end('Test passed :)');
+        appResponse.end('Test passed!');
       } else {
         appResponse.statusCode = 500;
         appResponse.setHeader('Content-Type', 'application/json');
         appResponse.end(testFailedDebug);
       }
     } else {
-      appResponse.statusCode = 500;
-      appResponse.end('Not a POST request');
+      appResponse.statusCode = 200;
+      appResponse.end('Ready!');
     }
   },
 );

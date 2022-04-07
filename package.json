@@ -7,10 +7,8 @@
   "prettier": "@shopify/prettier-config",
   "scripts": {
     "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__ --testPathIgnorePatterns=src/clients/http_client/__e2etests__",
-    "e2etests:build:cf_worker": "yarn build && yarn rollup -c src/clients/http_client/__e2etests__/rollup.test-cf-worker-app.config.js",
-    "e2etests:cf_worker": "yarn e2etests:build:cf_worker && yarn jest --no-coverage --testPathPattern=\\\"src/.*miniflare.e2e-runner.test.ts\\\"",
-    "e2etests:node": "yarn build && yarn jest --no-coverage --testPathPattern=\\\"src/.*node.e2e-runner.test.ts\\\"",
-    "e2etests:test": "yarn e2etests:build:cf_worker && yarn jest --no-coverage --testPathPattern=\\\"src/.*e2e-runner.test.ts\\\"",
+    "e2etests:build": "yarn build && yarn rollup -c src/clients/http_client/__e2etests__/rollup.test-cf-worker-app.config.js",
+    "e2etests": "yarn e2etests:build && yarn jest --no-coverage --testPathPattern=\\\"src/.*e2e-runner.test.ts\\\"",
     "test_rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
     "build": "tsc",
     "lint": "eslint '**/*.{js,ts,tsx}' --max-warnings 0",
