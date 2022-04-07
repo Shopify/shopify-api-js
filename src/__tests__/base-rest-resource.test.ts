@@ -226,6 +226,19 @@ describe('Base REST resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('loads unknown attribute', async () => {
+    const responseBody = {
+      fake_resource: {attribute: 'attribute', 'unknown?': 'some-value'},
+    };
+    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+
+    const got = await FakeResource.find({id: 1, session} as any);
+
+    expect(got!.attribute).toEqual('attribute');
+    expect(got!['unknown?']).toEqual('some-value');
+    expect(got!.serialize()['unknown?']).toEqual('some-value');
+  });
+
   it('saves with unknown attribute', async () => {
     const expectedRequestBody = {fake_resource: {unknown: 'some-value'}};
     fetchMock.mockResponseOnce(JSON.stringify({}));
