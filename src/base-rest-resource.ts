@@ -62,6 +62,7 @@ class Base {
   protected static PLURAL_NAME = '';
   protected static PRIMARY_KEY = 'id';
   protected static CUSTOM_PREFIX: string | null = null;
+  protected static READ_ONLY_ATTRIBUTES: string[] = [];
 
   protected static HAS_ONE: {[attribute: string]: typeof Base} = {};
   protected static HAS_MANY: {[attribute: string]: typeof Base} = {};
@@ -288,10 +289,13 @@ class Base {
   }
 
   public serialize(): Body {
-    const {HAS_MANY, HAS_ONE} = this.resource();
+    const {HAS_MANY, HAS_ONE, READ_ONLY_ATTRIBUTES} = this.resource();
 
     return Object.entries(this).reduce((acc: Body, [attribute, value]) => {
-      if (['session'].includes(attribute)) {
+      if (
+        ['session'].includes(attribute) ||
+        READ_ONLY_ATTRIBUTES.includes(attribute)
+      ) {
         return acc;
       }
 
