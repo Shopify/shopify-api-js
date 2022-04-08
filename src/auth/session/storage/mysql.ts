@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise';
+
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 
@@ -12,18 +13,6 @@ const defaultMySQLSessionStorageOptions: MySQLSessionStorageOptions = {
 };
 
 export class MySQLSessionStorage implements SessionStorage {
-  private options: MySQLSessionStorageOptions;
-  private ready: Promise<void>;
-  private connection: mysql.Connection;
-
-  constructor(private dbUrl: URL, opts: Partial<MySQLSessionStorageOptions>) {
-    if (typeof this.dbUrl === 'string') {
-      this.dbUrl = new URL(this.dbUrl);
-    }
-    this.options = {...defaultMySQLSessionStorageOptions, ...opts};
-    this.ready = this.init();
-  }
-
   static withCredentials(
     host: string,
     dbName: string,
@@ -41,24 +30,16 @@ export class MySQLSessionStorage implements SessionStorage {
     );
   }
 
-  private async init() {
-    this.connection = await mysql.createConnection(this.dbUrl.toString());
-    await this.createTable();
-  }
+  private options: MySQLSessionStorageOptions;
+  private ready: Promise<void>;
+  private connection: mysql.Connection;
 
-  private async createTable() {
-    const hasSessionTable = await this.hasSessionTable();
-    if (!hasSessionTable && !this.options.createDBWhenMissing) {
-      throw Error('Session Table is missing');
-    } else if (!hasSessionTable) {
-      const query = sql`
-        CREATE TABLE ${this.options.sessionTableName} (
-          id varchar(255) NOT NULL PRIMARY KEY,
-          payload varchar(4095) NOT NULL
-        )
-      `;
-      await this.connection.query(query);
+  constructor(private dbUrl: URL, opts: Partial<MySQLSessionStorageOptions>) {
+    if (typeof this.dbUrl === 'string') {
+      this.dbUrl = new URL(this.dbUrl);
     }
+    this.options = {...defaultMySQLSessionStorageOptions, ...opts};
+    this.ready = this.init();
   }
 
   public async hasSessionTable(): Promise<boolean> {
@@ -103,6 +84,26 @@ export class MySQLSessionStorage implements SessionStorage {
     `;
     await this.connection.query(query);
     return true;
+  }
+
+  private async init() {
+    this.connection = await mysql.createConnection(this.dbUrl.toString());
+    await this.createTable();
+  }
+
+  private async createTable() {
+    const hasSessionTable = await this.hasSessionTable();
+    if (!hasSessionTable && !this.options.createDBWhenMissing) {
+      throw Error('Session Table is missing');
+    } else if (!hasSessionTable) {
+      const query = sql`
+        CREATE TABLE ${this.options.sessionTableName} (
+          id varchar(255) NOT NULL PRIMARY KEY,
+          payload varchar(4095) NOT NULL
+        )
+      `;
+      await this.connection.query(query);
+    }
   }
 }
 
