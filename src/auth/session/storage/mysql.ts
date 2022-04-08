@@ -8,7 +8,7 @@ export interface MySQLSessionStorageOptions {
 }
 const defaultMySQLSessionStorageOptions: MySQLSessionStorageOptions = {
   createDBWhenMissing: true,
-  sessionTableName: 'sessions',
+  sessionTableName: 'shopify_node_api_sessions',
 };
 
 export class MySQLSessionStorage implements SessionStorage {
@@ -17,6 +17,9 @@ export class MySQLSessionStorage implements SessionStorage {
   private connection: mysql.Connection;
 
   constructor(private dbUrl: URL, opts: Partial<MySQLSessionStorageOptions>) {
+    if (typeof this.dbUrl === 'string') {
+      this.dbUrl = new URL(this.dbUrl);
+    }
     this.options = {...defaultMySQLSessionStorageOptions, ...opts};
     this.ready = this.init();
   }
@@ -35,7 +38,7 @@ export class MySQLSessionStorage implements SessionStorage {
         )}@${host}/${encodeURIComponent(dbName)}`,
       ),
       opts,
-    ); // ?ssl={"rejectUnauthorized":true}
+    );
   }
 
   private async init() {
@@ -44,16 +47,28 @@ export class MySQLSessionStorage implements SessionStorage {
   }
 
   private async createTable() {
-    const query = sql`
-      IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'${this.options.sessionTableName}')
-      BEGIN
-        CREATE TABLE '${this.options.sessionTableName}' (
-          'id' varchar(255) NOT NULL PRIMARY KEY,
-          'payload' varchar(4095) NOT NULL,
+    const hasSessionTable = await this.hasSessionTable();
+    if (!hasSessionTable && !this.options.createDBWhenMissing) {
+      throw Error('Session Table is missing');
+    } else if (!hasSessionTable) {
+      const query = sql`
+        CREATE TABLE ${this.options.sessionTableName} (
+          id varchar(255) NOT NULL PRIMARY KEY,
+          payload varchar(4095) NOT NULL
         )
-      END
+      `;
+      await this.connection.query(query);
+    }
+  }
+
+  public async hasSessionTable(): Promise<boolean> {
+    const query = sql`
+      SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ${JSON.stringify(
+        this.options.sessionTableName,
+      )}
     `;
-    await this.connection.query(query);
+    const [rows] = await this.connection.query(query);
+    return Array.isArray(rows) && rows.length === 1;
   }
 
   public async storeSession(session: SessionInterface): Promise<boolean> {
@@ -97,9 +112,9 @@ export class MySQLSessionStorage implements SessionStorage {
  * It effectively replaces single quotes with backticks,
  * leaving double quotes for strings.
  */
-function sql({raw}: Parameters<typeof String.raw>[0], ...substitutions: any[]) {
+function sql(raw: Parameters<typeof String.raw>[0], ...substitutions: any[]) {
   return String.raw(
-    {raw: Array.from(raw).map((raw) => raw.replace(/'/g, '`'))},
-    substitutions,
+    {raw: raw.map((raw) => raw.replace(/'/g, '`'))} as any,
+    ...substitutions,
   );
 }
