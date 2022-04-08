@@ -5,6 +5,7 @@ export interface TestRequest extends Request {
   bodyType?: DataType;
   tries?: number;
   query?: string;
+  retryTimeoutTimer?: number;
 }
 export interface ExpectedResponse extends Response {
   errorType?: string;

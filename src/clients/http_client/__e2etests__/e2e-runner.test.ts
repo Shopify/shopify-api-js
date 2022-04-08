@@ -25,7 +25,7 @@ const nodeAppServer: child_process.ChildProcess = child_process.spawn(
       E2ETESTS: '1',
     },
     detached: true,
-    // stdio: 'inherit',
+    stdio: 'inherit',
   },
 );
 
@@ -44,7 +44,7 @@ const miniflareAppServer: child_process.ChildProcess = child_process.spawn(
   ],
   {
     detached: true,
-    // stdio: 'inherit',
+    stdio: 'inherit',
   },
 );
 
@@ -57,7 +57,7 @@ const httpServer: child_process.ChildProcess = child_process.spawn(
       HTTP_SERVER_PORT: httpServerPort,
     },
     detached: true,
-    // stdio: 'inherit',
+    stdio: 'inherit',
   },
 );
 
@@ -442,6 +442,7 @@ testEnvironments.forEach((env) => {
           url: '/url/path/retries',
           headers: {},
           tries: 3,
+          retryTimeoutTimer: 0,
         },
         expectedResponse: expectedSuccessResponse,
       };
@@ -458,6 +459,7 @@ testEnvironments.forEach((env) => {
           url: '/url/path/retrythenfail',
           headers: {},
           tries: 3,
+          retryTimeoutTimer: 0,
         },
         expectedResponse: {
           statusCode: 403,
@@ -478,6 +480,7 @@ testEnvironments.forEach((env) => {
           url: '/url/path/maxretries',
           headers: {},
           tries: 3,
+          retryTimeoutTimer: 0,
         },
         expectedResponse: {
           statusCode: 500,
@@ -491,27 +494,21 @@ testEnvironments.forEach((env) => {
       );
     });
 
-    it.skip('waits for the amount of time defined by the Retry-After header', async () => {
-      /* eslint-disable-next-line no-warning-comments */
-      // FIXME: implement this test
-      // Default to a lot longer than the time we actually expect to sleep for
-      // setRestClientRetryTime(4000);
-      // If we don't retry within an acceptable amount of time, we assume to be paused for longer than Retry-After
-      // const retryTimeout = setTimeout(() => {
-      // throw new Error(
-      //   '18. Request was not retried within the interval defined by Retry-After, test failed',
-      // );
-      // }, 4000);
-      // response = await client.get({path: '/url/path/retrythensuccess', tries: 2});
-      // allPassed =
-      // allPassed &&
-      // JSON.stringify(response.body) === JSON.stringify(expectedResponse.body);
-      // logResultToConsole(
-      // '18. waits for the amount of time defined by the Retry-After header',
-      // JSON.stringify(response.body) === JSON.stringify(expectedResponse.body),
-      // );
-      // /* eslint-disable-next-line no-undef */
-      // clearTimeout(retryTimeout);
+    it('waits for the amount of time defined by the Retry-After header', async () => {
+      const retryHeaderTest: TestConfig = {
+        testRequest: {
+          method: 'get',
+          url: '/url/path/retrythensuccess',
+          headers: {},
+          tries: 2,
+          retryTimeoutTimer: 3000,
+        },
+        expectedResponse: expectedSuccessResponse,
+      };
+
+      checkTestResponse(
+        await fetch(env.appServer, fetchParams(retryHeaderTest)),
+      );
     });
 
     it('properly encodes strings in the error message', async () => {
@@ -520,6 +517,7 @@ testEnvironments.forEach((env) => {
           method: 'get',
           url: '/url/path/error',
           headers: {},
+          retryTimeoutTimer: 0,
         },
         expectedResponse: {
           statusCode: 500,
@@ -540,6 +538,7 @@ testEnvironments.forEach((env) => {
           method: 'get',
           url: '/url/path/detailederror',
           headers: {},
+          retryTimeoutTimer: 0,
         },
         expectedResponse: {
           statusCode: 500,

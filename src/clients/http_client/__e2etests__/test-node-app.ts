@@ -18,6 +18,8 @@ const appPort: number = parseInt(process.env.PORT || '8787', 10);
 /* eslint-enable no-process-env */
 const apiServer = `localhost:${apiServerPort}`;
 const client = new HttpClient(apiServer);
+const defaultRetryTimer = HttpClient.RETRY_WAIT_TIME;
+let testCount = 0;
 
 const server = createServer(
   async (request: IncomingMessage, appResponse: ServerResponse) => {
@@ -26,15 +28,56 @@ const server = createServer(
         await getJSONDataFromRequestStream<TestConfig>(request);
       const testRequest: TestRequest = testConfig.testRequest;
       const expectedResponse: ExpectedResponse = testConfig.expectedResponse;
-      let testPassed = false;
-      let testFailedDebug = '';
-      let response;
       const tries = testRequest.tries || 1;
       const params = {
         path: testRequest.url,
         type: testRequest.bodyType as DataType,
         data: JSON.stringify(testRequest.body),
       };
+      let testPassed = false;
+      let timedOut = false;
+      let testFailedDebug = '';
+      let response;
+      let retryTimeout;
+
+      setRestClientRetryTime(defaultRetryTimer);
+
+      testCount++;
+      console.log(
+        `[node] testRequest #${testCount} = ${JSON.stringify(
+          testRequest,
+          undefined,
+          2,
+        )}\n`,
+      );
+
+      if (typeof testRequest.retryTimeoutTimer !== 'undefined') {
+        setRestClientRetryTime(testRequest.retryTimeoutTimer);
+        console.log(
+          `[node] RETRY_TIME_WAIT (BEFORE) = ${HttpClient.RETRY_WAIT_TIME} ms\n\n`,
+        );
+
+        if (testRequest.retryTimeoutTimer !== 0) {
+          console.log(
+            `[node] setting setTimeout @ ${HttpClient.RETRY_WAIT_TIME} ms\n`,
+          );
+          retryTimeout = setTimeout(() => {
+            try {
+              throw new Error(
+                'Request was not retried within the interval defined by Retry-After, test failed',
+              );
+            } catch (error) {
+              console.log(
+                `[node] setTimeout fired! @ ${HttpClient.RETRY_WAIT_TIME} ms\n`,
+              );
+              testFailedDebug = JSON.stringify({
+                errorMessageReceived: error.message,
+              });
+              timedOut = true;
+            }
+          }, testRequest.retryTimeoutTimer);
+        }
+      }
 
       switch (testRequest.method.toLowerCase()) {
         case 'get':
@@ -44,12 +87,18 @@ const server = createServer(
               tries,
               extraHeaders: testRequest.headers,
             });
-            testPassed =
-              JSON.stringify(response.body) === expectedResponse.body;
-            testFailedDebug = JSON.stringify({
-              bodyExpected: expectedResponse.body,
-              bodyReceived: response.body,
-            });
+            if (timedOut) {
+              console.log(
+                `[node] timedOut=${timedOut}, testPassed=${testPassed}, testFailedDebug=${testFailedDebug}\n`,
+              );
+            } else {
+              testPassed =
+                JSON.stringify(response.body) === expectedResponse.body;
+              testFailedDebug = JSON.stringify({
+                bodyExpected: expectedResponse.body,
+                bodyReceived: response.body,
+              });
+            }
           } catch (error) {
             testPassed = error.constructor.name.startsWith(
               expectedResponse.errorType,
@@ -102,6 +151,22 @@ const server = createServer(
           testPassed = false;
       }
 
+      if (
+        typeof testRequest.retryTimeoutTimer !== 'undefined' &&
+        testRequest.retryTimeoutTimer !== 0 &&
+        typeof retryTimeout !== 'undefined'
+      ) {
+        clearTimeout(retryTimeout);
+      }
+
+      console.log(
+        `[node] test #${testCount} passed=${testPassed}, debug=${JSON.stringify(
+          testFailedDebug,
+          undefined,
+          2,
+        )}\n`,
+      );
+
       if (testPassed) {
         appResponse.statusCode = 200;
         appResponse.end('Test passed!');
@@ -128,8 +193,14 @@ function getJSONDataFromRequestStream<T>(request: IncomingMessage): Promise<T> {
     });
   });
 }
+
 function handle(_signal: any): void {
   process.exit(0);
+}
+
+function setRestClientRetryTime(time: number) {
+  // We de-type HttpClient here so we can alter its readonly time property
+  (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
 }
 
 process.on('SIGINT', handle);

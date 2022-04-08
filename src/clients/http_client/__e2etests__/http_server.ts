@@ -94,7 +94,7 @@ const responses: {[key: string | number]: Response} = {
   wait: {
     statusCode: 429,
     statusText: errorStatusText,
-    headers: {'Retry-After': (0.05).toString()},
+    headers: {'Retry-After': (0.1).toString()},
     body: JSON.stringify({errors: 'Something went wrong!'}),
   },
   500: {
