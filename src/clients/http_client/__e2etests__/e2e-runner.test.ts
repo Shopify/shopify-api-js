@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import {DataType} from '../../../types';
 import ProcessedQuery from '../../../utils/processed-query';
 
-import {ExpectedResponse, TestConfig} from './test_config_types';
+import {ExpectedResponse, TestConfig, TestRequest} from './test_config_types';
 
 const nodeAppPort = '6666';
 const nodeAppDomain = `http://localhost:${nodeAppPort}`;
@@ -76,14 +76,6 @@ let environmentCount = 0;
 
 testEnvironments.forEach((env) => {
   describe(`${env.name} HTTP client`, () => {
-    const expectedSuccessResponse: ExpectedResponse = {
-      statusCode: 200,
-      statusText: 'OK',
-      body: JSON.stringify({
-        message: 'Your HTTP request was successful!',
-      }),
-    };
-
     beforeAll(async () => {
       if (environmentCount === 0) {
         // first time through - wait for processes to be ready
@@ -114,12 +106,8 @@ testEnvironments.forEach((env) => {
 
     it('can make GET request', async () => {
       const getTest: TestConfig = {
-        testRequest: {
-          method: 'get',
-          url: '/url/path',
-          headers: {},
-        },
-        expectedResponse: expectedSuccessResponse,
+        testRequest: initTestRequest(),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(getTest)));
@@ -132,14 +120,12 @@ testEnvironments.forEach((env) => {
       };
 
       const postTest: TestConfig = {
-        testRequest: {
+        testRequest: initTestRequest({
           method: 'post',
-          url: '/url/path',
-          headers: {},
           bodyType: DataType.JSON,
           body: JSON.stringify(postData),
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
@@ -152,14 +138,12 @@ testEnvironments.forEach((env) => {
       };
 
       const postTest: TestConfig = {
-        testRequest: {
+        testRequest: initTestRequest({
           method: 'post',
-          url: '/url/path',
-          headers: {},
           bodyType: DataType.JSON,
           body: JSON.stringify(JSON.stringify(postData)),
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
@@ -167,14 +151,12 @@ testEnvironments.forEach((env) => {
 
     it('can make POST request with zero-length JSON', async () => {
       const postTest: TestConfig = {
-        testRequest: {
+        testRequest: initTestRequest({
           method: 'post',
-          url: '/url/path',
-          headers: {},
           bodyType: DataType.JSON,
           body: JSON.stringify(''),
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
@@ -187,14 +169,12 @@ testEnvironments.forEach((env) => {
       };
 
       const postTest: TestConfig = {
-        testRequest: {
+        testRequest: initTestRequest({
           method: 'post',
-          url: '/url/path',
-          headers: {},
           bodyType: DataType.URLEncoded,
           body: JSON.stringify(postData),
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
@@ -207,14 +187,12 @@ testEnvironments.forEach((env) => {
       };
 
       const postTest: TestConfig = {
-        testRequest: {
+        testRequest: initTestRequest({
           method: 'post',
-          url: '/url/path',
-          headers: {},
           bodyType: DataType.URLEncoded,
           body: ProcessedQuery.stringify(postData),
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
@@ -235,14 +213,12 @@ testEnvironments.forEach((env) => {
       `;
 
       const postTest: TestConfig = {
-        testRequest: {
+        testRequest: initTestRequest({
           method: 'post',
-          url: '/url/path',
-          headers: {},
           bodyType: DataType.GraphQL,
           body: graphqlQuery,
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
@@ -255,14 +231,13 @@ testEnvironments.forEach((env) => {
       };
 
       const putTest: TestConfig = {
-        testRequest: {
+        testRequest: initTestRequest({
           method: 'put',
           url: '/url/path/123',
-          headers: {},
           bodyType: DataType.JSON,
           body: JSON.stringify(putData),
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(putTest)));
@@ -270,12 +245,11 @@ testEnvironments.forEach((env) => {
 
     it('can make DELETE request', async () => {
       const deleteTest: TestConfig = {
-        testRequest: {
+        testRequest: initTestRequest({
           method: 'delete',
           url: '/url/path/123',
-          headers: {},
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(deleteTest)));
@@ -283,11 +257,7 @@ testEnvironments.forEach((env) => {
 
     it('gracefully handles 403 error', async () => {
       const fourZeroThreeTestConfig: TestConfig = {
-        testRequest: {
-          method: 'get',
-          url: '/url/path/403',
-          headers: {},
-        },
+        testRequest: initTestRequest({url: '/url/path/403'}),
         expectedResponse: {
           statusCode: 403,
           statusText: 'Did not work',
@@ -303,11 +273,7 @@ testEnvironments.forEach((env) => {
 
     it('gracefully handles 404 error', async () => {
       const fourZeroFourTestConfig: TestConfig = {
-        testRequest: {
-          method: 'get',
-          url: '/url/path/404',
-          headers: {},
-        },
+        testRequest: initTestRequest({url: '/url/path/404'}),
         expectedResponse: {
           statusCode: 404,
           statusText: 'Did not work',
@@ -322,11 +288,7 @@ testEnvironments.forEach((env) => {
 
     it('gracefully handles 429 error', async () => {
       const fourTwoNineTestConfig: TestConfig = {
-        testRequest: {
-          method: 'get',
-          url: '/url/path/429',
-          headers: {},
-        },
+        testRequest: initTestRequest({url: '/url/path/429'}),
         expectedResponse: {
           statusCode: 429,
           statusText: 'Did not work',
@@ -342,11 +304,7 @@ testEnvironments.forEach((env) => {
 
     it('gracefully handles 500 error', async () => {
       const fourTwoNineTestConfig: TestConfig = {
-        testRequest: {
-          method: 'get',
-          url: '/url/path/500',
-          headers: {},
-        },
+        testRequest: initTestRequest({url: '/url/path/500'}),
         expectedResponse: {
           statusCode: 500,
           statusText: 'Did not work',
@@ -363,17 +321,11 @@ testEnvironments.forEach((env) => {
     it('allows custom headers', async () => {
       /* eslint-disable-next-line no-warning-comments */
       // FIXME: change http_server.js to check that the headers were actually sent across
-      const customHeaders = {
-        /* eslint-disable-next-line @typescript-eslint/naming-convention */
-        'X-Not-A-Real-Header': 'some_value',
-      };
       const customHeaderTest: TestConfig = {
-        testRequest: {
-          method: 'get',
-          url: '/url/path',
-          headers: customHeaders,
-        },
-        expectedResponse: expectedSuccessResponse,
+        testRequest: initTestRequest({
+          headers: {'X-Not-A-Real-Header': 'some_value'}, // eslint-disable-line @typescript-eslint/naming-convention
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(
@@ -384,15 +336,12 @@ testEnvironments.forEach((env) => {
     it('extends User-Agent if it is provided (capitalized)', async () => {
       /* eslint-disable-next-line no-warning-comments */
       // FIXME: change http_server.js to check that the headers were actually sent across
-      /* eslint-disable-next-line @typescript-eslint/naming-convention */
-      const customHeaders = {'User-Agent': 'My agent'};
       const extendUATest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/uppercaseua',
-          headers: customHeaders,
-        },
-        expectedResponse: expectedSuccessResponse,
+          headers: {'User-Agent': 'My agent'}, // eslint-disable-line @typescript-eslint/naming-convention
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(extendUATest)));
@@ -401,15 +350,12 @@ testEnvironments.forEach((env) => {
     it('extends User-Agent if it is provided (lowercase)', async () => {
       /* eslint-disable-next-line no-warning-comments */
       // FIXME: change http_server.js to check that the headers were actually sent across
-      /* eslint-disable-next-line @typescript-eslint/naming-convention */
-      const customHeaders = {'user-agent': 'My lowercase agent'};
       const extendUATest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/lowercaseua',
-          headers: customHeaders,
-        },
-        expectedResponse: expectedSuccessResponse,
+          headers: {'user-agent': 'My lowercase agent'}, // eslint-disable-line @typescript-eslint/naming-convention
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(await fetch(env.appServer, fetchParams(extendUATest)));
@@ -417,12 +363,7 @@ testEnvironments.forEach((env) => {
 
     it('fails with invalid retry count', async () => {
       const invalidRetryCountTest: TestConfig = {
-        testRequest: {
-          method: 'get',
-          url: '/url/path',
-          headers: {},
-          tries: -1,
-        },
+        testRequest: initTestRequest({tries: -1}),
         expectedResponse: {
           statusCode: 500,
           statusText: 'Did not work',
@@ -437,14 +378,12 @@ testEnvironments.forEach((env) => {
 
     it('retries failed requests but returns success', async () => {
       const retryThenSuccessTest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/retries',
-          headers: {},
           tries: 3,
           retryTimeoutTimer: 0,
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(
@@ -454,13 +393,11 @@ testEnvironments.forEach((env) => {
 
     it('retries failed requests and stops on non-retriable errors', async () => {
       const retryThenFailTest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/retrythenfail',
-          headers: {},
           tries: 3,
           retryTimeoutTimer: 0,
-        },
+        }),
         expectedResponse: {
           statusCode: 403,
           statusText: 'Did not work',
@@ -475,13 +412,11 @@ testEnvironments.forEach((env) => {
 
     it('stops retrying after reaching the limit', async () => {
       const maxRetriesTest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/maxretries',
-          headers: {},
           tries: 3,
           retryTimeoutTimer: 0,
-        },
+        }),
         expectedResponse: {
           statusCode: 500,
           statusText: 'Did not work',
@@ -496,14 +431,12 @@ testEnvironments.forEach((env) => {
 
     it('waits for the amount of time defined by the Retry-After header', async () => {
       const retryHeaderTest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/retrythensuccess',
-          headers: {},
           tries: 2,
           retryTimeoutTimer: 3000,
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(
@@ -513,12 +446,10 @@ testEnvironments.forEach((env) => {
 
     it('properly encodes strings in the error message', async () => {
       const errorMessageTest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/error',
-          headers: {},
           retryTimeoutTimer: 0,
-        },
+        }),
         expectedResponse: {
           statusCode: 500,
           statusText: 'Did not work',
@@ -534,12 +465,10 @@ testEnvironments.forEach((env) => {
 
     it('properly encodes objects in the error message', async () => {
       const detailedErrorMessageTest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/detailederror',
-          headers: {},
           retryTimeoutTimer: 0,
-        },
+        }),
         expectedResponse: {
           statusCode: 500,
           statusText: 'Did not work',
@@ -560,12 +489,8 @@ testEnvironments.forEach((env) => {
 
     it('adds missing slashes to paths', async () => {
       const missingSlashesTest: TestConfig = {
-        testRequest: {
-          method: 'get',
-          url: 'url/path',
-          headers: {},
-        },
-        expectedResponse: expectedSuccessResponse,
+        testRequest: initTestRequest({url: 'url/path'}),
+        expectedResponse: initExpectedResponse(),
       };
 
       checkTestResponse(
@@ -575,17 +500,15 @@ testEnvironments.forEach((env) => {
 
     it('properly formats arrays and hashes in query strings', async () => {
       const formatsArraysHashesTest: TestConfig = {
-        testRequest: {
-          method: 'get',
+        testRequest: initTestRequest({
           url: '/url/path/query',
-          headers: {},
           query: JSON.stringify({
             array: ['a', 'b', 'c'],
             // eslint-disable-next-line id-length
             hash: {a: 'b', c: 'd'},
           }),
-        },
-        expectedResponse: expectedSuccessResponse,
+        }),
+        expectedResponse: initExpectedResponse(),
       };
       checkTestResponse(
         await fetch(env.appServer, fetchParams(formatsArraysHashesTest)),
@@ -642,4 +565,33 @@ async function serverReady(domain: string): Promise<boolean> {
   } catch (err) {
     return false;
   }
+}
+
+function initTestRequest(options?: Partial<TestRequest>): TestRequest {
+  const defaults = {
+    method: 'get',
+    url: '/url/path',
+    headers: {},
+  };
+  return {
+    ...defaults,
+    ...options,
+  };
+}
+
+function initExpectedResponse(
+  options?: Partial<ExpectedResponse>,
+): ExpectedResponse {
+  const defaults = {
+    statusCode: 200,
+    statusText: 'OK',
+    body: JSON.stringify({
+      message: 'Your HTTP request was successful!',
+    }),
+  };
+
+  return {
+    ...defaults,
+    ...options,
+  };
 }
