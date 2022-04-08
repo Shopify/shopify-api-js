@@ -12,8 +12,8 @@ interface Response {
 const port: number = parseInt(process.env.HTTP_SERVER_PORT || '3000', 10);
 const errorStatusText = 'Did not work';
 const requestId = 'Request id header';
+/* eslint-disable @typescript-eslint/naming-convention */
 const responses: {[key: string | number]: Response} = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   200: {
     statusCode: 200,
     statusText: 'OK',
@@ -23,35 +23,30 @@ const responses: {[key: string | number]: Response} = {
   custom: {
     statusCode: 200,
     statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'X-Not-A-Real-Header': 'some_value'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
   lowercaseua: {
     statusCode: 200,
     statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'user-agent': 'My lowercase agent'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
   uppercaseua: {
     statusCode: 200,
     statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'User-Agent': 'My agent'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
   contextua: {
     statusCode: 200,
     statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'User-Agent': 'Context Agent'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
   contextandheadersua: {
     statusCode: 200,
     statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'User-Agent': 'Headers Agent | Context Agent'},
     body: JSON.stringify({message: 'Your HTTP request was successful!'}),
   },
@@ -59,7 +54,6 @@ const responses: {[key: string | number]: Response} = {
     statusCode: 200,
     statusText: 'OK',
     headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'X-Shopify-API-Deprecated-Reason':
         'This API endpoint has been deprecated',
     },
@@ -69,7 +63,6 @@ const responses: {[key: string | number]: Response} = {
     statusCode: 200,
     statusText: 'OK',
     headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'X-Shopify-API-Deprecated-Reason':
         'This API endpoint has been deprecated',
     },
@@ -80,41 +73,33 @@ const responses: {[key: string | number]: Response} = {
       },
     }),
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   403: {
     statusCode: 403,
     statusText: errorStatusText,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'x-request-id': requestId},
     body: JSON.stringify({errors: 'Something went wrong!'}),
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   404: {
     statusCode: 404,
     statusText: errorStatusText,
     headers: {},
     body: JSON.stringify({}),
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   429: {
     statusCode: 429,
     statusText: errorStatusText,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'x-request-id': requestId},
     body: JSON.stringify({errors: 'Something went wrong!'}),
   },
   wait: {
     statusCode: 429,
     statusText: errorStatusText,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'Retry-After': (0.05).toString()},
     body: JSON.stringify({errors: 'Something went wrong!'}),
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   500: {
     statusCode: 500,
     statusText: errorStatusText,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: {'x-request-id': requestId},
     body: JSON.stringify({}),
   },
@@ -133,6 +118,7 @@ const responses: {[key: string | number]: Response} = {
     }),
   },
 };
+/* eslint-enable @typescript-eslint/naming-convention */
 
 let retryCount = 0;
 

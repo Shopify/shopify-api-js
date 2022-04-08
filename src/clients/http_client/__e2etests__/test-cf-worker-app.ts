@@ -81,7 +81,6 @@ export default {
           break;
         case 'post':
           response = await client.post(params(testRequest));
-
           testPassed = JSON.stringify(response.body) === expectedResponse.body;
           break;
 

@@ -7,12 +7,12 @@ import ProcessedQuery from '../../../utils/processed-query';
 
 import {ExpectedResponse, TestConfig} from './test_config_types';
 
-const testNodeAppPort = '6666';
-const testNodeAppDomain = `http://localhost:${testNodeAppPort}`;
-const testMiniflareAppPort = '7777';
-const testMiniflareAppDomain = `http://localhost:${testMiniflareAppPort}`;
-const testHttpServerPort = '9999';
-const testHttpServerDomain = `http://localhost:${testHttpServerPort}`;
+const nodeAppPort = '6666';
+const nodeAppDomain = `http://localhost:${nodeAppPort}`;
+const cfWorkerAppPort = '7777';
+const cfWorkerAppDomain = `http://localhost:${cfWorkerAppPort}`;
+const httpServerPort = '9999';
+const httpServerDomain = `http://localhost:${httpServerPort}`;
 
 const nodeAppServer: child_process.ChildProcess = child_process.spawn(
   'yarn',
@@ -20,11 +20,12 @@ const nodeAppServer: child_process.ChildProcess = child_process.spawn(
   {
     env: {
       ...process.env, // eslint-disable-line no-process-env
-      PORT: testNodeAppPort,
-      HTTP_SERVER_PORT: testHttpServerPort,
+      PORT: nodeAppPort,
+      HTTP_SERVER_PORT: httpServerPort,
       E2ETESTS: '1',
     },
     detached: true,
+    // stdio: 'inherit',
   },
 );
 
@@ -37,12 +38,13 @@ const miniflareAppServer: child_process.ChildProcess = child_process.spawn(
     '--global',
     'E2ETESTS=1',
     '--port',
-    `${testMiniflareAppPort}`,
+    `${cfWorkerAppPort}`,
     '--modules',
     'bundle/test-cf-worker-app.js',
   ],
   {
     detached: true,
+    // stdio: 'inherit',
   },
 );
 
@@ -52,24 +54,25 @@ const httpServer: child_process.ChildProcess = child_process.spawn(
   {
     env: {
       ...process.env, // eslint-disable-line no-process-env
-      HTTP_SERVER_PORT: testHttpServerPort,
+      HTTP_SERVER_PORT: httpServerPort,
     },
     detached: true,
+    // stdio: 'inherit',
   },
 );
 
 const testEnvironments = [
   {
     name: 'NodeJS',
-    appServer: testNodeAppDomain,
+    appServer: nodeAppDomain,
   },
   {
     name: 'CF Worker',
-    appServer: testMiniflareAppDomain,
+    appServer: cfWorkerAppDomain,
   },
 ];
-const maxCycles = testEnvironments.length;
-let cycleCount = 0;
+const maxEnvironments = testEnvironments.length;
+let environmentCount = 0;
 
 testEnvironments.forEach((env) => {
   describe(`${env.name} HTTP client`, () => {
@@ -82,56 +85,31 @@ testEnvironments.forEach((env) => {
     };
 
     beforeAll(async () => {
-      if (cycleCount === 0) {
-        /**
-         * first time through
-         */
-        let attempts = 0;
+      if (environmentCount === 0) {
+        // first time through - wait for processes to be ready
         const maxAttempts = 20;
-        let httpServerReady = false;
+        let attempts = 0;
+        let httpSrvrReady = false;
         let nodeAppReady = false;
-        let miniflareAppReady = false;
+        let cfWorkerReady = false;
 
         while (
-          !(httpServerReady && nodeAppReady && miniflareAppReady) &&
+          !(httpSrvrReady && nodeAppReady && cfWorkerReady) &&
           attempts < maxAttempts
         ) {
           attempts++;
-          await sleep(50);
-          if (!httpServerReady) {
-            try {
-              const response = await fetch(testHttpServerDomain);
-              httpServerReady = response.status === 200;
-            } catch (err) {
-              continue;
-            }
-          }
-          if (!nodeAppReady) {
-            try {
-              const response = await fetch(testNodeAppDomain);
-              nodeAppReady = response.status === 200;
-            } catch (err) {
-              continue;
-            }
-          }
-          if (!miniflareAppReady) {
-            try {
-              const response = await fetch(testMiniflareAppDomain);
-              miniflareAppReady = response.status === 200;
-            } catch (err) {
-              continue;
-            }
-          }
+          await sleep(100);
+          if (!(cfWorkerReady = await serverReady(cfWorkerAppDomain))) continue;
+          if (!(httpSrvrReady = await serverReady(httpServerDomain))) continue;
+          if (!(nodeAppReady = await serverReady(nodeAppDomain))) continue;
         }
       }
-      cycleCount++;
+      environmentCount++;
     });
 
     afterAll(async () => {
-      if (cycleCount === maxCycles) {
-        // we've finished last test cycle, shut down servers
-        killChildProcesses();
-      }
+      // if we've finished last test cycle, shut down processes
+      if (environmentCount === maxEnvironments) killChildProcesses();
     });
 
     it('can make GET request', async () => {
@@ -655,5 +633,14 @@ function killChildProcesses(): void {
   }
   if (typeof miniflareAppServer.pid !== 'undefined') {
     process.kill(-miniflareAppServer.pid);
+  }
+}
+
+async function serverReady(domain: string): Promise<boolean> {
+  try {
+    const response = await fetch(domain);
+    return response.status === 200;
+  } catch (err) {
+    return false;
   }
 }
