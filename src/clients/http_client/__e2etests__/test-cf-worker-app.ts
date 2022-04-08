@@ -6,14 +6,8 @@ import {HttpClient} from '../http_client';
 import {ExpectedResponse, TestConfig, TestRequest} from './test_config_types';
 
 /* Codes for different Colours */
-// const BLACK = '\x1b[30m';
 const RED = '\x1b[31m';
 const GREEN = '\x1b[32m';
-// const YELLOW = '\x1b[33m';
-// const BLUE = '\x1b[34m';
-// const MAGENTA = '\x1b[35m';
-// const CYAN = '\x1b[36m';
-// const WHITE = '\x1b[37m';
 const RESET = '\x1b[39m';
 
 setAbstractFetchFunc(cfWorkerAdapter.abstractFetch);

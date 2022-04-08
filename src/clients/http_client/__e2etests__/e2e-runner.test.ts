@@ -25,7 +25,7 @@ const nodeAppServer: child_process.ChildProcess = child_process.spawn(
       E2ETESTS: '1',
     },
     detached: true,
-    stdio: 'inherit',
+    // stdio: 'inherit',
   },
 );
 
@@ -44,7 +44,7 @@ const miniflareAppServer: child_process.ChildProcess = child_process.spawn(
   ],
   {
     detached: true,
-    stdio: 'inherit',
+    // stdio: 'inherit',
   },
 );
 
@@ -57,7 +57,7 @@ const httpServer: child_process.ChildProcess = child_process.spawn(
       HTTP_SERVER_PORT: httpServerPort,
     },
     detached: true,
-    stdio: 'inherit',
+    // stdio: 'inherit',
   },
 );
 

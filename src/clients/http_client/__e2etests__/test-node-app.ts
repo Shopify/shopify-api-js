@@ -7,6 +7,11 @@ import {HttpClient} from '../http_client';
 
 import {ExpectedResponse, TestConfig, TestRequest} from './test_config_types';
 
+/* Codes for different Colours */
+const RED = '\x1b[31m';
+const GREEN = '\x1b[32m';
+const RESET = '\x1b[39m';
+
 setAbstractFetchFunc(nodeAdapter.abstractFetch);
 
 /* eslint-disable no-process-env */
@@ -68,7 +73,7 @@ const server = createServer(
               );
             } catch (error) {
               console.log(
-                `[node] setTimeout fired! @ ${HttpClient.RETRY_WAIT_TIME} ms\n`,
+                `[node] ${RED}setTimeout fired!${RESET} @ ${HttpClient.RETRY_WAIT_TIME}\n`,
               );
               testFailedDebug = JSON.stringify({
                 errorMessageReceived: error.message,
@@ -160,7 +165,9 @@ const server = createServer(
       }
 
       console.log(
-        `[node] test #${testCount} passed=${testPassed}, debug=${JSON.stringify(
+        `[node] test #${testCount} passed=${
+          testPassed ? GREEN : RED
+        }${testPassed}${RESET}, debug=${JSON.stringify(
           testFailedDebug,
           undefined,
           2,
