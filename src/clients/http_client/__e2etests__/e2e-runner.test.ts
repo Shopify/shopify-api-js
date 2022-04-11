@@ -110,7 +110,7 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(getTest)));
+      await checkTestResponse(await fetch(env.appServer, fetchParams(getTest)));
     });
 
     it('can make POST request with type JSON', async () => {
@@ -128,7 +128,9 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(postTest)),
+      );
     });
 
     it('can make POST request with type JSON and data is already formatted', async () => {
@@ -146,7 +148,9 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(postTest)),
+      );
     });
 
     it('can make POST request with zero-length JSON', async () => {
@@ -159,7 +163,9 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(postTest)),
+      );
     });
 
     it('can make POST request with form-data type', async () => {
@@ -177,7 +183,9 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(postTest)),
+      );
     });
 
     it('can make POST request with form-data type and data is already formatted', async () => {
@@ -195,7 +203,9 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(postTest)),
+      );
     });
 
     it('can make POST request with GraphQL type', async () => {
@@ -221,7 +231,9 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(postTest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(postTest)),
+      );
     });
 
     it('can make PUT request with type JSON', async () => {
@@ -240,7 +252,7 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(putTest)));
+      await checkTestResponse(await fetch(env.appServer, fetchParams(putTest)));
     });
 
     it('can make DELETE request', async () => {
@@ -252,7 +264,9 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(deleteTest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(deleteTest)),
+      );
     });
 
     it('gracefully handles 403 error', async () => {
@@ -266,7 +280,7 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(fourZeroThreeTestConfig)),
       );
     });
@@ -281,7 +295,7 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(fourZeroFourTestConfig)),
       );
     });
@@ -297,7 +311,7 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(fourTwoNineTestConfig)),
       );
     });
@@ -313,29 +327,26 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(fourTwoNineTestConfig)),
       );
     });
 
     it('allows custom headers', async () => {
-      /* eslint-disable-next-line no-warning-comments */
-      // FIXME: change http_server.js to check that the headers were actually sent across
       const customHeaderTest: TestConfig = {
         testRequest: initTestRequest({
+          url: '/url/path/custom',
           headers: {'X-Not-A-Real-Header': 'some_value'}, // eslint-disable-line @typescript-eslint/naming-convention
         }),
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(customHeaderTest)),
       );
     });
 
     it('extends User-Agent if it is provided (capitalized)', async () => {
-      /* eslint-disable-next-line no-warning-comments */
-      // FIXME: change http_server.js to check that the headers were actually sent across
       const extendUATest: TestConfig = {
         testRequest: initTestRequest({
           url: '/url/path/uppercaseua',
@@ -344,12 +355,12 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(extendUATest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(extendUATest)),
+      );
     });
 
     it('extends User-Agent if it is provided (lowercase)', async () => {
-      /* eslint-disable-next-line no-warning-comments */
-      // FIXME: change http_server.js to check that the headers were actually sent across
       const extendUATest: TestConfig = {
         testRequest: initTestRequest({
           url: '/url/path/lowercaseua',
@@ -358,7 +369,9 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(await fetch(env.appServer, fetchParams(extendUATest)));
+      await checkTestResponse(
+        await fetch(env.appServer, fetchParams(extendUATest)),
+      );
     });
 
     it('fails with invalid retry count', async () => {
@@ -371,7 +384,7 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(invalidRetryCountTest)),
       );
     });
@@ -386,7 +399,7 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(retryThenSuccessTest)),
       );
     });
@@ -405,7 +418,7 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(retryThenFailTest)),
       );
     });
@@ -424,7 +437,7 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(maxRetriesTest)),
       );
     });
@@ -439,7 +452,7 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(retryHeaderTest)),
       );
     });
@@ -458,7 +471,7 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(errorMessageTest)),
       );
     });
@@ -482,7 +495,7 @@ testEnvironments.forEach((env) => {
         },
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(detailedErrorMessageTest)),
       );
     });
@@ -493,7 +506,7 @@ testEnvironments.forEach((env) => {
         expectedResponse: initExpectedResponse(),
       };
 
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(missingSlashesTest)),
       );
     });
@@ -510,7 +523,7 @@ testEnvironments.forEach((env) => {
         }),
         expectedResponse: initExpectedResponse(),
       };
-      checkTestResponse(
+      await checkTestResponse(
         await fetch(env.appServer, fetchParams(formatsArraysHashesTest)),
       );
     });
