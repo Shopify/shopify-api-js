@@ -133,7 +133,7 @@ describe('Country resource', () => {
       path: '/admin/api/2021-07/countries/879921427.json',
       query: '',
       headers,
-      data: { "country": {"id": 879921427, "tax": 0.05} }
+      data: { "country": {"tax": 0.05} }
     }).toMatchMadeHttpRequest();
   });
 

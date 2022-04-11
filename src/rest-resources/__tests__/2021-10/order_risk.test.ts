@@ -93,7 +93,7 @@ describe('OrderRisk resource', () => {
       path: '/admin/api/2021-10/orders/450789469/risks/284138680.json',
       query: '',
       headers,
-      data: { "risk": {"id": 284138680, "message": "After further review, this is a legitimate order", "recommendation": "accept", "source": "External", "cause_cancel": false, "score": 0.0} }
+      data: { "risk": {"message": "After further review, this is a legitimate order", "recommendation": "accept", "source": "External", "cause_cancel": false, "score": 0.0} }
     }).toMatchMadeHttpRequest();
   });
 

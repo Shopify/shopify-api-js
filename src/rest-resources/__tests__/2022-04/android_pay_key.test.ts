@@ -15,7 +15,7 @@ describe('AndroidPayKey resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811896, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811895, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv+TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM+616y8SrKwaVOSu4U8=\n"}}));
 
     const android_pay_key = new AndroidPayKey({session: test_session});
 
@@ -32,7 +32,7 @@ describe('AndroidPayKey resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811894, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811894, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv+TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM+616y8SrKwaVOSu4U8=\n"}}));
 
     await AndroidPayKey.find({
       session: test_session,
@@ -54,13 +54,13 @@ describe('AndroidPayKey resource', () => {
 
     await AndroidPayKey.delete({
       session: test_session,
-      id: 964811895,
+      id: 964811896,
     });
 
     expect({
       method: 'DELETE',
       domain,
-      path: '/admin/api/2022-04/android_pay_keys/964811895.json',
+      path: '/admin/api/2022-04/android_pay_keys/964811896.json',
       query: '',
       headers,
       data: null
