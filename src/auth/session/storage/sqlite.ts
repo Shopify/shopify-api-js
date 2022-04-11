@@ -15,41 +15,34 @@ const defaultMySQLSessionStorageOptions: SQLiteSessionStorageOptions = {
 export class SQLiteSessionStorage implements SessionStorage {
   private options: SQLiteSessionStorageOptions;
   private db: sqlite3.Database;
+  private ready: Promise<void>;
 
   constructor(
     private filename: string,
-    opts: Partial<SQLiteSessionStorageOptions>,
+    opts: Partial<SQLiteSessionStorageOptions> = {},
   ) {
     this.options = {...defaultMySQLSessionStorageOptions, ...opts};
     this.db = new sqlite3.Database(this.filename);
-    this.init();
-  }
-
-  public async hasSessionTable(): Promise<boolean> {
-    const query = sql`
-    SELECT name FROM sqlite_schema
-    WHERE
-      type = "table" AND
-      name = ${JSON.stringify(this.options.sessionTableName)}
-    `;
-    const rows = await this.query(query);
-    return rows.length === 1;
+    this.ready = this.init();
   }
 
   public async storeSession(session: SessionInterface): Promise<boolean> {
+    await this.ready;
+
     const id = session.id;
     const payload = JSON.stringify(session);
 
     const query = sql`
-      INSERT INTO ${this.options.sessionTableName}
+      INSERT OR REPLACE INTO ${this.options.sessionTableName}
       VALUES (${JSON.stringify(id)}, '${payload.replace(/"'"/g, "''")}');
     `;
-    console.log({query});
+
     await this.query(query);
     return true;
   }
 
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
+    await this.ready;
     const query = sql`
       SELECT payload FROM ${this.options.sessionTableName}
       WHERE id = ${JSON.stringify(id)};
@@ -60,6 +53,7 @@ export class SQLiteSessionStorage implements SessionStorage {
   }
 
   public async deleteSession(id: string): Promise<boolean> {
+    await this.ready;
     const query = sql`
       DELETE FROM ${this.options.sessionTableName}
       WHERE id = ${JSON.stringify(id)};
@@ -68,11 +62,24 @@ export class SQLiteSessionStorage implements SessionStorage {
     return true;
   }
 
+  private async hasSessionTable(): Promise<boolean> {
+    const query = sql`
+    SELECT name FROM sqlite_schema
+    WHERE
+      type = "table" AND
+      name = ${JSON.stringify(this.options.sessionTableName)}
+    `;
+    const rows = await this.query(query);
+    return rows.length === 1;
+  }
+
   private async init() {
     const hasSessionTable = await this.hasSessionTable();
+    console.log({hasSessionTable});
     if (!hasSessionTable && !this.options.createDBWhenMissing) {
       throw Error('Session Table is missing');
     } else if (!hasSessionTable) {
+      console.log('CREATING');
       const query = sql`
         CREATE TABLE ${this.options.sessionTableName} (
           id varchar(255) NOT NULL PRIMARY KEY,
