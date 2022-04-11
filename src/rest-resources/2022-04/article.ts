@@ -52,6 +52,9 @@ interface CountArgs {
 interface TagsArgs {
   [key: string]: unknown;
   session: SessionInterface;
+  blog_id?: number | string | null;
+  limit?: unknown;
+  popular?: unknown;
 }
 
 export class Article extends Base {
@@ -70,6 +73,7 @@ export class Article extends Base {
     {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
     {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
     {"http_method": "get", "operation": "tags", "ids": [], "path": "articles/tags.json"},
+    {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
     {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
     {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"}
   ];
@@ -186,6 +190,9 @@ export class Article extends Base {
   public static async tags(
     {
       session,
+      blog_id = null,
+      limit = null,
+      popular = null,
       ...otherArgs
     }: TagsArgs
   ): Promise<unknown> {
@@ -193,8 +200,8 @@ export class Article extends Base {
       http_method: "get",
       operation: "tags",
       session: session,
-      urlIds: {},
-      params: {...otherArgs},
+      urlIds: {"blog_id": blog_id},
+      params: {"limit": limit, "popular": popular, ...otherArgs},
       body: {},
       entity: null,
     });

@@ -15,7 +15,7 @@ describe('Policy resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"policies": [{"body": "You have 30 days to get a refund", "created_at": "2022-03-30T19:16:52-04:00", "updated_at": "2022-03-30T19:16:52-04:00", "handle": "refund-policy", "title": "Refund policy", "url": "https://jsmith.myshopify.com/548380009/policies/878590288"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"policies": [{"body": "You have 30 days to get a refund", "created_at": "2022-04-05T13:05:51-04:00", "updated_at": "2022-04-05T13:05:51-04:00", "handle": "refund-policy", "title": "Refund policy", "url": "https://jsmith.myshopify.com/548380009/policies/878590288"}]}));
 
     await Policy.all({
       session: test_session,

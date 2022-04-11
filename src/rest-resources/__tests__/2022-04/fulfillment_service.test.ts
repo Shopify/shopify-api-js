@@ -50,7 +50,7 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_service": {"id": 1061774488, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": false, "include_pending_stock": false, "provider_id": null, "location_id": 1072404545, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774488"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_service": {"id": 1061774488, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": false, "include_pending_stock": false, "provider_id": null, "location_id": 1072404543, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774488"}}));
 
     const fulfillment_service = new FulfillmentService({session: test_session});
     fulfillment_service.name = "Jupiter Fulfillment";
@@ -103,7 +103,7 @@ describe('FulfillmentService resource', () => {
       path: '/admin/api/2022-04/fulfillment_services/755357713.json',
       query: '',
       headers,
-      data: { "fulfillment_service": {"id": 755357713, "name": "New Fulfillment Service Name"} }
+      data: { "fulfillment_service": {"name": "New Fulfillment Service Name"} }
     }).toMatchMadeHttpRequest();
   });
 

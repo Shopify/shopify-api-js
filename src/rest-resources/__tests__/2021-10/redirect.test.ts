@@ -134,7 +134,7 @@ describe('Redirect resource', () => {
       path: '/admin/api/2021-10/redirects/668809255.json',
       query: '',
       headers,
-      data: { "redirect": {"id": 668809255, "path": "/tiger"} }
+      data: { "redirect": {"path": "/tiger"} }
     }).toMatchMadeHttpRequest();
   });
 
@@ -152,7 +152,7 @@ describe('Redirect resource', () => {
       path: '/admin/api/2021-10/redirects/668809255.json',
       query: '',
       headers,
-      data: { "redirect": {"id": 668809255, "target": "/pages/macpro"} }
+      data: { "redirect": {"target": "/pages/macpro"} }
     }).toMatchMadeHttpRequest();
   });
 
@@ -171,7 +171,7 @@ describe('Redirect resource', () => {
       path: '/admin/api/2021-10/redirects/950115854.json',
       query: '',
       headers,
-      data: { "redirect": {"id": 950115854, "path": "/powermac", "target": "/pages/macpro"} }
+      data: { "redirect": {"path": "/powermac", "target": "/pages/macpro"} }
     }).toMatchMadeHttpRequest();
   });
 

@@ -103,7 +103,7 @@ describe('Province resource', () => {
       path: '/admin/api/2022-04/countries/879921427/provinces/224293623.json',
       query: '',
       headers,
-      data: { "province": {"id": 224293623, "tax": 0.09} }
+      data: { "province": {"tax": 0.09} }
     }).toMatchMadeHttpRequest();
   });
 
