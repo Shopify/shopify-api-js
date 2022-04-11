@@ -20,7 +20,9 @@ export default function safeCompare(
       buffA = Buffer.from(JSON.stringify(strA));
       buffB = Buffer.from(JSON.stringify(strB));
     } else {
+      // @ts-ignore
       buffA = Buffer.from(strA);
+      // @ts-ignore
       buffB = Buffer.from(strB);
     }
 

@@ -34,7 +34,10 @@ export class MySQLSessionStorage implements SessionStorage {
   private ready: Promise<void>;
   private connection: mysql.Connection;
 
-  constructor(private dbUrl: URL, opts: Partial<MySQLSessionStorageOptions>) {
+  constructor(
+    private dbUrl: URL,
+    opts: Partial<MySQLSessionStorageOptions> = {},
+  ) {
     if (typeof this.dbUrl === 'string') {
       this.dbUrl = new URL(this.dbUrl);
     }
@@ -58,7 +61,7 @@ export class MySQLSessionStorage implements SessionStorage {
     const payload = JSON.stringify(session);
 
     const query = sql`
-      INSERT INTO ${this.options.sessionTableName}
+      REPLACE INTO ${this.options.sessionTableName}
       VALUES (${JSON.stringify(id)}, ${JSON.stringify(payload)});
     `;
     await this.connection.query(query);
@@ -84,6 +87,10 @@ export class MySQLSessionStorage implements SessionStorage {
     `;
     await this.connection.query(query);
     return true;
+  }
+
+  public async disconnect(): Promise<void> {
+    await this.connection.end();
   }
 
   private async init() {

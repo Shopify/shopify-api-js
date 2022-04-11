@@ -1,12 +1,14 @@
 import * as fs from 'fs/promises';
+// import * as process from "process";
 
 import {Session} from '../../session';
 import {SessionStorage} from '../../session_storage';
+import {MySQLSessionStorage} from '../mysql';
 
 interface StorageModuleDescriptor {
   name: string;
   instantiate: () => Promise<SessionStorage>;
-  shutdown?: () => Promise<void>;
+  shutdown?: (instance: SessionStorage) => Promise<void>;
 }
 
 const sqliteDbFile = './sqlite.testDb';
@@ -29,8 +31,21 @@ const storageModules: StorageModuleDescriptor[] = [
       });
       return instance;
     },
-    async shutdown() {
+    async shutdown(_instance) {
       await fs.unlink(sqliteDbFile).catch(() => {});
+    },
+  },
+  {
+    name: 'MySQL SessionStorage',
+    async instantiate() {
+      const mod = await import('../mysql');
+      const instance = new mod.MySQLSessionStorage(
+        new URL('mysql://shopify:passify@localhost/shopitest'),
+      );
+      return instance;
+    },
+    async shutdown(instance) {
+      await (instance as MySQLSessionStorage).disconnect();
     },
   },
 ];
@@ -44,7 +59,7 @@ for (const storageModule of storageModules) {
     });
 
     afterAll(async () => {
-      await storageModule.shutdown?.();
+      await storageModule.shutdown?.(storage);
     });
 
     it('can store and delete sessions in memory', async () => {
