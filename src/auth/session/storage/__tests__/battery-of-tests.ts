@@ -2,7 +2,7 @@ import {Session} from '../../session';
 import {SessionStorage} from '../../session_storage';
 
 export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
-  it('can store and delete sessions in memory', async () => {
+  it('can store and delete sessions', async () => {
     const storage = await storageFactory();
     const sessionId = 'test_session';
     const session = new Session(sessionId, 'shop', 'state', false);
@@ -20,7 +20,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
   });
 
-  it('wrong ids return null sessions from memory', async () => {
+  it('wrong ids return null sessions', async () => {
     const storage = await storageFactory();
     await expect(
       storage.loadSession('not_a_session_id'),

@@ -22,7 +22,7 @@ describe('MySQLSessionStorage', () => {
       {encoding: 'utf8'},
     );
     containerId = runCommand.stdout.trim();
-    // This seems to be necessary :S
+
     await pollTCPSocketForAResponse(3306, '127.0.0.1', {
       interval: 500,
       timeout: 20000,

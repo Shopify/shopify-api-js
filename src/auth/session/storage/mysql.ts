@@ -2,6 +2,7 @@ import mysql from 'mysql2/promise';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
+import {Session} from '../session';
 
 export interface MySQLSessionStorageOptions {
   createDBWhenMissing: boolean;
@@ -57,12 +58,17 @@ export class MySQLSessionStorage implements SessionStorage {
 
   public async storeSession(session: SessionInterface): Promise<boolean> {
     await this.ready;
-    const id = session.id;
-    const payload = JSON.stringify(session);
+
+    const sessionValues = Object.entries(session);
+    console.log({sessionValues});
 
     const query = sql`
       REPLACE INTO ${this.options.sessionTableName}
-      VALUES (${JSON.stringify(id)}, ${JSON.stringify(payload)});
+      (${sessionValues
+        .map(([key, _value]) => key)
+        .join(', ')}) VALUES (${sessionValues
+      .map(([_key, value]) => stringifyForSQL(value))
+      .join(', ')});
     `;
     await this.connection.query(query);
     return true;
@@ -71,12 +77,30 @@ export class MySQLSessionStorage implements SessionStorage {
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
     await this.ready;
     const query = sql`
-      SELECT payload FROM ${this.options.sessionTableName}
+      SELECT * FROM ${this.options.sessionTableName}
       WHERE id = ${JSON.stringify(id)};
     `;
     const [rows] = await this.connection.query(query);
     if (!Array.isArray(rows) || rows?.length !== 1) return undefined;
-    return JSON.parse((rows[0] as any).payload);
+    // let result: SessionInterface = rows[0] as any;
+    const rawResult = rows[0] as any;
+
+    const result = new Session(
+      rawResult.id,
+      rawResult.shop,
+      rawResult.state,
+      rawResult.isOnline !== 0,
+    );
+    if (rawResult.onlineAccessInfo) {
+      result.onlineAccessInfo = JSON.parse(
+        result.onlineAccessInfo as any,
+      ) as any;
+    }
+    if (rawResult.expires) result.expires = new Date(rawResult.expires);
+    if (rawResult.scope) result.scope = rawResult.scope;
+    if (rawResult.accessToken) result.accessToken = rawResult.accessToken;
+
+    return result;
   }
 
   public async deleteSession(id: string): Promise<boolean> {
@@ -106,7 +130,13 @@ export class MySQLSessionStorage implements SessionStorage {
       const query = sql`
         CREATE TABLE ${this.options.sessionTableName} (
           id varchar(255) NOT NULL PRIMARY KEY,
-          payload varchar(4095) NOT NULL
+          shop varchar(255) NOT NULL,
+          state varchar(255) NOT NULL,
+          isOnline tinyint NOT NULL,
+          scope varchar(255),
+          expires varchar(255),
+          accessToken varchar(255),
+          onlineAccessInfo varchar(4096)
         )
       `;
       await this.connection.query(query);
@@ -125,4 +155,11 @@ function sql(raw: Parameters<typeof String.raw>[0], ...substitutions: any[]) {
     {raw: raw.map((raw) => raw.replace(/'/g, '`'))} as any,
     ...substitutions,
   );
+}
+
+function stringifyForSQL(value: any) {
+  if (typeof value === 'boolean') {
+    return value ? 1 : 0;
+  }
+  return JSON.stringify(value);
 }
