@@ -31,6 +31,7 @@ describe('MySQLSessionStorage', () => {
   });
 
   afterAll(async () => {
+    console.log('KILLING');
     await exec(`docker rm -f ${containerId}`);
   });
 

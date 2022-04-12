@@ -60,7 +60,6 @@ export class MySQLSessionStorage implements SessionStorage {
     await this.ready;
 
     const sessionValues = Object.entries(session);
-    console.log({sessionValues});
 
     const query = sql`
       REPLACE INTO ${this.options.sessionTableName}
@@ -82,7 +81,6 @@ export class MySQLSessionStorage implements SessionStorage {
     `;
     const [rows] = await this.connection.query(query);
     if (!Array.isArray(rows) || rows?.length !== 1) return undefined;
-    // let result: SessionInterface = rows[0] as any;
     const rawResult = rows[0] as any;
 
     const result = new Session(
