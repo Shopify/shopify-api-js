@@ -5,7 +5,7 @@ import * as nodeAdapter from '../../../adapters/node-adapter';
 import {DataType} from '../types';
 import {HttpClient} from '../http_client';
 
-import {ExpectedResponse, TestConfig, TestRequest} from './test_config_types';
+import {TestResponse, TestConfig, TestRequest} from './test_config_types';
 
 /* Codes for different Colours */
 const RED = '\x1b[31m';
@@ -32,7 +32,7 @@ const server = createServer(
       const testConfig: TestConfig =
         await getJSONDataFromRequestStream<TestConfig>(request);
       const testRequest: TestRequest = testConfig.testRequest;
-      const expectedResponse: ExpectedResponse = testConfig.expectedResponse;
+      const expectedResponse: TestResponse = testConfig.expectedResponse;
       const tries = testRequest.tries || 1;
       const params = {
         path: testRequest.url,

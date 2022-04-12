@@ -3,7 +3,7 @@ import * as cfWorkerAdapter from '../../../adapters/cf-worker-adapter';
 import {DataType, PostRequestParams, PutRequestParams} from '../types';
 import {HttpClient} from '../http_client';
 
-import {ExpectedResponse, TestConfig, TestRequest} from './test_config_types';
+import {TestResponse, TestConfig, TestRequest} from './test_config_types';
 
 /* Codes for different Colours */
 const RED = '\x1b[31m';
@@ -38,7 +38,7 @@ export default {
     if (req.method === 'POST') {
       const testConfig: TestConfig = await req.json();
       const testRequest: TestRequest = testConfig.testRequest;
-      const expectedResponse: ExpectedResponse = testConfig.expectedResponse;
+      const expectedResponse: TestResponse = testConfig.expectedResponse;
       const tries = testRequest.tries || 1;
       let testPassed = false;
       let timedOut = false;

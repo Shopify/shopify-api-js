@@ -3,6 +3,8 @@ import {createServer, IncomingMessage, ServerResponse} from 'http';
 
 import {Headers, Request, Response} from '../../../adapters/abstract-http';
 
+import {initTestRequest, initTestResponse} from './test_config_types';
+
 interface Test {
   expectedRequest: Request;
   testResponse: Response;
@@ -15,11 +17,11 @@ const requestId = 'Request id header';
 /* eslint-disable @typescript-eslint/naming-convention */
 const tests: {[key: string | number]: Test} = {
   200: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse(),
   },
   custom: {
-    expectedRequest: initExpectedRequest({
+    expectedRequest: initTestRequest({
       headers: {'X-Not-A-Real-Header': 'some_value'},
     }),
     testResponse: initTestResponse({
@@ -27,7 +29,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   lowercaseua: {
-    expectedRequest: initExpectedRequest({
+    expectedRequest: initTestRequest({
       headers: {'user-agent': 'My lowercase agent'},
     }),
     testResponse: initTestResponse({
@@ -35,7 +37,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   uppercaseua: {
-    expectedRequest: initExpectedRequest({
+    expectedRequest: initTestRequest({
       headers: {'User-Agent': 'My agent'},
     }),
     testResponse: initTestResponse({
@@ -43,7 +45,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   deprecatedget: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       headers: {
         'X-Shopify-API-Deprecated-Reason':
@@ -53,7 +55,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   deprecatedpost: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       headers: {
         'X-Shopify-API-Deprecated-Reason':
@@ -68,7 +70,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   403: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       statusCode: 403,
       statusText: errorStatusText,
@@ -77,7 +79,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   404: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       statusCode: 404,
       statusText: errorStatusText,
@@ -85,14 +87,14 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   417: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       statusCode: 417,
       statusText: 'Expectation Failed',
     }),
   },
   429: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       statusCode: 429,
       statusText: errorStatusText,
@@ -101,7 +103,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   wait: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       statusCode: 429,
       statusText: errorStatusText,
@@ -110,7 +112,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   500: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       statusCode: 500,
       statusText: errorStatusText,
@@ -119,7 +121,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   error: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       statusCode: 500,
       statusText: errorStatusText,
@@ -127,7 +129,7 @@ const tests: {[key: string | number]: Test} = {
     }),
   },
   detailederror: {
-    expectedRequest: initExpectedRequest(),
+    expectedRequest: initTestRequest(),
     testResponse: initTestResponse({
       statusCode: 500,
       statusText: errorStatusText,
@@ -215,32 +217,6 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
 
 function handle(_signal: any): void {
   process.exit(0);
-}
-
-function initExpectedRequest(options?: Partial<Request>): Request {
-  const defaults = {
-    method: 'get',
-    url: '',
-    headers: {},
-  };
-  return {
-    ...defaults,
-    ...options,
-  };
-}
-
-function initTestResponse(options?: Partial<Response>): Response {
-  const defaults = {
-    statusCode: 200,
-    statusText: 'OK',
-    headers: {},
-    body: JSON.stringify({message: 'Your HTTP request was successful!'}),
-  };
-
-  return {
-    ...defaults,
-    ...options,
-  };
 }
 
 function expectedHeadersReceived(

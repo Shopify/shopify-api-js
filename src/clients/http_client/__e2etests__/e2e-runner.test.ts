@@ -5,7 +5,11 @@ import fetch from 'node-fetch';
 import {DataType} from '../../../types';
 import ProcessedQuery from '../../../utils/processed-query';
 
-import {ExpectedResponse, TestConfig, TestRequest} from './test_config_types';
+import {
+  TestConfig,
+  initTestRequest,
+  initTestResponse,
+} from './test_config_types';
 
 const nodeAppPort = '6666';
 const nodeAppDomain = `http://localhost:${nodeAppPort}`;
@@ -72,7 +76,6 @@ const testEnvironments = [
   },
 ];
 const maxEnvironments = testEnvironments.length;
-let environmentCount = 0;
 
 const postData = {
   title: 'Test product',
@@ -102,7 +105,7 @@ const testSuite = [
     name: 'can make GET request',
     config: {
       testRequest: initTestRequest(),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -113,7 +116,7 @@ const testSuite = [
         bodyType: DataType.JSON,
         body: JSON.stringify(postData),
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -124,7 +127,7 @@ const testSuite = [
         bodyType: DataType.JSON,
         body: JSON.stringify(JSON.stringify(postData)),
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -135,7 +138,7 @@ const testSuite = [
         bodyType: DataType.JSON,
         body: JSON.stringify(''),
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -146,7 +149,7 @@ const testSuite = [
         bodyType: DataType.URLEncoded,
         body: JSON.stringify(postData),
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -157,7 +160,7 @@ const testSuite = [
         bodyType: DataType.URLEncoded,
         body: ProcessedQuery.stringify(postData),
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -168,7 +171,7 @@ const testSuite = [
         bodyType: DataType.GraphQL,
         body: graphqlQuery,
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -180,7 +183,7 @@ const testSuite = [
         bodyType: DataType.JSON,
         body: JSON.stringify(putData),
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -190,14 +193,14 @@ const testSuite = [
         method: 'delete',
         url: '/url/path/123',
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
     name: 'gracefully handles 403 error',
     config: {
       testRequest: initTestRequest({url: '/url/path/403'}),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 403,
         statusText: 'Did not work',
         errorType: 'HttpResponseError',
@@ -209,7 +212,7 @@ const testSuite = [
     name: 'gracefully handles 404 error',
     config: {
       testRequest: initTestRequest({url: '/url/path/404'}),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 404,
         statusText: 'Did not work',
         errorType: 'HttpResponseError',
@@ -220,7 +223,7 @@ const testSuite = [
     name: 'gracefully handles 429 error',
     config: {
       testRequest: initTestRequest({url: '/url/path/429'}),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 429,
         statusText: 'Did not work',
         errorType: 'HttpThrottlingError',
@@ -232,7 +235,7 @@ const testSuite = [
     name: 'gracefully handles 500 error',
     config: {
       testRequest: initTestRequest({url: '/url/path/500'}),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 500,
         statusText: 'Did not work',
         errorType: 'HttpInternalError',
@@ -247,7 +250,7 @@ const testSuite = [
         url: '/url/path/custom',
         headers: {'X-Not-A-Real-Header': 'some_value'}, // eslint-disable-line @typescript-eslint/naming-convention
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -257,7 +260,7 @@ const testSuite = [
         url: '/url/path/uppercaseua',
         headers: {'User-Agent': 'My agent'}, // eslint-disable-line @typescript-eslint/naming-convention
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -267,14 +270,14 @@ const testSuite = [
         url: '/url/path/lowercaseua',
         headers: {'user-agent': 'My lowercase agent'}, // eslint-disable-line @typescript-eslint/naming-convention
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
     name: 'fails with invalid retry count',
     config: {
       testRequest: initTestRequest({tries: -1}),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 500,
         statusText: 'Did not work',
         errorType: 'HttpRequestError',
@@ -289,7 +292,7 @@ const testSuite = [
         tries: 3,
         retryTimeoutTimer: 0,
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -300,7 +303,7 @@ const testSuite = [
         tries: 3,
         retryTimeoutTimer: 0,
       }),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 403,
         statusText: 'Did not work',
         errorType: 'HttpResponseError',
@@ -315,7 +318,7 @@ const testSuite = [
         tries: 3,
         retryTimeoutTimer: 0,
       }),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 500,
         statusText: 'Did not work',
         errorType: 'HttpMaxRetriesError',
@@ -330,7 +333,7 @@ const testSuite = [
         tries: 2,
         retryTimeoutTimer: 3000,
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -340,7 +343,7 @@ const testSuite = [
         url: '/url/path/error',
         retryTimeoutTimer: 0,
       }),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 500,
         statusText: 'Did not work',
         errorType: 'HttpInternalError',
@@ -355,7 +358,7 @@ const testSuite = [
         url: '/url/path/detailederror',
         retryTimeoutTimer: 0,
       }),
-      expectedResponse: initExpectedResponse({
+      expectedResponse: initTestResponse({
         statusCode: 500,
         statusText: 'Did not work',
         errorType: 'HttpInternalError',
@@ -372,7 +375,7 @@ const testSuite = [
     name: 'adds missing slashes to paths',
     config: {
       testRequest: initTestRequest({url: 'url/path'}),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
   {
@@ -386,39 +389,22 @@ const testSuite = [
           hash: {a: 'b', c: 'd'},
         }),
       }),
-      expectedResponse: initExpectedResponse(),
+      expectedResponse: initTestResponse(),
     },
   },
 ];
 
-testEnvironments.forEach((env) => {
+let count = 0;
+testEnvironments.forEach(async (env) => {
   describe(`${env.name} HTTP client`, () => {
     beforeAll(async () => {
-      if (environmentCount === 0) {
-        // first time through - wait for processes to be ready
-        const maxAttempts = 20;
-        let attempts = 0;
-        let httpSrvrReady = false;
-        let nodeAppReady = false;
-        let cfWorkerReady = false;
-
-        while (
-          !(httpSrvrReady && nodeAppReady && cfWorkerReady) &&
-          attempts < maxAttempts
-        ) {
-          attempts++;
-          await sleep(100);
-          if (!(cfWorkerReady = await serverReady(cfWorkerAppDomain))) continue;
-          if (!(httpSrvrReady = await serverReady(httpServerDomain))) continue;
-          if (!(nodeAppReady = await serverReady(nodeAppDomain))) continue;
-        }
-      }
-      environmentCount++;
+      await serverPoolReady();
+      count++;
     });
 
     afterAll(async () => {
       // if we've finished last test cycle, shut down processes
-      if (environmentCount === maxEnvironments) killChildProcesses();
+      if (count === maxEnvironments) killChildProcesses();
     });
 
     testSuite.forEach((test) => {
@@ -481,31 +467,22 @@ async function serverReady(domain: string): Promise<boolean> {
   }
 }
 
-function initTestRequest(options?: Partial<TestRequest>): TestRequest {
-  const defaults = {
-    method: 'get',
-    url: '/url/path',
-    headers: {},
-  };
-  return {
-    ...defaults,
-    ...options,
-  };
-}
+async function serverPoolReady(): Promise<boolean> {
+  const maxAttempts = 20;
+  let attempts = 0;
+  let httpSrvrReady = false;
+  let nodeAppReady = false;
+  let cfWorkerReady = false;
 
-function initExpectedResponse(
-  options?: Partial<ExpectedResponse>,
-): ExpectedResponse {
-  const defaults = {
-    statusCode: 200,
-    statusText: 'OK',
-    body: JSON.stringify({
-      message: 'Your HTTP request was successful!',
-    }),
-  };
-
-  return {
-    ...defaults,
-    ...options,
-  };
+  while (
+    !(httpSrvrReady && nodeAppReady && cfWorkerReady) &&
+    attempts < maxAttempts
+  ) {
+    attempts++;
+    await sleep(100);
+    if (!(cfWorkerReady = await serverReady(cfWorkerAppDomain))) continue;
+    if (!(httpSrvrReady = await serverReady(httpServerDomain))) continue;
+    if (!(nodeAppReady = await serverReady(nodeAppDomain))) continue;
+  }
+  return httpSrvrReady && nodeAppReady && cfWorkerReady;
 }
