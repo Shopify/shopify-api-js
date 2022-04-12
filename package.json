@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "prettier": "@shopify/prettier-config",
   "scripts": {
-    "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__",
+    "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__ --testPathIgnorePatterns=src/auth/session/storage",
+    "test_storage": "jest src/auth/session/storage",
     "test_rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
     "build": "tsc",
     "lint": "eslint '**/*.{ts,tsx}' --max-warnings 0",
