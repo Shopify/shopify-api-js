@@ -75,11 +75,9 @@ export class SQLiteSessionStorage implements SessionStorage {
 
   private async init() {
     const hasSessionTable = await this.hasSessionTable();
-    console.log({hasSessionTable});
     if (!hasSessionTable && !this.options.createDBWhenMissing) {
       throw Error('Session Table is missing');
     } else if (!hasSessionTable) {
-      console.log('CREATING');
       const query = sql`
         CREATE TABLE ${this.options.sessionTableName} (
           id varchar(255) NOT NULL PRIMARY KEY,
