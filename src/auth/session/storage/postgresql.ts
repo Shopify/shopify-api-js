@@ -1,29 +1,32 @@
-import mysql from 'mysql2/promise';
+import pg from 'pg';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {Session} from '../session';
 
-export interface MySQLSessionStorageOptions {
+export interface PostgreSQLSessionStorageOptions {
   createDBWhenMissing: boolean;
   sessionTableName: string;
+  port: number;
 }
-const defaultMySQLSessionStorageOptions: MySQLSessionStorageOptions = {
-  createDBWhenMissing: true,
-  sessionTableName: 'shopify_node_api_sessions',
-};
+const defaultPostgreSQLSessionStorageOptions: PostgreSQLSessionStorageOptions =
+  {
+    createDBWhenMissing: true,
+    sessionTableName: 'shopify_node_api_sessions',
+    port: 3211,
+  };
 
-export class MySQLSessionStorage implements SessionStorage {
+export class PostgreSQLSessionStorage implements SessionStorage {
   static withCredentials(
     host: string,
     dbName: string,
     username: string,
     password: string,
-    opts: Partial<MySQLSessionStorageOptions>,
+    opts: Partial<PostgreSQLSessionStorageOptions>,
   ) {
-    return new MySQLSessionStorage(
+    return new PostgreSQLSessionStorage(
       new URL(
-        `mysql://${encodeURIComponent(username)}:${encodeURIComponent(
+        `postgres://${encodeURIComponent(username)}:${encodeURIComponent(
           password,
         )}@${host}/${encodeURIComponent(dbName)}`,
       ),
@@ -32,54 +35,52 @@ export class MySQLSessionStorage implements SessionStorage {
   }
 
   public readonly ready: Promise<void>;
-  private options: MySQLSessionStorageOptions;
-  private connection: mysql.Connection;
+  private options: PostgreSQLSessionStorageOptions;
+  private client: pg.Client;
 
   constructor(
     private dbUrl: URL,
-    opts: Partial<MySQLSessionStorageOptions> = {},
+    opts: Partial<PostgreSQLSessionStorageOptions> = {},
   ) {
     if (typeof this.dbUrl === 'string') {
       this.dbUrl = new URL(this.dbUrl);
     }
-    this.options = {...defaultMySQLSessionStorageOptions, ...opts};
+    this.options = {...defaultPostgreSQLSessionStorageOptions, ...opts};
     this.ready = this.init();
   }
 
   public async hasSessionTable(): Promise<boolean> {
-    const query = sql`
-      SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ${JSON.stringify(
-        this.options.sessionTableName,
-      )}
+    const query = `
+      SELECT * FROM pg_catalog.pg_tables WHERE tablename = $1
     `;
-    const [rows] = await this.query(query);
+    const [rows] = await this.query(query, [this.options.sessionTableName]);
     return Array.isArray(rows) && rows.length === 1;
   }
 
   public async storeSession(session: SessionInterface): Promise<boolean> {
     await this.ready;
 
-    const sessionValues = Object.entries(session);
-
-    const query = sql`
-      REPLACE INTO ${this.options.sessionTableName}
-      (${sessionValues
-        .map(([key, _value]) => key)
-        .join(', ')}) VALUES (${sessionValues
-      .map(([_key, value]) => stringifyForSQL(value))
-      .join(', ')});
+    const query = `
+      INSERT INTO ${this.options.sessionTableName}
+      (${Object.keys(session).join(', ')})
+      VALUES (${Object.values(session)
+        .map((_, i) => `$${i + 1}`)
+        .join(', ')})
+      ON CONFLICT (id) DO UPDATE SET ${Object.keys(session)
+        .map((key) => `${key} = Excluded.${key}`)
+        .join(', ')};
     `;
-    await this.query(query);
+    await this.query(query, Object.values(session));
     return true;
   }
 
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
     await this.ready;
-    const query = sql`
+    const query = `
       SELECT * FROM ${this.options.sessionTableName}
-      WHERE id = ${JSON.stringify(id)};
+      WHERE id = $1;
     `;
-    const [rows] = await this.query(query);
+    const rows = await this.query(query, [id]);
     if (!Array.isArray(rows) || rows?.length !== 1) return undefined;
     const rawResult = rows[0] as any;
 
@@ -87,11 +88,11 @@ export class MySQLSessionStorage implements SessionStorage {
       rawResult.id,
       rawResult.shop,
       rawResult.state,
-      rawResult.isOnline !== 0,
+      rawResult.isonline,
     );
-    if (rawResult.onlineAccessInfo) {
+    if (rawResult.onlineaccessInfo) {
       result.onlineAccessInfo = JSON.parse(
-        rawResult.onlineAccessInfo as any,
+        rawResult.onlineaccessinfo as any,
       ) as any;
     }
     if (rawResult.expires) result.expires = new Date(rawResult.expires);
@@ -103,21 +104,26 @@ export class MySQLSessionStorage implements SessionStorage {
 
   public async deleteSession(id: string): Promise<boolean> {
     await this.ready;
-    const query = sql`
+    const query = `
       DELETE FROM ${this.options.sessionTableName}
-      WHERE id = ${JSON.stringify(id)};
+      WHERE id = $1;
     `;
-    await this.query(query);
+    await this.query(query, [id]);
     return true;
   }
 
-  public async disconnect(): Promise<void> {
-    await this.connection.end();
+  public disconnect(): Promise<void> {
+    return this.client.end();
   }
 
   private async init() {
-    this.connection = await mysql.createConnection(this.dbUrl.toString());
+    this.client = new pg.Client({connectionString: this.dbUrl.toString()});
+    await this.connectClient();
     await this.createTable();
+  }
+
+  private async connectClient(): Promise<void> {
+    await this.client.connect();
   }
 
   private async createTable() {
@@ -125,12 +131,12 @@ export class MySQLSessionStorage implements SessionStorage {
     if (!hasSessionTable && !this.options.createDBWhenMissing) {
       throw Error('Session Table is missing');
     } else if (!hasSessionTable) {
-      const query = sql`
+      const query = `
         CREATE TABLE ${this.options.sessionTableName} (
           id varchar(255) NOT NULL PRIMARY KEY,
           shop varchar(255) NOT NULL,
           state varchar(255) NOT NULL,
-          isOnline tinyint NOT NULL,
+          isOnline boolean NOT NULL,
           scope varchar(255),
           expires varchar(255),
           accessToken varchar(255),
@@ -141,27 +147,8 @@ export class MySQLSessionStorage implements SessionStorage {
     }
   }
 
-  private query(sql: string): Promise<any> {
-    return this.connection.query(sql);
+  private async query(sql: string, params: any[] = []): Promise<any> {
+    const result = await this.client.query(sql, params);
+    return result.rows;
   }
-}
-
-/**
- * Quick’n’dirty tagged template literal to allow string interpolation with
- * backticks without conflicting with SQL’s usage of backticks.
- * It effectively replaces single quotes with backticks,
- * leaving double quotes for strings.
- */
-function sql(raw: Parameters<typeof String.raw>[0], ...substitutions: any[]) {
-  return String.raw(
-    {raw: raw.map((raw) => raw.replace(/'/g, '`'))} as any,
-    ...substitutions,
-  );
-}
-
-function stringifyForSQL(value: any) {
-  if (typeof value === 'boolean') {
-    return value ? 1 : 0;
-  }
-  return JSON.stringify(value);
 }

@@ -1,23 +1,13 @@
 import {Socket} from 'net';
 
-export function connect(port: number, host: string): Promise<Socket> {
-  const socket = new Socket();
-  return new Promise((resolve, reject) => {
-    socket.connect(port, host);
-    socket.on('connect', () => resolve(socket));
-    socket.on('error', (err) => reject(err));
-  });
-}
-
 export function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(() => resolve(), ms));
 }
 
-export async function pollTCPSocketForAResponse(
-  port: number,
-  addr: string,
+export async function poll(
+  func: () => Promise<boolean>,
   {interval = 100, timeout = 5000} = {},
-): Promise<void> {
+) {
   const start = Date.now();
   while (true) {
     const elapsed = Date.now() - start;
@@ -25,26 +15,20 @@ export async function pollTCPSocketForAResponse(
       throw Error('Timeout');
     }
 
-    let socket;
     try {
-      socket = await connect(port, addr);
-      // Closing the socket without sending anything should
-      // prompt the server (if it is listening!) to send an error message.
-      socket.end();
-      await waitForData(socket);
-      return;
+      const success = await func();
+      if (success) return;
     } catch {
-      await wait(interval);
-    } finally {
-      socket?.destroy();
+      /* lol empty */
     }
+    await wait(interval);
   }
 }
 
-export function waitForData(socket: Socket): Promise<void> {
+export function waitForData(socket: Socket): Promise<string> {
   return new Promise((resolve, reject) => {
-    socket.on('data', () => resolve());
+    socket.on('data', () => resolve('data'));
     socket.on('error', (err) => reject(err));
-    socket.on('close', () => reject(Error('Closed prematurely')));
+    socket.on('close', () => resolve('no data'));
   });
 }

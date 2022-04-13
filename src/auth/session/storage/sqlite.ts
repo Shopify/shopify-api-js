@@ -63,7 +63,7 @@ export class SQLiteSessionStorage implements SessionStorage {
     );
     if (rawResult.onlineAccessInfo) {
       result.onlineAccessInfo = JSON.parse(
-        result.onlineAccessInfo as any,
+        rawResult.onlineAccessInfo as any,
       ) as any;
     }
     if (rawResult.expires) result.expires = new Date(rawResult.expires);
