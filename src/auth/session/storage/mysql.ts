@@ -46,14 +46,6 @@ export class MySQLSessionStorage implements SessionStorage {
     this.ready = this.init();
   }
 
-  public async hasSessionTable(): Promise<boolean> {
-    const query = `
-      SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?;
-    `;
-    const [rows] = await this.query(query, [this.options.sessionTableName]);
-    return Array.isArray(rows) && rows.length === 1;
-  }
-
   public async storeSession(session: SessionInterface): Promise<boolean> {
     await this.ready;
 
@@ -113,6 +105,14 @@ export class MySQLSessionStorage implements SessionStorage {
   private async init() {
     this.connection = await mysql.createConnection(this.dbUrl.toString());
     await this.createTable();
+  }
+
+  private async hasSessionTable(): Promise<boolean> {
+    const query = `
+      SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?;
+    `;
+    const [rows] = await this.query(query, [this.options.sessionTableName]);
+    return Array.isArray(rows) && rows.length === 1;
   }
 
   private async createTable() {

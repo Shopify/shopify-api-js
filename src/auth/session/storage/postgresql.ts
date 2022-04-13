@@ -49,14 +49,6 @@ export class PostgreSQLSessionStorage implements SessionStorage {
     this.ready = this.init();
   }
 
-  public async hasSessionTable(): Promise<boolean> {
-    const query = `
-      SELECT * FROM pg_catalog.pg_tables WHERE tablename = $1
-    `;
-    const [rows] = await this.query(query, [this.options.sessionTableName]);
-    return Array.isArray(rows) && rows.length === 1;
-  }
-
   public async storeSession(session: SessionInterface): Promise<boolean> {
     await this.ready;
 
@@ -124,6 +116,14 @@ export class PostgreSQLSessionStorage implements SessionStorage {
 
   private async connectClient(): Promise<void> {
     await this.client.connect();
+  }
+
+  private async hasSessionTable(): Promise<boolean> {
+    const query = `
+      SELECT * FROM pg_catalog.pg_tables WHERE tablename = $1
+    `;
+    const [rows] = await this.query(query, [this.options.sessionTableName]);
+    return Array.isArray(rows) && rows.length === 1;
   }
 
   private async createTable() {
