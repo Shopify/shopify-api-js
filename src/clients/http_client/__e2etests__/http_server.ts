@@ -1,174 +1,204 @@
 /* global process */
 import {createServer, IncomingMessage, ServerResponse} from 'http';
 
-interface Response {
-  statusCode: number;
-  statusText: string;
-  headers?: {[key: string]: string};
-  body?: string;
+import {Headers, Request, Response} from '../../../adapters/abstract-http';
+
+import {initTestRequest, initTestResponse} from './test_config_types';
+import {matchHeaders} from './utils';
+
+interface Test {
+  expectedRequest: Request;
+  testResponse: Response;
 }
 
 // eslint-disable-next-line no-process-env
 const port: number = parseInt(process.env.HTTP_SERVER_PORT || '3000', 10);
 const errorStatusText = 'Did not work';
 const requestId = 'Request id header';
-const responses: {[key: string | number]: Response} = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+/* eslint-disable @typescript-eslint/naming-convention */
+const tests: {[key: string | number]: Test} = {
   200: {
-    statusCode: 200,
-    statusText: 'OK',
-    headers: {},
-    body: JSON.stringify({message: 'Your HTTP request was successful!'}),
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse(),
   },
   custom: {
-    statusCode: 200,
-    statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'X-Not-A-Real-Header': 'some_value'},
-    body: JSON.stringify({message: 'Your HTTP request was successful!'}),
-  },
-  lowercaseua: {
-    statusCode: 200,
-    statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'user-agent': 'My lowercase agent'},
-    body: JSON.stringify({message: 'Your HTTP request was successful!'}),
-  },
-  uppercaseua: {
-    statusCode: 200,
-    statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'User-Agent': 'My agent'},
-    body: JSON.stringify({message: 'Your HTTP request was successful!'}),
-  },
-  contextua: {
-    statusCode: 200,
-    statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'User-Agent': 'Context Agent'},
-    body: JSON.stringify({message: 'Your HTTP request was successful!'}),
-  },
-  contextandheadersua: {
-    statusCode: 200,
-    statusText: 'OK',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'User-Agent': 'Headers Agent | Context Agent'},
-    body: JSON.stringify({message: 'Your HTTP request was successful!'}),
-  },
-  deprecatedget: {
-    statusCode: 200,
-    statusText: 'OK',
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'X-Shopify-API-Deprecated-Reason':
-        'This API endpoint has been deprecated',
-    },
-    body: JSON.stringify({message: 'Some deprecated request'}),
-  },
-  deprecatedpost: {
-    statusCode: 200,
-    statusText: 'OK',
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'X-Shopify-API-Deprecated-Reason':
-        'This API endpoint has been deprecated',
-    },
-    body: JSON.stringify({
-      message: 'Some deprecated post request',
-      body: {
-        query: 'some query',
-      },
+    expectedRequest: initTestRequest({
+      headers: {'X-Not-A-Real-Header': 'some_value'},
+    }),
+    testResponse: initTestResponse({
+      headers: {'X-Not-A-Real-Header': 'some_value'},
     }),
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  lowercaseua: {
+    expectedRequest: initTestRequest({
+      headers: {'user-agent': 'My lowercase agent'},
+    }),
+    testResponse: initTestResponse({
+      headers: {'user-agent': 'My lowercase agent'},
+    }),
+  },
+  uppercaseua: {
+    expectedRequest: initTestRequest({
+      headers: {'User-Agent': 'My agent'},
+    }),
+    testResponse: initTestResponse({
+      headers: {'User-Agent': 'My agent'},
+    }),
+  },
+  deprecatedget: {
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      headers: {
+        'X-Shopify-API-Deprecated-Reason':
+          'This API endpoint has been deprecated',
+      },
+      body: JSON.stringify({message: 'Some deprecated request'}),
+    }),
+  },
+  deprecatedpost: {
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      headers: {
+        'X-Shopify-API-Deprecated-Reason':
+          'This API endpoint has been deprecated',
+      },
+      body: JSON.stringify({
+        message: 'Some deprecated post request',
+        body: {
+          query: 'some query',
+        },
+      }),
+    }),
+  },
   403: {
-    statusCode: 403,
-    statusText: errorStatusText,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'x-request-id': requestId},
-    body: JSON.stringify({errors: 'Something went wrong!'}),
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 403,
+      statusText: errorStatusText,
+      headers: {'x-request-id': requestId},
+      body: JSON.stringify({errors: 'Something went wrong!'}),
+    }),
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   404: {
-    statusCode: 404,
-    statusText: errorStatusText,
-    headers: {},
-    body: JSON.stringify({}),
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 404,
+      statusText: errorStatusText,
+      body: JSON.stringify({}),
+    }),
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  417: {
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 417,
+      statusText: 'Expectation Failed',
+    }),
+  },
   429: {
-    statusCode: 429,
-    statusText: errorStatusText,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'x-request-id': requestId},
-    body: JSON.stringify({errors: 'Something went wrong!'}),
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 429,
+      statusText: errorStatusText,
+      headers: {'x-request-id': requestId},
+      body: JSON.stringify({errors: 'Something went wrong!'}),
+    }),
   },
   wait: {
-    statusCode: 429,
-    statusText: errorStatusText,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'Retry-After': (0.05).toString()},
-    body: JSON.stringify({errors: 'Something went wrong!'}),
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 429,
+      statusText: errorStatusText,
+      headers: {'Retry-After': (0.1).toString()},
+      body: JSON.stringify({errors: 'Something went wrong!'}),
+    }),
   },
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   500: {
-    statusCode: 500,
-    statusText: errorStatusText,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: {'x-request-id': requestId},
-    body: JSON.stringify({}),
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 500,
+      statusText: errorStatusText,
+      headers: {'x-request-id': requestId},
+      body: JSON.stringify({}),
+    }),
   },
   error: {
-    statusCode: 500,
-    statusText: errorStatusText,
-    headers: {},
-    body: JSON.stringify({errors: 'Something went wrong'}),
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 500,
+      statusText: errorStatusText,
+      body: JSON.stringify({errors: 'Something went wrong'}),
+    }),
   },
   detailederror: {
-    statusCode: 500,
-    statusText: errorStatusText,
-    headers: {},
-    body: JSON.stringify({
-      errors: {title: 'Invalid title', description: 'Invalid description'},
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 500,
+      statusText: errorStatusText,
+      body: JSON.stringify({
+        errors: {title: 'Invalid title', description: 'Invalid description'},
+      }),
     }),
   },
 };
+/* eslint-enable @typescript-eslint/naming-convention */
 
 let retryCount = 0;
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   const lookup = req.url?.match(/^\/url\/path\/([a-z0-9]*)$/);
+  const receivedHeaders = req.headers;
   const code = lookup ? lookup[1] : '200';
-  let response: Response = responses[code] || responses['200'];
-  if (code === 'retries' && retryCount < 2) {
-    response = responses['429'];
-    retryCount += 1;
-  }
-  if (code === 'retrythenfail') {
-    if (retryCount === 0) {
-      response = responses['500'];
-      retryCount = 1;
-    } else {
-      response = responses['403'];
-      // this is the end of the test, reset the counter
-      retryCount = 0;
+  const test = tests[code] || tests['200'];
+  const expectedRequest = test.expectedRequest;
+  let testResponse = test.testResponse;
+
+  if (matchHeaders(receivedHeaders as Headers, expectedRequest.headers)) {
+    if (code === 'retries' && retryCount < 2) {
+      testResponse = tests['429'].testResponse;
+      retryCount += 1;
     }
-  }
-  if (code === 'retrythensuccess') {
-    if (retryCount === 0) {
-      response = responses.wait;
-      retryCount = 1;
-    } else {
-      // this is the end of the test, reset the counter; response already defaults to success
-      retryCount = 0;
+    if (code === 'retrythenfail') {
+      if (retryCount === 0) {
+        testResponse = tests['500'].testResponse;
+        retryCount = 1;
+      } else {
+        testResponse = tests['403'].testResponse;
+        // this is the end of the test, reset the counter
+        retryCount = 0;
+      }
     }
+    if (code === 'retrythensuccess') {
+      if (retryCount === 0) {
+        testResponse = tests.wait.testResponse;
+        retryCount = 1;
+      } else {
+        // this is the end of the test, reset the counter; response already defaults to success
+        retryCount = 0;
+      }
+    }
+    if (code === 'maxretries') {
+      testResponse = tests['500'].testResponse;
+    }
+  } else {
+    // return an "expectation failed" message
+    testResponse = tests['417'].testResponse;
+    testResponse.body = JSON.stringify({
+      errors: {
+        message:
+          'There was a header mismatch between expected request and received request',
+        receivedHeaders,
+        expectedHeaders: expectedRequest.headers,
+      },
+    });
   }
-  if (code === 'maxretries') {
-    response = responses['500'];
-  }
+
   // console.log(response);
-  res.writeHead(response.statusCode, response.statusText, response.headers);
-  res.end(response.body);
+  res.writeHead(
+    testResponse.statusCode,
+    testResponse.statusText,
+    testResponse.headers,
+  );
+  res.end(testResponse.body);
 
   // reset counters
   if (code !== 'retries' && retryCount === 2) {
