@@ -4,6 +4,7 @@ import {createServer, IncomingMessage, ServerResponse} from 'http';
 import {Headers, Request, Response} from '../../../adapters/abstract-http';
 
 import {initTestRequest, initTestResponse} from './test_config_types';
+import {matchHeaders} from './utils';
 
 interface Test {
   expectedRequest: Request;
@@ -151,24 +152,7 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   const expectedRequest = test.expectedRequest;
   let testResponse = test.testResponse;
 
-  if (
-    Object.keys(expectedRequest.headers).length > 0 &&
-    !expectedHeadersReceived(
-      receivedHeaders as Headers,
-      expectedRequest.headers,
-    )
-  ) {
-    // return an "expectation failed" message
-    testResponse = tests['417'].testResponse;
-    testResponse.body = JSON.stringify({
-      errors: {
-        message:
-          'There was a header mismatch between expected request and received request',
-        receivedHeaders,
-        expectedHeaders: expectedRequest.headers,
-      },
-    });
-  } else {
+  if (matchHeaders(receivedHeaders as Headers, expectedRequest.headers)) {
     if (code === 'retries' && retryCount < 2) {
       testResponse = tests['429'].testResponse;
       retryCount += 1;
@@ -195,6 +179,17 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
     if (code === 'maxretries') {
       testResponse = tests['500'].testResponse;
     }
+  } else {
+    // return an "expectation failed" message
+    testResponse = tests['417'].testResponse;
+    testResponse.body = JSON.stringify({
+      errors: {
+        message:
+          'There was a header mismatch between expected request and received request',
+        receivedHeaders,
+        expectedHeaders: expectedRequest.headers,
+      },
+    });
   }
 
   // console.log(response);
@@ -217,23 +212,6 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
 
 function handle(_signal: any): void {
   process.exit(0);
-}
-
-function expectedHeadersReceived(
-  received: Headers,
-  expected: Headers,
-): boolean {
-  let expectedHeadersCorrect = true;
-
-  for (const [expectedKey, expectedValues] of Object.entries(expected)) {
-    expectedHeadersCorrect =
-      expectedHeadersCorrect &&
-      expectedKey.toLowerCase() in received &&
-      received[expectedKey.toLowerCase()].includes(expectedValues as string);
-
-    if (!expectedHeadersCorrect) return false;
-  }
-  return expectedHeadersCorrect;
 }
 
 process.on('SIGINT', handle);

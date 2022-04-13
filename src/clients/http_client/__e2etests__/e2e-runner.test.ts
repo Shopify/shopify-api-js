@@ -49,7 +49,7 @@ async function checkTestResponse(response: any): Promise<void> {
       responseBody,
       undefined,
       2,
-    )}`;
+    )}\n${responseBody.errorMessageReceived}`;
     throw err;
   }
 }

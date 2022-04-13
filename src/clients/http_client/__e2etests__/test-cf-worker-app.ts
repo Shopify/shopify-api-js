@@ -1,9 +1,10 @@
-import {setAbstractFetchFunc} from '../../../adapters/abstract-http';
+import {setAbstractFetchFunc, Headers} from '../../../adapters/abstract-http';
 import * as cfWorkerAdapter from '../../../adapters/cf-worker-adapter';
 import {DataType, PostRequestParams, PutRequestParams} from '../types';
 import {HttpClient} from '../http_client';
 
 import {TestResponse, TestConfig, TestRequest} from './test_config_types';
+import {matchHeaders} from './utils';
 
 /* Codes for different Colours */
 const RED = '\x1b[31m';
@@ -99,10 +100,16 @@ export default {
               );
             } else {
               testPassed =
-                JSON.stringify(response.body) === expectedResponse.body;
+                matchHeaders(
+                  response.headers,
+                  expectedResponse.headers as Headers,
+                ) && JSON.stringify(response.body) === expectedResponse.body;
+
               testFailedDebug = JSON.stringify({
                 bodyExpected: expectedResponse.body,
                 bodyReceived: response.body,
+                headersExpected: expectedResponse.headers,
+                headersReceived: response.headers,
               });
             }
           } catch (error) {

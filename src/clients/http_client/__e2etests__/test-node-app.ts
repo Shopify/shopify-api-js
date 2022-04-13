@@ -1,11 +1,12 @@
 import {createServer, IncomingMessage, ServerResponse} from 'http';
 
-import {setAbstractFetchFunc} from '../../../adapters/abstract-http';
+import {setAbstractFetchFunc, Headers} from '../../../adapters/abstract-http';
 import * as nodeAdapter from '../../../adapters/node-adapter';
 import {DataType} from '../types';
 import {HttpClient} from '../http_client';
 
 import {TestResponse, TestConfig, TestRequest} from './test_config_types';
+import {matchHeaders} from './utils';
 
 /* Codes for different Colours */
 const RED = '\x1b[31m';
@@ -98,10 +99,16 @@ const server = createServer(
               );
             } else {
               testPassed =
-                JSON.stringify(response.body) === expectedResponse.body;
+                matchHeaders(
+                  response.headers,
+                  expectedResponse.headers as Headers,
+                ) && JSON.stringify(response.body) === expectedResponse.body;
+
               testFailedDebug = JSON.stringify({
                 bodyExpected: expectedResponse.body,
                 bodyReceived: response.body,
+                headersExpected: expectedResponse.headers,
+                headersReceived: response.headers,
               });
             }
           } catch (error) {

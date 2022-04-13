@@ -176,7 +176,9 @@ export const testSuite = [
         url: '/url/path/custom',
         headers: {'X-Not-A-Real-Header': 'some_value'}, // eslint-disable-line @typescript-eslint/naming-convention
       }),
-      expectedResponse: initTestResponse(),
+      expectedResponse: initTestResponse({
+        headers: {'X-Not-A-Real-Header': 'some_value'}, // eslint-disable-line @typescript-eslint/naming-convention
+      }),
     },
   },
   {
@@ -186,7 +188,9 @@ export const testSuite = [
         url: '/url/path/uppercaseua',
         headers: {'User-Agent': 'My agent'}, // eslint-disable-line @typescript-eslint/naming-convention
       }),
-      expectedResponse: initTestResponse(),
+      expectedResponse: initTestResponse({
+        headers: {'User-Agent': 'My agent'}, // eslint-disable-line @typescript-eslint/naming-convention
+      }),
     },
   },
   {
@@ -196,7 +200,9 @@ export const testSuite = [
         url: '/url/path/lowercaseua',
         headers: {'user-agent': 'My lowercase agent'}, // eslint-disable-line @typescript-eslint/naming-convention
       }),
-      expectedResponse: initTestResponse(),
+      expectedResponse: initTestResponse({
+        headers: {'user-agent': 'My lowercase agent'}, // eslint-disable-line @typescript-eslint/naming-convention
+      }),
     },
   },
   {
