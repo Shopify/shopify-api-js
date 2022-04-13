@@ -4,7 +4,55 @@ const nodeAppPort = '6666';
 const cfWorkerAppPort = '7777';
 const httpServerPort = '9999';
 
-export const testEnvironments = [
+function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+export function shutdownEnvironments(): void {
+  for (const env of allEnvironments) {
+    if (typeof env.process.pid !== 'undefined') {
+      process.kill(-env.process.pid);
+    }
+  }
+}
+
+async function serverReady(domain: string): Promise<boolean> {
+  try {
+    const response = await fetch(domain);
+    return response.status === 200;
+  } catch (err) {
+    return false;
+  }
+}
+
+function allEnvironmentsReady(): boolean {
+  return allEnvironments
+    .map((env) => env.ready)
+    .reduce((prev, curr) => prev && curr, true);
+}
+
+export async function runEnvironments(): Promise<boolean> {
+  const maxAttempts = 5;
+
+  if (allEnvironmentsReady()) return true;
+
+  for (const env of allEnvironments) {
+    let attempts = 0;
+    let ready = false;
+
+    while (!ready && attempts < maxAttempts) {
+      attempts++;
+      await sleep(100);
+      ready = await serverReady(env.domain);
+    }
+    env.ready = ready;
+  }
+  return allEnvironmentsReady();
+}
+
+const allEnvironments = [
   {
     name: 'NodeJS',
     domain: `http://localhost:${nodeAppPort}`,
@@ -68,3 +116,5 @@ export const testEnvironments = [
     ready: false,
   },
 ];
+
+export const testEnvironments = allEnvironments.filter((env) => env.testable);
