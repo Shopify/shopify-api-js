@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '14.x'
       - name: Install
         run: yarn install
       - name: Lint
@@ -16,3 +16,5 @@ jobs:
         run: yarn test
       - name: Test REST resources
         run: yarn test_rest_resources
+      - name: Test SessionStorage implementations
+        run: yarn test_sessionstorage
