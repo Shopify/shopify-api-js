@@ -16,13 +16,14 @@ export default function safeCompare(
     let buffA: Buffer;
     let buffB: Buffer;
 
-    if (typeof strA === 'object' && typeof strB === 'object') {
+    if (typeof strA === 'object') {
       buffA = Buffer.from(JSON.stringify(strA));
+    } else {
+      buffA = Buffer.from(strA);
+    }
+    if (typeof strB === 'object') {
       buffB = Buffer.from(JSON.stringify(strB));
     } else {
-      // @ts-ignore
-      buffA = Buffer.from(strA);
-      // @ts-ignore
       buffB = Buffer.from(strB);
     }
 

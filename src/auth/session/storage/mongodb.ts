@@ -34,7 +34,7 @@ export class MongoDBSessionStorage implements SessionStorage {
 
   public readonly ready: Promise<void>;
   private options: MongoDBSessionStorageOptions;
-  // FIXME: `mongodb` has no types for `MongoClient`???!
+  // `mongodb` has no types for `MongoClient`???!
   private client: any;
 
   constructor(
