@@ -63,7 +63,7 @@ export class MongoDBSessionStorage implements SessionStorage {
 
     const rawResult = await this.collection.findOne({id});
 
-    if (!rawResult) return;
+    if (!rawResult) return undefined;
 
     const result = new Session(
       rawResult.id,

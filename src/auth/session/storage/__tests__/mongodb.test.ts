@@ -33,7 +33,7 @@ describe('MongoDBSessionStorage', () => {
           await client.connect();
           await client.db().command({ping: 1});
           client.close();
-        } catch (e) {
+        } catch {
           return false;
         }
         return true;

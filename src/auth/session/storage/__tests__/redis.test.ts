@@ -1,26 +1,28 @@
 import * as child_process from 'child_process';
 import {promisify} from 'util';
+import {resolve} from 'path';
 
-import mysql2 from 'mysql2/promise';
+import {createClient} from 'redis';
 
-import {MySQLSessionStorage} from '../mysql';
+import {RedisSessionStorage} from '../redis';
 
 import {batteryOfTests} from './battery-of-tests';
 import {poll} from './utils';
 
 const exec = promisify(child_process.exec);
 
-const dbURL = new URL('mysql://shopify:passify@localhost/shopitest');
+const dbURL = new URL('redis://shopify:passify@localhost/1');
 
 // SORRY NOT SORRY
 jest.setTimeout(20000);
 
-describe('MySQLSessionStorage', () => {
-  let storage: MySQLSessionStorage;
+describe('RedisSessionStorage', () => {
+  let storage: RedisSessionStorage;
   let containerId: string;
   beforeAll(async () => {
+    const configPath = resolve(__dirname, './redis.conf');
     const runCommand = await exec(
-      'docker run -d -e MYSQL_DATABASE=shopitest -e MYSQL_USER=shopify -e MYSQL_PASSWORD=passify -e MYSQL_RANDOM_ROOT_PASSWORD=1 -p 3306:3306 mysql:8-oracle',
+      `docker run -d -p 6379:6379 -v ${configPath}:/redis.conf redis:6 redis-server /redis.conf`,
       {encoding: 'utf8'},
     );
     containerId = runCommand.stdout.trim();
@@ -28,8 +30,11 @@ describe('MySQLSessionStorage', () => {
     await poll(
       async () => {
         try {
-          const connection = await mysql2.createConnection(dbURL.toString());
-          await connection.end();
+          const client = createClient({
+            url: dbURL.toString(),
+          });
+          await client.connect();
+          await client.quit();
         } catch {
           return false;
         }
@@ -37,7 +42,8 @@ describe('MySQLSessionStorage', () => {
       },
       {interval: 500, timeout: 20000},
     );
-    storage = new MySQLSessionStorage(dbURL, {createDBWhenMissing: true});
+    storage = new RedisSessionStorage(dbURL);
+    await storage.ready;
   });
 
   afterAll(async () => {
