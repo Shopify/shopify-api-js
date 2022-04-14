@@ -1,4 +1,4 @@
-import {Socket} from 'net';
+import {Socket, SocketConnectOpts} from 'net';
 
 export function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(() => resolve(), ms));
@@ -27,8 +27,45 @@ export async function poll(
 
 export function waitForData(socket: Socket): Promise<string> {
   return new Promise((resolve, reject) => {
-    socket.on('data', () => resolve('data'));
-    socket.on('error', (err) => reject(err));
-    socket.on('close', () => resolve('no data'));
+    function data() {
+      resolve('data');
+      cleanup();
+    }
+    function error(err: any) {
+      reject(err);
+      cleanup();
+    }
+    function close() {
+      resolve('no data');
+      cleanup();
+    }
+    function cleanup() {
+      socket.off('data', data);
+      socket.off('error', error);
+      socket.off('close', close);
+    }
+    socket.on('data', data);
+    socket.on('error', error);
+    socket.on('close', close);
+  });
+}
+
+export function connectSocket(
+  socket: Socket,
+  opts: SocketConnectOpts,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    function error(err: any) {
+      reject(err);
+      cleanup();
+    }
+    function cleanup() {
+      socket.off('error', error);
+    }
+    socket.on('error', error);
+    socket.connect(opts, () => {
+      resolve();
+      cleanup();
+    });
   });
 }
