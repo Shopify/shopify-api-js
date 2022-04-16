@@ -237,7 +237,7 @@ const ShopifyOAuth = {
       cookie.serialize(ShopifyOAuth.SESSION_COOKIE_NAME, sessionId, {
         secure: true,
         httpOnly: true,
-        expires,
+        expires: expires && !isNaN(expires.valueOf()) ? expires : undefined,
       }),
     );
   },
