@@ -2,6 +2,7 @@ import querystring from 'querystring';
 import http from 'http';
 import http2 from 'http2';
 
+import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 
 import {ShopifyOAuth} from '../oauth';
@@ -180,16 +181,11 @@ describe('validateAuthCallback', () => {
       setHeader(name, value) {
         expect(name).toBe('Set-Cookie');
 
-        const sessionId = new RegExp(/shopify_app_session=(.*?);/).exec(
-          value.toString(),
-        )?.[1];
-
-        expect(sessionId).toBeTruthy();
-
-        if (sessionId) {
-          cookies.id = sessionId;
-          req.headers.cookie = `${ShopifyOAuth.SESSION_COOKIE_NAME}=${sessionId}`;
-        }
+        req.headers.cookie = value.toString();
+        
+        const parsedCookie = cookie.parse(req.headers.cookie);
+        cookies.id = parsedCookie[ShopifyOAuth.SESSION_COOKIE_NAME] ?? "";
+        cookies.expires = parsedCookie.Expires ? new Date(parsedCookie.Expires) : undefined;
       },
     } as http.ServerResponse | http2.Http2ServerResponse;
   });

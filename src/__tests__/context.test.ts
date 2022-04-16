@@ -1,5 +1,3 @@
-import './test_helper';
-
 import * as ShopifyErrors from '../error';
 import {Context} from '../context';
 import {ApiVersion, ContextParams} from '../base-types';
