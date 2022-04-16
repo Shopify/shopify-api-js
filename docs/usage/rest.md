@@ -14,7 +14,7 @@ The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and
 **`GetRequestParams` / `DeleteRequestParams`:**
 | Parameter | Type | Required? | Default Value | Notes |
 | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
-| `path` | `string` | True | none | The requested API endpoint path |
+| `path` | `string` | True | none | The requested API endpoint path. This can be one of two formats:<ul><li>The path starting after the `/admin/api/{version}/` prefix, such as `'products'`, which executes `/admin/api/{version}/products.json`</li><li>The full path, such as `/admin/oauth/access_scopes.json`</li></ul> |
 | `data` | `Record<string, unknown> \| string` | False | none | The body of the request |
 | `type` | `DataType` | False | none | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) |
 | `query` | `Record<string, string \| number>` | False | none | An optional query object to be appended to the request |
@@ -29,7 +29,7 @@ The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and
 **`PostRequestParams` / `PutRequestParams`:**
 | Parameter | Type | Required? | Default Value | Notes |
 | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
-| `path` | `string` | True | none | The requested API endpoint path |
+| `path` | `string` | True | none | The requested API endpoint path. This can be one of two formats:<ul><li>The path starting after the `/admin/api/{version}/` prefix, such as `'products'`, which executes `/admin/api/{version}/products.json`</li><li>The full path, such as `/admin/oauth/access_scopes.json`</li></ul> |
 | `data` | `Record<string, unknown> \| string` | True | none | The body of the request |
 | `type` | `DataType` | True | none | The type of data being sent in the body of the request (`JSON`, `GraphQL`, `URLEncoded`) |
 | `query` | `Record<string, string \| number>` | False | none | An optional query object to be appended to the request |

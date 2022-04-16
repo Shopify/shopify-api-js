@@ -2,7 +2,7 @@ import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 
 export class MemorySessionStorage implements SessionStorage {
-  private sessions: {[id: string]: SessionInterface;} = {};
+  private sessions: {[id: string]: SessionInterface} = {};
 
   public async storeSession(session: SessionInterface): Promise<boolean> {
     this.sessions[session.id] = session;

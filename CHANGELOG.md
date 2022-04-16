@@ -7,7 +7,77 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [3.0.1] - 2022-04-11
+
+### Added
+
+- Allow REST resources to configure a deny list of attributes to be excluded when saving [#355](https://github.com/Shopify/shopify-node-api/pull/355)
+
+## [3.0.0] - 2022-04-04
+
+### Added
+
+- ⚠️ [Breaking] Removing API version `2021-04` [#343](https://github.com/Shopify/shopify-node-api/pull/343)
+- ⚠️ [Breaking] The `HttpResponseError` error and its flavours (all returned from HTTP requests) have been slightly altered:
+  - They now take in a hash of values, and will always include the response code, body (as a string if the response is not JSON), and headers
+  - All response fields are now contained within a `response` object, to make it easier to access them
+- ⚠️ [Breaking] Update supported Admin API versions [#310](https://github.com/Shopify/shopify-node-api/pull/310)
+- Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-node-api/pull/301)
+
 ### Fixed
+
+- ⚠️ [Breaking] Stop responding to the request in the GraphQL Proxy function, returning Shopify's response instead [#312](https://github.com/Shopify/shopify-node-api/pull/312)
+
+  The examples below are in [express](https://expressjs.com/); you will now need to handle the response yourself.
+
+  Before:
+
+  ```js
+  app.post('/graphql', async (req, res) => {
+    await Shopify.Utils.graphqlProxy(req, res);
+  });
+  ```
+
+  After:
+
+  ```js
+  app.post('/graphql', async (req, res) => {
+    const response = await Shopify.Utils.graphqlProxy(req, res);
+    res.status(200).send(response.body);
+  });
+  ```
+
+## [2.1.0] - 2022-02-03
+
+### Added
+
+- Add support for January 2022 API version [#285](https://github.com/Shopify/shopify-node-api/pull/285)
+
+## [2.0.0] - 2021-10-28
+
+### Added
+
+- Add a 5 second `clockTolerance` to fix `jwt not active` error [#227](https://github.com/Shopify/shopify-node-api/pull/227)
+- [Breaking] Change default for OAuth.beginAuth to online sessions [#203](https://github.com/Shopify/shopify-node-api/pull/203)
+  - see [oauth.md](https://github.com/Shopify/shopify-node-api/blob/main/docs/usage/oauth.md) for updated docs
+- [Breaking] Return and delete session in `validateAuthCallback` [#217](https://github.com/Shopify/shopify-node-api/pull/217)
+  - see [oauth.md](https://github.com/Shopify/shopify-node-api/blob/main/docs/usage/oauth.md) for updated usage
+- [Breaking] Extract `addHandler` and `getHandler` methods for webhooks out of `register` [#205](https://github.com/Shopify/shopify-node-api/pull/205)
+- [Breaking] Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+- Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+- Allow `undefined` in `AuthScopes` [#169](https://github.com/Shopify/shopify-node-api/pull/169)
+
+## [1.4.3] - 2021-10-22
+
+### Fixed
+
+- Fixed the HTTP client error messages to expand objects [#252](https://github.com/Shopify/shopify-node-api/pull/252)
+
+## [1.4.2] - 2021-10-20
+
+- Added `October21` to `ApiVersion` [#247](https://github.com/Shopify/shopify-node-api/pull/247)
+
+## [1.4.1] - 2021-06-11
 
 - Don't include extra params when calculating local hmac [#196](https://github.com/Shopify/shopify-node-api/pull/196)
 

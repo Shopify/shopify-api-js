@@ -1,5 +1,5 @@
 import {Context} from '../context';
-import {ApiVersion} from '../base_types';
+import {ApiVersion} from '../base-types';
 
 /**
  * Check if the current or optionally supplied version is compatible with a given version
@@ -9,10 +9,7 @@ export default function versionCompatible(
   currentVersion: ApiVersion = Context.API_VERSION,
 ): boolean {
   // Return true if not using a dated version
-  if (
-    currentVersion === ApiVersion.Unstable ||
-    currentVersion === ApiVersion.Unversioned
-  ) {
+  if (currentVersion === ApiVersion.Unstable) {
     return true;
   }
   const numericVersion = (version: string) =>

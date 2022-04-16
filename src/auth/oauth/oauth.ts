@@ -8,13 +8,13 @@ import cookie from 'cookie';
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
-import validateShop from '../../utils/shop-validator';
 import safeCompare from '../../utils/safe-compare';
 import decodeSessionToken from '../../utils/decode-session-token';
 import {Session} from '../session';
 import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
 import * as ShopifyErrors from '../../error';
+import {SessionInterface} from '../session/types';
 
 import {
   AuthQuery,
@@ -35,14 +35,14 @@ const ShopifyOAuth = {
    * @param redirect Redirect url for callback
    * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token.
    *                 During final oauth request, will receive back the online access token and current online session information.
-   *                 Defaults to offline access.
+   *                 Defaults to online access.
    */
   async beginAuth(
     request: http.IncomingMessage | http2.Http2ServerRequest,
     response: http.ServerResponse | http2.Http2ServerResponse,
     shop: string,
     redirectPath: string,
-    isOnline = false,
+    isOnline = true,
   ): Promise<string> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
@@ -51,10 +51,10 @@ const ShopifyOAuth = {
 
     const session = new Session(
       isOnline ? uuidv4() : this.getOfflineSessionId(shop),
+      shop,
+      state,
+      isOnline,
     );
-    session.shop = shop;
-    session.state = state;
-    session.isOnline = isOnline;
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(session);
 
@@ -95,12 +95,13 @@ const ShopifyOAuth = {
    * @param response Current HTTP Response
    * @param query Current HTTP Request Query, containing the information to be validated.
    *              Depending on framework, this may need to be cast as "unknown" before being passed.
+   * @returns SessionInterface
    */
   async validateAuthCallback(
     request: http.IncomingMessage | http2.Http2ServerRequest,
     response: http.ServerResponse | http2.Http2ServerResponse,
     query: AuthQuery,
-  ): Promise<void> {
+  ): Promise<SessionInterface> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
@@ -111,7 +112,7 @@ const ShopifyOAuth = {
       );
     }
 
-    const currentSession = await Context.SESSION_STORAGE.loadSession(
+    let currentSession = await Context.SESSION_STORAGE.loadSession(
       sessionCookie,
     );
     if (!currentSession) {
@@ -151,49 +152,51 @@ const ShopifyOAuth = {
       currentSession.expires = sessionExpiration;
       currentSession.scope = scope;
       currentSession.onlineAccessInfo = rest;
+
+      // For an online session in an embedded app, we no longer want the cookie session so we delete it
+      if (Context.IS_EMBEDDED_APP) {
+        // If this is an online session for an embedded app, replace the online session with a JWT session
+        const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
+        const jwtSessionId = this.getJwtSessionId(
+          currentSession.shop,
+          `${onlineInfo.associated_user.id}`,
+        );
+        const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
+
+        const sessionDeleted = await Context.SESSION_STORAGE.deleteSession(
+          currentSession.id,
+        );
+        if (!sessionDeleted) {
+          throw new ShopifyErrors.SessionStorageError(
+            'OAuth Session could not be deleted. Please check your session storage functionality.',
+          );
+        }
+        currentSession = jwtSession;
+      }
     } else {
+      // Offline sessions (embedded / non-embedded) will use the same id so they don't need to be updated
       const responseBody = postResponse.body as AccessTokenResponse;
       currentSession.accessToken = responseBody.access_token;
       currentSession.scope = responseBody.scope;
-    }
-
-    // If this is an offline session, we're no longer interested in the cookie. If it is online in an embedded app, we
-    // want the cookie session to expire a few seconds from now to give the app time to load itself to set up a JWT.
-    // Otherwise, we want to leave the cookie session alone until the actual expiration.
-    let oauthSessionExpiration = currentSession.expires;
-    if (!currentSession.isOnline) {
-      oauthSessionExpiration = new Date();
-    } else if (Context.IS_EMBEDDED_APP) {
-      // If this is an online session for an embedded app, prepare a JWT session to be used going forward
-      const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
-      const jwtSessionId = this.getJwtSessionId(
-        currentSession.shop,
-        `${onlineInfo.associated_user.id}`,
-      );
-      const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
-      await Context.SESSION_STORAGE.storeSession(jwtSession);
-
-      // Make sure the current OAuth session expires along with the cookie
-      oauthSessionExpiration = new Date(Date.now() + 30000);
-      currentSession.expires = oauthSessionExpiration;
     }
 
     this.setCookieSessionId(
       request,
       response,
       currentSession.id,
-      oauthSessionExpiration,
+      Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
     );
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(
       currentSession,
     );
-
     if (!sessionStored) {
       throw new ShopifyErrors.SessionStorageError(
         'OAuth Session could not be saved. Please check your session storage functionality.',
       );
     }
+
+    return currentSession;
   },
 
   /**
@@ -305,16 +308,14 @@ const ShopifyOAuth = {
 };
 
 /**
- * Uses the validation utils validateHmac, validateShop, and safeCompare to assess whether the callback is valid.
+ * Uses the validation utils validateHmac, and safeCompare to assess whether the callback is valid.
  *
  * @param query Current HTTP Request Query
  * @param session Current session
  */
 function validQuery(query: AuthQuery, session: Session): boolean {
   return (
-    validateHmac(query) &&
-    validateShop(query.shop) &&
-    safeCompare(query.state, session.state as string)
+    validateHmac(query) && safeCompare(query.state, session.state as string)
   );
 }
 

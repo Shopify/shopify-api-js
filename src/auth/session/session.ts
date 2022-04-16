@@ -1,5 +1,5 @@
-import {OnlineAccessInfo} from '../oauth/types';
 import {Context} from '../../context';
+import {OnlineAccessInfo} from '../oauth/types';
 
 import {SessionInterface} from './types';
 
@@ -8,28 +8,32 @@ import {SessionInterface} from './types';
  */
 class Session implements SessionInterface {
   public static cloneSession(session: Session, newId: string): Session {
-    const newSession = new Session(newId);
+    const newSession = new Session(
+      newId,
+      session.shop,
+      session.state,
+      session.isOnline,
+    );
 
-    newSession.shop = session.shop;
-    newSession.state = session.state;
     newSession.scope = session.scope;
     newSession.expires = session.expires;
-    newSession.isOnline = session.isOnline;
     newSession.accessToken = session.accessToken;
     newSession.onlineAccessInfo = session.onlineAccessInfo;
 
     return newSession;
   }
 
-  public shop: string;
-  public state: string;
-  public scope: string;
+  public scope?: string;
   public expires?: Date;
-  public isOnline?: boolean;
   public accessToken?: string;
   public onlineAccessInfo?: OnlineAccessInfo;
 
-  constructor(readonly id: string) {}
+  constructor(
+    readonly id: string,
+    public shop: string,
+    public state: string,
+    public isOnline: boolean,
+  ) {}
 
   public isActive(): boolean {
     const scopesUnchanged = Context.SCOPES.equals(this.scope);
