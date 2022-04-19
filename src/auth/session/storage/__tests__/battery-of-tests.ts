@@ -2,13 +2,38 @@ import {Session} from '../../session';
 import {SessionStorage} from '../../session_storage';
 
 export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
-  it('can store and delete sessions', async () => {
+  it('can store and delete offline sessions', async () => {
     const storage = await storageFactory();
     const sessionId = 'test_session';
     const session = new Session(sessionId, 'shop', 'state', false);
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
     await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
+
+    await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
+    await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
+
+    // Deleting a non-existing session should work
+    await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
+  });
+
+  it('can store and delete sessions with augemented data', async () => {
+    const storage = await storageFactory();
+    const sessionId = 'test_session';
+    const session = new Session(sessionId, 'shop', 'state', true);
+    const accessToken = 'totally my token';
+    session.accessToken = accessToken;
+    session.expires = new Date();
+    session.expires.setSeconds(session.expires.getSeconds() + 1000);
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
+
+    session.expires = new Date();
+    session.expires.setSeconds(session.expires.getSeconds() + 2000);
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
     await expect(storage.loadSession(sessionId)).resolves.toEqual(session);

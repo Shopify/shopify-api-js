@@ -89,7 +89,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
     }
     if (rawResult.expires) result.expires = new Date(rawResult.expires);
     if (rawResult.scope) result.scope = rawResult.scope;
-    if (rawResult.accessToken) result.accessToken = rawResult.accessToken;
+    if (rawResult.accesstoken) result.accessToken = rawResult.accesstoken;
 
     return result;
   }

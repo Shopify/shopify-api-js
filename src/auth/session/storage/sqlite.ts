@@ -38,7 +38,10 @@ export class SQLiteSessionStorage implements SessionStorage {
         .join(', ')});
     `;
 
-    await this.query(query, Object.values(session));
+    await this.query(
+      query,
+      Object.values(session).map((value) => toSafeValue(value)),
+    );
     return true;
   }
 
@@ -63,7 +66,8 @@ export class SQLiteSessionStorage implements SessionStorage {
         rawResult.onlineAccessInfo as any,
       ) as any;
     }
-    if (rawResult.expires) result.expires = new Date(rawResult.expires);
+    if (rawResult.expires)
+      result.expires = new Date(parseInt(rawResult.expires, 10));
     if (rawResult.scope) result.scope = rawResult.scope;
     if (rawResult.accessToken) result.accessToken = rawResult.accessToken;
 
@@ -123,4 +127,11 @@ export class SQLiteSessionStorage implements SessionStorage {
       });
     });
   }
+}
+
+function toSafeValue(value: any): any {
+  if (value instanceof Date) {
+    return value.getTime();
+  }
+  return value;
 }
