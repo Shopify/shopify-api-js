@@ -2,7 +2,7 @@ import * as mongodb from 'mongodb';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {Session} from '../session';
+import {sessionFromEntries, sessionEntries} from '../session';
 
 export interface MongoDBSessionStorageOptions {
   createCollectionWhenMissing: boolean;
@@ -52,9 +52,13 @@ export class MongoDBSessionStorage implements SessionStorage {
   public async storeSession(session: SessionInterface): Promise<boolean> {
     await this.ready;
 
-    await this.collection.findOneAndReplace({id: session.id}, session, {
-      upsert: true,
-    });
+    await this.collection.findOneAndReplace(
+      {id: session.id},
+      {id: session.id, entries: sessionEntries(session)},
+      {
+        upsert: true,
+      },
+    );
     return true;
   }
 
@@ -64,23 +68,7 @@ export class MongoDBSessionStorage implements SessionStorage {
     const rawResult = await this.collection.findOne({id});
 
     if (!rawResult) return undefined;
-
-    const result = new Session(
-      rawResult.id,
-      rawResult.shop,
-      rawResult.state,
-      rawResult.isOnline,
-    );
-    if (rawResult.onlineAccessInfo) {
-      result.onlineAccessInfo = JSON.parse(
-        rawResult.onlineAccessInfo as any,
-      ) as any;
-    }
-    if (rawResult.expires) result.expires = new Date(rawResult.expires);
-    if (rawResult.scope) result.scope = rawResult.scope;
-    if (rawResult.accessToken) result.accessToken = rawResult.accessToken;
-
-    return result;
+    return sessionFromEntries(rawResult.entries);
   }
 
   public async deleteSession(id: string): Promise<boolean> {

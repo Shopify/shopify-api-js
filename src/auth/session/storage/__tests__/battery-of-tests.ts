@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {Session} from '../../session';
 import {SessionStorage} from '../../session_storage';
 
@@ -34,6 +35,40 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
 
     session.expires = new Date();
     session.expires.setSeconds(session.expires.getSeconds() + 2000);
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
+
+    await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
+    await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
+
+    // Deleting a non-existing session should work
+    await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
+  });
+
+  it('can store and delete sessions with online tokens', async () => {
+    const storage = await storageFactory();
+    const sessionId = 'test_session';
+    const session = new Session(sessionId, 'shop', 'state', true);
+    session.onlineAccessInfo = {
+      associated_user: {
+        account_owner: true,
+        collaborator: true,
+        email: 'some@email.com',
+        email_verified: true,
+        first_name: 'Phil',
+        last_name: 'McCann',
+        id: 1234,
+        locale: 'en-US',
+      },
+      associated_user_scope: 'my scope',
+      expires_in: 1000,
+    };
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
+
+    session.onlineAccessInfo.expires_in = 100;
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
     await expect(storage.loadSession(sessionId)).resolves.toEqual(session);

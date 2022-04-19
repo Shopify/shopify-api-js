@@ -2,7 +2,7 @@ import pg from 'pg';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {Session} from '../session';
+import {sessionEntries, sessionFromEntries} from '../session';
 
 export interface PostgreSQLSessionStorageOptions {
   createDBWhenMissing: boolean;
@@ -52,17 +52,19 @@ export class PostgreSQLSessionStorage implements SessionStorage {
   public async storeSession(session: SessionInterface): Promise<boolean> {
     await this.ready;
 
+    const entries = sessionEntries(session);
     const query = `
       INSERT INTO ${this.options.sessionTableName}
-      (${Object.keys(session).join(', ')})
-      VALUES (${Object.values(session)
-        .map((_, i) => `$${i + 1}`)
-        .join(', ')})
-      ON CONFLICT (id) DO UPDATE SET ${Object.keys(session)
-        .map((key) => `${key} = Excluded.${key}`)
+      (${entries.map(([key]) => key).join(', ')})
+      VALUES (${entries.map((_, i) => `$${i + 1}`).join(', ')})
+      ON CONFLICT (id) DO UPDATE SET ${entries
+        .map(([key]) => `${key} = Excluded.${key}`)
         .join(', ')};
     `;
-    await this.query(query, Object.values(session));
+    await this.query(
+      query,
+      entries.map(([_key, value]) => value),
+    );
     return true;
   }
 
@@ -75,23 +77,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
     const rows = await this.query(query, [id]);
     if (!Array.isArray(rows) || rows?.length !== 1) return undefined;
     const rawResult = rows[0] as any;
-
-    const result = new Session(
-      rawResult.id,
-      rawResult.shop,
-      rawResult.state,
-      rawResult.isonline,
-    );
-    if (rawResult.onlineaccessInfo) {
-      result.onlineAccessInfo = JSON.parse(
-        rawResult.onlineaccessinfo as any,
-      ) as any;
-    }
-    if (rawResult.expires) result.expires = new Date(rawResult.expires);
-    if (rawResult.scope) result.scope = rawResult.scope;
-    if (rawResult.accesstoken) result.accessToken = rawResult.accesstoken;
-
-    return result;
+    return sessionFromEntries(Object.entries(rawResult));
   }
 
   public async deleteSession(id: string): Promise<boolean> {

@@ -2,7 +2,7 @@ import sqlite3 from 'sqlite3';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {Session} from '../session';
+import {sessionFromEntries, sessionEntries} from '../session';
 
 export interface SQLiteSessionStorageOptions {
   createDBWhenMissing: boolean;
@@ -30,17 +30,17 @@ export class SQLiteSessionStorage implements SessionStorage {
   public async storeSession(session: SessionInterface): Promise<boolean> {
     await this.ready;
 
+    const entries = sessionEntries(session);
+
     const query = `
       INSERT OR REPLACE INTO ${this.options.sessionTableName}
       (${Object.keys(session).join(', ')})
-      VALUES (${Object.values(session)
-        .map(() => '?')
-        .join(', ')});
+      VALUES (${entries.map(() => '?').join(', ')});
     `;
 
     await this.query(
       query,
-      Object.values(session).map((value) => toSafeValue(value)),
+      entries.map(([_key, value]) => value),
     );
     return true;
   }
@@ -55,23 +55,7 @@ export class SQLiteSessionStorage implements SessionStorage {
     if (!Array.isArray(rows) || rows?.length !== 1) return undefined;
     const rawResult = rows[0] as any;
 
-    const result = new Session(
-      rawResult.id,
-      rawResult.shop,
-      rawResult.state,
-      rawResult.isOnline !== 0,
-    );
-    if (rawResult.onlineAccessInfo) {
-      result.onlineAccessInfo = JSON.parse(
-        rawResult.onlineAccessInfo as any,
-      ) as any;
-    }
-    if (rawResult.expires)
-      result.expires = new Date(parseInt(rawResult.expires, 10));
-    if (rawResult.scope) result.scope = rawResult.scope;
-    if (rawResult.accessToken) result.accessToken = rawResult.accessToken;
-
-    return result;
+    return sessionFromEntries(Object.entries(rawResult));
   }
 
   public async deleteSession(id: string): Promise<boolean> {
@@ -127,11 +111,4 @@ export class SQLiteSessionStorage implements SessionStorage {
       });
     });
   }
-}
-
-function toSafeValue(value: any): any {
-  if (value instanceof Date) {
-    return value.getTime();
-  }
-  return value;
 }

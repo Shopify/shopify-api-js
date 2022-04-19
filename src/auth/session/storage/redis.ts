@@ -2,7 +2,7 @@ import {createClient, RedisClientType} from 'redis';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {Session} from '../session';
+import {sessionFromEntries, sessionEntries} from '../session';
 
 export interface RedisSessionStorageOptions {
   sessionKeyPrefix: string;
@@ -47,7 +47,10 @@ export class RedisSessionStorage implements SessionStorage {
   public async storeSession(session: SessionInterface): Promise<boolean> {
     await this.ready;
 
-    await this.client.set(this.fullKey(session.id), JSON.stringify(session));
+    await this.client.set(
+      this.fullKey(session.id),
+      JSON.stringify(sessionEntries(session)),
+    );
     return true;
   }
 
@@ -59,19 +62,7 @@ export class RedisSessionStorage implements SessionStorage {
     if (!rawResult) return undefined;
     rawResult = JSON.parse(rawResult);
 
-    const result = new Session(
-      rawResult.id,
-      rawResult.shop,
-      rawResult.state,
-      rawResult.isOnline,
-    );
-    if (rawResult.onlineAccessInfo)
-      result.onlineAccessInfo = rawResult.onlineAccessInfo;
-    if (rawResult.expires) result.expires = new Date(rawResult.expires);
-    if (rawResult.scope) result.scope = rawResult.scope;
-    if (rawResult.accessToken) result.accessToken = rawResult.accessToken;
-
-    return result;
+    return sessionFromEntries(rawResult);
   }
 
   public async deleteSession(id: string): Promise<boolean> {
