@@ -13,7 +13,8 @@ const exec = promisify(child_process.exec);
 const dbURL = new URL('mongodb://shopify:passify@localhost');
 const dbName = 'shopitest';
 
-// SORRY NOT SORRY
+// SORRY NOT SORRY. Docker containers can take quite a while to get ready,
+// especially on CI. This is hopefully enough.
 jest.setTimeout(20000);
 
 describe('MongoDBSessionStorage', () => {

@@ -3,19 +3,17 @@ import {promisify} from 'util';
 import {resolve} from 'path';
 import * as net from 'net';
 
-// import {createClient, RedisClientType} from 'redis';
-
 import {RedisSessionStorage} from '../redis';
 
 import {batteryOfTests} from './battery-of-tests';
-// import {poll, wait} from './utils';
 import {poll, connectSocket, waitForData} from './utils';
 
 const exec = promisify(child_process.exec);
 
 const dbURL = new URL('redis://shopify:passify@localhost/1');
 
-// SORRY NOT SORRY
+// SORRY NOT SORRY. Docker containers can take quite a while to get ready,
+// especially on CI. This is hopefully enough.
 jest.setTimeout(20000);
 
 describe('RedisSessionStorage', () => {
