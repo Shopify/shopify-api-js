@@ -436,9 +436,8 @@ describe('validateAuthCallback', () => {
         authorization: `Bearer ${token}`,
       },
     } as Request;
-    const jwtRes = {} as Response;
 
-    const currentSession = await loadCurrentSession(jwtReq, jwtRes);
+    const currentSession = await loadCurrentSession(jwtReq);
     expect(currentSession).not.toBe(null);
     expect(currentSession?.id).toEqual(jwtSessionId);
     const jar = currentCookieJar(res);

@@ -35,12 +35,12 @@ export class Redirect extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "redirects.json"},
-    {http_method: "post", operation: "post", ids: [], path: "redirects.json"},
-    {http_method: "get", operation: "count", ids: [], path: "redirects/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "redirects/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "redirects/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "redirects/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "redirects.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "redirects.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "redirects/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "redirects/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "redirects/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "redirects/<id>.json"}
   ];
 
   public static async find(
@@ -52,8 +52,8 @@ export class Redirect extends Base {
   ): Promise<Redirect | null> {
     const result = await Redirect.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Redirect : null;
   }
@@ -68,7 +68,7 @@ export class Redirect extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -89,7 +89,7 @@ export class Redirect extends Base {
     const response = await Redirect.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, path: path, target: target, fields: fields, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "path": path, "target": target, "fields": fields, ...otherArgs},
     });
 
     return response as Redirect[];
@@ -108,7 +108,7 @@ export class Redirect extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {path: path, target: target, ...otherArgs},
+      params: {"path": path, "target": target, ...otherArgs},
       body: {},
       entity: null,
     });

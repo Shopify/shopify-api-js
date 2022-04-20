@@ -23,6 +23,7 @@ declare global {
 describe('Base REST resource', () => {
   const domain = 'test-shop.myshopify.io';
   const prefix = '/admin/api/unstable';
+  /* eslint-disable-next-line @typescript-eslint/naming-convention */
   const headers = {'X-Shopify-Access-Token': 'access-token'};
   const session = new Session('1234', domain, '1234', true);
   session.accessToken = 'access-token';

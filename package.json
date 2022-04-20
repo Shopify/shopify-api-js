@@ -6,11 +6,13 @@
   "types": "dist/index.d.ts",
   "prettier": "@shopify/prettier-config",
   "scripts": {
-    "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__",
+    "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__ --testPathIgnorePatterns=src/clients/http_client/__e2etests__",
+    "e2etest:build": "yarn build && yarn rollup -c src/clients/http_client/__e2etests__/rollup.test-cf-worker-app.config.js",
+    "e2etest": "yarn e2etest:build && yarn jest --no-coverage --testPathPattern=\\\"src/.*e2e-runner.test.ts\\\"",
     "test_rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
     "build": "tsc",
     "lint": "eslint '**/*.{ts,tsx}' --max-warnings 0",
-    "clean": "rimraf ./dist tsconfig.tsbuildinfo",
+    "clean": "rimraf ./dist ./bundle tsconfig.tsbuildinfo",
     "prepublishOnly": "yarn run build",
     "preversion": "yarn run test",
     "postversion": "git push origin main --follow-tags && echo \"Log in to shipit to deploy version $npm_package_version\""
@@ -53,8 +55,12 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
+    "@rollup/plugin-alias": "^3.1.9",
+    "@rollup/plugin-commonjs": "^21.0.2",
+    "@rollup/plugin-node-resolve": "^13.1.3",
     "@shopify/eslint-plugin": "^41.1.0",
     "@shopify/prettier-config": "^1.1.2",
+    "@swc/core": "^1.2.160",
     "@types/cookies": "^0.7.5",
     "@types/jest": "^26.0.15",
     "@types/node": "^17.0.22",
@@ -64,8 +70,11 @@
     "express": "^4.17.3",
     "jest": "^27.4.3",
     "jest-fetch-mock": "^3.0.3",
+    "miniflare": "^2.3.0",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
+    "rollup": "^2.70.1",
+    "rollup-plugin-swc": "^0.2.1",
     "supertest": "^6.1.3",
     "ts-jest": "^27.1.1",
     "typescript": "^4.6.2"

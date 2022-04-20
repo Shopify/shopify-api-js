@@ -53,13 +53,13 @@ export class SmartCollection extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "smart_collections.json"},
-    {http_method: "post", operation: "post", ids: [], path: "smart_collections.json"},
-    {http_method: "get", operation: "count", ids: [], path: "smart_collections/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "smart_collections/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "smart_collections/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "smart_collections/<id>.json"},
-    {http_method: "put", operation: "order", ids: ["id"], path: "smart_collections/<id>/order.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "smart_collections.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "smart_collections.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "smart_collections/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"}
   ];
 
   public static async find(
@@ -71,8 +71,8 @@ export class SmartCollection extends Base {
   ): Promise<SmartCollection | null> {
     const result = await SmartCollection.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as SmartCollection : null;
   }
@@ -87,7 +87,7 @@ export class SmartCollection extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -115,7 +115,7 @@ export class SmartCollection extends Base {
     const response = await SmartCollection.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, ids: ids, since_id: since_id, title: title, product_id: product_id, handle: handle, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, fields: fields, ...otherArgs},
+      params: {"limit": limit, "ids": ids, "since_id": since_id, "title": title, "product_id": product_id, "handle": handle, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "fields": fields, ...otherArgs},
     });
 
     return response as SmartCollection[];
@@ -139,7 +139,7 @@ export class SmartCollection extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {title: title, product_id: product_id, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, ...otherArgs},
+      params: {"title": title, "product_id": product_id, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -159,8 +159,8 @@ export class SmartCollection extends Base {
       http_method: "put",
       operation: "order",
       session: this.session,
-      urlIds: {id: this.id},
-      params: {products: products, sort_order: sort_order, ...otherArgs},
+      urlIds: {"id": this.id},
+      params: {"products": products, "sort_order": sort_order, ...otherArgs},
       body: body,
       entity: this,
     });

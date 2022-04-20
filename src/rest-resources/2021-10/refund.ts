@@ -34,13 +34,13 @@ export class Refund extends Base {
   protected static PLURAL_NAME = 'refunds';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    transactions: Transaction
+    "transactions": Transaction
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["order_id"], path: "orders/<order_id>/refunds.json"},
-    {http_method: "post", operation: "post", ids: ["order_id"], path: "orders/<order_id>/refunds.json"},
-    {http_method: "get", operation: "get", ids: ["order_id", "id"], path: "orders/<order_id>/refunds/<id>.json"},
-    {http_method: "post", operation: "calculate", ids: ["order_id"], path: "orders/<order_id>/refunds/calculate.json"}
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/refunds/<id>.json"},
+    {"http_method": "post", "operation": "calculate", "ids": ["order_id"], "path": "orders/<order_id>/refunds/calculate.json"}
   ];
 
   public static async find(
@@ -54,8 +54,8 @@ export class Refund extends Base {
   ): Promise<Refund | null> {
     const result = await Refund.baseFind({
       session: session,
-      urlIds: {id: id, order_id: order_id},
-      params: {fields: fields, in_shop_currency: in_shop_currency},
+      urlIds: {"id": id, "order_id": order_id},
+      params: {"fields": fields, "in_shop_currency": in_shop_currency},
     });
     return result ? result[0] as Refund : null;
   }
@@ -72,8 +72,8 @@ export class Refund extends Base {
   ): Promise<Refund[]> {
     const response = await Refund.baseFind({
       session: session,
-      urlIds: {order_id: order_id},
-      params: {limit: limit, fields: fields, in_shop_currency: in_shop_currency, ...otherArgs},
+      urlIds: {"order_id": order_id},
+      params: {"limit": limit, "fields": fields, "in_shop_currency": in_shop_currency, ...otherArgs},
     });
 
     return response as Refund[];
@@ -92,8 +92,8 @@ export class Refund extends Base {
       http_method: "post",
       operation: "calculate",
       session: this.session,
-      urlIds: {order_id: this.order_id},
-      params: {shipping: shipping, refund_line_items: refund_line_items, currency: currency, ...otherArgs},
+      urlIds: {"order_id": this.order_id},
+      params: {"shipping": shipping, "refund_line_items": refund_line_items, "currency": currency, ...otherArgs},
       body: body,
       entity: this,
     });

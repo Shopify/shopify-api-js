@@ -12,6 +12,8 @@ import {hashStringWithSHA256} from '../../runtime/crypto';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
+import runningNetworkTests from '../../utils/network-tests';
+import platform from '../../utils/platform';
 import {Context, LOG_SEVERITY} from '../../context';
 import ProcessedQuery from '../../utils/processed-query';
 
@@ -78,7 +80,7 @@ class HttpClient {
 
     const extraHeaders = params.extraHeaders ?? {};
 
-    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
+    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | ${platform()}`;
 
     if (Context.USER_AGENT_PREFIX) {
       userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
@@ -95,6 +97,7 @@ class HttpClient {
 
     let headers: Headers = {
       ...extraHeaders,
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'User-Agent': userAgent,
     };
     let body;
@@ -116,8 +119,10 @@ class HttpClient {
             break;
         }
         headers = {
+          /* eslint-disable @typescript-eslint/naming-convention */
           'Content-Type': type,
-          'Content-Length': Buffer.byteLength(body as string).toString(),
+          'Content-Length': new TextEncoder().encode(body).length.toString(),
+          /* eslint-enable @typescript-eslint/naming-convention */
           ...extraHeaders,
         };
       }
@@ -127,7 +132,8 @@ class HttpClient {
     if (query.length > 0) {
       query = `?${query}`;
     }
-    const url = `https://${this.domain}${this.getRequestPath(
+    const schema = runningNetworkTests() ? 'http' : 'https';
+    const url = `${schema}://${this.domain}${this.getRequestPath(
       params.path,
     )}${query}`;
 

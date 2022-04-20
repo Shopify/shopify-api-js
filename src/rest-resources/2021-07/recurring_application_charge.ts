@@ -30,11 +30,11 @@ export class RecurringApplicationCharge extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "recurring_application_charges.json"},
-    {http_method: "get", operation: "get", ids: [], path: "recurring_application_charges.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "recurring_application_charges/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "recurring_application_charges/<id>.json"},
-    {http_method: "put", operation: "customize", ids: ["id"], path: "recurring_application_charges/<id>/customize.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "recurring_application_charges.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "recurring_application_charges.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
+    {"http_method": "put", "operation": "customize", "ids": ["id"], "path": "recurring_application_charges/<id>/customize.json"}
   ];
 
   public static async find(
@@ -46,8 +46,8 @@ export class RecurringApplicationCharge extends Base {
   ): Promise<RecurringApplicationCharge | null> {
     const result = await RecurringApplicationCharge.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as RecurringApplicationCharge : null;
   }
@@ -62,7 +62,7 @@ export class RecurringApplicationCharge extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -80,7 +80,7 @@ export class RecurringApplicationCharge extends Base {
     const response = await RecurringApplicationCharge.baseFind({
       session: session,
       urlIds: {},
-      params: {since_id: since_id, fields: fields, ...otherArgs},
+      params: {"since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as RecurringApplicationCharge[];
@@ -96,7 +96,7 @@ export class RecurringApplicationCharge extends Base {
       http_method: "put",
       operation: "customize",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

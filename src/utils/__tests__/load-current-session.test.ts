@@ -47,7 +47,6 @@ describe('loadCurrentSession', () => {
         Context.API_SECRET_KEY,
       ),
     } as Request;
-    const res = {} as Response;
 
     const session = new Session(
       sessionId,
@@ -59,7 +58,7 @@ describe('loadCurrentSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
+    await expect(loadCurrentSession(req)).resolves.toEqual(session);
   });
 
   it('loads nothing if there is no session for non-embedded apps', async () => {
@@ -67,9 +66,8 @@ describe('loadCurrentSession', () => {
     Context.initialize(Context);
 
     const req = {} as Request;
-    const res = {} as Response;
 
-    await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
+    await expect(loadCurrentSession(req)).resolves.toBeUndefined();
   });
 
   it('gets the current session from JWT token for embedded apps', async () => {
@@ -82,7 +80,6 @@ describe('loadCurrentSession', () => {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
 
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
@@ -94,7 +91,7 @@ describe('loadCurrentSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
+    await expect(loadCurrentSession(req)).resolves.toEqual(session);
   });
 
   it('loads nothing if no authorization header is present', async () => {
@@ -102,9 +99,8 @@ describe('loadCurrentSession', () => {
     Context.initialize(Context);
 
     const req = {headers: {}} as Request;
-    const res = {} as Response;
 
-    await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
+    await expect(loadCurrentSession(req)).resolves.toBeUndefined();
   });
 
   it('loads nothing if there is no session for embedded apps', async () => {
@@ -117,9 +113,8 @@ describe('loadCurrentSession', () => {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
 
-    await expect(loadCurrentSession(req, res)).resolves.toBeUndefined();
+    await expect(loadCurrentSession(req)).resolves.toBeUndefined();
   });
 
   it('fails if authorization header is missing or is not a Bearer token', async () => {
@@ -131,9 +126,8 @@ describe('loadCurrentSession', () => {
         authorization: 'Not a Bearer token!',
       },
     } as any as Request;
-    const res = {} as Response;
 
-    await expect(() => loadCurrentSession(req, res)).rejects.toBeInstanceOf(
+    await expect(() => loadCurrentSession(req)).rejects.toBeInstanceOf(
       Shopify.Errors.MissingJwtTokenError,
     );
   });
@@ -149,7 +143,6 @@ describe('loadCurrentSession', () => {
         ...(await createSessionCookieHeader(sessionId, Context.API_SECRET_KEY)),
       },
     } as any as Request;
-    const res = {} as Response;
 
     const session = new Session(
       sessionId,
@@ -161,7 +154,7 @@ describe('loadCurrentSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
+    await expect(loadCurrentSession(req)).resolves.toEqual(session);
   });
 
   it('loads offline sessions from cookies', async () => {
@@ -177,7 +170,6 @@ describe('loadCurrentSession', () => {
         Context.API_SECRET_KEY,
       ),
     } as Request;
-    const res = {} as Response;
 
     const session = new Session(
       sessionId,
@@ -189,7 +181,7 @@ describe('loadCurrentSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
+    await expect(loadCurrentSession(req, false)).resolves.toEqual(session);
   });
 
   it('loads offline sessions from JWT token', async () => {
@@ -202,7 +194,6 @@ describe('loadCurrentSession', () => {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
 
     const session = new Session(
       ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io'),
@@ -214,7 +205,7 @@ describe('loadCurrentSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
+    await expect(loadCurrentSession(req, false)).resolves.toEqual(session);
   });
 });
 

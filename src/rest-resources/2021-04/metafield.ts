@@ -39,13 +39,13 @@ export class Metafield extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "metafields.json"},
-    {http_method: "post", operation: "post", ids: [], path: "metafields.json"},
-    {http_method: "get", operation: "get", ids: [], path: "metafields.json"},
-    {http_method: "get", operation: "count", ids: [], path: "metafields/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "metafields/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "metafields/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "metafields/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "metafields.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "metafields.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "metafields.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "metafields/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "metafields/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "metafields/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "metafields/<id>.json"}
   ];
 
   public static async find(
@@ -57,8 +57,8 @@ export class Metafield extends Base {
   ): Promise<Metafield | null> {
     const result = await Metafield.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Metafield : null;
   }
@@ -73,7 +73,7 @@ export class Metafield extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -100,7 +100,7 @@ export class Metafield extends Base {
     const response = await Metafield.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, namespace: namespace, key: key, value_type: value_type, fields: fields, metafield: metafield, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "namespace": namespace, "key": key, "value_type": value_type, "fields": fields, "metafield": metafield, ...otherArgs},
     });
 
     return response as Metafield[];

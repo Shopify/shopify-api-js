@@ -42,13 +42,13 @@ export class MarketingEvent extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "marketing_events.json"},
-    {http_method: "post", operation: "post", ids: [], path: "marketing_events.json"},
-    {http_method: "get", operation: "count", ids: [], path: "marketing_events/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "marketing_events/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "marketing_events/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "marketing_events/<id>.json"},
-    {http_method: "post", operation: "engagements", ids: ["id"], path: "marketing_events/<id>/engagements.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "marketing_events.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "marketing_events.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "marketing_events/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "marketing_events/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "marketing_events/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "marketing_events/<id>.json"},
+    {"http_method": "post", "operation": "engagements", "ids": ["id"], "path": "marketing_events/<id>/engagements.json"}
   ];
 
   public static async find(
@@ -59,7 +59,7 @@ export class MarketingEvent extends Base {
   ): Promise<MarketingEvent | null> {
     const result = await MarketingEvent.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as MarketingEvent : null;
@@ -75,7 +75,7 @@ export class MarketingEvent extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -93,7 +93,7 @@ export class MarketingEvent extends Base {
     const response = await MarketingEvent.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, offset: offset, ...otherArgs},
+      params: {"limit": limit, "offset": offset, ...otherArgs},
     });
 
     return response as MarketingEvent[];
@@ -137,8 +137,8 @@ export class MarketingEvent extends Base {
       http_method: "post",
       operation: "engagements",
       session: this.session,
-      urlIds: {id: this.id},
-      params: {occurred_on: occurred_on, impressions_count: impressions_count, views_count: views_count, clicks_count: clicks_count, shares_count: shares_count, favorites_count: favorites_count, comments_count: comments_count, ad_spend: ad_spend, is_cumulative: is_cumulative, ...otherArgs},
+      urlIds: {"id": this.id},
+      params: {"occurred_on": occurred_on, "impressions_count": impressions_count, "views_count": views_count, "clicks_count": clicks_count, "shares_count": shares_count, "favorites_count": favorites_count, "comments_count": comments_count, "ad_spend": ad_spend, "is_cumulative": is_cumulative, ...otherArgs},
       body: body,
       entity: this,
     });

@@ -63,16 +63,16 @@ export class Comment extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "comments.json"},
-    {http_method: "get", operation: "count", ids: [], path: "comments/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "comments/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "comments/<id>.json"},
-    {http_method: "post", operation: "post", ids: [], path: "comments.json"},
-    {http_method: "post", operation: "spam", ids: ["id"], path: "comments/<id>/spam.json"},
-    {http_method: "post", operation: "not_spam", ids: ["id"], path: "comments/<id>/not_spam.json"},
-    {http_method: "post", operation: "approve", ids: ["id"], path: "comments/<id>/approve.json"},
-    {http_method: "post", operation: "remove", ids: ["id"], path: "comments/<id>/remove.json"},
-    {http_method: "post", operation: "restore", ids: ["id"], path: "comments/<id>/restore.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "comments.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "comments/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "comments/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "comments.json"},
+    {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
+    {"http_method": "post", "operation": "not_spam", "ids": ["id"], "path": "comments/<id>/not_spam.json"},
+    {"http_method": "post", "operation": "approve", "ids": ["id"], "path": "comments/<id>/approve.json"},
+    {"http_method": "post", "operation": "remove", "ids": ["id"], "path": "comments/<id>/remove.json"},
+    {"http_method": "post", "operation": "restore", "ids": ["id"], "path": "comments/<id>/restore.json"}
   ];
 
   public static async find(
@@ -84,8 +84,8 @@ export class Comment extends Base {
   ): Promise<Comment | null> {
     const result = await Comment.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Comment : null;
   }
@@ -110,7 +110,7 @@ export class Comment extends Base {
     const response = await Comment.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, fields: fields, published_status: published_status, status: status, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "fields": fields, "published_status": published_status, "status": status, ...otherArgs},
     });
 
     return response as Comment[];
@@ -135,7 +135,7 @@ export class Comment extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, status: status, ...otherArgs},
+      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "status": status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -153,7 +153,7 @@ export class Comment extends Base {
       http_method: "post",
       operation: "spam",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -172,7 +172,7 @@ export class Comment extends Base {
       http_method: "post",
       operation: "not_spam",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -191,7 +191,7 @@ export class Comment extends Base {
       http_method: "post",
       operation: "approve",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -210,7 +210,7 @@ export class Comment extends Base {
       http_method: "post",
       operation: "remove",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -229,7 +229,7 @@ export class Comment extends Base {
       http_method: "post",
       operation: "restore",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

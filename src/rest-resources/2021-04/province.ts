@@ -29,10 +29,10 @@ export class Province extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["country_id"], path: "countries/<country_id>/provinces.json"},
-    {http_method: "get", operation: "count", ids: ["country_id"], path: "countries/<country_id>/provinces/count.json"},
-    {http_method: "get", operation: "get", ids: ["country_id", "id"], path: "countries/<country_id>/provinces/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["country_id", "id"], path: "countries/<country_id>/provinces/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": ["country_id"], "path": "countries/<country_id>/provinces.json"},
+    {"http_method": "get", "operation": "count", "ids": ["country_id"], "path": "countries/<country_id>/provinces/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["country_id", "id"], "path": "countries/<country_id>/provinces/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["country_id", "id"], "path": "countries/<country_id>/provinces/<id>.json"}
   ];
 
   public static async find(
@@ -45,8 +45,8 @@ export class Province extends Base {
   ): Promise<Province | null> {
     const result = await Province.baseFind({
       session: session,
-      urlIds: {id: id, country_id: country_id},
-      params: {fields: fields},
+      urlIds: {"id": id, "country_id": country_id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Province : null;
   }
@@ -62,8 +62,8 @@ export class Province extends Base {
   ): Promise<Province[]> {
     const response = await Province.baseFind({
       session: session,
-      urlIds: {country_id: country_id},
-      params: {since_id: since_id, fields: fields, ...otherArgs},
+      urlIds: {"country_id": country_id},
+      params: {"since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as Province[];
@@ -80,7 +80,7 @@ export class Province extends Base {
       http_method: "get",
       operation: "count",
       session: session,
-      urlIds: {country_id: country_id},
+      urlIds: {"country_id": country_id},
       params: {...otherArgs},
       body: {},
       entity: null,

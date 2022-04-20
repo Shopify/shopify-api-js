@@ -47,12 +47,12 @@ export class CustomCollection extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "custom_collections.json"},
-    {http_method: "post", operation: "post", ids: [], path: "custom_collections.json"},
-    {http_method: "get", operation: "count", ids: [], path: "custom_collections/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "custom_collections/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "custom_collections/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "custom_collections/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "custom_collections.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "custom_collections.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "custom_collections/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "custom_collections/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "custom_collections/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "custom_collections/<id>.json"}
   ];
 
   public static async find(
@@ -64,8 +64,8 @@ export class CustomCollection extends Base {
   ): Promise<CustomCollection | null> {
     const result = await CustomCollection.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as CustomCollection : null;
   }
@@ -80,7 +80,7 @@ export class CustomCollection extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -108,7 +108,7 @@ export class CustomCollection extends Base {
     const response = await CustomCollection.baseFind({
       session: session,
       urlIds: {},
-      params: {limit: limit, ids: ids, since_id: since_id, title: title, product_id: product_id, handle: handle, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, fields: fields, ...otherArgs},
+      params: {"limit": limit, "ids": ids, "since_id": since_id, "title": title, "product_id": product_id, "handle": handle, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "fields": fields, ...otherArgs},
     });
 
     return response as CustomCollection[];
@@ -132,7 +132,7 @@ export class CustomCollection extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {title: title, product_id: product_id, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, ...otherArgs},
+      params: {"title": title, "product_id": product_id, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
       body: {},
       entity: null,
     });

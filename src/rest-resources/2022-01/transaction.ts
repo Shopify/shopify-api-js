@@ -31,10 +31,10 @@ export class Transaction extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["order_id"], path: "orders/<order_id>/transactions.json"},
-    {http_method: "post", operation: "post", ids: ["order_id"], path: "orders/<order_id>/transactions.json"},
-    {http_method: "get", operation: "count", ids: ["order_id"], path: "orders/<order_id>/transactions/count.json"},
-    {http_method: "get", operation: "get", ids: ["order_id", "id"], path: "orders/<order_id>/transactions/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"},
+    {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/transactions/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/transactions/<id>.json"}
   ];
 
   public static async find(
@@ -48,8 +48,8 @@ export class Transaction extends Base {
   ): Promise<Transaction | null> {
     const result = await Transaction.baseFind({
       session: session,
-      urlIds: {id: id, order_id: order_id},
-      params: {fields: fields, in_shop_currency: in_shop_currency},
+      urlIds: {"id": id, "order_id": order_id},
+      params: {"fields": fields, "in_shop_currency": in_shop_currency},
     });
     return result ? result[0] as Transaction : null;
   }
@@ -66,8 +66,8 @@ export class Transaction extends Base {
   ): Promise<Transaction[]> {
     const response = await Transaction.baseFind({
       session: session,
-      urlIds: {order_id: order_id},
-      params: {since_id: since_id, fields: fields, in_shop_currency: in_shop_currency, ...otherArgs},
+      urlIds: {"order_id": order_id},
+      params: {"since_id": since_id, "fields": fields, "in_shop_currency": in_shop_currency, ...otherArgs},
     });
 
     return response as Transaction[];
@@ -84,7 +84,7 @@ export class Transaction extends Base {
       http_method: "get",
       operation: "count",
       session: session,
-      urlIds: {order_id: order_id},
+      urlIds: {"order_id": order_id},
       params: {...otherArgs},
       body: {},
       entity: null,

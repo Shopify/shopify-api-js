@@ -35,12 +35,12 @@ export class Variant extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["product_id"], path: "products/<product_id>/variants.json"},
-    {http_method: "get", operation: "count", ids: ["product_id"], path: "products/<product_id>/variants/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "variants/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "variants/<id>.json"},
-    {http_method: "post", operation: "post", ids: ["product_id"], path: "products/<product_id>/variants.json"},
-    {http_method: "delete", operation: "delete", ids: ["product_id", "id"], path: "products/<product_id>/variants/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
+    {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/variants/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "variants/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "variants/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/variants/<id>.json"}
   ];
 
   public static async find(
@@ -52,8 +52,8 @@ export class Variant extends Base {
   ): Promise<Variant | null> {
     const result = await Variant.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Variant : null;
   }
@@ -69,7 +69,7 @@ export class Variant extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id, product_id: product_id},
+      urlIds: {"id": id, "product_id": product_id},
       params: {},
     });
 
@@ -89,8 +89,8 @@ export class Variant extends Base {
   ): Promise<Variant[]> {
     const response = await Variant.baseFind({
       session: session,
-      urlIds: {product_id: product_id},
-      params: {limit: limit, presentment_currencies: presentment_currencies, since_id: since_id, fields: fields, ...otherArgs},
+      urlIds: {"product_id": product_id},
+      params: {"limit": limit, "presentment_currencies": presentment_currencies, "since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as Variant[];
@@ -107,7 +107,7 @@ export class Variant extends Base {
       http_method: "get",
       operation: "count",
       session: session,
-      urlIds: {product_id: product_id},
+      urlIds: {"product_id": product_id},
       params: {...otherArgs},
       body: {},
       entity: null,

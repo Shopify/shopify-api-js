@@ -31,15 +31,15 @@ export class Country extends Base {
   protected static PLURAL_NAME = 'countries';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    provinces: Province
+    "provinces": Province
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "countries.json"},
-    {http_method: "post", operation: "post", ids: [], path: "countries.json"},
-    {http_method: "get", operation: "count", ids: [], path: "countries/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "countries/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "countries/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "countries/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "countries.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "countries.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "countries/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "countries/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "countries/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "countries/<id>.json"}
   ];
 
   public static async find(
@@ -51,8 +51,8 @@ export class Country extends Base {
   ): Promise<Country | null> {
     const result = await Country.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Country : null;
   }
@@ -67,7 +67,7 @@ export class Country extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -85,7 +85,7 @@ export class Country extends Base {
     const response = await Country.baseFind({
       session: session,
       urlIds: {},
-      params: {since_id: since_id, fields: fields, ...otherArgs},
+      params: {"since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as Country[];

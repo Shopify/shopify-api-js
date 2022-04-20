@@ -53,15 +53,15 @@ export class FulfillmentOrder extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: ["order_id"], path: "orders/<order_id>/fulfillment_orders.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "fulfillment_orders/<id>.json"},
-    {http_method: "post", operation: "cancel", ids: ["id"], path: "fulfillment_orders/<id>/cancel.json"},
-    {http_method: "post", operation: "close", ids: ["id"], path: "fulfillment_orders/<id>/close.json"},
-    {http_method: "post", operation: "move", ids: ["id"], path: "fulfillment_orders/<id>/move.json"},
-    {http_method: "post", operation: "open", ids: ["id"], path: "fulfillment_orders/<id>/open.json"},
-    {http_method: "post", operation: "reschedule", ids: ["id"], path: "fulfillment_orders/<id>/reschedule.json"},
-    {http_method: "post", operation: "hold", ids: ["id"], path: "fulfillment_orders/<id>/hold.json"},
-    {http_method: "post", operation: "release_hold", ids: ["id"], path: "fulfillment_orders/<id>/release_hold.json"}
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_orders/<id>.json"},
+    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillment_orders/<id>/cancel.json"},
+    {"http_method": "post", "operation": "close", "ids": ["id"], "path": "fulfillment_orders/<id>/close.json"},
+    {"http_method": "post", "operation": "move", "ids": ["id"], "path": "fulfillment_orders/<id>/move.json"},
+    {"http_method": "post", "operation": "open", "ids": ["id"], "path": "fulfillment_orders/<id>/open.json"},
+    {"http_method": "post", "operation": "reschedule", "ids": ["id"], "path": "fulfillment_orders/<id>/reschedule.json"},
+    {"http_method": "post", "operation": "hold", "ids": ["id"], "path": "fulfillment_orders/<id>/hold.json"},
+    {"http_method": "post", "operation": "release_hold", "ids": ["id"], "path": "fulfillment_orders/<id>/release_hold.json"}
   ];
 
   public static async find(
@@ -72,7 +72,7 @@ export class FulfillmentOrder extends Base {
   ): Promise<FulfillmentOrder | null> {
     const result = await FulfillmentOrder.baseFind({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result ? result[0] as FulfillmentOrder : null;
@@ -87,7 +87,7 @@ export class FulfillmentOrder extends Base {
   ): Promise<FulfillmentOrder[]> {
     const response = await FulfillmentOrder.baseFind({
       session: session,
-      urlIds: {order_id: order_id},
+      urlIds: {"order_id": order_id},
       params: {...otherArgs},
     });
 
@@ -104,7 +104,7 @@ export class FulfillmentOrder extends Base {
       http_method: "post",
       operation: "cancel",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -124,8 +124,8 @@ export class FulfillmentOrder extends Base {
       http_method: "post",
       operation: "close",
       session: this.session,
-      urlIds: {id: this.id},
-      params: {message: message, ...otherArgs},
+      urlIds: {"id": this.id},
+      params: {"message": message, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -144,8 +144,8 @@ export class FulfillmentOrder extends Base {
       http_method: "post",
       operation: "move",
       session: this.session,
-      urlIds: {id: this.id},
-      params: {new_location_id: new_location_id, ...otherArgs},
+      urlIds: {"id": this.id},
+      params: {"new_location_id": new_location_id, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -163,7 +163,7 @@ export class FulfillmentOrder extends Base {
       http_method: "post",
       operation: "open",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -182,7 +182,7 @@ export class FulfillmentOrder extends Base {
       http_method: "post",
       operation: "reschedule",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -204,8 +204,8 @@ export class FulfillmentOrder extends Base {
       http_method: "post",
       operation: "hold",
       session: this.session,
-      urlIds: {id: this.id},
-      params: {reason: reason, reason_notes: reason_notes, notify_merchant: notify_merchant, ...otherArgs},
+      urlIds: {"id": this.id},
+      params: {"reason": reason, "reason_notes": reason_notes, "notify_merchant": notify_merchant, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -223,7 +223,7 @@ export class FulfillmentOrder extends Base {
       http_method: "post",
       operation: "release_hold",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

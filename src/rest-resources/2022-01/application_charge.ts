@@ -22,9 +22,9 @@ export class ApplicationCharge extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: [], path: "application_charges.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "application_charges/<id>.json"},
-    {http_method: "get", operation: "get", ids: [], path: "application_charges.json"}
+    {"http_method": "post", "operation": "post", "ids": [], "path": "application_charges.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_charges/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "application_charges.json"}
   ];
 
   public static async find(
@@ -36,8 +36,8 @@ export class ApplicationCharge extends Base {
   ): Promise<ApplicationCharge | null> {
     const result = await ApplicationCharge.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as ApplicationCharge : null;
   }
@@ -53,7 +53,7 @@ export class ApplicationCharge extends Base {
     const response = await ApplicationCharge.baseFind({
       session: session,
       urlIds: {},
-      params: {since_id: since_id, fields: fields, ...otherArgs},
+      params: {"since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response as ApplicationCharge[];

@@ -15,7 +15,7 @@ describe('LocationsForMove resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"locations_for_move": [{"location": {"id": 1072404548, "name": "Alpha Location"}, "message": "Current location.", "movable": false}, {"location": {"id": 1072404549, "name": "Bravo Location"}, "message": "No items are stocked at this location.", "movable": false}]}));
 
     await LocationsForMove.all({
       session: test_session,

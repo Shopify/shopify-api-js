@@ -2,10 +2,6 @@ import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 
-import {Country} from './country';
-import {Currency} from './currency';
-import {Province} from './province';
-
 interface AllArgs {
   [key: string]: unknown;
   session: SessionInterface;
@@ -17,14 +13,10 @@ export class Shop extends Base {
 
   protected static NAME = 'shop';
   protected static PLURAL_NAME = 'shops';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
-    country: Country,
-    currency: Currency,
-    province: Province
-  };
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "shop.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
   ];
 
   public static async all(
@@ -37,7 +29,7 @@ export class Shop extends Base {
     const response = await Shop.baseFind({
       session: session,
       urlIds: {},
-      params: {fields: fields, ...otherArgs},
+      params: {"fields": fields, ...otherArgs},
     });
 
     return response as Shop[];
@@ -48,12 +40,12 @@ export class Shop extends Base {
   public checkout_api_supported: boolean | null;
   public city: string | null;
   public cookie_consent_level: string | null;
-  public country: Country | null | {[key: string]: any};
+  public country: string | null;
   public country_code: string | null;
   public country_name: string | null;
   public county_taxes: string | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public customer_email: string | null;
   public domain: string | null;
   public eligible_for_card_reader_giveaway: boolean | null;
@@ -85,7 +77,7 @@ export class Shop extends Base {
   public pre_launch_enabled: boolean | null;
   public primary_locale: string | null;
   public primary_location_id: number | null;
-  public province: Province | null | {[key: string]: any};
+  public province: string | null;
   public province_code: string | null;
   public requires_extra_payments_agreement: boolean | null;
   public setup_required: boolean | null;

@@ -15,7 +15,7 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636133, "amount": "5.00", "description": "application credit for refund", "test": null}}));
 
     const application_credit = new ApplicationCredit({session: test_session});
     application_credit.description = "application credit for refund";
@@ -28,12 +28,12 @@ describe('ApplicationCredit resource', () => {
       path: '/admin/api/2021-07/application_credits.json',
       query: '',
       headers,
-      data: { "application_credit": {description: "application credit for refund", amount: 5.0} }
+      data: { "application_credit": {"description": "application credit for refund", "amount": 5.0} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636134, "amount": "5.00", "description": "application credit for refund", "test": true}}));
 
     const application_credit = new ApplicationCredit({session: test_session});
     application_credit.description = "application credit for refund";
@@ -47,12 +47,12 @@ describe('ApplicationCredit resource', () => {
       path: '/admin/api/2021-07/application_credits.json',
       query: '',
       headers,
-      data: { "application_credit": {description: "application credit for refund", amount: 5.0, test: true} }
+      data: { "application_credit": {"description": "application credit for refund", "amount": 5.0, "test": true} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credits": [{"id": 140583599, "amount": "5.00", "description": "credit for application refund", "test": null}]}));
 
     await ApplicationCredit.all({
       session: test_session,
@@ -69,7 +69,7 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 140583599, "amount": "5.00", "description": "credit for application refund", "test": null}}));
 
     await ApplicationCredit.find({
       session: test_session,

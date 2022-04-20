@@ -23,7 +23,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
   ```js
   app.post('/graphql', async (req, res) => {
-    await Shopify.Utils.graphqlProxy(req, res);
+    await Shopify.Utils.graphqlProxy(req);
   });
   ```
 
@@ -31,7 +31,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
   ```js
   app.post('/graphql', async (req, res) => {
-    const response = await Shopify.Utils.graphqlProxy(req, res);
+    const response = await Shopify.Utils.graphqlProxy(req);
     res.status(200).send(response.body);
   });
   ```

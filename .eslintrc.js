@@ -1,10 +1,17 @@
+/* eslint-disable-next-line no-undef */
 module.exports = {
   env: {
     browser: false,
     es2021: true,
   },
   extends: ['plugin:@shopify/typescript', 'plugin:@shopify/prettier'],
-  ignorePatterns: ['dist/', 'src/rest-resources'],
+  ignorePatterns: [
+    'dist/',
+    'src/rest-resources',
+    'coverage/',
+    'bundle/',
+    'src/clients/http_client/__e2etests__/experiments/',
+  ],
   rules: {
     'import/no-named-as-default': 0,
     'no-mixed-operators': 0,

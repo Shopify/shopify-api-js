@@ -58,16 +58,16 @@ export class Product extends Base {
   protected static PLURAL_NAME = 'products';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {
-    images: Image,
-    variants: Variant
+    "images": Image,
+    "variants": Variant
   };
   protected static PATHS: ResourcePath[] = [
-    {http_method: "get", operation: "get", ids: [], path: "products.json"},
-    {http_method: "post", operation: "post", ids: [], path: "products.json"},
-    {http_method: "get", operation: "count", ids: [], path: "products/count.json"},
-    {http_method: "get", operation: "get", ids: ["id"], path: "products/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["id"], path: "products/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["id"], path: "products/<id>.json"}
+    {"http_method": "get", "operation": "get", "ids": [], "path": "products.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "products/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "products/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "products/<id>.json"}
   ];
 
   public static async find(
@@ -79,8 +79,8 @@ export class Product extends Base {
   ): Promise<Product | null> {
     const result = await Product.baseFind({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result ? result[0] as Product : null;
   }
@@ -95,7 +95,7 @@ export class Product extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
@@ -129,7 +129,7 @@ export class Product extends Base {
     const response = await Product.baseFind({
       session: session,
       urlIds: {},
-      params: {ids: ids, limit: limit, since_id: since_id, title: title, vendor: vendor, handle: handle, product_type: product_type, status: status, collection_id: collection_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, fields: fields, presentment_currencies: presentment_currencies, ...otherArgs},
+      params: {"ids": ids, "limit": limit, "since_id": since_id, "title": title, "vendor": vendor, "handle": handle, "product_type": product_type, "status": status, "collection_id": collection_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "fields": fields, "presentment_currencies": presentment_currencies, ...otherArgs},
     });
 
     return response as Product[];
@@ -156,7 +156,7 @@ export class Product extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {vendor: vendor, product_type: product_type, collection_id: collection_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, ...otherArgs},
+      params: {"vendor": vendor, "product_type": product_type, "collection_id": collection_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
       body: {},
       entity: null,
     });

@@ -26,11 +26,11 @@ export class OrderRisk extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-    {http_method: "post", operation: "post", ids: ["order_id"], path: "orders/<order_id>/risks.json"},
-    {http_method: "get", operation: "get", ids: ["order_id"], path: "orders/<order_id>/risks.json"},
-    {http_method: "get", operation: "get", ids: ["order_id", "id"], path: "orders/<order_id>/risks/<id>.json"},
-    {http_method: "put", operation: "put", ids: ["order_id", "id"], path: "orders/<order_id>/risks/<id>.json"},
-    {http_method: "delete", operation: "delete", ids: ["order_id", "id"], path: "orders/<order_id>/risks/<id>.json"}
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/risks.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/risks.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/risks/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["order_id", "id"], "path": "orders/<order_id>/risks/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["order_id", "id"], "path": "orders/<order_id>/risks/<id>.json"}
   ];
 
   protected static getJsonBodyName(): string
@@ -47,7 +47,7 @@ export class OrderRisk extends Base {
   ): Promise<OrderRisk | null> {
     const result = await OrderRisk.baseFind({
       session: session,
-      urlIds: {id: id, order_id: order_id},
+      urlIds: {"id": id, "order_id": order_id},
       params: {},
     });
     return result ? result[0] as OrderRisk : null;
@@ -64,7 +64,7 @@ export class OrderRisk extends Base {
       http_method: "delete",
       operation: "delete",
       session: session,
-      urlIds: {id: id, order_id: order_id},
+      urlIds: {"id": id, "order_id": order_id},
       params: {},
     });
 
@@ -80,7 +80,7 @@ export class OrderRisk extends Base {
   ): Promise<OrderRisk[]> {
     const response = await OrderRisk.baseFind({
       session: session,
-      urlIds: {order_id: order_id},
+      urlIds: {"order_id": order_id},
       params: {...otherArgs},
     });
 
