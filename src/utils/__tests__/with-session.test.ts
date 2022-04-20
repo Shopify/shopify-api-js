@@ -4,9 +4,9 @@ import {
   Response,
   Cookies,
   Headers,
-} from '../../adapters/abstract-http';
-import Shopify from '../../index-node';
-import * as mockAdapter from '../../adapters/mock-adapter';
+} from '../../runtime/http';
+import Shopify from '../../adapters/node';
+import * as mockAdapter from '../../adapters/mock';
 import {Session} from '../../auth/session';
 import OAuth, {ShopifyOAuth} from '../../auth/oauth';
 import withSession from '../with-session';

@@ -1,4 +1,4 @@
-import {Request} from '../adapters/abstract-http';
+import {Request} from '../runtime/http';
 import {Context} from '../context';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
 import * as ShopifyErrors from '../error';

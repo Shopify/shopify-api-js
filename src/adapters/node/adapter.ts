@@ -7,7 +7,7 @@ import {
   flatHeaders,
   Request,
   Response,
-} from './abstract-http';
+} from '../../runtime/http';
 
 export async function convertRequest(req: IncomingMessage): Promise<Request> {
   const body = await new Promise<string>((resolve, reject) => {

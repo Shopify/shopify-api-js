@@ -1,10 +1,5 @@
-import {
-  Request,
-  Response,
-  Cookies,
-  getHeader,
-  crypto,
-} from '../../adapters/abstract-http';
+import {Request, Response, Cookies, getHeader} from '../../runtime/http';
+import {crypto} from '../../runtime/crypto';
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';

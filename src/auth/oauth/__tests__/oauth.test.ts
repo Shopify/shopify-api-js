@@ -7,9 +7,9 @@ import {
   Cookies,
   CookieJar,
   getHeaders,
-} from '../../../adapters/abstract-http';
-import Shopify from '../../../index-node';
-import * as mockAdapter from '../../../adapters/mock-adapter';
+} from '../../../runtime/http';
+import Shopify from '../../../adapters/node';
+import * as mockAdapter from '../../../adapters/mock';
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
 // import * as Shopify.Errors from '../../../error';

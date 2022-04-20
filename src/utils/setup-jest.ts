@@ -3,8 +3,8 @@ import * as jose from 'jose';
 import {Context} from '../context';
 import {ApiVersion} from '../base-types';
 import {MemorySessionStorage} from '../auth/session';
-import * as mockAdapter from '../adapters/mock-adapter';
-import {canonicalizeHeaders} from '../adapters/abstract-http';
+import * as mockAdapter from '../adapters/mock';
+import {canonicalizeHeaders} from '../runtime/http/headers';
 
 import {JwtPayload} from './decode-session-token';
 import {getHMACKey} from './get-hmac-key';
