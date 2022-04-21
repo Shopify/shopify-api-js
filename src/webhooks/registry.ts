@@ -199,6 +199,12 @@ function buildQuery(
   `;
 }
 
+const gdprTopics: string[] = [
+  'CUSTOMERS_DATA_REQUEST',
+  'CUSTOMERS_REDACT',
+  'SHOP_REDACT',
+];
+
 const WebhooksRegistry: RegistryInterface = {
   webhookRegistry: {},
 
@@ -233,6 +239,22 @@ const WebhooksRegistry: RegistryInterface = {
     deliveryMethod = DeliveryMethod.Http,
   }: RegisterOptions): Promise<RegisterReturn> {
     const registerReturn: RegisterReturn = {};
+
+    if (gdprTopics.includes(topic)) {
+      registerReturn[topic] = {
+        success: false,
+        result: {
+          errors: [
+            {
+              message: `GDPR topic '${topic}' cannot be registered here. Please set the appropriate webhook endpoint in the 'GDPR mandatory webhooks' section of 'App setup' in the Partners Dashboard`,
+            },
+          ],
+        },
+      };
+
+      return registerReturn;
+    }
+
     validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient(shop, accessToken);
     const address =
@@ -244,6 +266,15 @@ const WebhooksRegistry: RegistryInterface = {
     })) as {body: WebhookCheckResponse};
     let webhookId: string | undefined;
     let mustRegister = true;
+    if ('errors' in checkResult.body) {
+      registerReturn[topic] = {
+        success: false,
+        result: checkResult.body,
+      };
+
+      return registerReturn;
+    }
+
     if (checkResult.body.data.webhookSubscriptions.edges.length) {
       const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
       let endpointAddress = '';
@@ -426,4 +457,10 @@ const WebhooksRegistry: RegistryInterface = {
   },
 };
 
-export {WebhooksRegistry, RegistryInterface, buildCheckQuery, buildQuery};
+export {
+  WebhooksRegistry,
+  RegistryInterface,
+  buildCheckQuery,
+  buildQuery,
+  gdprTopics,
+};

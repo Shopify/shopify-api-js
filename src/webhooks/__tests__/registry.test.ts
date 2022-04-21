@@ -4,7 +4,12 @@ import express from 'express';
 import request from 'supertest';
 import {Method, Header, StatusCode} from '@shopify/network';
 
-import {DeliveryMethod, RegisterOptions, RegisterReturn} from '../types';
+import {
+  DeliveryMethod,
+  RegisterOptions,
+  RegisterReturn,
+  ShortenedRegisterOptions,
+} from '../types';
 import {ApiVersion, ShopifyHeader} from '../../base-types';
 import {Context} from '../../context';
 import {DataType} from '../../clients/types';
@@ -13,6 +18,7 @@ import * as ShopifyErrors from '../../error';
 import {
   buildQuery as createWebhookQuery,
   buildCheckQuery as createWebhookCheckQuery,
+  gdprTopics,
 } from '../registry';
 
 interface MockResponse {
@@ -25,7 +31,7 @@ interface RegisterTestWebhook {
   registerMockResponse?: MockResponse;
   checkMockResponse?: MockResponse;
   deliveryMethod?: DeliveryMethod;
-  wehbookId?: string | undefined;
+  webhookId?: string | undefined;
   expectRegistrationQuery?: boolean;
 }
 
@@ -118,7 +124,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       path: '/webhooks/new',
       checkMockResponse: webhookCheckResponse,
       registerMockResponse: successUpdateResponse,
-      wehbookId: TEST_WEBHOOK_ID,
+      webhookId: TEST_WEBHOOK_ID,
     });
 
     assertRegisterResponse({
@@ -135,7 +141,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       path: 'arn:test-new',
       checkMockResponse: eventBridgeWebhookCheckResponse,
       registerMockResponse: eventBridgeSuccessUpdateResponse,
-      wehbookId: TEST_WEBHOOK_ID,
+      webhookId: TEST_WEBHOOK_ID,
       deliveryMethod: DeliveryMethod.EventBridge,
     });
 
@@ -153,7 +159,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
       path: 'pubsub://my-project-id:my-new-topic-id',
       checkMockResponse: pubSubWebhookCheckResponse,
       registerMockResponse: pubSubSuccessUpdateResponse,
-      wehbookId: TEST_WEBHOOK_ID,
+      webhookId: TEST_WEBHOOK_ID,
       deliveryMethod: DeliveryMethod.PubSub,
     });
 
@@ -242,6 +248,91 @@ describe('ShopifyWebhooks.Registry.register', () => {
     // Make sure we have one of each topic in the registry
     const actualTopics = Object.keys(ShopifyWebhooks.Registry.webhookRegistry);
     expect(actualTopics).toEqual(['PRODUCTS_CREATE', 'PRODUCTS_UPDATE']);
+  });
+
+  gdprTopics.forEach((gdprTopic) => {
+    it(`does not send a register for ${gdprTopic}`, async () => {
+      const webhook: RegisterOptions = {
+        path: '/webhooks',
+        topic: gdprTopic,
+        accessToken: 'some token',
+        shop: 'shop1.myshopify.io',
+        deliveryMethod: DeliveryMethod.Http,
+      };
+
+      const response = await ShopifyWebhooks.Registry.register(webhook);
+      expect(fetchMock.mock.calls).toHaveLength(0);
+      expect(response[gdprTopic].success).toBeFalsy();
+      expect(
+        (response[gdprTopic].result as {errors: [{message: string}]}).errors[0]
+          .message,
+      ).toContain('cannot be registered here');
+    });
+  });
+
+  it('does not send a register for NONSENSE_TOPIC', async () => {
+    const topic = 'NONSENSE_TOPIC';
+    const webhook: RegisterOptions = {
+      path: '/webhooks',
+      topic,
+      accessToken: 'some token',
+      shop: 'shop1.myshopify.io',
+      deliveryMethod: DeliveryMethod.Http,
+    };
+
+    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckErrorResponse));
+    const response = await ShopifyWebhooks.Registry.register(webhook);
+    expect(fetchMock.mock.calls).toHaveLength(1);
+    expect(response[topic].success).toBeFalsy();
+    expect(
+      (response[topic].result as {errors: [{message: string}]}).errors[0]
+        .message,
+    ).toContain(
+      `Argument 'topics' on Field 'webhookSubscriptions' has an invalid value`,
+    );
+  });
+});
+
+describe('ShopifyWebhooks.Registry.registerAll', () => {
+  const shortenedRegisterOptions: ShortenedRegisterOptions = {
+    accessToken: 'some token',
+    shop: 'shop1.myshopify.io',
+  };
+  const productsCreate: RegisterOptions = {
+    path: '/webhooks',
+    topic: 'PRODUCTS_CREATE',
+    ...shortenedRegisterOptions,
+  };
+
+  beforeEach(async () => {
+    Context.API_VERSION = ApiVersion.Unstable;
+    ShopifyWebhooks.Registry.webhookRegistry = {};
+    ShopifyWebhooks.Registry.addHandler('PRODUCTS_CREATE', {
+      path: '/webhooks',
+      webhookHandler: genericWebhookHandler,
+    });
+  });
+
+  gdprTopics.forEach((gdprTopic) => {
+    it(`does not send a register for ${gdprTopic} if handler added for ${gdprTopic}`, async () => {
+      ShopifyWebhooks.Registry.addHandler(gdprTopic, {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      });
+      expect(gdprTopic in ShopifyWebhooks.Registry.webhookRegistry);
+      expect(
+        Object.keys(ShopifyWebhooks.Registry.webhookRegistry),
+      ).toHaveLength(2);
+
+      fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
+      fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+
+      await ShopifyWebhooks.Registry.registerAll(shortenedRegisterOptions);
+
+      expect(fetchMock.mock.calls).toHaveLength(2);
+      assertWebhookCheckRequest(productsCreate);
+      assertWebhookRegistrationRequest(productsCreate);
+    });
   });
 });
 
@@ -637,7 +728,7 @@ async function registerWebhook({
   registerMockResponse = undefined,
   checkMockResponse = webhookCheckEmptyResponse,
   deliveryMethod = DeliveryMethod.Http,
-  wehbookId = undefined,
+  webhookId = undefined,
   expectRegistrationQuery = true,
 }: RegisterTestWebhook): Promise<RegisterReturn> {
   fetchMock.mockResponseOnce(JSON.stringify(checkMockResponse));
@@ -657,7 +748,7 @@ async function registerWebhook({
   if (expectRegistrationQuery) {
     expect(fetchMock.mock.calls).toHaveLength(2);
     assertWebhookCheckRequest(webhook);
-    assertWebhookRegistrationRequest(webhook, wehbookId);
+    assertWebhookRegistrationRequest(webhook, webhookId);
   } else {
     expect(fetchMock.mock.calls).toHaveLength(1);
     assertWebhookCheckRequest(webhook);
@@ -719,6 +810,15 @@ const webhookCheckEmptyResponse: MockResponse = {
       edges: [],
     },
   },
+};
+
+const webhookCheckErrorResponse: MockResponse = {
+  errors: [
+    {
+      message:
+        "Argument 'topics' on Field 'webhookSubscriptions' has an invalid value (topic). Expected type '[WebhookSubscriptionTopic!]'.",
+    },
+  ],
 };
 
 const webhookCheckResponse: MockResponse = {
