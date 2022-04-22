@@ -7,6 +7,11 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Fixed
+- Fixes [#363](https://github.com/Shopify/shopify-node-api/issues/363)
+  - Webhooks `register` now checks for any attempt to register a GDPR topic (not done via API but by Partner Dashboard), provides an error message in response
+  - For topics that don't exist, `register` checks the response from the initial API call for an `errors` field and returns accordingly
+
 ## [3.0.1] - 2022-04-11
 
 ### Added
