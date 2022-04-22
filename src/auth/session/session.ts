@@ -63,8 +63,6 @@ export function sessionFromEntries(
         switch (key.toLowerCase()) {
           case 'isonline':
             return ['isOnline', value];
-          case 'onlineaccessinfo':
-            return ['onlineAccessInfo', value];
           case 'accesstoken':
             return ['accessToken', value];
           default:
@@ -77,25 +75,20 @@ export function sessionFromEntries(
   } else if (typeof obj.isOnline === 'number') {
     obj.isOnline = Boolean(obj.isOnline);
   }
-  if (obj.onlineAccessInfo) {
-    obj.onlineAccessInfo = JSON.parse(obj.onlineAccessInfo as any) as any;
-  }
-  if (obj.expires) obj.expires = new Date(parseInt(obj.expires.toString(), 10));
   if (obj.scope) obj.scope = obj.scope.toString();
   return obj;
 }
 
+const includedKeys = [
+  'id',
+  'shop',
+  'state',
+  'isOnline',
+  'scope',
+  'accessToken',
+];
 export function sessionEntries(
   session: SessionInterface,
 ): [string, string | number][] {
-  return Object.entries(session).map(([key, value]) => {
-    switch (key) {
-      case 'onlineAccessInfo':
-        return [key, JSON.stringify(value)];
-      case 'expires':
-        return [key, (value as Date).getTime()];
-      default:
-        return [key, value];
-    }
-  });
+  return Object.entries(session).filter(([key]) => includedKeys.includes(key));
 }

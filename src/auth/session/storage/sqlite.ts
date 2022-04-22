@@ -87,9 +87,7 @@ export class SQLiteSessionStorage implements SessionStorage {
           state varchar(255) NOT NULL,
           isOnline tinyint NOT NULL,
           scope varchar(255),
-          expires varchar(255),
-          accessToken varchar(255),
-          onlineAccessInfo varchar(4096)
+          accessToken varchar(255)
         )
       `;
       await this.query(query);
