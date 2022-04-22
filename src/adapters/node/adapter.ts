@@ -26,22 +26,13 @@ export async function convertRequest(req: IncomingMessage): Promise<Request> {
   };
 }
 
-export async function convertResponse(resp: ServerResponse): Promise<Response> {
-  const body = await new Promise<string>((resolve, reject) => {
-    let str = '';
-    resp.on('data', (chunk) => {
-      str += chunk.toString();
-    });
-    resp.on('error', (error) => reject(error));
-    resp.on('end', () => resolve(str));
-  });
-  return {
-    statusCode: resp.statusCode,
-    statusText: resp.statusMessage,
-    // Same
-    headers: resp.getHeaders() as any,
-    body,
-  };
+export async function convertResponse(resp: Response, nodeResponse: ServerResponse): Promise<void> {
+    nodeResponse.statusCode= resp.statusCode;
+    nodeResponse.statusMessage= resp.statusText;
+    for(const [header, value] of Object.entries(resp.headers ?? {})) {
+      nodeResponse.setHeader(header, value);
+    }
+    nodeResponse.end(resp.body);
 }
 
 export async function abstractFetch({

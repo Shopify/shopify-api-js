@@ -10,3 +10,5 @@ setCrypto((crypto as any).webcrypto);
 
 export * from '../..';
 export {default} from '../..';
+
+export {convertRequest, convertResponse} from "./adapter";

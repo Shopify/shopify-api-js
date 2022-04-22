@@ -1,4 +1,5 @@
-import {Request, Response, Cookies, getHeader} from '../../runtime/http';
+import {Request, Response, OutgoingCookieJar, getHeader, IncomingCookieJar} from '../../runtime/http';
+
 import {crypto} from '../../runtime/crypto';
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
@@ -19,39 +20,63 @@ import {
   OnlineAccessInfo,
 } from './types';
 
+export interface BeginAuthOptions {
+  isOnline: boolean;
+  shop?: string;
+}
+
+export interface BeginAuthReturn {
+  redirectUrl: string;
+  sessionCookies: string[];
+}
+
+const defaultBeginAuthOptions: BeginAuthOptions = {
+  isOnline: true
+}
+
 const ShopifyOAuth = {
   SESSION_COOKIE_NAME: 'shopify_app_session',
 
   /**
-   * Initializes a session and cookie for the OAuth process, and returns the necessary authorization url.
+   * Initializes a session and cookie for the OAuth process, and returns the
+   * necessary authorization url.
    *
    * @param request Current HTTP Request
-   * @param response Current HTTP Response
    * @param shop Shop url: {shop}.myshopify.com
-   * @param redirect Redirect url for callback
-   * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token.
-   *                 During final oauth request, will receive back the online access token and current online session information.
-   *                 Defaults to online access.
+   * @param redirectPath Redirect url for callback
+   * @param options Options object
+   * @param options.isOnline Boolean value. If true, appends 'per-user' grant
+   *                         options to authorization url to receive online
+   *                         access token. During final oauth request, will
+   *                         receive back the online access token and current
+   *                         online session information. Defaults to online
+   *                         access.
+   * @param options.shop Shop url: {shop}.myshopify.com
    */
   async beginAuth(
     request: Request,
-    response: Response,
-    shop: string,
     redirectPath: string,
-    isOnline = true,
-  ): Promise<string> {
+    options: Partial<BeginAuthOptions> = {}
+  ): Promise<BeginAuthReturn> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
-    const cookies = new Cookies(request, response, {
-      keys: [Context.API_SECRET_KEY],
-      secure: true,
-    });
+    let {shop, isOnline} = {...defaultBeginAuthOptions, ...options};
+    if(!shop) {
+      shop = new URL(request.url).searchParams.get("url") ?? undefined;
+    }
+    if(!shop) {
+      throw new ShopifyErrors.HttpRequestError("No shop value");
+    }
+
+    const cookies = new OutgoingCookieJar([Context.API_SECRET_KEY]);
 
     const state = nonce();
 
+    const sessionId =
+      isOnline ? uuidv4() : this.getOfflineSessionId(shop);
     const session = new Session(
-      isOnline ? uuidv4() : this.getOfflineSessionId(shop),
+      sessionId,
       shop,
       state,
       isOnline,
@@ -84,7 +109,10 @@ const ShopifyOAuth = {
     // const queryString = querystring.stringify(query);
     const queryString = new URLSearchParams(query).toString();
 
-    return `https://${shop}/admin/oauth/authorize?${queryString}`;
+    return {
+      redirectUrl: `https://${shop}/admin/oauth/authorize?${queryString}`,
+      sessionCookies: cookies.toHeaders(),
+    };
   },
 
   /**
@@ -93,24 +121,15 @@ const ShopifyOAuth = {
    * Throws errors for missing sessions and invalid callbacks.
    *
    * @param request Current HTTP Request
-   * @param response Current HTTP Response
-   * @param query Current HTTP Request Query, containing the information to be validated.
-   *              Depending on framework, this may need to be cast as "unknown" before being passed.
    * @returns SessionInterface
    */
   async validateAuthCallback(
     request: Request,
-    response: Response,
-    query: AuthQuery,
   ): Promise<SessionInterface> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
-    const cookies = new Cookies(request, response, {
-      keys: [Context.API_SECRET_KEY],
-      secure: true,
-    });
-
+    const query = Object.fromEntries(new URL(request.url, "https://example.com").searchParams.entries()) as unknown as AuthQuery;
     const sessionCookie = await this.getCookieSessionId(request);
     if (!sessionCookie) {
       throw new ShopifyErrors.CookieNotFound(
@@ -185,16 +204,6 @@ const ShopifyOAuth = {
       currentSession.scope = responseBody.scope;
     }
 
-    await cookies.setAndSign(
-      ShopifyOAuth.SESSION_COOKIE_NAME,
-      currentSession.id,
-      {
-        expires: Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
-        sameSite: 'lax',
-        secure: true,
-      },
-    );
-
     const sessionStored = await Context.SESSION_STORAGE.storeSession(
       currentSession,
     );
@@ -213,10 +222,7 @@ const ShopifyOAuth = {
    * @param request HTTP request object
    */
   getCookieSessionId(request: Request): Promise<string | undefined> {
-    const cookies = new Cookies(request, {} as Response, {
-      secure: true,
-      keys: [Context.API_SECRET_KEY],
-    });
+    const cookies = IncomingCookieJar.fromRequest(request, [Context.API_SECRET_KEY]);
     return cookies.getAndVerify(this.SESSION_COOKIE_NAME);
   },
 
