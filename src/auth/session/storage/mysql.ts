@@ -5,12 +5,10 @@ import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session';
 
 export interface MySQLSessionStorageOptions {
-  createDBWhenMissing: boolean;
   sessionTableName: string;
 }
 const defaultMySQLSessionStorageOptions: MySQLSessionStorageOptions = {
-  createDBWhenMissing: true,
-  sessionTableName: 'shopify_node_api_sessions',
+  sessionTableName: 'shopify_sessions',
 };
 
 export class MySQLSessionStorage implements SessionStorage {
@@ -103,9 +101,7 @@ export class MySQLSessionStorage implements SessionStorage {
 
   private async createTable() {
     const hasSessionTable = await this.hasSessionTable();
-    if (!hasSessionTable && !this.options.createDBWhenMissing) {
-      throw Error('Session Table is missing');
-    } else if (!hasSessionTable) {
+    if (!hasSessionTable) {
       const query = `
         CREATE TABLE ${this.options.sessionTableName} (
           id varchar(255) NOT NULL PRIMARY KEY,

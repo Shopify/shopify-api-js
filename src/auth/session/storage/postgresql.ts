@@ -5,14 +5,12 @@ import {SessionStorage} from '../session_storage';
 import {sessionEntries, sessionFromEntries} from '../session';
 
 export interface PostgreSQLSessionStorageOptions {
-  createDBWhenMissing: boolean;
   sessionTableName: string;
   port: number;
 }
 const defaultPostgreSQLSessionStorageOptions: PostgreSQLSessionStorageOptions =
   {
-    createDBWhenMissing: true,
-    sessionTableName: 'shopify_node_api_sessions',
+    sessionTableName: 'shopify_sessions',
     port: 3211,
   };
 
@@ -114,9 +112,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
 
   private async createTable() {
     const hasSessionTable = await this.hasSessionTable();
-    if (!hasSessionTable && !this.options.createDBWhenMissing) {
-      throw Error('Session Table is missing');
-    } else if (!hasSessionTable) {
+    if (!hasSessionTable) {
       const query = `
         CREATE TABLE ${this.options.sessionTableName} (
           id varchar(255) NOT NULL PRIMARY KEY,

@@ -5,12 +5,10 @@ import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session';
 
 export interface MongoDBSessionStorageOptions {
-  createCollectionWhenMissing: boolean;
   sessionCollectionName: string;
 }
 const defaultMongoDBSessionStorageOptions: MongoDBSessionStorageOptions = {
-  createCollectionWhenMissing: true,
-  sessionCollectionName: 'shopify_node_api_sessions',
+  sessionCollectionName: 'shopify_sessions',
 };
 
 export class MongoDBSessionStorage implements SessionStorage {
@@ -103,9 +101,7 @@ export class MongoDBSessionStorage implements SessionStorage {
 
   private async createCollection() {
     const hasSessionCollection = await this.hasSessionCollection();
-    if (!hasSessionCollection && !this.options.createCollectionWhenMissing) {
-      throw Error('Session collection is missing');
-    } else if (!hasSessionCollection) {
+    if (!hasSessionCollection) {
       await this.client.db().collection(this.options.sessionCollectionName);
     }
   }

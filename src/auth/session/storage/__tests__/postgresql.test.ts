@@ -44,7 +44,7 @@ describe('PostgreSQLSessionStorage', () => {
       },
       {interval: 500, timeout: 20000},
     );
-    storage = new PostgreSQLSessionStorage(dbURL, {createDBWhenMissing: true});
+    storage = new PostgreSQLSessionStorage(dbURL);
     await storage.ready;
   });
 

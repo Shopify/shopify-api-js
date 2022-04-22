@@ -41,9 +41,7 @@ describe('MongoDBSessionStorage', () => {
       },
       {interval: 500, timeout: 20000},
     );
-    storage = new MongoDBSessionStorage(dbURL, dbName, {
-      createCollectionWhenMissing: true,
-    });
+    storage = new MongoDBSessionStorage(dbURL, dbName);
   });
 
   afterAll(async () => {

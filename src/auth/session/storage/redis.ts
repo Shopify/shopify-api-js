@@ -8,7 +8,7 @@ export interface RedisSessionStorageOptions {
   sessionKeyPrefix: string;
 }
 const defaultRedisSessionStorageOptions: RedisSessionStorageOptions = {
-  sessionKeyPrefix: 'shopify_node_api_sessions',
+  sessionKeyPrefix: 'shopify_sessions',
 };
 
 export class RedisSessionStorage implements SessionStorage {

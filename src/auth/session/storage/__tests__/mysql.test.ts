@@ -38,7 +38,7 @@ describe('MySQLSessionStorage', () => {
       },
       {interval: 500, timeout: 20000},
     );
-    storage = new MySQLSessionStorage(dbURL, {createDBWhenMissing: true});
+    storage = new MySQLSessionStorage(dbURL);
   });
 
   afterAll(async () => {

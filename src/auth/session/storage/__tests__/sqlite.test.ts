@@ -9,9 +9,7 @@ describe('SQLiteSessionStorage', () => {
   let storage: SQLiteSessionStorage;
   beforeAll(async () => {
     await fs.unlink(sqliteDbFile).catch(() => {});
-    storage = new SQLiteSessionStorage(sqliteDbFile, {
-      createDBWhenMissing: true,
-    });
+    storage = new SQLiteSessionStorage(sqliteDbFile);
   });
 
   afterAll(async () => {
