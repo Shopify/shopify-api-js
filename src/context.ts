@@ -1,8 +1,9 @@
 import * as ShopifyErrors from './error';
 import {SessionStorage} from './auth/session/session_storage';
-import {MemorySessionStorage} from './auth/session/storage/memory';
+import {SQLiteSessionStorage} from './auth/session/storage/sqlite';
 import {ApiVersion, ContextParams} from './base-types';
 import {AuthScopes} from './auth/scopes';
+import path from 'path';
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;
@@ -26,6 +27,11 @@ interface ContextInterface extends ContextParams {
   throwIfPrivateApp(message: string): void | never;
 }
 
+const dbFile = path.join(
+  require.main ? path.dirname(require.main.filename) : process.cwd(),
+  "database.sqlite"
+);
+
 const Context: ContextInterface = {
   API_KEY: '',
   API_SECRET_KEY: '',
@@ -34,7 +40,7 @@ const Context: ContextInterface = {
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
-  SESSION_STORAGE: new MemorySessionStorage(),
+  SESSION_STORAGE: new SQLiteSessionStorage(dbFile),
 
   initialize(params: ContextParams): void {
     let scopes: AuthScopes;
