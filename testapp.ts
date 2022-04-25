@@ -5,8 +5,8 @@ import Shopify, {
 } from './src/adapters/node';
 
 const HOST = new URL('http://localhost:8080');
-const API_KEY = '4da7ea9324f095fed4667d73a0e24ef4';
-const API_SECRET_KEY = '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';
+const API_KEY = process.env.API_KEY;
+const API_SECRET_KEY = process.env.API_SECRET;
 const SCOPES = ['write_products', 'write_customers', 'write_draft_orders'];
 Shopify.Context.initialize({
   API_KEY,
