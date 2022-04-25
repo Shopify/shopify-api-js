@@ -12,25 +12,28 @@ export default function safeCompare(
   strA: string | {[key: string]: string} | string[] | number[],
   strB: string | {[key: string]: string} | string[] | number[],
 ): boolean {
-  if (typeof strA === typeof strB) {
-    let buffA: Buffer;
-    let buffB: Buffer;
+  let buffA: Buffer;
+  let buffB: Buffer;
 
-    if (typeof strA === 'object' && typeof strB === 'object') {
-      buffA = Buffer.from(JSON.stringify(strA));
-      buffB = Buffer.from(JSON.stringify(strB));
-    } else {
-      buffA = Buffer.from(strA);
-      buffB = Buffer.from(strB);
-    }
-
-    if (buffA.length === buffB.length) {
-      return crypto.timingSafeEqual(buffA, buffB);
-    }
-  } else {
+  if (typeof strA !== typeof strB) {
     throw new ShopifyErrors.SafeCompareError(
       `Mismatched data types provided: ${typeof strA} and ${typeof strB}`,
     );
+  }
+
+  if (typeof strA === 'object') {
+    buffA = Buffer.from(JSON.stringify(strA));
+  } else {
+    buffA = Buffer.from(strA);
+  }
+  if (typeof strB === 'object') {
+    buffB = Buffer.from(JSON.stringify(strB));
+  } else {
+    buffB = Buffer.from(strB);
+  }
+
+  if (buffA.length === buffB.length) {
+    return crypto.timingSafeEqual(buffA, buffB);
   }
   return false;
 }
