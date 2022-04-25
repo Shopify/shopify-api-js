@@ -2,7 +2,7 @@ import {createClient, RedisClientType} from 'redis';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {sessionFromEntries, sessionEntries} from '../session';
+import {sessionFromEntries, sessionEntries} from '../session-utils';
 
 export interface RedisSessionStorageOptions {
   sessionKeyPrefix: string;

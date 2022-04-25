@@ -1,9 +1,10 @@
+import path from 'path';
+
 import * as ShopifyErrors from './error';
 import {SessionStorage} from './auth/session/session_storage';
 import {SQLiteSessionStorage} from './auth/session/storage/sqlite';
 import {ApiVersion, ContextParams} from './base-types';
 import {AuthScopes} from './auth/scopes';
-import path from 'path';
 
 interface ContextInterface extends ContextParams {
   SESSION_STORAGE: SessionStorage;
@@ -29,7 +30,7 @@ interface ContextInterface extends ContextParams {
 
 const dbFile = path.join(
   require.main ? path.dirname(require.main.filename) : process.cwd(),
-  "database.sqlite"
+  'database.sqlite',
 );
 
 const Context: ContextInterface = {

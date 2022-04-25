@@ -2,7 +2,7 @@ import pg from 'pg';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {sessionEntries, sessionFromEntries} from '../session';
+import {sessionEntries, sessionFromEntries} from '../session-utils';
 
 export interface PostgreSQLSessionStorageOptions {
   sessionTableName: string;

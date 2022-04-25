@@ -2,7 +2,7 @@ import mysql from 'mysql2/promise';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {sessionFromEntries, sessionEntries} from '../session';
+import {sessionFromEntries, sessionEntries} from '../session-utils';
 
 export interface MySQLSessionStorageOptions {
   sessionTableName: string;

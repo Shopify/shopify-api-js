@@ -2,12 +2,12 @@ import sqlite3 from 'sqlite3';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {sessionFromEntries, sessionEntries} from '../session';
+import {sessionFromEntries, sessionEntries} from '../session-utils';
 
 export interface SQLiteSessionStorageOptions {
   sessionTableName: string;
 }
-const defaultMySQLSessionStorageOptions: SQLiteSessionStorageOptions = {
+const defaultSQLiteSessionStorageOptions: SQLiteSessionStorageOptions = {
   sessionTableName: 'shopify_sessions',
 };
 
@@ -20,7 +20,7 @@ export class SQLiteSessionStorage implements SessionStorage {
     private filename: string,
     opts: Partial<SQLiteSessionStorageOptions> = {},
   ) {
-    this.options = {...defaultMySQLSessionStorageOptions, ...opts};
+    this.options = {...defaultSQLiteSessionStorageOptions, ...opts};
     this.db = new sqlite3.Database(this.filename);
     this.ready = this.init();
   }
