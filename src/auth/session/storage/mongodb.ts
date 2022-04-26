@@ -2,7 +2,7 @@ import * as mongodb from 'mongodb';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {sessionFromEntries, sessionEntries} from '../session';
+import {sessionFromEntries, sessionEntries} from '../session-utils';
 
 export interface MongoDBSessionStorageOptions {
   sessionCollectionName: string;

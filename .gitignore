@@ -6,3 +6,4 @@ coverage/
 yarn-error.log
 tsdocs/
 tsconfig.tsbuildinfo
+database.sqlite
