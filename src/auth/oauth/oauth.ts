@@ -120,9 +120,7 @@ const ShopifyOAuth = {
         );
       }
 
-      currentSession = await Context.SESSION_STORAGE.loadSession(
-        sessionCookie,
-      );
+      currentSession = await Context.SESSION_STORAGE.loadSession(sessionCookie);
     } else {
       currentSession = await Context.SESSION_STORAGE.loadSession(
         ShopifyOAuth.getOfflineSessionId(query.shop),
