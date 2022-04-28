@@ -30,7 +30,7 @@ describe('PostgreSQLSessionStorage', () => {
       async () => {
         try {
           const client = new pg.Client({connectionString: dbURL.toString()});
-          await new Promise((resolve, reject) => {
+          await new Promise<void>((resolve, reject) => {
             client.connect((err) => {
               if (err) reject(err);
               resolve();
