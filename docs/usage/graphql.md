@@ -6,7 +6,7 @@ The `GraphQLClient`'s main method is `query`, which accepts a `GraphQLParams` ob
 
 | Parameter      | Type                                | Required? | Default Value | Notes                                                                                 |
 | -------------- | ----------------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------- |
-| `data`         | `Record<string, unknown> \| string` |   True    |     none      | Takes in either the query as a string, and an object containing a query and variables |
+| `data`         | `Record<string, unknown> \| string` |   True    |     none      | Takes in either the query as a string, or an object containing a query and variables  |
 | `query`        | `Record<string, string \| number>`  |   False   |     none      | An optional query object to be appended to the request                                |
 | `extraHeaders` | `Record<string, string \| number>`  |   False   |     none      | Any additional headers you want to send with your request                             |
 | `tries`        | `number`                            |   False   |      `1`      | The maximum number of times to retry the request _(must be >= 0)_                     |
@@ -34,4 +34,25 @@ const products = await client.query({
 // do something with the returned data
 ```
 
+To make use of GraphQL variables, your `data` should contain `query` and `variables` properties.
+```ts
+const products = await client.query({
+  data: {
+    query: `query GetProducts($first: Int!) {
+      products (first: $first) {
+        edges {
+          node {
+            id
+            title
+            descriptionHtml
+          }
+        }
+      }
+    }`,
+    variables: {
+      first: 10,
+    }
+  }
+});
+```
 [Back to guide index](../README.md)
