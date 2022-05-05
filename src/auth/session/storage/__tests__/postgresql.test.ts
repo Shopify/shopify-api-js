@@ -14,7 +14,7 @@ const dbURL = new URL('postgres://shopify:passify@localhost/shopitest');
 
 // SORRY NOT SORRY. Docker containers can take quite a while to get ready,
 // especially on CI. This is hopefully enough.
-jest.setTimeout(20000);
+jest.setTimeout(25000);
 
 describe('PostgreSQLSessionStorage', () => {
   let storage: PostgreSQLSessionStorage;
