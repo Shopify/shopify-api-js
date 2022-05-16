@@ -104,7 +104,7 @@ describe('beginAuth', () => {
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
-      redirect_uri: `https://${Context.HOST_NAME}/some-callback`,
+      redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}/some-callback`,
       state: session ? session.state : '',
       'grant_options[]': '',
     };
@@ -131,7 +131,7 @@ describe('beginAuth', () => {
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
-      redirect_uri: `https://${Context.HOST_NAME}/some-callback`,
+      redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}/some-callback`,
       state: session ? session.state : '',
       'grant_options[]': 'per-user',
     };
