@@ -130,7 +130,8 @@ Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
-  HOST_NAME: HOST.replace(/https:\/\//, ""),
+  HOST_NAME: HOST.replace(/https?:\/\//, ""),
+  HOST_SCHEME: HOST.split("://")[0],
   IS_EMBEDDED_APP: {boolean},
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 });
@@ -189,7 +190,8 @@ Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
-  HOST_NAME: HOST.replace(/https:\/\//, ""),
+  HOST_NAME: HOST.replace(/https?:\/\//, ""),
+  HOST_SCHEME: HOST.split("://")[0],
   IS_EMBEDDED_APP: {boolean},
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 });

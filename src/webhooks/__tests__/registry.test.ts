@@ -785,7 +785,7 @@ function assertWebhookRegistrationRequest(
 ) {
   const address =
     !webhook.deliveryMethod || webhook.deliveryMethod === DeliveryMethod.Http
-      ? `https://${Context.HOST_NAME}${webhook.path}`
+      ? `${Context.HOST_SCHEME}://${Context.HOST_NAME}${webhook.path}`
       : webhook.path;
   expect({
     method: Method.Post.toString(),
