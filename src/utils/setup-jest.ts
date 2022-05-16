@@ -14,6 +14,7 @@ beforeEach(() => {
     API_SECRET_KEY: 'test_secret_key',
     SCOPES: ['test_scope'],
     HOST_NAME: 'test_host_name',
+    HOST_SCHEME: 'https',
     API_VERSION: ApiVersion.Unstable,
     IS_EMBEDDED_APP: false,
     IS_PRIVATE_APP: false,

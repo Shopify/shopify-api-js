@@ -6,6 +6,7 @@ export interface ContextParams {
   API_SECRET_KEY: string;
   SCOPES: string[] | AuthScopes;
   HOST_NAME: string;
+  HOST_SCHEME?: string;
   API_VERSION: ApiVersion;
   IS_EMBEDDED_APP: boolean;
   IS_PRIVATE_APP?: boolean;
