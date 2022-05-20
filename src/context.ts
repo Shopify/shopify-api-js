@@ -3,6 +3,7 @@ import path from 'path';
 import * as ShopifyErrors from './error';
 import {SessionStorage} from './auth/session/session_storage';
 import {SQLiteSessionStorage} from './auth/session/storage/sqlite';
+import {MemorySessionStorage} from './auth/session';
 import {ApiVersion, ContextParams} from './base-types';
 import {AuthScopes} from './auth/scopes';
 
@@ -43,7 +44,7 @@ const Context: ContextInterface = {
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
-  SESSION_STORAGE: new SQLiteSessionStorage(dbFile),
+  SESSION_STORAGE: new MemorySessionStorage(),
 
   initialize(params: ContextParams): void {
     let scopes: AuthScopes;
@@ -90,6 +91,8 @@ const Context: ContextInterface = {
 
     if (params.SESSION_STORAGE) {
       this.SESSION_STORAGE = params.SESSION_STORAGE;
+    } else {
+      this.SESSION_STORAGE = new SQLiteSessionStorage(dbFile);
     }
 
     if (params.USER_AGENT_PREFIX) {
