@@ -104,7 +104,34 @@ describe('beginAuth', () => {
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
-      redirect_uri: `https://${Context.HOST_NAME}/some-callback`,
+      redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}/some-callback`,
+      state: session ? session.state : '',
+      'grant_options[]': '',
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
+
+    const expectedQueryString = querystring.stringify(query);
+
+    expect(authRoute).toBe(
+      `https://${shop}/admin/oauth/authorize?${expectedQueryString}`,
+    );
+  });
+
+  test('returns the correct auth url when the host scheme is http', async () => {
+    Context.HOST_SCHEME = 'http';
+    const authRoute = await ShopifyOAuth.beginAuth(
+      req,
+      res,
+      shop,
+      '/some-callback',
+      false,
+    );
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const query = {
+      client_id: Context.API_KEY,
+      scope: Context.SCOPES.toString(),
+      redirect_uri: `http://${Context.HOST_NAME}/some-callback`,
       state: session ? session.state : '',
       'grant_options[]': '',
     };
@@ -131,7 +158,7 @@ describe('beginAuth', () => {
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
-      redirect_uri: `https://${Context.HOST_NAME}/some-callback`,
+      redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}/some-callback`,
       state: session ? session.state : '',
       'grant_options[]': 'per-user',
     };

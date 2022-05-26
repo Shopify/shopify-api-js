@@ -198,7 +198,10 @@ describe('Base REST resource', () => {
         id: 1,
         attribute: 'attribute',
         has_one_attribute: {attribute: 'attribute1'},
-        has_many_attribute: [{attribute: 'attribute2'}],
+        has_many_attribute: [
+          {attribute: 'attribute2'},
+          {attribute: 'attribute3'},
+        ],
       },
     };
     fetchMock.mockResponseOnce(JSON.stringify({}));
@@ -209,11 +212,14 @@ describe('Base REST resource', () => {
     const child2 = new FakeResource({session});
     child2.attribute = 'attribute2';
 
+    const child3 = new FakeResource({session});
+    child3.attribute = 'attribute3';
+
     const resource = new FakeResource({session});
     resource.id = 1;
     resource.attribute = 'attribute';
     resource.has_one_attribute = child1;
-    resource.has_many_attribute = [child2];
+    resource.has_many_attribute = [child2, child3];
 
     await resource.save();
 
@@ -445,5 +451,30 @@ describe('Base REST resource', () => {
         `Current Context.API_VERSION '${ApiVersion.January22}' does not match resource version ${ApiVersion.Unstable}`,
       ),
     );
+  });
+
+  it('includes unsaveable attributes when default serialize called', async () => {
+    const resource = new FakeResource({session});
+    resource.attribute = 'attribute';
+    resource.unsaveable_attribute = 'unsaveable_attribute';
+
+    const hash = resource.serialize();
+
+    expect(hash).toHaveProperty('unsaveable_attribute', 'unsaveable_attribute');
+    expect(hash).toHaveProperty('attribute', 'attribute');
+  });
+
+  it('excludes unsaveable attributes when serialize called for saving', async () => {
+    const resource = new FakeResource({session});
+    resource.attribute = 'attribute';
+    resource.unsaveable_attribute = 'unsaveable_attribute';
+
+    const hash = resource.serialize(true);
+
+    expect(hash).not.toHaveProperty(
+      'unsaveable_attribute',
+      'unsaveable_attribute',
+    );
+    expect(hash).toHaveProperty('attribute', 'attribute');
   });
 });

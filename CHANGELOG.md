@@ -7,6 +7,12 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [3.1.0] - 2022-05-16
+
+### Added
+- Support for specifying the URI scheme of the host [#385](https://github.com/Shopify/shopify-node-api/pull/385)
+- Add optional `saving` parameter to `serialize` of `Base` class - default is `false` and will include read-only attributes in returned object; `true` used for `save` when committing via API to Shopify.
+
 ### Fixed
 - Fixes [#363](https://github.com/Shopify/shopify-node-api/issues/363)
   - Webhooks `register` now checks for any attempt to register a GDPR topic (not done via API but by Partner Dashboard), provides an error message in response

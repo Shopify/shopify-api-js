@@ -7,6 +7,7 @@ import {ApiVersion, ContextParams} from './base-types';
 import {AuthScopes} from './auth/scopes';
 
 interface ContextInterface extends ContextParams {
+  HOST_SCHEME: string;
   SESSION_STORAGE: SessionStorage;
   SCOPES: AuthScopes;
 
@@ -38,6 +39,7 @@ const Context: ContextInterface = {
   API_SECRET_KEY: '',
   SCOPES: new AuthScopes([]),
   HOST_NAME: '',
+  HOST_SCHEME: 'https',
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
@@ -84,6 +86,10 @@ const Context: ContextInterface = {
     this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
     this.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
     this.SESSION_STORAGE = params.SESSION_STORAGE ?? new SQLiteSessionStorage(dbFile);
+
+    if (params.HOST_SCHEME) {
+      this.HOST_SCHEME = params.HOST_SCHEME;
+    }
 
     if (params.USER_AGENT_PREFIX) {
       this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;

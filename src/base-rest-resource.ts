@@ -256,7 +256,7 @@ class Base {
     const {PRIMARY_KEY, NAME} = this.resource();
     const method = this[PRIMARY_KEY] ? 'put' : 'post';
 
-    const data = this.serialize();
+    const data = this.serialize(true);
 
     const response = await this.resource().request({
       http_method: method,
@@ -288,25 +288,24 @@ class Base {
     });
   }
 
-  public serialize(): Body {
+  public serialize(saving = false): Body {
     const {HAS_MANY, HAS_ONE, READ_ONLY_ATTRIBUTES} = this.resource();
 
     return Object.entries(this).reduce((acc: Body, [attribute, value]) => {
       if (
-        ['session'].includes(attribute) ||
-        READ_ONLY_ATTRIBUTES.includes(attribute)
+        saving &&
+        (['session'].includes(attribute) ||
+          READ_ONLY_ATTRIBUTES.includes(attribute))
       ) {
         return acc;
       }
 
       if (attribute in HAS_MANY && value) {
-        acc[attribute] = value.reduce(
-          (attrAcc: Body, entry: Base) =>
-            attrAcc.concat(entry.serialize ? entry.serialize() : entry),
-          [],
-        );
-      } else if (attribute in HAS_ONE && value && value.serialize) {
-        acc[attribute] = (value as Base).serialize();
+        acc[attribute] = value.reduce((attrAcc: Body, entry: Base) => {
+          return attrAcc.concat(this.serializeSubAttribute(entry, saving));
+        }, []);
+      } else if (attribute in HAS_ONE && value) {
+        acc[attribute] = this.serializeSubAttribute(value, saving);
       } else {
         acc[attribute] = value;
       }
@@ -341,6 +340,14 @@ class Base {
 
   private resource(): typeof Base {
     return this.constructor as unknown as typeof Base;
+  }
+
+  private serializeSubAttribute(attribute: Base, saving: boolean): Body {
+    return attribute.serialize
+      ? attribute.serialize(saving)
+      : this.resource()
+          .createInstance(this.session, attribute)
+          .serialize(saving);
   }
 }
 

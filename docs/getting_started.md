@@ -103,6 +103,7 @@ API_KEY={api key}               # Your API key
 API_SECRET_KEY={api secret key} # Your API secret key
 SCOPES={scopes}                 # Your app's required scopes
 HOST={your app's host}          # Your app's host, without the protocol prefix (in this case we used an `ngrok` tunnel to provide a secure connection to our localhost)
+HOST_SCHEME={your app's URI scheme} # Either http or https. Note http is intended for local development with localhost.
 ```
 
 ## Set up Context
@@ -130,7 +131,8 @@ Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
-  HOST_NAME: HOST.replace(/https:\/\//, ""),
+  HOST_NAME: HOST.replace(/https?:\/\//, ""),
+  HOST_SCHEME: HOST.split("://")[0],
   IS_EMBEDDED_APP: {boolean},
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 });
@@ -189,7 +191,8 @@ Shopify.Context.initialize({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
-  HOST_NAME: HOST.replace(/https:\/\//, ""),
+  HOST_NAME: HOST.replace(/https?:\/\//, ""),
+  HOST_SCHEME: HOST.split("://")[0],
   IS_EMBEDDED_APP: {boolean},
   API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
 });
