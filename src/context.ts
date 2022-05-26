@@ -33,7 +33,11 @@ const dbFile = path.join(
   'database.sqlite',
 );
 
-const Context: ContextInterface = {
+interface SessionStorageFactory {
+  SESSION_STORAGE_: SessionStorage | (() => SessionStorage);
+}
+
+const Context: ContextInterface & SessionStorageFactory = {
   API_KEY: '',
   API_SECRET_KEY: '',
   SCOPES: new AuthScopes([]),
@@ -41,7 +45,17 @@ const Context: ContextInterface = {
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
-  SESSION_STORAGE: new SQLiteSessionStorage(dbFile),
+
+  SESSION_STORAGE_: () => new SQLiteSessionStorage(dbFile),
+  get SESSION_STORAGE(): SessionStorage {
+    if(typeof this.SESSION_STORAGE_ === 'function') {
+      this.SESSION_STORAGE_ = this.SESSION_STORAGE_();
+    }
+    return this.SESSION_STORAGE_;
+  },
+  set SESSION_STORAGE(val: SessionStorage) {
+    this.SESSION_STORAGE_ = val;
+  },
 
   initialize(params: ContextParams): void {
     let scopes: AuthScopes;
