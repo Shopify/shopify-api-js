@@ -85,7 +85,8 @@ const Context: ContextInterface = {
     this.API_VERSION = params.API_VERSION;
     this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
     this.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
-    this.SESSION_STORAGE = params.SESSION_STORAGE ?? new SQLiteSessionStorage(dbFile);
+    this.SESSION_STORAGE =
+      params.SESSION_STORAGE ?? new SQLiteSessionStorage(dbFile);
 
     if (params.HOST_SCHEME) {
       this.HOST_SCHEME = params.HOST_SCHEME;
