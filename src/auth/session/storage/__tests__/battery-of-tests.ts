@@ -54,7 +54,8 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const storage = await storageFactory();
     const sessionId = 'test_session';
     const session = new Session(sessionId, 'shop', 'state', false);
-    session.onlineAccessInfo = {associated_user: {} } as any;
+    // eslint-disable-next-line  @typescript-eslint/naming-convention
+    session.onlineAccessInfo = {associated_user: {}} as any;
     session.onlineAccessInfo!.associated_user.id = 123;
 
     await expect(storage.storeSession(session)).resolves.toBe(true);

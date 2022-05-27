@@ -24,7 +24,7 @@ export function sessionFromEntries(
       })
       // Sanitize values
       .map(([key, value]) => {
-        switch(key) {
+        switch (key) {
           case 'isOnline':
             if (typeof value === 'string') {
               return [key, value.toString().toLowerCase() === 'true'];
@@ -33,15 +33,19 @@ export function sessionFromEntries(
             }
             return [key, value];
           case 'scope':
-            return [key, value.toString()]
+            return [key, value.toString()];
           case 'expires':
             return [key, new Date(Number(value) * 1000)];
           case 'onlineAccessInfo':
-            return [key, {
-              associated_user: {
-                id: Number(value)
-              }
-            }];
+            return [
+              key,
+              {
+                // eslint-disable-next-line  @typescript-eslint/naming-convention
+                associated_user: {
+                  id: Number(value),
+                },
+              },
+            ];
           default:
             return [key, value];
         }
@@ -59,24 +63,26 @@ const includedKeys = [
   'scope',
   'accessToken',
   'expires',
-  'onlineAccessInfo'
+  'onlineAccessInfo',
 ];
 export function sessionEntries(
   session: SessionInterface,
 ): [string, string | number][] {
-  return Object.entries(session)
-    .filter(([key]) => includedKeys.includes(key))
-    // Prepare values for db storage
-    .map(([key, value]) => {
-      switch (key) {
-        case 'expires':
-          return [key, Math.floor(value.getTime() / 1000)];
-        case 'onlineAccessInfo':
-          return [key, value?.associated_user?.id];
-        default:
-          return [key, value];
-      }
-    });
+  return (
+    Object.entries(session)
+      .filter(([key]) => includedKeys.includes(key))
+      // Prepare values for db storage
+      .map(([key, value]) => {
+        switch (key) {
+          case 'expires':
+            return [key, Math.floor(value.getTime() / 1000)];
+          case 'onlineAccessInfo':
+            return [key, value?.associated_user?.id];
+          default:
+            return [key, value];
+        }
+      })
+  );
 }
 
 export function sessionEqual(
