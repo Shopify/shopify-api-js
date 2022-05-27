@@ -9,25 +9,45 @@ export function sessionFromEntries(
   const obj = Object.fromEntries(
     entries
       .filter(([_key, value]) => value !== null)
+      // Sanitize keys
       .map(([key, value]) => {
         switch (key.toLowerCase()) {
-          case 'expires':
-            return ['expires', new Date(Number(value) * 1000)];
           case 'isonline':
             return ['isOnline', value];
           case 'accesstoken':
             return ['accessToken', value];
+          case 'onlineaccessinfo':
+            return ['onlineAccessInfo', value];
           default:
             return [key.toLowerCase(), value];
         }
+      })
+      // Sanitize values
+      .map(([key, value]) => {
+        switch(key) {
+          case 'isOnline':
+            if (typeof value === 'string') {
+              return [key, value.toString().toLowerCase() === 'true'];
+            } else if (typeof value === 'number') {
+              return [key, Boolean(value)];
+            }
+            return [key, value];
+          case 'scope':
+            return [key, value.toString()]
+          case 'expires':
+            return [key, new Date(Number(value) * 1000)];
+          case 'onlineAccessInfo':
+            return [key, {
+              associated_user: {
+                id: Number(value)
+              }
+            }];
+          default:
+            return [key, value];
+        }
       }),
   ) as any;
-  if (typeof obj.isOnline === 'string') {
-    obj.isOnline = obj.isOnline.toString().toLowerCase() === 'true';
-  } else if (typeof obj.isOnline === 'number') {
-    obj.isOnline = Boolean(obj.isOnline);
-  }
-  if (obj.scope) obj.scope = obj.scope.toString();
+
   return obj;
 }
 
@@ -39,16 +59,20 @@ const includedKeys = [
   'scope',
   'accessToken',
   'expires',
+  'onlineAccessInfo'
 ];
 export function sessionEntries(
   session: SessionInterface,
 ): [string, string | number][] {
   return Object.entries(session)
     .filter(([key]) => includedKeys.includes(key))
+    // Prepare values for db storage
     .map(([key, value]) => {
       switch (key) {
         case 'expires':
           return [key, Math.floor(value.getTime() / 1000)];
+        case 'onlineAccessInfo':
+          return [key, value?.associated_user?.id];
         default:
           return [key, value];
       }

@@ -88,7 +88,8 @@ export class SQLiteSessionStorage implements SessionStorage {
           isOnline integer NOT NULL,
           expires integer,
           scope varchar(255),
-          accessToken varchar(255)
+          accessToken varchar(255),
+          onlineAccessInfo varchar(255)
         )
       `;
       await this.query(query);

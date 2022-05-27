@@ -7,9 +7,55 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const storage = await storageFactory();
     const sessionId = 'test_session';
     const session = new Session(sessionId, 'shop', 'state', false);
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
+      true,
+    );
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
+      true,
+    );
+
+    await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
+    await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
+
+    // Deleting a non-existing session should work
+    await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
+  });
+
+  it('can store and delete offline sessions with expiry date', async () => {
+    const storage = await storageFactory();
+    const sessionId = 'test_session';
+    const session = new Session(sessionId, 'shop', 'state', false);
     const expiryDate = new Date();
     expiryDate.setMinutes(expiryDate.getMinutes() + 60);
     session.expires = expiryDate;
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
+      true,
+    );
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
+      true,
+    );
+
+    await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
+    await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
+
+    // Deleting a non-existing session should work
+    await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
+  });
+
+  it('can store and delete offline sessions with user info', async () => {
+    const storage = await storageFactory();
+    const sessionId = 'test_session';
+    const session = new Session(sessionId, 'shop', 'state', false);
+    session.onlineAccessInfo = {associated_user: {} } as any;
+    session.onlineAccessInfo!.associated_user.id = 123;
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
     expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
