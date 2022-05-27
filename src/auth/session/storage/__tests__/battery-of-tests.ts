@@ -7,6 +7,9 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const storage = await storageFactory();
     const sessionId = 'test_session';
     const session = new Session(sessionId, 'shop', 'state', false);
+    const expiryDate = new Date();
+    expiryDate.setMinutes(expiryDate.getMinutes() + 60);
+    session.expires = expiryDate;
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
     expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(

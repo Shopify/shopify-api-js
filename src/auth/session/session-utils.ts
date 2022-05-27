@@ -11,6 +11,8 @@ export function sessionFromEntries(
       .filter(([_key, value]) => value !== null)
       .map(([key, value]) => {
         switch (key.toLowerCase()) {
+          case 'expires':
+            return ['expires', new Date(Number(value) * 1000)];
           case 'isonline':
             return ['isOnline', value];
           case 'accesstoken':
@@ -36,11 +38,21 @@ const includedKeys = [
   'isOnline',
   'scope',
   'accessToken',
+  'expires',
 ];
 export function sessionEntries(
   session: SessionInterface,
 ): [string, string | number][] {
-  return Object.entries(session).filter(([key]) => includedKeys.includes(key));
+  return Object.entries(session)
+    .filter(([key]) => includedKeys.includes(key))
+    .map(([key, value]) => {
+      switch (key) {
+        case 'expires':
+          return [key, Math.floor(value.getTime() / 1000)];
+        default:
+          return [key, value];
+      }
+    });
 }
 
 export function sessionEqual(

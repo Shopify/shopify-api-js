@@ -120,6 +120,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
           state varchar(255) NOT NULL,
           isOnline boolean NOT NULL,
           scope varchar(255),
+          expires integer,
           accessToken varchar(255)
         )
       `;

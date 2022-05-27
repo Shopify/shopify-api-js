@@ -85,7 +85,8 @@ export class SQLiteSessionStorage implements SessionStorage {
           id varchar(255) NOT NULL PRIMARY KEY,
           shop varchar(255) NOT NULL,
           state varchar(255) NOT NULL,
-          isOnline tinyint NOT NULL,
+          isOnline integer NOT NULL,
+          expires integer,
           scope varchar(255),
           accessToken varchar(255)
         )
