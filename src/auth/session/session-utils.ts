@@ -42,3 +42,14 @@ export function sessionEntries(
 ): [string, string | number][] {
   return Object.entries(session).filter(([key]) => includedKeys.includes(key));
 }
+
+export function sessionEqual(
+  sessionA: SessionInterface | undefined,
+  sessionB: SessionInterface | undefined,
+): boolean {
+  if (!sessionA) return false;
+  if (!sessionB) return false;
+  const copyA = sessionFromEntries(sessionEntries(sessionA));
+  const copyB = sessionFromEntries(sessionEntries(sessionB));
+  return JSON.stringify(copyA) === JSON.stringify(copyB);
+}

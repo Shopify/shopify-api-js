@@ -1,4 +1,5 @@
 import {Session} from '../../session';
+import {sessionEqual} from '../../session-utils';
 import {SessionStorage} from '../../session_storage';
 
 export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
@@ -8,10 +9,14 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const session = new Session(sessionId, 'shop', 'state', false);
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
-    await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
+    expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
+      true,
+    );
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
-    await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
+    expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
+      true,
+    );
 
     await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
     await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
@@ -20,13 +25,27 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
   });
 
+  it('can store sessions with unexpected fields', async () => {
+    const storage = await storageFactory();
+    const sessionId = 'test_session';
+    const session = new Session(sessionId, 'shop', 'state', true);
+    (session as any).someField = 'lol';
+
+    await expect(storage.storeSession(session)).resolves.toBe(true);
+    expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
+      true,
+    );
+  });
+
   it('can store and delete sessions with online tokens', async () => {
     const storage = await storageFactory();
     const sessionId = 'test_session';
     const session = new Session(sessionId, 'shop', 'state', true);
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
-    await expect(storage.loadSession(sessionId)).resolves.toEqual(session);
+    expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
+      true,
+    );
   });
 
   it('wrong ids return null sessions', async () => {

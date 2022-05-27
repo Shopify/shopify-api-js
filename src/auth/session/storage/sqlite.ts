@@ -32,7 +32,7 @@ export class SQLiteSessionStorage implements SessionStorage {
 
     const query = `
       INSERT OR REPLACE INTO ${this.options.sessionTableName}
-      (${Object.keys(session).join(', ')})
+      (${entries.map(([key]) => key).join(', ')})
       VALUES (${entries.map(() => '?').join(', ')});
     `;
 
