@@ -32,7 +32,7 @@ export class SQLiteSessionStorage implements SessionStorage {
 
     const query = `
       INSERT OR REPLACE INTO ${this.options.sessionTableName}
-      (${Object.keys(session).join(', ')})
+      (${entries.map(([key]) => key).join(', ')})
       VALUES (${entries.map(() => '?').join(', ')});
     `;
 
@@ -85,9 +85,11 @@ export class SQLiteSessionStorage implements SessionStorage {
           id varchar(255) NOT NULL PRIMARY KEY,
           shop varchar(255) NOT NULL,
           state varchar(255) NOT NULL,
-          isOnline tinyint NOT NULL,
+          isOnline integer NOT NULL,
+          expires integer,
           scope varchar(255),
-          accessToken varchar(255)
+          accessToken varchar(255),
+          onlineAccessInfo varchar(255)
         )
       `;
       await this.query(query);

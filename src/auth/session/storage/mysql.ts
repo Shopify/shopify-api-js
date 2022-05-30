@@ -109,6 +109,8 @@ export class MySQLSessionStorage implements SessionStorage {
           state varchar(255) NOT NULL,
           isOnline tinyint NOT NULL,
           scope varchar(255),
+          expires integer,
+          onlineAccessInfo varchar(255),
           accessToken varchar(255)
         )
       `;
