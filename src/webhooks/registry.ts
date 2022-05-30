@@ -428,7 +428,7 @@ const WebhooksRegistry: RegistryInterface = {
             );
           }
         } else {
-          statusCode = StatusCode.Forbidden;
+          statusCode = StatusCode.Unauthorized;
           responseError = new ShopifyErrors.InvalidWebhookError(
             `Could not validate request for topic ${topic}`,
           );
