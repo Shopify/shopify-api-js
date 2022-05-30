@@ -35,7 +35,7 @@ export function sessionFromEntries(
           case 'scope':
             return [key, value.toString()];
           case 'expires':
-            return [key, new Date(Number(value) * 1000)];
+            return [key, value ? new Date(Number(value) * 1000) : undefined];
           case 'onlineAccessInfo':
             return [
               key,
@@ -75,7 +75,10 @@ export function sessionEntries(
       .map(([key, value]) => {
         switch (key) {
           case 'expires':
-            return [key, Math.floor(value.getTime() / 1000)];
+            return [
+              key,
+              value ? Math.floor(value.getTime() / 1000) : undefined,
+            ];
           case 'onlineAccessInfo':
             return [key, value?.associated_user?.id];
           default:
