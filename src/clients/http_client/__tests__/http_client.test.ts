@@ -32,6 +32,16 @@ describe('HTTP client', () => {
     expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
   });
 
+  it('allows the body to contain non-json response without dying', () => {
+    const client = new HttpClient(domain);
+    fetchMock.mockResponseOnce('not a json object');
+
+    const request = client.get({path: '/url/path'});
+
+    expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
+    expect(request).resolves.toMatchObject({body: {}});
+  });
+
   it('can make POST request with type JSON', async () => {
     const client = new HttpClient(domain);
 
