@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+- Fixes [#257](https://github.com/Shopify/shopify-node-api/issues/257)
+  - Properly parse a non-json HTTP response
 
 ## [3.1.0] - 2022-05-16
 
