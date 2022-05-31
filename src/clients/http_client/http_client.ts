@@ -180,13 +180,7 @@ class HttpClient {
   ): Promise<RequestReturn> {
     return fetch(url, options)
       .then(async (response: Response) => {
-        let body;
-
-        try {
-          body = await response.json();
-        } catch {
-          body = {};
-        }
+        const body = await response.json().catch(() => ({}));
 
         if (response.ok) {
           if (
