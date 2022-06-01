@@ -32,6 +32,29 @@ describe('HTTP client', () => {
     expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
   });
 
+  it('allows the body to contain non-json 2xx response without dying', () => {
+    const client = new HttpClient(domain);
+    fetchMock.mockResponseOnce('not a json object');
+
+    const request = client.get({path: '/url/path'});
+
+    expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
+    expect(request).resolves.toMatchObject({body: {}});
+  });
+
+  it('handles non-json non-2xx response', () => {
+    const client = new HttpClient(domain);
+    fetchMock.mockResponses([
+      'not a json object',
+      {status: 404, statusText: 'not found', headers: {}},
+    ]);
+
+    const request = client.get({path: '/url/path'});
+
+    expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
+    expect(request).rejects.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+  });
+
   it('can make POST request with type JSON', async () => {
     const client = new HttpClient(domain);
 
