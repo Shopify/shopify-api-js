@@ -1,3 +1,4 @@
+import {Session} from './session';
 import type {SessionInterface} from './types';
 
 /**
@@ -8,7 +9,7 @@ export function sessionFromEntries(
 ): SessionInterface {
   const obj = Object.fromEntries(
     entries
-      .filter(([_key, value]) => value !== null)
+      .filter(([_key, value]) => value !== null && value !== undefined)
       // Sanitize keys
       .map(([key, value]) => {
         switch (key.toLowerCase()) {
@@ -52,6 +53,8 @@ export function sessionFromEntries(
       }),
   ) as any;
 
+  Object.setPrototypeOf(obj, Session.prototype);
+
   return obj;
 }
 
@@ -70,7 +73,10 @@ export function sessionEntries(
 ): [string, string | number][] {
   return (
     Object.entries(session)
-      .filter(([key]) => includedKeys.includes(key))
+      .filter(
+        ([key, value]) =>
+          includedKeys.includes(key) && value !== undefined && value !== null,
+      )
       // Prepare values for db storage
       .map(([key, value]) => {
         switch (key) {
@@ -94,7 +100,9 @@ export function sessionEqual(
 ): boolean {
   if (!sessionA) return false;
   if (!sessionB) return false;
-  const copyA = sessionFromEntries(sessionEntries(sessionA));
-  const copyB = sessionFromEntries(sessionEntries(sessionB));
+  const copyA = sessionEntries(sessionA);
+  copyA.sort(([k1], [k2]) => (k1 < k2 ? -1 : 1));
+  const copyB = sessionEntries(sessionB);
+  copyB.sort(([k1], [k2]) => (k1 < k2 ? -1 : 1));
   return JSON.stringify(copyA) === JSON.stringify(copyB);
 }

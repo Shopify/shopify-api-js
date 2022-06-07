@@ -1,3 +1,4 @@
+import {Context} from '../../../../context';
 import {Session} from '../../session';
 import {sessionEqual} from '../../session-utils';
 import {SessionStorage} from '../../session_storage';
@@ -7,6 +8,8 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const sessionFactories = [
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
+        session.scope = Context.SCOPES.toString();
+        session.accessToken = '123';
         return session;
       },
       async () => {
@@ -14,16 +17,22 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
         const expiryDate = new Date();
         expiryDate.setMinutes(expiryDate.getMinutes() + 60);
         session.expires = expiryDate;
+        session.accessToken = '123';
+        session.scope = Context.SCOPES.toString();
         return session;
       },
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
         session.expires = null as any;
+        session.scope = Context.SCOPES.toString();
+        session.accessToken = '123';
         return session;
       },
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
         session.expires = undefined;
+        session.scope = Context.SCOPES.toString();
+        session.accessToken = '123';
         return session;
       },
       async () => {
@@ -31,6 +40,8 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
         // eslint-disable-next-line  @typescript-eslint/naming-convention
         session.onlineAccessInfo = {associated_user: {}} as any;
         session.onlineAccessInfo!.associated_user.id = 123;
+        session.scope = Context.SCOPES.toString();
+        session.accessToken = '123';
         return session;
       },
     ];
@@ -46,9 +57,9 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
       );
 
       await expect(storage.storeSession(session)).resolves.toBe(true);
-      expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
-        true,
-      );
+      const loadedSession = await storage.loadSession(sessionId);
+      expect(sessionEqual(loadedSession, session)).toBe(true);
+      expect(loadedSession?.isActive()).toBe(true);
 
       await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
       await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
