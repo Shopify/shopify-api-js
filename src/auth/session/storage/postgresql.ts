@@ -106,7 +106,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
     const query = `
       SELECT * FROM pg_catalog.pg_tables WHERE tablename = $1
     `;
-    const [rows] = await this.query(query, [this.options.sessionTableName]);
+    const rows = await this.query(query, [this.options.sessionTableName]);
     return Array.isArray(rows) && rows.length === 1;
   }
 
