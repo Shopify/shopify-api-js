@@ -11,6 +11,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - Add support for July 2022 API version [#409](https://github.com/Shopify/shopify-node-api/pull/409)
 
+### Fixes
+
+- PostgreSQL session storage don't create table if table exists
+
 ## [3.1.3] - 2022-06-08
 
 ### Fixes
