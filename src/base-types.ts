@@ -17,13 +17,14 @@ export interface ContextParams {
 }
 
 export enum ApiVersion {
-  July21 = '2021-07',
   October21 = '2021-10',
   January22 = '2022-01',
   April22 = '2022-04',
   July22 = '2022-07',
   Unstable = 'unstable',
 }
+
+export const LATEST_API_VERSION = ApiVersion.July22;
 
 export enum ShopifyHeader {
   AccessToken = 'X-Shopify-Access-Token',
