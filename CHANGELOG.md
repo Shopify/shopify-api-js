@@ -7,10 +7,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [4.0.0] - 2022-07-04
+
 - ⚠️ [Breaking] Add REST resources for July 2022 API version, add `LATEST_API_VERSION` constant, remove support and REST resources for July 2021 (`2021-07`) API version [#415](https://github.com/Shopify/shopify-node-api/pull/415)
-
-### Added
-
 - Add support for July 2022 API version [#409](https://github.com/Shopify/shopify-node-api/pull/409)
 
 ## [3.1.3] - 2022-06-08
