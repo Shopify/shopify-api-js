@@ -89,10 +89,9 @@ export class RedisSessionStorage implements SessionStorage {
     for (const key of keys) {
       const rawResult = await this.client.get(key);
       if (!rawResult) continue;
+
       const session = sessionFromEntries(JSON.parse(rawResult));
-      if (session.shop === shop) {
-        results.push(session);
-      }
+      if (session.shop === shop) results.push(session);
     }
 
     return results.length === 0 ? undefined : results;

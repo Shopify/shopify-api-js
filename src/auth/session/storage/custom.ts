@@ -110,21 +110,21 @@ export class CustomSessionStorage implements SessionStorage {
     shop: string,
   ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
     if (this.findSessionsByShopCallback) {
-      let result: SessionInterface[] | {[key: string]: unknown}[] | undefined;
+      let results: SessionInterface[] | {[key: string]: unknown}[] | undefined;
 
       try {
-        result = await this.findSessionsByShopCallback(shop);
+        results = await this.findSessionsByShopCallback(shop);
       } catch (error) {
         throw new ShopifyErrors.SessionStorageError(
           `CustomSessionStorage failed to find sessions by shop. Error Details: ${error}`,
         );
       }
 
-      if (result && result instanceof Array) {
+      if (results && results instanceof Array) {
         // loop through array and convert to SessionInterface
         const sessions: SessionInterface[] = [];
 
-        result.forEach((element) => {
+        results.forEach((element) => {
           sessions.push(element as SessionInterface);
         });
         return sessions;

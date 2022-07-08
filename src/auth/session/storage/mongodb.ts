@@ -91,11 +91,11 @@ export class MongoDBSessionStorage implements SessionStorage {
     const rawResults = await this.collection.find().toArray();
     if (!rawResults || rawResults?.length === 0) return undefined;
 
-    const result = rawResults
+    const results = rawResults
       .map((rawResult: any) => sessionFromEntries(rawResult.entries))
       .filter((session: SessionInterface) => session.shop === shop);
 
-    return result.length === 0 ? undefined : result;
+    return results.length === 0 ? undefined : results;
   }
 
   public async disconnect(): Promise<void> {

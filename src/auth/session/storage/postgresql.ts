@@ -111,8 +111,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
 
     const results: SessionInterface[] = [];
     for (const row of rows) {
-      const rawResult = row as any;
-      results.push(sessionFromEntries(Object.entries(rawResult)));
+      results.push(sessionFromEntries(Object.entries(row as any)));
     }
     return results;
   }
