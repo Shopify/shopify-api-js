@@ -13,7 +13,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Fixes
 
-- PostgreSQL session storage don't create table if table exists
+- Fix a bug where the PostgreSQL session storage always attempted to create the sessions table [#413](https://github.com/Shopify/shopify-api-node/pull/413)
 
 ## [3.1.3] - 2022-06-08
 
