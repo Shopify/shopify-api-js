@@ -19,4 +19,18 @@ export class MemorySessionStorage implements SessionStorage {
     }
     return true;
   }
+
+  public async deleteSessions(ids: string[]): Promise<boolean> {
+    ids.forEach((id) => delete this.sessions[id]);
+    return true;
+  }
+
+  public async findSessionsByShop(
+    shop: string,
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
+    const results = Object.values(this.sessions).filter(
+      (session) => session.shop === shop,
+    );
+    return results.length === 0 ? undefined : results;
+  }
 }

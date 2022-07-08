@@ -82,6 +82,35 @@ export class MySQLSessionStorage implements SessionStorage {
     return true;
   }
 
+  public async deleteSessions(ids: string[]): Promise<boolean> {
+    await this.ready;
+    const query = `
+      DELETE FROM ${this.options.sessionTableName}
+      WHERE id IN (${ids.map(() => '?').join(',')});
+    `;
+    await this.query(query, ids);
+    return true;
+  }
+
+  public async findSessionsByShop(
+    shop: string,
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
+    await this.ready;
+    const query = `
+      SELECT * FROM ${this.options.sessionTableName}
+      WHERE shop = ?;
+    `;
+    const rows = await this.query(query, [shop]);
+    if (!Array.isArray(rows) || rows?.length === 0) return undefined;
+
+    const results: SessionInterface[] = [];
+    for (const row of rows) {
+      const rawResult = row as any;
+      results.push(sessionFromEntries(Object.entries(rawResult)));
+    }
+    return results;
+  }
+
   public async disconnect(): Promise<void> {
     await this.connection.end();
   }

@@ -75,6 +75,27 @@ export class MongoDBSessionStorage implements SessionStorage {
     return true;
   }
 
+  public async deleteSessions(ids: string[]): Promise<boolean> {
+    await this.ready;
+    ids.forEach(async (id) => {
+      await this.collection.deleteOne({id});
+    });
+    return true;
+  }
+
+  public async findSessionsByShop(
+    shop: string,
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
+    await this.ready;
+
+    const rawResults = await this.collection.find({shop}).toArray();
+    if (!rawResults || rawResults?.length === 0) return undefined;
+
+    return rawResults.map((rawResult: any) =>
+      sessionFromEntries(rawResult.entries),
+    );
+  }
+
   public async disconnect(): Promise<void> {
     await this.client.close();
   }

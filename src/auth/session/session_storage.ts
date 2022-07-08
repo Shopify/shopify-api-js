@@ -24,6 +24,22 @@ interface SessionStorage {
    * @param id Id of the session to delete
    */
   deleteSession(id: string): Promise<boolean>;
+
+  /**
+   * Deletes an array of sessions from storage.
+   *
+   * @param ids Array of session id's to delete
+   */
+  deleteSessions?(ids: string[]): Promise<boolean>;
+
+  /**
+   * Return an array of sessions for a given shop (or undefined if none found).
+   *
+   * @param shop shop of the session(s) to return
+   */
+  findSessionsByShop?(
+    shop: string,
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined>;
 }
 
 export {SessionStorage};
