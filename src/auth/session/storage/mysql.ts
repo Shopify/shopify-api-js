@@ -100,13 +100,12 @@ export class MySQLSessionStorage implements SessionStorage {
       SELECT * FROM ${this.options.sessionTableName}
       WHERE shop = ?;
     `;
-    const rows = await this.query(query, [shop]);
+    const [rows] = await this.query(query, [shop]);
     if (!Array.isArray(rows) || rows?.length === 0) return undefined;
 
     const results: SessionInterface[] = [];
     for (const row of rows) {
-      const rawResult = row as any;
-      results.push(sessionFromEntries(Object.entries(rawResult)));
+      results.push(sessionFromEntries(Object.entries(row as any)));
     }
     return results;
   }

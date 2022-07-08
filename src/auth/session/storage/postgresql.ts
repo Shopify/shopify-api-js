@@ -92,7 +92,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
     await this.ready;
     const query = `
       DELETE FROM ${this.options.sessionTableName}
-      WHERE id IN (${ids.map(() => '?').join(',')});
+      WHERE id IN (${ids.map((_, i) => `$${i + 1}`).join(', ')});
     `;
     await this.query(query, ids);
     return true;
@@ -104,7 +104,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
     await this.ready;
     const query = `
       SELECT * FROM ${this.options.sessionTableName}
-      WHERE shop = ?;
+      WHERE shop = $1;
     `;
     const rows = await this.query(query, [shop]);
     if (!Array.isArray(rows) || rows?.length === 0) return undefined;

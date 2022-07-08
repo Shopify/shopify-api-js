@@ -73,7 +73,9 @@ export class RedisSessionStorage implements SessionStorage {
 
   public async deleteSessions(ids: string[]): Promise<boolean> {
     await this.ready;
-    await this.client.del(ids.map(this.fullKey));
+    for (const id of ids) {
+      await this.deleteSession(id);
+    }
     return true;
   }
 
@@ -82,7 +84,7 @@ export class RedisSessionStorage implements SessionStorage {
   ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
     await this.ready;
 
-    const keys = await this.client.keys(`${this.options.sessionKeyPrefix}_*`);
+    const keys = await this.client.keys('*');
     const results: SessionInterface[] = [];
     for (const key of keys) {
       const rawResult = await this.client.get(key);

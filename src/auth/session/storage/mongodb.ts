@@ -77,9 +77,9 @@ export class MongoDBSessionStorage implements SessionStorage {
 
   public async deleteSessions(ids: string[]): Promise<boolean> {
     await this.ready;
-    ids.forEach(async (id) => {
+    for (const id of ids) {
       await this.collection.deleteOne({id});
-    });
+    }
     return true;
   }
 
@@ -88,12 +88,14 @@ export class MongoDBSessionStorage implements SessionStorage {
   ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
     await this.ready;
 
-    const rawResults = await this.collection.find({shop}).toArray();
+    const rawResults = await this.collection.find().toArray();
     if (!rawResults || rawResults?.length === 0) return undefined;
 
-    return rawResults.map((rawResult: any) =>
-      sessionFromEntries(rawResult.entries),
-    );
+    const result = rawResults
+      .map((rawResult: any) => sessionFromEntries(rawResult.entries))
+      .filter((session: SessionInterface) => session.shop === shop);
+
+    return result.length === 0 ? undefined : result;
   }
 
   public async disconnect(): Promise<void> {
