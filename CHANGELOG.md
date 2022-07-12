@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- Add new method to construct the host app URL [#419](https://github.com/Shopify/shopify-api-node/pull/419)
+
 ## [4.0.0] - 2022-07-04
 
 - ⚠️ [Breaking] Add REST resources for July 2022 API version, add `LATEST_API_VERSION` constant, remove support and REST resources for July 2021 (`2021-07`) API version [#415](https://github.com/Shopify/shopify-node-api/pull/415)
