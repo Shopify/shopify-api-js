@@ -75,3 +75,5 @@ export class SessionStorageError extends ShopifyError {}
 
 export class MissingRequiredArgument extends ShopifyError {}
 export class UnsupportedClientType extends ShopifyError {}
+
+export class InvalidRequestError extends ShopifyError {}
