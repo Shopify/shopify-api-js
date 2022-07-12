@@ -1,5 +1,4 @@
 import http from 'http';
-import url from 'url';
 
 import * as ShopifyErrors from '../error';
 import {Context} from '../context';
@@ -9,10 +8,12 @@ import {Context} from '../context';
  *
  * @param request Current HTTP request
  */
-export default function getHostAppUrl(request: http.IncomingMessage): string {
+export default function getEmbeddedAppUrl(
+  request: http.IncomingMessage,
+): string {
   if (!request) {
     throw new ShopifyErrors.MissingRequiredArgument(
-      'getHostAppUrl requires a request object argument',
+      'getEmbeddedAppUrl requires a request object argument',
     );
   }
 
@@ -22,15 +23,16 @@ export default function getHostAppUrl(request: http.IncomingMessage): string {
     );
   }
 
-  const query = url.parse(request.url, true).query;
+  const url = new URL(request.url, `https://${request.headers.host}`);
+  const host = url.searchParams.get('host');
 
-  if (typeof query.host !== 'string') {
+  if (typeof host !== 'string') {
     throw new ShopifyErrors.InvalidRequestError(
       'Request does not contain a host query parameter',
     );
   }
 
-  const host = Buffer.from(query.host, 'base64').toString();
+  const decodedHost = Buffer.from(host, 'base64').toString();
 
-  return `https://${host}/apps/${Context.API_KEY}`;
+  return `https://${decodedHost}/apps/${Context.API_KEY}`;
 }
