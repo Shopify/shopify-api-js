@@ -27,7 +27,7 @@ Requirements:
 You can set up your development environment by running the following:
 
 ```
-git clone git@github.com:Shopify/shopify-node-api.git # get the code
+git clone git@github.com:Shopify/shopify-api-node.git # get the code
 cd shopify-node-api                                   # change into the source directory
 yarn install                                          # install dependencies
 yarn build                                            # build library
