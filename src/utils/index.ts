@@ -11,6 +11,7 @@ import validateHmac from './hmac-validator';
 import validateShop from './shop-validator';
 import versionCompatible from './version-compatible';
 import withSession from './with-session';
+import getEmbeddedAppUrl from './get-embedded-app-url';
 
 const ShopifyUtils = {
   decodeSessionToken,
@@ -26,6 +27,7 @@ const ShopifyUtils = {
   validateShop,
   versionCompatible,
   withSession,
+  getEmbeddedAppUrl,
 };
 
 export default ShopifyUtils;
