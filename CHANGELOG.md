@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [4.1.0] - 2022-07-14
+
 - Add new method to construct the host app URL [#419](https://github.com/Shopify/shopify-api-node/pull/419)
 
 ## [4.0.0] - 2022-07-04
