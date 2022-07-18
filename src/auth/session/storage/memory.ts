@@ -27,10 +27,10 @@ export class MemorySessionStorage implements SessionStorage {
 
   public async findSessionsByShop(
     shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
     const results = Object.values(this.sessions).filter(
       (session) => session.shop === shop,
     );
-    return results.length === 0 ? undefined : results;
+    return results;
   }
 }

@@ -52,7 +52,7 @@ export class MongoDBSessionStorage implements SessionStorage {
 
     await this.collection.findOneAndReplace(
       {id: session.id},
-      {id: session.id, entries: sessionEntries(session)},
+      Object.fromEntries(sessionEntries(session)),
       {
         upsert: true,
       },
@@ -63,10 +63,9 @@ export class MongoDBSessionStorage implements SessionStorage {
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
     await this.ready;
 
-    const rawResult = await this.collection.findOne({id});
+    const result = await this.collection.findOne({id});
 
-    if (!rawResult) return undefined;
-    return sessionFromEntries(rawResult.entries);
+    return result ? sessionFromEntries(Object.entries(result)) : undefined;
   }
 
   public async deleteSession(id: string): Promise<boolean> {
@@ -77,25 +76,23 @@ export class MongoDBSessionStorage implements SessionStorage {
 
   public async deleteSessions(ids: string[]): Promise<boolean> {
     await this.ready;
-    for (const id of ids) {
-      await this.collection.deleteOne({id});
-    }
+    await this.collection.deleteMany({id: {$in: ids}});
     return true;
   }
 
   public async findSessionsByShop(
     shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
     await this.ready;
 
-    const rawResults = await this.collection.find().toArray();
-    if (!rawResults || rawResults?.length === 0) return undefined;
+    const rawResults = await this.collection.find({shop}).toArray();
+    if (!rawResults || rawResults?.length === 0) return [];
 
-    const results = rawResults
-      .map((rawResult: any) => sessionFromEntries(rawResult.entries))
-      .filter((session: SessionInterface) => session.shop === shop);
+    const results = rawResults.map((rawResult: any) =>
+      sessionFromEntries(Object.entries(rawResult)),
+    );
 
-    return results.length === 0 ? undefined : results;
+    return results ? results : [];
   }
 
   public async disconnect(): Promise<void> {

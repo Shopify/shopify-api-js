@@ -100,19 +100,18 @@ export class PostgreSQLSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(
     shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
     await this.ready;
     const query = `
       SELECT * FROM ${this.options.sessionTableName}
       WHERE shop = $1;
     `;
     const rows = await this.query(query, [shop]);
-    if (!Array.isArray(rows) || rows?.length === 0) return undefined;
+    if (!Array.isArray(rows) || rows?.length === 0) return [];
 
-    const results: SessionInterface[] = [];
-    for (const row of rows) {
-      results.push(sessionFromEntries(Object.entries(row as any)));
-    }
+    const results: SessionInterface[] = rows.map((row) => {
+      return sessionFromEntries(Object.entries(row as any));
+    });
     return results;
   }
 

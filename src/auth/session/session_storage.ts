@@ -33,13 +33,13 @@ interface SessionStorage {
   deleteSessions?(ids: string[]): Promise<boolean>;
 
   /**
-   * Return an array of sessions for a given shop (or undefined if none found).
+   * Return an array of sessions for a given shop (or [] if none found).
    *
    * @param shop shop of the session(s) to return
    */
   findSessionsByShop?(
     shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined>;
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[]>;
 }
 
 export {SessionStorage};

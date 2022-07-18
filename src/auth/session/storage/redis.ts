@@ -73,15 +73,13 @@ export class RedisSessionStorage implements SessionStorage {
 
   public async deleteSessions(ids: string[]): Promise<boolean> {
     await this.ready;
-    for (const id of ids) {
-      await this.deleteSession(id);
-    }
+    await this.client.del(ids.map((id) => this.fullKey(id)));
     return true;
   }
 
   public async findSessionsByShop(
     shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
     await this.ready;
 
     const keys = await this.client.keys('*');
@@ -94,7 +92,7 @@ export class RedisSessionStorage implements SessionStorage {
       if (session.shop === shop) results.push(session);
     }
 
-    return results.length === 0 ? undefined : results;
+    return results;
   }
 
   public async disconnect(): Promise<void> {

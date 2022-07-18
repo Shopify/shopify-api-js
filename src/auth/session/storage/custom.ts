@@ -12,14 +12,10 @@ export class CustomSessionStorage implements SessionStorage {
       id: string,
     ) => Promise<SessionInterface | {[key: string]: unknown} | undefined>,
     readonly deleteSessionCallback: (id: string) => Promise<boolean>,
-    readonly deleteSessionsCallback?: (
-      id: string[],
-    ) => Promise<boolean> | undefined,
+    readonly deleteSessionsCallback?: (ids: string[]) => Promise<boolean>,
     readonly findSessionsByShopCallback?: (
       shop: string,
-    ) =>
-      | Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined>
-      | undefined,
+    ) => Promise<SessionInterface[] | {[key: string]: unknown}[]>,
   ) {
     this.storeSessionCallback = storeSessionCallback;
     this.loadSessionCallback = loadSessionCallback;
@@ -93,24 +89,27 @@ export class CustomSessionStorage implements SessionStorage {
   public async deleteSessions(ids: string[]): Promise<boolean> {
     if (this.deleteSessionsCallback) {
       try {
-        return (await this.deleteSessionsCallback(ids)) as boolean;
+        return await this.deleteSessionsCallback(ids);
       } catch (error) {
         throw new ShopifyErrors.SessionStorageError(
           `CustomSessionStorage failed to delete array of sessions. Error Details: ${error}`,
         );
       }
     } else {
-      throw new ShopifyErrors.SessionStorageError(
+      console.warn(
         `CustomSessionStorage failed to delete array of sessions. Error Details: deleteSessionsCallback not defined.`,
       );
     }
+    return false;
   }
 
   public async findSessionsByShop(
     shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[] | undefined> {
+  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
+    const sessions: SessionInterface[] = [];
+
     if (this.findSessionsByShopCallback) {
-      let results: SessionInterface[] | {[key: string]: unknown}[] | undefined;
+      let results: SessionInterface[] | {[key: string]: unknown}[] = [];
 
       try {
         results = await this.findSessionsByShopCallback(shop);
@@ -122,18 +121,15 @@ export class CustomSessionStorage implements SessionStorage {
 
       if (results && results instanceof Array) {
         // loop through array and convert to SessionInterface
-        const sessions: SessionInterface[] = [];
-
         results.forEach((element) => {
           sessions.push(element as SessionInterface);
         });
-        return sessions;
       }
-      return undefined;
     } else {
-      throw new ShopifyErrors.SessionStorageError(
+      console.warn(
         `CustomSessionStorage failed to find sessions by shop. Error Details: findSessionsByShopCallback not defined.`,
       );
     }
+    return sessions;
   }
 }

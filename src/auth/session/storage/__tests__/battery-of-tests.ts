@@ -4,6 +4,8 @@ import {sessionEqual} from '../../session-utils';
 import {SessionStorage} from '../../session_storage';
 import {SessionInterface} from '../../types';
 
+import {sessionArraysEqual} from './session-test-utils';
+
 export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
   it('can store and delete all kinds of sessions', async () => {
     const sessionFactories = [
@@ -121,12 +123,12 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
       expect(shop1Sessions).toBeDefined();
       if (shop1Sessions) {
         expect(shop1Sessions.length).toBe(2);
-        for (const session of shop1Sessions) {
-          expect(
-            sessionEqual(session as SessionInterface, sessions[0]) ||
-              sessionEqual(session as SessionInterface, sessions[2]),
-          ).toBe(true);
-        }
+        expect(
+          sessionArraysEqual(shop1Sessions as SessionInterface[], [
+            sessions[0] as SessionInterface,
+            sessions[2] as SessionInterface,
+          ]),
+        ).toBe(true);
       }
     }
   });
@@ -159,7 +161,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
         shop1Sessions = await storage.findSessionsByShop(
           'delete-shop1-sessions',
         );
-        expect(shop1Sessions).toBeUndefined();
+        expect(shop1Sessions).toEqual([]);
       }
     }
   });
