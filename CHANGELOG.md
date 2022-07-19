@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- Add optional new methods `deleteSession` and `findSessionsByShop` to `SessionStorage`, with the corresponding implementations for the various session storage adapters [#418](https://github.com/Shopify/shopify-api-node/pull/418)
+
 ## [4.1.0] - 2022-07-14
 
 - Add new method to construct the host app URL [#419](https://github.com/Shopify/shopify-api-node/pull/419)
