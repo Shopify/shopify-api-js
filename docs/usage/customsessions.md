@@ -1,10 +1,16 @@
 # Create a `CustomSessionStorage` solution
 
-This library comes with two session management options: `MemorySessionStorage` and `CustomSessionStorage`.
+This library comes with various session management options:
 
-`MemorySessionStorage` exists as an option to help you get started developing your apps as quickly as possible, and is the default storage option on `Shopify.Context`. It's perfect for working in your development and testing environments. However, this storage solution is not meant to be used in production [due to its limitations](../issues.md).
+- `CustomSessionStorage` - to allow for a custom session storage solution (see below for details).
+- `MemorySessionStorage` - uses memory exists as an option to help you get started developing your apps as quickly as possible. It's perfect for working in your development and testing environments. However, this storage solution is **not** meant to be used in production [due to its limitations](../issues.md).
+- `MongoDBSessionStorage`
+- `MySQLSessionStorage`
+- `PostgreSQLSessionStorage`
+- `RedisSessionStorage`
+- `SQLiteSessionStorage` - uses the file-based SQLite package, and is the default storage option on `Shopify.Context`.
 
-When you're ready to deploy your app and run it in production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `Shopify.Context`. The `CustomSessionStorage` class expects to be initialized with three callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
+If you wish to you an alternative session storage solution for production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `Shopify.Context`. The `CustomSessionStorage` class expects to be initialized with the following three mandatory callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
 
 ## Callback methods
 
@@ -16,9 +22,16 @@ When you're ready to deploy your app and run it in production, you'll need to se
 | `loadCallback`   | `string`           | `Promise<SessionInterface \| Record<string, unknown> \| undefined> ` | Takes in the id of the `Session` to load (as a `string`) and returns either an instance of a `Session`, an object to be used to instantiate a `Session`, or `undefined` if no record is found for the specified id. |
 | `deleteCallback` | `string`           | `Promise<boolean>`                                                   | Takes in the id of the `Session` to load (as a `string`) and returns a `booelan` (`true` if deleted successfully).                                                                                                  |
 
+- There are two optional callbacks methods that also be passed in during initialization:
+
+| Optional Method              | Arg type   | Return type                    | Notes                                                                                                                                  |
+| ---------------------------- | ---------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `deleteSessionsCallback`     | `string[]` | `Promise<boolean>`             | Takes in an array of ids of `Session`'s to be deleted (as an array of `string`), returns a `boolean` (`true` if deleted successfully). |
+| `findSessionsByShopCallback` | `string`   | `Promise<SessionInterface[]> ` | Takes in the shop domain (as a `string`) and returns an array of the sessions of that shop, or an empty array (`[]`) if none found.    |
+
 ## Example usage
 
-This is an example implementation of a `CustomSessionStorage` solution, using `redis` for storage.
+This is an example implementation of a `CustomSessionStorage` solution, using `redis` for storage (mandatory callbacks only).
 
 Before starting this tutorial, please first follow our [getting started guide](../getting_started.md).
 

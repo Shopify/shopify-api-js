@@ -3,7 +3,7 @@ import {CustomSessionStorage} from '../custom';
 import {SessionStorageError} from '../../../../error';
 
 describe('custom session storage', () => {
-  test('can perform actions', async () => {
+  test('can perform core actions', async () => {
     const sessionId = 'test_session';
     let session: Session | undefined = new Session(
       sessionId,
@@ -54,6 +54,89 @@ describe('custom session storage', () => {
     // Deleting a non-existing session should work
     await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
     expect(deleteCalled).toBe(true);
+  });
+
+  test('can perform optional actions', async () => {
+    const prefix = 'custom_sessions';
+    let sessions = [
+      new Session(`${prefix}_1`, 'shop1-sessions', 'state', true),
+      new Session(`${prefix}_2`, 'shop2-sessions', 'state', true),
+      new Session(`${prefix}_3`, 'shop1-sessions', 'state', true),
+      new Session(`${prefix}_4`, 'shop3-sessions', 'state', true),
+    ];
+
+    let deleteSessionsCalled = false;
+    let findSessionsByShopCalled = false;
+    const storage = new CustomSessionStorage(
+      () => {
+        return Promise.resolve(true);
+      },
+      () => {
+        return Promise.resolve(sessions[0]);
+      },
+      () => {
+        return Promise.resolve(true);
+      },
+      () => {
+        deleteSessionsCalled = true;
+        sessions = [sessions[1], sessions[3]];
+        return Promise.resolve(true);
+      },
+      () => {
+        findSessionsByShopCalled = true;
+        if (deleteSessionsCalled) {
+          return Promise.resolve([]);
+        } else {
+          return Promise.resolve([sessions[0], sessions[2]]);
+        }
+      },
+    );
+
+    await expect(
+      storage.findSessionsByShop('shop1_sessinons'),
+    ).resolves.toEqual([sessions[0], sessions[2]]);
+    expect(findSessionsByShopCalled).toBe(true);
+
+    await expect(
+      storage.deleteSessions([`${prefix}_1`, `${prefix}_3`]),
+    ).resolves.toBe(true);
+    expect(deleteSessionsCalled).toBe(true);
+    expect(sessions.length).toBe(2);
+    await expect(
+      storage.findSessionsByShop('shop1_sessinons'),
+    ).resolves.toEqual([]);
+  });
+
+  test('missing optional actions generate warnings', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const prefix = 'custom_sessions';
+    const session = new Session(`${prefix}_1`, 'shop1-sessions', 'state', true);
+
+    const storage = new CustomSessionStorage(
+      () => {
+        return Promise.resolve(true);
+      },
+      () => {
+        return Promise.resolve(session);
+      },
+      () => {
+        return Promise.resolve(true);
+      },
+    );
+
+    await expect(
+      storage.findSessionsByShop('shop1_sessinons'),
+    ).resolves.toEqual([]);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('findSessionsByShopCallback not defined.'),
+    );
+
+    await expect(
+      storage.deleteSessions([`${prefix}_1`, `${prefix}_3`]),
+    ).resolves.toBe(false);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('deleteSessionsCallback not defined.'),
+    );
   });
 
   test('failures and exceptions are raised', () => {

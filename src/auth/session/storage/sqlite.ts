@@ -66,6 +66,31 @@ export class SQLiteSessionStorage implements SessionStorage {
     return true;
   }
 
+  public async deleteSessions(ids: string[]): Promise<boolean> {
+    await this.ready;
+    const query = `
+      DELETE FROM ${this.options.sessionTableName}
+      WHERE id IN (${ids.map(() => '?').join(',')});
+    `;
+    await this.query(query, ids);
+    return true;
+  }
+
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
+    await this.ready;
+    const query = `
+      SELECT * FROM ${this.options.sessionTableName}
+      WHERE shop = ?;
+    `;
+    const rows = await this.query(query, [shop]);
+    if (!Array.isArray(rows) || rows?.length === 0) return [];
+
+    const results: SessionInterface[] = rows.map((row) => {
+      return sessionFromEntries(Object.entries(row as any));
+    });
+    return results;
+  }
+
   private async hasSessionTable(): Promise<boolean> {
     const query = `
     SELECT name FROM sqlite_schema
