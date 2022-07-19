@@ -92,9 +92,7 @@ export class MySQLSessionStorage implements SessionStorage {
     return true;
   }
 
-  public async findSessionsByShop(
-    shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
     const query = `
       SELECT * FROM ${this.options.sessionTableName}

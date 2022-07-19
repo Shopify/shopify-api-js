@@ -37,9 +37,7 @@ interface SessionStorage {
    *
    * @param shop shop of the session(s) to return
    */
-  findSessionsByShop?(
-    shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[]>;
+  findSessionsByShop?(shop: string): Promise<SessionInterface[]>;
 }
 
 export {SessionStorage};

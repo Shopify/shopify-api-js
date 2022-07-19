@@ -80,19 +80,15 @@ export class MongoDBSessionStorage implements SessionStorage {
     return true;
   }
 
-  public async findSessionsByShop(
-    shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
 
     const rawResults = await this.collection.find({shop}).toArray();
     if (!rawResults || rawResults?.length === 0) return [];
 
-    const results = rawResults.map((rawResult: any) =>
+    return rawResults.map((rawResult: any) =>
       sessionFromEntries(Object.entries(rawResult)),
     );
-
-    return results ? results : [];
   }
 
   public async disconnect(): Promise<void> {

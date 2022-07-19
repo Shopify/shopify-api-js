@@ -77,9 +77,7 @@ export class RedisSessionStorage implements SessionStorage {
     return true;
   }
 
-  public async findSessionsByShop(
-    shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
 
     const keys = await this.client.keys('*');

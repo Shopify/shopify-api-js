@@ -25,9 +25,7 @@ export class MemorySessionStorage implements SessionStorage {
     return true;
   }
 
-  public async findSessionsByShop(
-    shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     const results = Object.values(this.sessions).filter(
       (session) => session.shop === shop,
     );

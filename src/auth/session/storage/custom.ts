@@ -5,28 +5,26 @@ import * as ShopifyErrors from '../../../error';
 
 export class CustomSessionStorage implements SessionStorage {
   constructor(
-    readonly storeSessionCallback: (
-      session: SessionInterface,
-    ) => Promise<boolean>,
-    readonly loadSessionCallback: (
+    readonly storeCallback: (session: SessionInterface) => Promise<boolean>,
+    readonly loadCallback: (
       id: string,
     ) => Promise<SessionInterface | {[key: string]: unknown} | undefined>,
-    readonly deleteSessionCallback: (id: string) => Promise<boolean>,
+    readonly deleteCallback: (id: string) => Promise<boolean>,
     readonly deleteSessionsCallback?: (ids: string[]) => Promise<boolean>,
     readonly findSessionsByShopCallback?: (
       shop: string,
-    ) => Promise<SessionInterface[] | {[key: string]: unknown}[]>,
+    ) => Promise<SessionInterface[]>,
   ) {
-    this.storeSessionCallback = storeSessionCallback;
-    this.loadSessionCallback = loadSessionCallback;
-    this.deleteSessionCallback = deleteSessionCallback;
+    this.storeCallback = storeCallback;
+    this.loadCallback = loadCallback;
+    this.deleteCallback = deleteCallback;
     this.deleteSessionsCallback = deleteSessionsCallback;
     this.findSessionsByShopCallback = findSessionsByShopCallback;
   }
 
   public async storeSession(session: SessionInterface): Promise<boolean> {
     try {
-      return await this.storeSessionCallback(session);
+      return await this.storeCallback(session);
     } catch (error) {
       throw new ShopifyErrors.SessionStorageError(
         `CustomSessionStorage failed to store a session. Error Details: ${error}`,
@@ -37,7 +35,7 @@ export class CustomSessionStorage implements SessionStorage {
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
     let result: SessionInterface | {[key: string]: unknown} | undefined;
     try {
-      result = await this.loadSessionCallback(id);
+      result = await this.loadCallback(id);
     } catch (error) {
       throw new ShopifyErrors.SessionStorageError(
         `CustomSessionStorage failed to load a session. Error Details: ${error}`,
@@ -78,7 +76,7 @@ export class CustomSessionStorage implements SessionStorage {
 
   public async deleteSession(id: string): Promise<boolean> {
     try {
-      return await this.deleteSessionCallback(id);
+      return await this.deleteCallback(id);
     } catch (error) {
       throw new ShopifyErrors.SessionStorageError(
         `CustomSessionStorage failed to delete a session. Error Details: ${error}`,
@@ -103,27 +101,16 @@ export class CustomSessionStorage implements SessionStorage {
     return false;
   }
 
-  public async findSessionsByShop(
-    shop: string,
-  ): Promise<SessionInterface[] | {[key: string]: unknown}[]> {
-    const sessions: SessionInterface[] = [];
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
+    let sessions: SessionInterface[] = [];
 
     if (this.findSessionsByShopCallback) {
-      let results: SessionInterface[] | {[key: string]: unknown}[] = [];
-
       try {
-        results = await this.findSessionsByShopCallback(shop);
+        sessions = await this.findSessionsByShopCallback(shop);
       } catch (error) {
         throw new ShopifyErrors.SessionStorageError(
           `CustomSessionStorage failed to find sessions by shop. Error Details: ${error}`,
         );
-      }
-
-      if (results && results instanceof Array) {
-        // loop through array and convert to SessionInterface
-        results.forEach((element) => {
-          sessions.push(element as SessionInterface);
-        });
       }
     } else {
       console.warn(

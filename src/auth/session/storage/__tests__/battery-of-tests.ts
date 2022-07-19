@@ -124,7 +124,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
       if (shop1Sessions) {
         expect(shop1Sessions.length).toBe(2);
         expect(
-          sessionArraysEqual(shop1Sessions as SessionInterface[], [
+          sessionArraysEqual(shop1Sessions, [
             sessions[0] as SessionInterface,
             sessions[2] as SessionInterface,
           ]),
@@ -155,9 +155,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
       if (shop1Sessions) {
         expect(shop1Sessions.length).toBe(2);
         const idsToDelete = shop1Sessions.map((session) => session.id);
-        await expect(
-          storage.deleteSessions(idsToDelete as string[]),
-        ).resolves.toBe(true);
+        await expect(storage.deleteSessions(idsToDelete)).resolves.toBe(true);
         shop1Sessions = await storage.findSessionsByShop(
           'delete-shop1-sessions',
         );
