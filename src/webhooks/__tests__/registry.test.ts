@@ -387,7 +387,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
       .expect(StatusCode.Ok);
   });
 
-  it('handles the request and returns Forbidden when topic is not registered', async () => {
+  it('handles the request and returns Not Found when topic is not registered', async () => {
     ShopifyWebhooks.Registry.addHandler('NONSENSE_TOPIC', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
@@ -409,10 +409,10 @@ describe('ShopifyWebhooks.Registry.process', () => {
       .post('/webhooks')
       .set(headers({hmac: hmac(Context.API_SECRET_KEY, rawBody)}))
       .send(rawBody)
-      .expect(StatusCode.Forbidden);
+      .expect(StatusCode.NotFound);
   });
 
-  it('handles the request and returns Forbidden when hmac does not match', async () => {
+  it('handles the request and returns Unauthorized when hmac does not match', async () => {
     ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
@@ -434,7 +434,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
       .post('/webhooks')
       .set(headers({hmac: hmac('incorrect secret', rawBody)}))
       .send(rawBody)
-      .expect(StatusCode.Forbidden);
+      .expect(StatusCode.Unauthorized);
   });
 
   it('fails if the given body is empty', async () => {
