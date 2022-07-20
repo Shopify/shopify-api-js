@@ -200,10 +200,10 @@ app.post('/webhooks', async (req, res) => {
 
 </details>
 
-### Note regarding Express
+### Note regarding use of body parsers
 
-If you use Express and wish to use the `express.json()` middleware in your app **and** if you use this library's `process` method to handle webhooks API calls from Shopify (which we recommend), the webhook processing must occur ***before*** calling `app.use(express.json())`.
+Please note that the use of body parsing middleware must occur **after** webhook processing.  `Shopify.Webhooks.Registry.process()` reads in the request body directly, therefore, if a body parsing middleware is used beforehand, `process` thinks the request body is empty and will return a `bad request` message back to Shopify for the webhook and raise an error.
 
-`Shopify.Webhooks.Registry.process()` reads in the request body directly. If `express.json()` is used beforehand, `process` thinks the request body is empty and will return a `bad request` message back to Shopify for the webhook and raise an error.
+To use Express as an example, if you wish to use the `express.json()` middleware in your app **and** if you use this library's `process` method to handle webhooks API calls from Shopify (which we recommend), the webhook processing must occur ***before*** calling `app.use(express.json())`.
 
 [Back to guide index](../README.md)
