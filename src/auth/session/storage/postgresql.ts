@@ -88,6 +88,31 @@ export class PostgreSQLSessionStorage implements SessionStorage {
     return true;
   }
 
+  public async deleteSessions(ids: string[]): Promise<boolean> {
+    await this.ready;
+    const query = `
+      DELETE FROM ${this.options.sessionTableName}
+      WHERE id IN (${ids.map((_, i) => `$${i + 1}`).join(', ')});
+    `;
+    await this.query(query, ids);
+    return true;
+  }
+
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
+    await this.ready;
+    const query = `
+      SELECT * FROM ${this.options.sessionTableName}
+      WHERE shop = $1;
+    `;
+    const rows = await this.query(query, [shop]);
+    if (!Array.isArray(rows) || rows?.length === 0) return [];
+
+    const results: SessionInterface[] = rows.map((row) => {
+      return sessionFromEntries(Object.entries(row as any));
+    });
+    return results;
+  }
+
   public disconnect(): Promise<void> {
     return this.client.end();
   }

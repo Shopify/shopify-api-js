@@ -71,6 +71,28 @@ export class RedisSessionStorage implements SessionStorage {
     return true;
   }
 
+  public async deleteSessions(ids: string[]): Promise<boolean> {
+    await this.ready;
+    await this.client.del(ids.map((id) => this.fullKey(id)));
+    return true;
+  }
+
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
+    await this.ready;
+
+    const keys = await this.client.keys('*');
+    const results: SessionInterface[] = [];
+    for (const key of keys) {
+      const rawResult = await this.client.get(key);
+      if (!rawResult) continue;
+
+      const session = sessionFromEntries(JSON.parse(rawResult));
+      if (session.shop === shop) results.push(session);
+    }
+
+    return results;
+  }
+
   public async disconnect(): Promise<void> {
     await this.client.quit();
   }

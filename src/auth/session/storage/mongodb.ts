@@ -52,7 +52,7 @@ export class MongoDBSessionStorage implements SessionStorage {
 
     await this.collection.findOneAndReplace(
       {id: session.id},
-      {id: session.id, entries: sessionEntries(session)},
+      Object.fromEntries(sessionEntries(session)),
       {
         upsert: true,
       },
@@ -63,16 +63,32 @@ export class MongoDBSessionStorage implements SessionStorage {
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
     await this.ready;
 
-    const rawResult = await this.collection.findOne({id});
+    const result = await this.collection.findOne({id});
 
-    if (!rawResult) return undefined;
-    return sessionFromEntries(rawResult.entries);
+    return result ? sessionFromEntries(Object.entries(result)) : undefined;
   }
 
   public async deleteSession(id: string): Promise<boolean> {
     await this.ready;
     await this.collection.deleteOne({id});
     return true;
+  }
+
+  public async deleteSessions(ids: string[]): Promise<boolean> {
+    await this.ready;
+    await this.collection.deleteMany({id: {$in: ids}});
+    return true;
+  }
+
+  public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
+    await this.ready;
+
+    const rawResults = await this.collection.find({shop}).toArray();
+    if (!rawResults || rawResults?.length === 0) return [];
+
+    return rawResults.map((rawResult: any) =>
+      sessionFromEntries(Object.entries(rawResult)),
+    );
   }
 
   public async disconnect(): Promise<void> {

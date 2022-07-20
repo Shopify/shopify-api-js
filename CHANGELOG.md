@@ -8,6 +8,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## Unreleased
 
 - Return a 401 instead of 403 when webhooks fail validation [#425](https://github.com/Shopify/shopify-api-node/pull/425)
+- Add optional new methods `deleteSession` and `findSessionsByShop` to `SessionStorage`, with the corresponding implementations for the various session storage adapters [#418](https://github.com/Shopify/shopify-api-node/pull/418)
 
 ## [4.1.0] - 2022-07-14
 
