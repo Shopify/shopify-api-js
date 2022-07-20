@@ -175,7 +175,7 @@ The `process` method will handle extracting the necessary information from your 
     try {
       await Shopify.Webhooks.Registry.process(request, response);
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   }
 }  // end of onRequest()
@@ -193,11 +193,17 @@ app.post('/webhooks', async (req, res) => {
   try {
     await Shopify.Webhooks.Registry.process(req, res);
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 });
 ```
 
 </details>
+
+### Note regarding use of body parsers
+
+Please note that the use of body parsing middleware must occur **after** webhook processing.  `Shopify.Webhooks.Registry.process()` reads in the request body directly, therefore, if a body parsing middleware is used beforehand, `process` thinks the request body is empty and will return a `bad request` message back to Shopify for the webhook and raise an error.
+
+To use Express as an example, if you wish to use the `express.json()` middleware in your app **and** if you use this library's `process` method to handle webhooks API calls from Shopify (which we recommend), the webhook processing must occur ***before*** calling `app.use(express.json())`.
 
 [Back to guide index](../README.md)
