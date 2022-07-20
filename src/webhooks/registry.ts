@@ -422,13 +422,13 @@ const WebhooksRegistry: RegistryInterface = {
               responseError = error;
             }
           } else {
-            statusCode = StatusCode.Forbidden;
+            statusCode = StatusCode.NotFound;
             responseError = new ShopifyErrors.InvalidWebhookError(
               `No webhook is registered for topic ${topic}`,
             );
           }
         } else {
-          statusCode = StatusCode.Forbidden;
+          statusCode = StatusCode.Unauthorized;
           responseError = new ShopifyErrors.InvalidWebhookError(
             `Could not validate request for topic ${topic}`,
           );
