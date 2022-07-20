@@ -9,6 +9,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - Return a 401 instead of 403 when webhooks fail validation [#425](https://github.com/Shopify/shopify-api-node/pull/425)
 - Add optional new methods `deleteSession` and `findSessionsByShop` to `SessionStorage`, with the corresponding implementations for the various session storage adapters [#418](https://github.com/Shopify/shopify-api-node/pull/418)
+- Include subset of query body in API deprecation logs [#426](https://github.com/Shopify/shopify-api-node/pull/426)
 
 ## [4.1.0] - 2022-07-14
 
@@ -26,25 +27,29 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## [3.1.3] - 2022-06-08
 
 ### Fixes
+
 - Return instances of `Session` from session storages, not POJOs.
 
 ## [3.1.2] - 2022-06-07
 
 ### Added
+
 - Store user id and expiration date of online tokens
 
 ### Fixes
+
 - Properly parse a non-json HTTP response [#257](https://github.com/Shopify/shopify-api-node/issues/257)
 - Don’t create a SQLite DB file if the SQLite storage is not used.
-
 
 ## [3.1.0] - 2022-05-16
 
 ### Added
+
 - Support for specifying the URI scheme of the host [#385](https://github.com/Shopify/shopify-api-node/pull/385)
 - Add optional `saving` parameter to `serialize` of `Base` class - default is `false` and will include read-only attributes in returned object; `true` used for `save` when committing via API to Shopify.
 
 ### Fixed
+
 - Fixes [#363](https://github.com/Shopify/shopify-api-node/issues/363)
   - Webhooks `register` now checks for any attempt to register a GDPR topic (not done via API but by Partner Dashboard), provides an error message in response
   - For topics that don't exist, `register` checks the response from the initial API call for an `errors` field and returns accordingly
