@@ -1,10 +1,10 @@
-## Releasing shopify-node-api
+# Releasing shopify-node-api
 
-1. Check the Semantic Versioning page for info on how to version the new release: http://semver.org
+1. Check the Semantic Versioning page for info on how to version the new release: [http://semver.org](http://semver.org)
 
 1. Ensure your local repo is up-to-date
 
-   ```
+   ```shell
    git checkout main && git pull
    ```
 
@@ -14,13 +14,13 @@
 
 1. Stage the `CHANGELOG.md` and `src/version.ts` files
 
-   ```
+   ```shell
    git add CHANGELOG.md src/version.ts
    ```
 
 1. To update the version, create the appropriate tag, commit all staged changes and push to the remote repository
 
-   ```
+   ```shell
    yarn version [ --patch | --minor | --major ]
    ```
 
