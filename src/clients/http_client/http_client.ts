@@ -20,6 +20,12 @@ import {
   RequestReturn,
 } from './types';
 
+interface DeprecationInterface {
+  message: string | null;
+  path: string;
+  body?: string;
+}
+
 export class HttpClient {
   // 1 second
   static readonly RETRY_WAIT_TIME = 1000;
@@ -182,10 +188,18 @@ export class HttpClient {
           response.headers &&
           response.headers.has('X-Shopify-API-Deprecated-Reason')
         ) {
-          const deprecation = {
+          const deprecation: DeprecationInterface = {
             message: response.headers.get('X-Shopify-API-Deprecated-Reason'),
             path: url,
           };
+
+          if (options.body) {
+            // This can only be a string, since we're always converting the body before calling this method
+            deprecation.body = `${(options.body as string).substring(
+              0,
+              100,
+            )}...`;
+          }
 
           const depHash = crypto
             .createHash('md5')

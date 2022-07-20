@@ -567,6 +567,10 @@ describe('HTTP client', () => {
     const client = new HttpClient(domain);
     console.warn = jest.fn();
 
+    const postBody = {
+      query: 'some query',
+    };
+
     fetchMock.mockResponses(
       [
         JSON.stringify({
@@ -583,9 +587,7 @@ describe('HTTP client', () => {
       [
         JSON.stringify({
           message: 'Some deprecated post request',
-          body: {
-            query: 'some query',
-          },
+          body: postBody,
         }),
         {
           status: 200,
@@ -607,12 +609,13 @@ describe('HTTP client', () => {
     await client.post({
       path: '/url/path',
       type: DataType.JSON,
-      data: {query: 'some query'},
+      data: postBody,
     });
 
     expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
       message: 'This API endpoint has been deprecated',
       path: 'https://test-shop.myshopify.io/url/path',
+      body: `${JSON.stringify(postBody)}...`,
     });
   });
 
