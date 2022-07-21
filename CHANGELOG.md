@@ -9,6 +9,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - Allow passing in options for the Redis client used by the session storage strategy [#430](https://github.com/Shopify/shopify-api-node/pull/430)
 - ⚠️ [Breaking] If a response from a GraphQL query contains an `errors` attribute, `GraphqlClient` will now throw a `GraphqlQueryError`. The caller can check the `error.response` attribute to see what was returned from the GraphQL API. [#431](https://github.com/Shopify/shopify-api-node/pull/431)
+- Add optional `isOnline` parameter to `Auth` method `validateAuthCallback` [#272](https://github.com/Shopify/shopify-api-node/pull/272)
 
 ## [4.2.0] - 2022-07-20
 
