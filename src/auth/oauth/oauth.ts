@@ -99,6 +99,7 @@ const ShopifyOAuth = {
    * @param response Current HTTP Response
    * @param query Current HTTP Request Query, containing the information to be validated.
    *              Depending on framework, this may need to be cast as "unknown" before being passed.
+   * @param isOnline Whether the session is online or offline
    * @returns SessionInterface
    */
   async validateAuthCallback(
