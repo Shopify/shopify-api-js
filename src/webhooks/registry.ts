@@ -261,19 +261,30 @@ const WebhooksRegistry: RegistryInterface = {
       deliveryMethod === DeliveryMethod.Http
         ? `${Context.HOST_SCHEME}://${Context.HOST_NAME}${path}`
         : path;
-    const checkResult = (await client.query({
-      data: buildCheckQuery(topic),
-    })) as {body: WebhookCheckResponse};
-    let webhookId: string | undefined;
-    let mustRegister = true;
-    if ('errors' in checkResult.body) {
-      registerReturn[topic] = {
-        success: false,
-        result: checkResult.body,
-      };
+
+    let checkResult: {body: WebhookCheckResponse};
+    try {
+      checkResult = (await client.query({
+        data: buildCheckQuery(topic),
+      })) as {body: WebhookCheckResponse};
+    } catch (error) {
+      if (error instanceof ShopifyErrors.GraphqlQueryError) {
+        registerReturn[topic] = {
+          success: false,
+          result: error.response,
+        };
+      } else {
+        registerReturn[topic] = {
+          success: false,
+          result: {},
+        };
+      }
 
       return registerReturn;
     }
+
+    let webhookId: string | undefined;
+    let mustRegister = true;
 
     if (checkResult.body.data.webhookSubscriptions.edges.length) {
       const {node} = checkResult.body.data.webhookSubscriptions.edges[0];

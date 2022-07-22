@@ -184,7 +184,12 @@ describe('GraphQL client', () => {
 
     fetchMock.mockResponseOnce(JSON.stringify(errorResponse));
 
-    await expect(() => client.query({data: query})).rejects.toThrowError();
+    await expect(() => client.query({data: query})).rejects.toThrow(
+      new ShopifyErrors.GraphqlQueryError({
+        message: 'GraphQL query returned errors',
+        response: errorResponse,
+      }),
+    );
 
     expect({
       method: 'POST',
