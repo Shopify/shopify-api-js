@@ -61,6 +61,7 @@ export class CustomSessionStorage implements SessionStorage {
           session.expires = new Date(session.expires);
         }
 
+        Object.setPrototypeOf(session, Session.prototype);
         return session as SessionInterface;
       } else {
         throw new ShopifyErrors.SessionStorageError(
