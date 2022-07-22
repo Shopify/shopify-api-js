@@ -1,10 +1,10 @@
-import {createClient, RedisClientType} from 'redis';
+import {createClient, RedisClientType, RedisClientOptions} from 'redis';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
 
-export interface RedisSessionStorageOptions {
+export interface RedisSessionStorageOptions extends RedisClientOptions {
   sessionKeyPrefix: string;
 }
 const defaultRedisSessionStorageOptions: RedisSessionStorageOptions = {
@@ -103,6 +103,7 @@ export class RedisSessionStorage implements SessionStorage {
 
   private async init() {
     this.client = createClient({
+      ...this.options,
       url: this.dbUrl.toString(),
     });
     await this.client.connect();
