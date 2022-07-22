@@ -48,7 +48,14 @@ export class GraphqlClient {
       dataType = DataType.GraphQL;
     }
 
-    return this.client.post({path, type: dataType, ...params});
+    const result = await this.client.post({path, type: dataType, ...params});
+
+    if ((result.body as {[key: string]: unknown}).errors) {
+      throw new ShopifyErrors.GraphqlQueryError(
+        `GraphQL query returned errors: ${JSON.stringify(result.body)}`,
+      );
+    }
+    return result;
   }
 
   protected getAccessTokenHeader(): AccessTokenHeader {
