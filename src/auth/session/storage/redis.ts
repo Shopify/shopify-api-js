@@ -3,6 +3,7 @@ import {createClient, RedisClientType, RedisClientOptions} from 'redis';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
+import {sanitizeShop} from '../../../utils/shop-validator';
 
 export interface RedisSessionStorageOptions extends RedisClientOptions {
   sessionKeyPrefix: string;
@@ -79,6 +80,7 @@ export class RedisSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
+    sanitizeShop(shop, true);
 
     const keys = await this.client.keys('*');
     const results: SessionInterface[] = [];

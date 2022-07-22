@@ -1,6 +1,8 @@
 import {Context} from '../context';
 import OAuth from '../auth/oauth';
 
+import {sanitizeShop} from './shop-validator';
+
 /**
  * Helper method to find and delete offline sessions by shop url.
  *
@@ -10,6 +12,7 @@ export default async function deleteOfflineSession(
   shop: string,
 ): Promise<boolean> {
   Context.throwIfUninitialized();
+  sanitizeShop(shop, true);
 
   const sessionId = OAuth.getOfflineSessionId(shop);
 

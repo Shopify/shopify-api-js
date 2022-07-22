@@ -3,6 +3,7 @@ import pg from 'pg';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionEntries, sessionFromEntries} from '../session-utils';
+import {sanitizeShop} from '../../../utils/shop-validator';
 
 export interface PostgreSQLSessionStorageOptions {
   sessionTableName: string;
@@ -100,6 +101,8 @@ export class PostgreSQLSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
+    sanitizeShop(shop, true);
+
     const query = `
       SELECT * FROM ${this.options.sessionTableName}
       WHERE shop = $1;

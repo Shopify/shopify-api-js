@@ -7,6 +7,7 @@ export class ShopifyError extends Error {
 
 export class InvalidHmacError extends ShopifyError {}
 export class InvalidShopError extends ShopifyError {}
+export class InvalidHostError extends ShopifyError {}
 export class InvalidJwtError extends ShopifyError {}
 export class MissingJwtTokenError extends ShopifyError {}
 

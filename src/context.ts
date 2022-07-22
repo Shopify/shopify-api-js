@@ -104,6 +104,10 @@ const Context: ContextInterface = {
       this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN =
         params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
     }
+
+    if (params.CUSTOM_SHOP_DOMAINS) {
+      this.CUSTOM_SHOP_DOMAINS = params.CUSTOM_SHOP_DOMAINS;
+    }
   },
 
   throwIfUninitialized(): void {

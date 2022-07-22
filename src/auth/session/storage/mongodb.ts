@@ -3,6 +3,7 @@ import * as mongodb from 'mongodb';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
+import {sanitizeShop} from '../../../utils/shop-validator';
 
 export interface MongoDBSessionStorageOptions {
   sessionCollectionName: string;
@@ -82,6 +83,7 @@ export class MongoDBSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
+    sanitizeShop(shop, true);
 
     const rawResults = await this.collection.find({shop}).toArray();
     if (!rawResults || rawResults?.length === 0) return [];

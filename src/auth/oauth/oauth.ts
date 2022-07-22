@@ -14,6 +14,7 @@ import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
 import * as ShopifyErrors from '../../error';
 import {SessionInterface} from '../session/types';
+import {sanitizeShop} from '../../utils/shop-validator';
 
 import {
   AuthQuery,
@@ -45,6 +46,7 @@ const ShopifyOAuth = {
   ): Promise<string> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
+    sanitizeShop(shop, true);
 
     const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],
@@ -232,7 +234,7 @@ const ShopifyOAuth = {
    * @param userId Current actor id
    */
   getJwtSessionId(shop: string, userId: string): string {
-    return `${shop}_${userId}`;
+    return `${sanitizeShop(shop, true)}_${userId}`;
   },
 
   /**
@@ -241,7 +243,7 @@ const ShopifyOAuth = {
    * @param shop Shopify shop domain
    */
   getOfflineSessionId(shop: string): string {
-    return `offline_${shop}`;
+    return `offline_${sanitizeShop(shop, true)}`;
   },
 
   /**

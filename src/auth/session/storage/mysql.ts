@@ -3,6 +3,7 @@ import mysql from 'mysql2/promise';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
+import {sanitizeShop} from '../../../utils/shop-validator';
 
 export interface MySQLSessionStorageOptions {
   sessionTableName: string;
@@ -94,6 +95,8 @@ export class MySQLSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
+    sanitizeShop(shop, true);
+
     const query = `
       SELECT * FROM ${this.options.sessionTableName}
       WHERE shop = ?;

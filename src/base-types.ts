@@ -14,6 +14,7 @@ export interface ContextParams {
   LOG_FILE?: string;
   USER_AGENT_PREFIX?: string;
   PRIVATE_APP_STOREFRONT_ACCESS_TOKEN?: string;
+  CUSTOM_SHOP_DOMAINS?: (RegExp | string)[];
 }
 
 export enum ApiVersion {

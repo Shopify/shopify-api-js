@@ -39,6 +39,19 @@ describe('getEmbeddedAppUrl', () => {
     );
   });
 
+  test('throws an error when the host query param is invalid', () => {
+    const req = {
+      url: '/?shop=test.myshopify.com&host=test.myshopify.com',
+      headers: {
+        host: 'test.myshopify.com',
+      },
+    } as http.IncomingMessage;
+
+    expect(() => getEmbeddedAppUrl(req)).toThrow(
+      ShopifyErrors.InvalidRequestError,
+    );
+  });
+
   test('returns the host app url', () => {
     const host = 'test.myshopify.com/admin';
     const base64Host = Buffer.from(host, 'utf-8').toString('base64');

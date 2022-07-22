@@ -19,6 +19,7 @@ beforeEach(() => {
     IS_EMBEDDED_APP: false,
     IS_PRIVATE_APP: false,
     SESSION_STORAGE: new MemorySessionStorage(),
+    CUSTOM_SHOP_DOMAINS: undefined,
   });
 
   fetchMock.mockReset();

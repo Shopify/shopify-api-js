@@ -3,6 +3,8 @@ import http from 'http';
 import * as ShopifyErrors from '../error';
 import {Context} from '../context';
 
+import {sanitizeHost} from './shop-validator';
+
 /**
  * Helper method to get the host URL for the app.
  *
@@ -26,7 +28,7 @@ export default function getEmbeddedAppUrl(
   const url = new URL(request.url, `https://${request.headers.host}`);
   const host = url.searchParams.get('host');
 
-  if (typeof host !== 'string') {
+  if (typeof host !== 'string' || !sanitizeHost(host)) {
     throw new ShopifyErrors.InvalidRequestError(
       'Request does not contain a host query parameter',
     );
