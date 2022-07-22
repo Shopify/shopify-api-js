@@ -1,4 +1,3 @@
-import {MissingRequiredArgument} from '../../error';
 import {Context} from '../../context';
 import {ShopifyHeader} from '../../base-types';
 import {HttpClient} from '../http_client/http_client';
@@ -29,7 +28,7 @@ export class GraphqlClient {
 
   async query(params: GraphqlParams): Promise<RequestReturn> {
     if (params.data.length === 0) {
-      throw new MissingRequiredArgument('Query missing.');
+      throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
     }
 
     const accessTokenHeader = this.getAccessTokenHeader();
