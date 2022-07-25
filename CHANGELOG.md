@@ -8,7 +8,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## Unreleased
 
 - Allow passing in options for the Redis client used by the session storage strategy [#430](https://github.com/Shopify/shopify-api-node/pull/430)
-- If a response from a GraphQL query contains an `errors` attribute, `GraphqlClient` will now throw a `GraphqlQueryError`. The caller can check the `error.response` attribute to see what was returned from the GraphQL API. [#431](https://github.com/Shopify/shopify-api-node/pull/431)
+- ⚠️ [Breaking] If a response from a GraphQL query contains an `errors` attribute, `GraphqlClient` will now throw a `GraphqlQueryError`. The caller can check the `error.response` attribute to see what was returned from the GraphQL API. [#431](https://github.com/Shopify/shopify-api-node/pull/431)
 
 ## [4.2.0] - 2022-07-20
 
@@ -110,12 +110,12 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add a 5 second `clockTolerance` to fix `jwt not active` error [#227](https://github.com/Shopify/shopify-api-node/pull/227)
-- [Breaking] Change default for OAuth.beginAuth to online sessions [#203](https://github.com/Shopify/shopify-api-node/pull/203)
+- ⚠️ [Breaking] Change default for OAuth.beginAuth to online sessions [#203](https://github.com/Shopify/shopify-api-node/pull/203)
   - see [oauth.md](https://github.com/Shopify/shopify-api-node/blob/main/docs/usage/oauth.md) for updated docs
-- [Breaking] Return and delete session in `validateAuthCallback` [#217](https://github.com/Shopify/shopify-api-node/pull/217)
+- ⚠️ [Breaking] Return and delete session in `validateAuthCallback` [#217](https://github.com/Shopify/shopify-api-node/pull/217)
   - see [oauth.md](https://github.com/Shopify/shopify-api-node/blob/main/docs/usage/oauth.md) for updated usage
-- [Breaking] Extract `addHandler` and `getHandler` methods for webhooks out of `register` [#205](https://github.com/Shopify/shopify-api-node/pull/205)
-- [Breaking] Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-api-node/pull/169)
+- ⚠️ [Breaking] Extract `addHandler` and `getHandler` methods for webhooks out of `register` [#205](https://github.com/Shopify/shopify-api-node/pull/205)
+- ⚠️ [Breaking] Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-api-node/pull/169)
 - Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-api-node/pull/169)
 - Allow `undefined` in `AuthScopes` [#169](https://github.com/Shopify/shopify-api-node/pull/169)
 

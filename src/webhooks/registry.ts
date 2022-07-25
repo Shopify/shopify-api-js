@@ -268,18 +268,9 @@ const WebhooksRegistry: RegistryInterface = {
         data: buildCheckQuery(topic),
       })) as {body: WebhookCheckResponse};
     } catch (error) {
-      if (error instanceof ShopifyErrors.GraphqlQueryError) {
-        registerReturn[topic] = {
-          success: false,
-          result: error.response,
-        };
-      } else {
-        registerReturn[topic] = {
-          success: false,
-          result: {},
-        };
-      }
-
+      const result =
+        error instanceof ShopifyErrors.GraphqlQueryError ? error.response : {};
+      registerReturn[topic] = {success: false, result};
       return registerReturn;
     }
 
