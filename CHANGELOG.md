@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- Allow passing in options for the Redis client used by the session storage strategy [#430](https://github.com/Shopify/shopify-api-node/pull/430)
+
 ## [4.2.0] - 2022-07-20
 
 - Return a 401 instead of 403 when webhooks fail validation [#425](https://github.com/Shopify/shopify-api-node/pull/425)
