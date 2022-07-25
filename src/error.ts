@@ -64,6 +64,20 @@ export class HttpThrottlingError extends HttpRetriableError {
 }
 
 export class RestResourceError extends ShopifyError {}
+export class GraphqlQueryError extends ShopifyError {
+  readonly response: {[key: string]: unknown};
+
+  public constructor({
+    message,
+    response,
+  }: {
+    message: string;
+    response: {[key: string]: unknown};
+  }) {
+    super(message);
+    this.response = response;
+  }
+}
 
 export class InvalidOAuthError extends ShopifyError {}
 export class SessionNotFound extends ShopifyError {}

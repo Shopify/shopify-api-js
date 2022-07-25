@@ -55,4 +55,35 @@ const products = await client.query({
   }
 });
 ```
+
+Note that the call to `query` should be wrapped in a `try/catch` block.  If the GraphQL API returns any errors, it will throw `ShopifyErrors.GraphqlQueryError` and provides the response from the API in the `response` attribute.
+
+```ts
+let products;
+try {
+  products = await client.query({
+    data: `{
+        products (first: 10) {
+          edges {
+            node {
+              id
+              title
+              descriptionHtml
+            }
+          }
+        }
+      }`,
+  });
+} catch (error) {
+  if (error instanceof ShopifyErrors.GraphqlQueryError) {
+    // look at error.response for details returned from API,
+    // specifically, error.response.errors[0].message
+  } else {
+    // handle other errors
+  }
+}
+
+// assuming no errors, do something with the returned data...
+```
+
 [Back to guide index](../README.md)

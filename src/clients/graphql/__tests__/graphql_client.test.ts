@@ -140,6 +140,69 @@ describe('GraphQL client', () => {
       data: JSON.stringify(queryWithVariables),
     }).toMatchMadeHttpRequest();
   });
+
+  it('throws error when response contains an errors field', async () => {
+    const client: GraphqlClient = new GraphqlClient(DOMAIN, 'bork');
+    const query = {
+      query: `query getProducts {
+        products {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }`,
+    };
+
+    const errorResponse = {
+      data: null,
+      errors: [
+        {
+          message: 'you must provide one of first or last',
+          locations: [
+            {
+              line: 2,
+              column: 3,
+            },
+          ],
+          path: ['products'],
+        },
+      ],
+      extensions: {
+        cost: {
+          requestedQueryCost: 2,
+          actualQueryCost: 2,
+          throttleStatus: {
+            maximumAvailable: 1000,
+            currentlyAvailable: 998,
+            restoreRate: 50,
+          },
+        },
+      },
+    };
+
+    fetchMock.mockResponseOnce(JSON.stringify(errorResponse));
+
+    await expect(() => client.query({data: query})).rejects.toThrow(
+      new ShopifyErrors.GraphqlQueryError({
+        message: 'GraphQL query returned errors',
+        response: errorResponse,
+      }),
+    );
+
+    expect({
+      method: 'POST',
+      domain: DOMAIN,
+      path: '/admin/api/unstable/graphql.json',
+      headers: {
+        'Content-Length': 156,
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': 'bork',
+      },
+      data: JSON.stringify(query),
+    }).toMatchMadeHttpRequest();
+  });
 });
 
 function buildExpectedResponse(obj: unknown) {
