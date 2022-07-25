@@ -14,7 +14,7 @@ const dbURL = new URL('redis://shopify:passify@localhost/1');
 
 // SORRY NOT SORRY. Docker containers can take quite a while to get ready,
 // especially on CI. This is hopefully enough.
-jest.setTimeout(25000);
+jest.setTimeout(30000);
 
 describe('RedisSessionStorage', () => {
   let storage: RedisSessionStorage | undefined;
