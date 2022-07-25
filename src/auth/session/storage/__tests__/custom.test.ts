@@ -59,10 +59,10 @@ describe('custom session storage', () => {
   test('can perform optional actions', async () => {
     const prefix = 'custom_sessions';
     let sessions = [
-      new Session(`${prefix}_1`, 'shop1-sessions', 'state', true),
-      new Session(`${prefix}_2`, 'shop2-sessions', 'state', true),
-      new Session(`${prefix}_3`, 'shop1-sessions', 'state', true),
-      new Session(`${prefix}_4`, 'shop3-sessions', 'state', true),
+      new Session(`${prefix}_1`, 'shop1-sessions.myshopify.io', 'state', true),
+      new Session(`${prefix}_2`, 'shop2-sessions.myshopify.io', 'state', true),
+      new Session(`${prefix}_3`, 'shop1-sessions.myshopify.io', 'state', true),
+      new Session(`${prefix}_4`, 'shop3-sessions.myshopify.io', 'state', true),
     ];
 
     let deleteSessionsCalled = false;
@@ -93,7 +93,7 @@ describe('custom session storage', () => {
     );
 
     await expect(
-      storage.findSessionsByShop('shop1_sessinons'),
+      storage.findSessionsByShop('shop1_sessions.myshopify.io'),
     ).resolves.toEqual([sessions[0], sessions[2]]);
     expect(findSessionsByShopCalled).toBe(true);
 
@@ -103,14 +103,19 @@ describe('custom session storage', () => {
     expect(deleteSessionsCalled).toBe(true);
     expect(sessions.length).toBe(2);
     await expect(
-      storage.findSessionsByShop('shop1_sessinons'),
+      storage.findSessionsByShop('shop1_sessions.myshopify.io'),
     ).resolves.toEqual([]);
   });
 
   test('missing optional actions generate warnings', async () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
     const prefix = 'custom_sessions';
-    const session = new Session(`${prefix}_1`, 'shop1-sessions', 'state', true);
+    const session = new Session(
+      `${prefix}_1`,
+      'shop1-sessions.myshopify.io',
+      'state',
+      true,
+    );
 
     const storage = new CustomSessionStorage(
       () => {
@@ -125,7 +130,7 @@ describe('custom session storage', () => {
     );
 
     await expect(
-      storage.findSessionsByShop('shop1_sessinons'),
+      storage.findSessionsByShop('shop1_sessions.myshopify.io'),
     ).resolves.toEqual([]);
     expect(warnSpy).toHaveBeenCalledWith(
       expect.stringContaining('findSessionsByShopCallback not defined.'),
@@ -141,7 +146,12 @@ describe('custom session storage', () => {
 
   test('failures and exceptions are raised', () => {
     const sessionId = 'test_session';
-    const session = new Session(sessionId, 'shop-url', 'state', true);
+    const session = new Session(
+      sessionId,
+      'shop-url.myshopify.io',
+      'state',
+      true,
+    );
 
     let storage = new CustomSessionStorage(
       () => Promise.resolve(false),
@@ -272,7 +282,7 @@ describe('custom session storage', () => {
 
     let session: Session | undefined = new Session(
       sessionId,
-      'shop',
+      'shop.myshopify.io',
       'state',
       true,
     );

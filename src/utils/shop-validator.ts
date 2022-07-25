@@ -35,7 +35,7 @@ export function sanitizeShop(
   }
 
   const shopUrlRegex = new RegExp(
-    `^[a-zA-Z0-9][a-zA-Z0-9-]*\\.(${domainsRegex.join('|')})[/]*$`,
+    `^[a-zA-Z0-9][a-zA-Z0-9-_]*\\.(${domainsRegex.join('|')})[/]*$`,
   );
 
   const sanitizedShop = shopUrlRegex.test(shop) ? shop : null;
