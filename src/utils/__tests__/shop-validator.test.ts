@@ -1,6 +1,6 @@
 import {Context} from '../../context';
 import {InvalidShopError} from '../../error';
-import validateShop, {sanitizeHost, sanitizeShop} from '../shop-validator';
+import {sanitizeHost, sanitizeShop} from '../shop-validator';
 
 const VALID_SHOP_URL_1 = 'someshop.myshopify.com';
 const VALID_SHOP_URL_2 = 'devshop.myshopify.io';
@@ -29,24 +29,6 @@ const INVALID_HOST_1 = 'plain-string-is-not-base64';
 const INVALID_HOST_2 = `${Buffer.from(
   'my-other-host.myshopify.com/admin',
 ).toString('base64')}-nope`;
-
-describe('validateShop', () => {
-  test('returns true for valid shop URLs', () => {
-    expect(validateShop(VALID_SHOP_URL_1)).toBe(true);
-    expect(validateShop(VALID_SHOP_URL_2)).toBe(true);
-    expect(validateShop(VALID_SHOP_URL_3)).toBe(true);
-    expect(validateShop(VALID_SHOP_URL_4)).toBe(true);
-  });
-
-  test('returns false for invalid shop URLs', () => {
-    expect(validateShop(INVALID_SHOP_URL_1)).toBe(false);
-    expect(validateShop(INVALID_SHOP_URL_2)).toBe(false);
-  });
-
-  test("returns false for invalid shop URLs, even if they contain the string 'myshopify.io'", () => {
-    expect(validateShop(`${VALID_SHOP_URL_1}.org/potato`)).toBe(false);
-  });
-});
 
 describe('sanitizeShop', () => {
   test('returns the shop for valid URLs', () => {
