@@ -83,9 +83,9 @@ export class MongoDBSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
-    sanitizeShop(shop, true);
+    const cleanShop = sanitizeShop(shop, true)!;
 
-    const rawResults = await this.collection.find({shop}).toArray();
+    const rawResults = await this.collection.find({shop: cleanShop}).toArray();
     if (!rawResults || rawResults?.length === 0) return [];
 
     return rawResults.map((rawResult: any) =>

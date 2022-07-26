@@ -80,7 +80,7 @@ export class RedisSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
-    sanitizeShop(shop, true);
+    const cleanShop = sanitizeShop(shop, true)!;
 
     const keys = await this.client.keys('*');
     const results: SessionInterface[] = [];
@@ -89,7 +89,7 @@ export class RedisSessionStorage implements SessionStorage {
       if (!rawResult) continue;
 
       const session = sessionFromEntries(JSON.parse(rawResult));
-      if (session.shop === shop) results.push(session);
+      if (session.shop === cleanShop) results.push(session);
     }
 
     return results;

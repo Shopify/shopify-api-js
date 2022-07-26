@@ -27,10 +27,10 @@ export class MemorySessionStorage implements SessionStorage {
   }
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
-    sanitizeShop(shop, true);
+    const cleanShop = sanitizeShop(shop, true)!;
 
     const results = Object.values(this.sessions).filter(
-      (session) => session.shop === shop,
+      (session) => session.shop === cleanShop,
     );
     return results;
   }

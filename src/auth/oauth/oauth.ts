@@ -46,7 +46,7 @@ const ShopifyOAuth = {
   ): Promise<string> {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
-    sanitizeShop(shop, true);
+    const cleanShop = sanitizeShop(shop, true)!;
 
     const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],
@@ -56,8 +56,8 @@ const ShopifyOAuth = {
     const state = nonce();
 
     const session = new Session(
-      isOnline ? uuidv4() : this.getOfflineSessionId(shop),
-      shop,
+      isOnline ? uuidv4() : this.getOfflineSessionId(cleanShop),
+      cleanShop,
       state,
       isOnline,
     );
@@ -89,7 +89,7 @@ const ShopifyOAuth = {
 
     const queryString = querystring.stringify(query);
 
-    return `https://${shop}/admin/oauth/authorize?${queryString}`;
+    return `https://${cleanShop}/admin/oauth/authorize?${queryString}`;
   },
 
   /**

@@ -17,9 +17,9 @@ export default async function loadOfflineSession(
   includeExpired = false,
 ): Promise<Session | undefined> {
   Context.throwIfUninitialized();
-  sanitizeShop(shop, true);
+  const cleanShop = sanitizeShop(shop, true)!;
 
-  const sessionId = OAuth.getOfflineSessionId(shop);
+  const sessionId = OAuth.getOfflineSessionId(cleanShop);
   const session = await Context.SESSION_STORAGE.loadSession(sessionId);
 
   const now = new Date();

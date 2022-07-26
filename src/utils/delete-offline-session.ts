@@ -12,9 +12,9 @@ export default async function deleteOfflineSession(
   shop: string,
 ): Promise<boolean> {
   Context.throwIfUninitialized();
-  sanitizeShop(shop, true);
+  const cleanShop = sanitizeShop(shop, true)!;
 
-  const sessionId = OAuth.getOfflineSessionId(shop);
+  const sessionId = OAuth.getOfflineSessionId(cleanShop);
 
   return Context.SESSION_STORAGE.deleteSession(sessionId);
 }

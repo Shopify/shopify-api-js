@@ -104,13 +104,13 @@ export class CustomSessionStorage implements SessionStorage {
   }
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
-    sanitizeShop(shop, true);
+    const cleanShop = sanitizeShop(shop, true)!;
 
     let sessions: SessionInterface[] = [];
 
     if (this.findSessionsByShopCallback) {
       try {
-        sessions = await this.findSessionsByShopCallback(shop);
+        sessions = await this.findSessionsByShopCallback(cleanShop);
       } catch (error) {
         throw new ShopifyErrors.SessionStorageError(
           `CustomSessionStorage failed to find sessions by shop. Error Details: ${error}`,
