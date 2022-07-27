@@ -2,6 +2,7 @@ import {Session} from '../session';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import * as ShopifyErrors from '../../../error';
+import {sanitizeShop} from '../../../utils/shop-validator';
 
 export class CustomSessionStorage implements SessionStorage {
   constructor(
@@ -103,11 +104,13 @@ export class CustomSessionStorage implements SessionStorage {
   }
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
+    const cleanShop = sanitizeShop(shop, true)!;
+
     let sessions: SessionInterface[] = [];
 
     if (this.findSessionsByShopCallback) {
       try {
-        sessions = await this.findSessionsByShopCallback(shop);
+        sessions = await this.findSessionsByShopCallback(cleanShop);
       } catch (error) {
         throw new ShopifyErrors.SessionStorageError(
           `CustomSessionStorage failed to find sessions by shop. Error Details: ${error}`,

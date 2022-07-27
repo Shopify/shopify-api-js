@@ -106,10 +106,30 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const storage = await storageFactory();
     const prefix = 'find_sessions';
     const sessions = [
-      new Session(`${prefix}_1`, 'find-shop1-sessions', 'state', true),
-      new Session(`${prefix}_2`, 'do-not-find-shop2-sessions', 'state', true),
-      new Session(`${prefix}_3`, 'find-shop1-sessions', 'state', true),
-      new Session(`${prefix}_4`, 'do-not-find-shop3-sessions', 'state', true),
+      new Session(
+        `${prefix}_1`,
+        'find-shop1-sessions.myshopify.io',
+        'state',
+        true,
+      ),
+      new Session(
+        `${prefix}_2`,
+        'do-not-find-shop2-sessions.myshopify.io',
+        'state',
+        true,
+      ),
+      new Session(
+        `${prefix}_3`,
+        'find-shop1-sessions.myshopify.io',
+        'state',
+        true,
+      ),
+      new Session(
+        `${prefix}_4`,
+        'do-not-find-shop3-sessions.myshopify.io',
+        'state',
+        true,
+      ),
     ];
 
     for (const session of sessions) {
@@ -118,7 +138,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     expect(storage.findSessionsByShop).toBeDefined();
     if (storage.findSessionsByShop) {
       const shop1Sessions = await storage.findSessionsByShop(
-        'find-shop1-sessions',
+        'find-shop1-sessions.myshopify.io',
       );
       expect(shop1Sessions).toBeDefined();
       if (shop1Sessions) {
@@ -137,10 +157,30 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const storage = await storageFactory();
     const prefix = 'delete_sessions';
     const sessions = [
-      new Session(`${prefix}_1`, 'delete-shop1-sessions', 'state', true),
-      new Session(`${prefix}_2`, 'do-not-delete-shop2-sessions', 'state', true),
-      new Session(`${prefix}_3`, 'delete-shop1-sessions', 'state', true),
-      new Session(`${prefix}_4`, 'do-not-delete-shop3-sessions', 'state', true),
+      new Session(
+        `${prefix}_1`,
+        'delete-shop1-sessions.myshopify.io',
+        'state',
+        true,
+      ),
+      new Session(
+        `${prefix}_2`,
+        'do-not-delete-shop2-sessions.myshopify.io',
+        'state',
+        true,
+      ),
+      new Session(
+        `${prefix}_3`,
+        'delete-shop1-sessions.myshopify.io',
+        'state',
+        true,
+      ),
+      new Session(
+        `${prefix}_4`,
+        'do-not-delete-shop3-sessions.myshopify.io',
+        'state',
+        true,
+      ),
     ];
 
     for (const session of sessions) {
@@ -149,7 +189,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     expect(storage.deleteSessions).toBeDefined();
     if (storage.deleteSessions && storage.findSessionsByShop) {
       let shop1Sessions = await storage.findSessionsByShop(
-        'delete-shop1-sessions',
+        'delete-shop1-sessions.myshopify.io',
       );
       expect(shop1Sessions).toBeDefined();
       if (shop1Sessions) {
@@ -157,7 +197,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
         const idsToDelete = shop1Sessions.map((session) => session.id);
         await expect(storage.deleteSessions(idsToDelete)).resolves.toBe(true);
         shop1Sessions = await storage.findSessionsByShop(
-          'delete-shop1-sessions',
+          'delete-shop1-sessions.myshopify.io',
         );
         expect(shop1Sessions).toEqual([]);
       }

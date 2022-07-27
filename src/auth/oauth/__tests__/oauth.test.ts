@@ -237,7 +237,12 @@ describe('validateAuthCallback', () => {
   });
 
   test('throws an error when receiving a callback for a shop with no saved session', async () => {
-    await ShopifyOAuth.beginAuth(req, res, 'invalidurl.com', '/some-callback');
+    await ShopifyOAuth.beginAuth(
+      req,
+      res,
+      'test-shop.myshopify.io',
+      '/some-callback',
+    );
 
     await Context.SESSION_STORAGE.deleteSession(cookies.id);
 
@@ -249,7 +254,12 @@ describe('validateAuthCallback', () => {
   });
 
   test('throws error when callback includes invalid hmac, or state', async () => {
-    await ShopifyOAuth.beginAuth(req, res, 'invalidurl.com', '/some-callback');
+    await ShopifyOAuth.beginAuth(
+      req,
+      res,
+      'test-shop.myshopify.io',
+      '/some-callback',
+    );
     const testCallbackQuery: AuthQuery = {
       shop: 'invalidurl.com',
       state: 'incorrect',

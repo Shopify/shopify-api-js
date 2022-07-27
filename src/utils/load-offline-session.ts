@@ -2,6 +2,8 @@ import {Session} from '../auth/session/session';
 import {Context} from '../context';
 import OAuth from '../auth/oauth';
 
+import {sanitizeShop} from './shop-validator';
+
 /**
  * Helper method for quickly loading offline sessions by shop url.
  * By default, returns undefined if there is no session, or the session found is expired.
@@ -15,8 +17,9 @@ export default async function loadOfflineSession(
   includeExpired = false,
 ): Promise<Session | undefined> {
   Context.throwIfUninitialized();
+  const cleanShop = sanitizeShop(shop, true)!;
 
-  const sessionId = OAuth.getOfflineSessionId(shop);
+  const sessionId = OAuth.getOfflineSessionId(cleanShop);
   const session = await Context.SESSION_STORAGE.loadSession(sessionId);
 
   const now = new Date();
