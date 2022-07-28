@@ -29,7 +29,14 @@ describe('HTTP client', () => {
     await expect(client.get({path: '/url/path'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
-    expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
+    expect({
+      method: 'GET',
+      domain,
+      path: '/url/path',
+      headers: {
+        'User-Agent': expect.stringContaining('Shopify API Library v'),
+      },
+    }).toMatchMadeHttpRequest();
   });
 
   it('allows the body to contain non-json 2xx response without dying', () => {
@@ -78,7 +85,11 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
-      headers: {'Content-Type': DataType.JSON.toString()},
+      headers: {
+        'Content-Length': JSON.stringify(postData).length,
+        'Content-Type': DataType.JSON.toString(),
+        'User-Agent': expect.stringContaining('Shopify API Library v'),
+      },
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
   });
@@ -247,7 +258,11 @@ describe('HTTP client', () => {
       method: 'PUT',
       domain,
       path: '/url/path/123',
-      headers: {'Content-Type': DataType.JSON.toString()},
+      headers: {
+        'Content-Length': JSON.stringify(putData).length,
+        'Content-Type': DataType.JSON.toString(),
+        'User-Agent': expect.stringContaining('Shopify API Library v'),
+      },
       data: JSON.stringify(putData),
     }).toMatchMadeHttpRequest();
   });
@@ -264,6 +279,9 @@ describe('HTTP client', () => {
       method: 'DELETE',
       domain,
       path: '/url/path/123',
+      headers: {
+        'User-Agent': expect.stringContaining('Shopify API Library v'),
+      },
     }).toMatchMadeHttpRequest();
   });
 
