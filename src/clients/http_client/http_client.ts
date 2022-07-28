@@ -111,9 +111,9 @@ export class HttpClient {
             break;
         }
         headers = {
+          ...headers,
           'Content-Type': type,
           'Content-Length': Buffer.byteLength(body as string),
-          ...params.extraHeaders,
         };
       }
     }

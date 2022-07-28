@@ -10,6 +10,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - ⚠️ [Breaking] If a response from a GraphQL query contains an `errors` attribute, `GraphqlClient` will now throw a `GraphqlQueryError`. The caller can check the `error.response` attribute to see what was returned from the GraphQL API. [#431](https://github.com/Shopify/shopify-api-node/pull/431)
 - ⚠️ [Breaking] Add utils functions to sanitize shops and hosts, and remove the `validateShop` utils function [#434](https://github.com/Shopify/shopify-api-node/pull/434)
 - Allow passing in options for the Redis client used by the session storage strategy [#430](https://github.com/Shopify/shopify-api-node/pull/430)
+- Fix User-Agent header sent in PUT / POST requests [#435](https://github.com/Shopify/shopify-api-node/pull/435)
 
 ## [4.2.0] - 2022-07-20
 
