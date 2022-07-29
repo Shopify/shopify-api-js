@@ -6,14 +6,16 @@ import Cookies from 'cookies';
 
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
+import nonce from '../../../utils/nonce';
 import * as ShopifyErrors from '../../../error';
 import {AuthQuery} from '../types';
 import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
-import {CustomSessionStorage, Session} from '../../session';
+import {CustomSessionStorage} from '../../session';
 
 jest.mock('cookies');
+jest.mock('../../../utils/nonce', () => jest.fn(() => 'noncenoncenonce'));
 
 let shop: string;
 
@@ -39,7 +41,7 @@ describe('beginAuth', () => {
 
     Cookies.prototype.set.mockImplementation(
       (cookieName: string, cookieValue: string) => {
-        expect(cookieName).toBe('shopify_app_session');
+        expect(cookieName).toBe('shopify_app_state');
         cookies.id = cookieValue;
       },
     );
@@ -53,42 +55,11 @@ describe('beginAuth', () => {
     ).rejects.toThrow(ShopifyErrors.UninitializedContextError);
   });
 
-  test('throws SessionStorageErrors when storeSession returns false', async () => {
-    const storage = new CustomSessionStorage(
-      () => Promise.resolve(false),
-      () => Promise.resolve(new Session('id', shop, 'state', true)),
-      () => Promise.resolve(true),
-    );
-    Context.SESSION_STORAGE = storage;
-
-    await expect(
-      ShopifyOAuth.beginAuth(req, res, shop, 'some-callback'),
-    ).rejects.toThrow(ShopifyErrors.SessionStorageError);
-  });
-
-  test('creates and stores a new session for the specified shop', async () => {
-    const authRoute = await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      shop,
-      '/some-callback',
-    );
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
-
-    expect(Cookies).toHaveBeenCalledTimes(1);
-    expect(Cookies.prototype.set).toHaveBeenCalledTimes(1);
-    expect(authRoute).toBeDefined();
-    expect(session).toBeDefined();
-    expect(session).toHaveProperty('id');
-    expect(session).toHaveProperty('shop', shop);
-    expect(session).toHaveProperty('state');
-    expect(session).toHaveProperty('expires', undefined);
-  });
-
-  test('sets session id and cookie to shop name prefixed with "offline_" for offline access requests', async () => {
+  test('sets cookie to state for offline access requests', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
 
-    expect(cookies.id).toBe(`offline_${shop}`);
+    expect(nonce).toHaveBeenCalled();
+    expect(cookies.id).toBe(`noncenoncenonce`);
   });
 
   test('returns the correct auth url for given info', async () => {
@@ -99,13 +70,12 @@ describe('beginAuth', () => {
       '/some-callback',
       false,
     );
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
       redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}/some-callback`,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       'grant_options[]': '',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
@@ -126,13 +96,12 @@ describe('beginAuth', () => {
       '/some-callback',
       false,
     );
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
       redirect_uri: `http://${Context.HOST_NAME}/some-callback`,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       'grant_options[]': '',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
@@ -152,14 +121,13 @@ describe('beginAuth', () => {
       '/some-callback',
       true,
     );
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
       redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}/some-callback`,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       'grant_options[]': 'per-user',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
@@ -202,7 +170,9 @@ describe('validateAuthCallback', () => {
 
     Cookies.prototype.set.mockImplementation(
       (cookieName: string, cookieValue: string, options: {expires: Date}) => {
-        expect(cookieName).toBe('shopify_app_session');
+        expect(cookieName).toEqual(
+          expect.stringMatching(/^shopify_app_(session|state)/),
+        );
         cookies.id = cookieValue;
         cookies.expires = options.expires;
       },
@@ -213,10 +183,9 @@ describe('validateAuthCallback', () => {
 
   test('throws Context error when not properly initialized', async () => {
     Context.API_KEY = '';
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -236,37 +205,31 @@ describe('validateAuthCallback', () => {
     ).rejects.toThrow(ShopifyErrors.CookieNotFound);
   });
 
-  test('throws an error when receiving a callback for a shop with no saved session', async () => {
-    await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      'test-shop.myshopify.io',
-      '/some-callback',
-    );
-
-    await Context.SESSION_STORAGE.deleteSession(cookies.id);
-
-    await expect(
-      ShopifyOAuth.validateAuthCallback(req, res, {
-        shop: 'I do not exist',
-      } as AuthQuery),
-    ).rejects.toThrow(ShopifyErrors.SessionNotFound);
-  });
-
-  test('throws error when callback includes invalid hmac, or state', async () => {
-    await ShopifyOAuth.beginAuth(
-      req,
-      res,
-      'test-shop.myshopify.io',
-      '/some-callback',
-    );
+  test('throws error when callback includes invalid hmac', async () => {
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
     const testCallbackQuery: AuthQuery = {
-      shop: 'invalidurl.com',
-      state: 'incorrect',
+      shop,
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
     testCallbackQuery.hmac = 'definitely the wrong hmac';
+
+    await expect(
+      ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery),
+    ).rejects.toThrow(ShopifyErrors.InvalidOAuthError);
+  });
+
+  test('throws error when callback includes invalid state', async () => {
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
+    const testCallbackQuery: AuthQuery = {
+      shop,
+      state: 'incorrect state',
+      timestamp: Number(new Date()).toString(),
+      code: 'some random auth code',
+    };
+    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    testCallbackQuery.hmac = expectedHmac;
 
     await expect(
       ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery),
@@ -279,7 +242,7 @@ describe('validateAuthCallback', () => {
 
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -307,12 +270,11 @@ describe('validateAuthCallback', () => {
     ).rejects.toThrow(ShopifyErrors.SessionStorageError);
   });
 
-  test('requests access token for valid callbacks with offline access and updates session', async () => {
-    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
-    let session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+  test('requests access token for valid callbacks with offline access and creates session', async () => {
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -327,18 +289,18 @@ describe('validateAuthCallback', () => {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
-    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
-    session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery, false);
+    expect(cookies.id).toEqual(expect.stringMatching(`offline_${shop}`));
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     expect(session?.accessToken).toBe(successResponse.access_token);
   });
 
-  test('requests access token for valid callbacks with online access and updates session with expiration and onlineAccessInfo', async () => {
+  test('requests access token for valid callbacks with online access and creates session with expiration and onlineAccessInfo', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    let session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -371,8 +333,13 @@ describe('validateAuthCallback', () => {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
-    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
-    session = await Context.SESSION_STORAGE.loadSession(cookies.id);
+    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery, true);
+    expect(cookies.id).toEqual(
+      expect.stringMatching(
+        /^[a-f0-9]{8,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{12,}/,
+      ),
+    );
+    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     expect(session?.accessToken).toBe(successResponse.access_token);
     expect(session?.expires).toBeInstanceOf(Date);
@@ -388,13 +355,11 @@ describe('validateAuthCallback', () => {
     ).rejects.toThrow(ShopifyErrors.PrivateAppError);
   });
 
-  test('properly updates the Oauth cookie for online, embedded apps', async () => {
+  test('properly updates the OAuth cookie for online, embedded apps', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
-    expect(session).not.toBe(null);
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -415,7 +380,7 @@ describe('validateAuthCallback', () => {
     };
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -428,6 +393,7 @@ describe('validateAuthCallback', () => {
       req,
       res,
       testCallbackQuery,
+      true,
     );
 
     const jwtPayload: JwtPayload = {
@@ -476,12 +442,11 @@ describe('validateAuthCallback', () => {
     );
   });
 
-  test('properly updates the Oauth cookie for online, non-embedded apps', async () => {
+  test('properly updates the OAuth cookie for online, non-embedded apps', async () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -502,7 +467,7 @@ describe('validateAuthCallback', () => {
     };
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -515,8 +480,14 @@ describe('validateAuthCallback', () => {
       req,
       res,
       testCallbackQuery,
+      true,
     );
     expect(returnedSession.id).toEqual(cookies.id);
+    expect(cookies.id).toEqual(
+      expect.stringMatching(
+        /^[a-f0-9]{8,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{12,}/,
+      ),
+    );
 
     expect(returnedSession?.expires?.getTime() as number).toBeWithinSecondsOf(
       new Date(Date.now() + successResponse.expires_in * 1000).getTime(),
@@ -531,12 +502,11 @@ describe('validateAuthCallback', () => {
     expect(cookieSession).not.toBeUndefined();
   });
 
-  test('properly updates the Oauth cookie for offline, embedded apps', async () => {
+  test('properly updates the OAuth cookie for offline, embedded apps', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -557,7 +527,7 @@ describe('validateAuthCallback', () => {
     };
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -570,6 +540,7 @@ describe('validateAuthCallback', () => {
       req,
       res,
       testCallbackQuery,
+      false,
     );
     expect(returnedSession.id).toEqual(cookies.id);
     expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
@@ -583,12 +554,11 @@ describe('validateAuthCallback', () => {
     expect(returnedSession?.expires?.getTime()).toBeUndefined();
   });
 
-  test('properly updates the Oauth cookie for offline, non-embedded apps', async () => {
+  test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
     Context.IS_EMBEDDED_APP = false;
     Context.initialize(Context);
 
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
-    const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
     /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
@@ -609,7 +579,7 @@ describe('validateAuthCallback', () => {
     };
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: session ? session.state : '',
+      state: 'noncenoncenonce',
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -622,6 +592,7 @@ describe('validateAuthCallback', () => {
       req,
       res,
       testCallbackQuery,
+      false,
     );
     expect(returnedSession.id).toEqual(cookies.id);
     expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
