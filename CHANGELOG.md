@@ -195,7 +195,11 @@
 =======
 - Add support for billing to the library [#449](https://github.com/Shopify/shopify-api-node/pull/449)
 - Allow dynamically typing the body of REST and GraphQL request responses, so callers don't need to cast it [#447](https://github.com/Shopify/shopify-api-node/pull/447)
+<<<<<<< HEAD
 >>>>>>> 85c72bea (Add billing support)
+=======
+- Rather than create a temporary session in order to store a session id in a cookie for the OAuth transaction, we can store the `state` in the cookie instead, that can then be compared against the `state` provided by Shopify in the callback. [#438](https://github.com/Shopify/shopify-api-node/pull/438)
+>>>>>>> 970dc560 (Store state instead of session id in cookie)
 
 ## [5.0.1] - 2022-08-03
 
