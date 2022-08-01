@@ -105,10 +105,19 @@ export class RedisSessionStorage implements SessionStorage {
 
   private async init() {
     this.client = createClient({
-      ...this.options,
+      socket: this.options.socket,
+      username: this.options.username,
+      password: this.options.password,
+      name: this.options.name,
+      database: this.options.database,
+      commandsQueueMaxLength: this.options.commandsQueueMaxLength,
+      disableOfflineQueue: this.options.disableOfflineQueue,
+      readonly: this.options.disableOfflineQueue,
+      legacyMode: this.options.legacyMode,
+      isolationPoolOptions: this.options.isolationPoolOptions,
       url: this.dbUrl.toString(),
     });
-    this.client.on('error', () => { });
+    this.client.on('error', () => {});
     await this.client.connect();
   }
 }
