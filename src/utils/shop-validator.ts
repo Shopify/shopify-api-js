@@ -43,8 +43,7 @@ export function sanitizeHost(
   host: string,
   throwOnInvalid = false,
 ): string | null {
-  const base64regex =
-    /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+  const base64regex = /^[0-9a-zA-Z+/]+={0,2}$/;
 
   const sanitizedHost = base64regex.test(host) ? host : null;
   if (!sanitizedHost && throwOnInvalid) {
