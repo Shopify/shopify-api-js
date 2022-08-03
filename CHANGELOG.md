@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [5.0.1] - 2022-08-03
+
 - Make `sanitizeHost` validation more flexible [#446](https://github.com/Shopify/shopify-api-node/pull/446)
 
 ## [5.0.0] - 2022-07-28
