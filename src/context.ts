@@ -1,10 +1,13 @@
+import path from 'path';
+
 import * as ShopifyErrors from './error';
 import {SessionStorage} from './auth/session/session_storage';
-import {MemorySessionStorage} from './auth/session/storage/memory';
-import {ApiVersion, ContextParams} from './base_types';
+import {SQLiteSessionStorage} from './auth/session/storage/sqlite';
+import {ApiVersion, ContextParams} from './base-types';
 import {AuthScopes} from './auth/scopes';
 
 interface ContextInterface extends ContextParams {
+  HOST_SCHEME: string;
   SESSION_STORAGE: SessionStorage;
   SCOPES: AuthScopes;
 
@@ -26,15 +29,23 @@ interface ContextInterface extends ContextParams {
   throwIfPrivateApp(message: string): void | never;
 }
 
+const dbFile = path.join(
+  require.main ? path.dirname(require.main.filename) : process.cwd(),
+  'database.sqlite',
+);
+
 const Context: ContextInterface = {
   API_KEY: '',
   API_SECRET_KEY: '',
   SCOPES: new AuthScopes([]),
   HOST_NAME: '',
+  HOST_SCHEME: 'https',
   API_VERSION: ApiVersion.Unstable,
   IS_EMBEDDED_APP: true,
   IS_PRIVATE_APP: false,
-  SESSION_STORAGE: new MemorySessionStorage(),
+  // TS hack as SESSION_STORAGE is guaranteed to be set
+  // to a correct value in `initialize()`.
+  SESSION_STORAGE: null as unknown as SessionStorage,
 
   initialize(params: ContextParams): void {
     let scopes: AuthScopes;
@@ -61,7 +72,9 @@ const Context: ContextInterface = {
 
     if (missing.length) {
       throw new ShopifyErrors.ShopifyError(
-        `Cannot initialize Shopify API Library. Missing values for: ${missing.join(', ')}`,
+        `Cannot initialize Shopify API Library. Missing values for: ${missing.join(
+          ', ',
+        )}`,
       );
     }
 
@@ -72,9 +85,11 @@ const Context: ContextInterface = {
     this.API_VERSION = params.API_VERSION;
     this.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
     this.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
+    this.SESSION_STORAGE =
+      params.SESSION_STORAGE ?? new SQLiteSessionStorage(dbFile);
 
-    if (params.SESSION_STORAGE) {
-      this.SESSION_STORAGE = params.SESSION_STORAGE;
+    if (params.HOST_SCHEME) {
+      this.HOST_SCHEME = params.HOST_SCHEME;
     }
 
     if (params.USER_AGENT_PREFIX) {
@@ -86,7 +101,12 @@ const Context: ContextInterface = {
     }
 
     if (params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN) {
-      this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN = params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
+      this.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN =
+        params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
+    }
+
+    if (params.CUSTOM_SHOP_DOMAINS) {
+      this.CUSTOM_SHOP_DOMAINS = params.CUSTOM_SHOP_DOMAINS;
     }
   },
 

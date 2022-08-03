@@ -19,6 +19,7 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "lib": [
       "dom",
       "dom.iterable",
@@ -26,33 +27,15 @@
       "es2016",
       "es2017",
       "es2018",
+      "es2019",
+      "es2020",
       "esnext.asynciterable"
     ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./node_modules/@types"],
     "outDir": "./dist",
     "baseUrl": ".",
     "rootDir": "src"
   },
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
-  ],
-  "exclude": [
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/test/*"
-  ],
-  "typedocOptions": {
-    "inputFiles": [
-      "./src"
-    ],
-    "mode": "file",
-    "out": "tsdocs",
-    "exclude": "**/test/**",
-    "excludeNotExported": true,
-    "excludePrivate": true,
-    "disableSources": true
-  }
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*"],
 }

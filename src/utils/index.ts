@@ -8,9 +8,10 @@ import graphqlProxy from './graphql_proxy';
 import safeCompare from './safe-compare';
 import storeSession from './store-session';
 import validateHmac from './hmac-validator';
-import validateShop from './shop-validator';
+import {sanitizeShop, sanitizeHost} from './shop-validator';
 import versionCompatible from './version-compatible';
 import withSession from './with-session';
+import getEmbeddedAppUrl from './get-embedded-app-url';
 
 const ShopifyUtils = {
   decodeSessionToken,
@@ -23,9 +24,11 @@ const ShopifyUtils = {
   safeCompare,
   storeSession,
   validateHmac,
-  validateShop,
+  sanitizeShop,
+  sanitizeHost,
   versionCompatible,
   withSession,
+  getEmbeddedAppUrl,
 };
 
 export default ShopifyUtils;

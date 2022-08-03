@@ -1,7 +1,9 @@
 import {Method} from '@shopify/network';
 import {Headers} from 'node-fetch';
 
-export type HeaderParams = Record<string, string | number>;
+export interface HeaderParams {
+  [key: string]: string | number;
+}
 
 export enum DataType {
   JSON = 'application/json', // eslint-disable-line @shopify/typescript/prefer-pascal-case-enums
@@ -9,25 +11,34 @@ export enum DataType {
   URLEncoded = 'application/x-www-form-urlencoded', // eslint-disable-line @shopify/typescript/prefer-pascal-case-enums
 }
 
+export type QueryParams =
+  | string
+  | number
+  | string[]
+  | number[]
+  | {[key: string]: QueryParams};
+
 export interface GetRequestParams {
   path: string;
   type?: DataType;
-  data?: Record<string, unknown> | string;
-  query?: Record<string, string | number>;
+  data?: {[key: string]: unknown} | string;
+  query?: {[key: string]: QueryParams};
   extraHeaders?: HeaderParams;
   tries?: number;
 }
 
 export type PostRequestParams = GetRequestParams & {
   type: DataType;
-  data: Record<string, unknown> | string;
+  data: {[key: string]: unknown} | string;
 };
 
 export type PutRequestParams = PostRequestParams;
 
 export type DeleteRequestParams = GetRequestParams;
 
-export type RequestParams = (GetRequestParams | PostRequestParams) & {method: Method;};
+export type RequestParams = (GetRequestParams | PostRequestParams) & {
+  method: Method;
+};
 
 export interface RequestReturn {
   body: unknown;

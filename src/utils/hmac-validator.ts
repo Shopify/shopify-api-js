@@ -10,15 +10,30 @@ import safeCompare from './safe-compare';
 export function stringifyQuery(query: AuthQuery): string {
   const orderedObj = Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
-    .reduce((obj: Record<string, string | undefined>, key: keyof AuthQuery) => {
-      obj[key] = query[key];
-      return obj;
-    }, {});
+    .reduce(
+      (obj: {[key: string]: string | undefined}, key: keyof AuthQuery) => ({
+        ...obj,
+        [key]: query[key],
+      }),
+      {},
+    );
   return querystring.stringify(orderedObj);
 }
 
-export function generateLocalHmac({code, timestamp, state, shop, host}: AuthQuery): string {
-  const queryString = stringifyQuery({code, timestamp, state, shop, ...host && {host}});
+export function generateLocalHmac({
+  code,
+  timestamp,
+  state,
+  shop,
+  host,
+}: AuthQuery): string {
+  const queryString = stringifyQuery({
+    code,
+    timestamp,
+    state,
+    shop,
+    ...(host && {host}),
+  });
   return crypto
     .createHmac('sha256', Context.API_SECRET_KEY)
     .update(queryString)

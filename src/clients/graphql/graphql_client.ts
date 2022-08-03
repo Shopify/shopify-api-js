@@ -1,6 +1,5 @@
-import {MissingRequiredArgument} from '../../error';
 import {Context} from '../../context';
-import {ShopifyHeader} from '../../base_types';
+import {ShopifyHeader} from '../../base-types';
 import {HttpClient} from '../http_client/http_client';
 import {DataType, RequestReturn} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
@@ -19,7 +18,9 @@ export class GraphqlClient {
 
   constructor(readonly domain: string, readonly accessToken?: string) {
     if (!Context.IS_PRIVATE_APP && !accessToken) {
-      throw new ShopifyErrors.MissingRequiredArgument('Missing access token when creating GraphQL client');
+      throw new ShopifyErrors.MissingRequiredArgument(
+        'Missing access token when creating GraphQL client',
+      );
     }
 
     this.client = new HttpClient(this.domain);
@@ -27,7 +28,7 @@ export class GraphqlClient {
 
   async query(params: GraphqlParams): Promise<RequestReturn> {
     if (params.data.length === 0) {
-      throw new MissingRequiredArgument('Query missing.');
+      throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
     }
 
     const accessTokenHeader = this.getAccessTokenHeader();
@@ -46,13 +47,23 @@ export class GraphqlClient {
       dataType = DataType.GraphQL;
     }
 
-    return this.client.post({path, type: dataType, ...params});
+    const result = await this.client.post({path, type: dataType, ...params});
+
+    if ((result.body as {[key: string]: unknown}).errors) {
+      throw new ShopifyErrors.GraphqlQueryError({
+        message: 'GraphQL query returned errors',
+        response: result.body as {[key: string]: unknown},
+      });
+    }
+    return result;
   }
 
   protected getAccessTokenHeader(): AccessTokenHeader {
     return {
       header: ShopifyHeader.AccessToken,
-      value: Context.IS_PRIVATE_APP ? Context.API_SECRET_KEY : this.accessToken as string,
+      value: Context.IS_PRIVATE_APP
+        ? Context.API_SECRET_KEY
+        : (this.accessToken as string),
     };
   }
 }

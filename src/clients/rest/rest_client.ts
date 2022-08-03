@@ -1,7 +1,7 @@
 import querystring from 'querystring';
 
 import {Context} from '../../context';
-import {ShopifyHeader} from '../../base_types';
+import {ShopifyHeader} from '../../base-types';
 import {HttpClient} from '../http_client/http_client';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
@@ -16,24 +16,28 @@ class RestClient extends HttpClient {
     super(domain);
 
     if (!Context.IS_PRIVATE_APP && !accessToken) {
-      throw new ShopifyErrors.MissingRequiredArgument('Missing access token when creating REST client');
+      throw new ShopifyErrors.MissingRequiredArgument(
+        'Missing access token when creating REST client',
+      );
     }
   }
 
   protected async request(params: RequestParams): Promise<RestRequestReturn> {
     params.extraHeaders = {
-      [ShopifyHeader.AccessToken]: Context.IS_PRIVATE_APP ? Context.API_SECRET_KEY : this.accessToken as string,
+      [ShopifyHeader.AccessToken]: Context.IS_PRIVATE_APP
+        ? Context.API_SECRET_KEY
+        : (this.accessToken as string),
       ...params.extraHeaders,
     };
-
-    params.path = this.getRestPath(params.path);
 
     const ret = (await super.request(params)) as RestRequestReturn;
 
     const link = ret.headers.get('link');
-    if (params.query && link !== undefined) {
+    if (link !== undefined) {
       const pageInfo: PageInfo = {
-        limit: params.query.limit ? params.query.limit.toString() : RestClient.DEFAULT_LIMIT,
+        limit: params.query?.limit
+          ? params.query?.limit.toString()
+          : RestClient.DEFAULT_LIMIT,
       };
 
       if (link) {
@@ -75,8 +79,16 @@ class RestClient extends HttpClient {
     return ret;
   }
 
-  private getRestPath(path: string): string {
-    return `/admin/api/${Context.API_VERSION}/${path}.json`;
+  protected getRequestPath(path: string): string {
+    const cleanPath = super.getRequestPath(path);
+    if (cleanPath.startsWith('/admin')) {
+      return `${cleanPath.replace(/\.json$/, '')}.json`;
+    } else {
+      return `/admin/api/${Context.API_VERSION}${cleanPath.replace(
+        /\.json$/,
+        '',
+      )}.json`;
+    }
   }
 
   private buildRequestParams(newPageUrl: string): GetRequestParams {
@@ -84,7 +96,9 @@ class RestClient extends HttpClient {
 
     const url = new URL(newPageUrl);
     const path = url.pathname.replace(new RegExp(pattern), '$1');
-    const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as Record<string, string | number>;
+    const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as {
+      [key: string]: string | number;
+    };
     return {
       path,
       query,
