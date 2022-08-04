@@ -1,10 +1,11 @@
-import {createClient, RedisClientType, RedisClientOptions} from 'redis';
+import {createClient, RedisClientOptions} from 'redis';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
 import {sanitizeShop} from '../../../utils/shop-validator';
 
+type RedisClient = ReturnType<typeof createClient>;
 export interface RedisSessionStorageOptions extends RedisClientOptions {
   sessionKeyPrefix: string;
   onError?: (...args: any[]) => void;
@@ -33,7 +34,7 @@ export class RedisSessionStorage implements SessionStorage {
 
   public readonly ready: Promise<void>;
   private options: RedisSessionStorageOptions;
-  private client: RedisClientType;
+  private client: RedisClient;
 
   constructor(
     private dbUrl: URL,
@@ -106,16 +107,7 @@ export class RedisSessionStorage implements SessionStorage {
 
   private async init() {
     this.client = createClient({
-      socket: this.options.socket,
-      username: this.options.username,
-      password: this.options.password,
-      name: this.options.name,
-      database: this.options.database,
-      commandsQueueMaxLength: this.options.commandsQueueMaxLength,
-      disableOfflineQueue: this.options.disableOfflineQueue,
-      readonly: this.options.disableOfflineQueue,
-      legacyMode: this.options.legacyMode,
-      isolationPoolOptions: this.options.isolationPoolOptions,
+      ...this.options,
       url: this.dbUrl.toString(),
     });
     this.client.on(
