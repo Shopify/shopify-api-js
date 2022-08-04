@@ -7,6 +7,7 @@ import {sanitizeShop} from '../../../utils/shop-validator';
 
 export interface RedisSessionStorageOptions extends RedisClientOptions {
   sessionKeyPrefix: string;
+  onError?: (...args: any[]) => void;
 }
 const defaultRedisSessionStorageOptions: RedisSessionStorageOptions = {
   sessionKeyPrefix: 'shopify_sessions',
@@ -117,7 +118,10 @@ export class RedisSessionStorage implements SessionStorage {
       isolationPoolOptions: this.options.isolationPoolOptions,
       url: this.dbUrl.toString(),
     });
-    this.client.on('error', () => {});
+    this.client.on(
+      'error',
+      this.options.onError ? this.options.onError : () => {},
+    );
     await this.client.connect();
   }
 }
