@@ -262,11 +262,11 @@ const WebhooksRegistry: RegistryInterface = {
         ? `${Context.HOST_SCHEME}://${Context.HOST_NAME}${path}`
         : path;
 
-    let checkResult: {body: WebhookCheckResponse};
+    let checkResult;
     try {
-      checkResult = (await client.query({
+      checkResult = await client.query<WebhookCheckResponse>({
         data: buildCheckQuery(topic),
-      })) as {body: WebhookCheckResponse};
+      });
     } catch (error) {
       const result =
         error instanceof ShopifyErrors.GraphqlQueryError ? error.response : {};
