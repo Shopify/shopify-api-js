@@ -203,28 +203,6 @@ describe('GraphQL client', () => {
       data: JSON.stringify(query),
     }).toMatchMadeHttpRequest();
   });
-
-  it('properly types the response', async () => {
-    const client: GraphqlClient = new GraphqlClient(DOMAIN, 'bork');
-
-    const typedResponse = {
-      value1: 1,
-      value2: false,
-    };
-
-    fetchMock.mockResponseOnce(JSON.stringify(typedResponse));
-
-    const response = await client.query<typeof typedResponse>({data: QUERY});
-
-    expect({
-      method: 'POST',
-      domain: DOMAIN,
-      path: '/admin/api/unstable/graphql.json',
-      data: QUERY,
-    }).toMatchMadeHttpRequest();
-
-    expect(typeof response).toBe(typeof typedResponse);
-  });
 });
 
 function buildExpectedResponse(obj: unknown) {

@@ -370,28 +370,6 @@ describe('REST client', () => {
       path: '/admin/some-path.json',
     }).toMatchMadeHttpRequest();
   });
-
-  it('properly types the response', async () => {
-    const client = new RestClient(domain, 'dummy-token');
-
-    const typedResponse = {
-      value1: 1,
-      value2: false,
-    };
-
-    fetchMock.mockResponseOnce(JSON.stringify(typedResponse));
-
-    const response = await client.get<typeof typedResponse>({
-      path: 'path.json',
-    });
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/unstable/path.json',
-    }).toMatchMadeHttpRequest();
-
-    expect(typeof response).toBe(typeof typedResponse);
-  });
 });
 
 function getDefaultPageInfo(): PageInfo {

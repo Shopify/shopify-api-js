@@ -32,7 +32,7 @@ class RestClient extends HttpClient {
       ...params.extraHeaders,
     };
 
-    const ret = (await super.request(params)) as RestRequestReturn;
+    const ret = (await super.request<T>(params)) as RestRequestReturn<T>;
 
     const link = ret.headers.get('link');
     if (link !== undefined) {
@@ -78,7 +78,7 @@ class RestClient extends HttpClient {
       ret.pageInfo = pageInfo;
     }
 
-    return ret as unknown as RestRequestReturn<T>;
+    return ret;
   }
 
   protected getRequestPath(path: string): string {
