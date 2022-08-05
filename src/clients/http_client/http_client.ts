@@ -40,32 +40,42 @@ export class HttpClient {
   /**
    * Performs a GET request on the given path.
    */
-  public async get(params: GetRequestParams): Promise<RequestReturn> {
-    return this.request({method: Method.Get, ...params});
+  public async get<T = unknown>(
+    params: GetRequestParams,
+  ): Promise<RequestReturn<T>> {
+    return this.request<T>({method: Method.Get, ...params});
   }
 
   /**
    * Performs a POST request on the given path.
    */
-  public async post(params: PostRequestParams): Promise<RequestReturn> {
-    return this.request({method: Method.Post, ...params});
+  public async post<T = unknown>(
+    params: PostRequestParams,
+  ): Promise<RequestReturn<T>> {
+    return this.request<T>({method: Method.Post, ...params});
   }
 
   /**
    * Performs a PUT request on the given path.
    */
-  public async put(params: PutRequestParams): Promise<RequestReturn> {
-    return this.request({method: Method.Put, ...params});
+  public async put<T = unknown>(
+    params: PutRequestParams,
+  ): Promise<RequestReturn<T>> {
+    return this.request<T>({method: Method.Put, ...params});
   }
 
   /**
    * Performs a DELETE request on the given path.
    */
-  public async delete(params: DeleteRequestParams): Promise<RequestReturn> {
-    return this.request({method: Method.Delete, ...params});
+  public async delete<T = unknown>(
+    params: DeleteRequestParams,
+  ): Promise<RequestReturn<T>> {
+    return this.request<T>({method: Method.Delete, ...params});
   }
 
-  protected async request(params: RequestParams): Promise<RequestReturn> {
+  protected async request<T = unknown>(
+    params: RequestParams,
+  ): Promise<RequestReturn<T>> {
     const maxTries = params.tries ? params.tries : 1;
     if (maxTries <= 0) {
       throw new ShopifyErrors.HttpRequestError(
@@ -134,7 +144,7 @@ export class HttpClient {
     let tries = 0;
     while (tries < maxTries) {
       try {
-        return await this.doRequest(url, options);
+        return await this.doRequest<T>(url, options);
       } catch (error) {
         tries++;
         if (error instanceof ShopifyErrors.HttpRetriableError) {
@@ -175,10 +185,10 @@ export class HttpClient {
     return `/${path.replace(/^\//, '')}`;
   }
 
-  private async doRequest(
+  private async doRequest<T = unknown>(
     url: string,
     options: RequestInit,
-  ): Promise<RequestReturn> {
+  ): Promise<RequestReturn<T>> {
     try {
       const response: Response = await fetch(url, options);
       const body = await response.json().catch(() => ({}));
