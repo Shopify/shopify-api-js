@@ -32,7 +32,7 @@ class RestClient extends HttpClient {
       ...params.extraHeaders,
     };
 
-    const ret = (await super.request<T>(params)) as RestRequestReturn<T>;
+    const ret: RestRequestReturn<T> = await super.request<T>(params);
 
     const link = ret.headers.get('link');
     if (link !== undefined) {

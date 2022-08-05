@@ -40,36 +40,28 @@ export class HttpClient {
   /**
    * Performs a GET request on the given path.
    */
-  public async get<T = unknown>(
-    params: GetRequestParams,
-  ): Promise<RequestReturn<T>> {
+  public async get<T = unknown>(params: GetRequestParams) {
     return this.request<T>({method: Method.Get, ...params});
   }
 
   /**
    * Performs a POST request on the given path.
    */
-  public async post<T = unknown>(
-    params: PostRequestParams,
-  ): Promise<RequestReturn<T>> {
+  public async post<T = unknown>(params: PostRequestParams) {
     return this.request<T>({method: Method.Post, ...params});
   }
 
   /**
    * Performs a PUT request on the given path.
    */
-  public async put<T = unknown>(
-    params: PutRequestParams,
-  ): Promise<RequestReturn<T>> {
+  public async put<T = unknown>(params: PutRequestParams) {
     return this.request<T>({method: Method.Put, ...params});
   }
 
   /**
    * Performs a DELETE request on the given path.
    */
-  public async delete<T = unknown>(
-    params: DeleteRequestParams,
-  ): Promise<RequestReturn<T>> {
+  public async delete<T = unknown>(params: DeleteRequestParams) {
     return this.request<T>({method: Method.Delete, ...params});
   }
 
