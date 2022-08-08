@@ -26,7 +26,7 @@ export class GraphqlClient {
     this.client = new HttpClient(this.domain);
   }
 
-  async query(params: GraphqlParams): Promise<RequestReturn> {
+  async query<T = unknown>(params: GraphqlParams): Promise<RequestReturn<T>> {
     if (params.data.length === 0) {
       throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
     }
@@ -47,12 +47,12 @@ export class GraphqlClient {
       dataType = DataType.GraphQL;
     }
 
-    const result = await this.client.post({path, type: dataType, ...params});
+    const result = await this.client.post<T>({path, type: dataType, ...params});
 
-    if ((result.body as {[key: string]: unknown}).errors) {
+    if ((result.body as unknown as {[key: string]: unknown}).errors) {
       throw new ShopifyErrors.GraphqlQueryError({
         message: 'GraphQL query returned errors',
-        response: result.body as {[key: string]: unknown},
+        response: result.body as unknown as {[key: string]: unknown},
       });
     }
     return result;

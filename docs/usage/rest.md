@@ -38,21 +38,27 @@ The `RestClient` offers the 4 core request methods: `get`, `delete`, `post`, and
 
 ## Usage Examples:
 
-We can run the code below in any endpoint where we have access to the request and response objects.
+We can run the code below in any endpoint where we have access to the request and response objects, optionally typing the body of the response.
 
 ### Perform a `GET` request:
 
 ```ts
+// Example expected type for the response body
+interface MyResponseBodyType {
+  products: { ... }
+}
+
 // Load the current session to get the `accessToken`.
 const session = await Shopify.Utils.loadCurrentSession(req, res);
 // Create a new client for the specified shop.
 const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
 // Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
-const products = await client.get({
+const response = await client.get<MyResponseBodyType>({
   path: 'products',
 });
 
-// do something with the returned data
+// response.body will be of type MyResponseBodyType
+response.body.products...
 ```
 
 ### Perform a `POST` request:

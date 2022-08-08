@@ -22,7 +22,9 @@ class RestClient extends HttpClient {
     }
   }
 
-  protected async request(params: RequestParams): Promise<RestRequestReturn> {
+  protected async request<T = unknown>(
+    params: RequestParams,
+  ): Promise<RestRequestReturn<T>> {
     params.extraHeaders = {
       [ShopifyHeader.AccessToken]: Context.IS_PRIVATE_APP
         ? Context.API_SECRET_KEY
@@ -30,7 +32,7 @@ class RestClient extends HttpClient {
       ...params.extraHeaders,
     };
 
-    const ret = (await super.request(params)) as RestRequestReturn;
+    const ret: RestRequestReturn<T> = await super.request<T>(params);
 
     const link = ret.headers.get('link');
     if (link !== undefined) {

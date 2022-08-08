@@ -71,10 +71,12 @@ describe('sanitizeHost', () => {
   test('returns the shop for valid URLs', () => {
     expect(sanitizeHost(VALID_HOST_1)).toEqual(VALID_HOST_1);
     expect(sanitizeHost(VALID_HOST_2)).toEqual(VALID_HOST_2);
+    expect(sanitizeHost(`${VALID_HOST_2}==`)).toEqual(`${VALID_HOST_2}==`);
   });
 
   test('returns null for invalid URLs', () => {
     expect(sanitizeHost(INVALID_HOST_1)).toBe(null);
     expect(sanitizeHost(INVALID_HOST_2)).toBe(null);
+    expect(sanitizeHost(`==${INVALID_HOST_2}`)).toBe(null);
   });
 });
