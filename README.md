@@ -111,7 +111,10 @@ To do that, apps will need to:
   - [Register a Webhook](docs/usage/webhooks.md#register-a-webhook)
   - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
 - [Billing](docs/usage/billing.md)
+<<<<<<< HEAD
 - [Adding custom runtimes](docs/usage/runtimes.md)
+=======
+>>>>>>> 85c72bea (Add billing support)
 - [Known issues and caveats](docs/issues.md)
   - [Notes on session handling](docs/issues.md#notes-on-session-handling)
 

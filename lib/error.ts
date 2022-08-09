@@ -121,5 +121,8 @@ export class BillingError extends ShopifyError {
     this.errorData = errorData;
   }
 }
+<<<<<<< HEAD:lib/error.ts
 
 export class FeatureDeprecatedError extends ShopifyError {}
+=======
+>>>>>>> 85c72bea (Add billing support):src/error.ts

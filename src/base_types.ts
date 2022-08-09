@@ -1,5 +1,10 @@
 import {SessionStorage} from './auth/session';
 import {AuthScopes} from './auth/scopes';
+<<<<<<< HEAD:src/base_types.ts
+=======
+import {SessionStorage} from './auth/session/session_storage';
+import {BillingSettings} from './billing/types';
+>>>>>>> 85c72bea (Add billing support):src/base-types.ts
 
 export interface ContextParams {
   API_KEY: string;
@@ -12,6 +17,12 @@ export interface ContextParams {
   SESSION_STORAGE?: SessionStorage;
   LOG_FILE?: string;
   USER_AGENT_PREFIX?: string;
+<<<<<<< HEAD:src/base_types.ts
+=======
+  PRIVATE_APP_STOREFRONT_ACCESS_TOKEN?: string;
+  CUSTOM_SHOP_DOMAINS?: (RegExp | string)[];
+  BILLING?: BillingSettings;
+>>>>>>> 85c72bea (Add billing support):src/base-types.ts
 }
 
 export enum ApiVersion {
