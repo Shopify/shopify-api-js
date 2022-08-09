@@ -108,6 +108,10 @@ const Context: ContextInterface = {
     if (params.CUSTOM_SHOP_DOMAINS) {
       this.CUSTOM_SHOP_DOMAINS = params.CUSTOM_SHOP_DOMAINS;
     }
+
+    if (params.BILLING) {
+      this.BILLING = params.BILLING;
+    }
   },
 
   throwIfUninitialized(): void {
