@@ -92,3 +92,14 @@ export class MissingRequiredArgument extends ShopifyError {}
 export class UnsupportedClientType extends ShopifyError {}
 
 export class InvalidRequestError extends ShopifyError {}
+
+export class BillingError extends ShopifyError {
+  readonly errorData: any;
+
+  public constructor({message, errorData}: {message: string; errorData: any}) {
+    super(message);
+
+    this.message = message;
+    this.errorData = errorData;
+  }
+}

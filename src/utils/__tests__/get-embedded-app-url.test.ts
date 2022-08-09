@@ -48,7 +48,7 @@ describe('getEmbeddedAppUrl', () => {
     } as http.IncomingMessage;
 
     expect(() => getEmbeddedAppUrl(req)).toThrow(
-      ShopifyErrors.InvalidRequestError,
+      ShopifyErrors.InvalidHostError,
     );
   });
 

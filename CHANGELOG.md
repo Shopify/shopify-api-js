@@ -7,6 +7,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- Add support for billing to the library [#449](https://github.com/Shopify/shopify-api-node/pull/449)
 - Allow dynamically typing the body of REST and GraphQL request responses, so callers don't need to cast it [#447](https://github.com/Shopify/shopify-api-node/pull/447)
 
 ## [5.0.1] - 2022-08-03
