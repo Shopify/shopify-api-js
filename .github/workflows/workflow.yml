@@ -2,19 +2,26 @@ on: [push, pull_request]
 name: CI
 jobs:
   CI:
+    name: CI (${{ matrix.version }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [14, 16, 18]
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: ${{ matrix.version }}
       - name: Install
         run: yarn install
       - name: Lint
         run: yarn lint
       - name: Test
         run: yarn test
-      - name: Test REST resources
-        run: yarn test_rest_resources
+      # TODO reinstate these tests once we re-introduce the wrappers
+      # - name: Test REST resources
+      #   run: yarn test:rest:resources
       - name: Test SessionStorage implementations
-        run: yarn test_sessionstorage
+        run: yarn test:session:storage
+      - name: Run isomorphic tests
+        run: yarn test:adapters:node

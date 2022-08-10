@@ -1,8 +1,8 @@
 import fetchMock from 'jest-fetch-mock';
 
-import {Context} from '../context';
-import {ApiVersion} from '../base-types';
-import {MemorySessionStorage} from '../auth/session';
+import {Context} from './context';
+import {ApiVersion} from './base-types';
+import {MemorySessionStorage} from './auth/session';
 
 fetchMock.enableMocks();
 
