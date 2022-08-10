@@ -2,7 +2,12 @@
   "name": "@shopify/shopify-api",
   "version": "5.0.1",
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
-  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./oauth": "./dist/src/auth/oauth/index.js",
+    "./webhooks": "./dist/src/webhooks/registry.js",
+    "./runtimes/node": "./dist/src/runtimes/node.js"
+  },
   "types": "dist/index.d.ts",
   "prettier": "@shopify/prettier-config",
   "scripts": {
