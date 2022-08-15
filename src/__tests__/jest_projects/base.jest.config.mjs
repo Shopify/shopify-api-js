@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   preset: 'ts-jest/presets/default-esm', // or other ESM presets
   globals: {
     'ts-jest': {
@@ -7,9 +7,8 @@ module.exports = {
   },
   testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'js', 'json'],
-  watchPathIgnorePatterns: ['<rootDir>/node_modules/'],
+  watchPathIgnorePatterns: ['./node_modules'],
   testRegex: '.*\\.test\\.tsx?$',
   coverageDirectory: './coverage/',
-  collectCoverage: true,
-  setupFilesAfterEnv: ['<rootDir>/src/setup-jest.ts'],
+  collectCoverage: false,
 };
