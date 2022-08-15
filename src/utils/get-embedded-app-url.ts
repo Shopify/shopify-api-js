@@ -28,11 +28,17 @@ export default function getEmbeddedAppUrl(
   const url = new URL(request.url, `https://${request.headers.host}`);
   const host = url.searchParams.get('host');
 
-  if (typeof host !== 'string' || !sanitizeHost(host)) {
+  if (typeof host !== 'string') {
     throw new ShopifyErrors.InvalidRequestError(
       'Request does not contain a host query parameter',
     );
   }
+
+  return buildEmbeddedAppUrl(host);
+}
+
+export function buildEmbeddedAppUrl(host: string): string {
+  sanitizeHost(host, true);
 
   const decodedHost = Buffer.from(host, 'base64').toString();
 

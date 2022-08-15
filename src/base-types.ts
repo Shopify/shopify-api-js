@@ -1,5 +1,6 @@
 import {AuthScopes} from './auth/scopes';
 import {SessionStorage} from './auth/session/session_storage';
+import {BillingSettings} from './billing/types';
 
 export interface ContextParams {
   API_KEY: string;
@@ -15,6 +16,7 @@ export interface ContextParams {
   USER_AGENT_PREFIX?: string;
   PRIVATE_APP_STOREFRONT_ACCESS_TOKEN?: string;
   CUSTOM_SHOP_DOMAINS?: (RegExp | string)[];
+  BILLING?: BillingSettings;
 }
 
 export enum ApiVersion {
