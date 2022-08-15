@@ -40,21 +40,21 @@ This method will take in the following parameters:
 
 And return the following:
 
-| Parameter         | Type                   | Notes                                               |
-| ----------------- | ---------------------- | --------------------------------------------------- |
-| `hasPayment`      | `boolean`              | Whether the store has already paid for the app      |
-| `confirmationUrl` | `string` / `undefined` | The URL to redirect to if payment is still required |
+| Parameter           | Type                   | Notes                                               |
+| ------------------- | ---------------------- | --------------------------------------------------- |
+| `hasPayment`        | `boolean`              | Whether the store has already paid for the app      |
+| `confirmBillingUrl` | `string` / `undefined` | The URL to redirect to if payment is still required |
 
 Here's a typical example of how to use `check`:
 
 ```ts
-const {hasPayment, confirmationUrl} = await Shopify.Billing.check({
+const {hasPayment, confirmBillingUrl} = await Shopify.Billing.check({
   session,
   isTest: true,
 });
 
 if (!hasPayment) {
-  return redirect(confirmationUrl);
+  return redirect(confirmBillingUrl);
 }
 
 // Proceed with app logic

@@ -47,7 +47,7 @@ describe('check', () => {
 
         expect(response).toEqual({
           hasPayment: false,
-          confirmationUrl: CONFIRMATION_URL,
+          confirmBillingUrl: CONFIRMATION_URL,
         });
         expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(fetchMock).toHaveBeenNthCalledWith(
@@ -71,6 +71,26 @@ describe('check', () => {
       }),
     );
 
+    test('defaults to test purchases', async () => {
+      fetchMock.mockResponses(EMPTY_SUBSCRIPTIONS, PURCHASE_ONE_TIME_RESPONSE);
+
+      const response = await check({session});
+
+      expect(response).toEqual({
+        hasPayment: false,
+        confirmBillingUrl: CONFIRMATION_URL,
+      });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+
+      const parsedBody = JSON.parse(
+        fetchMock.mock.calls[1][1]!.body!.toString(),
+      );
+      expect(parsedBody).toMatchObject({
+        query: expect.stringContaining('appPurchaseOneTimeCreate'),
+        variables: expect.objectContaining({test: true}),
+      });
+    });
+
     test('does not request payment if there is one', async () => {
       fetchMock.mockResponses(EXISTING_ONE_TIME_PAYMENT);
 
@@ -81,7 +101,7 @@ describe('check', () => {
 
       expect(response).toEqual({
         hasPayment: true,
-        confirmationUrl: undefined,
+        confirmBillingUrl: undefined,
       });
       expect(fetchMock).toHaveBeenCalledTimes(1);
       expect(fetchMock).toHaveBeenNthCalledWith(
@@ -106,7 +126,7 @@ describe('check', () => {
 
       expect(response).toEqual({
         hasPayment: false,
-        confirmationUrl: CONFIRMATION_URL,
+        confirmBillingUrl: CONFIRMATION_URL,
       });
       expect(fetchMock).toHaveBeenCalledTimes(2);
       expect(fetchMock).toHaveBeenNthCalledWith(
@@ -135,7 +155,7 @@ describe('check', () => {
 
       expect(response).toEqual({
         hasPayment: true,
-        confirmationUrl: undefined,
+        confirmBillingUrl: undefined,
       });
       expect(fetchMock).toHaveBeenCalledTimes(2);
 
@@ -193,7 +213,7 @@ describe('check', () => {
 
         expect(response).toEqual({
           hasPayment: false,
-          confirmationUrl: CONFIRMATION_URL,
+          confirmBillingUrl: CONFIRMATION_URL,
         });
         expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(fetchMock).toHaveBeenNthCalledWith(
@@ -217,6 +237,29 @@ describe('check', () => {
       }),
     );
 
+    test('defaults to test purchases', async () => {
+      fetchMock.mockResponses(
+        EMPTY_SUBSCRIPTIONS,
+        PURCHASE_SUBSCRIPTION_RESPONSE,
+      );
+
+      const response = await check({session});
+
+      expect(response).toEqual({
+        hasPayment: false,
+        confirmBillingUrl: CONFIRMATION_URL,
+      });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+
+      const parsedBody = JSON.parse(
+        fetchMock.mock.calls[1][1]!.body!.toString(),
+      );
+      expect(parsedBody).toMatchObject({
+        query: expect.stringContaining('appSubscriptionCreate'),
+        variables: expect.objectContaining({test: true}),
+      });
+    });
+
     test('does not request subscription if there is one', async () => {
       fetchMock.mockResponses(EXISTING_SUBSCRIPTION);
 
@@ -227,7 +270,7 @@ describe('check', () => {
 
       expect(response).toEqual({
         hasPayment: true,
-        confirmationUrl: undefined,
+        confirmBillingUrl: undefined,
       });
 
       expect(fetchMock).toHaveBeenCalledTimes(1);

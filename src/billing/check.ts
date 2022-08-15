@@ -6,31 +6,31 @@ import {requestPayment} from './request_payment';
 
 interface CheckInterface {
   session: SessionInterface;
-  isTest: boolean;
+  isTest?: boolean;
 }
 
 interface CheckReturn {
   hasPayment: boolean;
-  confirmationUrl?: string;
+  confirmBillingUrl?: string;
 }
 
 export async function check({
   session,
-  isTest,
+  isTest = true,
 }: CheckInterface): Promise<CheckReturn> {
   if (!Context.BILLING) {
-    return {hasPayment: true, confirmationUrl: undefined};
+    return {hasPayment: true, confirmBillingUrl: undefined};
   }
 
-  let hasPayment;
-  let confirmationUrl;
+  let hasPayment: boolean;
+  let confirmBillingUrl: string | undefined;
 
   if (await hasActivePayment(session, isTest)) {
     hasPayment = true;
   } else {
     hasPayment = false;
-    confirmationUrl = await requestPayment(session, isTest);
+    confirmBillingUrl = await requestPayment(session, isTest);
   }
 
-  return {hasPayment, confirmationUrl};
+  return {hasPayment, confirmBillingUrl};
 }
