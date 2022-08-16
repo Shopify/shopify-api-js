@@ -14,23 +14,23 @@ This library provides support for TypeScript/JavaScript [Shopify](https://www.sh
 
 Once your app has access to the Admin API, you can also access the [Shopify Storefront API](https://shopify.dev/docs/storefront-api) to run GraphQL queries using the `unauthenticated_*` access scopes.
 
-This library can be used in any application that has a Node.js backend, since it doesn't rely on any specific framework—you can include it alongside your preferred stack and only use the features that you need to build your app.
+This library can be used in any application that runs on one of the supported runtimes. It doesn't rely on any specific framework, so you can include it alongside your preferred stack and only use the features that you need to build your app.
 
-# Requirements
+## Requirements
 
 To follow these usage guides, you will need to:
 
-- have a basic understanding of [Node.js](https://nodejs.org)
+- have a basic understanding of [TypeScript](https://www.typescriptlang.org/)
 - have a Shopify Partner account and development store
 - _OR_ have a test store where you can create a private app
 - have a private or custom app already set up in your test store or partner account
 - use [ngrok](https://ngrok.com), in order to create a secure tunnel to your app running on your localhost
 - add the `ngrok` URL and the appropriate redirect for your OAuth callback route to your app settings
-- have [yarn](https://yarnpkg.com) installed
+- have a JavaScript package manager such as [yarn](https://yarnpkg.com) installed
 
 <!-- Make sure this section is in sync with docs/README.md -->
 
-# Getting started
+## Getting started
 
 You can follow our [getting started guide](docs/), which will provide instructions on how to create an app using plain Node.js code, or the [Express](https://expressjs.com/) framework. Both examples are written in Typescript.
 
@@ -53,3 +53,11 @@ You can follow our [getting started guide](docs/), which will provide instructio
   - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
 - [Known issues and caveats](docs/issues.md)
   - [Notes on session handling](docs/issues.md#notes-on-session-handling)
+
+## Migrating from the Node.js-only version
+
+This library used to work only on Node.js runtimes, but we refactored it to be able to run on any runtime for which we provide an adapter.
+If we don't provide an adapter for the runtime you want to run on, you can create your own adapter by implementing some key functions, or contribute a PR to this repository.
+
+While we've updated the library to work with different runtimes, we've also improved its public interface to make it easier for apps to load only the features they need from the library.
+If you're upgrading an existing app, please see [this migration guide](docs/migrating_to_isomorphic.md).
