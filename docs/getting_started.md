@@ -122,6 +122,7 @@ While setting up `Context`, you'll be able to set [which version of the Admin AP
 import http from 'http';
 import url from 'url';
 import querystring from 'querystring';
+import '@shopify/shopify-api/adapters/node';
 import Shopify, { ApiVersion } from '@shopify/shopify-api';
 require('dotenv').config();
 
@@ -180,6 +181,7 @@ http.createServer(onRequest).listen(3000);
 ```ts
 // src/index.ts
 import express from 'express';
+import '@shopify/shopify-api/adapters/node';
 import Shopify, { ApiVersion } from '@shopify/shopify-api';
 require('dotenv').config();
 
