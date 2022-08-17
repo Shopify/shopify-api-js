@@ -14,8 +14,10 @@ import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
 import {CustomSessionStorage} from '../../session';
 
+const VALID_NONCE = 'noncenoncenonce';
+
 jest.mock('cookies');
-jest.mock('../../../utils/nonce', () => jest.fn(() => 'noncenoncenonce'));
+jest.mock('../../../utils/nonce', () => jest.fn(() => VALID_NONCE));
 
 let shop: string;
 
@@ -59,7 +61,14 @@ describe('beginAuth', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
 
     expect(nonce).toHaveBeenCalled();
-    expect(cookies.id).toBe(`noncenoncenonce`);
+    expect(cookies.id).toBe(`offline_${VALID_NONCE}`);
+  });
+
+  test('sets cookie to state for online access requests', async () => {
+    await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
+
+    expect(nonce).toHaveBeenCalled();
+    expect(cookies.id).toBe(`online_${VALID_NONCE}`);
   });
 
   test('returns the correct auth url for given info', async () => {
@@ -75,7 +84,7 @@ describe('beginAuth', () => {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
       redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}/some-callback`,
-      state: 'noncenoncenonce',
+      state: `offline_${VALID_NONCE}`,
       'grant_options[]': '',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
@@ -101,7 +110,7 @@ describe('beginAuth', () => {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
       redirect_uri: `http://${Context.HOST_NAME}/some-callback`,
-      state: 'noncenoncenonce',
+      state: `offline_${VALID_NONCE}`,
       'grant_options[]': '',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
@@ -127,7 +136,7 @@ describe('beginAuth', () => {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
       redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}/some-callback`,
-      state: 'noncenoncenonce',
+      state: `online_${VALID_NONCE}`,
       'grant_options[]': 'per-user',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
@@ -185,7 +194,7 @@ describe('validateAuthCallback', () => {
     Context.API_KEY = '';
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -209,7 +218,7 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback');
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: `online_${VALID_NONCE}`,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -242,7 +251,7 @@ describe('validateAuthCallback', () => {
 
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: `online_${VALID_NONCE}`,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -274,7 +283,7 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: `offline_${VALID_NONCE}`,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -289,7 +298,7 @@ describe('validateAuthCallback', () => {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
-    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery, false);
+    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     expect(cookies.id).toEqual(expect.stringMatching(`offline_${shop}`));
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
@@ -300,7 +309,7 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: `online_${VALID_NONCE}`,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -333,7 +342,7 @@ describe('validateAuthCallback', () => {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
-    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery, true);
+    await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     expect(cookies.id).toEqual(
       expect.stringMatching(
         /^[a-f0-9]{8,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{12,}/,
@@ -380,7 +389,7 @@ describe('validateAuthCallback', () => {
     };
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: `online_${VALID_NONCE}`,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -393,7 +402,6 @@ describe('validateAuthCallback', () => {
       req,
       res,
       testCallbackQuery,
-      true,
     );
 
     const jwtPayload: JwtPayload = {
@@ -467,7 +475,7 @@ describe('validateAuthCallback', () => {
     };
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: `online_${VALID_NONCE}`,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -480,7 +488,6 @@ describe('validateAuthCallback', () => {
       req,
       res,
       testCallbackQuery,
-      true,
     );
     expect(returnedSession.id).toEqual(cookies.id);
     expect(cookies.id).toEqual(
@@ -527,7 +534,7 @@ describe('validateAuthCallback', () => {
     };
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: `offline_${VALID_NONCE}`,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -540,7 +547,6 @@ describe('validateAuthCallback', () => {
       req,
       res,
       testCallbackQuery,
-      false,
     );
     expect(returnedSession.id).toEqual(cookies.id);
     expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
@@ -579,7 +585,7 @@ describe('validateAuthCallback', () => {
     };
     const testCallbackQuery: AuthQuery = {
       shop,
-      state: 'noncenoncenonce',
+      state: `offline_${VALID_NONCE}`,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
@@ -592,7 +598,6 @@ describe('validateAuthCallback', () => {
       req,
       res,
       testCallbackQuery,
-      false,
     );
     expect(returnedSession.id).toEqual(cookies.id);
     expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
