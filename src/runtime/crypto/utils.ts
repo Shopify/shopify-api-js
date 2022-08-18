@@ -9,6 +9,7 @@ export async function createSHA256HMAC(
       ? crypto
       : (crypto as any).webcrypto;
 
+  // eslint-disable-next-line no-warning-comments
   // TODO Make the subtle implementation the default when dropping Node 14 support
   if (cryptoLib?.subtle) {
     const enc = new TextEncoder();
