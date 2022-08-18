@@ -23,5 +23,5 @@ jobs:
       #   run: yarn test:rest:resources
       - name: Test SessionStorage implementations
         run: yarn test:session_storage
-      - name: Run isomorphic tests
-        run: yarn test:adapters:node
+      - name: Run isomorphic adapter tests
+        run: yarn test:adapters

@@ -1,43 +1,40 @@
-import {crypto} from '../crypto';
+import {execSync} from 'child_process';
+
 import {createSHA256HMAC, asBase64} from '..';
 
 const NUM_FUZZS = 100;
 describe('Wrapper to create HMACs', () => {
   it('gives the same results as Node’s crypto API', async () => {
-    for (let i = 0; i < NUM_FUZZS; i++) {
-      const secret = (crypto as any)
-        .randomBytes(random({min: 4, max: 32}))
-        .toString('hex');
-      const payload = (crypto as any)
-        .randomBytes(random({min: 4, max: 128}))
-        .toString('hex');
-      const hmac = await createSHA256HMAC(secret, payload);
-      const nodeHmac = (crypto as any)
-        .createHmac('sha256', secret)
-        .update(payload, 'utf8')
-        .digest('base64');
+    const stdout = execSync(
+      `node ./src/runtime/crypto/__tests__/produce-node-hmac.mjs ${NUM_FUZZS}`,
+    );
+    const output = JSON.parse(stdout.toString());
 
-      expect(hmac).toEqual(nodeHmac);
+    for (let i = 0; i < NUM_FUZZS; i++) {
+      const hmac = await createSHA256HMAC(output[i].secret, output[i].payload);
+
+      expect(hmac).toEqual(output[i].hmac);
     }
   });
 });
 
 describe('Base64 encoder', () => {
   it('gives the same results as Node', async () => {
-    for (let i = 0; i < NUM_FUZZS; i++) {
-      const payload = (crypto as any).randomBytes(random({min: 4, max: 128}));
-      const b64Encoding = asBase64(payload.buffer);
-      const b64EncodingNode = payload.toString('base64');
+    const stdout = execSync(
+      `node ./src/runtime/crypto/__tests__/produce-node-base64.mjs ${NUM_FUZZS}`,
+    );
+    const output = JSON.parse(stdout.toString());
 
-      expect(b64Encoding).toEqual(b64EncodingNode);
+    for (let i = 0; i < NUM_FUZZS; i++) {
+      const b64Encoding = asBase64(
+        new Uint8Array(
+          output[i].hex
+            .match(/../g)
+            .map((hexChar: string) => parseInt(hexChar, 16)),
+        ).buffer,
+      );
+
+      expect(b64Encoding).toEqual(output[i].base64);
     }
   });
 });
-
-function random({min = 0, max = 1, floor = true} = {}): number {
-  let value = Math.random() * (max - min) + min;
-  if (floor) {
-    value = Math.floor(value);
-  }
-  return value;
-}
