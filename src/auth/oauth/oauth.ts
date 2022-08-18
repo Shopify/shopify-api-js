@@ -98,16 +98,13 @@ const ShopifyOAuth = {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
-    const cookies = new Cookies(request, response, {
-      keys: [Context.API_SECRET_KEY],
-      secure: true,
-    });
-
     const stateFromCookie = getValueFromCookie(
       request,
       response,
       this.STATE_COOKIE_NAME,
     );
+    deleteCookie(request, response, this.STATE_COOKIE_NAME);
+
     if (!stateFromCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
@@ -145,12 +142,19 @@ const ShopifyOAuth = {
       isOnline,
     );
 
-    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
-      signed: true,
-      expires: Context.IS_EMBEDDED_APP ? new Date() : session.expires,
-      sameSite: 'lax',
-      secure: true,
-    });
+    if (!Context.IS_EMBEDDED_APP) {
+      const cookies = new Cookies(request, response, {
+        keys: [Context.API_SECRET_KEY],
+        secure: true,
+      });
+
+      cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
+        signed: true,
+        expires: session.expires,
+        sameSite: 'lax',
+        secure: true,
+      });
+    }
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(session);
     if (!sessionStored) {
@@ -271,6 +275,25 @@ function getValueFromCookie(
     keys: [Context.API_SECRET_KEY],
   });
   return cookies.get(name, {signed: true});
+}
+
+/**
+ * Loads a given value from the cookie
+ *
+ * @param request HTTP request object
+ * @param response HTTP response object
+ * @param name Name of the cookie to load
+ */
+function deleteCookie(
+  request: http.IncomingMessage,
+  response: http.ServerResponse,
+  name: string,
+): void {
+  const cookies = new Cookies(request, response, {
+    secure: true,
+    keys: [Context.API_SECRET_KEY],
+  });
+  cookies.set(name);
 }
 
 /**

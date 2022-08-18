@@ -178,12 +178,12 @@ describe('validateAuthCallback', () => {
     res = {} as http.ServerResponse;
 
     Cookies.prototype.set.mockImplementation(
-      (cookieName: string, cookieValue: string, options: {expires: Date}) => {
+      (cookieName: string, cookieValue: string, options?: {expires: Date}) => {
         expect(cookieName).toEqual(
           expect.stringMatching(/^shopify_app_(session|state)/),
         );
         cookies.id = cookieValue;
-        cookies.expires = options.expires;
+        cookies.expires = options?.expires;
       },
     );
 
@@ -364,7 +364,7 @@ describe('validateAuthCallback', () => {
     ).rejects.toThrow(ShopifyErrors.PrivateAppError);
   });
 
-  test('properly updates the OAuth cookie for online, embedded apps', async () => {
+  test('does not set an OAuth cookie for online, embedded apps', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
@@ -444,10 +444,7 @@ describe('validateAuthCallback', () => {
     const currentSession = await loadCurrentSession(jwtReq, jwtRes);
     expect(currentSession).not.toBe(null);
     expect(currentSession?.id).toEqual(jwtSessionId);
-    expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(
-      new Date().getTime(),
-      1,
-    );
+    expect(cookies.id).not.toBeDefined();
   });
 
   test('properly updates the OAuth cookie for online, non-embedded apps', async () => {
@@ -509,7 +506,7 @@ describe('validateAuthCallback', () => {
     expect(cookieSession).not.toBeUndefined();
   });
 
-  test('properly updates the OAuth cookie for offline, embedded apps', async () => {
+  test('does not set an OAuth cookie for offline, embedded apps', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
@@ -548,16 +545,10 @@ describe('validateAuthCallback', () => {
       res,
       testCallbackQuery,
     );
-    expect(returnedSession.id).toEqual(cookies.id);
     expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
-
-    const cookieSession = await Context.SESSION_STORAGE.loadSession(cookies.id);
-    expect(cookieSession).not.toBeUndefined();
-    expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(
-      new Date().getTime(),
-      1,
-    );
     expect(returnedSession?.expires?.getTime()).toBeUndefined();
+
+    expect(cookies.id).not.toBeDefined();
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
