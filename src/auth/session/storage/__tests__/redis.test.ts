@@ -12,10 +12,6 @@ const exec = promisify(child_process.exec);
 
 const dbURL = new URL('redis://shopify:passify@localhost/1');
 
-// SORRY NOT SORRY. Docker containers can take quite a while to get ready,
-// especially on CI. This is hopefully enough.
-jest.setTimeout(30000);
-
 describe('RedisSessionStorage', () => {
   let storage: RedisSessionStorage | undefined;
   let containerId: string | undefined;

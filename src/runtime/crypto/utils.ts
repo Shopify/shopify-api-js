@@ -4,33 +4,24 @@ export async function createSHA256HMAC(
   secret: string,
   payload: string,
 ): Promise<string> {
-  const webcrypto = (crypto as any).webcrypto;
+  const enc = new TextEncoder();
+  const key = await (crypto as any).subtle.importKey(
+    'raw',
+    enc.encode(secret),
+    {
+      name: 'HMAC',
+      hash: {name: 'SHA-256'},
+    },
+    false,
+    ['sign'],
+  );
 
-  if (webcrypto?.subtle) {
-    const enc = new TextEncoder();
-    const key = await webcrypto.subtle.importKey(
-      'raw',
-      enc.encode(secret),
-      {
-        name: 'HMAC',
-        hash: {name: 'SHA-256'},
-      },
-      false,
-      ['sign'],
-    );
-
-    const signature = await webcrypto.subtle.sign(
-      'HMAC',
-      key,
-      enc.encode(payload),
-    );
-    return asBase64(signature);
-  } else {
-    return (crypto as any)
-      .createHmac('sha256', secret)
-      .update(payload)
-      .digest('base64');
-  }
+  const signature = await (crypto as any).subtle.sign(
+    'HMAC',
+    key,
+    enc.encode(payload),
+  );
+  return asBase64(signature);
 }
 
 export function asHex(buffer: ArrayBuffer): string {
@@ -73,9 +64,6 @@ export function asBase64(buffer: ArrayBuffer): string {
 
 export async function hashStringWithSHA256(input: string): Promise<string> {
   const buffer = new TextEncoder().encode(input);
-  const hash = await (crypto as any).webcrypto.subtle.digest(
-    {name: 'SHA-256'},
-    buffer,
-  );
+  const hash = await (crypto as any).subtle.digest({name: 'SHA-256'}, buffer);
   return asHex(hash);
 }
