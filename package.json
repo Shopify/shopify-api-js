@@ -6,14 +6,16 @@
     ".": "./dist/src/index.js",
     "./oauth": "./dist/src/auth/oauth/index.js",
     "./webhooks": "./dist/src/webhooks/registry.js",
-    "./runtimes/node": "./dist/src/runtimes/node.js"
+    "./adapters/node": "./dist/src/adapters/node/index.js",
+    "./adapters/cf-worker": "./dist/src/adapters/cf-worker/index.js"
   },
   "types": "dist/index.d.ts",
   "prettier": "@shopify/prettier-config",
   "scripts": {
-    "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__ --testPathIgnorePatterns=src/auth/session/storage",
-    "test_sessionstorage": "jest src/auth/session/storage",
-    "test_rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
+    "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__ --testPathIgnorePatterns=src/auth/session/storage --testPathIgnorePatterns=src/adapters --testPathIgnorePatterns=src/runtime",
+    "test:adapters:node": "jest src/adapters/node --no-coverage",
+    "test:session:storage": "jest src/auth/session/storage --no-coverage",
+    "test:rest:resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
     "build": "tsc",
     "lint": "eslint '**/*.{ts,tsx}' --max-warnings 0",
     "clean": "rimraf ./dist tsconfig.tsbuildinfo",
