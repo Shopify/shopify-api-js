@@ -63,7 +63,6 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
@@ -71,7 +70,6 @@ const ShopifyOAuth = {
       state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     const queryString = querystring.stringify(query);
 
@@ -117,13 +115,11 @@ const ShopifyOAuth = {
 
     const isOnline = stateFromCookie.startsWith('online_');
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const body = {
       client_id: Context.API_KEY,
       client_secret: Context.API_SECRET_KEY,
       code: query.code,
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     const postParams = {
       path: '/admin/oauth/access_token',

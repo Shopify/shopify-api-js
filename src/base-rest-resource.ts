@@ -191,7 +191,6 @@ class Base {
       specificity = path.ids.length;
       match = path.path.replace(
         /(<([^>]+)>)/g,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         (_m1, _m2, id) => `${pathUrlIds[id]}`,
       );
     });
