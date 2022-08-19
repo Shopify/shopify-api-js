@@ -100,7 +100,6 @@ describe('beginAuth', () => {
       false,
     );
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
-    /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
@@ -108,7 +107,6 @@ describe('beginAuth', () => {
       state: session ? session.state : '',
       'grant_options[]': '',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     const expectedQueryString = querystring.stringify(query);
 
@@ -127,7 +125,6 @@ describe('beginAuth', () => {
       false,
     );
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
-    /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
@@ -135,7 +132,6 @@ describe('beginAuth', () => {
       state: session ? session.state : '',
       'grant_options[]': '',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     const expectedQueryString = querystring.stringify(query);
 
@@ -154,7 +150,6 @@ describe('beginAuth', () => {
     );
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
@@ -162,7 +157,6 @@ describe('beginAuth', () => {
       state: session ? session.state : '',
       'grant_options[]': 'per-user',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
     const expectedQueryString = querystring.stringify(query);
 
     expect(authRoute).toBe(
@@ -286,12 +280,10 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token string',
       scope: Context.SCOPES.toString(),
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
 
@@ -319,12 +311,10 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token string',
       scope: Context.SCOPES.toString(),
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
@@ -345,7 +335,6 @@ describe('validateAuthCallback', () => {
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token',
       scope: 'pet_kitties, walk_dogs',
@@ -368,7 +357,6 @@ describe('validateAuthCallback', () => {
       associated_user_scope: successResponse.associated_user_scope,
       associated_user: successResponse.associated_user,
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     fetchMock.mockResponse(JSON.stringify(successResponse));
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
@@ -396,7 +384,6 @@ describe('validateAuthCallback', () => {
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
     expect(session).not.toBe(null);
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token',
       scope: 'pet_kitties, walk_dogs',
@@ -419,7 +406,6 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
@@ -483,7 +469,6 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', true);
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token',
       scope: 'pet_kitties, walk_dogs',
@@ -506,7 +491,6 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
@@ -538,7 +522,6 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token',
       scope: 'pet_kitties, walk_dogs',
@@ -561,7 +544,6 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
@@ -590,7 +572,6 @@ describe('validateAuthCallback', () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
     const session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const successResponse = {
       access_token: 'some access token',
       scope: 'pet_kitties, walk_dogs',
@@ -613,7 +594,6 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
     const expectedHmac = generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 

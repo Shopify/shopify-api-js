@@ -40,7 +40,6 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
       },
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
-        // eslint-disable-next-line  @typescript-eslint/naming-convention
         session.onlineAccessInfo = {associated_user: {}} as any;
         session.onlineAccessInfo!.associated_user.id = 123;
         session.scope = Context.SCOPES.toString();

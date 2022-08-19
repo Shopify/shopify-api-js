@@ -41,7 +41,6 @@ export function sessionFromEntries(
             return [
               key,
               {
-                // eslint-disable-next-line  @typescript-eslint/naming-convention
                 associated_user: {
                   id: Number(value),
                 },

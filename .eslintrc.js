@@ -11,24 +11,6 @@ module.exports = {
     'no-console': 0,
     'lines-around-comment': 0,
     'import/no-cycle': 0,
+    '@typescript-eslint/naming-convention': 0,
   },
-  overrides: [
-    {
-      files: [
-        'src/__tests__/*.ts',
-        'src/base-rest-resource.ts',
-        'src/rest-resources/*',
-      ],
-      rules: {
-        '@typescript-eslint/naming-convention': [
-          'error',
-          {
-            selector: 'default',
-            // Allow snake_case so we can have properties that follow the API's naming conventions
-            format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
-          },
-        ],
-      },
-    },
-  ],
 };
