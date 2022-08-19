@@ -110,10 +110,9 @@ export class RedisSessionStorage implements SessionStorage {
       ...this.options,
       url: this.dbUrl.toString(),
     });
-    this.client.on(
-      'error',
-      this.options.onError ? this.options.onError : () => {},
-    );
+    if (this.options.onError) {
+      this.client.on('error', this.options.onError);
+    }
     await this.client.connect();
   }
 }
