@@ -56,7 +56,7 @@ You can follow our [getting started guide](docs/), which will provide instructio
 
 ## Migrating from the Node.js-only version
 
-This library used to work only on Node.js runtimes, but we refactored it to be able to run on any runtime for which we provide an adapter.
+Previously, this library only worked with Node.js runtimes.  It now supports multiple runtimes through the use of adapters, more of which can be added over time.
 If we don't provide an adapter for the runtime you want to run on, you can create your own adapter by implementing some key functions, or contribute a PR to this repository.
 
 While we've updated the library to work with different runtimes, we've also improved its public interface to make it easier for apps to load only the features they need from the library.
