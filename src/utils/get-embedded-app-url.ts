@@ -1,7 +1,7 @@
 import http from 'http';
 
 import * as ShopifyErrors from '../error';
-import {Context} from '../context';
+import {config} from '../config';
 
 import {sanitizeHost} from './shop-validator';
 
@@ -42,5 +42,5 @@ export function buildEmbeddedAppUrl(host: string): string {
 
   const decodedHost = Buffer.from(host, 'base64').toString();
 
-  return `https://${decodedHost}/apps/${Context.API_KEY}`;
+  return `https://${decodedHost}/apps/${config.API_KEY}`;
 }

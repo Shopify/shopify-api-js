@@ -25,7 +25,7 @@ const storefrontAccessToken =
   storefrontTokenResponse.body['storefront_access_token']['access_token'];
 ```
 
-If you are building a private app, you can set a default Storefront Access Token for all `StorefrontClient` instances by setting the `Shopify.Context.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN` property.
+If you are building a private app, you can set a default Storefront Access Token for all `StorefrontClient` instances by setting the `config.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN` property.
 
 The `StorefrontClient` extends the `GraphqlClient`, so it supports the same parameters. Please refer to the [GraphqlClient documentation](graphql.md) for details.
 

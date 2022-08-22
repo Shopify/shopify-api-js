@@ -1,6 +1,6 @@
 import {ShopifyHeader} from '../../../base-types';
 import {GraphqlClient} from '../graphql_client';
-import {Context} from '../../../context';
+import {config, setConfig} from '../../../config';
 import * as ShopifyErrors from '../../../error';
 
 const DOMAIN = 'shop.myshopify.io';
@@ -59,8 +59,8 @@ describe('GraphQL client', () => {
   });
 
   it('adapts to private app requests', async () => {
-    Context.IS_PRIVATE_APP = true;
-    Context.initialize(Context);
+    config.IS_PRIVATE_APP = true;
+    setConfig(config);
 
     const client: GraphqlClient = new GraphqlClient(DOMAIN);
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));

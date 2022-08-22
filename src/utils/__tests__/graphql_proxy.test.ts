@@ -7,7 +7,7 @@ import request from 'supertest';
 import {Session} from '../../auth/session';
 import {InvalidSession, SessionNotFound} from '../../error';
 import graphqlProxy from '../graphql_proxy';
-import {Context} from '../../context';
+import {config, setConfig} from '../../config';
 import {JwtPayload} from '../decode-session-token';
 
 const successResponse = {
@@ -51,12 +51,12 @@ describe('GraphQL proxy with session', () => {
   });
 
   beforeEach(async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
     const jwtPayload: JwtPayload = {
       iss: 'https://shop.myshopify.com/admin',
       dest: 'https://shop.myshopify.com',
-      aud: Context.API_KEY,
+      aud: config.API_KEY,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -72,8 +72,8 @@ describe('GraphQL proxy with session', () => {
       true,
     );
     session.accessToken = accessToken;
-    await Context.SESSION_STORAGE.storeSession(session);
-    token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+    await config.SESSION_STORAGE.storeSession(session);
+    token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
       algorithm: 'HS256',
     });
   });
@@ -113,12 +113,12 @@ describe('GraphQL proxy with session', () => {
 
 describe('GraphQL proxy', () => {
   it('throws an error if no token', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
     const jwtPayload: JwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: Context.API_KEY,
+      aud: config.API_KEY,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -127,7 +127,7 @@ describe('GraphQL proxy', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
       algorithm: 'HS256',
     });
     const req = {
@@ -142,7 +142,7 @@ describe('GraphQL proxy', () => {
       'state',
       true,
     );
-    Context.SESSION_STORAGE.storeSession(session);
+    config.SESSION_STORAGE.storeSession(session);
 
     await expect(graphqlProxy(req, res)).rejects.toThrow(InvalidSession);
   });

@@ -2,11 +2,11 @@ import http from 'http';
 
 import getEmbeddedAppUrl from '../get-embedded-app-url';
 import * as ShopifyErrors from '../../error';
-import {Context} from '../../context';
+import {config} from '../../config';
 
 describe('getEmbeddedAppUrl', () => {
   beforeEach(() => {
-    Context.API_KEY = 'my-api-key';
+    config.API_KEY = 'my-api-key';
   });
 
   test('throws an error when no request is passed', () => {
@@ -64,7 +64,7 @@ describe('getEmbeddedAppUrl', () => {
     } as http.IncomingMessage;
 
     expect(getEmbeddedAppUrl(req)).toBe(
-      `https://${host}/apps/${Context.API_KEY}`,
+      `https://${host}/apps/${config.API_KEY}`,
     );
   });
 });

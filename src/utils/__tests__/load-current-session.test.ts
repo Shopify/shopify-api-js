@@ -3,7 +3,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
 
-import {Context} from '../../context';
+import {config, setConfig} from '../../config';
 import * as ShopifyErrors from '../../error';
 import {Session} from '../../auth/session';
 import {JwtPayload} from '../decode-session-token';
@@ -19,7 +19,7 @@ describe('loadCurrentSession', () => {
     jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: Context.API_KEY,
+      aud: config.API_KEY,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -30,8 +30,8 @@ describe('loadCurrentSession', () => {
   });
 
   it('gets the current session from cookies for non-embedded apps', async () => {
-    Context.IS_EMBEDDED_APP = false;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = false;
+    setConfig(config);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -44,9 +44,9 @@ describe('loadCurrentSession', () => {
       'state',
       true,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -54,8 +54,8 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads nothing if there is no session for non-embedded apps', async () => {
-    Context.IS_EMBEDDED_APP = false;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = false;
+    setConfig(config);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -66,10 +66,10 @@ describe('loadCurrentSession', () => {
   });
 
   it('gets the current session from JWT token for embedded apps', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
       algorithm: 'HS256',
     });
     const req = {
@@ -85,16 +85,16 @@ describe('loadCurrentSession', () => {
       'state',
       true,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     await expect(loadCurrentSession(req, res)).resolves.toEqual(session);
   });
 
   it('loads nothing if no authorization header is present', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
 
     const req = {headers: {}} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -103,10 +103,10 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads nothing if there is no session for embedded apps', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
       algorithm: 'HS256',
     });
     const req = {
@@ -120,8 +120,8 @@ describe('loadCurrentSession', () => {
   });
 
   it('fails if authorization header is missing or is not a Bearer token', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
 
     const req = {
       headers: {
@@ -136,8 +136,8 @@ describe('loadCurrentSession', () => {
   });
 
   it('falls back to the cookie session for embedded apps', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
 
     const req = {
       headers: {
@@ -154,9 +154,9 @@ describe('loadCurrentSession', () => {
       'state',
       true,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -164,8 +164,8 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads offline sessions from cookies', async () => {
-    Context.IS_EMBEDDED_APP = false;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = false;
+    setConfig(config);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -178,9 +178,9 @@ describe('loadCurrentSession', () => {
       'state',
       false,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -188,10 +188,10 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads offline sessions from JWT token', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
       algorithm: 'HS256',
     });
     const req = {
@@ -207,9 +207,9 @@ describe('loadCurrentSession', () => {
       'state',
       false,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     await expect(loadCurrentSession(req, res, false)).resolves.toEqual(session);
   });

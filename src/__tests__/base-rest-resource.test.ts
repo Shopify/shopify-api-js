@@ -1,6 +1,6 @@
 import {Session} from '../auth/session';
 import {ApiVersion} from '../base-types';
-import {Context} from '../context';
+import {config} from '../config';
 import {RestResourceError, HttpResponseError} from '../error';
 
 import FakeResource from './fake-resource';
@@ -444,11 +444,11 @@ describe('Base REST resource', () => {
   });
 
   it('throws an error if the API versions mismatch', async () => {
-    Context.API_VERSION = ApiVersion.January22;
+    config.API_VERSION = ApiVersion.January22;
 
     await expect(FakeResource.all({session})).rejects.toThrowError(
       new RestResourceError(
-        `Current Context.API_VERSION '${ApiVersion.January22}' does not match resource version ${ApiVersion.Unstable}`,
+        `Current config.API_VERSION '${ApiVersion.January22}' does not match resource version ${ApiVersion.Unstable}`,
       ),
     );
   });

@@ -8,7 +8,7 @@ You can follow our getting started guide, which will provide instructions on how
   - [Install dependencies](getting_started.md#install-dependencies)
   - [Set up base files](getting_started.md#set-up-base-files)
   - [Set up environment](getting_started.md#set-up-environment)
-  - [Set up Context](getting_started.md#set-up-context)
+  - [Set up config](getting_started.md#set-up-config)
   - [Running your app](getting_started.md#running-your-app)
 - [Performing OAuth](usage/oauth.md)
   - [Add a route to start OAuth](usage/oauth.md#add-a-route-to-start-oauth)

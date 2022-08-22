@@ -1,4 +1,4 @@
-import {Context} from '../../context';
+import {config} from '../../config';
 import loadOfflineSession from '../load-offline-session';
 import {Session} from '../../auth/session/session';
 import OAuth from '../../auth/oauth';
@@ -13,7 +13,7 @@ describe('loadOfflineSession', () => {
   it('loads offline sessions by shop', async () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const offlineSession = new Session(offlineId, shop, 'state', false);
-    Context.SESSION_STORAGE.storeSession(offlineSession);
+    config.SESSION_STORAGE.storeSession(offlineSession);
 
     expect(await loadOfflineSession(shop)).toBe(offlineSession);
   });
@@ -22,7 +22,7 @@ describe('loadOfflineSession', () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const offlineSession = new Session(offlineId, shop, 'state', false);
     offlineSession.expires = new Date('2020-01-01');
-    Context.SESSION_STORAGE.storeSession(offlineSession);
+    config.SESSION_STORAGE.storeSession(offlineSession);
 
     await expect(loadOfflineSession(shop)).resolves.toBeUndefined();
   });
@@ -31,7 +31,7 @@ describe('loadOfflineSession', () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const offlineSession = new Session(offlineId, shop, 'state', false);
     offlineSession.expires = new Date('2020-01-01');
-    Context.SESSION_STORAGE.storeSession(offlineSession);
+    config.SESSION_STORAGE.storeSession(offlineSession);
 
     await expect(loadOfflineSession(shop, true)).resolves.toBe(offlineSession);
   });

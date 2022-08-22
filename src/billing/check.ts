@@ -1,4 +1,4 @@
-import {Context} from '../context';
+import {config} from '../config';
 import {SessionInterface} from '../auth/session/types';
 
 import {hasActivePayment} from './has_active_payment';
@@ -18,7 +18,7 @@ export async function check({
   session,
   isTest = true,
 }: CheckInterface): Promise<CheckReturn> {
-  if (!Context.BILLING) {
+  if (!config.BILLING) {
     return {hasPayment: true, confirmBillingUrl: undefined};
   }
 

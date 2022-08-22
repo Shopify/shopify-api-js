@@ -1,6 +1,6 @@
 import querystring from 'querystring';
 
-import {Context} from '../../context';
+import {config} from '../../config';
 import {ShopifyHeader} from '../../base-types';
 import {HttpClient} from '../http_client/http_client';
 import {RequestParams, GetRequestParams} from '../http_client/types';
@@ -15,7 +15,7 @@ class RestClient extends HttpClient {
   public constructor(domain: string, readonly accessToken?: string) {
     super(domain);
 
-    if (!Context.IS_PRIVATE_APP && !accessToken) {
+    if (!config.IS_PRIVATE_APP && !accessToken) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating REST client',
       );
@@ -26,8 +26,8 @@ class RestClient extends HttpClient {
     params: RequestParams,
   ): Promise<RestRequestReturn<T>> {
     params.extraHeaders = {
-      [ShopifyHeader.AccessToken]: Context.IS_PRIVATE_APP
-        ? Context.API_SECRET_KEY
+      [ShopifyHeader.AccessToken]: config.IS_PRIVATE_APP
+        ? config.API_SECRET_KEY
         : (this.accessToken as string),
       ...params.extraHeaders,
     };
@@ -86,7 +86,7 @@ class RestClient extends HttpClient {
     if (cleanPath.startsWith('/admin')) {
       return `${cleanPath.replace(/\.json$/, '')}.json`;
     } else {
-      return `/admin/api/${Context.API_VERSION}${cleanPath.replace(
+      return `/admin/api/${config.API_VERSION}${cleanPath.replace(
         /\.json$/,
         '',
       )}.json`;

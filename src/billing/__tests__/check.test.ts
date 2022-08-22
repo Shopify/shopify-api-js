@@ -1,5 +1,5 @@
 import {Session} from '../../auth/session/session';
-import {Context} from '../../context';
+import {config} from '../../config';
 import {BillingError} from '../../error';
 import {check} from '../check';
 import {BillingInterval} from '../types';
@@ -21,11 +21,11 @@ import {
 describe('check', () => {
   const session = new Session('1234', 'test-shop.myshopify.io', '1234', true);
   session.accessToken = 'access-token';
-  session.scope = Context.SCOPES.toString();
+  session.scope = config.SCOPES.toString();
 
   describe('with non-recurring config', () => {
     beforeEach(() => {
-      Context.BILLING = {
+      config.BILLING = {
         amount: 5,
         chargeName: TEST_CHARGE_NAME,
         currencyCode: 'USD',
@@ -191,7 +191,7 @@ describe('check', () => {
 
   describe('with recurring config', () => {
     beforeEach(() => {
-      Context.BILLING = {
+      config.BILLING = {
         amount: 5,
         chargeName: TEST_CHARGE_NAME,
         currencyCode: 'USD',

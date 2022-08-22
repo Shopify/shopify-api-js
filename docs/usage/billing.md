@@ -12,7 +12,7 @@ Learn more about billing in [our documentation](https://shopify.dev/apps/billing
 
 ## Setting up for billing
 
-To trigger the billing behaviour, you should set the `BILLING` value when calling `Shopify.Context.initialize`.
+To trigger the billing behaviour, you should set the `BILLING` value when calling `setConfig`.
 This setting is an object containing the following values:
 
 | Parameter      | Type              | Required? | Default Value | Notes                                                              |

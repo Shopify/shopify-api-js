@@ -6,7 +6,7 @@ import {StatusCode} from '@shopify/network';
 import {GraphqlClient} from '../clients/graphql/graphql_client';
 import {ShopifyHeader} from '../base-types';
 import ShopifyUtilities from '../utils';
-import {Context} from '../context';
+import {config} from '../config';
 import * as ShopifyErrors from '../error';
 
 import {
@@ -259,7 +259,7 @@ const WebhooksRegistry: RegistryInterface = {
     const client = new GraphqlClient(shop, accessToken);
     const address =
       deliveryMethod === DeliveryMethod.Http
-        ? `${Context.HOST_SCHEME}://${Context.HOST_NAME}${path}`
+        ? `${config.HOST_SCHEME}://${config.HOST_NAME}${path}`
         : path;
 
     let checkResult;
@@ -401,7 +401,7 @@ const WebhooksRegistry: RegistryInterface = {
         let responseError: Error | undefined;
         const headers = {};
 
-        const generatedHash = createHmac('sha256', Context.API_SECRET_KEY)
+        const generatedHash = createHmac('sha256', config.API_SECRET_KEY)
           .update(reqBody, 'utf8')
           .digest('base64');
 

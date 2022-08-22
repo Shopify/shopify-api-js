@@ -106,11 +106,11 @@ HOST={your app's host}          # Your app's host, without the protocol prefix (
 HOST_SCHEME={your app's URI scheme} # Either http or https. Note http is intended for local development with localhost.
 ```
 
-## Set up Context
+## Set up config
 
-First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library. Note that you only need to set up `Context` once when your app is loaded, and the library will automatically use those settings whenever they are needed.
+First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library. Note that you only need to set up `config` once when your app is loaded, and the library will automatically use those settings whenever they are needed.
 
-While setting up `Context`, you'll be able to set [which version of the Admin API](https://shopify.dev/concepts/about-apis/versioning) your app will be using. All supported versions are available in `ApiVersion`, including `'unstable'`. The `Context.API_VERSION` setting will be applied to all requests made by the library.
+While setting up `config`, you'll be able to set [which version of the Admin API](https://shopify.dev/concepts/about-apis/versioning) your app will be using. All supported versions are available in `ApiVersion`, including `'unstable'`. The `config.API_VERSION` setting will be applied to all requests made by the library.
 
 (See [oauth](./usage/oauth.md#add-your-oauth-callback-route) for use of `ACTIVE_SHOPIFY_SHOPS`)
 
@@ -128,7 +128,7 @@ require('dotenv').config();
 
 const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST, HOST_SCHEME } = process.env;
 
-Shopify.Context.initialize({
+setConfig({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],
@@ -189,7 +189,7 @@ const app = express();
 
 const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST, HOST_SCHEME } = process.env;
 
-Shopify.Context.initialize({
+setConfig({
   API_KEY,
   API_SECRET_KEY,
   SCOPES: [SCOPES],

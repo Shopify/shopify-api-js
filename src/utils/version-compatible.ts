@@ -1,4 +1,4 @@
-import {Context} from '../context';
+import {config} from '../config';
 import {ApiVersion} from '../base-types';
 
 /**
@@ -6,7 +6,7 @@ import {ApiVersion} from '../base-types';
  */
 export default function versionCompatible(
   referenceVersion: ApiVersion,
-  currentVersion: ApiVersion = Context.API_VERSION,
+  currentVersion: ApiVersion = config.API_VERSION,
 ): boolean {
   // Return true if not using a dated version
   if (currentVersion === ApiVersion.Unstable) {

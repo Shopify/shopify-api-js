@@ -3,7 +3,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 
 import {Session} from '../../auth/session';
-import {Context} from '../../context';
+import {config, setConfig} from '../../config';
 import loadCurrentSession from '../load-current-session';
 import storeSession from '../store-session';
 
@@ -12,7 +12,7 @@ describe('storeSession', () => {
     const jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: Context.API_KEY,
+      aud: config.API_KEY,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -21,10 +21,10 @@ describe('storeSession', () => {
       sid: 'abc123',
     };
 
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.IS_EMBEDDED_APP = true;
+    setConfig(config);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
       algorithm: 'HS256',
     });
     const req = {

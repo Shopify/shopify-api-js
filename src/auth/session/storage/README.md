@@ -7,7 +7,7 @@ This folder contains implementations of the `SessionStorage` interface that work
 ```js
 import Shopify from '@shopify/shopify-api';
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: new Shopify.Auth.Session.SQLiteSessionStorage("/path/to/your.db"),
   ...
 });
@@ -20,14 +20,14 @@ Note that [SQLite] is a local, file-based SQL database. It persists all tables t
 ```js
 import Shopify from '@shopify/shopify-api';
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: new Shopify.Auth.Session.MySQLSessionStorage("mysql://username:password@host/database"),
   ...
 });
 
 // OR
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: Shopify.Auth.Session.MySQLSessionStorage.withCredentials({
     "host.com",
     "thedatabase",
@@ -43,14 +43,14 @@ Shopify.Context.initialize({
 ```js
 import Shopify from '@shopify/shopify-api';
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: new Shopify.Auth.Session.PostgreSQLSessionStorage("postgres://username:password@host/database"),
   ...
 });
 
 // OR
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: Shopify.Auth.Session.PostgreSQLSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
@@ -66,14 +66,14 @@ Shopify.Context.initialize({
 ```js
 import Shopify from '@shopify/shopify-api';
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: new Shopify.Auth.Session.MongoDBSessionStorage("mongodb://username:password@host/", "database"),
   ...
 });
 
 // OR
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: Shopify.Auth.Session.MongoDBSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
@@ -89,14 +89,14 @@ Shopify.Context.initialize({
 ```js
 import Shopify from '@shopify/shopify-api';
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: new Shopify.Auth.Session.RedisSessionStorage("redis://username:password@host/database"),
   ...
 });
 
 // OR
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: Shopify.Auth.Session.RedisSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
@@ -112,7 +112,7 @@ Shopify.Context.initialize({
 ```js
 import Shopify from '@shopify/shopify-api';
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: new Shopify.Auth.Session.MemorySessionStorage(),
   ...
 });
@@ -125,7 +125,7 @@ Note that all sessions will be lost if the app process gets restarted or redeplo
 ```ts
 import Shopify from '@shopify/shopify-api';
 
-Shopify.Context.initialize({
+setConfig({
   SESSION_STORAGE: new Shopify.Auth.Session.CustomSessionStorage(
     async function storeCallback(session: SessionInterface): Promise<boolean> {
       // ..

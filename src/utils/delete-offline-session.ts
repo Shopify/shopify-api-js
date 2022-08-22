@@ -1,4 +1,4 @@
-import {Context} from '../context';
+import {config, throwIfUninitializedConfig} from '../config';
 import OAuth from '../auth/oauth';
 
 import {sanitizeShop} from './shop-validator';
@@ -11,10 +11,10 @@ import {sanitizeShop} from './shop-validator';
 export default async function deleteOfflineSession(
   shop: string,
 ): Promise<boolean> {
-  Context.throwIfUninitialized();
+  throwIfUninitializedConfig();
   const cleanShop = sanitizeShop(shop, true)!;
 
   const sessionId = OAuth.getOfflineSessionId(cleanShop);
 
-  return Context.SESSION_STORAGE.deleteSession(sessionId);
+  return config.SESSION_STORAGE.deleteSession(sessionId);
 }

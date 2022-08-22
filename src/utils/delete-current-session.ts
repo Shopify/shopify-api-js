@@ -1,6 +1,6 @@
 import http from 'http';
 
-import {Context} from '../context';
+import {config, throwIfUninitializedConfig} from '../config';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
 import * as ShopifyErrors from '../error';
 
@@ -16,7 +16,7 @@ export default async function deleteCurrentSession(
   response: http.ServerResponse,
   isOnline = true,
 ): Promise<boolean | never> {
-  Context.throwIfUninitialized();
+  throwIfUninitializedConfig();
 
   const sessionId = ShopifyOAuth.getCurrentSessionId(
     request,
@@ -27,5 +27,5 @@ export default async function deleteCurrentSession(
     throw new ShopifyErrors.SessionNotFound('No active session found.');
   }
 
-  return Context.SESSION_STORAGE.deleteSession(sessionId);
+  return config.SESSION_STORAGE.deleteSession(sessionId);
 }
