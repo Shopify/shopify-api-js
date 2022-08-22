@@ -312,7 +312,7 @@ function createSession(
   if (isOnline) {
     let sessionId: string;
     const responseBody = postResponse.body as OnlineAccessResponse;
-    const {access_token, scope, ...rest} = responseBody; // eslint-disable-line @typescript-eslint/naming-convention
+    const {access_token, scope, ...rest} = responseBody;
     const sessionExpiration = new Date(
       Date.now() + responseBody.expires_in * 1000,
     );
