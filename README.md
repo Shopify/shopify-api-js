@@ -57,7 +57,7 @@ You can follow our [getting started guide](docs/), which will provide instructio
 ## Migrating from the Node.js-only version
 
 Previously, this library only worked with Node.js runtimes.  It now supports multiple runtimes through the use of adapters, more of which can be added over time.
-If we don't provide an adapter for the runtime you want to run on, you can create your own adapter by implementing some key functions, or contribute a PR to this repository.
+If an adapter for the runtime you wish to use doesn't exist, you can create your own adapter by implementing some key functions, or contribute a PR to this repository.
 
 While we've updated the library to work with different runtimes, we've also improved its public interface to make it easier for apps to load only the features they need from the library.
 If you're upgrading an existing app, please see [this migration guide](docs/migrating_to_isomorphic.md).
