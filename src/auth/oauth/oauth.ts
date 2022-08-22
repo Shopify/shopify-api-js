@@ -77,7 +77,6 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const query = {
       client_id: Context.API_KEY,
       scope: Context.SCOPES.toString(),
@@ -85,7 +84,6 @@ const ShopifyOAuth = {
       state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     const queryString = querystring.stringify(query);
 
@@ -136,13 +134,11 @@ const ShopifyOAuth = {
       throw new ShopifyErrors.InvalidOAuthError('Invalid OAuth callback.');
     }
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     const body = {
       client_id: Context.API_KEY,
       client_secret: Context.API_SECRET_KEY,
       code: query.code,
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     const postParams = {
       path: '/admin/oauth/access_token',
@@ -155,7 +151,7 @@ const ShopifyOAuth = {
 
     if (currentSession.isOnline) {
       const responseBody = postResponse.body;
-      const {access_token, scope, ...rest} = responseBody; // eslint-disable-line @typescript-eslint/naming-convention
+      const {access_token, scope, ...rest} = responseBody;
       const sessionExpiration = new Date(
         Date.now() + responseBody.expires_in * 1000,
       );

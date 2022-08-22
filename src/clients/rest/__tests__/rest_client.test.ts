@@ -386,7 +386,6 @@ function getDefaultPageInfo(): PageInfo {
     query: {
       fields: fields.join(','),
       limit: `${limit}`,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       page_info: 'previousToken',
     },
   };
@@ -395,7 +394,6 @@ function getDefaultPageInfo(): PageInfo {
     query: {
       fields: fields.join(','),
       limit: `${limit}`,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       page_info: 'nextToken',
     },
   };

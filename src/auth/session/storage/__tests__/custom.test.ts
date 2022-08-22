@@ -228,7 +228,6 @@ describe('custom session storage', () => {
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + 10);
 
-    /* eslint-disable @typescript-eslint/naming-convention */
     let session: Session | undefined = new Session(
       sessionId,
       'test.myshopify.io',
@@ -253,7 +252,6 @@ describe('custom session storage', () => {
         locale: 'en',
       },
     };
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     let serializedSession = '';
     const storage = new CustomSessionStorage(
