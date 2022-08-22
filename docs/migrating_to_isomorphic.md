@@ -2,7 +2,7 @@
 
 We've extended the functionality of this library so that can now run on more JavaScript runtimes other than just Node.js, as long as there is a runtime adapter for it.
 
-The first thing you'll need to do is import the node adapter in your app, _before_ importing the library functions itself.
+To migrate your Node.js app to use this new adaptable version of the API library, you'll need to add an import of the node adapter in your app, _before_ importing the library functions itself.
 Note you only need to import this once in your app.
 
 ```js
