@@ -13,7 +13,7 @@ beforeEach(() => {
   payload = {
     iss: 'test-shop.myshopify.io/admin',
     dest: 'test-shop.myshopify.io',
-    aud: config.API_KEY,
+    aud: config.apiKey,
     sub: '1',
     exp: Date.now() / 1000 + 3600,
     nbf: 1234,
@@ -24,7 +24,7 @@ beforeEach(() => {
 });
 
 test('JWT session token can verify valid tokens', () => {
-  const token = jwt.sign(payload, config.API_SECRET_KEY, {
+  const token = jwt.sign(payload, config.apiSecretKey, {
     algorithm: 'HS256',
   });
 
@@ -42,7 +42,7 @@ test('JWT session token fails if the token is expired', () => {
   const invalidPayload = {...payload};
   invalidPayload.exp = new Date().getTime() / 1000 - 60;
 
-  const token = jwt.sign(invalidPayload, config.API_SECRET_KEY, {
+  const token = jwt.sign(invalidPayload, config.apiSecretKey, {
     algorithm: 'HS256',
   });
   expect(() => decodeSessionToken(token)).toThrow(
@@ -54,7 +54,7 @@ test('JWT session token fails if the token is not activated yet', () => {
   const invalidPayload = {...payload};
   invalidPayload.nbf = new Date().getTime() / 1000 + 60;
 
-  const token = jwt.sign(invalidPayload, config.API_SECRET_KEY, {
+  const token = jwt.sign(invalidPayload, config.apiSecretKey, {
     algorithm: 'HS256',
   });
   expect(() => decodeSessionToken(token)).toThrow(
@@ -64,10 +64,10 @@ test('JWT session token fails if the token is not activated yet', () => {
 
 test('JWT session token fails if the API key is wrong', () => {
   // The token is signed with a key that is not the current value
-  const token = jwt.sign(payload, config.API_SECRET_KEY, {
+  const token = jwt.sign(payload, config.apiSecretKey, {
     algorithm: 'HS256',
   });
-  config.API_KEY = 'something_else';
+  config.apiKey = 'something_else';
 
   expect(() => decodeSessionToken(token)).toThrow(
     ShopifyErrors.InvalidJwtError,

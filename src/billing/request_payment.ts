@@ -51,7 +51,7 @@ async function requestRecurringPayment(
   returnUrl: string,
   isTest: boolean,
 ): Promise<RecurringPaymentResponse> {
-  if (!config.BILLING) {
+  if (!config.billing) {
     throw new BillingError({
       message: 'Attempted to request recurring payment without billing configs',
       errorData: [],
@@ -64,15 +64,15 @@ async function requestRecurringPayment(
     data: {
       query: RECURRING_PURCHASE_MUTATION,
       variables: {
-        name: config.BILLING.chargeName,
+        name: config.billing.chargeName,
         lineItems: [
           {
             plan: {
               appRecurringPricingDetails: {
-                interval: config.BILLING.interval,
+                interval: config.billing.interval,
                 price: {
-                  amount: config.BILLING.amount,
-                  currencyCode: config.BILLING.currencyCode,
+                  amount: config.billing.amount,
+                  currencyCode: config.billing.currencyCode,
                 },
               },
             },
@@ -99,7 +99,7 @@ async function requestSinglePayment(
   returnUrl: string,
   isTest: boolean,
 ): Promise<SinglePaymentResponse> {
-  if (!config.BILLING) {
+  if (!config.billing) {
     throw new BillingError({
       message: 'Attempted to request single payment without billing configs',
       errorData: [],
@@ -112,10 +112,10 @@ async function requestSinglePayment(
     data: {
       query: ONE_TIME_PURCHASE_MUTATION,
       variables: {
-        name: config.BILLING.chargeName,
+        name: config.billing.chargeName,
         price: {
-          amount: config.BILLING.amount,
-          currencyCode: config.BILLING.currencyCode,
+          amount: config.billing.amount,
+          currencyCode: config.billing.currencyCode,
         },
         returnUrl,
         test: isTest,

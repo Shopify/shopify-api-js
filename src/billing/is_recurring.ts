@@ -9,12 +9,12 @@ const RECURRING_INTERVALS: BillingInterval[] = [
 ];
 
 export function isRecurring(): boolean {
-  if (!config.BILLING) {
+  if (!config.billing) {
     throw new BillingError({
       message: 'Attempted to request billing without billing configs',
       errorData: [],
     });
   }
 
-  return RECURRING_INTERVALS.includes(config.BILLING.interval!);
+  return RECURRING_INTERVALS.includes(config.billing.interval!);
 }

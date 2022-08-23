@@ -27,5 +27,5 @@ export default async function loadCurrentSession(
     return Promise.resolve(undefined);
   }
 
-  return config.SESSION_STORAGE.loadSession(sessionId);
+  return config.sessionStorage.loadSession(sessionId);
 }

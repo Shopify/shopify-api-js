@@ -259,7 +259,7 @@ const WebhooksRegistry: RegistryInterface = {
     const client = new GraphqlClient(shop, accessToken);
     const address =
       deliveryMethod === DeliveryMethod.Http
-        ? `${config.HOST_SCHEME}://${config.HOST_NAME}${path}`
+        ? `${config.hostScheme}://${config.hostName}${path}`
         : path;
 
     let checkResult;
@@ -401,7 +401,7 @@ const WebhooksRegistry: RegistryInterface = {
         let responseError: Error | undefined;
         const headers = {};
 
-        const generatedHash = createHmac('sha256', config.API_SECRET_KEY)
+        const generatedHash = createHmac('sha256', config.apiSecretKey)
           .update(reqBody, 'utf8')
           .digest('base64');
 

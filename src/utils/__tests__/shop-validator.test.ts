@@ -53,7 +53,7 @@ describe('sanitizeShop', () => {
   });
 
   test('returns the right values when using custom domains', () => {
-    config.CUSTOM_SHOP_DOMAINS = [CUSTOM_DOMAIN, CUSTOM_DOMAIN_REGEX];
+    config.customShopDomains = [CUSTOM_DOMAIN, CUSTOM_DOMAIN_REGEX];
 
     expect(sanitizeShop(VALID_SHOP_WITH_CUSTOM_DOMAIN)).toEqual(
       VALID_SHOP_WITH_CUSTOM_DOMAIN,

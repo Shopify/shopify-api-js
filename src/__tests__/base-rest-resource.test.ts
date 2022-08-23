@@ -444,11 +444,11 @@ describe('Base REST resource', () => {
   });
 
   it('throws an error if the API versions mismatch', async () => {
-    config.API_VERSION = ApiVersion.January22;
+    config.apiVersion = ApiVersion.January22;
 
     await expect(FakeResource.all({session})).rejects.toThrowError(
       new RestResourceError(
-        `Current config.API_VERSION '${ApiVersion.January22}' does not match resource version ${ApiVersion.Unstable}`,
+        `Current config.apiVersion '${ApiVersion.January22}' does not match resource version ${ApiVersion.Unstable}`,
       ),
     );
   });

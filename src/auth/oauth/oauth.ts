@@ -54,7 +54,7 @@ const ShopifyOAuth = {
     const cleanShop = sanitizeShop(shop, true)!;
 
     const cookies = new Cookies(request, response, {
-      keys: [config.API_SECRET_KEY],
+      keys: [config.apiSecretKey],
       secure: true,
     });
 
@@ -68,9 +68,9 @@ const ShopifyOAuth = {
     });
 
     const query = {
-      client_id: config.API_KEY,
-      scope: config.SCOPES.toString(),
-      redirect_uri: `${config.HOST_SCHEME}://${config.HOST_NAME}${redirectPath}`,
+      client_id: config.apiKey,
+      scope: config.scopes.toString(),
+      redirect_uri: `${config.hostScheme}://${config.hostName}${redirectPath}`,
       state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
@@ -120,8 +120,8 @@ const ShopifyOAuth = {
     const isOnline = stateFromCookie.startsWith('online_');
 
     const body = {
-      client_id: config.API_KEY,
-      client_secret: config.API_SECRET_KEY,
+      client_id: config.apiKey,
+      client_secret: config.apiSecretKey,
       code: query.code,
     };
 
@@ -142,9 +142,9 @@ const ShopifyOAuth = {
       isOnline,
     );
 
-    if (!config.IS_EMBEDDED_APP) {
+    if (!config.isEmbeddedApp) {
       const cookies = new Cookies(request, response, {
-        keys: [config.API_SECRET_KEY],
+        keys: [config.apiSecretKey],
         secure: true,
       });
 
@@ -156,7 +156,7 @@ const ShopifyOAuth = {
       });
     }
 
-    const sessionStored = await config.SESSION_STORAGE.storeSession(session);
+    const sessionStored = await config.sessionStorage.storeSession(session);
     if (!sessionStored) {
       throw new ShopifyErrors.SessionStorageError(
         'Session could not be saved. Please check your session storage functionality.',
@@ -212,7 +212,7 @@ const ShopifyOAuth = {
   ): string | undefined {
     let currentSessionId: string | undefined;
 
-    if (config.IS_EMBEDDED_APP) {
+    if (config.isEmbeddedApp) {
       const authHeader = request.headers.authorization;
       if (authHeader) {
         const matches = authHeader.match(/^Bearer (.+)$/);
@@ -272,7 +272,7 @@ function getValueFromCookie(
 ): string | undefined {
   const cookies = new Cookies(request, response, {
     secure: true,
-    keys: [config.API_SECRET_KEY],
+    keys: [config.apiSecretKey],
   });
   return cookies.get(name, {signed: true});
 }
@@ -291,7 +291,7 @@ function deleteCookie(
 ): void {
   const cookies = new Cookies(request, response, {
     secure: true,
-    keys: [config.API_SECRET_KEY],
+    keys: [config.apiSecretKey],
   });
   cookies.set(name);
 }
@@ -321,7 +321,7 @@ function createSession(
       Date.now() + responseBody.expires_in * 1000,
     );
 
-    if (config.IS_EMBEDDED_APP) {
+    if (config.isEmbeddedApp) {
       sessionId = ShopifyOAuth.getJwtSessionId(
         shop,
         `${(rest as OnlineAccessInfo).associated_user.id}`,

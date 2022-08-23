@@ -77,8 +77,8 @@ export class HttpClient {
 
     let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
 
-    if (config.USER_AGENT_PREFIX) {
-      userAgent = `${config.USER_AGENT_PREFIX} | ${userAgent}`;
+    if (config.userAgentPrefix) {
+      userAgent = `${config.userAgentPrefix} | ${userAgent}`;
     }
 
     if (params.extraHeaders) {
@@ -215,12 +215,12 @@ export class HttpClient {
           ) {
             this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
-            if (config.LOG_FILE) {
+            if (config.logFile) {
               const stack = new Error().stack;
               const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
                 deprecation,
               )}\n    Stack Trace: ${stack}\n`;
-              fs.writeFileSync(config.LOG_FILE, log, {
+              fs.writeFileSync(config.logFile, log, {
                 flag: 'a',
                 encoding: 'utf-8',
               });

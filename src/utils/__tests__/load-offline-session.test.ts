@@ -13,7 +13,7 @@ describe('loadOfflineSession', () => {
   it('loads offline sessions by shop', async () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const offlineSession = new Session(offlineId, shop, 'state', false);
-    config.SESSION_STORAGE.storeSession(offlineSession);
+    config.sessionStorage.storeSession(offlineSession);
 
     expect(await loadOfflineSession(shop)).toBe(offlineSession);
   });
@@ -22,7 +22,7 @@ describe('loadOfflineSession', () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const offlineSession = new Session(offlineId, shop, 'state', false);
     offlineSession.expires = new Date('2020-01-01');
-    config.SESSION_STORAGE.storeSession(offlineSession);
+    config.sessionStorage.storeSession(offlineSession);
 
     await expect(loadOfflineSession(shop)).resolves.toBeUndefined();
   });
@@ -31,7 +31,7 @@ describe('loadOfflineSession', () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const offlineSession = new Session(offlineId, shop, 'state', false);
     offlineSession.expires = new Date('2020-01-01');
-    config.SESSION_STORAGE.storeSession(offlineSession);
+    config.sessionStorage.storeSession(offlineSession);
 
     await expect(loadOfflineSession(shop, true)).resolves.toBe(offlineSession);
   });

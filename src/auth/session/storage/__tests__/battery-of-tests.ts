@@ -11,7 +11,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const sessionFactories = [
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
-        session.scope = config.SCOPES.toString();
+        session.scope = config.scopes.toString();
         session.accessToken = '123';
         return session;
       },
@@ -21,20 +21,20 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
         expiryDate.setMinutes(expiryDate.getMinutes() + 60);
         session.expires = expiryDate;
         session.accessToken = '123';
-        session.scope = config.SCOPES.toString();
+        session.scope = config.scopes.toString();
         return session;
       },
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
         session.expires = null as any;
-        session.scope = config.SCOPES.toString();
+        session.scope = config.scopes.toString();
         session.accessToken = '123';
         return session;
       },
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
         session.expires = undefined;
-        session.scope = config.SCOPES.toString();
+        session.scope = config.scopes.toString();
         session.accessToken = '123';
         return session;
       },
@@ -42,7 +42,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
         const session = new Session(sessionId, 'shop', 'state', false);
         session.onlineAccessInfo = {associated_user: {}} as any;
         session.onlineAccessInfo!.associated_user.id = 123;
-        session.scope = config.SCOPES.toString();
+        session.scope = config.scopes.toString();
         session.accessToken = '123';
         return session;
       },

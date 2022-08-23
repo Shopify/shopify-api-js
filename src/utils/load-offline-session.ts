@@ -20,7 +20,7 @@ export default async function loadOfflineSession(
   const cleanShop = sanitizeShop(shop, true)!;
 
   const sessionId = OAuth.getOfflineSessionId(cleanShop);
-  const session = await config.SESSION_STORAGE.loadSession(sessionId);
+  const session = await config.sessionStorage.loadSession(sessionId);
 
   const now = new Date();
 

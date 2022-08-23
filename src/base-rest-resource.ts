@@ -97,9 +97,9 @@ class Base {
     body,
     entity,
   }: RequestArgs): Promise<RestRequestReturn> {
-    if (config.API_VERSION !== this.API_VERSION) {
+    if (config.apiVersion !== this.API_VERSION) {
       throw new RestResourceError(
-        `Current config.API_VERSION '${config.API_VERSION}' does not match resource version ${this.API_VERSION}`,
+        `Current config.apiVersion '${config.apiVersion}' does not match resource version ${this.API_VERSION}`,
       );
     }
 

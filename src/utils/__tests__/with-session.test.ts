@@ -35,7 +35,7 @@ describe('withSession', () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const session = new Session(offlineId, shop, 'state', false);
     session.accessToken = 'gimme-access';
-    await config.SESSION_STORAGE.storeSession(session);
+    await config.sessionStorage.storeSession(session);
 
     await expect(
       withSession({clientType: 'blah' as any, isOnline: false, shop}),
@@ -57,7 +57,7 @@ describe('withSession', () => {
   it('throws an error when the session is not yet authenticated', async () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const session = new Session(offlineId, shop, 'state', false);
-    await config.SESSION_STORAGE.storeSession(session);
+    await config.sessionStorage.storeSession(session);
 
     await expect(
       withSession({clientType: 'rest', isOnline: false, shop}),
@@ -68,7 +68,7 @@ describe('withSession', () => {
     const offlineId = OAuth.getOfflineSessionId(shop);
     const session = new Session(offlineId, shop, 'state', false);
     session.accessToken = 'gimme-access';
-    await config.SESSION_STORAGE.storeSession(session);
+    await config.sessionStorage.storeSession(session);
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',
@@ -92,12 +92,12 @@ describe('withSession', () => {
   });
 
   it('returns an object containing the appropriate client and session for online && non-embedded apps', async () => {
-    config.IS_EMBEDDED_APP = false;
+    config.isEmbeddedApp = false;
     setConfig(config);
 
     const session = new Session(`12345`, shop, 'state', true);
     session.accessToken = 'gimme-access';
-    await config.SESSION_STORAGE.storeSession(session);
+    await config.sessionStorage.storeSession(session);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -130,19 +130,19 @@ describe('withSession', () => {
   });
 
   it('returns an object with the appropriate client and session for online && embedded apps', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
     const sub = '1';
     const sessionId = ShopifyOAuth.getJwtSessionId(shop, sub);
     const session = new Session(sessionId, shop, 'state', true);
     session.accessToken = 'gimme-access';
-    await config.SESSION_STORAGE.storeSession(session);
+    await config.sessionStorage.storeSession(session);
 
     const jwtPayload = {
       iss: `https://${shop}`,
       dest: `https://${shop}`,
-      aud: config.API_KEY,
+      aud: config.apiKey,
       sub,
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -151,7 +151,7 @@ describe('withSession', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {

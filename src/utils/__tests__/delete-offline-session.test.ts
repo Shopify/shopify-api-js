@@ -10,7 +10,7 @@ describe('deleteOfflineSession', () => {
 
   beforeEach(() => {
     const offlineSession = new Session(offlineId, shop, 'state', false);
-    config.SESSION_STORAGE.storeSession(offlineSession);
+    config.sessionStorage.storeSession(offlineSession);
   });
 
   it('deletes offline sessions by shop', async () => {

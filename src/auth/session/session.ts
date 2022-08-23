@@ -36,7 +36,7 @@ class Session implements SessionInterface {
   ) {}
 
   public isActive(): boolean {
-    const scopesUnchanged = config.SCOPES.equals(this.scope);
+    const scopesUnchanged = config.scopes.equals(this.scope);
     if (
       scopesUnchanged &&
       this.accessToken &&

@@ -17,7 +17,7 @@ export class GraphqlClient {
   private readonly client: HttpClient;
 
   constructor(readonly domain: string, readonly accessToken?: string) {
-    if (!config.IS_PRIVATE_APP && !accessToken) {
+    if (!config.isPrivateApp && !accessToken) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating GraphQL client',
       );
@@ -37,7 +37,7 @@ export class GraphqlClient {
       ...params.extraHeaders,
     };
 
-    const path = `${this.baseApiPath}/${config.API_VERSION}/graphql.json`;
+    const path = `${this.baseApiPath}/${config.apiVersion}/graphql.json`;
 
     let dataType: DataType.GraphQL | DataType.JSON;
 
@@ -61,8 +61,8 @@ export class GraphqlClient {
   protected getAccessTokenHeader(): AccessTokenHeader {
     return {
       header: ShopifyHeader.AccessToken,
-      value: config.IS_PRIVATE_APP
-        ? config.API_SECRET_KEY
+      value: config.isPrivateApp
+        ? config.apiSecretKey
         : (this.accessToken as string),
     };
   }

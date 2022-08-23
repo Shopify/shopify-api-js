@@ -313,7 +313,7 @@ describe('REST client', () => {
   });
 
   it('adapts to private app requests', async () => {
-    config.IS_PRIVATE_APP = true;
+    config.isPrivateApp = true;
     setConfig(config);
 
     const client = new RestClient(domain);

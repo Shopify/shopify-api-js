@@ -18,7 +18,7 @@ export async function check({
   session,
   isTest = true,
 }: CheckInterface): Promise<CheckReturn> {
-  if (!config.BILLING) {
+  if (!config.billing) {
     return {hasPayment: true, confirmBillingUrl: undefined};
   }
 

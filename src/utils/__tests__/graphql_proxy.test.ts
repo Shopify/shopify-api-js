@@ -51,12 +51,12 @@ describe('GraphQL proxy with session', () => {
   });
 
   beforeEach(async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
     const jwtPayload: JwtPayload = {
       iss: 'https://shop.myshopify.com/admin',
       dest: 'https://shop.myshopify.com',
-      aud: config.API_KEY,
+      aud: config.apiKey,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -72,8 +72,8 @@ describe('GraphQL proxy with session', () => {
       true,
     );
     session.accessToken = accessToken;
-    await config.SESSION_STORAGE.storeSession(session);
-    token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    await config.sessionStorage.storeSession(session);
+    token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
   });
@@ -113,12 +113,12 @@ describe('GraphQL proxy with session', () => {
 
 describe('GraphQL proxy', () => {
   it('throws an error if no token', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
     const jwtPayload: JwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: config.API_KEY,
+      aud: config.apiKey,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -127,7 +127,7 @@ describe('GraphQL proxy', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {
@@ -142,7 +142,7 @@ describe('GraphQL proxy', () => {
       'state',
       true,
     );
-    config.SESSION_STORAGE.storeSession(session);
+    config.sessionStorage.storeSession(session);
 
     await expect(graphqlProxy(req, res)).rejects.toThrow(InvalidSession);
   });

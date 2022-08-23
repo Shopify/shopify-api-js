@@ -15,7 +15,7 @@ class RestClient extends HttpClient {
   public constructor(domain: string, readonly accessToken?: string) {
     super(domain);
 
-    if (!config.IS_PRIVATE_APP && !accessToken) {
+    if (!config.isPrivateApp && !accessToken) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating REST client',
       );
@@ -26,8 +26,8 @@ class RestClient extends HttpClient {
     params: RequestParams,
   ): Promise<RestRequestReturn<T>> {
     params.extraHeaders = {
-      [ShopifyHeader.AccessToken]: config.IS_PRIVATE_APP
-        ? config.API_SECRET_KEY
+      [ShopifyHeader.AccessToken]: config.isPrivateApp
+        ? config.apiSecretKey
         : (this.accessToken as string),
       ...params.extraHeaders,
     };
@@ -86,7 +86,7 @@ class RestClient extends HttpClient {
     if (cleanPath.startsWith('/admin')) {
       return `${cleanPath.replace(/\.json$/, '')}.json`;
     } else {
-      return `/admin/api/${config.API_VERSION}${cleanPath.replace(
+      return `/admin/api/${config.apiVersion}${cleanPath.replace(
         /\.json$/,
         '',
       )}.json`;

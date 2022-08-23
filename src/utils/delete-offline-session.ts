@@ -16,5 +16,5 @@ export default async function deleteOfflineSession(
 
   const sessionId = OAuth.getOfflineSessionId(cleanShop);
 
-  return config.SESSION_STORAGE.deleteSession(sessionId);
+  return config.sessionStorage.deleteSession(sessionId);
 }

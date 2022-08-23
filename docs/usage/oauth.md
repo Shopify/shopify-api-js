@@ -143,7 +143,7 @@ You can use the `Shopify.Utils.loadCurrentSession()` method to load an online se
 
 ## Fetching sessions
 
-As mentioned in the previous sections, you can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `config.SESSION_STORAGE` strategy, and can be retrieved with the below utilities.
+As mentioned in the previous sections, you can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `config.sessionStorage` strategy, and can be retrieved with the below utilities.
 
 - To load a session, you can use the following method. You can load both online and offline sessions from the current request / response objects.
 
@@ -168,7 +168,7 @@ When an app's scopes change, it needs to request merchants to go through OAuth a
 ```ts
 const session: Session; // Loaded from one of the utility methods above
 
-if (!config.SCOPES.equals(session.scope)) {
+if (!config.scopes.equals(session.scope)) {
   // Scopes have changed, the app should redirect the merchant to OAuth
 }
 ```

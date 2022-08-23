@@ -41,8 +41,8 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('can return response from config private app setting', async () => {
-    config.IS_PRIVATE_APP = true;
-    config.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN = 'private_token';
+    config.isPrivateApp = true;
+    config.privateAppStorefrontAccessToken = 'private_token';
     setConfig(config);
 
     const client: StorefrontClient = new StorefrontClient(DOMAIN);

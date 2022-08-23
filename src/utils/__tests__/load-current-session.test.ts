@@ -19,7 +19,7 @@ describe('loadCurrentSession', () => {
     jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: config.API_KEY,
+      aud: config.apiKey,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -30,7 +30,7 @@ describe('loadCurrentSession', () => {
   });
 
   it('gets the current session from cookies for non-embedded apps', async () => {
-    config.IS_EMBEDDED_APP = false;
+    config.isEmbeddedApp = false;
     setConfig(config);
 
     const req = {} as http.IncomingMessage;
@@ -44,7 +44,7 @@ describe('loadCurrentSession', () => {
       'state',
       true,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 
@@ -54,7 +54,7 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads nothing if there is no session for non-embedded apps', async () => {
-    config.IS_EMBEDDED_APP = false;
+    config.isEmbeddedApp = false;
     setConfig(config);
 
     const req = {} as http.IncomingMessage;
@@ -66,10 +66,10 @@ describe('loadCurrentSession', () => {
   });
 
   it('gets the current session from JWT token for embedded apps', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
-    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {
@@ -85,7 +85,7 @@ describe('loadCurrentSession', () => {
       'state',
       true,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 
@@ -93,7 +93,7 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads nothing if no authorization header is present', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
     const req = {headers: {}} as http.IncomingMessage;
@@ -103,10 +103,10 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads nothing if there is no session for embedded apps', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
-    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {
@@ -120,7 +120,7 @@ describe('loadCurrentSession', () => {
   });
 
   it('fails if authorization header is missing or is not a Bearer token', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
     const req = {
@@ -136,7 +136,7 @@ describe('loadCurrentSession', () => {
   });
 
   it('falls back to the cookie session for embedded apps', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
     const req = {
@@ -154,7 +154,7 @@ describe('loadCurrentSession', () => {
       'state',
       true,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 
@@ -164,7 +164,7 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads offline sessions from cookies', async () => {
-    config.IS_EMBEDDED_APP = false;
+    config.isEmbeddedApp = false;
     setConfig(config);
 
     const req = {} as http.IncomingMessage;
@@ -178,7 +178,7 @@ describe('loadCurrentSession', () => {
       'state',
       false,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 
@@ -188,10 +188,10 @@ describe('loadCurrentSession', () => {
   });
 
   it('loads offline sessions from JWT token', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
-    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {
@@ -207,7 +207,7 @@ describe('loadCurrentSession', () => {
       'state',
       false,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 

@@ -25,7 +25,7 @@ async function hasActiveSubscription(
   session: SessionInterface,
   isTest: boolean,
 ): Promise<boolean> {
-  if (!config.BILLING) {
+  if (!config.billing) {
     throw new BillingError({
       message: 'Attempted to look for subscriptions without billing configs',
       errorData: [],
@@ -42,7 +42,7 @@ async function hasActiveSubscription(
 
   return currentInstallations.body.data.currentAppInstallation.activeSubscriptions.some(
     (subscription) =>
-      subscription.name === config.BILLING!.chargeName &&
+      subscription.name === config.billing!.chargeName &&
       (isTest || !subscription.test),
   );
 }
@@ -51,7 +51,7 @@ async function hasActiveOneTimePurchase(
   session: SessionInterface,
   isTest: boolean,
 ): Promise<boolean> {
-  if (!config.BILLING) {
+  if (!config.billing) {
     throw new BillingError({
       message:
         'Attempted to look for one time purchases without billing configs',
@@ -77,7 +77,7 @@ async function hasActiveOneTimePurchase(
     if (
       installation.oneTimePurchases.edges.some(
         (purchase) =>
-          purchase.node.name === config.BILLING!.chargeName &&
+          purchase.node.name === config.billing!.chargeName &&
           (isTest || !purchase.node.test) &&
           purchase.node.status === 'ACTIVE',
       )

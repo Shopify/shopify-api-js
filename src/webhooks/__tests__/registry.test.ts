@@ -56,7 +56,7 @@ const TEST_WEBHOOK_ID = 'gid://shopify/WebhookSubscription/12345';
 
 describe('ShopifyWebhooks.Registry.register', () => {
   beforeEach(async () => {
-    config.API_VERSION = ApiVersion.Unstable;
+    config.apiVersion = ApiVersion.Unstable;
     ShopifyWebhooks.Registry.webhookRegistry = {};
   });
 
@@ -305,7 +305,7 @@ describe('ShopifyWebhooks.Registry.registerAll', () => {
   };
 
   beforeEach(async () => {
-    config.API_VERSION = ApiVersion.Unstable;
+    config.apiVersion = ApiVersion.Unstable;
     ShopifyWebhooks.Registry.webhookRegistry = {};
     ShopifyWebhooks.Registry.addHandler('PRODUCTS_CREATE', {
       path: '/webhooks',
@@ -341,9 +341,9 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
   beforeEach(async () => {
     fetchMock.resetMocks();
-    config.API_SECRET_KEY = 'kitties are cute';
-    config.API_VERSION = ApiVersion.Unstable;
-    config.IS_EMBEDDED_APP = true;
+    config.apiSecretKey = 'kitties are cute';
+    config.apiVersion = ApiVersion.Unstable;
+    config.isEmbeddedApp = true;
     setConfig(config);
   });
 
@@ -362,7 +362,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(config.API_SECRET_KEY, rawBody)}))
+      .set(headers({hmac: hmac(config.apiSecretKey, rawBody)}))
       .send(rawBody)
       .expect(StatusCode.Ok);
   });
@@ -379,7 +379,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
       .post('/webhooks')
       .set(
         headers({
-          hmac: hmac(config.API_SECRET_KEY, rawBody),
+          hmac: hmac(config.apiSecretKey, rawBody),
           lowercase: true,
         }),
       )
@@ -407,7 +407,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(config.API_SECRET_KEY, rawBody)}))
+      .set(headers({hmac: hmac(config.apiSecretKey, rawBody)}))
       .send(rawBody)
       .expect(StatusCode.NotFound);
   });
@@ -522,7 +522,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(config.API_SECRET_KEY, rawBody)}))
+      .set(headers({hmac: hmac(config.apiSecretKey, rawBody)}))
       .send(rawBody)
       .expect(500);
   });
@@ -770,7 +770,7 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
   expect({
     method: Method.Post.toString(),
     domain: webhook.shop,
-    path: `/admin/api/${config.API_VERSION}/graphql.json`,
+    path: `/admin/api/${config.apiVersion}/graphql.json`,
     headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
@@ -785,12 +785,12 @@ function assertWebhookRegistrationRequest(
 ) {
   const address =
     !webhook.deliveryMethod || webhook.deliveryMethod === DeliveryMethod.Http
-      ? `${config.HOST_SCHEME}://${config.HOST_NAME}${webhook.path}`
+      ? `${config.hostScheme}://${config.hostName}${webhook.path}`
       : webhook.path;
   expect({
     method: Method.Post.toString(),
     domain: webhook.shop,
-    path: `/admin/api/${config.API_VERSION}/graphql.json`,
+    path: `/admin/api/${config.apiVersion}/graphql.json`,
     headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,

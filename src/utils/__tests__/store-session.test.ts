@@ -12,7 +12,7 @@ describe('storeSession', () => {
     const jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: config.API_KEY,
+      aud: config.apiKey,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -21,10 +21,10 @@ describe('storeSession', () => {
       sid: 'abc123',
     };
 
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
-    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {

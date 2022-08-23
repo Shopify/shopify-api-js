@@ -9,8 +9,8 @@ export class StorefrontClient extends GraphqlClient {
   protected getAccessTokenHeader(): AccessTokenHeader {
     return {
       header: ShopifyHeader.StorefrontAccessToken,
-      value: (config.IS_PRIVATE_APP
-        ? config.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN || this.accessToken
+      value: (config.isPrivateApp
+        ? config.privateAppStorefrontAccessToken || this.accessToken
         : this.accessToken) as string,
     };
   }

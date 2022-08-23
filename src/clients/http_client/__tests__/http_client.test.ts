@@ -403,7 +403,7 @@ describe('HTTP client', () => {
   });
 
   it('extends a User-Agent provided by config', async () => {
-    config.USER_AGENT_PREFIX = 'Config Agent';
+    config.userAgentPrefix = 'Config Agent';
     setConfig(config);
 
     const client = new HttpClient(domain);
@@ -699,7 +699,7 @@ describe('HTTP client', () => {
   });
 
   it('writes deprecation notices to log file if one is specified in config', async () => {
-    config.LOG_FILE = logFilePath;
+    config.logFile = logFilePath;
     setConfig(config);
 
     const client = new HttpClient(domain);

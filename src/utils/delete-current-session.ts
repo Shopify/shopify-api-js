@@ -27,5 +27,5 @@ export default async function deleteCurrentSession(
     throw new ShopifyErrors.SessionNotFound('No active session found.');
   }
 
-  return config.SESSION_STORAGE.deleteSession(sessionId);
+  return config.sessionStorage.deleteSession(sessionId);
 }

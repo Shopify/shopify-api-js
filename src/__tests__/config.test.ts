@@ -7,14 +7,14 @@ import {ApiVersion, ConfigParams} from '../base-types';
 jest.mock('cookies');
 
 const validParams: ConfigParams = {
-  API_KEY: 'api_key',
-  API_SECRET_KEY: 'secret_key',
-  SCOPES: ['scope'],
-  HOST_NAME: 'host_name',
-  API_VERSION: ApiVersion.Unstable,
-  IS_EMBEDDED_APP: true,
-  IS_PRIVATE_APP: false,
-  LOG_FILE: 'some-file-path.txt',
+  apiKey: 'apiKey',
+  apiSecretKey: 'secret_key',
+  scopes: ['scope'],
+  hostName: 'host_name',
+  apiVersion: ApiVersion.Unstable,
+  isEmbeddedApp: true,
+  isPrivateApp: false,
+  logFile: 'some-file-path.txt',
 };
 
 const originalWarn = console.warn;
@@ -28,61 +28,61 @@ describe('Config object', () => {
   it('can initialize and update config', () => {
     setConfig(validParams);
 
-    expect(config.API_KEY).toEqual(validParams.API_KEY);
-    expect(config.API_SECRET_KEY).toEqual(validParams.API_SECRET_KEY);
-    expect(config.SCOPES.equals(validParams.SCOPES)).toBeTruthy();
-    expect(config.HOST_NAME).toEqual(validParams.HOST_NAME);
+    expect(config.apiKey).toEqual(validParams.apiKey);
+    expect(config.apiSecretKey).toEqual(validParams.apiSecretKey);
+    expect(config.scopes.equals(validParams.scopes)).toBeTruthy();
+    expect(config.hostName).toEqual(validParams.hostName);
   });
 
   it("can't initialize with empty values", () => {
     let invalid: ConfigParams = {...validParams};
-    invalid.API_KEY = '';
+    invalid.apiKey = '';
     try {
       setConfig(invalid);
-      fail('Initializing without API_KEY did not throw an exception');
+      fail('Initializing without apiKey did not throw an exception');
     } catch (error) {
       expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(error.message).toContain('Missing values for: API_KEY');
+      expect(error.message).toContain('Missing values for: apiKey');
     }
 
     invalid = {...validParams};
-    invalid.API_SECRET_KEY = '';
+    invalid.apiSecretKey = '';
     try {
       setConfig(invalid);
-      fail('Initializing without API_SECRET_KEY did not throw an exception');
+      fail('Initializing without apiSecretKey did not throw an exception');
     } catch (error) {
       expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(error.message).toContain('Missing values for: API_SECRET_KEY');
+      expect(error.message).toContain('Missing values for: apiSecretKey');
     }
 
     invalid = {...validParams};
-    invalid.SCOPES = [];
+    invalid.scopes = [];
     try {
       setConfig(invalid);
-      fail('Initializing without SCOPES did not throw an exception');
+      fail('Initializing without scopes did not throw an exception');
     } catch (error) {
       expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(error.message).toContain('Missing values for: SCOPES');
+      expect(error.message).toContain('Missing values for: scopes');
     }
 
     invalid = {...validParams};
-    invalid.HOST_NAME = '';
+    invalid.hostName = '';
     try {
       setConfig(invalid);
-      fail('Initializing without HOST_NAME did not throw an exception');
+      fail('Initializing without hostName did not throw an exception');
     } catch (error) {
       expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
-      expect(error.message).toContain('Missing values for: HOST_NAME');
+      expect(error.message).toContain('Missing values for: hostName');
     }
 
     const empty: ConfigParams = {
-      API_KEY: '',
-      API_SECRET_KEY: '',
-      SCOPES: [],
-      HOST_NAME: '',
-      API_VERSION: ApiVersion.Unstable,
-      IS_EMBEDDED_APP: true,
-      LOG_FILE: '',
+      apiKey: '',
+      apiSecretKey: '',
+      scopes: [],
+      hostName: '',
+      apiVersion: ApiVersion.Unstable,
+      isEmbeddedApp: true,
+      logFile: '',
     };
     expect(() => setConfig(empty)).toThrow(ShopifyErrors.ShopifyError);
   });

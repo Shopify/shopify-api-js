@@ -21,11 +21,11 @@ import {
 describe('check', () => {
   const session = new Session('1234', 'test-shop.myshopify.io', '1234', true);
   session.accessToken = 'access-token';
-  session.scope = config.SCOPES.toString();
+  session.scope = config.scopes.toString();
 
   describe('with non-recurring config', () => {
     beforeEach(() => {
-      config.BILLING = {
+      config.billing = {
         amount: 5,
         chargeName: TEST_CHARGE_NAME,
         currencyCode: 'USD',
@@ -191,7 +191,7 @@ describe('check', () => {
 
   describe('with recurring config', () => {
     beforeEach(() => {
-      config.BILLING = {
+      config.billing = {
         amount: 5,
         chargeName: TEST_CHARGE_NAME,
         currencyCode: 'USD',

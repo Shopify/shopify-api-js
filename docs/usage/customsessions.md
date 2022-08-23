@@ -145,14 +145,14 @@ const sessionStorage = new RedisStore();
 
 // Setup config with CustomSessionStorage
 setConfig({
-  API_KEY,
-  API_SECRET_KEY,
-  SCOPES,
-  HOST_NAME: HOST,
-  IS_EMBEDDED_APP: true,
-  API_VERSION: ApiVersion.unstable,
+  apiKey: API_KEY,
+  apiSecretKey: API_SECRET_KEY,
+  scopes: SCOPES,
+  hostName: HOST,
+  isEmbeddedApp: true,
+  apiVersion: ApiVersion.unstable,
   // Pass the sessionStorage methods to pass into a new instance of `CustomSessionStorage`
-  SESSION_STORAGE: new Shopify.Session.CustomSessionStorage(
+  sessionStorage: new Shopify.Session.CustomSessionStorage(
     sessionStorage.storeCallback.bind(sessionStorage),
     sessionStorage.loadCallback.bind(sessionStorage),
     sessionStorage.deleteCallback.bind(sessionStorage),

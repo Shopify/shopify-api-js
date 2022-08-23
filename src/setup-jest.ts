@@ -10,17 +10,17 @@ let currentCall = 0;
 beforeEach(() => {
   // We want to reset the Config object on every run so that tests start with a consistent state
   setConfig({
-    API_KEY: 'test_key',
-    API_SECRET_KEY: 'test_secret_key',
-    SCOPES: ['test_scope'],
-    HOST_NAME: 'test_host_name',
-    HOST_SCHEME: 'https',
-    API_VERSION: ApiVersion.Unstable,
-    IS_EMBEDDED_APP: false,
-    IS_PRIVATE_APP: false,
-    SESSION_STORAGE: new MemorySessionStorage(),
-    CUSTOM_SHOP_DOMAINS: undefined,
-    BILLING: undefined,
+    apiKey: 'test_key',
+    apiSecretKey: 'test_secret_key',
+    scopes: ['test_scope'],
+    hostName: 'test_host_name',
+    hostScheme: 'https',
+    apiVersion: ApiVersion.Unstable,
+    isEmbeddedApp: false,
+    isPrivateApp: false,
+    sessionStorage: new MemorySessionStorage(),
+    customShopDomains: undefined,
+    billing: undefined,
   });
 
   fetchMock.mockReset();

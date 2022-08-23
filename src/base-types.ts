@@ -3,20 +3,20 @@ import {SessionStorage} from './auth/session/session_storage';
 import {BillingSettings} from './billing/types';
 
 export interface ConfigParams {
-  API_KEY: string;
-  API_SECRET_KEY: string;
-  SCOPES: string[] | AuthScopes;
-  HOST_NAME: string;
-  HOST_SCHEME?: string;
-  API_VERSION: ApiVersion;
-  IS_EMBEDDED_APP: boolean;
-  IS_PRIVATE_APP?: boolean;
-  SESSION_STORAGE?: SessionStorage;
-  LOG_FILE?: string;
-  USER_AGENT_PREFIX?: string;
-  PRIVATE_APP_STOREFRONT_ACCESS_TOKEN?: string;
-  CUSTOM_SHOP_DOMAINS?: (RegExp | string)[];
-  BILLING?: BillingSettings;
+  apiKey: string;
+  apiSecretKey: string;
+  scopes: string[] | AuthScopes;
+  hostName: string;
+  hostScheme?: string;
+  apiVersion: ApiVersion;
+  isEmbeddedApp: boolean;
+  isPrivateApp?: boolean;
+  sessionStorage?: SessionStorage;
+  logFile?: string;
+  userAgentPrefix?: string;
+  privateAppStorefrontAccessToken?: string;
+  customShopDomains?: (RegExp | string)[];
+  billing?: BillingSettings;
 }
 
 export enum ApiVersion {

@@ -19,7 +19,7 @@ describe('deleteCurrenSession', () => {
     jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: config.API_KEY,
+      aud: config.apiKey,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -30,7 +30,7 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current session when using cookies', async () => {
-    config.IS_EMBEDDED_APP = false;
+    config.isEmbeddedApp = false;
     setConfig(config);
 
     const req = {} as http.IncomingMessage;
@@ -44,7 +44,7 @@ describe('deleteCurrenSession', () => {
       'state',
       true,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 
@@ -55,10 +55,10 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current session when using JWT', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
-    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {
@@ -74,7 +74,7 @@ describe('deleteCurrenSession', () => {
       'state',
       true,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 
@@ -83,7 +83,7 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current offline session when using cookies', async () => {
-    config.IS_EMBEDDED_APP = false;
+    config.isEmbeddedApp = false;
     setConfig(config);
 
     const req = {} as http.IncomingMessage;
@@ -97,7 +97,7 @@ describe('deleteCurrenSession', () => {
       'state',
       false,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 
@@ -108,10 +108,10 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current offline session when using JWT', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
-    const token = jwt.sign(jwtPayload, config.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {
@@ -127,7 +127,7 @@ describe('deleteCurrenSession', () => {
       'state',
       false,
     );
-    await expect(config.SESSION_STORAGE.storeSession(session)).resolves.toEqual(
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
       true,
     );
 
@@ -136,7 +136,7 @@ describe('deleteCurrenSession', () => {
   });
 
   it('throws an error when no cookie is found', async () => {
-    config.IS_EMBEDDED_APP = false;
+    config.isEmbeddedApp = false;
     setConfig(config);
 
     const req = {} as http.IncomingMessage;
@@ -150,7 +150,7 @@ describe('deleteCurrenSession', () => {
   });
 
   it('throws an error when authorization header is not a bearer token', async () => {
-    config.IS_EMBEDDED_APP = true;
+    config.isEmbeddedApp = true;
     setConfig(config);
 
     const req = {

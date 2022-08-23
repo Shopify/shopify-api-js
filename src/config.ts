@@ -5,46 +5,46 @@ import {AuthScopes} from './auth/scopes';
 import {MemorySessionStorage} from './auth/session/storage/memory';
 
 interface ConfigInterface extends ConfigParams {
-  HOST_SCHEME: string;
-  SESSION_STORAGE: SessionStorage;
-  SCOPES: AuthScopes;
+  hostScheme: string;
+  sessionStorage: SessionStorage;
+  scopes: AuthScopes;
 }
 
 export const config: ConfigInterface = {
-  API_KEY: '',
-  API_SECRET_KEY: '',
-  SCOPES: new AuthScopes([]),
-  HOST_NAME: '',
-  HOST_SCHEME: 'https',
-  API_VERSION: ApiVersion.Unstable,
-  IS_EMBEDDED_APP: true,
-  IS_PRIVATE_APP: false,
-  // TS hack as SESSION_STORAGE is guaranteed to be set
+  apiKey: '',
+  apiSecretKey: '',
+  scopes: new AuthScopes([]),
+  hostName: '',
+  hostScheme: 'https',
+  apiVersion: ApiVersion.Unstable,
+  isEmbeddedApp: true,
+  isPrivateApp: false,
+  // TS hack as sessionStorage is guaranteed to be set
   // to a correct value in `initialize()`.
-  SESSION_STORAGE: null as unknown as SessionStorage,
+  sessionStorage: null as unknown as SessionStorage,
 };
 
 export function setConfig(params: ConfigParams): void {
   let scopes: AuthScopes;
-  if (params.SCOPES instanceof AuthScopes) {
-    scopes = params.SCOPES;
+  if (params.scopes instanceof AuthScopes) {
+    scopes = params.scopes;
   } else {
-    scopes = new AuthScopes(params.SCOPES);
+    scopes = new AuthScopes(params.scopes);
   }
 
   // Make sure that the essential params actually have content in them
   const missing: string[] = [];
-  if (!params.API_KEY.length) {
-    missing.push('API_KEY');
+  if (!params.apiKey.length) {
+    missing.push('apiKey');
   }
-  if (!params.API_SECRET_KEY.length) {
-    missing.push('API_SECRET_KEY');
+  if (!params.apiSecretKey.length) {
+    missing.push('apiSecretKey');
   }
   if (!scopes.toArray().length) {
-    missing.push('SCOPES');
+    missing.push('scopes');
   }
-  if (!params.HOST_NAME.length) {
-    missing.push('HOST_NAME');
+  if (!params.hostName.length) {
+    missing.push('hostName');
   }
 
   if (missing.length) {
@@ -55,43 +55,43 @@ export function setConfig(params: ConfigParams): void {
     );
   }
 
-  config.API_KEY = params.API_KEY;
-  config.API_SECRET_KEY = params.API_SECRET_KEY;
-  config.SCOPES = scopes;
-  config.HOST_NAME = params.HOST_NAME;
-  config.API_VERSION = params.API_VERSION;
-  config.IS_EMBEDDED_APP = params.IS_EMBEDDED_APP;
-  config.IS_PRIVATE_APP = params.IS_PRIVATE_APP;
-  config.SESSION_STORAGE = params.SESSION_STORAGE ?? new MemorySessionStorage();
+  config.apiKey = params.apiKey;
+  config.apiSecretKey = params.apiSecretKey;
+  config.scopes = scopes;
+  config.hostName = params.hostName;
+  config.apiVersion = params.apiVersion;
+  config.isEmbeddedApp = params.isEmbeddedApp;
+  config.isPrivateApp = params.isPrivateApp;
+  config.sessionStorage = params.sessionStorage ?? new MemorySessionStorage();
 
-  if (params.HOST_SCHEME) {
-    config.HOST_SCHEME = params.HOST_SCHEME;
+  if (params.hostScheme) {
+    config.hostScheme = params.hostScheme;
   }
 
-  if (params.USER_AGENT_PREFIX) {
-    config.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
+  if (params.userAgentPrefix) {
+    config.userAgentPrefix = params.userAgentPrefix;
   }
 
-  if (params.LOG_FILE) {
-    config.LOG_FILE = params.LOG_FILE;
+  if (params.logFile) {
+    config.logFile = params.logFile;
   }
 
-  if (params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN) {
-    config.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN =
-      params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN;
+  if (params.privateAppStorefrontAccessToken) {
+    config.privateAppStorefrontAccessToken =
+      params.privateAppStorefrontAccessToken;
   }
 
-  if (params.CUSTOM_SHOP_DOMAINS) {
-    config.CUSTOM_SHOP_DOMAINS = params.CUSTOM_SHOP_DOMAINS;
+  if (params.customShopDomains) {
+    config.customShopDomains = params.customShopDomains;
   }
 
-  if (params.BILLING) {
-    config.BILLING = params.BILLING;
+  if (params.billing) {
+    config.billing = params.billing;
   }
 }
 
 export function throwIfUninitializedConfig(): void {
-  if (!config.API_KEY || config.API_KEY.length === 0) {
+  if (!config.apiKey || config.apiKey.length === 0) {
     throw new UninitializedConfigError(
       'Config has not been properly initialized. Please call setConfig() to setup your app config object.',
     );
@@ -99,7 +99,7 @@ export function throwIfUninitializedConfig(): void {
 }
 
 export function throwIfPrivateApp(message: string): void {
-  if (config.IS_PRIVATE_APP) {
+  if (config.isPrivateApp) {
     throw new PrivateAppError(message);
   }
 }

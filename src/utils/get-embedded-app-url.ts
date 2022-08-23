@@ -42,5 +42,5 @@ export function buildEmbeddedAppUrl(host: string): string {
 
   const decodedHost = Buffer.from(host, 'base64').toString();
 
-  return `https://${decodedHost}/apps/${config.API_KEY}`;
+  return `https://${decodedHost}/apps/${config.apiKey}`;
 }

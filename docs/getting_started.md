@@ -110,7 +110,7 @@ HOST_SCHEME={your app's URI scheme} # Either http or https. Note http is intende
 
 First of all, in your `src/index.ts` file, you'll need to set up your application, and initialize the Shopify library. Note that you only need to set up `config` once when your app is loaded, and the library will automatically use those settings whenever they are needed.
 
-While setting up `config`, you'll be able to set [which version of the Admin API](https://shopify.dev/concepts/about-apis/versioning) your app will be using. All supported versions are available in `ApiVersion`, including `'unstable'`. The `config.API_VERSION` setting will be applied to all requests made by the library.
+While setting up `config`, you'll be able to set [which version of the Admin API](https://shopify.dev/concepts/about-apis/versioning) your app will be using. All supported versions are available in `ApiVersion`, including `'unstable'`. The `config.apiVersion` setting will be applied to all requests made by the library.
 
 (See [oauth](./usage/oauth.md#add-your-oauth-callback-route) for use of `ACTIVE_SHOPIFY_SHOPS`)
 
@@ -123,19 +123,19 @@ import http from 'http';
 import url from 'url';
 import querystring from 'querystring';
 import '@shopify/shopify-api/adapters/node';
-import Shopify, { ApiVersion } from '@shopify/shopify-api';
+import { setConfig, ApiVersion } from '@shopify/shopify-api';
 require('dotenv').config();
 
 const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST, HOST_SCHEME } = process.env;
 
 setConfig({
-  API_KEY,
-  API_SECRET_KEY,
-  SCOPES: [SCOPES],
-  HOST_NAME: HOST.replace(/https?:\/\//, ""),
-  HOST_SCHEME,
-  IS_EMBEDDED_APP: {boolean},
-  API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
+  apiKey: API_KEY,
+  apiSecretKey: API_SECRET_KEY,
+  scopes: [SCOPES],
+  hostName: HOST.replace(/https?:\/\//, ""),
+  hostScheme: HOST_SCHEME,
+  isEmbeddedApp: {boolean},
+  apiVersion: ApiVersion.{version} // all supported versions are available, as well as "unstable"
 });
 
 // Storing the currently active shops in memory will force them to re-login when your server restarts. You should
@@ -182,7 +182,7 @@ http.createServer(onRequest).listen(3000);
 // src/index.ts
 import express from 'express';
 import '@shopify/shopify-api/adapters/node';
-import Shopify, { ApiVersion } from '@shopify/shopify-api';
+import { setConfig, ApiVersion } from '@shopify/shopify-api';
 require('dotenv').config();
 
 const app = express();
@@ -190,13 +190,13 @@ const app = express();
 const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST, HOST_SCHEME } = process.env;
 
 setConfig({
-  API_KEY,
-  API_SECRET_KEY,
-  SCOPES: [SCOPES],
-  HOST_NAME: HOST.replace(/https?:\/\//, ""),
-  HOST_SCHEME,
-  IS_EMBEDDED_APP: {boolean},
-  API_VERSION: ApiVersion.{version} // all supported versions are available, as well as "unstable" and "unversioned"
+  apiKey: API_KEY,
+  apiSecretKey: API_SECRET_KEY,
+  scopes: [SCOPES],
+  hostName: HOST.replace(/https?:\/\//, ""),
+  hostScheme: HOST_SCHEME,
+  isEmbeddedApp: {boolean},
+  apiVersion: ApiVersion.{version} // all supported versions are available, as well as "unstable"
 });
 // Storing the currently active shops in memory will force them to re-login when your server restarts. You should
 // persist this object in your app.

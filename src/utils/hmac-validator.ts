@@ -35,7 +35,7 @@ export function generateLocalHmac({
     ...(host && {host}),
   });
   return crypto
-    .createHmac('sha256', config.API_SECRET_KEY)
+    .createHmac('sha256', config.apiSecretKey)
     .update(queryString)
     .digest('hex');
 }

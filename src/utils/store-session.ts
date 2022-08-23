@@ -9,5 +9,5 @@ import {Session} from '../auth/session';
 export default async function storeSession(session: Session): Promise<boolean> {
   throwIfUninitializedConfig();
 
-  return config.SESSION_STORAGE.storeSession(session);
+  return config.sessionStorage.storeSession(session);
 }

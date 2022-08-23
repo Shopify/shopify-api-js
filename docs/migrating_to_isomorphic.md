@@ -23,8 +23,12 @@ You will probably need to search and replace most of the imports to this library
 
 ### Renamed `Context` to `config`
 
-You can search / replace instances of `Shopify.Context` with `config` which is a direct export of the library.
-The `initialize` method is now a separate function called `setConfig`.
+The current `Context` object name doesn't reflect that it mostly just holds configuration settings for the library, and no business logic.
+To make it more idiomatic, we've made the following changes to it:
+
+- The `Shopify.Context.initialize()` method is now called `setConfig()`.
+- You can search / replace instances of `Shopify.Context` with `config`, as per the example below.
+- The config options are now `camelCase` instead of `UPPER_CASE` to better represent them as properties, rather than constants. The settings' names and functionality are still the same, you'll just need to replace e.g. `Shopify.Context.API_KEY` with `config.apiKey`.
 
 **Note**: the `UninitializedContextError` is now `UninitializedConfigError`.
 
