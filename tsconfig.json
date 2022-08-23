@@ -53,7 +53,6 @@
   "exclude": [
     "src/base-rest-resource.ts",
     "src/auth/**/*.ts",
-    "src/runtime/**/*.ts",
     "src/utils/**/*.ts",
     "src/adapters/**/*.ts",
     "src/webhooks/**/*.ts",

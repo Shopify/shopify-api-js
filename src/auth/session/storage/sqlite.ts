@@ -12,7 +12,7 @@ const defaultSQLiteSessionStorageOptions: SQLiteSessionStorageOptions = {
   sessionTableName: 'shopify_sessions',
 };
 
-export class SQLiteSessionStorage implements SessionStorage {
+export class SQLiteSessionStorage extends SessionStorage {
   private options: SQLiteSessionStorageOptions;
   private db: sqlite3.Database;
   private ready: Promise<void>;
@@ -21,6 +21,8 @@ export class SQLiteSessionStorage implements SessionStorage {
     private filename: string,
     opts: Partial<SQLiteSessionStorageOptions> = {},
   ) {
+    super();
+
     this.options = {...defaultSQLiteSessionStorageOptions, ...opts};
     this.db = new sqlite3.Database(this.filename);
     this.ready = this.init();
