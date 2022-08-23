@@ -70,3 +70,5 @@ const currentSessionScope = session.scope;
 ```
 
 </details>
+
+[Back to guide index](../../README.md#features)

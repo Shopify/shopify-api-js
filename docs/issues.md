@@ -14,4 +14,4 @@ The other storage adapters (`MongoDBSessionStorage`, `MySQLSessionStorage`, `Pos
 
 If you wish to have an alternative storage solution, you must use a `CustomSessionStorage` solution in your production app- you can reference our [usage example with redis](usage/customsessions.md) to get started.
 
-[Back to guide index](README.md)
+[Back to guide index](../README.md)
