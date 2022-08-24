@@ -12,7 +12,7 @@ export class InvalidJwtError extends ShopifyError {}
 export class MissingJwtTokenError extends ShopifyError {}
 
 export class SafeCompareError extends ShopifyError {}
-export class UninitializedConfigError extends ShopifyError {}
+export class ConfigNotSetError extends ShopifyError {}
 export class PrivateAppError extends ShopifyError {}
 
 export class HttpRequestError extends ShopifyError {}

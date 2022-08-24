@@ -1,4 +1,4 @@
-import {config, throwIfUninitializedConfig} from '../config';
+import {config, throwIfConfigNotSet} from '../config';
 import {Session} from '../auth/session';
 
 /**
@@ -7,7 +7,7 @@ import {Session} from '../auth/session';
  * @param Session Session object
  */
 export default async function storeSession(session: Session): Promise<boolean> {
-  throwIfUninitializedConfig();
+  throwIfConfigNotSet();
 
   return config.sessionStorage.storeSession(session);
 }

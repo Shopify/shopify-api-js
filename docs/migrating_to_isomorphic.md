@@ -29,8 +29,8 @@ To make it more idiomatic, we've made the following changes to it:
 - The `Shopify.Context.initialize()` method is now called `setConfig()`.
 - You can search / replace instances of `Shopify.Context` with `config`, as per the example below.
 - The config options are now `camelCase` instead of `UPPER_CASE` to better represent them as properties, rather than constants. The settings' names and functionality are still the same, you'll just need to replace e.g. `Shopify.Context.API_KEY` with `config.apiKey`.
-
-**Note**: the `UninitializedContextError` is now `UninitializedConfigError`.
+- `Shopify.Context.throwIfUnitialized` is now `throwIfConfigNotSet`.
+- `UninitializedContextError` is now `ConfigNotSetError`.
 
 <table>
 <tr><th>Old code</th><th>New code</th></tr>
@@ -39,7 +39,8 @@ To make it more idiomatic, we've made the following changes to it:
 
 ```ts
 import {Shopify} from '@shopify/shopify-api';
-Shopify.Context.initialize({ ... });
+Shopify.Context.initialize({ API_KEY: '...', ... });
+console.log(Shopify.Context.API_KEY);
 ```
 
 </td>
@@ -47,8 +48,8 @@ Shopify.Context.initialize({ ... });
 
 ```ts
 import {setConfig, config} from '@shopify/shopify-api';
-setConfig({ SHOPIFY_API_KEY: '...', ... });
-console.log(config.SHOPIFY_API_KEY);
+setConfig({ apiKey: '...', ... });
+console.log(config.apiKey);
 ```
 
 </td>

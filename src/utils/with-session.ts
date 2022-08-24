@@ -2,7 +2,7 @@ import * as ShopifyErrors from '../error';
 import {Session} from '../auth/session';
 import {GraphqlClient} from '../clients/graphql';
 import {RestClient} from '../clients/rest';
-import {throwIfUninitializedConfig} from '../config';
+import {throwIfConfigNotSet} from '../config';
 
 import {WithSessionParams, WithSessionResponse} from './types';
 import loadOfflineSession from './load-offline-session';
@@ -15,7 +15,7 @@ export default async function withSession({
   res,
   shop,
 }: WithSessionParams): Promise<WithSessionResponse> {
-  throwIfUninitializedConfig();
+  throwIfConfigNotSet();
 
   let session: Session | undefined;
   if (isOnline) {

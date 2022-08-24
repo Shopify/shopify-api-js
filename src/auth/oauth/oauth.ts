@@ -4,11 +4,7 @@ import querystring from 'querystring';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'cookies';
 
-import {
-  config,
-  throwIfUninitializedConfig,
-  throwIfPrivateApp,
-} from '../../config';
+import {config, throwIfConfigNotSet, throwIfPrivateApp} from '../../config';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
 import safeCompare from '../../utils/safe-compare';
@@ -49,7 +45,7 @@ const ShopifyOAuth = {
     redirectPath: string,
     isOnline = true,
   ): Promise<string> {
-    throwIfUninitializedConfig();
+    throwIfConfigNotSet();
     throwIfPrivateApp('Cannot perform OAuth for private apps');
     const cleanShop = sanitizeShop(shop, true)!;
 
@@ -97,7 +93,7 @@ const ShopifyOAuth = {
     response: http.ServerResponse,
     query: AuthQuery,
   ): Promise<SessionInterface> {
-    throwIfUninitializedConfig();
+    throwIfConfigNotSet();
     throwIfPrivateApp('Cannot perform OAuth for private apps');
 
     const stateFromCookie = getValueFromCookie(

@@ -54,7 +54,7 @@ describe('beginAuth', () => {
 
     await expect(
       ShopifyOAuth.beginAuth(req, res, shop, '/some-callback'),
-    ).rejects.toThrow(ShopifyErrors.UninitializedConfigError);
+    ).rejects.toThrow(ShopifyErrors.ConfigNotSetError);
   });
 
   test('sets cookie to state for offline access requests', async () => {
@@ -197,7 +197,7 @@ describe('validateAuthCallback', () => {
 
     await expect(
       ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery),
-    ).rejects.toThrow(ShopifyErrors.UninitializedConfigError);
+    ).rejects.toThrow(ShopifyErrors.ConfigNotSetError);
   });
 
   test("throws an error when receiving a callback for a shop that doesn't have a session cookie", async () => {

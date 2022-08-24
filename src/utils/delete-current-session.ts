@@ -1,6 +1,6 @@
 import http from 'http';
 
-import {config, throwIfUninitializedConfig} from '../config';
+import {config, throwIfConfigNotSet} from '../config';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
 import * as ShopifyErrors from '../error';
 
@@ -16,7 +16,7 @@ export default async function deleteCurrentSession(
   response: http.ServerResponse,
   isOnline = true,
 ): Promise<boolean | never> {
-  throwIfUninitializedConfig();
+  throwIfConfigNotSet();
 
   const sessionId = ShopifyOAuth.getCurrentSessionId(
     request,
