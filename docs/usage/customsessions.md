@@ -10,7 +10,7 @@ This library comes with various session management options:
 - `RedisSessionStorage`
 - `SQLiteSessionStorage` - uses the file-based SQLite package, and is the default storage option on `config`.
 
-If you wish to you an alternative session storage solution for production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `config`. The `CustomSessionStorage` class expects to be initialized with the following three mandatory callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
+If you wish to use an alternative session storage solution for production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `config`. The `CustomSessionStorage` class expects to be initialized with the following three mandatory callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
 
 ## Callback methods
 
