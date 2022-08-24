@@ -1,6 +1,6 @@
-import {ShopifyError, UninitializedConfigError, PrivateAppError} from './error';
+import {ShopifyError, ConfigNotSetError, PrivateAppError} from './error';
 import {SessionStorage} from './auth/session/session_storage';
-import {ApiVersion, ConfigParams} from './base-types';
+import {ConfigParams, LATEST_API_VERSION} from './base-types';
 import {AuthScopes} from './auth/scopes';
 import {MemorySessionStorage} from './auth/session/storage/memory';
 
@@ -16,7 +16,7 @@ export const config: ConfigInterface = {
   scopes: new AuthScopes([]),
   hostName: '',
   hostScheme: 'https',
-  apiVersion: ApiVersion.Unstable,
+  apiVersion: LATEST_API_VERSION,
   isEmbeddedApp: true,
   isPrivateApp: false,
   // TS hack as sessionStorage is guaranteed to be set
@@ -25,27 +25,19 @@ export const config: ConfigInterface = {
 };
 
 export function setConfig(params: ConfigParams): void {
-  let scopes: AuthScopes;
-  if (params.scopes instanceof AuthScopes) {
-    scopes = params.scopes;
-  } else {
-    scopes = new AuthScopes(params.scopes);
-  }
-
   // Make sure that the essential params actually have content in them
-  const missing: string[] = [];
-  if (!params.apiKey.length) {
-    missing.push('apiKey');
-  }
-  if (!params.apiSecretKey.length) {
-    missing.push('apiSecretKey');
-  }
-  if (!scopes.toArray().length) {
-    missing.push('scopes');
-  }
-  if (!params.hostName.length) {
-    missing.push('hostName');
-  }
+  const mandatory: (keyof ConfigParams)[] = [
+    'apiKey',
+    'apiSecretKey',
+    'scopes',
+    'hostName',
+  ];
+  const missing: (keyof ConfigParams)[] = [];
+  mandatory.forEach((key) => {
+    if (!notEmpty(params[key])) {
+      missing.push(key);
+    }
+  });
 
   if (missing.length) {
     throw new ShopifyError(
@@ -55,44 +47,39 @@ export function setConfig(params: ConfigParams): void {
     );
   }
 
-  config.apiKey = params.apiKey;
-  config.apiSecretKey = params.apiSecretKey;
-  config.scopes = scopes;
-  config.hostName = params.hostName;
-  config.apiVersion = params.apiVersion;
-  config.isEmbeddedApp = params.isEmbeddedApp;
-  config.isPrivateApp = params.isPrivateApp;
-  config.sessionStorage = params.sessionStorage ?? new MemorySessionStorage();
+  const {
+    sessionStorage,
+    hostScheme,
+    isPrivateApp,
+    userAgentPrefix,
+    logFile,
+    privateAppStorefrontAccessToken,
+    customShopDomains,
+    billing,
+    ...mandatoryParams
+  } = params;
 
-  if (params.hostScheme) {
-    config.hostScheme = params.hostScheme;
-  }
-
-  if (params.userAgentPrefix) {
-    config.userAgentPrefix = params.userAgentPrefix;
-  }
-
-  if (params.logFile) {
-    config.logFile = params.logFile;
-  }
-
-  if (params.privateAppStorefrontAccessToken) {
-    config.privateAppStorefrontAccessToken =
-      params.privateAppStorefrontAccessToken;
-  }
-
-  if (params.customShopDomains) {
-    config.customShopDomains = params.customShopDomains;
-  }
-
-  if (params.billing) {
-    config.billing = params.billing;
-  }
+  Object.assign(config, mandatoryParams, {
+    scopes:
+      params.scopes instanceof AuthScopes
+        ? params.scopes
+        : new AuthScopes(params.scopes),
+    sessionStorage: sessionStorage ?? new MemorySessionStorage(),
+    hostScheme: hostScheme ?? config.hostScheme,
+    isPrivateApp:
+      isPrivateApp === undefined ? config.isPrivateApp : isPrivateApp,
+    userAgentPrefix: userAgentPrefix ?? config.userAgentPrefix,
+    logFile: logFile ?? config.logFile,
+    privateAppStorefrontAccessToken:
+      privateAppStorefrontAccessToken ?? config.privateAppStorefrontAccessToken,
+    customShopDomains: customShopDomains ?? config.customShopDomains,
+    billing: billing ?? config.billing,
+  });
 }
 
-export function throwIfUninitializedConfig(): void {
+export function throwIfConfigNotSet(): void {
   if (!config.apiKey || config.apiKey.length === 0) {
-    throw new UninitializedConfigError(
+    throw new ConfigNotSetError(
       'Config has not been properly initialized. Please call setConfig() to setup your app config object.',
     );
   }
@@ -102,4 +89,13 @@ export function throwIfPrivateApp(message: string): void {
   if (config.isPrivateApp) {
     throw new PrivateAppError(message);
   }
+}
+
+function notEmpty<T>(value: T): value is NonNullable<T> {
+  if (value == null) {
+    return false;
+  }
+  return typeof value === 'string' || Array.isArray(value)
+    ? value.length > 0
+    : true;
 }
