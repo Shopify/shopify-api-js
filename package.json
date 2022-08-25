@@ -2,18 +2,13 @@
   "name": "@shopify/shopify-api",
   "version": "5.0.1",
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
-  "exports": {
-    ".": "./dist/src/index.js",
-    "./oauth": "./dist/src/auth/oauth/index.js",
-    "./webhooks": "./dist/src/webhooks/registry.js",
-    "./adapters/node": "./dist/src/adapters/node/index.js",
-    "./adapters/cf-worker": "./dist/src/adapters/cf-worker/index.js"
-  },
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "prettier": "@shopify/prettier-config",
   "scripts": {
     "test:all": "jest",
     "test": "jest --selectProjects library",
+    "pretest:adapters": "yarn build",
     "test:adapters": "jest --selectProjects adapters:node adapters:cf-worker",
     "test:session_storage": "jest --selectProjects session_storage",
     "test:rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --testPathPattern=\\\"{}\\\" || exit 255'",
