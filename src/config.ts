@@ -4,27 +4,27 @@ import {ConfigParams, LATEST_API_VERSION} from './base-types';
 import {AuthScopes} from './auth/scopes';
 import {MemorySessionStorage} from './auth/session/storage/memory';
 
-interface ConfigInterface extends ConfigParams {
+export interface ConfigInterface extends ConfigParams {
   hostScheme: string;
   sessionStorage: SessionStorage;
   scopes: AuthScopes;
 }
 
-export const config: ConfigInterface = {
-  apiKey: '',
-  apiSecretKey: '',
-  scopes: new AuthScopes([]),
-  hostName: '',
-  hostScheme: 'https',
-  apiVersion: LATEST_API_VERSION,
-  isEmbeddedApp: true,
-  isPrivateApp: false,
-  // TS hack as sessionStorage is guaranteed to be set
-  // to a correct value in `initialize()`.
-  sessionStorage: null as unknown as SessionStorage,
-};
+export function validateConfig(params: ConfigParams): ConfigInterface {
+  const config: ConfigInterface = {
+    apiKey: '',
+    apiSecretKey: '',
+    scopes: new AuthScopes([]),
+    hostName: '',
+    hostScheme: 'https',
+    apiVersion: LATEST_API_VERSION,
+    isEmbeddedApp: true,
+    isPrivateApp: false,
+    // TS hack as sessionStorage is guaranteed to be set
+    // to a correct value in `initialize()`.
+    sessionStorage: null as unknown as SessionStorage,
+  };
 
-export function setConfig(params: ConfigParams): void {
   // Make sure that the essential params actually have content in them
   const mandatory: (keyof ConfigParams)[] = [
     'apiKey',
@@ -75,17 +75,11 @@ export function setConfig(params: ConfigParams): void {
     customShopDomains: customShopDomains ?? config.customShopDomains,
     billing: billing ?? config.billing,
   });
+
+  return config;
 }
 
-export function throwIfConfigNotSet(): void {
-  if (!config.apiKey || config.apiKey.length === 0) {
-    throw new ConfigNotSetError(
-      'Config has not been properly initialized. Please call setConfig() to setup your app config object.',
-    );
-  }
-}
-
-export function throwIfPrivateApp(message: string): void {
+export function throwIfPrivateApp(config: ConfigInterface, message: string): void {
   if (config.isPrivateApp) {
     throw new PrivateAppError(message);
   }
