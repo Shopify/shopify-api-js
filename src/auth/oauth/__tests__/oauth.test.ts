@@ -49,14 +49,6 @@ describe('beginAuth', () => {
     );
   });
 
-  test('throws config error when not properly initialized', async () => {
-    config.apiKey = '';
-
-    await expect(
-      ShopifyOAuth.beginAuth(req, res, shop, '/some-callback'),
-    ).rejects.toThrow(ShopifyErrors.ConfigNotSetError);
-  });
-
   test('sets cookie to state for offline access requests', async () => {
     await ShopifyOAuth.beginAuth(req, res, shop, '/some-callback', false);
 
@@ -182,22 +174,6 @@ describe('validateAuthCallback', () => {
     );
 
     Cookies.prototype.get.mockImplementation(() => cookies.id);
-  });
-
-  test('throws config error when not properly initialized', async () => {
-    config.apiKey = '';
-    const testCallbackQuery: AuthQuery = {
-      shop,
-      state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
-      code: 'some random auth code',
-    };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
-    testCallbackQuery.hmac = expectedHmac;
-
-    await expect(
-      ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery),
-    ).rejects.toThrow(ShopifyErrors.ConfigNotSetError);
   });
 
   test("throws an error when receiving a callback for a shop that doesn't have a session cookie", async () => {

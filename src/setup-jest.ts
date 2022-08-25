@@ -1,27 +1,37 @@
 import fetchMock from 'jest-fetch-mock';
 
-import {setConfig} from './config';
 import {ApiVersion} from './base-types';
-import {MemorySessionStorage} from './auth/session';
+import {MemorySessionStorage} from './auth/session/storage/memory';
+
+import {Shopify} from './index';
 
 fetchMock.enableMocks();
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    interface Global {
+      shopify: ReturnType<typeof Shopify>;
+    }
+  }
+}
+
+export const testConfig = {
+  apiKey: 'test_key',
+  apiSecretKey: 'test_secret_key',
+  scopes: ['test_scope'],
+  hostName: 'test_host_name',
+  hostScheme: 'https',
+  apiVersion: ApiVersion.Unstable,
+  isEmbeddedApp: false,
+  isPrivateApp: false,
+  sessionStorage: new MemorySessionStorage(),
+  customShopDomains: undefined,
+  billing: undefined,
+};
 
 let currentCall = 0;
 beforeEach(() => {
-  // We want to reset the Config object on every run so that tests start with a consistent state
-  setConfig({
-    apiKey: 'test_key',
-    apiSecretKey: 'test_secret_key',
-    scopes: ['test_scope'],
-    hostName: 'test_host_name',
-    hostScheme: 'https',
-    apiVersion: ApiVersion.Unstable,
-    isEmbeddedApp: false,
-    isPrivateApp: false,
-    sessionStorage: new MemorySessionStorage(),
-    customShopDomains: undefined,
-    billing: undefined,
-  });
+  global.shopify = Shopify(testConfig);
 
   fetchMock.mockReset();
 

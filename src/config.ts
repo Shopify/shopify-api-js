@@ -1,4 +1,4 @@
-import {ShopifyError, ConfigNotSetError, PrivateAppError} from './error';
+import {ShopifyError, PrivateAppError} from './error';
 import {SessionStorage} from './auth/session/session_storage';
 import {ConfigParams, LATEST_API_VERSION} from './base-types';
 import {AuthScopes} from './auth/scopes';
@@ -76,10 +76,15 @@ export function validateConfig(params: ConfigParams): ConfigInterface {
     billing: billing ?? config.billing,
   });
 
+  config.sessionStorage.setConfig(config);
+
   return config;
 }
 
-export function throwIfPrivateApp(config: ConfigInterface, message: string): void {
+export function throwIfPrivateApp(
+  config: ConfigInterface,
+  message: string,
+): void {
   if (config.isPrivateApp) {
     throw new PrivateAppError(message);
   }

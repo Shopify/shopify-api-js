@@ -1,7 +1,7 @@
 import Cookies from 'cookies';
 
 import * as ShopifyErrors from '../error';
-import {config, setConfig} from '../config';
+import {validateConfig} from '../config';
 import {ApiVersion, ConfigParams} from '../base-types';
 
 jest.mock('cookies');
@@ -26,7 +26,7 @@ describe('Config object', () => {
   });
 
   it('can initialize and update config', () => {
-    setConfig(validParams);
+    const config = validateConfig(validParams);
 
     expect(config.apiKey).toEqual(validParams.apiKey);
     expect(config.apiSecretKey).toEqual(validParams.apiSecretKey);
@@ -38,7 +38,7 @@ describe('Config object', () => {
     let invalid: ConfigParams = {...validParams};
     invalid.apiKey = '';
     try {
-      setConfig(invalid);
+      validateConfig(invalid);
       fail('Initializing without apiKey did not throw an exception');
     } catch (error) {
       expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
@@ -48,7 +48,7 @@ describe('Config object', () => {
     invalid = {...validParams};
     invalid.apiSecretKey = '';
     try {
-      setConfig(invalid);
+      validateConfig(invalid);
       fail('Initializing without apiSecretKey did not throw an exception');
     } catch (error) {
       expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
@@ -58,7 +58,7 @@ describe('Config object', () => {
     invalid = {...validParams};
     invalid.scopes = [];
     try {
-      setConfig(invalid);
+      validateConfig(invalid);
       fail('Initializing without scopes did not throw an exception');
     } catch (error) {
       expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
@@ -68,7 +68,7 @@ describe('Config object', () => {
     invalid = {...validParams};
     invalid.hostName = '';
     try {
-      setConfig(invalid);
+      validateConfig(invalid);
       fail('Initializing without hostName did not throw an exception');
     } catch (error) {
       expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
@@ -84,6 +84,6 @@ describe('Config object', () => {
       isEmbeddedApp: true,
       logFile: '',
     };
-    expect(() => setConfig(empty)).toThrow(ShopifyErrors.ShopifyError);
+    expect(() => validateConfig(empty)).toThrow(ShopifyErrors.ShopifyError);
   });
 });
