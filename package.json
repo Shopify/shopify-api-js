@@ -8,6 +8,7 @@
   "scripts": {
     "test:all": "jest",
     "test": "jest --selectProjects library",
+    "pretest:adapters": "yarn build",
     "test:adapters": "jest --selectProjects adapters:node adapters:cf-worker",
     "test:session_storage": "jest --selectProjects session_storage",
     "test:rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --testPathPattern=\\\"{}\\\" || exit 255'",
