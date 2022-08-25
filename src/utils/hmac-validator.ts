@@ -3,7 +3,7 @@ import querystring from 'querystring';
 
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
-import {Context} from '../context';
+import {config} from '../config';
 
 import safeCompare from './safe-compare';
 
@@ -35,7 +35,7 @@ export function generateLocalHmac({
     ...(host && {host}),
   });
   return crypto
-    .createHmac('sha256', Context.API_SECRET_KEY)
+    .createHmac('sha256', config.apiSecretKey)
     .update(queryString)
     .digest('hex');
 }

@@ -1,4 +1,4 @@
-import {Context} from '../context';
+import {config} from '../config';
 import {BillingError} from '../error';
 
 import {BillingInterval} from './types';
@@ -9,12 +9,12 @@ const RECURRING_INTERVALS: BillingInterval[] = [
 ];
 
 export function isRecurring(): boolean {
-  if (!Context.BILLING) {
+  if (!config.billing) {
     throw new BillingError({
       message: 'Attempted to request billing without billing configs',
       errorData: [],
     });
   }
 
-  return RECURRING_INTERVALS.includes(Context.BILLING.interval!);
+  return RECURRING_INTERVALS.includes(config.billing.interval!);
 }

@@ -1,5 +1,5 @@
 import {Session} from '../auth/session/session';
-import {Context} from '../context';
+import {config, throwIfConfigNotSet} from '../config';
 import OAuth from '../auth/oauth';
 
 import {sanitizeShop} from './shop-validator';
@@ -16,11 +16,11 @@ export default async function loadOfflineSession(
   shop: string,
   includeExpired = false,
 ): Promise<Session | undefined> {
-  Context.throwIfUninitialized();
+  throwIfConfigNotSet();
   const cleanShop = sanitizeShop(shop, true)!;
 
   const sessionId = OAuth.getOfflineSessionId(cleanShop);
-  const session = await Context.SESSION_STORAGE.loadSession(sessionId);
+  const session = await config.sessionStorage.loadSession(sessionId);
 
   const now = new Date();
 

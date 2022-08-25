@@ -4,7 +4,7 @@ import querystring from 'querystring';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'cookies';
 
-import {Context} from '../../context';
+import {config, throwIfConfigNotSet, throwIfPrivateApp} from '../../config';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
 import safeCompare from '../../utils/safe-compare';
@@ -45,12 +45,12 @@ const ShopifyOAuth = {
     redirectPath: string,
     isOnline = true,
   ): Promise<string> {
-    Context.throwIfUninitialized();
-    Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
+    throwIfConfigNotSet();
+    throwIfPrivateApp('Cannot perform OAuth for private apps');
     const cleanShop = sanitizeShop(shop, true)!;
 
     const cookies = new Cookies(request, response, {
-      keys: [Context.API_SECRET_KEY],
+      keys: [config.apiSecretKey],
       secure: true,
     });
 
@@ -64,9 +64,9 @@ const ShopifyOAuth = {
     });
 
     const query = {
-      client_id: Context.API_KEY,
-      scope: Context.SCOPES.toString(),
-      redirect_uri: `${Context.HOST_SCHEME}://${Context.HOST_NAME}${redirectPath}`,
+      client_id: config.apiKey,
+      scope: config.scopes.toString(),
+      redirect_uri: `${config.hostScheme}://${config.hostName}${redirectPath}`,
       state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
@@ -93,8 +93,8 @@ const ShopifyOAuth = {
     response: http.ServerResponse,
     query: AuthQuery,
   ): Promise<SessionInterface> {
-    Context.throwIfUninitialized();
-    Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
+    throwIfConfigNotSet();
+    throwIfPrivateApp('Cannot perform OAuth for private apps');
 
     const stateFromCookie = getValueFromCookie(
       request,
@@ -116,8 +116,8 @@ const ShopifyOAuth = {
     const isOnline = stateFromCookie.startsWith('online_');
 
     const body = {
-      client_id: Context.API_KEY,
-      client_secret: Context.API_SECRET_KEY,
+      client_id: config.apiKey,
+      client_secret: config.apiSecretKey,
       code: query.code,
     };
 
@@ -138,9 +138,9 @@ const ShopifyOAuth = {
       isOnline,
     );
 
-    if (!Context.IS_EMBEDDED_APP) {
+    if (!config.isEmbeddedApp) {
       const cookies = new Cookies(request, response, {
-        keys: [Context.API_SECRET_KEY],
+        keys: [config.apiSecretKey],
         secure: true,
       });
 
@@ -152,7 +152,7 @@ const ShopifyOAuth = {
       });
     }
 
-    const sessionStored = await Context.SESSION_STORAGE.storeSession(session);
+    const sessionStored = await config.sessionStorage.storeSession(session);
     if (!sessionStored) {
       throw new ShopifyErrors.SessionStorageError(
         'Session could not be saved. Please check your session storage functionality.',
@@ -208,7 +208,7 @@ const ShopifyOAuth = {
   ): string | undefined {
     let currentSessionId: string | undefined;
 
-    if (Context.IS_EMBEDDED_APP) {
+    if (config.isEmbeddedApp) {
       const authHeader = request.headers.authorization;
       if (authHeader) {
         const matches = authHeader.match(/^Bearer (.+)$/);
@@ -268,7 +268,7 @@ function getValueFromCookie(
 ): string | undefined {
   const cookies = new Cookies(request, response, {
     secure: true,
-    keys: [Context.API_SECRET_KEY],
+    keys: [config.apiSecretKey],
   });
   return cookies.get(name, {signed: true});
 }
@@ -287,7 +287,7 @@ function deleteCookie(
 ): void {
   const cookies = new Cookies(request, response, {
     secure: true,
-    keys: [Context.API_SECRET_KEY],
+    keys: [config.apiSecretKey],
   });
   cookies.set(name);
 }
@@ -317,7 +317,7 @@ function createSession(
       Date.now() + responseBody.expires_in * 1000,
     );
 
-    if (Context.IS_EMBEDDED_APP) {
+    if (config.isEmbeddedApp) {
       sessionId = ShopifyOAuth.getJwtSessionId(
         shop,
         `${(rest as OnlineAccessInfo).associated_user.id}`,

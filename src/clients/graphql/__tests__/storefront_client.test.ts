@@ -1,6 +1,6 @@
 import {ShopifyHeader} from '../../../base-types';
 import {StorefrontClient} from '../storefront_client';
-import {Context} from '../../../context';
+import {config, setConfig} from '../../../config';
 
 const DOMAIN = 'shop.myshopify.io';
 const QUERY = `
@@ -40,10 +40,10 @@ describe('Storefront GraphQL client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('can return response from Context private app setting', async () => {
-    Context.IS_PRIVATE_APP = true;
-    Context.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN = 'private_token';
-    Context.initialize(Context);
+  it('can return response from config private app setting', async () => {
+    config.isPrivateApp = true;
+    config.privateAppStorefrontAccessToken = 'private_token';
+    setConfig(config);
 
     const client: StorefrontClient = new StorefrontClient(DOMAIN);
 

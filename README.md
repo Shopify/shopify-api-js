@@ -38,7 +38,7 @@ You can follow our [getting started guide](docs/), which will provide instructio
   - [Install dependencies](docs/getting_started.md#install-dependencies)
   - [Set up base files](docs/getting_started.md#set-up-base-files)
   - [Set up environment](docs/getting_started.md#set-up-environment)
-  - [Set up Context](docs/getting_started.md#set-up-context)
+  - [Set up config](docs/getting_started.md#set-up-config)
   - [Running your app](docs/getting_started.md#running-your-app)
 - [Performing OAuth](docs/usage/oauth.md)
   - [Add a route to start OAuth](docs/usage/oauth.md#add-a-route-to-start-oauth)
@@ -57,7 +57,7 @@ You can follow our [getting started guide](docs/), which will provide instructio
 
 ## Migrating from the Node.js-only version
 
-Previously, this library only worked with Node.js runtimes.  It now supports multiple runtimes through the use of adapters, more of which can be added over time.
+Previously, this library only worked with Node.js runtimes. It now supports multiple runtimes through the use of adapters, more of which can be added over time.
 If an adapter for the runtime you wish to use doesn't exist, you can create your own adapter by implementing some key functions, or contribute a PR to this repository.
 
 While we've updated the library to work with different runtimes, we've also improved its public interface to make it easier for apps to load only the features they need from the library.

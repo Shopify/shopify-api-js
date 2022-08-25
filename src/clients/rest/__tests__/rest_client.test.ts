@@ -4,7 +4,7 @@ import {ShopifyHeader} from '../../../base-types';
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestClient} from '../rest_client';
 import {RestRequestReturn, PageInfo} from '../types';
-import {Context} from '../../../context';
+import {config, setConfig} from '../../../config';
 import * as ShopifyErrors from '../../../error';
 
 const domain = 'test-shop.myshopify.io';
@@ -313,8 +313,8 @@ describe('REST client', () => {
   });
 
   it('adapts to private app requests', async () => {
-    Context.IS_PRIVATE_APP = true;
-    Context.initialize(Context);
+    config.isPrivateApp = true;
+    setConfig(config);
 
     const client = new RestClient(domain);
 

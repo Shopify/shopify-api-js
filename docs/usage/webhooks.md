@@ -17,23 +17,23 @@ The first step to process webhooks in your app is telling the library how you ex
 
 The parameters this method accepts are:
 
-| Parameter | Type | Required? | Default Value | Notes |
-| --- | --- | :---: | :---: | --- |
-| `topic` | `string` | Yes | - | The topic to subscribe to, [see the full list](https://shopify.dev/api/admin-graphql/latest/enums/WebhookSubscriptionTopic). |
-| `handler` | `WebhookRegistryEntry` | Yes | - | The handler for this topic, contains a path and the `async` callback to call. |
+| Parameter | Type                   | Required? | Default Value | Notes                                                                                                                        |
+| --------- | ---------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------------------------------------------- |
+| `topic`   | `string`               |    Yes    |       -       | The topic to subscribe to, [see the full list](https://shopify.dev/api/admin-graphql/latest/enums/WebhookSubscriptionTopic). |
+| `handler` | `WebhookRegistryEntry` |    Yes    |       -       | The handler for this topic, contains a path and the `async` callback to call.                                                |
 
 When a shop triggers an event you subscribed to, the `process` method below will call your handler with the following arguments:
 
-| Parameter | Type | Notes |
-| --- | --- | --- |
-| `topic` | `string` | The webhook topic. |
-| `shop` | `string` | The shop for which the webhook was triggered. |
+| Parameter            | Type     | Notes                                            |
+| -------------------- | -------- | ------------------------------------------------ |
+| `topic`              | `string` | The webhook topic.                               |
+| `shop`               | `string` | The shop for which the webhook was triggered.    |
 | `webhookRequestBody` | `string` | The payload of the POST request made by Shopify. |
 
-For example, you can load one or more handlers when setting up your app's `Context` (or any other location, as long as it happens before the call to `process`) by running:
+For example, you can load one or more handlers when setting up your app's `config` (or any other location, as long as it happens before the call to `process`) by running:
 
 ```typescript
-Shopify.Context.initialize({ ... });
+setConfig({ ... });
 
 const handleWebhookRequest = async (topic: string, shop: string, webhookRequestBody: string) => {
   // handler triggered when a webhook is sent by the Shopify platform to your application
@@ -57,20 +57,20 @@ In your OAuth callback action, you can use the `Shopify.Webhooks.Registry.regist
 
 The parameters this method accepts are:
 
-| Parameter | Type | Required? | Default Value | Notes |
-|:---|:---|:---:|:---:|:---|
-| `path` | `string` | Yes | - | The URL path for the callback for HTTPS delivery, EventBridge or Pub/Sub URLs |
-| `topic` | `string` | Yes | - | The topic to subscribe to. |
-| `shop` | `string` | Yes | - | The shop to use for requests. |
-| `accessToken` | `string` | Yes | - | The access token to use for requests. |
-| `deliveryMethod` | `string` | No | `DeliveryMethod.Http` | The delivery method for this webhook. |
+| Parameter        | Type     | Required? |     Default Value     | Notes                                                                         |
+| :--------------- | :------- | :-------: | :-------------------: | :---------------------------------------------------------------------------- |
+| `path`           | `string` |    Yes    |           -           | The URL path for the callback for HTTPS delivery, EventBridge or Pub/Sub URLs |
+| `topic`          | `string` |    Yes    |           -           | The topic to subscribe to.                                                    |
+| `shop`           | `string` |    Yes    |           -           | The shop to use for requests.                                                 |
+| `accessToken`    | `string` |    Yes    |           -           | The access token to use for requests.                                         |
+| `deliveryMethod` | `string` |    No     | `DeliveryMethod.Http` | The delivery method for this webhook.                                         |
 
 This method will return a `RegisterReturn` object, which holds the following data:
 
-| Method | Return type | Notes |
-| --- | --- | --- |
-| `success` | `bool` | Whether the registration was successful. |
-| `result` | `array` | The body from the Shopify request to register the webhook. May be null even when successful if no request was needed. |
+| Method    | Return type | Notes                                                                                                                 |
+| --------- | ----------- | --------------------------------------------------------------------------------------------------------------------- |
+| `success` | `bool`      | Whether the registration was successful.                                                                              |
+| `result`  | `array`     | The body from the Shopify request to register the webhook. May be null even when successful if no request was needed. |
 
 For example, to subscribe to the `PRODUCTS_CREATE` event, you can run this code in your OAuth callback action:
 
@@ -131,7 +131,7 @@ app.get('/auth/callback', async (req, res) => {
 
     if (!response['PRODUCTS_CREATE'].success) {
       console.log(
-        `Failed to register PRODUCTS_CREATE webhook: ${response.result}`
+        `Failed to register PRODUCTS_CREATE webhook: ${response.result}`,
       );
     }
   } catch (error) {
@@ -202,8 +202,8 @@ app.post('/webhooks', async (req, res) => {
 
 ### Note regarding use of body parsers
 
-Please note that the use of body parsing middleware must occur **after** webhook processing.  `Shopify.Webhooks.Registry.process()` reads in the request body directly, therefore, if a body parsing middleware is used beforehand, `process` thinks the request body is empty and will return a `bad request` message back to Shopify for the webhook and raise an error.
+Please note that the use of body parsing middleware must occur **after** webhook processing. `Shopify.Webhooks.Registry.process()` reads in the request body directly, therefore, if a body parsing middleware is used beforehand, `process` thinks the request body is empty and will return a `bad request` message back to Shopify for the webhook and raise an error.
 
-To use Express as an example, if you wish to use the `express.json()` middleware in your app **and** if you use this library's `process` method to handle webhooks API calls from Shopify (which we recommend), the webhook processing must occur ***before*** calling `app.use(express.json())`.
+To use Express as an example, if you wish to use the `express.json()` middleware in your app **and** if you use this library's `process` method to handle webhooks API calls from Shopify (which we recommend), the webhook processing must occur **_before_** calling `app.use(express.json())`.
 
 [Back to guide index](../README.md)

@@ -1,4 +1,4 @@
-import {Context} from '../../context';
+import {config} from '../../config';
 import {InvalidShopError} from '../../error';
 import {sanitizeHost, sanitizeShop} from '../shop-validator';
 
@@ -53,7 +53,7 @@ describe('sanitizeShop', () => {
   });
 
   test('returns the right values when using custom domains', () => {
-    Context.CUSTOM_SHOP_DOMAINS = [CUSTOM_DOMAIN, CUSTOM_DOMAIN_REGEX];
+    config.customShopDomains = [CUSTOM_DOMAIN, CUSTOM_DOMAIN_REGEX];
 
     expect(sanitizeShop(VALID_SHOP_WITH_CUSTOM_DOMAIN)).toEqual(
       VALID_SHOP_WITH_CUSTOM_DOMAIN,

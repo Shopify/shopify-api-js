@@ -1,4 +1,4 @@
-import {Context} from '../../context';
+import {config} from '../../config';
 import deleteOfflineSession from '../delete-offline-session';
 import {Session} from '../../auth/session';
 import OAuth from '../../auth/oauth';
@@ -10,7 +10,7 @@ describe('deleteOfflineSession', () => {
 
   beforeEach(() => {
     const offlineSession = new Session(offlineId, shop, 'state', false);
-    Context.SESSION_STORAGE.storeSession(offlineSession);
+    config.sessionStorage.storeSession(offlineSession);
   });
 
   it('deletes offline sessions by shop', async () => {

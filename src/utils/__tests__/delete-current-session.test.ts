@@ -3,7 +3,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
 
-import {Context} from '../../context';
+import {config, setConfig} from '../../config';
 import * as ShopifyErrors from '../../error';
 import {Session} from '../../auth/session';
 import {JwtPayload} from '../decode-session-token';
@@ -19,7 +19,7 @@ describe('deleteCurrenSession', () => {
     jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: Context.API_KEY,
+      aud: config.apiKey,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -30,8 +30,8 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current session when using cookies', async () => {
-    Context.IS_EMBEDDED_APP = false;
-    Context.initialize(Context);
+    config.isEmbeddedApp = false;
+    setConfig(config);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -44,9 +44,9 @@ describe('deleteCurrenSession', () => {
       'state',
       true,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -55,10 +55,10 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current session when using JWT', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.isEmbeddedApp = true;
+    setConfig(config);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {
@@ -74,17 +74,17 @@ describe('deleteCurrenSession', () => {
       'state',
       true,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     await expect(deleteCurrentSession(req, res)).resolves.toBe(true);
     await expect(loadCurrentSession(req, res)).resolves.toBe(undefined);
   });
 
   it('finds and deletes the current offline session when using cookies', async () => {
-    Context.IS_EMBEDDED_APP = false;
-    Context.initialize(Context);
+    config.isEmbeddedApp = false;
+    setConfig(config);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -97,9 +97,9 @@ describe('deleteCurrenSession', () => {
       'state',
       false,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     Cookies.prototype.get.mockImplementation(() => cookieId);
 
@@ -108,10 +108,10 @@ describe('deleteCurrenSession', () => {
   });
 
   it('finds and deletes the current offline session when using JWT', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.isEmbeddedApp = true;
+    setConfig(config);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
+    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
       algorithm: 'HS256',
     });
     const req = {
@@ -127,17 +127,17 @@ describe('deleteCurrenSession', () => {
       'state',
       false,
     );
-    await expect(
-      Context.SESSION_STORAGE.storeSession(session),
-    ).resolves.toEqual(true);
+    await expect(config.sessionStorage.storeSession(session)).resolves.toEqual(
+      true,
+    );
 
     await expect(deleteCurrentSession(req, res, false)).resolves.toBe(true);
     await expect(loadCurrentSession(req, res, false)).resolves.toBe(undefined);
   });
 
   it('throws an error when no cookie is found', async () => {
-    Context.IS_EMBEDDED_APP = false;
-    Context.initialize(Context);
+    config.isEmbeddedApp = false;
+    setConfig(config);
 
     const req = {} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
@@ -150,8 +150,8 @@ describe('deleteCurrenSession', () => {
   });
 
   it('throws an error when authorization header is not a bearer token', async () => {
-    Context.IS_EMBEDDED_APP = true;
-    Context.initialize(Context);
+    config.isEmbeddedApp = true;
+    setConfig(config);
 
     const req = {
       headers: {

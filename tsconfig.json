@@ -36,6 +36,28 @@
     "baseUrl": ".",
     "rootDir": "src"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*"],
+  "files": [
+    "src/billing/types.ts",
+    "src/utils/shop-validator.ts",
+    "src/auth/session/session_storage.ts",
+    "src/auth/session/storage/memory.ts",
+    "src/auth/session/types.ts",
+    "src/auth/scopes/index.ts",
+    "src/auth/oauth/types.ts"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "src/clients/**/*.ts",
+    "src/base-rest-resource.ts",
+    "src/auth/**/*.ts",
+    "src/runtime/**/*.ts",
+    "src/utils/**/*.ts",
+    "src/adapters/**/*.ts",
+    "src/webhooks/**/*.ts",
+    "src/billing/**/*.ts",
+    "**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*"
+  ],
 }

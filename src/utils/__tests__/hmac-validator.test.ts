@@ -3,10 +3,10 @@ import crypto from 'crypto';
 import validateHmac from '../hmac-validator';
 import {AuthQuery} from '../../auth/oauth/types';
 import * as ShopifyErrors from '../../error';
-import {Context} from '../../context';
+import {config} from '../../config';
 
 test('correctly validates query objects', () => {
-  Context.API_SECRET_KEY = 'my super secret key';
+  config.apiSecretKey = 'my super secret key';
   const queryString =
     'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
   const queryObjectWithoutHmac = {
@@ -16,7 +16,7 @@ test('correctly validates query objects', () => {
     timestamp: 'a number as a string',
   };
   const localHmac = crypto
-    .createHmac('sha256', Context.API_SECRET_KEY)
+    .createHmac('sha256', config.apiSecretKey)
     .update(queryString)
     .digest('hex');
 
@@ -50,7 +50,7 @@ test('queries without hmac key throw InvalidHmacError', () => {
 });
 
 test('queries with extra keys are not included in hmac querystring', () => {
-  Context.API_SECRET_KEY = 'my super secret key';
+  config.apiSecretKey = 'my super secret key';
   const queryString =
     'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
   const queryObjectWithoutHmac = {
@@ -60,7 +60,7 @@ test('queries with extra keys are not included in hmac querystring', () => {
     timestamp: 'a number as a string',
   };
   const localHmac = crypto
-    .createHmac('sha256', Context.API_SECRET_KEY)
+    .createHmac('sha256', config.apiSecretKey)
     .update(queryString)
     .digest('hex');
 

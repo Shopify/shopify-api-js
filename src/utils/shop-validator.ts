@@ -1,8 +1,7 @@
 import {InvalidHostError, InvalidShopError} from '../error';
-import {Context} from '../context';
 
 /**
- * Validates and sanitizes shop domain urls. If Context.CUSTOM_SHOP_DOMAINS is set, shops ending in those domains are
+ * Validates and sanitizes shop domain urls. If config.customShopDomains is set, shops ending in those domains are
  * allowed. Accepts myshopify.com and myshopify.io by default.
  *
  * @param shop Shop url: {shop}.{domain}
@@ -11,11 +10,12 @@ import {Context} from '../context';
 export function sanitizeShop(
   shop: string,
   throwOnInvalid = false,
+  customShopDomains: (string | RegExp)[] = [],
 ): string | null {
   const domainsRegex = ['myshopify\\.com', 'myshopify\\.io'];
-  if (Context.CUSTOM_SHOP_DOMAINS) {
+  if (customShopDomains) {
     domainsRegex.push(
-      ...Context.CUSTOM_SHOP_DOMAINS.map((regex) =>
+      ...customShopDomains.map((regex) =>
         typeof regex === 'string' ? regex : regex.source,
       ),
     );

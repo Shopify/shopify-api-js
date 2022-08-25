@@ -7,7 +7,7 @@ import {Method, StatusCode} from '@shopify/network';
 
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
-import {Context} from '../../context';
+import {config} from '../../config';
 import ProcessedQuery from '../../utils/processed-query';
 
 import {
@@ -77,8 +77,8 @@ export class HttpClient {
 
     let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
 
-    if (Context.USER_AGENT_PREFIX) {
-      userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
+    if (config.userAgentPrefix) {
+      userAgent = `${config.userAgentPrefix} | ${userAgent}`;
     }
 
     if (params.extraHeaders) {
@@ -215,12 +215,12 @@ export class HttpClient {
           ) {
             this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
-            if (Context.LOG_FILE) {
+            if (config.logFile) {
               const stack = new Error().stack;
               const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
                 deprecation,
               )}\n    Stack Trace: ${stack}\n`;
-              fs.writeFileSync(Context.LOG_FILE, log, {
+              fs.writeFileSync(config.logFile, log, {
                 flag: 'a',
                 encoding: 'utf-8',
               });

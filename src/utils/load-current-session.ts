@@ -1,6 +1,6 @@
 import http from 'http';
 
-import {Context} from '../context';
+import {config, throwIfConfigNotSet} from '../config';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
 import {Session} from '../auth/session';
 
@@ -16,7 +16,7 @@ export default async function loadCurrentSession(
   response: http.ServerResponse,
   isOnline = true,
 ): Promise<Session | undefined> {
-  Context.throwIfUninitialized();
+  throwIfConfigNotSet();
 
   const sessionId = ShopifyOAuth.getCurrentSessionId(
     request,
@@ -27,5 +27,5 @@ export default async function loadCurrentSession(
     return Promise.resolve(undefined);
   }
 
-  return Context.SESSION_STORAGE.loadSession(sessionId);
+  return config.sessionStorage.loadSession(sessionId);
 }

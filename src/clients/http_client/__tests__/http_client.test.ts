@@ -4,7 +4,7 @@ import fs from 'fs';
 import {HttpClient} from '../http_client';
 import {DataType, HeaderParams, RequestReturn} from '../../types';
 import * as ShopifyErrors from '../../../error';
-import {Context} from '../../../context';
+import {config, setConfig} from '../../../config';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
@@ -402,9 +402,9 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('extends a User-Agent provided by Context', async () => {
-    Context.USER_AGENT_PREFIX = 'Context Agent';
-    Context.initialize(Context);
+  it('extends a User-Agent provided by config', async () => {
+    config.userAgentPrefix = 'Config Agent';
+    setConfig(config);
 
     const client = new HttpClient(domain);
 
@@ -422,7 +422,7 @@ describe('HTTP client', () => {
       path: '/url/path',
       headers: {
         'User-Agent': expect.stringContaining(
-          'Context Agent | Shopify API Library v',
+          'Config Agent | Shopify API Library v',
         ),
       },
     }).toMatchMadeHttpRequest();
@@ -438,7 +438,7 @@ describe('HTTP client', () => {
       path: '/url/path',
       headers: {
         'User-Agent': expect.stringContaining(
-          'Headers Agent | Context Agent | Shopify API Library v',
+          'Headers Agent | Config Agent | Shopify API Library v',
         ),
       },
     }).toMatchMadeHttpRequest();
@@ -698,9 +698,9 @@ describe('HTTP client', () => {
     expect(console.warn).toHaveBeenCalledTimes(2);
   });
 
-  it('writes deprecation notices to log file if one is specified in Context', async () => {
-    Context.LOG_FILE = logFilePath;
-    Context.initialize(Context);
+  it('writes deprecation notices to log file if one is specified in config', async () => {
+    config.logFile = logFilePath;
+    setConfig(config);
 
     const client = new HttpClient(domain);
 

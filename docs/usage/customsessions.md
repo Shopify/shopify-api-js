@@ -8,9 +8,9 @@ This library comes with various session management options:
 - `MySQLSessionStorage`
 - `PostgreSQLSessionStorage`
 - `RedisSessionStorage`
-- `SQLiteSessionStorage` - uses the file-based SQLite package, and is the default storage option on `Shopify.Context`.
+- `SQLiteSessionStorage` - uses the file-based SQLite package, and is the default storage option on `config`.
 
-If you wish to you an alternative session storage solution for production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `Shopify.Context`. The `CustomSessionStorage` class expects to be initialized with the following three mandatory callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
+If you wish to use an alternative session storage solution for production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `config`. The `CustomSessionStorage` class expects to be initialized with the following three mandatory callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
 
 ## Callback methods
 
@@ -125,9 +125,9 @@ class RedisStore {
 export default RedisStore;
 ```
 
-### Create a new `CustomSessionStorage` to use in `Shopify.Context`
+### Create a new `CustomSessionStorage` to use in `config`
 
-Now we can import our custom storage class into our `index.ts` and use it to setup our storage solution in `Shopify.Context`.
+Now we can import our custom storage class into our `index.ts` and use it to setup our storage solution in `config`.
 
 ```ts
 /* index.ts */
@@ -143,16 +143,16 @@ const {API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST} = process.env;
 // Create a new instance of the custom storage class
 const sessionStorage = new RedisStore();
 
-// Setup Shopify.Context with CustomSessionStorage
-Shopify.Context.initialize({
-  API_KEY,
-  API_SECRET_KEY,
-  SCOPES,
-  HOST_NAME: HOST,
-  IS_EMBEDDED_APP: true,
-  API_VERSION: ApiVersion.unstable,
+// Setup config with CustomSessionStorage
+setConfig({
+  apiKey: API_KEY,
+  apiSecretKey: API_SECRET_KEY,
+  scopes: SCOPES,
+  hostName: HOST,
+  isEmbeddedApp: true,
+  apiVersion: ApiVersion.unstable,
   // Pass the sessionStorage methods to pass into a new instance of `CustomSessionStorage`
-  SESSION_STORAGE: new Shopify.Session.CustomSessionStorage(
+  sessionStorage: new Shopify.Session.CustomSessionStorage(
     sessionStorage.storeCallback.bind(sessionStorage),
     sessionStorage.loadCallback.bind(sessionStorage),
     sessionStorage.deleteCallback.bind(sessionStorage),
