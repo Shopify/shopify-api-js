@@ -1,4 +1,4 @@
-import {ConfigInterface} from '../../config';
+import {ConfigInterface} from '../../base-types';
 
 import {SessionInterface} from './types';
 

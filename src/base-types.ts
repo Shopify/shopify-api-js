@@ -19,6 +19,16 @@ export interface ConfigParams {
   billing?: BillingSettings;
 }
 
+export interface ConfigInterface extends ConfigParams {
+  hostScheme: string;
+  sessionStorage: SessionStorage;
+  scopes: AuthScopes;
+}
+
+export interface Shopify {
+  config: ConfigInterface;
+}
+
 export enum ApiVersion {
   October21 = '2021-10',
   January22 = '2022-01',

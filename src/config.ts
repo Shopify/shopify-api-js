@@ -1,14 +1,8 @@
 import {ShopifyError, PrivateAppError} from './error';
 import {SessionStorage} from './auth/session/session_storage';
-import {ConfigParams, LATEST_API_VERSION} from './base-types';
+import {ConfigInterface, ConfigParams, LATEST_API_VERSION} from './base-types';
 import {AuthScopes} from './auth/scopes';
 import {MemorySessionStorage} from './auth/session/storage/memory';
-
-export interface ConfigInterface extends ConfigParams {
-  hostScheme: string;
-  sessionStorage: SessionStorage;
-  scopes: AuthScopes;
-}
 
 export function validateConfig(params: ConfigParams): ConfigInterface {
   const config: ConfigInterface = {

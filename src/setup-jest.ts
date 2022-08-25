@@ -1,16 +1,16 @@
 import fetchMock from 'jest-fetch-mock';
 
-import {ApiVersion} from './base-types';
+import {ApiVersion, Shopify} from './base-types';
 import {MemorySessionStorage} from './auth/session/storage/memory';
 
-import {Shopify} from './index';
+import {shopifyApi} from './index';
 
 fetchMock.enableMocks();
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
-      shopify: ReturnType<typeof Shopify>;
+      shopify: Shopify;
     }
   }
 }
@@ -31,7 +31,7 @@ export const testConfig = {
 
 let currentCall = 0;
 beforeEach(() => {
-  global.shopify = Shopify(testConfig);
+  global.shopify = shopifyApi(testConfig);
 
   fetchMock.mockReset();
 
