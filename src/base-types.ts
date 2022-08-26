@@ -27,6 +27,7 @@ export interface ConfigInterface extends ConfigParams {
 
 export interface Shopify {
   config: ConfigInterface;
+  clients?: any;
 }
 
 export enum ApiVersion {

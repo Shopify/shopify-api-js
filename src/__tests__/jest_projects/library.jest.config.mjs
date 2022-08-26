@@ -15,7 +15,6 @@ export default {
     "<rootDir>/utils",
     "<rootDir>/webhooks",
     "<rootDir>/billing",
- 
   ],
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
 };

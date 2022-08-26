@@ -6,6 +6,6 @@ import {createRestClientClass} from './rest/rest_client';
 
 export function createClientClasses(config: ConfigInterface) {
   return {
-    rest: createRestClientClass(config),
+    Rest: createRestClientClass(config),
   };
 }
