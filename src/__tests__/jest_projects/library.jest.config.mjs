@@ -9,7 +9,7 @@ export default {
     '<rootDir>/auth/session/storage',
     '<rootDir>/adapters',
     '<rootDir>/runtime',
-    "<rootDir>/clients",
+    "<rootDir>/clients/graphql",
     "<rootDir>/__tests__/base-rest-resource.test.ts",
     "<rootDir>/auth",
     "<rootDir>/utils",

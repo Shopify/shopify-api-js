@@ -1,14 +1,28 @@
 import querystring from 'querystring';
 import fs from 'fs';
 
-import {HttpClient} from '../http_client';
+import {createHttpClientClass} from '../http_client';
 import {DataType, HeaderParams, RequestReturn} from '../../types';
 import * as ShopifyErrors from '../../../error';
-import {config, setConfig} from '../../../config';
+import {ConfigInterface, LATEST_API_VERSION} from '../../../base-types';
+import {AuthScopes} from '../../../auth/scopes';
+import {MemorySessionStorage} from '../../../auth/session/storage/memory';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
 const logFilePath = `${process.cwd()}/src/clients/http_client/__tests__/test_logs.txt`;
+
+const config: ConfigInterface = {
+  apiKey: 'test-api-key',
+  apiSecretKey: 'test-api-secret-key',
+  scopes: new AuthScopes(['read_products', 'write_products']),
+  hostName: 'my.platform.net',
+  hostScheme: 'https',
+  apiVersion: LATEST_API_VERSION,
+  isEmbeddedApp: true,
+  sessionStorage: new MemorySessionStorage(),
+};
+const HttpClient = createHttpClientClass(config);
 
 const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
@@ -22,7 +36,7 @@ describe('HTTP client', () => {
   });
 
   it('can make GET request', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -40,7 +54,7 @@ describe('HTTP client', () => {
   });
 
   it('allows the body to contain non-json 2xx response without dying', () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
     fetchMock.mockResponseOnce('not a json object');
 
     const request = client.get({path: '/url/path'});
@@ -50,7 +64,7 @@ describe('HTTP client', () => {
   });
 
   it('handles non-json non-2xx response', () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
     fetchMock.mockResponses([
       'not a json object',
       {status: 404, statusText: 'not found', headers: {}},
@@ -63,7 +77,7 @@ describe('HTTP client', () => {
   });
 
   it('can make POST request with type JSON', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -95,7 +109,7 @@ describe('HTTP client', () => {
   });
 
   it('can make POST request with type JSON and data is already formatted', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -123,7 +137,7 @@ describe('HTTP client', () => {
   });
 
   it('can make POST request with zero-length JSON', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -144,7 +158,7 @@ describe('HTTP client', () => {
   });
 
   it('can make POST request with form-data type', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -172,7 +186,7 @@ describe('HTTP client', () => {
   });
 
   it('can make POST request with form-data type and data is already formatted', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -200,7 +214,7 @@ describe('HTTP client', () => {
   });
 
   it('can make POST request with GraphQL type', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -236,7 +250,7 @@ describe('HTTP client', () => {
   });
 
   it('can make PUT request with type JSON', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -268,7 +282,7 @@ describe('HTTP client', () => {
   });
 
   it('can make DELETE request', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -286,7 +300,7 @@ describe('HTTP client', () => {
   });
 
   it('gracefully handles errors', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     const statusText = 'Did not work';
     const requestId = 'Request id header';
@@ -344,7 +358,7 @@ describe('HTTP client', () => {
   });
 
   it('allows custom headers', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     const customHeaders = {
       'X-Not-A-Real-Header': 'some_value',
@@ -364,7 +378,7 @@ describe('HTTP client', () => {
   });
 
   it('extends User-Agent if it is provided', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     let customHeaders: HeaderParams = {'User-Agent': 'My agent'};
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
@@ -404,9 +418,8 @@ describe('HTTP client', () => {
 
   it('extends a User-Agent provided by config', async () => {
     config.userAgentPrefix = 'Config Agent';
-    setConfig(config);
 
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponses(
       buildMockResponse(successResponse),
@@ -445,7 +458,7 @@ describe('HTTP client', () => {
   });
 
   it('fails with invalid retry count', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -456,7 +469,7 @@ describe('HTTP client', () => {
 
   it('retries failed requests but returns success', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponses(
       [
@@ -483,7 +496,7 @@ describe('HTTP client', () => {
 
   it('retries failed requests and stops on non-retriable errors', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponses(
       [
@@ -511,7 +524,7 @@ describe('HTTP client', () => {
 
   it('stops retrying after reaching the limit', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponses(
       [
@@ -548,7 +561,7 @@ describe('HTTP client', () => {
     setRestClientRetryTime(4000);
     const realWaitTime = 0.05;
 
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponses(
       [
@@ -582,7 +595,7 @@ describe('HTTP client', () => {
   });
 
   it('logs deprecation headers to the console when they are present', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
     console.warn = jest.fn();
 
     const postBody = {
@@ -640,7 +653,7 @@ describe('HTTP client', () => {
   it('will wait 5 minutes before logging repeat deprecation alerts', async () => {
     jest.useFakeTimers();
 
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
     console.warn = jest.fn();
 
     fetchMock.mockResponses(
@@ -700,9 +713,8 @@ describe('HTTP client', () => {
 
   it('writes deprecation notices to log file if one is specified in config', async () => {
     config.logFile = logFilePath;
-    setConfig(config);
 
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponse(
       JSON.stringify({
@@ -734,7 +746,7 @@ describe('HTTP client', () => {
 
   it('properly encodes strings in the error message', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponses([
       JSON.stringify({errors: 'Something went wrong'}),
@@ -758,7 +770,7 @@ describe('HTTP client', () => {
 
   it('properly encodes objects in the error message', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponses([
       JSON.stringify({
@@ -787,7 +799,7 @@ describe('HTTP client', () => {
   });
 
   it('adds missing slashes to paths', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
@@ -799,7 +811,7 @@ describe('HTTP client', () => {
 
   it('properly formats arrays and hashes in query strings', async () => {
     fetchMock.mockResponse(JSON.stringify({}));
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     await client.get({
       path: '/url/path',
@@ -819,7 +831,7 @@ describe('HTTP client', () => {
   });
 
   it('throws exceptions with response details on internal errors', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponse(JSON.stringify({errors: 'Error 500'}), {
       status: 500,
@@ -841,7 +853,7 @@ describe('HTTP client', () => {
   });
 
   it('throws exceptions with response details on throttled requests', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponse(JSON.stringify({errors: 'Error 429'}), {
       status: 429,
@@ -864,7 +876,7 @@ describe('HTTP client', () => {
   });
 
   it('throws exceptions with response details on any other errors', async () => {
-    const client = new HttpClient(domain);
+    const client = new HttpClient({domain});
 
     fetchMock.mockResponse(JSON.stringify({errors: 'Error 403'}), {
       status: 403,

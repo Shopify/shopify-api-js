@@ -39,11 +39,16 @@
   "files": [
     "src/billing/types.ts",
     "src/utils/shop-validator.ts",
+    "src/utils/processed-query.ts",
     "src/auth/session/session_storage.ts",
     "src/auth/session/storage/memory.ts",
     "src/auth/session/types.ts",
     "src/auth/scopes/index.ts",
-    "src/auth/oauth/types.ts"
+    "src/auth/oauth/types.ts",
+    "src/clients/http_client/types.ts",
+    "src/clients/http_client/http_client.ts",
+    "src/clients/rest/types.ts",
+    "src/clients/rest/rest_client.ts",
   ],
   "include": [
     "src/**/*.ts",
