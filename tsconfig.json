@@ -49,6 +49,8 @@
     "src/clients/http_client/http_client.ts",
     "src/clients/rest/types.ts",
     "src/clients/rest/rest_client.ts",
+    "src/clients/graphql/types.ts",
+    "src/clients/graphql/graphql_client.ts",
     "src/clients/index.ts",
   ],
   "include": [
