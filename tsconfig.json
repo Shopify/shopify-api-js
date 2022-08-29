@@ -45,21 +45,12 @@
     "src/auth/session/types.ts",
     "src/auth/scopes/index.ts",
     "src/auth/oauth/types.ts",
-    "src/clients/http_client/types.ts",
-    "src/clients/http_client/http_client.ts",
-    "src/clients/rest/types.ts",
-    "src/clients/rest/rest_client.ts",
-    "src/clients/graphql/types.ts",
-    "src/clients/graphql/graphql_client.ts",
-    "src/clients/graphql/storefront_client.ts",
-    "src/clients/index.ts",
   ],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
   "exclude": [
-    "src/clients/**/*.ts",
     "src/base-rest-resource.ts",
     "src/auth/**/*.ts",
     "src/runtime/**/*.ts",

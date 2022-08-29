@@ -1,24 +1,6 @@
 import * as ShopifyErrors from '../../../error';
-import {createGraphqlClientClass} from '../graphql_client';
-import {
-  ShopifyHeader,
-  ConfigInterface,
-  LATEST_API_VERSION,
-} from '../../../base-types';
-import {AuthScopes} from '../../../auth/scopes';
-import {MemorySessionStorage} from '../../../auth/session/storage/memory';
+import {ShopifyHeader} from '../../../base-types';
 
-const config: ConfigInterface = {
-  apiKey: 'test-api-key',
-  apiSecretKey: 'test-api-secret-key',
-  scopes: new AuthScopes(['read_products', 'write_products']),
-  hostName: 'my.platform.net',
-  hostScheme: 'https',
-  apiVersion: LATEST_API_VERSION,
-  isEmbeddedApp: true,
-  sessionStorage: new MemorySessionStorage(),
-};
-const GraphqlClientClass = createGraphqlClientClass(config);
 const DOMAIN = 'shop.myshopify.io';
 const QUERY = `
 {
@@ -38,7 +20,7 @@ const successResponse = {
 
 describe('GraphQL client', () => {
   it('can return response', async () => {
-    const client = new GraphqlClientClass({
+    const client = new global.shopify.clients.Graphql({
       domain: DOMAIN,
       accessToken: 'bork',
     });
@@ -50,13 +32,13 @@ describe('GraphQL client', () => {
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/admin/api/${config.apiVersion}/graphql.json`,
+      path: `/admin/api/${global.shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
     }).toMatchMadeHttpRequest();
   });
 
   it('merges custom headers with default', async () => {
-    const client = new GraphqlClientClass({
+    const client = new global.shopify.clients.Graphql({
       domain: DOMAIN,
       accessToken: 'bork',
     });
@@ -74,16 +56,16 @@ describe('GraphQL client', () => {
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/admin/api/${config.apiVersion}/graphql.json`,
+      path: `/admin/api/${global.shopify.config.apiVersion}/graphql.json`,
       headers: customHeader,
       data: QUERY,
     }).toMatchMadeHttpRequest();
   });
 
   it('adapts to private app requests', async () => {
-    config.isPrivateApp = true;
+    global.shopify.config.isPrivateApp = true;
 
-    const client = new GraphqlClientClass({domain: DOMAIN});
+    const client = new global.shopify.clients.Graphql({domain: DOMAIN});
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
@@ -91,27 +73,28 @@ describe('GraphQL client', () => {
     );
 
     const customHeaders: {[key: string]: string} = {};
-    customHeaders[ShopifyHeader.AccessToken] = config.apiSecretKey;
+    customHeaders[ShopifyHeader.AccessToken] =
+      global.shopify.config.apiSecretKey;
 
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/admin/api/${config.apiVersion}/graphql.json`,
+      path: `/admin/api/${global.shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
 
-    config.isPrivateApp = false;
+    global.shopify.config.isPrivateApp = false;
   });
 
   it('fails to instantiate without access token', () => {
-    expect(() => new GraphqlClientClass({domain: DOMAIN})).toThrow(
+    expect(() => new global.shopify.clients.Graphql({domain: DOMAIN})).toThrow(
       ShopifyErrors.MissingRequiredArgument,
     );
   });
 
   it('can handle queries with variables', async () => {
-    const client = new GraphqlClientClass({
+    const client = new global.shopify.clients.Graphql({
       domain: DOMAIN,
       accessToken: 'bork',
     });
@@ -157,7 +140,7 @@ describe('GraphQL client', () => {
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/admin/api/${config.apiVersion}/graphql.json`,
+      path: `/admin/api/${global.shopify.config.apiVersion}/graphql.json`,
       headers: {
         'Content-Length': 219,
         'Content-Type': 'application/json',
@@ -168,7 +151,7 @@ describe('GraphQL client', () => {
   });
 
   it('throws error when response contains an errors field', async () => {
-    const client = new GraphqlClientClass({
+    const client = new global.shopify.clients.Graphql({
       domain: DOMAIN,
       accessToken: 'bork',
     });
@@ -223,7 +206,7 @@ describe('GraphQL client', () => {
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/admin/api/${config.apiVersion}/graphql.json`,
+      path: `/admin/api/${global.shopify.config.apiVersion}/graphql.json`,
       headers: {
         'Content-Length': 156,
         'Content-Type': 'application/json',

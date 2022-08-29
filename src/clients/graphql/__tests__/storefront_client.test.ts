@@ -1,11 +1,4 @@
-import {createStorefrontClientClass} from '../storefront_client';
-import {
-  ShopifyHeader,
-  ConfigInterface,
-  LATEST_API_VERSION,
-} from '../../../base-types';
-import {AuthScopes} from '../../../auth/scopes';
-import {MemorySessionStorage} from '../../../auth/session/storage/memory';
+import {ShopifyHeader} from '../../../base-types';
 
 const DOMAIN = 'shop.myshopify.io';
 const QUERY = `
@@ -24,21 +17,9 @@ const successResponse = {
   },
 };
 
-const config: ConfigInterface = {
-  apiKey: 'test-api-key',
-  apiSecretKey: 'test-api-secret-key',
-  scopes: new AuthScopes(['read_products', 'write_products']),
-  hostName: 'my.platform.net',
-  hostScheme: 'https',
-  apiVersion: LATEST_API_VERSION,
-  isEmbeddedApp: true,
-  sessionStorage: new MemorySessionStorage(),
-};
-const StorefrontClientClass = createStorefrontClientClass(config);
-
 describe('Storefront GraphQL client', () => {
   it('can return response from specific access token', async () => {
-    const client = new StorefrontClientClass({
+    const client = new global.shopify.clients.Storefront({
       domain: DOMAIN,
       accessToken: 'bork',
     });
@@ -54,17 +35,17 @@ describe('Storefront GraphQL client', () => {
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/api/${config.apiVersion}/graphql.json`,
+      path: `/api/${global.shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers,
     }).toMatchMadeHttpRequest();
   });
 
   it('can return response from config private app setting', async () => {
-    config.isPrivateApp = true;
-    config.privateAppStorefrontAccessToken = 'private_token';
+    global.shopify.config.isPrivateApp = true;
+    global.shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
-    const client = new StorefrontClientClass({domain: DOMAIN});
+    const client = new global.shopify.clients.Storefront({domain: DOMAIN});
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
@@ -77,14 +58,11 @@ describe('Storefront GraphQL client', () => {
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/api/${config.apiVersion}/graphql.json`,
+      path: `/api/${global.shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers,
     }).toMatchMadeHttpRequest();
   });
-
-  config.isPrivateApp = false;
-  config.privateAppStorefrontAccessToken = undefined;
 });
 
 function buildExpectedResponse(obj: unknown) {

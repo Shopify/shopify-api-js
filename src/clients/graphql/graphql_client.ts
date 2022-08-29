@@ -17,7 +17,7 @@ export interface GraphqlClientParams {
 }
 
 export function createGraphqlClientClass(config: ConfigInterface) {
-  const HttpClientClass = createHttpClientClass(config);
+  const HttpClient = createHttpClientClass(config);
   return class GraphqlClient {
     baseApiPath = '/admin/api';
     readonly domain: string;
@@ -35,7 +35,7 @@ export function createGraphqlClientClass(config: ConfigInterface) {
       if (accessToken) {
         this.accessToken = accessToken;
       }
-      this.graphqlClient = new HttpClientClass({domain: this.domain});
+      this.graphqlClient = new HttpClient({domain: this.domain});
     }
 
     async query<T = unknown>(params: GraphqlParams): Promise<RequestReturn<T>> {

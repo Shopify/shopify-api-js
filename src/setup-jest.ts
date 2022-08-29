@@ -1,11 +1,15 @@
 import fetchMock from 'jest-fetch-mock';
 
-import {ApiVersion, Shopify} from './base-types';
+// Enabling of mocks MUST happen BEFORE importing shopifyApi - DO NOT MOVE THIS LINE!
+fetchMock.enableMocks();
+
+/* eslint-disable import/first */
+import {LATEST_API_VERSION, Shopify} from './base-types';
 import {MemorySessionStorage} from './auth/session/storage/memory';
 
 import {shopifyApi} from './index';
+/* eslint-enable import/first */
 
-fetchMock.enableMocks();
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
@@ -15,22 +19,22 @@ declare global {
   }
 }
 
-export const testConfig = {
-  apiKey: 'test_key',
-  apiSecretKey: 'test_secret_key',
-  scopes: ['test_scope'],
-  hostName: 'test_host_name',
-  hostScheme: 'https',
-  apiVersion: ApiVersion.Unstable,
-  isEmbeddedApp: false,
-  isPrivateApp: false,
-  sessionStorage: new MemorySessionStorage(),
-  customShopDomains: undefined,
-  billing: undefined,
-};
-
 let currentCall = 0;
 beforeEach(() => {
+  const testConfig = {
+    apiKey: 'test_key',
+    apiSecretKey: 'test_secret_key',
+    scopes: ['test_scope'],
+    hostName: 'test_host_name',
+    hostScheme: 'https',
+    apiVersion: LATEST_API_VERSION,
+    isEmbeddedApp: false,
+    isPrivateApp: false,
+    sessionStorage: new MemorySessionStorage(),
+    customShopDomains: undefined,
+    billing: undefined,
+  };
+
   global.shopify = shopifyApi(testConfig);
 
   fetchMock.mockReset();

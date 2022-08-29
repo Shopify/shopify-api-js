@@ -3,9 +3,9 @@ import {ShopifyHeader, ConfigInterface} from '../../base-types';
 import {createGraphqlClientClass, AccessTokenHeader} from './graphql_client';
 
 export function createStorefrontClientClass(config: ConfigInterface) {
-  const GraphqlClientClass = createGraphqlClientClass(config);
+  const GraphqlClient = createGraphqlClientClass(config);
 
-  return class StorefrontClient extends GraphqlClientClass {
+  return class StorefrontClient extends GraphqlClient {
     baseApiPath = '/api';
 
     getAccessTokenHeader(): AccessTokenHeader {
