@@ -3,10 +3,10 @@ import http from 'http';
 import * as ShopifyErrors from '../error';
 import {ConfigInterface} from '../base-types';
 
-import {sanitizeHost} from './shop-validator';
+import {createSanitizeHost} from './shop-validator';
 
 export function createGetEmbeddedAppUrl(config: ConfigInterface) {
-  return async (request: http.IncomingMessage): string => {
+  return (request: http.IncomingMessage): string => {
     if (!request) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'getEmbeddedAppUrl requires a request object argument',
@@ -34,7 +34,7 @@ export function createGetEmbeddedAppUrl(config: ConfigInterface) {
 
 export function createBuildEmbeddedAppUrl(config: ConfigInterface) {
   return (host: string): string => {
-    sanitizeHost(host, true);
+    createSanitizeHost(config)(host, true);
 
     const decodedHost = Buffer.from(host, 'base64').toString();
 

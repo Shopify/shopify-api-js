@@ -3,7 +3,7 @@ import {createClient, RedisClientOptions} from 'redis';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {sanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../../utils/shop-validator';
 
 type RedisClient = ReturnType<typeof createClient>;
 export interface RedisSessionStorageOptions extends RedisClientOptions {
@@ -14,7 +14,7 @@ const defaultRedisSessionStorageOptions: RedisSessionStorageOptions = {
   sessionKeyPrefix: 'shopify_sessions',
 };
 
-export class RedisSessionStorage implements SessionStorage {
+export class RedisSessionStorage extends SessionStorage {
   static withCredentials(
     host: string,
     db: number,
@@ -40,6 +40,8 @@ export class RedisSessionStorage implements SessionStorage {
     private dbUrl: URL,
     opts: Partial<RedisSessionStorageOptions> = {},
   ) {
+    super();
+
     if (typeof this.dbUrl === 'string') {
       this.dbUrl = new URL(this.dbUrl);
     }
@@ -82,7 +84,7 @@ export class RedisSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
-    const cleanShop = sanitizeShop(shop, true)!;
+    const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
     const keys = await this.client.keys('*');
     const results: SessionInterface[] = [];

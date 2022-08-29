@@ -2,9 +2,9 @@ import {Session} from '../session';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import * as ShopifyErrors from '../../../error';
-import {sanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../../utils/shop-validator';
 
-export class CustomSessionStorage implements SessionStorage {
+export class CustomSessionStorage extends SessionStorage {
   constructor(
     readonly storeCallback: (session: SessionInterface) => Promise<boolean>,
     readonly loadCallback: (
@@ -16,6 +16,8 @@ export class CustomSessionStorage implements SessionStorage {
       shop: string,
     ) => Promise<SessionInterface[]>,
   ) {
+    super();
+
     this.storeCallback = storeCallback;
     this.loadCallback = loadCallback;
     this.deleteCallback = deleteCallback;
@@ -104,7 +106,7 @@ export class CustomSessionStorage implements SessionStorage {
   }
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
-    const cleanShop = sanitizeShop(shop, true)!;
+    const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
     let sessions: SessionInterface[] = [];
 

@@ -1,8 +1,6 @@
-import nonce from '../nonce';
-
 test('nonce always returns a new 15 digit random number as a string', () => {
-  const firstNonce = nonce();
-  const secondNonce = nonce();
+  const firstNonce = global.shopify.utils.nonce();
+  const secondNonce = global.shopify.utils.nonce();
 
   expect(firstNonce.length).toBe(15);
   expect(secondNonce.length).toBe(15);
@@ -12,8 +10,8 @@ test('nonce always returns a new 15 digit random number as a string', () => {
 
 test('nonce always returns a unique value', () => {
   for (let i = 0; i < 100; i++) {
-    const first = nonce();
-    const second = nonce();
+    const first = global.shopify.utils.nonce();
+    const second = global.shopify.utils.nonce();
 
     expect(first).not.toEqual(second);
   }

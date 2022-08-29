@@ -3,7 +3,7 @@ import sqlite3 from 'sqlite3';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {sanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../../utils/shop-validator';
 
 export interface SQLiteSessionStorageOptions {
   sessionTableName: string;
@@ -80,7 +80,7 @@ export class SQLiteSessionStorage extends SessionStorage {
   }
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
-    const cleanShop = sanitizeShop(shop, true)!;
+    const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
     await this.ready;
     const query = `

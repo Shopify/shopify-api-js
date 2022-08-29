@@ -1,5 +1,5 @@
 import * as ShopifyErrors from '../error';
-import {Session} from '../auth/session';
+import {SessionInterface} from '../auth/session/types';
 import {GraphqlClient} from '../clients/graphql';
 import {RestClient} from '../clients/rest';
 import {ConfigInterface} from '../base-types';
@@ -16,7 +16,7 @@ export function createWithSession(config: ConfigInterface) {
     res,
     shop,
   }: WithSessionParams): Promise<WithSessionResponse> => {
-    let session: Session | undefined;
+    let session: SessionInterface | undefined;
     if (isOnline) {
       if (!req || !res) {
         throw new ShopifyErrors.MissingRequiredArgument(
@@ -24,7 +24,8 @@ export function createWithSession(config: ConfigInterface) {
         );
       }
 
-      session = await createLoadCurrentSession(config)(req, res);
+      const loadCurrentSession = createLoadCurrentSession(config);
+      session = await loadCurrentSession(req, res);
     } else {
       if (!shop) {
         throw new ShopifyErrors.MissingRequiredArgument(
@@ -32,7 +33,8 @@ export function createWithSession(config: ConfigInterface) {
         );
       }
 
-      session = await createLoadOfflineSession(config)(shop);
+      const loadOfflineSession = createLoadOfflineSession(config);
+      session = await loadOfflineSession(shop);
     }
 
     if (!session) {

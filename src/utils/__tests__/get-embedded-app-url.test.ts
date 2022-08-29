@@ -1,17 +1,15 @@
 import http from 'http';
 
-import getEmbeddedAppUrl from '../get-embedded-app-url';
 import * as ShopifyErrors from '../../error';
-import {config} from '../../config';
 
 describe('getEmbeddedAppUrl', () => {
   beforeEach(() => {
-    config.apiKey = 'my-api-key';
+    global.shopify.config.apiKey = 'my-api-key';
   });
 
   test('throws an error when no request is passed', () => {
     // @ts-expect-error: For JS users test it throws when no request is passed
-    expect(() => getEmbeddedAppUrl()).toThrow(
+    expect(() => global.shopify.utils.getEmbeddedAppUrl()).toThrow(
       ShopifyErrors.MissingRequiredArgument,
     );
   });
@@ -21,7 +19,7 @@ describe('getEmbeddedAppUrl', () => {
       url: undefined,
     } as http.IncomingMessage;
 
-    expect(() => getEmbeddedAppUrl(req)).toThrow(
+    expect(() => global.shopify.utils.getEmbeddedAppUrl(req)).toThrow(
       ShopifyErrors.InvalidRequestError,
     );
   });
@@ -34,7 +32,7 @@ describe('getEmbeddedAppUrl', () => {
       },
     } as http.IncomingMessage;
 
-    expect(() => getEmbeddedAppUrl(req)).toThrow(
+    expect(() => global.shopify.utils.getEmbeddedAppUrl(req)).toThrow(
       ShopifyErrors.InvalidRequestError,
     );
   });
@@ -47,7 +45,7 @@ describe('getEmbeddedAppUrl', () => {
       },
     } as http.IncomingMessage;
 
-    expect(() => getEmbeddedAppUrl(req)).toThrow(
+    expect(() => global.shopify.utils.getEmbeddedAppUrl(req)).toThrow(
       ShopifyErrors.InvalidHostError,
     );
   });
@@ -63,8 +61,8 @@ describe('getEmbeddedAppUrl', () => {
       },
     } as http.IncomingMessage;
 
-    expect(getEmbeddedAppUrl(req)).toBe(
-      `https://${host}/apps/${config.apiKey}`,
+    expect(global.shopify.utils.getEmbeddedAppUrl(req)).toBe(
+      `https://${host}/apps/${global.shopify.config.apiKey}`,
     );
   });
 });

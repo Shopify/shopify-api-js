@@ -2,14 +2,14 @@ import {Session} from '../auth/session/session';
 import OAuth from '../auth/oauth';
 import {ConfigInterface} from '../base-types';
 
-import {sanitizeShop} from './shop-validator';
+import {createSanitizeShop} from './shop-validator';
 
 export function createLoadOfflineSession(config: ConfigInterface) {
   return async (
     shop: string,
     includeExpired = false,
   ): Promise<Session | undefined> => {
-    const cleanShop = sanitizeShop(shop, true)!;
+    const cleanShop = createSanitizeShop(config)(shop, true)!;
 
     const sessionId = OAuth.getOfflineSessionId(cleanShop);
     const session = await config.sessionStorage.loadSession(sessionId);

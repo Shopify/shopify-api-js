@@ -4,7 +4,7 @@ import querystring from 'querystring';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
 
-import safeCompare from './safe-compare';
+import {safeCompare} from './safe-compare';
 
 export function stringifyQuery(query: AuthQuery): string {
   const orderedObj = Object.keys(query)

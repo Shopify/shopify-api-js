@@ -10,5 +10,5 @@ export interface SessionInterface {
   expires?: Date;
   accessToken?: string;
   onlineAccessInfo?: OnlineAccessInfo;
-  isActive(scopes: AuthScopes): boolean;
+  isActive(scopes: AuthScopes | string | string[]): boolean;
 }

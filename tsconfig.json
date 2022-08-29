@@ -51,10 +51,16 @@
   "exclude": [
     "src/base-rest-resource.ts",
     "src/auth/**/*.ts",
-    "src/runtime/**/*.ts",
-    "src/adapters/**/*.ts",
     "src/webhooks/**/*.ts",
     "src/billing/**/*.ts",
+    "src/utils/with-session.ts",
+    "src/utils/graphql_proxy.ts",
+    "src/utils/graphql_proxy.ts",
+    "src/utils/load-current-session.ts",
+    "src/utils/delete-current-session.ts",
+    "src/utils/load-offline-session.ts",
+    "src/utils/delete-offline-session.ts",
+    "src/utils/load-offline-session.ts",
     "**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*"
   ],
 }

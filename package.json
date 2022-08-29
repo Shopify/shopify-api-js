@@ -2,17 +2,19 @@
   "name": "@shopify/shopify-api",
   "version": "5.0.1",
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
-  ".": {
-    "import": "./dist/index.js",
-    "types": "./dist/index.d.ts"
-  },
-  "./adapters/node": {
-    "import": "./dist/adapters/node/index.js",
-    "types": "./dist/adapters/node/index.d.ts"
-  },
-  "./adapters/cf-worker": {
-    "import": "./dist/adapters/cf-worker/index.js",
-    "types": "./dist/adapters/cf-worker/index.d.ts"
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./adapters/node": {
+      "import": "./dist/adapters/node/index.js",
+      "types": "./dist/adapters/node/index.d.ts"
+    },
+    "./adapters/cf-worker": {
+      "import": "./dist/adapters/cf-worker/index.js",
+      "types": "./dist/adapters/cf-worker/index.d.ts"
+    }
   },
   "prettier": "@shopify/prettier-config",
   "scripts": {

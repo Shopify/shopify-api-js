@@ -1,7 +1,6 @@
-import {config} from '../../config';
-import deleteOfflineSession from '../delete-offline-session';
 import {Session} from '../../auth/session';
 import OAuth from '../../auth/oauth';
+import deleteOfflineSession from '../delete-offline-session';
 import loadOfflineSession from '../load-offline-session';
 
 describe('deleteOfflineSession', () => {
@@ -10,7 +9,7 @@ describe('deleteOfflineSession', () => {
 
   beforeEach(() => {
     const offlineSession = new Session(offlineId, shop, 'state', false);
-    config.sessionStorage.storeSession(offlineSession);
+    global.shopify.config.sessionStorage.storeSession(offlineSession);
   });
 
   it('deletes offline sessions by shop', async () => {

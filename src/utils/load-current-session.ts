@@ -10,8 +10,6 @@ export function createLoadCurrentSession(config: ConfigInterface) {
     response: http.ServerResponse,
     isOnline = true,
   ): Promise<SessionInterface | undefined> => {
-    throwIfConfigNotSet();
-
     const sessionId = ShopifyOAuth.getCurrentSessionId(
       request,
       response,

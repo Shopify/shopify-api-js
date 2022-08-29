@@ -60,3 +60,10 @@ console.log(shopify.config.apiKey);
 
 `SessionStorage` is no longer an interface, but an abstract class.
 If you're using your own implementation of the interface, you need to replace `implements SessionStorage` with `extends SessionStorage`.
+
+### [WIP] Utility functions
+
+The old `Shopify.Utils` object contained functions that relied on the global configuration object, and in refactoring it to use a local configuration, we've removed all the default exports from it.
+Utils functions should always be called through `shopify.utils` now.
+
+- The `Shopify.Utils.storeSession` method was removed since sessions shouldn't be stored through the library unless the library is doing it. Apps can still save data to their sessions as they please, as long as the data is properly exported to the library via the SessionStorage.

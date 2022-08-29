@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {sanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../../utils/shop-validator';
 
 export interface MySQLSessionStorageOptions {
   sessionTableName: string;
@@ -12,7 +12,7 @@ const defaultMySQLSessionStorageOptions: MySQLSessionStorageOptions = {
   sessionTableName: 'shopify_sessions',
 };
 
-export class MySQLSessionStorage implements SessionStorage {
+export class MySQLSessionStorage extends SessionStorage {
   static withCredentials(
     host: string,
     dbName: string,
@@ -38,6 +38,8 @@ export class MySQLSessionStorage implements SessionStorage {
     private dbUrl: URL,
     opts: Partial<MySQLSessionStorageOptions> = {},
   ) {
+    super();
+
     if (typeof this.dbUrl === 'string') {
       this.dbUrl = new URL(this.dbUrl);
     }
@@ -95,7 +97,7 @@ export class MySQLSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
-    const cleanShop = sanitizeShop(shop, true)!;
+    const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
     const query = `
       SELECT * FROM ${this.options.sessionTableName}

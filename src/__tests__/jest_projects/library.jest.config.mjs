@@ -9,11 +9,18 @@ export default {
     '<rootDir>/auth/session/storage',
     '<rootDir>/adapters',
     '<rootDir>/runtime',
-    "<rootDir>/__tests__/base-rest-resource.test.ts",
-    "<rootDir>/auth",
-    "<rootDir>/utils",
-    "<rootDir>/webhooks",
-    "<rootDir>/billing",
+    // TODO remove these as we refactor components, keep the ones above as they run in their own suites
+    '<rootDir>/__tests__/base-rest-resource.test.ts',
+    '<rootDir>/auth',
+    '<rootDir>/webhooks',
+    '<rootDir>/billing',
+    // These tests depend on the auth component and can't be fixed until it's refactored
+    '<rootDir>/utils/__tests__/delete-current-session.test.ts',
+    '<rootDir>/utils/__tests__/delete-offline-session.test.ts',
+    '<rootDir>/utils/__tests__/load-current-session.test.ts',
+    '<rootDir>/utils/__tests__/load-offline-session.test.ts',
+    '<rootDir>/utils/__tests__/graphql_proxy.test.ts',
+    '<rootDir>/utils/__tests__/with-session.test.ts',
   ],
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
 };
