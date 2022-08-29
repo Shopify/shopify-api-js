@@ -2,6 +2,7 @@ import {AuthScopes} from './auth/scopes';
 import {SessionStorage} from './auth/session/session_storage';
 import {BillingSettings} from './billing/types';
 import {ShopifyClients} from './clients/types';
+import {ShopifyUtils} from './utils/types';
 
 export interface ConfigParams {
   apiKey: string;
@@ -29,6 +30,7 @@ export interface ConfigInterface extends ConfigParams {
 export interface Shopify {
   config: ConfigInterface;
   clients: ShopifyClients;
+  utils: ShopifyUtils;
 }
 
 export enum ApiVersion {

@@ -1,13 +1,8 @@
-import {config, throwIfConfigNotSet} from '../config';
-import {Session} from '../auth/session';
+import {SessionInterface} from '../auth/session/types';
+import {ConfigInterface} from '../base-types';
 
-/**
- * Stores the current user's session.
- *
- * @param Session Session object
- */
-export default async function storeSession(session: Session): Promise<boolean> {
-  throwIfConfigNotSet();
-
-  return config.sessionStorage.storeSession(session);
+export function createStoreSession(config: ConfigInterface) {
+  return async (session: SessionInterface): Promise<boolean> => {
+    return config.sessionStorage.storeSession(session);
+  };
 }

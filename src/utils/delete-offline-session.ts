@@ -1,20 +1,14 @@
-import {config, throwIfConfigNotSet} from '../config';
+import {ConfigInterface} from '../base-types';
 import OAuth from '../auth/oauth';
 
 import {sanitizeShop} from './shop-validator';
 
-/**
- * Helper method to find and delete offline sessions by shop url.
- *
- * @param shop the shop url to find and delete a session for
- */
-export default async function deleteOfflineSession(
-  shop: string,
-): Promise<boolean> {
-  throwIfConfigNotSet();
-  const cleanShop = sanitizeShop(shop, true)!;
+export function createDeleteOfflineSession(config: ConfigInterface) {
+  return async (shop: string): Promise<boolean> => {
+    const cleanShop = sanitizeShop(shop, true)!;
 
-  const sessionId = OAuth.getOfflineSessionId(cleanShop);
+    const sessionId = OAuth.getOfflineSessionId(cleanShop);
 
-  return config.sessionStorage.deleteSession(sessionId);
+    return config.sessionStorage.deleteSession(sessionId);
+  };
 }

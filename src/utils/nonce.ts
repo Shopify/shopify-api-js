@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-export default function nonce(): string {
+export function nonce(): string {
   const length = 15;
   const bytes = crypto.randomBytes(length);
 

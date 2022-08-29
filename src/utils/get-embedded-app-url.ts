@@ -1,46 +1,43 @@
 import http from 'http';
 
 import * as ShopifyErrors from '../error';
-import {config} from '../config';
+import {ConfigInterface} from '../base-types';
 
 import {sanitizeHost} from './shop-validator';
 
-/**
- * Helper method to get the host URL for the app.
- *
- * @param request Current HTTP request
- */
-export default function getEmbeddedAppUrl(
-  request: http.IncomingMessage,
-): string {
-  if (!request) {
-    throw new ShopifyErrors.MissingRequiredArgument(
-      'getEmbeddedAppUrl requires a request object argument',
-    );
-  }
+export function createGetEmbeddedAppUrl(config: ConfigInterface) {
+  return async (request: http.IncomingMessage): string => {
+    if (!request) {
+      throw new ShopifyErrors.MissingRequiredArgument(
+        'getEmbeddedAppUrl requires a request object argument',
+      );
+    }
 
-  if (!request.url) {
-    throw new ShopifyErrors.InvalidRequestError(
-      'Request does not contain a URL',
-    );
-  }
+    if (!request.url) {
+      throw new ShopifyErrors.InvalidRequestError(
+        'Request does not contain a URL',
+      );
+    }
 
-  const url = new URL(request.url, `https://${request.headers.host}`);
-  const host = url.searchParams.get('host');
+    const url = new URL(request.url, `https://${request.headers.host}`);
+    const host = url.searchParams.get('host');
 
-  if (typeof host !== 'string') {
-    throw new ShopifyErrors.InvalidRequestError(
-      'Request does not contain a host query parameter',
-    );
-  }
+    if (typeof host !== 'string') {
+      throw new ShopifyErrors.InvalidRequestError(
+        'Request does not contain a host query parameter',
+      );
+    }
 
-  return buildEmbeddedAppUrl(host);
+    return createBuildEmbeddedAppUrl(config)(host);
+  };
 }
 
-export function buildEmbeddedAppUrl(host: string): string {
-  sanitizeHost(host, true);
+export function createBuildEmbeddedAppUrl(config: ConfigInterface) {
+  return (host: string): string => {
+    sanitizeHost(host, true);
 
-  const decodedHost = Buffer.from(host, 'base64').toString();
+    const decodedHost = Buffer.from(host, 'base64').toString();
 
-  return `https://${decodedHost}/apps/${config.apiKey}`;
+    return `https://${decodedHost}/apps/${config.apiKey}`;
+  };
 }

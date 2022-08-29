@@ -1,31 +1,26 @@
 import http from 'http';
 
-import {config, throwIfConfigNotSet} from '../config';
+import {ConfigInterface} from '../base-types';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
-import {Session} from '../auth/session';
+import {SessionInterface} from '../auth/session/types';
 
-/**
- * Loads the current user's session, based on the given request and response.
- *
- * @param request  Current HTTP request
- * @param response Current HTTP response
- * @param isOnline Whether to load online (default) or offline sessions (optional)
- */
-export default async function loadCurrentSession(
-  request: http.IncomingMessage,
-  response: http.ServerResponse,
-  isOnline = true,
-): Promise<Session | undefined> {
-  throwIfConfigNotSet();
+export function createLoadCurrentSession(config: ConfigInterface) {
+  return async (
+    request: http.IncomingMessage,
+    response: http.ServerResponse,
+    isOnline = true,
+  ): Promise<SessionInterface | undefined> => {
+    throwIfConfigNotSet();
 
-  const sessionId = ShopifyOAuth.getCurrentSessionId(
-    request,
-    response,
-    isOnline,
-  );
-  if (!sessionId) {
-    return Promise.resolve(undefined);
-  }
+    const sessionId = ShopifyOAuth.getCurrentSessionId(
+      request,
+      response,
+      isOnline,
+    );
+    if (!sessionId) {
+      return Promise.resolve(undefined);
+    }
 
-  return config.sessionStorage.loadSession(sessionId);
+    return config.sessionStorage.loadSession(sessionId);
+  };
 }

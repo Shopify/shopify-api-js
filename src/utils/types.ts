@@ -4,6 +4,20 @@ import {Session} from '../auth/session';
 // import {GraphqlClient} from '../clients/graphql';
 // import {RestClient} from '../clients/rest';
 
+import type {shopifyUtils} from '.';
+
+export interface JwtPayload {
+  iss: string;
+  dest: string;
+  aud: string;
+  sub: string;
+  exp: number;
+  nbf: number;
+  iat: number;
+  jti: string;
+  sid: string;
+}
+
 export interface WithSessionParams {
   clientType: 'rest' | 'graphql';
   isOnline: boolean;
@@ -25,3 +39,5 @@ export interface GraphqlWithSession extends WithSessionBaseResponse {
 }
 
 export type WithSessionResponse = RestWithSession | GraphqlWithSession;
+
+export type ShopifyUtils = ReturnType<typeof shopifyUtils>;

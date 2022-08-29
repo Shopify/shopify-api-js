@@ -1,31 +1,19 @@
 import jwt from 'jsonwebtoken';
 
-import {config} from '../config';
 import * as ShopifyErrors from '../error';
+
+import {JwtPayload} from './types';
 
 const JWT_PERMITTED_CLOCK_TOLERANCE = 10;
 
-interface JwtPayload {
-  iss: string;
-  dest: string;
-  aud: string;
-  sub: string;
-  exp: number;
-  nbf: number;
-  iat: number;
-  jti: string;
-  sid: string;
-}
-
-/**
- * Decodes the given session token, and extracts the session information from it
- *
- * @param token Received session token
- */
-function decodeSessionToken(token: string): JwtPayload {
+export function decodeSessionToken(
+  apiKey: string,
+  apiSecretKey: string,
+  token: string,
+): JwtPayload {
   let payload: JwtPayload;
   try {
-    payload = jwt.verify(token, config.apiSecretKey, {
+    payload = jwt.verify(token, apiSecretKey, {
       algorithms: ['HS256'],
       clockTolerance: JWT_PERMITTED_CLOCK_TOLERANCE,
     }) as JwtPayload;
@@ -37,7 +25,7 @@ function decodeSessionToken(token: string): JwtPayload {
 
   // The exp and nbf fields are validated by the JWT library
 
-  if (payload.aud !== config.apiKey) {
+  if (payload.aud !== apiKey) {
     throw new ShopifyErrors.InvalidJwtError(
       'Session token had invalid API key',
     );
@@ -45,7 +33,3 @@ function decodeSessionToken(token: string): JwtPayload {
 
   return payload;
 }
-
-export default decodeSessionToken;
-
-export {decodeSessionToken, JwtPayload};

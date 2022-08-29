@@ -6,7 +6,7 @@ import * as ShopifyErrors from '../error';
 
 import loadCurrentSession from './load-current-session';
 
-export default async function graphqlProxy(
+export async function graphqlProxy(
   userReq: http.IncomingMessage,
   userRes: http.ServerResponse,
 ): Promise<RequestReturn> {
