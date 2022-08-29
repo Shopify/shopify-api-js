@@ -1,3 +1,4 @@
+import '../../__tests__/shopify-global';
 import {InvalidShopError} from '../../error';
 
 const VALID_SHOP_URL_1 = 'someshop.myshopify.com';

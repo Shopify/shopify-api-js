@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import express, {Request, Response} from 'express';
 import request from 'supertest';
 
+import '../../__tests__/shopify-global';
 import {Session} from '../../auth/session';
 import {InvalidSession, SessionNotFound} from '../../error';
 import graphqlProxy from '../graphql_proxy';

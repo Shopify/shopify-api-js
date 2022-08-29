@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 
+import '../../__tests__/shopify-global';
 import {JwtPayload} from '../types';
 import * as ShopifyErrors from '../../error';
 

@@ -1,3 +1,5 @@
+import '../../__tests__/shopify-global';
+
 test('nonce always returns a new 15 digit random number as a string', () => {
   const firstNonce = global.shopify.utils.nonce();
   const secondNonce = global.shopify.utils.nonce();

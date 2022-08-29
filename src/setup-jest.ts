@@ -4,20 +4,12 @@ import fetchMock from 'jest-fetch-mock';
 fetchMock.enableMocks();
 
 /* eslint-disable import/first */
-import {ConfigParams, LATEST_API_VERSION, Shopify} from './base-types';
+import './__tests__/shopify-global';
+import {ConfigParams, LATEST_API_VERSION} from './base-types';
 import {MemorySessionStorage} from './auth/session/storage/memory';
 
 import {shopifyApi} from './index';
 /* eslint-enable import/first */
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      shopify: Shopify;
-    }
-  }
-}
 
 let currentCall = 0;
 beforeEach(() => {

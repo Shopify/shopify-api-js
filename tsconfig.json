@@ -37,9 +37,14 @@
     "rootDir": "src"
   },
   "files": [
+    "src/__tests__/shopify-global.ts",
+    // TODO remove these as we progress through the refactoring
     "src/billing/types.ts",
     "src/auth/session/session_storage.ts",
     "src/auth/session/storage/memory.ts",
+    "src/auth/session/storage/sqlite.ts",
+    "src/auth/session/session.ts",
+    "src/auth/session/session-utils.ts",
     "src/auth/session/types.ts",
     "src/auth/scopes/index.ts",
     "src/auth/oauth/types.ts",
@@ -49,6 +54,8 @@
     "src/**/*.tsx"
   ],
   "exclude": [
+    "**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*",
+    // TODO remove these as we progress through the refactoring
     "src/base-rest-resource.ts",
     "src/auth/**/*.ts",
     "src/webhooks/**/*.ts",
@@ -60,7 +67,6 @@
     "src/utils/delete-current-session.ts",
     "src/utils/load-offline-session.ts",
     "src/utils/delete-offline-session.ts",
-    "src/utils/load-offline-session.ts",
-    "**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*"
+    "src/utils/load-offline-session.ts"
   ],
 }

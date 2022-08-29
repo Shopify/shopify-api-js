@@ -1,3 +1,4 @@
+import '../../__tests__/shopify-global';
 import {Session} from '../../auth/session';
 import OAuth from '../../auth/oauth';
 import deleteOfflineSession from '../delete-offline-session';

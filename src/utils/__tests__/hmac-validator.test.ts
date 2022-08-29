@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 
+import '../../__tests__/shopify-global';
 import {AuthQuery} from '../../auth/oauth/types';
 import * as ShopifyErrors from '../../error';
 

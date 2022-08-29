@@ -1,5 +1,6 @@
 import http from 'http';
 
+import '../../__tests__/shopify-global';
 import * as ShopifyErrors from '../../error';
 
 describe('getEmbeddedAppUrl', () => {
