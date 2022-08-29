@@ -1,6 +1,6 @@
 import http from 'http';
 
-import jwt from 'jsonwebtoken';
+import jose from 'jose';
 import express, {Request, Response} from 'express';
 import request from 'supertest';
 

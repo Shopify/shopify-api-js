@@ -1,33 +1,32 @@
-import crypto from 'crypto';
-
 import * as ShopifyErrors from '../error';
 
 export function safeCompare(
   strA: string | {[key: string]: string} | string[] | number[],
   strB: string | {[key: string]: string} | string[] | number[],
 ): boolean {
-  let buffA: Buffer;
-  let buffB: Buffer;
+  if (typeof strA === typeof strB) {
+    const enc = new TextEncoder();
+    const buffA = enc.encode(JSON.stringify(strA));
+    const buffB = enc.encode(JSON.stringify(strB));
 
-  if (typeof strA !== typeof strB) {
+    if (buffA.length === buffB.length) {
+      return timingSafeEqual(buffA, buffB);
+    }
+  } else {
     throw new ShopifyErrors.SafeCompareError(
       `Mismatched data types provided: ${typeof strA} and ${typeof strB}`,
     );
   }
-
-  if (typeof strA === 'object') {
-    buffA = Buffer.from(JSON.stringify(strA));
-  } else {
-    buffA = Buffer.from(strA);
-  }
-  if (typeof strB === 'object') {
-    buffB = Buffer.from(JSON.stringify(strB));
-  } else {
-    buffB = Buffer.from(strB);
-  }
-
-  if (buffA.length === buffB.length) {
-    return crypto.timingSafeEqual(buffA, buffB);
-  }
   return false;
+}
+
+// Buffer must be same length for this function to be secure.
+function timingSafeEqual(bufA: ArrayBuffer, bufB: ArrayBuffer): boolean {
+  const viewA = new Uint8Array(bufA);
+  const viewB = new Uint8Array(bufB);
+  let out = 0;
+  for (let i = 0; i < viewA.length; i++) {
+    out |= viewA[i] ^ viewB[i];
+  }
+  return out === 0;
 }

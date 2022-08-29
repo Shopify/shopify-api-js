@@ -3,6 +3,7 @@ import {crypto} from './crypto';
 export async function createSHA256HMAC(
   secret: string,
   payload: string,
+  returnFormat: 'base64' | 'hex' = 'base64',
 ): Promise<string> {
   const cryptoLib =
     typeof (crypto as any)?.webcrypto === 'undefined'
@@ -29,13 +30,13 @@ export async function createSHA256HMAC(
       key,
       enc.encode(payload),
     );
-    return asBase64(signature);
+    return returnFormat === 'base64' ? asBase64(signature) : asHex(signature);
   }
 
   return (cryptoLib as any)
     .createHmac('sha256', secret)
     .update(payload)
-    .digest('base64');
+    .digest(returnFormat ? 'base64' : 'hex');
 }
 
 export function asHex(buffer: ArrayBuffer): string {

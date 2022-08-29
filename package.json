@@ -61,11 +61,10 @@
   },
   "dependencies": {
     "@shopify/network": "^1.5.1",
-    "@types/jsonwebtoken": "^8.5.0",
     "@types/node-fetch": "^2.5.7",
     "@types/supertest": "^2.0.10",
     "cookies": "^0.8.0",
-    "jsonwebtoken": "^8.5.1",
+    "jose": "^4.9.1",
     "mongodb": "^4.5.0",
     "mysql2": "^2.3.3",
     "node-fetch": "^2.6.1",

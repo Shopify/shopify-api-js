@@ -1,11 +1,11 @@
-import crypto from 'crypto';
+import {crypto} from '../runtime/crypto';
 
 export function nonce(): string {
   const length = 15;
-  const bytes = crypto.randomBytes(length);
+  const bytes = crypto.getRandomValues(new Uint8Array(length));
 
   const nonce = bytes
-    .map((byte) => {
+    .map((byte: number) => {
       return byte % 10;
     })
     .join('');

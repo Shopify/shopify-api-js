@@ -4,7 +4,7 @@ import '../../__tests__/shopify-global';
 import {AuthQuery} from '../../auth/oauth/types';
 import * as ShopifyErrors from '../../error';
 
-test('correctly validates query objects', () => {
+test('correctly validates query objects', async () => {
   global.shopify.config.apiSecretKey = 'my super secret key';
   const queryString =
     'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
@@ -31,11 +31,15 @@ test('correctly validates query objects', () => {
     shop: 'the shop URL',
   };
 
-  expect(global.shopify.utils.validateHmac(testQuery)).toBe(true);
-  expect(global.shopify.utils.validateHmac(badQuery)).toBe(false);
+  await expect(global.shopify.utils.validateHmac(testQuery)).resolves.toBe(
+    true,
+  );
+  await expect(global.shopify.utils.validateHmac(badQuery)).resolves.toBe(
+    false,
+  );
 });
 
-test('queries without hmac key throw InvalidHmacError', () => {
+test('queries without hmac key throw InvalidHmacError', async () => {
   const noHmacQuery = {
     code: 'some code goes here',
     timestamp: 'a number as a string',
@@ -43,12 +47,12 @@ test('queries without hmac key throw InvalidHmacError', () => {
     shop: 'the shop URL',
   };
 
-  expect(() => {
-    global.shopify.utils.validateHmac(noHmacQuery);
-  }).toThrowError(ShopifyErrors.InvalidHmacError);
+  await expect(
+    global.shopify.utils.validateHmac(noHmacQuery),
+  ).rejects.toBeInstanceOf(ShopifyErrors.InvalidHmacError);
 });
 
-test('queries with extra keys are not included in hmac querystring', () => {
+test('queries with extra keys are not included in hmac querystring', async () => {
   global.shopify.config.apiSecretKey = 'my super secret key';
   const queryString =
     'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
@@ -68,5 +72,7 @@ test('queries with extra keys are not included in hmac querystring', () => {
     shopify: ['callback'],
   });
 
-  expect(global.shopify.utils.validateHmac(testQueryWithExtraParam)).toBe(true);
+  await expect(
+    global.shopify.utils.validateHmac(testQueryWithExtraParam),
+  ).resolves.toBe(true);
 });

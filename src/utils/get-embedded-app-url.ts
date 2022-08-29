@@ -36,7 +36,7 @@ export function createBuildEmbeddedAppUrl(config: ConfigInterface) {
   return (host: string): string => {
     createSanitizeHost(config)(host, true);
 
-    const decodedHost = Buffer.from(host, 'base64').toString();
+    const decodedHost = atob(host);
 
     return `https://${decodedHost}/apps/${config.apiKey}`;
   };
