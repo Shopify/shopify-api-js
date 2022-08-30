@@ -1,9 +1,10 @@
 import querystring from 'querystring';
 
-import {ConfigInterface, ShopifyHeader} from '../../base-types';
+import {ShopifyHeader} from '../../base-types';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
 import {createHttpClientClass} from '../http_client/http_client';
+import {CreateClientClassParams} from '..';
 
 import {RestRequestReturn, PageInfo} from './types';
 
@@ -12,8 +13,12 @@ export interface RestClientParams {
   accessToken?: string;
 }
 
-export function createRestClientClass(config: ConfigInterface) {
-  const HttpClient = createHttpClientClass(config);
+export function createRestClientClass(params: CreateClientClassParams) {
+  const {config} = params;
+  let {HttpClient} = params;
+  if (!HttpClient) {
+    HttpClient = createHttpClientClass(params.config);
+  }
   return class RestClient extends HttpClient {
     static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
     static DEFAULT_LIMIT = '50';

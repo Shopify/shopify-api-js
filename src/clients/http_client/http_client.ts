@@ -31,7 +31,7 @@ interface HttpClientParams {
 }
 
 export function createHttpClientClass(config: ConfigInterface) {
-  return class AnonymousHttpClient {
+  return class HttpClient {
     // 1 second
     static readonly RETRY_WAIT_TIME = 1000;
     // 5 minutes
@@ -148,7 +148,7 @@ export function createHttpClientClass(config: ConfigInterface) {
           if (error instanceof ShopifyErrors.HttpRetriableError) {
             // We're not out of tries yet, use them
             if (tries < maxTries) {
-              let waitTime = AnonymousHttpClient.RETRY_WAIT_TIME;
+              let waitTime = HttpClient.RETRY_WAIT_TIME;
               if (
                 error instanceof ShopifyErrors.HttpThrottlingError &&
                 error.response.retryAfter
@@ -217,7 +217,7 @@ export function createHttpClientClass(config: ConfigInterface) {
             if (
               !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
               Date.now() - this.LOGGED_DEPRECATIONS[depHash] >=
-                AnonymousHttpClient.DEPRECATION_ALERT_DELAY
+                HttpClient.DEPRECATION_ALERT_DELAY
             ) {
               this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
