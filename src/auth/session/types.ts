@@ -1,4 +1,5 @@
 import {OnlineAccessInfo} from '../oauth/types';
+import {AuthScopes} from '../scopes';
 
 export interface SessionInterface {
   readonly id: string;
@@ -9,5 +10,5 @@ export interface SessionInterface {
   expires?: Date;
   accessToken?: string;
   onlineAccessInfo?: OnlineAccessInfo;
-  isActive(): boolean;
+  isActive(scopes: AuthScopes): boolean;
 }

@@ -2,7 +2,7 @@ import {ShopifyError, PrivateAppError} from './error';
 import {SessionStorage} from './auth/session/session_storage';
 import {ConfigInterface, ConfigParams, LATEST_API_VERSION} from './base-types';
 import {AuthScopes} from './auth/scopes';
-import {MemorySessionStorage} from './auth/session/storage/memory';
+import {abstractCreateDefaultStorage} from './runtime/session';
 
 export function validateConfig(params: ConfigParams): ConfigInterface {
   const config: ConfigInterface = {
@@ -58,7 +58,8 @@ export function validateConfig(params: ConfigParams): ConfigInterface {
       params.scopes instanceof AuthScopes
         ? params.scopes
         : new AuthScopes(params.scopes),
-    sessionStorage: sessionStorage ?? new MemorySessionStorage(),
+    // We only want to use the default if there is no existing session storage.
+    sessionStorage: sessionStorage ?? abstractCreateDefaultStorage(),
     hostScheme: hostScheme ?? config.hostScheme,
     isPrivateApp:
       isPrivateApp === undefined ? config.isPrivateApp : isPrivateApp,

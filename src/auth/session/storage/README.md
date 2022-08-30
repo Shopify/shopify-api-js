@@ -2,7 +2,7 @@
 
 This folder contains implementations of the `SessionStorage` interface that works with the most common databases.
 
-## SQLite (default)
+## SQLite (default for Node)
 
 ```js
 import Shopify from '@shopify/shopify-api';
@@ -107,7 +107,7 @@ setConfig({
 });
 ```
 
-## In-Memory (legacy)
+## In-Memory
 
 ```js
 import Shopify from '@shopify/shopify-api';
@@ -118,7 +118,7 @@ setConfig({
 });
 ```
 
-Note that all sessions will be lost if the app process gets restarted or redeployed. This session storage modal is for local development only.
+Note that all sessions will be lost if the app process gets restarted or redeployed. This session storage model is for local development only.
 
 ## Custom
 

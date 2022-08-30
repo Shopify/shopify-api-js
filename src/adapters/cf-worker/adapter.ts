@@ -1,3 +1,4 @@
+import {ShopifyError} from '../../error';
 import {
   canonicalizeHeaders,
   flatHeaders,
@@ -47,4 +48,10 @@ export async function workerFetch({
     body: respBody,
     headers: canonicalizeHeaders(Object.fromEntries(resp.headers.entries())),
   };
+}
+
+export function workerCreateDefaultStorage(): never {
+  throw new ShopifyError(
+    'You must specify a session storage implementation for CloudFlare workers',
+  );
 }

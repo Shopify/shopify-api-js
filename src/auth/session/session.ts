@@ -1,5 +1,5 @@
-import {config} from '../../config';
 import {OnlineAccessInfo} from '../oauth/types';
+import {AuthScopes} from '../scopes';
 
 import {SessionInterface} from './types';
 
@@ -35,8 +35,8 @@ class Session implements SessionInterface {
     public isOnline: boolean,
   ) {}
 
-  public isActive(): boolean {
-    const scopesUnchanged = config.scopes.equals(this.scope);
+  public isActive(scopes: AuthScopes): boolean {
+    const scopesUnchanged = scopes.equals(this.scope);
     if (
       scopesUnchanged &&
       this.accessToken &&
