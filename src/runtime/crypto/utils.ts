@@ -36,7 +36,7 @@ export async function createSHA256HMAC(
   return (cryptoLib as any)
     .createHmac('sha256', secret)
     .update(payload)
-    .digest(returnFormat ? 'base64' : 'hex');
+    .digest(returnFormat === 'base64' ? 'base64' : 'hex');
 }
 
 export function asHex(buffer: ArrayBuffer): string {

@@ -14,6 +14,7 @@ test('correctly validates query objects', async () => {
     state: 'some nonce passed from auth',
     timestamp: 'a number as a string',
   };
+
   const localHmac = crypto
     .createHmac('sha256', global.shopify.config.apiSecretKey)
     .update(queryString)
