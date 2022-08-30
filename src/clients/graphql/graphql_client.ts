@@ -1,8 +1,8 @@
-import {config} from '../../config';
 import {ShopifyHeader} from '../../base-types';
-import {HttpClient} from '../http_client/http_client';
+import {createHttpClientClass} from '../http_client/http_client';
 import {DataType, RequestReturn} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
+import {CreateClientClassParams} from '..';
 
 import {GraphqlParams} from './types';
 
@@ -11,59 +11,80 @@ export interface AccessTokenHeader {
   value: string;
 }
 
-export class GraphqlClient {
-  protected baseApiPath = '/admin/api';
+export interface GraphqlClientParams {
+  domain: string;
+  accessToken?: string;
+}
 
-  private readonly client: HttpClient;
-
-  constructor(readonly domain: string, readonly accessToken?: string) {
-    if (!config.isPrivateApp && !accessToken) {
-      throw new ShopifyErrors.MissingRequiredArgument(
-        'Missing access token when creating GraphQL client',
-      );
-    }
-
-    this.client = new HttpClient(this.domain);
+export function createGraphqlClientClass(params: CreateClientClassParams) {
+  const {config} = params;
+  let {HttpClient} = params;
+  if (!HttpClient) {
+    HttpClient = createHttpClientClass(params.config);
   }
+  return class GraphqlClient {
+    baseApiPath = '/admin/api';
+    readonly domain: string;
+    readonly accessToken: string;
+    readonly client;
 
-  async query<T = unknown>(params: GraphqlParams): Promise<RequestReturn<T>> {
-    if (params.data.length === 0) {
-      throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
+    constructor({domain, accessToken}: GraphqlClientParams) {
+      if (!config.isPrivateApp && !accessToken) {
+        throw new ShopifyErrors.MissingRequiredArgument(
+          'Missing access token when creating GraphQL client',
+        );
+      }
+
+      this.domain = domain;
+      if (accessToken) {
+        this.accessToken = accessToken;
+      }
+      this.client = new HttpClient!({domain: this.domain});
     }
 
-    const accessTokenHeader = this.getAccessTokenHeader();
-    params.extraHeaders = {
-      [accessTokenHeader.header]: accessTokenHeader.value,
-      ...params.extraHeaders,
-    };
+    async query<T = unknown>(params: GraphqlParams): Promise<RequestReturn<T>> {
+      if (params.data.length === 0) {
+        throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
+      }
 
-    const path = `${this.baseApiPath}/${config.apiVersion}/graphql.json`;
+      const accessTokenHeader = this.getAccessTokenHeader();
+      params.extraHeaders = {
+        [accessTokenHeader.header]: accessTokenHeader.value,
+        ...params.extraHeaders,
+      };
 
-    let dataType: DataType.GraphQL | DataType.JSON;
+      const path = `${this.baseApiPath}/${config.apiVersion}/graphql.json`;
 
-    if (typeof params.data === 'object') {
-      dataType = DataType.JSON;
-    } else {
-      dataType = DataType.GraphQL;
-    }
+      let dataType: DataType.GraphQL | DataType.JSON;
 
-    const result = await this.client.post<T>({path, type: dataType, ...params});
+      if (typeof params.data === 'object') {
+        dataType = DataType.JSON;
+      } else {
+        dataType = DataType.GraphQL;
+      }
 
-    if ((result.body as unknown as {[key: string]: unknown}).errors) {
-      throw new ShopifyErrors.GraphqlQueryError({
-        message: 'GraphQL query returned errors',
-        response: result.body as unknown as {[key: string]: unknown},
+      const result = await this.client.post<T>({
+        path,
+        type: dataType,
+        ...params,
       });
-    }
-    return result;
-  }
 
-  protected getAccessTokenHeader(): AccessTokenHeader {
-    return {
-      header: ShopifyHeader.AccessToken,
-      value: config.isPrivateApp
-        ? config.apiSecretKey
-        : (this.accessToken as string),
-    };
-  }
+      if ((result.body as unknown as {[key: string]: unknown}).errors) {
+        throw new ShopifyErrors.GraphqlQueryError({
+          message: 'GraphQL query returned errors',
+          response: result.body as unknown as {[key: string]: unknown},
+        });
+      }
+      return result;
+    }
+
+    getAccessTokenHeader(): AccessTokenHeader {
+      return {
+        header: ShopifyHeader.AccessToken,
+        value: config.isPrivateApp
+          ? config.apiSecretKey
+          : (this.accessToken as string),
+      };
+    }
+  };
 }

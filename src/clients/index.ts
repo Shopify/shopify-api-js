@@ -1,12 +1,20 @@
-import {RestClient as Rest} from './rest';
-import {GraphqlClient as Graphql} from './graphql';
-import {StorefrontClient as Storefront} from './graphql/storefront_client';
+import {ConfigInterface} from '../base-types';
 
-const ShopifyClients = {
-  Rest,
-  Graphql,
-  Storefront,
-};
+import {createHttpClientClass} from './http_client/http_client';
+import {createRestClientClass} from './rest/rest_client';
+import {createGraphqlClientClass} from './graphql/graphql_client';
+import {createStorefrontClientClass} from './graphql/storefront_client';
 
-export default ShopifyClients;
-export {ShopifyClients};
+export interface CreateClientClassParams {
+  config: ConfigInterface;
+  HttpClient?: ReturnType<typeof createHttpClientClass>;
+}
+
+export function createClientClasses(config: ConfigInterface) {
+  const HttpClient = createHttpClientClass(config);
+  return {
+    Rest: createRestClientClass({config, HttpClient}),
+    Graphql: createGraphqlClientClass({config, HttpClient}),
+    Storefront: createStorefrontClientClass({config, HttpClient}),
+  };
+}

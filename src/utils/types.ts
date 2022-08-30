@@ -1,8 +1,8 @@
 import http from 'http';
 
 import {Session} from '../auth/session';
-import {GraphqlClient} from '../clients/graphql';
-import {RestClient} from '../clients/rest';
+// import {GraphqlClient} from '../clients/graphql';
+// import {RestClient} from '../clients/rest';
 
 export interface WithSessionParams {
   clientType: 'rest' | 'graphql';

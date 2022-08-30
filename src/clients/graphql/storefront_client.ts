@@ -1,17 +1,21 @@
-import {config} from '../../config';
+import {CreateClientClassParams} from '..';
 import {ShopifyHeader} from '../../base-types';
 
-import {GraphqlClient, AccessTokenHeader} from './graphql_client';
+import {createGraphqlClientClass, AccessTokenHeader} from './graphql_client';
 
-export class StorefrontClient extends GraphqlClient {
-  protected baseApiPath = '/api';
+export function createStorefrontClientClass(params: CreateClientClassParams) {
+  const GraphqlClient = createGraphqlClientClass(params);
 
-  protected getAccessTokenHeader(): AccessTokenHeader {
-    return {
-      header: ShopifyHeader.StorefrontAccessToken,
-      value: (config.isPrivateApp
-        ? config.privateAppStorefrontAccessToken || this.accessToken
-        : this.accessToken) as string,
-    };
-  }
+  return class StorefrontClient extends GraphqlClient {
+    baseApiPath = '/api';
+
+    getAccessTokenHeader(): AccessTokenHeader {
+      return {
+        header: ShopifyHeader.StorefrontAccessToken,
+        value: (params.config.isPrivateApp
+          ? params.config.privateAppStorefrontAccessToken || this.accessToken
+          : this.accessToken) as string,
+      };
+    }
+  };
 }
