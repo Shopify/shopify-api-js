@@ -1,6 +1,6 @@
 # Performing OAuth
 
-Once the library is set up for your project, you'll be able to use it to start adding functionality to your app. The first thing your app will need to do is to obtain an access token to the Admin API by performing the OAuth process. Learn more about Shopify's OAuth process [in our documentation](https://shopify.dev/apps/auth/oauth).
+Once the library is set up for your project, you'll be able to use it to start adding functionality to your app. The next action your app will need to do is to obtain an access token to the Admin API by performing the OAuth process. Learn more about Shopify's OAuth process [in our documentation](https://shopify.dev/apps/auth/oauth).
 
 To do that, you can follow the steps below.
 

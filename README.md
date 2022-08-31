@@ -1,4 +1,4 @@
-a# `@shopify/shopify-api`
+# `@shopify/shopify-api`
 
 <!-- ![Build Status]() -->
 
@@ -45,7 +45,7 @@ The first thing you need to import is the adapter for your app's runtime, for ex
 import '@shopify/shopify-api/adapters/node';
 ```
 
-The next step is to configure the library, for which you'll need some values:
+Next, configure the library - you'll need some values in advance:
 
 - Your app's API key from [Partners dashboard](https://www.shopify.com/partners)
 - Your app's API secret from Partners dashboard
@@ -54,6 +54,7 @@ The next step is to configure the library, for which you'll need some values:
 Call `shopifyApi` to create your library object before setting up your app itself:
 
 ```ts
+import '@shopify/shopify-api/adapters/node';
 import {shopifyApi, LATEST_API_VERSION} from '@shopify/shopify-api';
 import express from 'express';
 
@@ -85,10 +86,10 @@ These are all the configuration values `shopifyApi` supports.
 | apiKey                          | `string`                 |   Yes    |          -           | API key from Partners Dashboard                                                                                        |
 | apiSecretKey                    | `string`                 |   Yes    |          -           | API secret from Partners Dashboard                                                                                     |
 | scopes                          | `string[] \| AuthScopes` |   Yes    |          -           | [App scopes](https://shopify.dev/api/usage/access-scopes)                                                              |
-| hostName                        | `string`                 |   Yes    |          -           | App host name in the format `my-host-name.com`. Don't include the scheme or trailing slashes                           |
+| hostName                        | `string`                 |   Yes    |          -           | App host name in the format `my-host-name.com`. Do **not** include the scheme or leading or trailing slashes                           |
 | hostScheme                      | `"https" \| "http"`      |    No    |      `"https"`       | The scheme for your app's public URL                                                                                   |
-| apiVersion                      | `ApiVersion` value       |   Yes    |          -           | API version your app will be querying. E.g. `ApiVersion.January20`                                                     |
-| isEmbeddedApp                   | `boolean`                |   Yes    |          -           | Whether your app will run within the Shopify Admin                                                                     |
+| apiVersion                      | `ApiVersion` value       |   No    |  `LATEST_API_VERSION`  | API version your app will be querying. E.g. `ApiVersion.January20`                                                     |
+| isEmbeddedApp                   | `boolean`                |   No    |  'true'  | Whether your app will run within the Shopify Admin                                                                     |
 | sessionStorage                  | `SessionStorage`         |    -     | _Depends on runtime_ | The storage strategy for your user sessions. Learn more about the [available strategies](docs/usage/customsessions.md) |
 | isPrivateApp                    | `boolean`                |    No    |       `false`        | Whether you are building a private app for a store                                                                     |
 | logFile                         | `string`                 |    No    |     `undefined`      | File path where the library may log some events                                                                        |

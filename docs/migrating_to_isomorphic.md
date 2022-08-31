@@ -1,8 +1,8 @@
 # Migrating from the Node.js-only version
 
-We've extended the functionality of this library so that can now run on JavaScript runtimes other than Node.js, as long as there is a runtime adapter for it.
+We've extended the functionality of this library so that it can now run on JavaScript runtimes other than Node.js, as long as there is a runtime adapter for it.
 
-To migrate your Node.js app to use this new adaptable version of the API library, you'll need to add an import of the node adapter in your app, _before_ importing the library functions itself.
+To migrate your Node.js app to use this new adaptable version of the API library, you'll need to add an import of the node adapter in your app, _before_ importing the library functions themselves.
 Note you only need to import this once in your app.
 
 ```js
@@ -26,12 +26,12 @@ You will probably need to search and replace most of the imports to this library
 
 ### Renamed `Shopify.Context` to `shopify.config`
 
-The current `Context` object name doesn't reflect that it mostly just holds configuration settings for the library, and no business logic, and it applies to the library on a global level.
-To make it more idiomatic and better support multiple instances / mocking, we've made the following changes to it:
+The current `Context` object name doesn't reflect that it mostly just holds configuration settings for the library, has no business logic, and it applies to the library on a global level.
+To make it more idiomatic and to better support multiple instances / mocking, we've made the following changes to it:
 
 - The `Shopify.Context.initialize()` method is no longer needed. You will pass in the configuration while setting up your library object.
 - You can search / replace instances of `Shopify.Context` with `shopify.config`, as per the example below.
-- The config options are now `camelCase` instead of `UPPER_CASE` to better represent them as properties, rather than constants. The settings' names and functionality are still the same, you'll just need to replace e.g. `Shopify.Context.API_KEY` with `shopify.config.apiKey`.
+- The config options are now `camelCase` instead of `UPPER_CASE` to better represent them as properties, rather than constants. The settings' names and functionality are still the same, you'll just need to find and replace, e.g., `Shopify.Context.API_KEY` with `shopify.config.apiKey`.
 - `Shopify.Context.throwIfUnitialized` and `UninitializedContextError` were removed.
 
 <table>
