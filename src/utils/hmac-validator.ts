@@ -1,3 +1,5 @@
+import {URLSearchParams} from 'url';
+
 import {ConfigInterface} from '../base-types';
 import {createSHA256HMAC} from '../runtime/crypto';
 import {AuthQuery} from '../auth/oauth/types';
@@ -9,14 +11,14 @@ function stringifyQuery(query: AuthQuery): string {
   const orderedObj = Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
     .reduce(
-      (acc: string[], key: keyof AuthQuery) =>
-        acc.concat(
-          `${encodeURIComponent(key)}=${encodeURIComponent(query[key]!)}`,
-        ),
-      [],
+      (obj: {[key: string]: string}, key: keyof AuthQuery) => ({
+        ...obj,
+        [key]: query[key]!,
+      }),
+      {},
     );
 
-  return orderedObj.join('&');
+  return new URLSearchParams(orderedObj).toString();
 }
 
 export function createGenerateLocalHmac(config: ConfigInterface) {

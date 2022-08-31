@@ -1,4 +1,3 @@
-import querystring, {ParsedUrlQueryInput} from 'querystring';
 import crypto from 'crypto';
 import fs from 'fs';
 
@@ -112,7 +111,9 @@ export function createHttpClientClass(config: ConfigInterface) {
               body =
                 typeof data === 'string'
                   ? data
-                  : querystring.stringify(data as ParsedUrlQueryInput);
+                  : new URLSearchParams(
+                      data as {[key: string]: string},
+                    ).toString();
               break;
             case DataType.GraphQL:
               body = data as string;

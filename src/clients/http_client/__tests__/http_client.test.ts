@@ -1,4 +1,3 @@
-import querystring from 'querystring';
 import fs from 'fs';
 
 import {createHttpClientClass} from '../http_client';
@@ -153,7 +152,7 @@ describe('HTTP client', () => {
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     const postData = {
-      title: 'Test product',
+      title: 'Test product + something else',
       amount: 10,
     };
 
@@ -171,7 +170,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: 'title=Test+product+%2B+something+else&amount=10',
     }).toMatchMadeHttpRequest();
   });
 
@@ -188,7 +187,7 @@ describe('HTTP client', () => {
     const postParams = {
       path: '/url/path',
       type: DataType.URLEncoded,
-      data: querystring.stringify(postData),
+      data: new URLSearchParams(postData as any).toString(),
     };
 
     await expect(client.post(postParams)).resolves.toEqual(
@@ -199,7 +198,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: 'title=Test+product&amount=10',
     }).toMatchMadeHttpRequest();
   });
 

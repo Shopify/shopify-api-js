@@ -1,5 +1,3 @@
-import querystring from 'querystring';
-
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestRequestReturn, PageInfo} from '../types';
 import * as ShopifyErrors from '../../../error';
@@ -93,7 +91,7 @@ describe('REST client', () => {
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
     const postData = {
-      title: 'Test product',
+      title: 'Test product + something else',
       amount: 10,
     };
 
@@ -110,7 +108,7 @@ describe('REST client', () => {
       domain,
       path: `/admin/api/${global.shopify.config.apiVersion}/products.json`,
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: 'title=Test+product+%2B+something+else&amount=10',
     }).toMatchMadeHttpRequest();
   });
 

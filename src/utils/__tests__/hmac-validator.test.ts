@@ -7,7 +7,7 @@ import * as ShopifyErrors from '../../error';
 test('correctly validates query objects', async () => {
   global.shopify.config.apiSecretKey = 'my super secret key';
   const queryString =
-    'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
+    'code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=a+number+as+a+string';
   const queryObjectWithoutHmac = {
     code: 'some code goes here',
     shop: 'the shop URL',
@@ -56,7 +56,7 @@ test('queries without hmac key throw InvalidHmacError', async () => {
 test('queries with extra keys are not included in hmac querystring', async () => {
   global.shopify.config.apiSecretKey = 'my super secret key';
   const queryString =
-    'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
+    'code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=a+number+as+a+string';
   const queryObjectWithoutHmac = {
     code: 'some code goes here',
     shop: 'the shop URL',
