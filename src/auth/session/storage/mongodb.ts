@@ -3,7 +3,7 @@ import * as mongodb from 'mongodb';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {sanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../../utils/shop-validator';
 
 export interface MongoDBSessionStorageOptions {
   sessionCollectionName: string;
@@ -12,7 +12,7 @@ const defaultMongoDBSessionStorageOptions: MongoDBSessionStorageOptions = {
   sessionCollectionName: 'shopify_sessions',
 };
 
-export class MongoDBSessionStorage implements SessionStorage {
+export class MongoDBSessionStorage extends SessionStorage {
   static withCredentials(
     host: string,
     dbName: string,
@@ -41,6 +41,8 @@ export class MongoDBSessionStorage implements SessionStorage {
     private dbName: string,
     opts: Partial<MongoDBSessionStorageOptions> = {},
   ) {
+    super();
+
     if (typeof this.dbUrl === 'string') {
       this.dbUrl = new URL(this.dbUrl);
     }
@@ -83,7 +85,7 @@ export class MongoDBSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
-    const cleanShop = sanitizeShop(shop, true)!;
+    const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
     const rawResults = await this.collection.find({shop: cleanShop}).toArray();
     if (!rawResults || rawResults?.length === 0) return [];

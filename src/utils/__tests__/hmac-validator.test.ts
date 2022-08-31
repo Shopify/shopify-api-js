@@ -1,12 +1,11 @@
 import crypto from 'crypto';
 
-import validateHmac from '../hmac-validator';
+import '../../__tests__/shopify-global';
 import {AuthQuery} from '../../auth/oauth/types';
 import * as ShopifyErrors from '../../error';
-import {config} from '../../config';
 
 test('correctly validates query objects', () => {
-  config.apiSecretKey = 'my super secret key';
+  global.shopify.config.apiSecretKey = 'my super secret key';
   const queryString =
     'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
   const queryObjectWithoutHmac = {
@@ -16,7 +15,7 @@ test('correctly validates query objects', () => {
     timestamp: 'a number as a string',
   };
   const localHmac = crypto
-    .createHmac('sha256', config.apiSecretKey)
+    .createHmac('sha256', global.shopify.config.apiSecretKey)
     .update(queryString)
     .digest('hex');
 
@@ -32,8 +31,8 @@ test('correctly validates query objects', () => {
     shop: 'the shop URL',
   };
 
-  expect(validateHmac(testQuery)).toBe(true);
-  expect(validateHmac(badQuery)).toBe(false);
+  expect(global.shopify.utils.validateHmac(testQuery)).toBe(true);
+  expect(global.shopify.utils.validateHmac(badQuery)).toBe(false);
 });
 
 test('queries without hmac key throw InvalidHmacError', () => {
@@ -45,12 +44,12 @@ test('queries without hmac key throw InvalidHmacError', () => {
   };
 
   expect(() => {
-    validateHmac(noHmacQuery);
+    global.shopify.utils.validateHmac(noHmacQuery);
   }).toThrowError(ShopifyErrors.InvalidHmacError);
 });
 
 test('queries with extra keys are not included in hmac querystring', () => {
-  config.apiSecretKey = 'my super secret key';
+  global.shopify.config.apiSecretKey = 'my super secret key';
   const queryString =
     'code=some%20code%20goes%20here&shop=the%20shop%20URL&state=some%20nonce%20passed%20from%20auth&timestamp=a%20number%20as%20a%20string';
   const queryObjectWithoutHmac = {
@@ -60,7 +59,7 @@ test('queries with extra keys are not included in hmac querystring', () => {
     timestamp: 'a number as a string',
   };
   const localHmac = crypto
-    .createHmac('sha256', config.apiSecretKey)
+    .createHmac('sha256', global.shopify.config.apiSecretKey)
     .update(queryString)
     .digest('hex');
 
@@ -69,5 +68,5 @@ test('queries with extra keys are not included in hmac querystring', () => {
     shopify: ['callback'],
   });
 
-  expect(validateHmac(testQueryWithExtraParam)).toBe(true);
+  expect(global.shopify.utils.validateHmac(testQueryWithExtraParam)).toBe(true);
 });

@@ -3,7 +3,7 @@ import pg from 'pg';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionEntries, sessionFromEntries} from '../session-utils';
-import {sanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../../utils/shop-validator';
 
 export interface PostgreSQLSessionStorageOptions {
   sessionTableName: string;
@@ -15,7 +15,7 @@ const defaultPostgreSQLSessionStorageOptions: PostgreSQLSessionStorageOptions =
     port: 3211,
   };
 
-export class PostgreSQLSessionStorage implements SessionStorage {
+export class PostgreSQLSessionStorage extends SessionStorage {
   static withCredentials(
     host: string,
     dbName: string,
@@ -41,6 +41,8 @@ export class PostgreSQLSessionStorage implements SessionStorage {
     private dbUrl: URL,
     opts: Partial<PostgreSQLSessionStorageOptions> = {},
   ) {
+    super();
+
     if (typeof this.dbUrl === 'string') {
       this.dbUrl = new URL(this.dbUrl);
     }
@@ -101,7 +103,7 @@ export class PostgreSQLSessionStorage implements SessionStorage {
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
     await this.ready;
-    const cleanShop = sanitizeShop(shop, true)!;
+    const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
     const query = `
       SELECT * FROM ${this.options.sessionTableName}

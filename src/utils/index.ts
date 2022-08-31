@@ -1,34 +1,40 @@
-import decodeSessionToken from './decode-session-token';
-import deleteCurrentSession from './delete-current-session';
-import deleteOfflineSession from './delete-offline-session';
-import loadCurrentSession from './load-current-session';
-import loadOfflineSession from './load-offline-session';
-import nonce from './nonce';
-import graphqlProxy from './graphql_proxy';
-import safeCompare from './safe-compare';
-import storeSession from './store-session';
-import validateHmac from './hmac-validator';
-import {sanitizeShop, sanitizeHost} from './shop-validator';
-import versionCompatible from './version-compatible';
-import withSession from './with-session';
-import getEmbeddedAppUrl from './get-embedded-app-url';
+import {ConfigInterface} from '../base-types';
 
-const ShopifyUtils = {
-  decodeSessionToken,
-  deleteCurrentSession,
-  deleteOfflineSession,
-  loadCurrentSession,
-  loadOfflineSession,
-  nonce,
-  graphqlProxy,
-  safeCompare,
-  storeSession,
-  validateHmac,
-  sanitizeShop,
-  sanitizeHost,
-  versionCompatible,
-  withSession,
-  getEmbeddedAppUrl,
-};
+import {createDecodeSessionToken} from './decode-session-token';
+// eslint-disable-next-line no-warning-comments
+// TODO we need to refactor the clients to be able to do this
+// import {createDeleteCurrentSession} from './delete-current-session';
+// import {createDeleteOfflineSession} from './delete-offline-session';
+// import {createLoadCurrentSession} from './load-current-session';
+// import {createLoadOfflineSession} from './load-offline-session';
+import {nonce} from './nonce';
+// eslint-disable-next-line no-warning-comments
+// TODO we need to refactor the clients to be able to do this
+// import {createGraphqlProxy} from './graphql_proxy';
+import {safeCompare} from './safe-compare';
+import {createValidateHmac} from './hmac-validator';
+import {createSanitizeShop, createSanitizeHost} from './shop-validator';
+import {createVersionCompatible} from './version-compatible';
+// eslint-disable-next-line no-warning-comments
+// TODO we need to refactor the clients to be able to do this
+// import {createWithSession} from './with-session';
+import {createGetEmbeddedAppUrl} from './get-embedded-app-url';
 
-export default ShopifyUtils;
+export function shopifyUtils(config: ConfigInterface) {
+  return {
+    decodeSessionToken: createDecodeSessionToken(config),
+    // deleteCurrentSession: createDeleteCurrentSession(config),
+    // deleteOfflineSession: createDeleteOfflineSession(config),
+    // loadCurrentSession: createLoadCurrentSession(config),
+    // loadOfflineSession: createLoadOfflineSession(config),
+    nonce,
+    // graphqlProxy: createGraphqlProxy(config),
+    safeCompare,
+    validateHmac: createValidateHmac(config),
+    sanitizeShop: createSanitizeShop(config),
+    sanitizeHost: createSanitizeHost(config),
+    versionCompatible: createVersionCompatible(config),
+    // withSession: createWithSession(config),
+    getEmbeddedAppUrl: createGetEmbeddedAppUrl(config),
+  };
+}

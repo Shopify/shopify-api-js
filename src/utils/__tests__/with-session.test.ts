@@ -3,6 +3,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import Cookies from 'cookies';
 
+import '../../__tests__/shopify-global';
 import {Session} from '../../auth/session';
 import OAuth, {ShopifyOAuth} from '../../auth/oauth';
 import withSession from '../with-session';

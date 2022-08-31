@@ -1,6 +1,6 @@
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {sanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../../utils/shop-validator';
 
 export class MemorySessionStorage extends SessionStorage {
   private sessions: {[id: string]: SessionInterface} = {};
@@ -27,7 +27,7 @@ export class MemorySessionStorage extends SessionStorage {
   }
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
-    const cleanShop = sanitizeShop(shop, true, this.config.customShopDomains)!;
+    const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
     const results = Object.values(this.sessions).filter(
       (session) => session.shop === cleanShop,

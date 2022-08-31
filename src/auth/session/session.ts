@@ -35,8 +35,11 @@ class Session implements SessionInterface {
     public isOnline: boolean,
   ) {}
 
-  public isActive(scopes: AuthScopes): boolean {
-    const scopesUnchanged = scopes.equals(this.scope);
+  public isActive(scopes: AuthScopes | string | string[]): boolean {
+    const scopesObject =
+      scopes instanceof AuthScopes ? scopes : new AuthScopes(scopes);
+
+    const scopesUnchanged = scopesObject.equals(this.scope);
     if (
       scopesUnchanged &&
       this.accessToken &&
