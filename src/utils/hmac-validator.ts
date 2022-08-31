@@ -1,24 +1,18 @@
-import {URLSearchParams} from 'url';
-
 import {ConfigInterface} from '../base-types';
 import {createSHA256HMAC} from '../runtime/crypto';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
 
 import {safeCompare} from './safe-compare';
+import ProcessedQuery from './processed-query';
 
 function stringifyQuery(query: AuthQuery): string {
-  const orderedObj = Object.keys(query)
+  const processedQuery = new ProcessedQuery();
+  Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
-    .reduce(
-      (obj: {[key: string]: string}, key: keyof AuthQuery) => ({
-        ...obj,
-        [key]: query[key]!,
-      }),
-      {},
-    );
+    .forEach((key: keyof AuthQuery) => processedQuery.put(key, query[key]));
 
-  return new URLSearchParams(orderedObj).toString();
+  return processedQuery.stringify(true);
 }
 
 export function createGenerateLocalHmac(config: ConfigInterface) {
