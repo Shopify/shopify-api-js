@@ -46,7 +46,7 @@ export function validateConfig(params: ConfigParams): ConfigInterface {
     hostScheme,
     isPrivateApp,
     userAgentPrefix,
-    logFile,
+    logFunction,
     privateAppStorefrontAccessToken,
     customShopDomains,
     billing,
@@ -64,7 +64,7 @@ export function validateConfig(params: ConfigParams): ConfigInterface {
     isPrivateApp:
       isPrivateApp === undefined ? config.isPrivateApp : isPrivateApp,
     userAgentPrefix: userAgentPrefix ?? config.userAgentPrefix,
-    logFile: logFile ?? config.logFile,
+    logFunction: logFunction ?? config.logFunction,
     privateAppStorefrontAccessToken:
       privateAppStorefrontAccessToken ?? config.privateAppStorefrontAccessToken,
     customShopDomains: customShopDomains ?? config.customShopDomains,

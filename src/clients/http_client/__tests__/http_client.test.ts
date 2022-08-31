@@ -1,27 +1,23 @@
-import fs from 'fs';
-
 import {createHttpClientClass} from '../http_client';
 // import {RequestReturn} from '../../types';
 import {DataType, HeaderParams, RequestReturn} from '../../types';
 import * as ShopifyErrors from '../../../error';
+import {LogSeverity} from '../../../base-types';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
-const logFilePath = `${process.cwd()}/src/clients/http_client/__tests__/test_logs.txt`;
 
 let HttpClient: ReturnType<typeof createHttpClientClass>;
 let originalRetryTime: number;
 
 describe('HTTP client', () => {
   beforeEach(() => {
-    fs.writeFileSync(logFilePath, '');
     HttpClient = createHttpClientClass(global.shopify.config);
     originalRetryTime = HttpClient.RETRY_WAIT_TIME;
   });
 
   afterAll(() => {
     setRestClientRetryTime(originalRetryTime);
-    fs.writeFileSync(logFilePath, '');
   });
 
   it('can make GET request', async () => {
@@ -700,8 +696,9 @@ describe('HTTP client', () => {
     expect(console.warn).toHaveBeenCalledTimes(2);
   });
 
-  it('writes deprecation notices to log file if one is specified in config', async () => {
-    global.shopify.config.logFile = logFilePath;
+  it('calls log function with deprecation notice if one is specified in config', async () => {
+    const logMock = jest.fn();
+    global.shopify.config.logFunction = logMock;
 
     const client = new HttpClient({domain});
 
@@ -720,17 +717,12 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    // open and read test log file
-    const fileContent = fs.readFileSync(logFilePath, {
-      encoding: 'utf-8',
-      flag: 'r',
-    });
-
-    expect(fileContent).toContain('API Deprecation Notice');
-    expect(fileContent).toContain(
+    expect(logMock.mock.calls[0][0]).toEqual(LogSeverity.Warning);
+    expect(logMock.mock.calls[0][1]).toContain('API Deprecation Notice');
+    expect(logMock.mock.calls[0][1]).toContain(
       ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
     );
-    expect(fileContent).toContain(`Stack Trace: Error:`);
+    expect(logMock.mock.calls[0][1]).toContain(`Stack Trace: Error`);
   });
 
   it('properly encodes strings in the error message', async () => {

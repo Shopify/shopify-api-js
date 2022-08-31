@@ -15,7 +15,7 @@ const validParams: ConfigParams = {
   apiVersion: ApiVersion.Unstable,
   isEmbeddedApp: true,
   isPrivateApp: false,
-  logFile: 'some-file-path.txt',
+  logFunction: () => Promise.resolve(),
   sessionStorage: new MemorySessionStorage(),
 };
 
@@ -84,7 +84,7 @@ describe('Config object', () => {
       hostName: '',
       apiVersion: ApiVersion.Unstable,
       isEmbeddedApp: true,
-      logFile: '',
+      logFunction: undefined,
     };
     expect(() => validateConfig(empty)).toThrow(ShopifyErrors.ShopifyError);
   });

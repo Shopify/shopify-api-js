@@ -68,3 +68,4 @@ Utils functions should always be called through `shopify.utils` now.
 
 - The `Shopify.Utils.storeSession` method was removed since sessions shouldn't be stored using the library unless the library is doing it. Apps can still save data to their sessions as they please, as long as the data is properly exported to the library via the SessionStorage.
 - `Shopify.Utils.validateHmac`, `Shopify.Utils.generateLocalHmac`, `Shopify.Utils.decodeSessionToken` are now `async`.
+- `Shopify.Context.LOG_FILE` was replaced with `shopify.config.logFunction` so it can work without file-system access.

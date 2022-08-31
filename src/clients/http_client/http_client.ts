@@ -1,13 +1,11 @@
-import crypto from 'crypto';
-import fs from 'fs';
-
 import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
 
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import ProcessedQuery from '../../utils/processed-query';
-import {ConfigInterface} from '../../base-types';
+import {ConfigInterface, LogSeverity} from '../../base-types';
+import {createSHA256HMAC} from '../../runtime/crypto';
 
 import {
   DataType,
@@ -210,10 +208,11 @@ export function createHttpClientClass(config: ConfigInterface) {
               )}...`;
             }
 
-            const depHash = crypto
-              .createHash('md5')
-              .update(JSON.stringify(deprecation))
-              .digest('hex');
+            const depHash = await createSHA256HMAC(
+              config.apiSecretKey,
+              JSON.stringify(deprecation),
+              'hex',
+            );
 
             if (
               !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
@@ -222,15 +221,12 @@ export function createHttpClientClass(config: ConfigInterface) {
             ) {
               this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
-              if (config.logFile) {
+              if (config.logFunction) {
                 const stack = new Error().stack;
                 const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
                   deprecation,
                 )}\n    Stack Trace: ${stack}\n`;
-                fs.writeFileSync(config.logFile, log, {
-                  flag: 'a',
-                  encoding: 'utf-8',
-                });
+                await config.logFunction(LogSeverity.Warning, log);
               } else {
                 console.warn('API Deprecation Notice:', deprecation);
               }
