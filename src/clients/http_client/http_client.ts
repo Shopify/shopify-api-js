@@ -6,6 +6,7 @@ import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import ProcessedQuery from '../../utils/processed-query';
 import {ConfigInterface, LogSeverity} from '../../base-types';
 import {createSHA256HMAC} from '../../runtime/crypto';
+import {HmacReturnFormat} from '../../runtime/crypto/types';
 
 import {
   DataType,
@@ -211,7 +212,7 @@ export function createHttpClientClass(config: ConfigInterface) {
             const depHash = await createSHA256HMAC(
               config.apiSecretKey,
               JSON.stringify(deprecation),
-              'hex',
+              HmacReturnFormat.Hex,
             );
 
             if (
