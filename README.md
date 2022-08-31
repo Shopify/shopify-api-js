@@ -64,10 +64,6 @@ const shopify = shopifyApi({
   apiSecretKey: 'APISecretFromPartnersDashboard',
   scopes: 'read_products',
   hostName: 'ngrok-tunnel-address',
-  hostScheme: 'https',
-  // You can use one of the ApiVersion values to prevent automatically upgrading to the latest
-  apiVersion: LATEST_API_VERSION,
-  isEmbeddedApp: true,
   ...
 });
 
@@ -86,10 +82,10 @@ These are all the configuration values `shopifyApi` supports.
 | apiKey                          | `string`                 |   Yes    |          -           | API key from Partners Dashboard                                                                                        |
 | apiSecretKey                    | `string`                 |   Yes    |          -           | API secret from Partners Dashboard                                                                                     |
 | scopes                          | `string[] \| AuthScopes` |   Yes    |          -           | [App scopes](https://shopify.dev/api/usage/access-scopes)                                                              |
-| hostName                        | `string`                 |   Yes    |          -           | App host name in the format `my-host-name.com`. Do **not** include the scheme or leading or trailing slashes                           |
+| hostName                        | `string`                 |   Yes    |          -           | App host name in the format `my-host-name.com`. Do **not** include the scheme or leading or trailing slashes           |
 | hostScheme                      | `"https" \| "http"`      |    No    |      `"https"`       | The scheme for your app's public URL                                                                                   |
-| apiVersion                      | `ApiVersion` value       |   No    |  `LATEST_API_VERSION`  | API version your app will be querying. E.g. `ApiVersion.January20`                                                     |
-| isEmbeddedApp                   | `boolean`                |   No    |  'true'  | Whether your app will run within the Shopify Admin                                                                     |
+| apiVersion                      | `ApiVersion` value       |    No    | `LATEST_API_VERSION` | API version your app will be querying. E.g. `ApiVersion.January20`                                                     |
+| isEmbeddedApp                   | `boolean`                |    No    |        'true'        | Whether your app will run within the Shopify Admin                                                                     |
 | sessionStorage                  | `SessionStorage`         |    -     | _Depends on runtime_ | The storage strategy for your user sessions. Learn more about the [available strategies](docs/usage/customsessions.md) |
 | isPrivateApp                    | `boolean`                |    No    |       `false`        | Whether you are building a private app for a store                                                                     |
 | logFile                         | `string`                 |    No    |     `undefined`      | File path where the library may log some events                                                                        |

@@ -15,8 +15,6 @@ This automatically sets the library up to run on the Node.js runtime.
 In addition to making the library compatible with multiple runtimes, we've also improved its public interface to make it easier for apps to load only the features they need from the library.
 Once you set up your app with the right adapter, you can follow the next sections for instructions on how to upgrade the individual methods that were changed.
 
-**Note**: if your app is using Express.js, we **strongly recommend** using our new Express app package instead of upgrading your existing app's library. It will make it much easier to set up your app to interact with Shopify APIs, and stay up to date as the platform evolves.
-
 ## Basic configuration
 
 We've refactored the way objects are exported by this library, to remove the main "static" `Shopify` object with global configs.

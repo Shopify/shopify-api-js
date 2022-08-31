@@ -8,7 +8,7 @@ export interface ConfigParams {
   apiSecretKey: string;
   scopes: string[] | AuthScopes;
   hostName: string;
-  hostScheme?: string;
+  hostScheme?: 'http' | 'https';
   apiVersion: ApiVersion;
   isEmbeddedApp: boolean;
   isPrivateApp?: boolean;
@@ -21,7 +21,7 @@ export interface ConfigParams {
 }
 
 export interface ConfigInterface extends ConfigParams {
-  hostScheme: string;
+  hostScheme: 'http' | 'https';
   sessionStorage: SessionStorage;
   scopes: AuthScopes;
 }
