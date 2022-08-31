@@ -71,4 +71,4 @@ If you're gating access to the entire app, you should check for billing:
    - Note that the merchant may refuse the payment at this point, but the app will already be installed. If your app is using offline tokens, sessions will be unique to a shop, so you can also use the latest session to check for access in full page loads.
 1. When validating requests from the frontend. Since the check requires API access, you can only run it in requests that work with `Shopify.Utils.loadCurrentSession`.
 
-[Back to guide index](../README.md)
+[Back to guide index](../../README.md#features)

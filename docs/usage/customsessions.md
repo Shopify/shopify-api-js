@@ -33,7 +33,7 @@ If you wish to use an alternative session storage solution for production, you'l
 
 This is an example implementation of a `CustomSessionStorage` solution, using `redis` for storage (mandatory callbacks only).
 
-Before starting this tutorial, please first follow our [getting started guide](../getting_started.md).
+Before starting this tutorial, make sure to [set up your app](../../README.md).
 
 ### Install `redis` dependencies
 
@@ -166,4 +166,4 @@ At this point, you should have a working `CustomSessionStorage` solution that wi
 
 **Note:** This is only one possible `CustomSessionStorage` solution. As long as your callback methods fit the requirements for argument types and return types, you can use any storage solution or database you're comfortable and/or familiar with.
 
-[Back to guide index](../README.md)
+[Back to guide index](../../README.md#features)

@@ -26,3 +26,5 @@ const host = Shopify.Utils.sanitizeHost(req.query.host, true);
 Both of these return the string itself if it's valid, or `null` otherwise.
 You can also optionally set the method to throw an exception if the validation fails.
 If you're using custom shop domains for testing, you can add them to the `config.customShopDomains` setting.
+
+[Back to guide index](../../README.md#features)

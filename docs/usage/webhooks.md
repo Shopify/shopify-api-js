@@ -206,4 +206,4 @@ Please note that the use of body parsing middleware must occur **after** webhook
 
 To use Express as an example, if you wish to use the `express.json()` middleware in your app **and** if you use this library's `process` method to handle webhooks API calls from Shopify (which we recommend), the webhook processing must occur **_before_** calling `app.use(express.json())`.
 
-[Back to guide index](../README.md)
+[Back to guide index](../../README.md#features)

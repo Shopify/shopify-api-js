@@ -4,7 +4,7 @@ import fetchMock from 'jest-fetch-mock';
 fetchMock.enableMocks();
 
 /* eslint-disable import/first */
-import {LATEST_API_VERSION, Shopify} from './base-types';
+import {ConfigParams, LATEST_API_VERSION, Shopify} from './base-types';
 import {MemorySessionStorage} from './auth/session/storage/memory';
 
 import {shopifyApi} from './index';
@@ -21,7 +21,7 @@ declare global {
 
 let currentCall = 0;
 beforeEach(() => {
-  const testConfig = {
+  const testConfig: ConfigParams = {
     apiKey: 'test_key',
     apiSecretKey: 'test_secret_key',
     scopes: ['test_scope'],

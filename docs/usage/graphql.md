@@ -93,4 +93,4 @@ try {
 // assuming no errors, do something with the returned data...
 ```
 
-[Back to guide index](../README.md)
+[Back to guide index](../../README.md#features)

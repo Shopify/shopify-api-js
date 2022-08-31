@@ -1,8 +1,8 @@
 # Migrating from the Node.js-only version
 
-We've extended the functionality of this library so that can now run on more JavaScript runtimes other than just Node.js, as long as there is a runtime adapter for it.
+We've extended the functionality of this library so that it can now run on JavaScript runtimes other than Node.js, as long as there is a runtime adapter for it.
 
-To migrate your Node.js app to use this new adaptable version of the API library, you'll need to add an import of the node adapter in your app, _before_ importing the library functions itself.
+To migrate your Node.js app to use this new adaptable version of the API library, you'll need to add an import of the node adapter in your app, _before_ importing the library functions themselves.
 Note you only need to import this once in your app.
 
 ```js
@@ -17,20 +17,20 @@ Once you set up your app with the right adapter, you can follow the next section
 
 ## Basic configuration
 
-We've refactored the way many of the objects are exported by this library, to remove the global `Shopify` object.
+We've refactored the way objects are exported by this library, to remove the main "static" `Shopify` object with global configs.
+The entry point to the library is now a function that returns a separate instance with local settings, which makes it easier to mock for tests.
 In general, those changes don't affect any library functionality, unless explicitly mentioned below.
 You will probably need to search and replace most of the imports to this library to leverage the new, more idiomatic approach to exporting them.
 
-### Renamed `Context` to `config`
+### Renamed `Shopify.Context` to `shopify.config`
 
-The current `Context` object name doesn't reflect that it mostly just holds configuration settings for the library, and no business logic.
-To make it more idiomatic, we've made the following changes to it:
+The current `Context` object name doesn't reflect that it mostly just holds configuration settings for the library, has no business logic, and it applies to the library on a global level.
+To make it more idiomatic and to better support multiple instances / mocking, we've made the following changes to it:
 
-- The `Shopify.Context.initialize()` method is now called `setConfig()`.
-- You can search / replace instances of `Shopify.Context` with `config`, as per the example below.
-- The config options are now `camelCase` instead of `UPPER_CASE` to better represent them as properties, rather than constants. The settings' names and functionality are still the same, you'll just need to replace e.g. `Shopify.Context.API_KEY` with `config.apiKey`.
-- `Shopify.Context.throwIfUnitialized` is now `throwIfConfigNotSet`.
-- `UninitializedContextError` is now `ConfigNotSetError`.
+- The `Shopify.Context.initialize()` method is no longer needed. You will pass in the configuration while setting up your library object.
+- You can search / replace instances of `Shopify.Context` with `shopify.config`, as per the example below.
+- The config options are now `camelCase` instead of `UPPER_CASE` to better represent them as properties, rather than constants. The settings' names and functionality are still the same, you'll just need to find and replace, e.g., `Shopify.Context.API_KEY` with `shopify.config.apiKey`.
+- `Shopify.Context.throwIfUnitialized` and `UninitializedContextError` were removed.
 
 <table>
 <tr><th>Old code</th><th>New code</th></tr>
@@ -47,11 +47,16 @@ console.log(Shopify.Context.API_KEY);
 <td>
 
 ```ts
-import {setConfig, config} from '@shopify/shopify-api';
-setConfig({ apiKey: '...', ... });
-console.log(config.apiKey);
+import {shopifyApi} from '@shopify/shopify-api';
+const shopify = shopifyApi({ apiKey: '...', ... });
+console.log(shopify.config.apiKey);
 ```
 
 </td>
 </tr>
 </table>
+
+### Changes to `SessionStorage`
+
+`SessionStorage` is no longer an interface, but an abstract class.
+If you're using your own implementation of the interface, you need to replace `implements SessionStorage` with `extends SessionStorage`.
