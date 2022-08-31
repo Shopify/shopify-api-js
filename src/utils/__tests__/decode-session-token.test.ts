@@ -28,21 +28,13 @@ test('JWT session token can verify valid tokens', () => {
     algorithm: 'HS256',
   });
 
-  const actualPayload = global.shopify.utils.decodeSessionToken(
-    global.shopify.config.apiKey,
-    global.shopify.config.apiSecretKey,
-    token,
-  );
+  const actualPayload = global.shopify.utils.decodeSessionToken(token);
   expect(actualPayload).toStrictEqual(payload);
 });
 
 test('JWT session token fails with invalid tokens', () => {
   expect(() =>
-    global.shopify.utils.decodeSessionToken(
-      global.shopify.config.apiKey,
-      global.shopify.config.apiSecretKey,
-      'not_a_valid_token',
-    ),
+    global.shopify.utils.decodeSessionToken('not_a_valid_token'),
   ).toThrow(ShopifyErrors.InvalidJwtError);
 });
 
@@ -53,13 +45,9 @@ test('JWT session token fails if the token is expired', () => {
   const token = jwt.sign(invalidPayload, global.shopify.config.apiSecretKey, {
     algorithm: 'HS256',
   });
-  expect(() =>
-    global.shopify.utils.decodeSessionToken(
-      global.shopify.config.apiKey,
-      global.shopify.config.apiSecretKey,
-      token,
-    ),
-  ).toThrow(ShopifyErrors.InvalidJwtError);
+  expect(() => global.shopify.utils.decodeSessionToken(token)).toThrow(
+    ShopifyErrors.InvalidJwtError,
+  );
 });
 
 test('JWT session token fails if the token is not activated yet', () => {
@@ -69,13 +57,9 @@ test('JWT session token fails if the token is not activated yet', () => {
   const token = jwt.sign(invalidPayload, global.shopify.config.apiSecretKey, {
     algorithm: 'HS256',
   });
-  expect(() =>
-    global.shopify.utils.decodeSessionToken(
-      global.shopify.config.apiKey,
-      global.shopify.config.apiSecretKey,
-      token,
-    ),
-  ).toThrow(ShopifyErrors.InvalidJwtError);
+  expect(() => global.shopify.utils.decodeSessionToken(token)).toThrow(
+    ShopifyErrors.InvalidJwtError,
+  );
 });
 
 test('JWT session token fails if the API key is wrong', () => {
@@ -85,11 +69,7 @@ test('JWT session token fails if the API key is wrong', () => {
   });
   global.shopify.config.apiKey = 'something_else';
 
-  expect(() =>
-    global.shopify.utils.decodeSessionToken(
-      global.shopify.config.apiKey,
-      global.shopify.config.apiSecretKey,
-      token,
-    ),
-  ).toThrow(ShopifyErrors.InvalidJwtError);
+  expect(() => global.shopify.utils.decodeSessionToken(token)).toThrow(
+    ShopifyErrors.InvalidJwtError,
+  );
 });

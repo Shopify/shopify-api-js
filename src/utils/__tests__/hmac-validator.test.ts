@@ -31,18 +31,8 @@ test('correctly validates query objects', () => {
     shop: 'the shop URL',
   };
 
-  expect(
-    global.shopify.utils.validateHmac(
-      global.shopify.config.apiSecretKey,
-      testQuery,
-    ),
-  ).toBe(true);
-  expect(
-    global.shopify.utils.validateHmac(
-      global.shopify.config.apiSecretKey,
-      badQuery,
-    ),
-  ).toBe(false);
+  expect(global.shopify.utils.validateHmac(testQuery)).toBe(true);
+  expect(global.shopify.utils.validateHmac(badQuery)).toBe(false);
 });
 
 test('queries without hmac key throw InvalidHmacError', () => {
@@ -54,10 +44,7 @@ test('queries without hmac key throw InvalidHmacError', () => {
   };
 
   expect(() => {
-    global.shopify.utils.validateHmac(
-      global.shopify.config.apiSecretKey,
-      noHmacQuery,
-    );
+    global.shopify.utils.validateHmac(noHmacQuery);
   }).toThrowError(ShopifyErrors.InvalidHmacError);
 });
 
@@ -81,10 +68,5 @@ test('queries with extra keys are not included in hmac querystring', () => {
     shopify: ['callback'],
   });
 
-  expect(
-    global.shopify.utils.validateHmac(
-      global.shopify.config.apiSecretKey,
-      testQueryWithExtraParam,
-    ),
-  ).toBe(true);
+  expect(global.shopify.utils.validateHmac(testQueryWithExtraParam)).toBe(true);
 });

@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import querystring from 'querystring';
 
+import {ConfigInterface} from '../base-types';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
 
@@ -19,31 +20,32 @@ export function stringifyQuery(query: AuthQuery): string {
   return querystring.stringify(orderedObj);
 }
 
-export function generateLocalHmac(
-  apiSecretKey: string,
-  {code, timestamp, state, shop, host}: AuthQuery,
-): string {
-  const queryString = stringifyQuery({
-    code,
-    timestamp,
-    state,
-    shop,
-    ...(host && {host}),
-  });
-  return crypto
-    .createHmac('sha256', apiSecretKey)
-    .update(queryString)
-    .digest('hex');
+export function createGenerateLocalHmac(config: ConfigInterface) {
+  return ({code, timestamp, state, shop, host}: AuthQuery): string => {
+    const queryString = stringifyQuery({
+      code,
+      timestamp,
+      state,
+      shop,
+      ...(host && {host}),
+    });
+    return crypto
+      .createHmac('sha256', config.apiSecretKey)
+      .update(queryString)
+      .digest('hex');
+  };
 }
 
-export function validateHmac(apiSecretKey: string, query: AuthQuery): boolean {
-  if (!query.hmac) {
-    throw new ShopifyErrors.InvalidHmacError(
-      'Query does not contain an HMAC value.',
-    );
-  }
-  const {hmac} = query;
-  const localHmac = generateLocalHmac(apiSecretKey, query);
+export function createValidateHmac(config: ConfigInterface) {
+  return (query: AuthQuery): boolean => {
+    if (!query.hmac) {
+      throw new ShopifyErrors.InvalidHmacError(
+        'Query does not contain an HMAC value.',
+      );
+    }
+    const {hmac} = query;
+    const localHmac = createGenerateLocalHmac(config)(query);
 
-  return safeCompare(hmac as string, localHmac);
+    return safeCompare(hmac as string, localHmac);
+  };
 }
