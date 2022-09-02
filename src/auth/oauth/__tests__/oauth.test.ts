@@ -1,5 +1,4 @@
 import querystring from 'querystring';
-import http from 'http';
 
 import jose from 'jose';
 import Cookies from 'cookies';

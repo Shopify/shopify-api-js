@@ -4,6 +4,7 @@ const projects = [
   './src/__tests__/jest_projects/library.jest.config.mjs',
   // './src/__tests__/jest_projects/session_storage.jest.config.mjs',
   './src/__tests__/jest_projects/eslint.jest.config.mjs',
+  './src/__tests__/jest_projects/adapters.mock.jest.config.mjs',
   './src/__tests__/jest_projects/adapters.node.jest.config.mjs',
 ];
 

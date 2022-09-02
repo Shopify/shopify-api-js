@@ -1,12 +1,11 @@
-import http from 'http';
-
 import * as ShopifyErrors from '../error';
 import {ConfigInterface} from '../base-types';
+import {NormalizedRequest} from '../runtime/http';
 
 import {createSanitizeHost} from './shop-validator';
 
 export function createGetEmbeddedAppUrl(config: ConfigInterface) {
-  return (request: http.IncomingMessage): string => {
+  return (request: NormalizedRequest): string => {
     if (!request) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'getEmbeddedAppUrl requires a request object argument',

@@ -1,7 +1,6 @@
-import http from 'http';
-
 import {shopify} from '../../__tests__/test-helper';
 import * as ShopifyErrors from '../../error';
+import {NormalizedRequest} from '../../runtime/http/types';
 
 describe('getEmbeddedAppUrl', () => {
   beforeEach(() => {
@@ -16,9 +15,12 @@ describe('getEmbeddedAppUrl', () => {
   });
 
   test('throws an error when the request has no URL', () => {
-    const req = {
-      url: undefined,
-    } as http.IncomingMessage;
+    const req: NormalizedRequest = {
+      method: 'GET',
+      // This should never happen, so we're casting here to work around the typing
+      url: undefined as any,
+      headers: {},
+    };
 
     expect(() => shopify.utils.getEmbeddedAppUrl(req)).toThrow(
       ShopifyErrors.InvalidRequestError,
@@ -26,12 +28,13 @@ describe('getEmbeddedAppUrl', () => {
   });
 
   test('throws an error when the request has no host query param', () => {
-    const req = {
+    const req: NormalizedRequest = {
+      method: 'GET',
       url: '/?shop=test.myshopify.com',
       headers: {
         host: 'test.myshopify.com',
       },
-    } as http.IncomingMessage;
+    };
 
     expect(() => shopify.utils.getEmbeddedAppUrl(req)).toThrow(
       ShopifyErrors.InvalidRequestError,
@@ -39,12 +42,13 @@ describe('getEmbeddedAppUrl', () => {
   });
 
   test('throws an error when the host query param is invalid', () => {
-    const req = {
+    const req: NormalizedRequest = {
+      method: 'GET',
       url: '/?shop=test.myshopify.com&host=test.myshopify.com',
       headers: {
         host: 'test.myshopify.com',
       },
-    } as http.IncomingMessage;
+    };
 
     expect(() => shopify.utils.getEmbeddedAppUrl(req)).toThrow(
       ShopifyErrors.InvalidHostError,
@@ -55,12 +59,13 @@ describe('getEmbeddedAppUrl', () => {
     const host = 'test.myshopify.com/admin';
     const base64Host = Buffer.from(host, 'utf-8').toString('base64');
 
-    const req = {
+    const req: NormalizedRequest = {
+      method: 'GET',
       url: `?shop=test.myshopify.com&host=${base64Host}`,
       headers: {
         host: 'test.myshopify.com',
       },
-    } as http.IncomingMessage;
+    };
 
     expect(shopify.utils.getEmbeddedAppUrl(req)).toBe(
       `https://${host}/apps/${shopify.config.apiKey}`,
