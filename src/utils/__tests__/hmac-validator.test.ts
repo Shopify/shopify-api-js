@@ -32,12 +32,9 @@ test('correctly validates query objects', async () => {
     shop: 'the shop URL',
   };
 
-  await expect(global.shopify.utils.validateHmac(testQuery)).resolves.toBe(
-    true,
-  );
-  await expect(global.shopify.utils.validateHmac(badQuery)).resolves.toBe(
-    false,
-  );
+  const validateHmac = global.shopify.utils.validateHmac;
+  await expect(validateHmac(testQuery)).resolves.toBe(true);
+  await expect(validateHmac(badQuery)).resolves.toBe(false);
 });
 
 test('queries without hmac key throw InvalidHmacError', async () => {
