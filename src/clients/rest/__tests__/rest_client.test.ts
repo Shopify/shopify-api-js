@@ -1,3 +1,4 @@
+import {shopify} from '../../../__tests__/test-helper';
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestRequestReturn, PageInfo} from '../types';
 import * as ShopifyErrors from '../../../error';
@@ -15,7 +16,7 @@ const successResponse = {
 
 describe('REST client', () => {
   it('can make GET request', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -28,12 +29,12 @@ describe('REST client', () => {
     expect({
       method: 'GET',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products.json`,
+      path: `/admin/api/${shopify.config.apiVersion}/products.json`,
     }).toMatchMadeHttpRequest();
   });
 
   it('can make GET request with path in query', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -52,12 +53,12 @@ describe('REST client', () => {
     expect({
       method: 'GET',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products.json?path=some_path`,
+      path: `/admin/api/${shopify.config.apiVersion}/products.json?path=some_path`,
     }).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with JSON data', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -76,14 +77,14 @@ describe('REST client', () => {
     expect({
       method: 'POST',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products.json`,
+      path: `/admin/api/${shopify.config.apiVersion}/products.json`,
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with form data', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -106,14 +107,14 @@ describe('REST client', () => {
     expect({
       method: 'POST',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products.json`,
+      path: `/admin/api/${shopify.config.apiVersion}/products.json`,
       headers: {'Content-Type': DataType.URLEncoded.toString()},
       data: 'title=Test+product+%2B+something+else&amount=10',
     }).toMatchMadeHttpRequest();
   });
 
   it('can make PUT request with JSON data', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -132,14 +133,14 @@ describe('REST client', () => {
     expect({
       method: 'PUT',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products/123.json`,
+      path: `/admin/api/${shopify.config.apiVersion}/products/123.json`,
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(putData),
     }).toMatchMadeHttpRequest();
   });
 
   it('can make DELETE request', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -153,12 +154,12 @@ describe('REST client', () => {
     expect({
       method: 'DELETE',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products/123.json`,
+      path: `/admin/api/${shopify.config.apiVersion}/products/123.json`,
     }).toMatchMadeHttpRequest();
   });
 
   it('merges custom headers with the default ones', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -177,14 +178,14 @@ describe('REST client', () => {
     expect({
       method: 'GET',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products.json`,
+      path: `/admin/api/${shopify.config.apiVersion}/products.json`,
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
   });
 
   it('includes pageInfo of type PageInfo in the returned object for calls with next or previous pages', async () => {
     const params = getDefaultPageInfo();
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -210,7 +211,7 @@ describe('REST client', () => {
 
   it('is able to make subsequent get requests to either pageInfo.nextPage or pageInfo.prevPage', async () => {
     const params = getDefaultPageInfo();
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -255,7 +256,7 @@ describe('REST client', () => {
 
   it('can request next pages until they run out', async () => {
     const params = getDefaultPageInfo();
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -297,7 +298,7 @@ describe('REST client', () => {
 
   it('can request previous pages until they run out', async () => {
     const params = getDefaultPageInfo();
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -342,9 +343,9 @@ describe('REST client', () => {
   });
 
   it('adapts to private app requests', async () => {
-    global.shopify.config.isPrivateApp = true;
+    shopify.config.isPrivateApp = true;
 
-    const client = new global.shopify.clients.Rest({domain});
+    const client = new shopify.clients.Rest({domain});
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
@@ -353,27 +354,26 @@ describe('REST client', () => {
     );
 
     const customHeaders: {[key: string]: string} = {};
-    customHeaders[ShopifyHeader.AccessToken] =
-      global.shopify.config.apiSecretKey;
+    customHeaders[ShopifyHeader.AccessToken] = shopify.config.apiSecretKey;
 
     expect({
       method: 'GET',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products.json`,
+      path: `/admin/api/${shopify.config.apiVersion}/products.json`,
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
 
-    global.shopify.config.isPrivateApp = false;
+    shopify.config.isPrivateApp = false;
   });
 
   it('fails to instantiate without access token', () => {
-    expect(() => new global.shopify.clients.Rest({domain})).toThrow(
+    expect(() => new shopify.clients.Rest({domain})).toThrow(
       ShopifyErrors.MissingRequiredArgument,
     );
   });
 
   it('allows paths with .json', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -386,12 +386,12 @@ describe('REST client', () => {
     expect({
       method: 'GET',
       domain,
-      path: `/admin/api/${global.shopify.config.apiVersion}/products.json`,
+      path: `/admin/api/${shopify.config.apiVersion}/products.json`,
     }).toMatchMadeHttpRequest();
   });
 
   it('allows full paths', async () => {
-    const client = new global.shopify.clients.Rest({
+    const client = new shopify.clients.Rest({
       domain,
       accessToken: 'dummy-token',
     });
@@ -413,12 +413,12 @@ function getDefaultPageInfo(): PageInfo {
   const limit = '10';
   const fields = ['test1', 'test2'];
   const previousUrl = `https://${domain}/admin/api/${
-    global.shopify.config.apiVersion
+    shopify.config.apiVersion
   }/products.json?limit=${limit}&fields=${fields.join(
     ',',
   )}&page_info=previousToken`;
   const nextUrl = `https://${domain}/admin/api/${
-    global.shopify.config.apiVersion
+    shopify.config.apiVersion
   }/products.json?limit=${limit}&fields=${fields.join(
     ',',
   )}&page_info=nextToken`;

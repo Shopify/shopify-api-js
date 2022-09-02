@@ -1,39 +1,12 @@
 import fetchMock from 'jest-fetch-mock';
-import * as jose from 'jose';
 
-// Enabling of mocks MUST happen BEFORE importing shopifyApi - DO NOT MOVE THIS LINE!
-fetchMock.enableMocks();
-
-/* eslint-disable import/first */
 // Default to the node adapter
 import './adapters/node';
-import './__tests__/shopify-global';
-import {ConfigParams, LATEST_API_VERSION} from './base-types';
-import {MemorySessionStorage} from './auth/session/storage/memory';
-import {JwtPayload} from './utils/types';
-import {getHMACKey} from './utils/get-hmac-key';
 
-import {shopifyApi} from './index';
-/* eslint-enable import/first */
+fetchMock.enableMocks();
 
 let currentCall = 0;
 beforeEach(() => {
-  const testConfig: ConfigParams = {
-    apiKey: 'test_key',
-    apiSecretKey: 'test_secret_key',
-    scopes: ['test_scope'],
-    hostName: 'test_host_name',
-    hostScheme: 'https',
-    apiVersion: LATEST_API_VERSION,
-    isEmbeddedApp: false,
-    isPrivateApp: false,
-    sessionStorage: new MemorySessionStorage(),
-    customShopDomains: undefined,
-    billing: undefined,
-  };
-
-  global.shopify = shopifyApi(testConfig);
-
   fetchMock.mockReset();
 
   currentCall = 0;
@@ -121,9 +94,3 @@ expect.extend({
     };
   },
 });
-
-export async function signJWT(payload: JwtPayload): Promise<string> {
-  return new jose.SignJWT(payload as any)
-    .setProtectedHeader({alg: 'HS256'})
-    .sign(getHMACKey(global.shopify.config.apiSecretKey));
-}

@@ -37,7 +37,6 @@
     "rootDir": "src"
   },
   "files": [
-    "src/__tests__/shopify-global.ts",
     // TODO remove these as we progress through the refactoring
     "src/billing/types.ts",
     "src/auth/session/session_storage.ts",

@@ -1,5 +1,5 @@
+import {shopify} from '../../../__tests__/test-helper';
 import {createHttpClientClass} from '../http_client';
-// import {RequestReturn} from '../../types';
 import {DataType, HeaderParams, RequestReturn} from '../../types';
 import * as ShopifyErrors from '../../../error';
 import {LogSeverity} from '../../../base-types';
@@ -12,7 +12,7 @@ let originalRetryTime: number;
 
 describe('HTTP client', () => {
   beforeEach(() => {
-    HttpClient = createHttpClientClass(global.shopify.config);
+    HttpClient = createHttpClientClass(shopify.config);
     originalRetryTime = HttpClient.RETRY_WAIT_TIME;
   });
 
@@ -402,7 +402,7 @@ describe('HTTP client', () => {
   });
 
   it('extends a User-Agent provided by config', async () => {
-    global.shopify.config.userAgentPrefix = 'Config Agent';
+    shopify.config.userAgentPrefix = 'Config Agent';
 
     const client = new HttpClient({domain});
 
@@ -698,7 +698,7 @@ describe('HTTP client', () => {
 
   it('calls log function with deprecation notice if one is specified in config', async () => {
     const logMock = jest.fn();
-    global.shopify.config.logFunction = logMock;
+    shopify.config.logFunction = logMock;
 
     const client = new HttpClient({domain});
 
