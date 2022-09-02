@@ -1,4 +1,5 @@
 import {Session} from '..';
+import {shopify} from '../../__tests__/test-helper';
 
 describe('session', () => {
   it('can clone a session', () => {
@@ -30,7 +31,7 @@ describe('isActive', () => {
     session.accessToken = 'indeed';
     session.expires = new Date(Date.now() + 86400);
 
-    expect(session.isActive()).toBeTruthy();
+    expect(session.isActive(shopify.config.scopes)).toBeTruthy();
   });
 
   it('returns false if session is not active', () => {
@@ -42,6 +43,6 @@ describe('isActive', () => {
     );
     session.scope = 'test_scope';
     session.expires = new Date(Date.now() - 1);
-    expect(session.isActive()).toBeFalsy();
+    expect(session.isActive(shopify.config.scopes)).toBeFalsy();
   });
 });

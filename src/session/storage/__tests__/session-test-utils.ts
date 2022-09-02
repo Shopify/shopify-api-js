@@ -1,5 +1,5 @@
-import {sessionEqual} from '../../session-utils';
-import {SessionInterface} from '../../types';
+import {sessionEqual} from '../session-utils';
+import {SessionInterface} from '../types';
 
 // compare two arrays of sessions that should contain
 // the same sessions but may be in a different order

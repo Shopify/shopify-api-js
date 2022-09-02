@@ -1,49 +1,30 @@
-import mysql from 'mysql2/promise';
+import sqlite3 from 'sqlite3';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {createSanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../utils/shop-validator';
 
-export interface MySQLSessionStorageOptions {
+export interface SQLiteSessionStorageOptions {
   sessionTableName: string;
 }
-const defaultMySQLSessionStorageOptions: MySQLSessionStorageOptions = {
+const defaultSQLiteSessionStorageOptions: SQLiteSessionStorageOptions = {
   sessionTableName: 'shopify_sessions',
 };
 
-export class MySQLSessionStorage extends SessionStorage {
-  static withCredentials(
-    host: string,
-    dbName: string,
-    username: string,
-    password: string,
-    opts: Partial<MySQLSessionStorageOptions>,
-  ) {
-    return new MySQLSessionStorage(
-      new URL(
-        `mysql://${encodeURIComponent(username)}:${encodeURIComponent(
-          password,
-        )}@${host}/${encodeURIComponent(dbName)}`,
-      ),
-      opts,
-    );
-  }
-
-  public readonly ready: Promise<void>;
-  private options: MySQLSessionStorageOptions;
-  private connection: mysql.Connection;
+export class SQLiteSessionStorage extends SessionStorage {
+  private options: SQLiteSessionStorageOptions;
+  private db: sqlite3.Database;
+  private ready: Promise<void>;
 
   constructor(
-    private dbUrl: URL,
-    opts: Partial<MySQLSessionStorageOptions> = {},
+    private filename: string,
+    opts: Partial<SQLiteSessionStorageOptions> = {},
   ) {
     super();
 
-    if (typeof this.dbUrl === 'string') {
-      this.dbUrl = new URL(this.dbUrl);
-    }
-    this.options = {...defaultMySQLSessionStorageOptions, ...opts};
+    this.options = {...defaultSQLiteSessionStorageOptions, ...opts};
+    this.db = new sqlite3.Database(this.filename);
     this.ready = this.init();
   }
 
@@ -51,11 +32,13 @@ export class MySQLSessionStorage extends SessionStorage {
     await this.ready;
 
     const entries = sessionEntries(session);
+
     const query = `
-      REPLACE INTO ${this.options.sessionTableName}
+      INSERT OR REPLACE INTO ${this.options.sessionTableName}
       (${entries.map(([key]) => key).join(', ')})
-      VALUES (${entries.map(() => `?`).join(', ')})
+      VALUES (${entries.map(() => '?').join(', ')});
     `;
+
     await this.query(
       query,
       entries.map(([_key, value]) => value),
@@ -66,12 +49,13 @@ export class MySQLSessionStorage extends SessionStorage {
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
     await this.ready;
     const query = `
-      SELECT * FROM \`${this.options.sessionTableName}\`
+      SELECT * FROM ${this.options.sessionTableName}
       WHERE id = ?;
     `;
-    const [rows] = await this.query(query, [id]);
+    const rows = await this.query(query, [id]);
     if (!Array.isArray(rows) || rows?.length !== 1) return undefined;
     const rawResult = rows[0] as any;
+
     return sessionFromEntries(Object.entries(rawResult));
   }
 
@@ -96,14 +80,14 @@ export class MySQLSessionStorage extends SessionStorage {
   }
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
-    await this.ready;
     const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
+    await this.ready;
     const query = `
       SELECT * FROM ${this.options.sessionTableName}
       WHERE shop = ?;
     `;
-    const [rows] = await this.query(query, [cleanShop]);
+    const rows = await this.query(query, [cleanShop]);
     if (!Array.isArray(rows) || rows?.length === 0) return [];
 
     const results: SessionInterface[] = rows.map((row) => {
@@ -112,24 +96,18 @@ export class MySQLSessionStorage extends SessionStorage {
     return results;
   }
 
-  public async disconnect(): Promise<void> {
-    await this.connection.end();
+  private async hasSessionTable(): Promise<boolean> {
+    const query = `
+    SELECT name FROM sqlite_schema
+    WHERE
+      type = 'table' AND
+      name = ?;
+    `;
+    const rows = await this.query(query, [this.options.sessionTableName]);
+    return rows.length === 1;
   }
 
   private async init() {
-    this.connection = await mysql.createConnection(this.dbUrl.toString());
-    await this.createTable();
-  }
-
-  private async hasSessionTable(): Promise<boolean> {
-    const query = `
-      SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?;
-    `;
-    const [rows] = await this.query(query, [this.options.sessionTableName]);
-    return Array.isArray(rows) && rows.length === 1;
-  }
-
-  private async createTable() {
     const hasSessionTable = await this.hasSessionTable();
     if (!hasSessionTable) {
       const query = `
@@ -137,18 +115,26 @@ export class MySQLSessionStorage extends SessionStorage {
           id varchar(255) NOT NULL PRIMARY KEY,
           shop varchar(255) NOT NULL,
           state varchar(255) NOT NULL,
-          isOnline tinyint NOT NULL,
-          scope varchar(255),
+          isOnline integer NOT NULL,
           expires integer,
-          onlineAccessInfo varchar(255),
-          accessToken varchar(255)
+          scope varchar(255),
+          accessToken varchar(255),
+          onlineAccessInfo varchar(255)
         )
       `;
       await this.query(query);
     }
   }
 
-  private query(sql: string, params: any[] = []): Promise<any> {
-    return this.connection.query(sql, params);
+  private query(sql: string, params: any[] = []): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.db.all(sql, params, (err, result) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(result);
+      });
+    });
   }
 }

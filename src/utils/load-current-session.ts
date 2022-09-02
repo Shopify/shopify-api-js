@@ -2,7 +2,7 @@ import http from 'http';
 
 import {ConfigInterface} from '../base-types';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
-import {SessionInterface} from '../auth/session/types';
+import {SessionInterface} from '../session/types';
 
 export function createLoadCurrentSession(config: ConfigInterface) {
   return async (

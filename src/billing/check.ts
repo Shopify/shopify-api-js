@@ -1,5 +1,5 @@
 import {config} from '../config';
-import {SessionInterface} from '../auth/session/types';
+import {SessionInterface} from '../session/types';
 
 import {hasActivePayment} from './has_active_payment';
 import {requestPayment} from './request_payment';

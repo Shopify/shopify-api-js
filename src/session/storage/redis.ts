@@ -3,7 +3,7 @@ import {createClient, RedisClientOptions} from 'redis';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {createSanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../utils/shop-validator';
 
 type RedisClient = ReturnType<typeof createClient>;
 export interface RedisSessionStorageOptions extends RedisClientOptions {

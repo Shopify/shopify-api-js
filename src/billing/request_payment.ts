@@ -1,5 +1,5 @@
 import {GraphqlClient} from '../clients/graphql';
-import {SessionInterface} from '../auth/session/types';
+import {SessionInterface} from '../session/types';
 import {config} from '../config';
 import {BillingError} from '../error';
 import {buildEmbeddedAppUrl} from '../utils/get-embedded-app-url';

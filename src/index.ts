@@ -5,6 +5,7 @@ import {shopifyUtils} from './utils';
 
 export * from './error';
 export * from './types';
+export * from './session/classes';
 
 export function shopifyApi(config: ConfigParams): Shopify {
   const validatedConfig = validateConfig(config);

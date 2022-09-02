@@ -1,3 +1,3 @@
-import {SessionStorage} from '../../auth/session/session_storage';
+import {SessionStorage} from '../../session/session_storage';
 
 export type AbstractCreateDefaultStorageFunc = () => SessionStorage;

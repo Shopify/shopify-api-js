@@ -39,12 +39,6 @@
   "files": [
     // TODO remove these as we progress through the refactoring
     "src/billing/types.ts",
-    "src/auth/session/session_storage.ts",
-    "src/auth/session/storage/memory.ts",
-    "src/auth/session/storage/sqlite.ts",
-    "src/auth/session/session.ts",
-    "src/auth/session/session-utils.ts",
-    "src/auth/session/types.ts",
     "src/auth/scopes/index.ts",
     "src/auth/oauth/types.ts",
   ],

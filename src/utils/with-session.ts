@@ -1,5 +1,5 @@
 import * as ShopifyErrors from '../error';
-import {SessionInterface} from '../auth/session/types';
+import {SessionInterface} from '../session/types';
 import {GraphqlClient} from '../clients/graphql';
 import {RestClient} from '../clients/rest';
 import {ConfigInterface} from '../base-types';

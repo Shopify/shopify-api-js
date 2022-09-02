@@ -3,7 +3,7 @@ import * as mongodb from 'mongodb';
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {createSanitizeShop} from '../../../utils/shop-validator';
+import {createSanitizeShop} from '../../utils/shop-validator';
 
 export interface MongoDBSessionStorageOptions {
   sessionCollectionName: string;

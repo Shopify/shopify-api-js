@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-import {MemorySessionStorage} from '../../auth/session/storage/memory';
+import {MemorySessionStorage} from '../../session/storage/memory';
 import {
   AdapterArgs,
   canonicalizeHeaders,

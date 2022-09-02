@@ -1,5 +1,5 @@
 import {RestResourceError} from './error';
-import {SessionInterface} from './auth/session/types';
+import {SessionInterface} from './session/types';
 import {RestClient} from './clients/rest';
 import {RestRequestReturn} from './clients/rest/types';
 import {DataType, GetRequestParams} from './clients/http_client/types';

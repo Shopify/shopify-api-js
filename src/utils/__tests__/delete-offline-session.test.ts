@@ -1,5 +1,5 @@
 import '../../__tests__/shopify-global';
-import {Session} from '../../auth/session';
+import {Session} from '../../session';
 import OAuth from '../../auth/oauth';
 import deleteOfflineSession from '../delete-offline-session';
 import loadOfflineSession from '../load-offline-session';
