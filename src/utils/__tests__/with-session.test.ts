@@ -1,6 +1,6 @@
 import http from 'http';
 
-import jwt from 'jsonwebtoken';
+import jose from 'jose';
 import Cookies from 'cookies';
 
 import '../../__tests__/shopify-global';

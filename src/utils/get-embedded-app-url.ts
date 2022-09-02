@@ -36,7 +36,12 @@ export function createBuildEmbeddedAppUrl(config: ConfigInterface) {
   return (host: string): string => {
     createSanitizeHost(config)(host, true);
 
-    const decodedHost = Buffer.from(host, 'base64').toString();
+    // eslint-disable-next-line no-warning-comments
+    // TODO Remove the Buffer.from call when dropping Node 14 support
+    const decodedHost =
+      typeof atob === 'undefined'
+        ? Buffer.from(host, 'base64').toString()
+        : atob(host);
 
     return `https://${decodedHost}/apps/${config.apiKey}`;
   };

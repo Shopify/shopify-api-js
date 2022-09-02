@@ -1,5 +1,3 @@
-import querystring from 'querystring';
-
 import {ShopifyHeader} from '../../base-types';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
@@ -113,12 +111,9 @@ export function createRestClientClass(params: CreateClientClassParams) {
 
       const url = new URL(newPageUrl);
       const path = url.pathname.replace(new RegExp(pattern), '$1');
-      const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as {
-        [key: string]: string | number;
-      };
       return {
         path,
-        query,
+        query: Object.fromEntries(url.searchParams.entries()),
       };
     }
   };

@@ -14,7 +14,7 @@ export interface ConfigParams {
   isEmbeddedApp: boolean;
   isPrivateApp?: boolean;
   sessionStorage?: SessionStorage;
-  logFile?: string;
+  logFunction?: (severity: LogSeverity, msg: string) => Promise<void>;
   userAgentPrefix?: string;
   privateAppStorefrontAccessToken?: string;
   customShopDomains?: (RegExp | string)[];
@@ -31,6 +31,12 @@ export interface Shopify {
   config: ConfigInterface;
   clients: ShopifyClients;
   utils: ShopifyUtils;
+}
+
+export enum LogSeverity {
+  Error,
+  Warning,
+  Info,
 }
 
 export enum ApiVersion {

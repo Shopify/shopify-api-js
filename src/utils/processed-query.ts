@@ -1,5 +1,3 @@
-import querystring, {ParsedUrlQueryInput} from 'querystring';
-
 export default class ProcessedQuery {
   static stringify(keyValuePairs?: {[key: string]: any}): string {
     if (!keyValuePairs || Object.keys(keyValuePairs).length === 0) return '';
@@ -7,12 +5,10 @@ export default class ProcessedQuery {
     return new ProcessedQuery().putAll(keyValuePairs).stringify();
   }
 
-  processedQuery: {
-    [key: string]: string | number | (string | number)[];
-  };
+  processedQuery: URLSearchParams;
 
   constructor() {
-    this.processedQuery = {};
+    this.processedQuery = new URLSearchParams();
   }
 
   putAll(keyValuePairs: {[key: string]: any}): ProcessedQuery {
@@ -25,7 +21,7 @@ export default class ProcessedQuery {
   put(key: string, value: any): void {
     if (Array.isArray(value)) {
       this.putArray(key, value);
-    } else if (value.constructor === Object) {
+    } else if (value?.constructor === Object) {
       this.putObject(key, value);
     } else {
       this.putSimple(key, value);
@@ -33,24 +29,25 @@ export default class ProcessedQuery {
   }
 
   putArray(key: string, value: (string | number)[]): void {
-    this.processedQuery[`${key}[]`] = value;
+    value.forEach((arrayValue) =>
+      this.processedQuery.append(`${key}[]`, `${arrayValue}`),
+    );
   }
 
   putObject(key: string, value: object): void {
     Object.entries(value).forEach(
       ([entry, entryValue]: [string, string | number]) => {
-        this.processedQuery[`${key}[${entry}]`] = entryValue;
+        this.processedQuery.append(`${key}[${entry}]`, `${entryValue}`);
       },
     );
   }
 
   putSimple(key: string, value: string | number): void {
-    this.processedQuery[key] = value;
+    this.processedQuery.append(key, `${value}`);
   }
 
-  stringify(): string {
-    return `?${querystring.stringify(
-      this.processedQuery as ParsedUrlQueryInput,
-    )}`;
+  stringify(omitQuestionMark = false): string {
+    const queryString = this.processedQuery.toString();
+    return omitQuestionMark ? queryString : `?${queryString}`;
   }
 }

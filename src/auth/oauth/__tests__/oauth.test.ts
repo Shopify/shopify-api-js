@@ -1,7 +1,7 @@
 import querystring from 'querystring';
 import http from 'http';
 
-import jwt from 'jsonwebtoken';
+import jose from 'jose';
 import Cookies from 'cookies';
 
 import {ShopifyOAuth} from '../oauth';
