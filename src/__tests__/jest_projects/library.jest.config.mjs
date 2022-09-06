@@ -14,8 +14,6 @@ export default {
     '<rootDir>/webhooks',
     '<rootDir>/billing',
     // These tests depend on the auth component and can't be fixed until it's refactored
-    '<rootDir>/utils/__tests__/delete-offline-session.test.ts',
-    '<rootDir>/utils/__tests__/load-offline-session.test.ts',
     '<rootDir>/utils/__tests__/graphql_proxy.test.ts',
     '<rootDir>/utils/__tests__/with-session.test.ts',
   ],

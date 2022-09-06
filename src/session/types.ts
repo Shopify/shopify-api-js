@@ -24,14 +24,14 @@ export interface SessionDeleteCurrentParams extends AdapterArgs {
   isOnline: boolean;
 }
 
-// export interface SessionGetOfflineParams {
-//   shop: string;
-//   includeExpired?: boolean;
-// }
+export interface SessionGetOfflineParams {
+  shop: string;
+  includeExpired?: boolean;
+}
 
-// export interface SessionDeleteOfflineParams {
-//   shop: string;
-// }
+export interface SessionDeleteOfflineParams {
+  shop: string;
+}
 
 export interface GetCurrentSessionIdParams {
   request: NormalizedRequest;
