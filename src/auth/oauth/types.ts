@@ -12,7 +12,7 @@ export interface AuthQuery {
 
 export interface BeginParams extends AdapterArgs {
   shop: string;
-  redirectPath: string;
+  callbackPath: string;
   isOnline: boolean;
 }
 

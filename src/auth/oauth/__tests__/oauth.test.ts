@@ -41,47 +41,34 @@ describe('beginAuth', () => {
     };
   });
 
-  test('sets cookie to state for offline access requests', async () => {
-    const response: NormalizedResponse = await shopify.auth.begin({
-      shop,
-      isOnline: false,
-      redirectPath: '/some-callback',
-      rawRequest: request,
+  [
+    {isOnline: true, type: `online`},
+    {isOnline: false, type: 'offline'},
+  ].forEach(({isOnline, type}) => {
+    test(`sets cookie to state for ${type} access requests`, async () => {
+      const response: NormalizedResponse = await shopify.auth.begin({
+        shop,
+        isOnline,
+        callbackPath: '/some-callback',
+        rawRequest: request,
+      });
+
+      const cookies = new Cookies({} as NormalizedRequest, response, {
+        keys: [shopify.config.apiSecretKey],
+      });
+
+      expect(nonce).toHaveBeenCalledTimes(1);
+      expect(cookies.outgoingCookieJar.shopify_app_state.value).toEqual(
+        VALID_NONCE,
+      );
     });
-
-    const cookies = new Cookies({} as NormalizedRequest, response, {
-      keys: [shopify.config.apiSecretKey],
-    });
-
-    expect(nonce).toHaveBeenCalledTimes(1);
-    expect(cookies.outgoingCookieJar.shopify_app_state.value).toEqual(
-      VALID_NONCE,
-    );
-  });
-
-  test('sets cookie to state for online access requests', async () => {
-    const response: NormalizedResponse = await shopify.auth.begin({
-      shop,
-      isOnline: true,
-      redirectPath: '/some-callback',
-      rawRequest: request,
-    });
-
-    const cookies = new Cookies({} as NormalizedRequest, response, {
-      keys: [shopify.config.apiSecretKey],
-    });
-
-    expect(nonce).toHaveBeenCalledTimes(1);
-    expect(cookies.outgoingCookieJar.shopify_app_state.value).toEqual(
-      VALID_NONCE,
-    );
   });
 
   test('returns the correct auth url for given info', async () => {
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: false,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
 
@@ -106,7 +93,7 @@ describe('beginAuth', () => {
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: false,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
 
@@ -129,7 +116,7 @@ describe('beginAuth', () => {
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
 
@@ -155,7 +142,7 @@ describe('beginAuth', () => {
       shopify.auth.begin({
         shop,
         isOnline: true,
-        redirectPath: '/some-callback',
+        callbackPath: '/some-callback',
         rawRequest: request,
       }),
     ).rejects.toThrow(ShopifyErrors.PrivateAppError);
@@ -197,7 +184,7 @@ describe('validateAuthCallback', () => {
     ).rejects.toThrow(ShopifyErrors.PrivateAppError);
   });
 
-  test("throws an error when receiving a callback for a shop that doesn't have a session cookie", async () => {
+  test("throws an error when receiving a callback for a shop that doesn't have a state cookie", async () => {
     await expect(
       shopify.auth.callback({
         isOnline: true,
@@ -213,7 +200,7 @@ describe('validateAuthCallback', () => {
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, response);
@@ -239,7 +226,7 @@ describe('validateAuthCallback', () => {
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, response);
@@ -275,7 +262,7 @@ describe('validateAuthCallback', () => {
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, response);
@@ -323,7 +310,7 @@ describe('validateAuthCallback', () => {
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: false,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, beginResponse);
@@ -375,7 +362,7 @@ describe('validateAuthCallback', () => {
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, beginResponse);
@@ -455,7 +442,7 @@ describe('validateAuthCallback', () => {
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, beginResponse);
@@ -556,7 +543,7 @@ describe('validateAuthCallback', () => {
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, beginResponse);
@@ -638,7 +625,7 @@ describe('validateAuthCallback', () => {
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: false,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, beginResponse);
@@ -691,7 +678,7 @@ describe('validateAuthCallback', () => {
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: false,
-      redirectPath: '/some-callback',
+      callbackPath: '/some-callback',
       rawRequest: request,
     });
     setCallbackCookieFromResponse(request, beginResponse);

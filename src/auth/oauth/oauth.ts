@@ -39,7 +39,7 @@ export const STATE_COOKIE_NAME = 'shopify_app_state';
 export function createBegin(config: ConfigInterface) {
   return async ({
     shop,
-    redirectPath,
+    callbackPath,
     isOnline,
     ...adapterArgs
   }: BeginParams): Promise<AdapterResponse> => {
@@ -70,7 +70,7 @@ export function createBegin(config: ConfigInterface) {
     const query = {
       client_id: config.apiKey,
       scope: config.scopes.toString(),
-      redirect_uri: `${config.hostScheme}://${config.hostName}${redirectPath}`,
+      redirect_uri: `${config.hostScheme}://${config.hostName}${callbackPath}`,
       state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
