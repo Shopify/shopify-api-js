@@ -6,7 +6,7 @@ import {SessionInterface} from './types';
 /**
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.
  */
-class Session implements SessionInterface {
+export class Session implements SessionInterface {
   public static cloneSession(session: Session, newId: string): Session {
     const newSession = new Session(
       newId,
@@ -50,5 +50,3 @@ class Session implements SessionInterface {
     return false;
   }
 }
-
-export {Session};

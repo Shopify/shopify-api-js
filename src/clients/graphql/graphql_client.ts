@@ -43,7 +43,10 @@ export function createGraphqlClientClass(params: CreateClientClassParams) {
     }
 
     async query<T = unknown>(params: GraphqlParams): Promise<RequestReturn<T>> {
-      if (params.data.length === 0) {
+      if (
+        (typeof params.data === 'string' && params.data.length === 0) ||
+        Object.entries(params.data).length === 0
+      ) {
         throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
       }
 

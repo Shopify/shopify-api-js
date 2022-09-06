@@ -131,7 +131,7 @@ export function createGetCurrentSessionId(config: ConfigInterface) {
     isOnline,
   }: GetCurrentSessionIdParams): Promise<string | undefined> => {
     if (config.isEmbeddedApp) {
-      const authHeader = request.headers.authorization;
+      const authHeader = request.headers.Authorization;
       if (authHeader) {
         const matches = (
           typeof authHeader === 'string' ? authHeader : authHeader[0]
