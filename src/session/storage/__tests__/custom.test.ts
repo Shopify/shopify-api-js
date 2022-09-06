@@ -1,6 +1,6 @@
-import {Session} from '../../session';
+import {Session} from '../session';
 import {CustomSessionStorage} from '../custom';
-import {SessionStorageError} from '../../../../error';
+import {SessionStorageError} from '../../error';
 
 describe('custom session storage', () => {
   test('can perform core actions', async () => {

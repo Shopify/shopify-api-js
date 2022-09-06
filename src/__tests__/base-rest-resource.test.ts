@@ -1,4 +1,4 @@
-import {Session} from '../auth/session';
+import {Session} from '../session';
 import {ApiVersion} from '../base-types';
 import {config} from '../config';
 import {RestResourceError, HttpResponseError} from '../error';

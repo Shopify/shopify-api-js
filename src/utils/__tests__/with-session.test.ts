@@ -2,7 +2,7 @@ import jose from 'jose';
 import Cookies from 'cookies';
 
 import '../../__tests__/shopify-global';
-import {Session} from '../../auth/session';
+import {Session} from '../../session';
 import OAuth, {ShopifyOAuth} from '../../auth/oauth';
 import withSession from '../with-session';
 import {config, setConfig} from '../../config';

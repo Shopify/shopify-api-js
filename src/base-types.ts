@@ -1,5 +1,5 @@
 import {AuthScopes} from './auth/scopes';
-import {SessionStorage} from './auth/session/session_storage';
+import {SessionStorage} from './session/session_storage';
 import {BillingSettings} from './billing/types';
 import {ShopifyClients} from './clients/types';
 import {ShopifyUtils} from './utils/types';

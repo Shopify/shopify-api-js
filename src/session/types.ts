@@ -1,5 +1,5 @@
-import {OnlineAccessInfo} from '../oauth/types';
-import {AuthScopes} from '../scopes';
+import {OnlineAccessInfo} from '../auth/oauth/types';
+import {AuthScopes} from '../auth/scopes';
 
 export interface SessionInterface {
   readonly id: string;

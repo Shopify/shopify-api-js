@@ -1,30 +1,52 @@
-import sqlite3 from 'sqlite3';
+import pg from 'pg';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
-import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {createSanitizeShop} from '../../../utils/shop-validator';
+import {sessionEntries, sessionFromEntries} from '../session-utils';
+import {createSanitizeShop} from '../../utils/shop-validator';
 
-export interface SQLiteSessionStorageOptions {
+export interface PostgreSQLSessionStorageOptions {
   sessionTableName: string;
+  port: number;
 }
-const defaultSQLiteSessionStorageOptions: SQLiteSessionStorageOptions = {
-  sessionTableName: 'shopify_sessions',
-};
+const defaultPostgreSQLSessionStorageOptions: PostgreSQLSessionStorageOptions =
+  {
+    sessionTableName: 'shopify_sessions',
+    port: 3211,
+  };
 
-export class SQLiteSessionStorage extends SessionStorage {
-  private options: SQLiteSessionStorageOptions;
-  private db: sqlite3.Database;
-  private ready: Promise<void>;
+export class PostgreSQLSessionStorage extends SessionStorage {
+  static withCredentials(
+    host: string,
+    dbName: string,
+    username: string,
+    password: string,
+    opts: Partial<PostgreSQLSessionStorageOptions>,
+  ) {
+    return new PostgreSQLSessionStorage(
+      new URL(
+        `postgres://${encodeURIComponent(username)}:${encodeURIComponent(
+          password,
+        )}@${host}/${encodeURIComponent(dbName)}`,
+      ),
+      opts,
+    );
+  }
+
+  public readonly ready: Promise<void>;
+  private options: PostgreSQLSessionStorageOptions;
+  private client: pg.Client;
 
   constructor(
-    private filename: string,
-    opts: Partial<SQLiteSessionStorageOptions> = {},
+    private dbUrl: URL,
+    opts: Partial<PostgreSQLSessionStorageOptions> = {},
   ) {
     super();
 
-    this.options = {...defaultSQLiteSessionStorageOptions, ...opts};
-    this.db = new sqlite3.Database(this.filename);
+    if (typeof this.dbUrl === 'string') {
+      this.dbUrl = new URL(this.dbUrl);
+    }
+    this.options = {...defaultPostgreSQLSessionStorageOptions, ...opts};
     this.ready = this.init();
   }
 
@@ -32,13 +54,14 @@ export class SQLiteSessionStorage extends SessionStorage {
     await this.ready;
 
     const entries = sessionEntries(session);
-
     const query = `
-      INSERT OR REPLACE INTO ${this.options.sessionTableName}
+      INSERT INTO ${this.options.sessionTableName}
       (${entries.map(([key]) => key).join(', ')})
-      VALUES (${entries.map(() => '?').join(', ')});
+      VALUES (${entries.map((_, i) => `$${i + 1}`).join(', ')})
+      ON CONFLICT (id) DO UPDATE SET ${entries
+        .map(([key]) => `${key} = Excluded.${key}`)
+        .join(', ')};
     `;
-
     await this.query(
       query,
       entries.map(([_key, value]) => value),
@@ -50,12 +73,11 @@ export class SQLiteSessionStorage extends SessionStorage {
     await this.ready;
     const query = `
       SELECT * FROM ${this.options.sessionTableName}
-      WHERE id = ?;
+      WHERE id = $1;
     `;
     const rows = await this.query(query, [id]);
     if (!Array.isArray(rows) || rows?.length !== 1) return undefined;
     const rawResult = rows[0] as any;
-
     return sessionFromEntries(Object.entries(rawResult));
   }
 
@@ -63,7 +85,7 @@ export class SQLiteSessionStorage extends SessionStorage {
     await this.ready;
     const query = `
       DELETE FROM ${this.options.sessionTableName}
-      WHERE id = ?;
+      WHERE id = $1;
     `;
     await this.query(query, [id]);
     return true;
@@ -73,19 +95,19 @@ export class SQLiteSessionStorage extends SessionStorage {
     await this.ready;
     const query = `
       DELETE FROM ${this.options.sessionTableName}
-      WHERE id IN (${ids.map(() => '?').join(',')});
+      WHERE id IN (${ids.map((_, i) => `$${i + 1}`).join(', ')});
     `;
     await this.query(query, ids);
     return true;
   }
 
   public async findSessionsByShop(shop: string): Promise<SessionInterface[]> {
+    await this.ready;
     const cleanShop = createSanitizeShop(this.config)(shop, true)!;
 
-    await this.ready;
     const query = `
       SELECT * FROM ${this.options.sessionTableName}
-      WHERE shop = ?;
+      WHERE shop = $1;
     `;
     const rows = await this.query(query, [cleanShop]);
     if (!Array.isArray(rows) || rows?.length === 0) return [];
@@ -96,18 +118,29 @@ export class SQLiteSessionStorage extends SessionStorage {
     return results;
   }
 
-  private async hasSessionTable(): Promise<boolean> {
-    const query = `
-    SELECT name FROM sqlite_schema
-    WHERE
-      type = 'table' AND
-      name = ?;
-    `;
-    const rows = await this.query(query, [this.options.sessionTableName]);
-    return rows.length === 1;
+  public disconnect(): Promise<void> {
+    return this.client.end();
   }
 
   private async init() {
+    this.client = new pg.Client({connectionString: this.dbUrl.toString()});
+    await this.connectClient();
+    await this.createTable();
+  }
+
+  private async connectClient(): Promise<void> {
+    await this.client.connect();
+  }
+
+  private async hasSessionTable(): Promise<boolean> {
+    const query = `
+      SELECT * FROM pg_catalog.pg_tables WHERE tablename = $1
+    `;
+    const rows = await this.query(query, [this.options.sessionTableName]);
+    return Array.isArray(rows) && rows.length === 1;
+  }
+
+  private async createTable() {
     const hasSessionTable = await this.hasSessionTable();
     if (!hasSessionTable) {
       const query = `
@@ -115,26 +148,19 @@ export class SQLiteSessionStorage extends SessionStorage {
           id varchar(255) NOT NULL PRIMARY KEY,
           shop varchar(255) NOT NULL,
           state varchar(255) NOT NULL,
-          isOnline integer NOT NULL,
-          expires integer,
+          isOnline boolean NOT NULL,
           scope varchar(255),
-          accessToken varchar(255),
-          onlineAccessInfo varchar(255)
+          expires integer,
+          onlineAccessInfo varchar(255),
+          accessToken varchar(255)
         )
       `;
       await this.query(query);
     }
   }
 
-  private query(sql: string, params: any[] = []): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      this.db.all(sql, params, (err, result) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result);
-      });
-    });
+  private async query(sql: string, params: any[] = []): Promise<any> {
+    const result = await this.client.query(sql, params);
+    return result.rows;
   }
 }

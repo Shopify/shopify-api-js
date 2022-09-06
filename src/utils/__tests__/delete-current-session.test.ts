@@ -4,7 +4,7 @@ import Cookies from 'cookies';
 import '../../__tests__/shopify-global';
 import {config, setConfig} from '../../config';
 import * as ShopifyErrors from '../../error';
-import {Session} from '../../auth/session';
+import {Session} from '../../session';
 import {JwtPayload} from '../decode-session-token';
 import deleteCurrentSession from '../delete-current-session';
 import loadCurrentSession from '../load-current-session';

@@ -1,5 +1,5 @@
 import {ShopifyError, PrivateAppError} from './error';
-import {SessionStorage} from './auth/session/session_storage';
+import {SessionStorage} from './session/session_storage';
 import {ConfigInterface, ConfigParams, LATEST_API_VERSION} from './base-types';
 import {AuthScopes} from './auth/scopes';
 import {abstractCreateDefaultStorage} from './runtime/session';

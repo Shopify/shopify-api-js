@@ -2,7 +2,7 @@ import * as jose from 'jose';
 
 import {shopifyApi} from '..';
 import {ConfigParams, LATEST_API_VERSION, Shopify} from '../base-types';
-import {MemorySessionStorage} from '../auth/session/storage/memory';
+import {MemorySessionStorage} from '../session/storage/memory';
 import {JwtPayload} from '../utils/types';
 import {getHMACKey} from '../utils/get-hmac-key';
 

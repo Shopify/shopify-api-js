@@ -1,4 +1,4 @@
-import {Session} from '../../auth/session/session';
+import {Session} from '../../session/session';
 import {config} from '../../config';
 import {BillingError} from '../../error';
 import {check} from '../check';

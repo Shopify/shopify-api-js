@@ -6,7 +6,7 @@ export default {
   rootDir: '../../',
   testPathIgnorePatterns: [
     '<rootDir>/rest-resources/__tests__',
-    '<rootDir>/auth/session/storage',
+    '<rootDir>/session/storage',
     '<rootDir>/adapters',
     '<rootDir>/runtime',
     // TODO remove these as we refactor components, keep the ones above as they run in their own suites

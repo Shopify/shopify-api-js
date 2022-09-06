@@ -4,7 +4,7 @@ import {AdapterArgs} from '../runtime/http';
 
 // eslint-disable-next-line no-warning-comments
 // TODO: uncomment and fix issues once we've refactored the clients
-// import {SessionInterface} from '../auth/session/types';
+// import {SessionInterface} from '../session/types';
 // import {GraphqlClient} from '../clients/graphql';
 // import {RestClient} from '../clients/rest';
 

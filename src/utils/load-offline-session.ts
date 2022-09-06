@@ -1,4 +1,4 @@
-import {Session} from '../auth/session/session';
+import {Session} from '../session/session';
 import OAuth from '../auth/oauth';
 import {ConfigInterface} from '../base-types';
 

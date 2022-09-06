@@ -1,7 +1,7 @@
 import {config} from '../config';
 import {BillingError} from '../error';
 import {GraphqlClient} from '../clients/graphql';
-import {SessionInterface} from '../auth/session/types';
+import {SessionInterface} from '../session/types';
 
 import {isRecurring} from './is_recurring';
 import {

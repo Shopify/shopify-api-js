@@ -1,4 +1,4 @@
-import {Session} from '../../session';
+import {Session} from '../session';
 
 import {sessionArraysEqual} from './session-test-utils';
 
