@@ -1,7 +1,4 @@
 import {AdapterArgs} from '../runtime/http';
-// import {SessionInterface} from '../session/types';
-// import {createRestClientClass} from '../clients/rest/rest_client';
-// import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 
 import type {shopifyUtils} from '.';
 
@@ -19,18 +16,8 @@ export interface JwtPayload {
 
 export interface GetEmbeddedAppUrlParams extends AdapterArgs {}
 
-// interface WithSessionBaseResponse {
-//   session: SessionInterface;
-// }
-
-// export interface RestWithSession extends WithSessionBaseResponse {
-//   client: InstanceType<ReturnType<typeof createRestClientClass>>;
-// }
-
-// export interface GraphqlWithSession extends WithSessionBaseResponse {
-//   client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
-// }
-
-// export type WithSessionResponse = RestWithSession | GraphqlWithSession;
+export interface GraphqlProxyParams extends AdapterArgs {
+  body: string;
+}
 
 export type ShopifyUtils = ReturnType<typeof shopifyUtils>;

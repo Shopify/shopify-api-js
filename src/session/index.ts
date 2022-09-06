@@ -4,7 +4,7 @@ import {createDeleteCurrent} from './delete-current';
 import {createGetCurrent} from './get-current';
 import {createDeleteOffline} from './delete-offline';
 import {createGetOffline} from './get-offline';
-// import {createWithSession} from './with-session';
+import {createWithSession} from './with-session';
 
 export function shopifySession(config: ConfigInterface) {
   return {
@@ -12,6 +12,6 @@ export function shopifySession(config: ConfigInterface) {
     deleteCurrent: createDeleteCurrent(config),
     getOffline: createGetOffline(config),
     deleteOffline: createDeleteOffline(config),
-    // withSession: createWithSession(config),
+    withSession: createWithSession(config),
   };
 }
