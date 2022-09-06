@@ -101,13 +101,13 @@ export class Cookies {
   private keys: string[] = [];
 
   constructor(
-    req: NormalizedRequest,
+    request: NormalizedRequest,
     public response: NormalizedResponse,
     {keys = []}: Partial<CookiesOptions> = {},
   ) {
     if (keys) this.keys = keys;
 
-    const cookieReqHdr = getHeader(req.headers, 'Cookie') ?? '';
+    const cookieReqHdr = getHeader(request.headers, 'Cookie') ?? '';
     this.receivedCookieJar = Cookies.parseCookies(cookieReqHdr.split(','));
     const cookieResHdr = getHeaders(response.headers, 'Set-Cookie') ?? [];
     this.outgoingCookieJar = Cookies.parseCookies(cookieResHdr);
@@ -131,6 +131,10 @@ export class Cookies {
 
   get(name: string): string | undefined {
     return this.receivedCookieJar[name]?.value;
+  }
+
+  getOutgoing(name: string): string | undefined {
+    return this.outgoingCookieJar[name]?.value;
   }
 
   deleteCookie(name: string) {

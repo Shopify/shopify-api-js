@@ -21,7 +21,11 @@ export async function nodeConvertRequest(
   adapterArgs: NodeAdapterArgs,
 ): Promise<NormalizedRequest> {
   const req = adapterArgs.rawRequest;
-  const body = await new Promise<string>((resolve, reject) => {
+  const body = await new Promise<string | undefined>((resolve, reject) => {
+    if ((req as any).writableFinished) {
+      resolve(undefined);
+    }
+
     let str = '';
     req.on('data', (chunk) => {
       str += chunk.toString();
@@ -42,8 +46,6 @@ export async function nodeConvertAndSendResponse(
   adapterArgs: NodeAdapterArgs,
 ): Promise<void> {
   const res = adapterArgs.rawResponse;
-  res.statusCode = response.statusCode;
-  res.statusMessage = response.statusText;
 
   if (response.headers) {
     Object.entries(response.headers).forEach(([header, value]) =>
@@ -55,7 +57,14 @@ export async function nodeConvertAndSendResponse(
     res.write(response.body);
   }
 
-  res.end();
+  if (response.statusCode) {
+    res.statusCode = response.statusCode;
+    if (response.statusText) {
+      res.statusMessage = response.statusText;
+    }
+
+    res.end();
+  }
 }
 
 export async function nodeFetch({

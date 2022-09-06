@@ -1,5 +1,12 @@
+import {ConfigInterface} from '../base-types';
+import {SESSION_COOKIE_NAME} from '../auth/oauth/oauth';
+import {Cookies} from '../runtime/http';
+import {createSanitizeShop} from '../utils/shop-validator';
+import {createDecodeSessionToken} from '../utils/decode-session-token';
+import * as ShopifyErrors from '../error';
+
 import {Session} from './session';
-import type {SessionInterface} from './types';
+import type {GetCurrentSessionIdParams, SessionInterface} from './types';
 
 /**
  * Like Object.fromEntries(), but normalizes the keys and filters out null values.
@@ -104,4 +111,50 @@ export function sessionEqual(
   const copyB = sessionEntries(sessionB);
   copyB.sort(([k1], [k2]) => (k1 < k2 ? -1 : 1));
   return JSON.stringify(copyA) === JSON.stringify(copyB);
+}
+
+export function createGetJwtSessionId(config: ConfigInterface) {
+  return (shop: string, userId: string): string => {
+    return `${createSanitizeShop(config)(shop, true)}_${userId}`;
+  };
+}
+
+export function createGetOfflineId(config: ConfigInterface) {
+  return (shop: string): string => {
+    return `offline_${createSanitizeShop(config)(shop, true)}`;
+  };
+}
+
+export function createGetCurrentSessionId(config: ConfigInterface) {
+  return async ({
+    request,
+    isOnline,
+  }: GetCurrentSessionIdParams): Promise<string | undefined> => {
+    if (config.isEmbeddedApp) {
+      const authHeader = request.headers.authorization;
+      if (authHeader) {
+        const matches = (
+          typeof authHeader === 'string' ? authHeader : authHeader[0]
+        ).match(/^Bearer (.+)$/);
+        if (!matches) {
+          throw new ShopifyErrors.MissingJwtTokenError(
+            'Missing Bearer token in authorization header',
+          );
+        }
+
+        const jwtPayload = await createDecodeSessionToken(config)(matches[1]);
+        const shop = jwtPayload.dest.replace(/^https:\/\//, '');
+        if (isOnline) {
+          return createGetJwtSessionId(config)(shop, jwtPayload.sub);
+        } else {
+          return createGetOfflineId(config)(shop);
+        }
+      }
+    } else {
+      const cookies = new Cookies(request, {}, {keys: [config.apiSecretKey]});
+      return cookies.getAndVerify(SESSION_COOKIE_NAME);
+    }
+
+    return undefined;
+  };
 }

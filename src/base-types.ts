@@ -2,6 +2,8 @@ import {AuthScopes} from './auth/scopes';
 import {SessionStorage} from './session/session_storage';
 import {BillingSettings} from './billing/types';
 import {ShopifyClients} from './clients/types';
+import {ShopifyAuth} from './auth/types';
+// import {ShopifySession} from './session/types';
 import {ShopifyUtils} from './utils/types';
 
 export interface ConfigParams {
@@ -25,11 +27,14 @@ export interface ConfigInterface extends ConfigParams {
   hostScheme: 'http' | 'https';
   sessionStorage: SessionStorage;
   scopes: AuthScopes;
+  isPrivateApp: boolean;
 }
 
 export interface Shopify {
   config: ConfigInterface;
   clients: ShopifyClients;
+  auth: ShopifyAuth;
+  // session: ShopifySession;
   utils: ShopifyUtils;
 }
 

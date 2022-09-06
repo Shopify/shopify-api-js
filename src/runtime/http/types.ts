@@ -10,8 +10,8 @@ export interface NormalizedRequest {
 }
 
 export interface NormalizedResponse {
-  statusCode: number;
-  statusText: string;
+  statusCode?: number;
+  statusText?: string;
   headers?: Headers;
   body?: string;
 }

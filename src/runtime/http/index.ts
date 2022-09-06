@@ -13,7 +13,7 @@ export * from './types';
 
 export function isOK(resp: NormalizedResponse) {
   // https://fetch.spec.whatwg.org/#ok-status
-  return resp.statusCode >= 200 && resp.statusCode <= 299;
+  return resp.statusCode && resp.statusCode >= 200 && resp.statusCode <= 299;
 }
 
 // We ignore mutable export linting errors because we explicitly want these abstract functions to be overwritten.
