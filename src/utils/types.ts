@@ -1,5 +1,7 @@
 import http from 'http';
 
+import {AdapterArgs} from '../runtime/http';
+
 // eslint-disable-next-line no-warning-comments
 // TODO: uncomment and fix issues once we've refactored the clients
 // import {SessionInterface} from '../auth/session/types';
@@ -27,6 +29,8 @@ export interface WithSessionParams {
   res?: http.ServerResponse;
   shop?: string;
 }
+
+export interface GetEmbeddedAppUrlParams extends AdapterArgs {}
 
 // interface WithSessionBaseResponse {
 //   session: SessionInterface;
