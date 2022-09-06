@@ -1,12 +1,14 @@
-import http from 'http';
-
 import * as ShopifyErrors from '../error';
 import {ConfigInterface} from '../base-types';
+import {abstractConvertRequest} from '../runtime/http';
 
 import {createSanitizeHost} from './shop-validator';
+import {GetEmbeddedAppUrlParams} from './types';
 
 export function createGetEmbeddedAppUrl(config: ConfigInterface) {
-  return (request: http.IncomingMessage): string => {
+  return async ({...adapterArgs}: GetEmbeddedAppUrlParams): Promise<string> => {
+    const request = await abstractConvertRequest(adapterArgs);
+
     if (!request) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'getEmbeddedAppUrl requires a request object argument',

@@ -1,5 +1,3 @@
-import http from 'http';
-
 import jose from 'jose';
 import express, {Request, Response} from 'express';
 import request from 'supertest';

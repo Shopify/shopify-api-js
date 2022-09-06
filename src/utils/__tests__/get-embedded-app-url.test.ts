@@ -1,68 +1,72 @@
-import http from 'http';
-
 import {shopify} from '../../__tests__/test-helper';
 import * as ShopifyErrors from '../../error';
+import {NormalizedRequest} from '../../runtime/http/types';
 
 describe('getEmbeddedAppUrl', () => {
   beforeEach(() => {
     shopify.config.apiKey = 'my-api-key';
   });
 
-  test('throws an error when no request is passed', () => {
-    // @ts-expect-error: For JS users test it throws when no request is passed
-    expect(() => shopify.utils.getEmbeddedAppUrl()).toThrow(
-      ShopifyErrors.MissingRequiredArgument,
-    );
+  test('throws an error when no request is passed', async () => {
+    await expect(
+      shopify.utils.getEmbeddedAppUrl({rawRequest: undefined}),
+    ).rejects.toThrow(ShopifyErrors.MissingRequiredArgument);
   });
 
-  test('throws an error when the request has no URL', () => {
-    const req = {
-      url: undefined,
-    } as http.IncomingMessage;
+  test('throws an error when the request has no URL', async () => {
+    const req: NormalizedRequest = {
+      method: 'GET',
+      // This should never happen, so we're casting here to work around the typing
+      url: undefined as any,
+      headers: {},
+    };
 
-    expect(() => shopify.utils.getEmbeddedAppUrl(req)).toThrow(
-      ShopifyErrors.InvalidRequestError,
-    );
+    await expect(
+      shopify.utils.getEmbeddedAppUrl({rawRequest: req}),
+    ).rejects.toThrow(ShopifyErrors.InvalidRequestError);
   });
 
-  test('throws an error when the request has no host query param', () => {
-    const req = {
+  test('throws an error when the request has no host query param', async () => {
+    const req: NormalizedRequest = {
+      method: 'GET',
       url: '/?shop=test.myshopify.com',
       headers: {
         host: 'test.myshopify.com',
       },
-    } as http.IncomingMessage;
+    };
 
-    expect(() => shopify.utils.getEmbeddedAppUrl(req)).toThrow(
-      ShopifyErrors.InvalidRequestError,
-    );
+    await expect(
+      shopify.utils.getEmbeddedAppUrl({rawRequest: req}),
+    ).rejects.toThrow(ShopifyErrors.InvalidRequestError);
   });
 
-  test('throws an error when the host query param is invalid', () => {
-    const req = {
+  test('throws an error when the host query param is invalid', async () => {
+    const req: NormalizedRequest = {
+      method: 'GET',
       url: '/?shop=test.myshopify.com&host=test.myshopify.com',
       headers: {
         host: 'test.myshopify.com',
       },
-    } as http.IncomingMessage;
+    };
 
-    expect(() => shopify.utils.getEmbeddedAppUrl(req)).toThrow(
-      ShopifyErrors.InvalidHostError,
-    );
+    await expect(
+      shopify.utils.getEmbeddedAppUrl({rawRequest: req}),
+    ).rejects.toThrow(ShopifyErrors.InvalidHostError);
   });
 
-  test('returns the host app url', () => {
+  test('returns the host app url', async () => {
     const host = 'test.myshopify.com/admin';
     const base64Host = Buffer.from(host, 'utf-8').toString('base64');
 
-    const req = {
+    const req: NormalizedRequest = {
+      method: 'GET',
       url: `?shop=test.myshopify.com&host=${base64Host}`,
       headers: {
         host: 'test.myshopify.com',
       },
-    } as http.IncomingMessage;
+    };
 
-    expect(shopify.utils.getEmbeddedAppUrl(req)).toBe(
+    expect(await shopify.utils.getEmbeddedAppUrl({rawRequest: req})).toBe(
       `https://${host}/apps/${shopify.config.apiKey}`,
     );
   });

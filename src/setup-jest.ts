@@ -1,7 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
 
-// Default to the node adapter
-import './adapters/node';
+import './adapters/mock';
 
 fetchMock.enableMocks();
 
