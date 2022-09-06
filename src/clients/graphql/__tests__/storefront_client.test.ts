@@ -1,3 +1,4 @@
+import {shopify} from '../../../__tests__/test-helper';
 import {ShopifyHeader} from '../../../base-types';
 
 const DOMAIN = 'shop.myshopify.io';
@@ -19,7 +20,7 @@ const successResponse = {
 
 describe('Storefront GraphQL client', () => {
   it('can return response from specific access token', async () => {
-    const client = new global.shopify.clients.Storefront({
+    const client = new shopify.clients.Storefront({
       domain: DOMAIN,
       accessToken: 'bork',
     });
@@ -35,17 +36,17 @@ describe('Storefront GraphQL client', () => {
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/api/${global.shopify.config.apiVersion}/graphql.json`,
+      path: `/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers,
     }).toMatchMadeHttpRequest();
   });
 
   it('can return response from config private app setting', async () => {
-    global.shopify.config.isPrivateApp = true;
-    global.shopify.config.privateAppStorefrontAccessToken = 'private_token';
+    shopify.config.isPrivateApp = true;
+    shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
-    const client = new global.shopify.clients.Storefront({domain: DOMAIN});
+    const client = new shopify.clients.Storefront({domain: DOMAIN});
 
     fetchMock.mockResponseOnce(JSON.stringify(successResponse));
 
@@ -58,7 +59,7 @@ describe('Storefront GraphQL client', () => {
     expect({
       method: 'POST',
       domain: DOMAIN,
-      path: `/api/${global.shopify.config.apiVersion}/graphql.json`,
+      path: `/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers,
     }).toMatchMadeHttpRequest();

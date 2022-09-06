@@ -1,4 +1,4 @@
-import '../../__tests__/shopify-global';
+import {shopify} from '../../__tests__/test-helper';
 import {InvalidShopError} from '../../error';
 
 const VALID_SHOP_URL_1 = 'someshop.myshopify.com';
@@ -31,72 +31,65 @@ const INVALID_HOST_2 = `${Buffer.from(
 
 describe('sanitizeShop', () => {
   test('returns the shop for valid URLs', () => {
-    expect(global.shopify.utils.sanitizeShop(VALID_SHOP_URL_1)).toEqual(
+    expect(shopify.utils.sanitizeShop(VALID_SHOP_URL_1)).toEqual(
       VALID_SHOP_URL_1,
     );
-    expect(global.shopify.utils.sanitizeShop(VALID_SHOP_URL_2)).toEqual(
+    expect(shopify.utils.sanitizeShop(VALID_SHOP_URL_2)).toEqual(
       VALID_SHOP_URL_2,
     );
-    expect(global.shopify.utils.sanitizeShop(VALID_SHOP_URL_3)).toEqual(
+    expect(shopify.utils.sanitizeShop(VALID_SHOP_URL_3)).toEqual(
       VALID_SHOP_URL_3,
     );
-    expect(global.shopify.utils.sanitizeShop(VALID_SHOP_URL_4)).toEqual(
+    expect(shopify.utils.sanitizeShop(VALID_SHOP_URL_4)).toEqual(
       VALID_SHOP_URL_4,
     );
   });
 
   test('returns null for invalid URLs', () => {
-    expect(global.shopify.utils.sanitizeShop(INVALID_SHOP_URL_1)).toBe(null);
-    expect(global.shopify.utils.sanitizeShop(INVALID_SHOP_URL_2)).toBe(null);
+    expect(shopify.utils.sanitizeShop(INVALID_SHOP_URL_1)).toBe(null);
+    expect(shopify.utils.sanitizeShop(INVALID_SHOP_URL_2)).toBe(null);
   });
 
   test('throws for invalid URLs if set to', () => {
     expect(() =>
-      global.shopify.utils.sanitizeShop(INVALID_SHOP_URL_1, true),
+      shopify.utils.sanitizeShop(INVALID_SHOP_URL_1, true),
     ).toThrowError(InvalidShopError);
     expect(() =>
-      global.shopify.utils.sanitizeShop(INVALID_SHOP_URL_2, true),
+      shopify.utils.sanitizeShop(INVALID_SHOP_URL_2, true),
     ).toThrowError(InvalidShopError);
   });
 
   test('returns the right values when using custom domains', () => {
-    global.shopify.config.customShopDomains = [
-      CUSTOM_DOMAIN,
-      CUSTOM_DOMAIN_REGEX,
-    ];
+    shopify.config.customShopDomains = [CUSTOM_DOMAIN, CUSTOM_DOMAIN_REGEX];
+
+    expect(shopify.utils.sanitizeShop(VALID_SHOP_WITH_CUSTOM_DOMAIN)).toEqual(
+      VALID_SHOP_WITH_CUSTOM_DOMAIN,
+    );
+    expect(shopify.utils.sanitizeShop(INVALID_SHOP_WITH_CUSTOM_DOMAIN)).toBe(
+      null,
+    );
 
     expect(
-      global.shopify.utils.sanitizeShop(VALID_SHOP_WITH_CUSTOM_DOMAIN),
-    ).toEqual(VALID_SHOP_WITH_CUSTOM_DOMAIN);
-    expect(
-      global.shopify.utils.sanitizeShop(INVALID_SHOP_WITH_CUSTOM_DOMAIN),
-    ).toBe(null);
-
-    expect(
-      global.shopify.utils.sanitizeShop(VALID_SHOP_WITH_CUSTOM_DOMAIN_REGEX),
+      shopify.utils.sanitizeShop(VALID_SHOP_WITH_CUSTOM_DOMAIN_REGEX),
     ).toEqual(VALID_SHOP_WITH_CUSTOM_DOMAIN_REGEX);
     expect(
-      global.shopify.utils.sanitizeShop(INVALID_SHOP_WITH_CUSTOM_DOMAIN_REGEX),
+      shopify.utils.sanitizeShop(INVALID_SHOP_WITH_CUSTOM_DOMAIN_REGEX),
     ).toBe(null);
   });
 });
 
 describe('sanitizeHost', () => {
   test('returns the shop for valid URLs', () => {
-    expect(global.shopify.utils.sanitizeHost(VALID_HOST_1)).toEqual(
-      VALID_HOST_1,
-    );
-    expect(global.shopify.utils.sanitizeHost(VALID_HOST_2)).toEqual(
-      VALID_HOST_2,
-    );
-    expect(global.shopify.utils.sanitizeHost(`${VALID_HOST_2}==`)).toEqual(
+    expect(shopify.utils.sanitizeHost(VALID_HOST_1)).toEqual(VALID_HOST_1);
+    expect(shopify.utils.sanitizeHost(VALID_HOST_2)).toEqual(VALID_HOST_2);
+    expect(shopify.utils.sanitizeHost(`${VALID_HOST_2}==`)).toEqual(
       `${VALID_HOST_2}==`,
     );
   });
 
   test('returns null for invalid URLs', () => {
-    expect(global.shopify.utils.sanitizeHost(INVALID_HOST_1)).toBe(null);
-    expect(global.shopify.utils.sanitizeHost(INVALID_HOST_2)).toBe(null);
-    expect(global.shopify.utils.sanitizeHost(`==${INVALID_HOST_2}`)).toBe(null);
+    expect(shopify.utils.sanitizeHost(INVALID_HOST_1)).toBe(null);
+    expect(shopify.utils.sanitizeHost(INVALID_HOST_2)).toBe(null);
+    expect(shopify.utils.sanitizeHost(`==${INVALID_HOST_2}`)).toBe(null);
   });
 });
