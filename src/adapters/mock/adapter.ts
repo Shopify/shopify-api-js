@@ -23,33 +23,6 @@ export async function mockConvertResponse(
   return Promise.resolve(response);
 }
 
-type RequestListEntry = NormalizedRequest & {attempts: number};
-type ResponseListEntry = NormalizedResponse | Error;
-let requestList: RequestListEntry[] = [];
-let responseList: ResponseListEntry[] = [];
-
-export function getOldestRequest(): NormalizedRequest {
-  if (requestList.length === 0) {
-    throw new Error('No requests have been made');
-  }
-  return requestList.shift()!;
-}
-
-export function getMostRecentRequest(): NormalizedRequest {
-  if (requestList.length === 0) {
-    throw new Error('No requests have been made');
-  }
-  return requestList.pop()!;
-}
-
-export function queueResponse(response: NormalizedResponse): void {
-  responseList.push(response);
-}
-
-export function queueError(error: Error): void {
-  responseList.push(error);
-}
-
 export async function mockFetch({
   url,
   method,
@@ -57,42 +30,86 @@ export async function mockFetch({
   body,
 }: NormalizedRequest): Promise<NormalizedResponse> {
   canonicalizeHeaders(headers);
-  const matchingRequest = findRequest({url, method, headers, body});
+  const matchingRequest = mockAdapter.findRequest({
+    url,
+    method,
+    headers,
+    body,
+  });
   if (typeof matchingRequest === 'undefined') {
-    requestList.push({url, method, headers, body, attempts: 1});
+    mockAdapter.requestList.push({url, method, headers, body, attempts: 1});
   } else {
     matchingRequest.attempts++;
   }
 
-  const next = responseList.shift()!;
+  const next = mockAdapter.responseList.shift()!;
   if (next instanceof Error) {
     throw next;
   }
   return next;
 }
 
-export function findRequest(
-  request: NormalizedRequest,
-): RequestListEntry | undefined {
-  for (const matchingRequest of requestList) {
-    if (
-      matchingRequest.url === request.url &&
-      matchingRequest.method === request.method
-    ) {
-      if (request.body === undefined || request.body === null) {
-        return matchingRequest;
-      } else if (matchingRequest.body === request.body) {
-        return matchingRequest;
-      }
-    }
-  }
-  return undefined;
+type RequestListEntry = NormalizedRequest & {attempts: number};
+type ResponseListEntry = NormalizedResponse | Error;
+
+interface MockedAdapter {
+  requestList: RequestListEntry[];
+  responseList: ResponseListEntry[];
+  getOldestRequest: () => NormalizedRequest;
+  getMostRecentRequest: () => NormalizedRequest;
+  queueResponse: (response: NormalizedResponse) => void;
+  queueError: (error: Error) => void;
+  findRequest: (request: NormalizedRequest) => RequestListEntry | undefined;
+  reset: () => void;
 }
 
-export function reset() {
-  requestList = [];
-  responseList = [];
-}
+export const mockAdapter: MockedAdapter = {
+  requestList: [],
+  responseList: [],
+
+  getOldestRequest(): NormalizedRequest {
+    if (this.requestList.length === 0) {
+      throw new Error('No requests have been made');
+    }
+    return this.requestList.shift()!;
+  },
+
+  getMostRecentRequest(): NormalizedRequest {
+    if (this.requestList.length === 0) {
+      throw new Error('No requests have been made');
+    }
+    return this.requestList.pop()!;
+  },
+
+  queueResponse(response: NormalizedResponse): void {
+    this.responseList.push(response);
+  },
+
+  queueError(error: Error): void {
+    this.responseList.push(error);
+  },
+
+  findRequest(request: NormalizedRequest): RequestListEntry | undefined {
+    for (const matchingRequest of this.requestList) {
+      if (
+        matchingRequest.url === request.url &&
+        matchingRequest.method === request.method
+      ) {
+        if (request.body === undefined || request.body === null) {
+          return matchingRequest;
+        } else if (matchingRequest.body === request.body) {
+          return matchingRequest;
+        }
+      }
+    }
+    return undefined;
+  },
+
+  reset() {
+    this.requestList = [];
+    this.responseList = [];
+  },
+};
 
 export function mockCreateDefaultStorage() {
   return new MemorySessionStorage();

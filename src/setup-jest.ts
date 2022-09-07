@@ -1,9 +1,9 @@
 import './adapters/mock';
-import {reset, findRequest} from './adapters/mock/adapter';
+import {mockAdapter} from './adapters/mock/adapter';
 import {canonicalizeHeaders} from './runtime/http';
 
 beforeEach(() => {
-  reset();
+  mockAdapter.reset();
 });
 
 interface AssertHttpRequestParams {
@@ -58,7 +58,7 @@ expect.extend({
       query ? `?${query.replace(/\+/g, '%20')}` : ''
     }`;
 
-    const matchingRequest = findRequest({
+    const matchingRequest = mockAdapter.findRequest({
       url: searchUrl,
       method,
       headers: searchHeaders,

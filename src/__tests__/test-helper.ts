@@ -5,7 +5,7 @@ import {ConfigParams, LATEST_API_VERSION, Shopify} from '../base-types';
 import {MemorySessionStorage} from '../session/storage/memory';
 import {JwtPayload} from '../utils/types';
 import {getHMACKey} from '../utils/get-hmac-key';
-import {queueResponse} from '../adapters/mock/adapter';
+import {mockAdapter} from '../adapters/mock/adapter';
 import {NormalizedResponse} from '../runtime/http';
 import {RequestReturn} from '../clients/http_client/types';
 
@@ -68,7 +68,7 @@ export function queueMockResponse(
   body: string,
   partial: Partial<NormalizedResponse> = {},
 ) {
-  queueResponse({
+  mockAdapter.queueResponse({
     statusCode: 200,
     statusText: 'OK',
     headers: {},
