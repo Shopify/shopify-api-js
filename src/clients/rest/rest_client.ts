@@ -1,3 +1,4 @@
+import {getHeader} from '../../runtime/http';
 import {ShopifyHeader} from '../../base-types';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
@@ -47,7 +48,7 @@ export function createRestClientClass(params: CreateClientClassParams) {
 
       const ret: RestRequestReturn<T> = await super.request<T>(params);
 
-      const link = ret.headers.get('link');
+      const link = getHeader(ret.headers, 'link');
       if (link !== undefined) {
         const pageInfo: PageInfo = {
           limit: params.query?.limit
