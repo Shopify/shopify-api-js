@@ -31,24 +31,12 @@ export async function mockFetch({
   headers = {},
   body,
 }: NormalizedRequest): Promise<NormalizedResponse> {
-  canonicalizeHeaders(headers);
-  const matchingRequest = mockTestRequests.findRequest({
+  mockTestRequests.requestList.push({
     url,
     method,
-    headers,
+    headers: canonicalizeHeaders(headers),
     body,
   });
-  if (matchingRequest === undefined) {
-    mockTestRequests.requestList.push({
-      url,
-      method,
-      headers,
-      body,
-      attempts: 1,
-    });
-  } else {
-    matchingRequest.attempts++;
-  }
 
   const next = mockTestRequests.responseList.shift()!;
   if (next instanceof Error) {

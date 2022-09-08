@@ -49,7 +49,8 @@ expect.extend({
     path,
     query = '',
     headers = {},
-    data = null,
+    data = undefined,
+    attempts = 1,
   }: AssertHttpRequestParams) {
     const searchHeaders = canonicalizeHeaders(headers as any);
     const searchBody =
@@ -58,14 +59,14 @@ expect.extend({
       query ? `?${query.replace(/\+/g, '%20')}` : ''
     }`;
 
-    const matchingRequest = mockTestRequests.findRequest({
-      url: searchUrl,
-      method,
-      headers: searchHeaders,
-      body: searchBody!,
-    });
-    expect(matchingRequest).not.toBeNull();
-    expect(matchingRequest!.headers).toMatchObject(searchHeaders);
+    for (let i = 0; i < attempts; i++) {
+      const matchingRequest = mockTestRequests.getRequest();
+      expect(matchingRequest).not.toBeNull();
+      expect(matchingRequest!.url).toEqual(searchUrl);
+      expect(matchingRequest!.method).toEqual(method);
+      expect(matchingRequest!.headers).toMatchObject(searchHeaders);
+      expect(matchingRequest!.body).toEqual(searchBody);
+    }
 
     return {
       message: () => `expected to have seen the right HTTP requests`,
