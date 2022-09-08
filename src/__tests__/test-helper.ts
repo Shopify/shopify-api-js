@@ -6,7 +6,7 @@ import {MemorySessionStorage} from '../session/storage/memory';
 import {JwtPayload} from '../utils/types';
 import {getHMACKey} from '../utils/get-hmac-key';
 import {mockTestRequests} from '../adapters/mock/mock_test_requests';
-import {NormalizedResponse} from '../runtime/http';
+import {canonicalizeHeaders, NormalizedResponse} from '../runtime/http';
 import {RequestReturn} from '../clients/http_client/types';
 
 declare global {
@@ -69,10 +69,9 @@ export function queueMockResponse(
   partial: Partial<NormalizedResponse> = {},
 ) {
   mockTestRequests.queueResponse({
-    statusCode: 200,
-    statusText: 'OK',
-    headers: {},
-    ...partial,
+    statusCode: partial.statusCode ?? 200,
+    statusText: partial.statusText ?? 'OK',
+    headers: canonicalizeHeaders(partial.headers ?? {}),
     body,
   });
 }

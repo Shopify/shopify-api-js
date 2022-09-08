@@ -850,7 +850,7 @@ describe('HTTP client', () => {
         body: {errors: 'Error 500'},
         code: 500,
         statusText: 'Error 500',
-        headers: {'X-Text-Header': 'Error 500'},
+        headers: {'X-Text-Header': ['Error 500']},
       },
     });
   });
@@ -872,7 +872,7 @@ describe('HTTP client', () => {
         body: {errors: 'Error 429'},
         code: 429,
         statusText: 'Error 429',
-        headers: {'X-Text-Header': 'Error 429', 'Retry-After': '100'},
+        headers: {'X-Text-Header': ['Error 429'], 'Retry-After': ['100']},
         retryAfter: 100,
       },
     });
@@ -894,7 +894,7 @@ describe('HTTP client', () => {
         body: {errors: 'Error 403'},
         code: 403,
         statusText: 'Error 403',
-        headers: {'X-Text-Header': 'Error 403'},
+        headers: {'X-Text-Header': ['Error 403']},
       },
     });
   });
