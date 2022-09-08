@@ -1,13 +1,12 @@
-import fetch from 'node-fetch';
-
 import {MemorySessionStorage} from '../../session/storage/memory';
 import {
   AdapterArgs,
   canonicalizeHeaders,
-  flatHeaders,
   NormalizedRequest,
   NormalizedResponse,
 } from '../../runtime/http';
+
+import {mockTestRequests} from './mock_test_requests';
 
 interface MockAdapterArgs extends AdapterArgs {
   rawRequest: NormalizedRequest;
@@ -32,14 +31,18 @@ export async function mockFetch({
   headers = {},
   body,
 }: NormalizedRequest): Promise<NormalizedResponse> {
-  const resp = await fetch(url, {method, headers: flatHeaders(headers), body});
-  const respBody = await resp.text();
-  return {
-    statusCode: resp.status,
-    statusText: resp.statusText,
-    body: respBody,
-    headers: canonicalizeHeaders(Object.fromEntries(resp.headers.entries())),
-  };
+  mockTestRequests.requestList.push({
+    url,
+    method,
+    headers: canonicalizeHeaders(headers),
+    body,
+  });
+
+  const next = mockTestRequests.responseList.shift()!;
+  if (next instanceof Error) {
+    throw next;
+  }
+  return next;
 }
 
 export function mockCreateDefaultStorage() {

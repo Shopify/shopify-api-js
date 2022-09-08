@@ -1,4 +1,8 @@
-import {shopify} from '../../../__tests__/test-helper';
+import {
+  queueMockResponse,
+  queueMockResponses,
+  shopify,
+} from '../../../__tests__/test-helper';
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestRequestReturn, PageInfo} from '../types';
 import * as ShopifyErrors from '../../../error';
@@ -21,7 +25,7 @@ describe('REST client', () => {
       accessToken: 'dummy-token',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.get({path: 'products'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -39,7 +43,7 @@ describe('REST client', () => {
       accessToken: 'dummy-token',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
     const getRequest = {
       path: 'products',
       query: {
@@ -63,7 +67,7 @@ describe('REST client', () => {
       accessToken: 'dummy-token',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -89,7 +93,7 @@ describe('REST client', () => {
       accessToken: 'dummy-token',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const postData = {
       title: 'Test product + something else',
@@ -119,7 +123,7 @@ describe('REST client', () => {
       accessToken: 'dummy-token',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const putData = {
       title: 'Test product',
@@ -145,7 +149,7 @@ describe('REST client', () => {
       accessToken: 'dummy-token',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.delete({path: 'products/123'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -168,7 +172,7 @@ describe('REST client', () => {
       'X-Not-A-Real-Header': 'some_value',
     };
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(
       client.get({path: 'products', extraHeaders: customHeaders}),
@@ -195,7 +199,7 @@ describe('REST client', () => {
       'This invalid info header will be ignored',
     ];
 
-    fetchMock.mockResponses([
+    queueMockResponses([
       JSON.stringify(successResponse),
       {headers: {link: linkHeaders.join(', ')}},
     ]);
@@ -220,7 +224,7 @@ describe('REST client', () => {
       `<${params.nextPageUrl}>; rel="next"`,
     ];
 
-    fetchMock.mockResponses(
+    queueMockResponses(
       [
         JSON.stringify(successResponse),
         {headers: {link: linkHeaders.join(', ')}},
@@ -265,7 +269,7 @@ describe('REST client', () => {
       `<${params.nextPageUrl}>; rel="next"`,
     ];
 
-    fetchMock.mockResponses(
+    queueMockResponses(
       [
         JSON.stringify(successResponse),
         {headers: {link: linkHeaders.join(', ')}},
@@ -307,7 +311,7 @@ describe('REST client', () => {
       `<${params.nextPageUrl}>; rel="next"`,
     ];
 
-    fetchMock.mockResponses(
+    queueMockResponses(
       [
         JSON.stringify(successResponse),
         {headers: {link: linkHeaders.join(', ')}},
@@ -347,7 +351,7 @@ describe('REST client', () => {
 
     const client = new shopify.clients.Rest({domain});
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.get({path: 'products'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -378,7 +382,7 @@ describe('REST client', () => {
       accessToken: 'dummy-token',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.get({path: 'products.json'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -396,7 +400,7 @@ describe('REST client', () => {
       accessToken: 'dummy-token',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.get({path: '/admin/some-path.json'})).resolves.toEqual(
       buildExpectedResponse(successResponse),

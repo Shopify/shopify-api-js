@@ -1,4 +1,4 @@
-import {shopify} from '../../../__tests__/test-helper';
+import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
 import {ShopifyHeader} from '../../../base-types';
 
 const DOMAIN = 'shop.myshopify.io';
@@ -25,7 +25,7 @@ describe('Storefront GraphQL client', () => {
       accessToken: 'bork',
     });
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -48,7 +48,7 @@ describe('Storefront GraphQL client', () => {
 
     const client = new shopify.clients.Storefront({domain: DOMAIN});
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
       buildExpectedResponse(successResponse),

@@ -1,6 +1,6 @@
 import * as ShopifyErrors from '../../../error';
 import {ShopifyHeader} from '../../../base-types';
-import {shopify} from '../../../__tests__/test-helper';
+import {queueMockResponse, shopify} from '../../../__tests__/test-helper';
 
 const DOMAIN = 'shop.myshopify.io';
 const QUERY = `
@@ -25,7 +25,7 @@ describe('GraphQL client', () => {
       domain: DOMAIN,
       accessToken: 'bork',
     });
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const response = await client.query({data: QUERY});
 
@@ -47,7 +47,7 @@ describe('GraphQL client', () => {
       'X-Glib-Glob': 'goobers',
     };
 
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(
       client.query({extraHeaders: customHeader, data: QUERY}),
@@ -67,7 +67,7 @@ describe('GraphQL client', () => {
     shopify.config.isPrivateApp = true;
 
     const client = new shopify.clients.Graphql({domain: DOMAIN});
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -131,7 +131,7 @@ describe('GraphQL client', () => {
       },
     };
 
-    fetchMock.mockResponseOnce(JSON.stringify(expectedResponse));
+    queueMockResponse(JSON.stringify(expectedResponse));
 
     await expect(client.query({data: queryWithVariables})).resolves.toEqual(
       buildExpectedResponse(expectedResponse),
@@ -194,7 +194,7 @@ describe('GraphQL client', () => {
       },
     };
 
-    fetchMock.mockResponseOnce(JSON.stringify(errorResponse));
+    queueMockResponse(JSON.stringify(errorResponse));
 
     await expect(() => client.query({data: query})).rejects.toThrow(
       new ShopifyErrors.GraphqlQueryError({

@@ -5,6 +5,19 @@ import {ConfigParams, LATEST_API_VERSION, Shopify} from '../base-types';
 import {MemorySessionStorage} from '../session/storage/memory';
 import {JwtPayload} from '../utils/types';
 import {getHMACKey} from '../utils/get-hmac-key';
+import {mockTestRequests} from '../adapters/mock/mock_test_requests';
+import {canonicalizeHeaders, NormalizedResponse} from '../runtime/http';
+import {RequestReturn} from '../clients/http_client/types';
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
+      toMatchMadeHttpRequest(): R;
+    }
+  }
+}
 
 // eslint-disable-next-line import/no-mutable-exports
 let shopify: Shopify;
@@ -36,4 +49,41 @@ export async function signJWT(
   return new jose.SignJWT(payload as any)
     .setProtectedHeader({alg: 'HS256'})
     .sign(getHMACKey(secret));
+}
+
+export function buildMockResponse(obj: unknown): string {
+  return JSON.stringify(obj);
+}
+
+export function buildExpectedResponse(obj: unknown): RequestReturn {
+  const expectedResponse: RequestReturn = {
+    body: obj,
+    headers: expect.objectContaining({}),
+  };
+
+  return expect.objectContaining(expectedResponse);
+}
+
+export function queueMockResponse(
+  body: string,
+  partial: Partial<NormalizedResponse> = {},
+) {
+  mockTestRequests.queueResponse({
+    statusCode: partial.statusCode ?? 200,
+    statusText: partial.statusText ?? 'OK',
+    headers: canonicalizeHeaders(partial.headers ?? {}),
+    body,
+  });
+}
+
+export function queueError(error: Error) {
+  mockTestRequests.queueError(error);
+}
+
+export function queueMockResponses(
+  ...responses: Parameters<typeof queueMockResponse>[]
+) {
+  for (const [body, response] of responses) {
+    queueMockResponse(body, response);
+  }
 }

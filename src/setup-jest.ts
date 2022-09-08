@@ -1,14 +1,9 @@
-import fetchMock from 'jest-fetch-mock';
-
 import './adapters/mock';
+import {mockTestRequests} from './adapters/mock/mock_test_requests';
+import {canonicalizeHeaders} from './runtime/http';
 
-fetchMock.enableMocks();
-
-let currentCall = 0;
 beforeEach(() => {
-  fetchMock.mockReset();
-
-  currentCall = 0;
+  mockTestRequests.reset();
 });
 
 interface AssertHttpRequestParams {
@@ -18,17 +13,7 @@ interface AssertHttpRequestParams {
   query?: string;
   headers?: {[key: string]: unknown};
   data?: string | {[key: string]: unknown} | null;
-  tries?: number;
-}
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toBeWithinSecondsOf(compareDate: number, seconds: number): R;
-      toMatchMadeHttpRequest(): R;
-    }
-  }
+  attempts?: number;
 }
 
 expect.extend({
@@ -64,27 +49,23 @@ expect.extend({
     path,
     query = '',
     headers = {},
-    data = null,
-    tries = 1,
+    data = undefined,
+    attempts = 1,
   }: AssertHttpRequestParams) {
-    const bodyObject = data && typeof data !== 'string';
-    const maxCall = currentCall + tries;
-    for (let i = currentCall; i < maxCall; i++) {
-      currentCall++;
+    const searchHeaders = canonicalizeHeaders(headers as any);
+    const searchBody =
+      data && typeof data !== 'string' ? JSON.stringify(data) : data;
+    const searchUrl = `https://${domain}${path}${
+      query ? `?${query.replace(/\+/g, '%20')}` : ''
+    }`;
 
-      const mockCall = fetchMock.mock.calls[i];
-      expect(mockCall).not.toBeUndefined();
-
-      if (bodyObject && mockCall[1]) {
-        mockCall[1].body = JSON.parse(mockCall[1].body as string);
-      }
-
-      expect(mockCall[0]).toEqual(
-        `https://${domain}${path}${
-          query ? `?${query.replace(/\+/g, '%20')}` : ''
-        }`,
-      );
-      expect(mockCall[1]).toMatchObject({method, headers, body: data});
+    for (let i = 0; i < attempts; i++) {
+      const matchingRequest = mockTestRequests.getRequest();
+      expect(matchingRequest).not.toBeNull();
+      expect(matchingRequest!.url).toEqual(searchUrl);
+      expect(matchingRequest!.method).toEqual(method);
+      expect(matchingRequest!.headers).toMatchObject(searchHeaders);
+      expect(matchingRequest!.body).toEqual(searchBody);
     }
 
     return {
