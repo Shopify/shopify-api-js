@@ -1,6 +1,7 @@
 import {
   buildExpectedResponse,
   buildMockResponse,
+  queueError,
   queueMockResponse,
   queueMockResponses,
   shopify,
@@ -345,19 +346,14 @@ describe('HTTP client', () => {
     await testErrorResponse(429, ShopifyErrors.HttpThrottlingError, true);
     await testErrorResponse(500, ShopifyErrors.HttpInternalError, true);
 
-    // fetchMock.mockRejectOnce(() => Promise.reject());
-    // await testErrorResponse(null, ShopifyErrors.HttpRequestError, false);
-
-    // eslint-disable-next-line no-warning-comments
-    // TODO: fix this test
-    // class MyError extends Error {
-    //   constructor(...args: any) {
-    //     super(...args);
-    //     Object.setPrototypeOf(this, new.target.prototype);
-    //   }
-    // }
-    // queueError(new MyError());
-    // await testErrorResponse(null, MyError, false);
+    class MyError extends Error {
+      constructor(...args: any) {
+        super(...args);
+        Object.setPrototypeOf(this, new.target.prototype);
+      }
+    }
+    queueError(new MyError());
+    await testErrorResponse(null, MyError, false);
   });
 
   it('allows custom headers', async () => {

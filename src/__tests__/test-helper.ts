@@ -77,6 +77,10 @@ export function queueMockResponse(
   });
 }
 
+export function queueError(error: Error) {
+  mockTestRequests.queueError(error);
+}
+
 export function queueMockResponses(
   ...responses: Parameters<typeof queueMockResponse>[]
 ) {
