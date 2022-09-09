@@ -1,3 +1,5 @@
+import type {shopifyWebhooks} from '.';
+
 export enum DeliveryMethod {
   Http = 'http',
   EventBridge = 'eventbridge',
@@ -68,3 +70,5 @@ export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
     };
   };
 }
+
+export type ShopifyWebhooks = ReturnType<typeof shopifyWebhooks>;

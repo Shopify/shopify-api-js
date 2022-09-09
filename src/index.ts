@@ -4,6 +4,7 @@ import {createClientClasses} from './clients';
 import {shopifyAuth} from './auth';
 import {shopifySession} from './session';
 import {shopifyUtils} from './utils';
+import {shopifyWebhooks} from './webhooks';
 
 export * from './error';
 export * from './types';
@@ -18,5 +19,6 @@ export function shopifyApi(config: ConfigParams): Shopify {
     auth: shopifyAuth(validatedConfig),
     session: shopifySession(validatedConfig),
     utils: shopifyUtils(validatedConfig),
+    webhooks: shopifyWebhooks(validatedConfig),
   };
 }

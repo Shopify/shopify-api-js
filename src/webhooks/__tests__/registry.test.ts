@@ -11,15 +11,15 @@ import {
   ShortenedRegisterOptions,
 } from '../types';
 import {ApiVersion, ShopifyHeader} from '../../base-types';
-import {config, setConfig} from '../../config';
 import {DataType} from '../../clients/types';
-import ShopifyWebhooks from '..';
 import * as ShopifyErrors from '../../error';
 import {
   buildQuery as createWebhookQuery,
   buildCheckQuery as createWebhookCheckQuery,
   gdprTopics,
 } from '../registry';
+import {queueMockResponse, shopify} from '../../__tests__/test-helper';
+import {mockTestRequests} from '../../adapters/mock/mock_test_requests';
 
 interface MockResponse {
   [key: string]: unknown;
@@ -54,10 +54,10 @@ async function genericWebhookHandler(
 
 const TEST_WEBHOOK_ID = 'gid://shopify/WebhookSubscription/12345';
 
-describe('ShopifyWebhooks.Registry.register', () => {
+describe('shopify.webhooks.registry.register', () => {
   beforeEach(async () => {
-    config.apiVersion = ApiVersion.Unstable;
-    ShopifyWebhooks.Registry.webhookRegistry = {};
+    shopify.config.apiVersion = ApiVersion.Unstable;
+    shopify.webhooks.registry.webhookRegistry = {};
   });
 
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
@@ -185,8 +185,8 @@ describe('ShopifyWebhooks.Registry.register', () => {
   });
 
   it('fails if given an invalid DeliveryMethod', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(eventBridgeSuccessResponse));
+    queueMockResponse(JSON.stringify(webhookCheckEmptyResponse));
+    queueMockResponse(JSON.stringify(eventBridgeSuccessResponse));
     const webhook = {
       path: '/webhooks',
       topic: 'PRODUCTS_CREATE',
@@ -195,58 +195,58 @@ describe('ShopifyWebhooks.Registry.register', () => {
       deliveryMethod: 'Something else',
     };
 
-    const result = await ShopifyWebhooks.Registry.register(
+    const result = await shopify.webhooks.registry.register(
       webhook as RegisterOptions,
     );
     expect(result.PRODUCTS_CREATE.success).toBe(false);
   });
 
   it('only contains a single entry for a topic after an update', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(webhookCheckEmptyResponse));
+    queueMockResponse(JSON.stringify(successResponse));
     let webhook: RegisterOptions = {
       path: '/webhooks',
       topic: 'PRODUCTS_CREATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
     };
-    await ShopifyWebhooks.Registry.addHandler('PRODUCTS_CREATE', {
+    await shopify.webhooks.registry.addHandler('PRODUCTS_CREATE', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    await ShopifyWebhooks.Registry.register(webhook);
-    expect('PRODUCTS_CREATE' in ShopifyWebhooks.Registry.webhookRegistry);
+    await shopify.webhooks.registry.register(webhook);
+    expect('PRODUCTS_CREATE' in shopify.webhooks.registry.webhookRegistry);
 
     // Add a second handler
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(webhookCheckEmptyResponse));
+    queueMockResponse(JSON.stringify(successResponse));
     webhook = {
       path: '/webhooks',
       topic: 'PRODUCTS_UPDATE',
       accessToken: 'some token',
       shop: 'shop1.myshopify.io',
     };
-    await ShopifyWebhooks.Registry.addHandler('PRODUCTS_UPDATE', {
+    await shopify.webhooks.registry.addHandler('PRODUCTS_UPDATE', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    await ShopifyWebhooks.Registry.register(webhook);
-    expect('PRODUCTS_UPDATE' in ShopifyWebhooks.Registry.webhookRegistry);
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(
+    await shopify.webhooks.registry.register(webhook);
+    expect('PRODUCTS_UPDATE' in shopify.webhooks.registry.webhookRegistry);
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toHaveLength(
       2,
     );
 
     // Update the second handler and make sure we still have the two of them
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckResponse));
-    fetchMock.mockResponseOnce(JSON.stringify(successUpdateResponse));
+    queueMockResponse(JSON.stringify(webhookCheckResponse));
+    queueMockResponse(JSON.stringify(successUpdateResponse));
     webhook.path = '/webhooks/new';
-    await ShopifyWebhooks.Registry.register(webhook);
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(
+    await shopify.webhooks.registry.register(webhook);
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toHaveLength(
       2,
     );
 
     // Make sure we have one of each topic in the registry
-    const actualTopics = Object.keys(ShopifyWebhooks.Registry.webhookRegistry);
+    const actualTopics = Object.keys(shopify.webhooks.registry.webhookRegistry);
     expect(actualTopics).toEqual(['PRODUCTS_CREATE', 'PRODUCTS_UPDATE']);
   });
 
@@ -260,8 +260,8 @@ describe('ShopifyWebhooks.Registry.register', () => {
         deliveryMethod: DeliveryMethod.Http,
       };
 
-      const response = await ShopifyWebhooks.Registry.register(webhook);
-      expect(fetchMock.mock.calls).toHaveLength(0);
+      const response = await shopify.webhooks.registry.register(webhook);
+      expect(mockTestRequests.requestList).toHaveLength(0);
       expect(response[gdprTopic].success).toBeFalsy();
       expect(
         (response[gdprTopic].result as {errors: [{message: string}]}).errors[0]
@@ -280,9 +280,9 @@ describe('ShopifyWebhooks.Registry.register', () => {
       deliveryMethod: DeliveryMethod.Http,
     };
 
-    fetchMock.mockResponseOnce(JSON.stringify(webhookCheckErrorResponse));
-    const response = await ShopifyWebhooks.Registry.register(webhook);
-    expect(fetchMock.mock.calls).toHaveLength(1);
+    queueMockResponse(JSON.stringify(webhookCheckErrorResponse));
+    const response = await shopify.webhooks.registry.register(webhook);
+    expect(mockTestRequests.requestList).toHaveLength(1);
     expect(response[topic].success).toBeFalsy();
     expect(
       (response[topic].result as {errors: [{message: string}]}).errors[0]
@@ -293,7 +293,7 @@ describe('ShopifyWebhooks.Registry.register', () => {
   });
 });
 
-describe('ShopifyWebhooks.Registry.registerAll', () => {
+describe('shopify.webhooks.registry.registerAll', () => {
   const shortenedRegisterOptions: ShortenedRegisterOptions = {
     accessToken: 'some token',
     shop: 'shop1.myshopify.io',
@@ -305,9 +305,9 @@ describe('ShopifyWebhooks.Registry.registerAll', () => {
   };
 
   beforeEach(async () => {
-    config.apiVersion = ApiVersion.Unstable;
-    ShopifyWebhooks.Registry.webhookRegistry = {};
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS_CREATE', {
+    shopify.config.apiVersion = ApiVersion.Unstable;
+    shopify.webhooks.registry.webhookRegistry = {};
+    shopify.webhooks.registry.addHandler('PRODUCTS_CREATE', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
@@ -315,71 +315,70 @@ describe('ShopifyWebhooks.Registry.registerAll', () => {
 
   gdprTopics.forEach((gdprTopic) => {
     it(`does not send a register for ${gdprTopic} if handler added for ${gdprTopic}`, async () => {
-      ShopifyWebhooks.Registry.addHandler(gdprTopic, {
+      shopify.webhooks.registry.addHandler(gdprTopic, {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
       });
-      expect(gdprTopic in ShopifyWebhooks.Registry.webhookRegistry);
+      expect(gdprTopic in shopify.webhooks.registry.webhookRegistry);
       expect(
-        Object.keys(ShopifyWebhooks.Registry.webhookRegistry),
+        Object.keys(shopify.webhooks.registry.webhookRegistry),
       ).toHaveLength(2);
 
-      fetchMock.mockResponseOnce(JSON.stringify(webhookCheckEmptyResponse));
-      fetchMock.mockResponseOnce(JSON.stringify(successResponse));
+      queueMockResponse(JSON.stringify(webhookCheckEmptyResponse));
+      queueMockResponse(JSON.stringify(successResponse));
 
-      await ShopifyWebhooks.Registry.registerAll(shortenedRegisterOptions);
+      await shopify.webhooks.registry.registerAll(shortenedRegisterOptions);
 
-      expect(fetchMock.mock.calls).toHaveLength(2);
+      expect(mockTestRequests.requestList).toHaveLength(2);
       assertWebhookCheckRequest(productsCreate);
       assertWebhookRegistrationRequest(productsCreate);
     });
   });
 });
 
-describe('ShopifyWebhooks.Registry.process', () => {
+describe('shopify.webhooks.registry.process', () => {
   const rawBody = '{"foo": "bar"}';
 
   beforeEach(async () => {
-    fetchMock.resetMocks();
-    config.apiSecretKey = 'kitties are cute';
-    config.apiVersion = ApiVersion.Unstable;
-    config.isEmbeddedApp = true;
-    setConfig(config);
+    // fetchMock.resetMocks();
+    shopify.config.apiSecretKey = 'kitties are cute';
+    shopify.config.apiVersion = ApiVersion.Unstable;
+    shopify.config.isEmbeddedApp = true;
   });
 
   afterEach(async () => {
-    ShopifyWebhooks.Registry.webhookRegistry = {};
+    shopify.webhooks.registry.webhookRegistry = {};
   });
 
   it('handles the request when topic is already registered', async () => {
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
 
     const app = express();
-    app.post('/webhooks', ShopifyWebhooks.Registry.process);
+    app.post('/webhooks', shopify.webhooks.registry.process);
 
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(config.apiSecretKey, rawBody)}))
+      .set(headers({hmac: hmac(shopify.config.apiSecretKey, rawBody)}))
       .send(rawBody)
       .expect(StatusCode.Ok);
   });
 
   it('handles lower case headers', async () => {
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
     const app = express();
-    app.post('/webhooks', ShopifyWebhooks.Registry.process);
+    app.post('/webhooks', shopify.webhooks.registry.process);
 
     await request(app)
       .post('/webhooks')
       .set(
         headers({
-          hmac: hmac(config.apiSecretKey, rawBody),
+          hmac: hmac(shopify.config.apiSecretKey, rawBody),
           lowercase: true,
         }),
       )
@@ -388,7 +387,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('handles the request and returns Not Found when topic is not registered', async () => {
-    ShopifyWebhooks.Registry.addHandler('NONSENSE_TOPIC', {
+    shopify.webhooks.registry.addHandler('NONSENSE_TOPIC', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
@@ -397,7 +396,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await shopify.webhooks.registry.process(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
@@ -407,13 +406,13 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(config.apiSecretKey, rawBody)}))
+      .set(headers({hmac: hmac(shopify.config.apiSecretKey, rawBody)}))
       .send(rawBody)
       .expect(StatusCode.NotFound);
   });
 
   it('handles the request and returns Unauthorized when hmac does not match', async () => {
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
@@ -422,7 +421,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await shopify.webhooks.registry.process(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
@@ -438,7 +437,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('fails if the given body is empty', async () => {
-    ShopifyWebhooks.Registry.addHandler('NONSENSE_TOPIC', {
+    shopify.webhooks.registry.addHandler('NONSENSE_TOPIC', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
@@ -447,7 +446,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await shopify.webhooks.registry.process(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
@@ -462,7 +461,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   });
 
   it('fails if the any of the required headers are missing', async () => {
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
@@ -471,7 +470,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await shopify.webhooks.registry.process(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
@@ -501,7 +500,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
   it('catches handler errors but still responds', async () => {
     const errorMessage = 'Oh no something went wrong!';
 
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: () => {
         throw new Error(errorMessage);
@@ -512,7 +511,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await shopify.webhooks.registry.process(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error.message).toEqual(errorMessage);
@@ -522,176 +521,176 @@ describe('ShopifyWebhooks.Registry.process', () => {
 
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(config.apiSecretKey, rawBody)}))
+      .set(headers({hmac: hmac(shopify.config.apiSecretKey, rawBody)}))
       .send(rawBody)
       .expect(500);
   });
 });
 
-describe('ShopifyWebhooks.Registry.isWebhookPath', () => {
+describe('shopify.webhooks.registry.isWebhookPath', () => {
   beforeEach(async () => {
-    ShopifyWebhooks.Registry.webhookRegistry = {};
+    shopify.webhooks.registry.webhookRegistry = {};
   });
 
   it('returns true when given path is registered for a webhook topic', async () => {
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
 
-    expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(true);
+    expect(shopify.webhooks.registry.isWebhookPath('/webhooks')).toBe(true);
   });
 
   it('returns false when given path is not registered for a webhook topic', async () => {
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/fakepath',
       webhookHandler: genericWebhookHandler,
     });
 
-    expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(false);
+    expect(shopify.webhooks.registry.isWebhookPath('/webhooks')).toBe(false);
   });
 
   it('returns false when there is no webhooks registered', async () => {
-    expect(ShopifyWebhooks.Registry.isWebhookPath('/webhooks')).toBe(false);
+    expect(shopify.webhooks.registry.isWebhookPath('/webhooks')).toBe(false);
   });
 });
 
-describe('ShopifyWebhooks.Registry.addHandler', () => {
+describe('shopify.webhooks.registry.addHandler', () => {
   beforeEach(async () => {
-    ShopifyWebhooks.Registry.webhookRegistry = {};
+    shopify.webhooks.registry.webhookRegistry = {};
   });
 
   it('adds two handlers to the webhook registry', async () => {
-    await ShopifyWebhooks.Registry.addHandler('PRODUCTS_CREATE', {
+    await shopify.webhooks.registry.addHandler('PRODUCTS_CREATE', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toHaveLength(
       1,
     );
 
-    await ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    await shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toHaveLength(
       2,
     );
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toEqual([
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toEqual([
       'PRODUCTS_CREATE',
       'PRODUCTS',
     ]);
   });
 
   it('adds a handler and replaces it with a new one', async () => {
-    await ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    await shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toHaveLength(
       1,
     );
 
-    await ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    await shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhookspath',
       webhookHandler: genericWebhookHandler,
     });
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toHaveLength(
       1,
     );
 
-    expect(ShopifyWebhooks.Registry.webhookRegistry.PRODUCTS.path).toBe(
+    expect(shopify.webhooks.registry.webhookRegistry.PRODUCTS.path).toBe(
       '/webhookspath',
     );
   });
 });
 
-describe('ShopifyWebhooks.Registry.addHandlers', () => {
+describe('shopify.webhooks.registry.addHandlers', () => {
   beforeEach(async () => {
-    ShopifyWebhooks.Registry.webhookRegistry = {};
+    shopify.webhooks.registry.webhookRegistry = {};
   });
 
   it('adds two unique handlers to the webhook registry', async () => {
-    await ShopifyWebhooks.Registry.addHandlers({
+    await shopify.webhooks.registry.addHandlers({
       PRODUCTS_CREATE: {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
       },
       PRODUCTS: {path: '/webhooks', webhookHandler: genericWebhookHandler},
     });
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toHaveLength(
       2,
     );
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toEqual([
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toEqual([
       'PRODUCTS_CREATE',
       'PRODUCTS',
     ]);
   });
 
   it('adds multiple handlers with duplicates', async () => {
-    await ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    await shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    await ShopifyWebhooks.Registry.addHandlers({
+    await shopify.webhooks.registry.addHandlers({
       PRODUCTS_CREATE: {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
       },
       PRODUCTS: {path: '/newerpath', webhookHandler: genericWebhookHandler},
     });
-    expect(Object.keys(ShopifyWebhooks.Registry.webhookRegistry)).toHaveLength(
+    expect(Object.keys(shopify.webhooks.registry.webhookRegistry)).toHaveLength(
       2,
     );
     expect(
-      Object.keys(ShopifyWebhooks.Registry.webhookRegistry).sort(),
+      Object.keys(shopify.webhooks.registry.webhookRegistry).sort(),
     ).toEqual(['PRODUCTS_CREATE', 'PRODUCTS'].sort());
-    expect(ShopifyWebhooks.Registry.webhookRegistry.PRODUCTS.path).toBe(
+    expect(shopify.webhooks.registry.webhookRegistry.PRODUCTS.path).toBe(
       '/newerpath',
     );
   });
 });
 
-describe('ShopifyWebhooks.Registry.getHandler', () => {
+describe('shopify.webhooks.registry.getHandler', () => {
   beforeEach(async () => {
-    ShopifyWebhooks.Registry.webhookRegistry = {};
+    shopify.webhooks.registry.webhookRegistry = {};
   });
 
   it('gets a nonexistent handler', async () => {
-    expect(ShopifyWebhooks.Registry.getHandler('PRODUCTS')).toBe(null);
+    expect(shopify.webhooks.registry.getHandler('PRODUCTS')).toBe(null);
   });
 
   it('gets a handler', async () => {
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    expect(ShopifyWebhooks.Registry.getHandler('PRODUCTS')).toStrictEqual({
+    expect(shopify.webhooks.registry.getHandler('PRODUCTS')).toStrictEqual({
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
   });
 });
 
-describe('ShopifyWebhooks.Registry.getTopics', () => {
+describe('shopify.webhooks.registry.getTopics', () => {
   beforeEach(async () => {
-    ShopifyWebhooks.Registry.webhookRegistry = {};
+    shopify.webhooks.registry.webhookRegistry = {};
   });
 
   it('gets an empty list of topics', async () => {
-    expect(ShopifyWebhooks.Registry.getTopics()).toStrictEqual([]);
+    expect(shopify.webhooks.registry.getTopics()).toStrictEqual([]);
   });
 
   it('adds two handlers and gets them', async () => {
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS', {
+    shopify.webhooks.registry.addHandler('PRODUCTS', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    ShopifyWebhooks.Registry.addHandler('PRODUCTS_CREATE', {
+    shopify.webhooks.registry.addHandler('PRODUCTS_CREATE', {
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
-    expect(ShopifyWebhooks.Registry.getTopics()).toStrictEqual([
+    expect(shopify.webhooks.registry.getTopics()).toStrictEqual([
       'PRODUCTS',
       'PRODUCTS_CREATE',
     ]);
@@ -731,9 +730,9 @@ async function registerWebhook({
   webhookId = undefined,
   expectRegistrationQuery = true,
 }: RegisterTestWebhook): Promise<RegisterReturn> {
-  fetchMock.mockResponseOnce(JSON.stringify(checkMockResponse));
+  queueMockResponse(JSON.stringify(checkMockResponse));
   if (expectRegistrationQuery) {
-    fetchMock.mockResponseOnce(JSON.stringify(registerMockResponse));
+    queueMockResponse(JSON.stringify(registerMockResponse));
   }
   const webhook: RegisterOptions = {
     path,
@@ -743,14 +742,14 @@ async function registerWebhook({
     deliveryMethod,
   };
 
-  const result = await ShopifyWebhooks.Registry.register(webhook);
+  const result = await shopify.webhooks.registry.register(webhook);
 
   if (expectRegistrationQuery) {
-    expect(fetchMock.mock.calls).toHaveLength(2);
+    expect(mockTestRequests.requestList).toHaveLength(2);
     assertWebhookCheckRequest(webhook);
     assertWebhookRegistrationRequest(webhook, webhookId);
   } else {
-    expect(fetchMock.mock.calls).toHaveLength(1);
+    expect(mockTestRequests.requestList).toHaveLength(1);
     assertWebhookCheckRequest(webhook);
   }
   return result;
@@ -770,7 +769,7 @@ function assertWebhookCheckRequest(webhook: RegisterOptions) {
   expect({
     method: Method.Post.toString(),
     domain: webhook.shop,
-    path: `/admin/api/${config.apiVersion}/graphql.json`,
+    path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
     headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,
@@ -785,12 +784,12 @@ function assertWebhookRegistrationRequest(
 ) {
   const address =
     !webhook.deliveryMethod || webhook.deliveryMethod === DeliveryMethod.Http
-      ? `${config.hostScheme}://${config.hostName}${webhook.path}`
+      ? `${shopify.config.hostScheme}://${shopify.config.hostName}${webhook.path}`
       : webhook.path;
   expect({
     method: Method.Post.toString(),
     domain: webhook.shop,
-    path: `/admin/api/${config.apiVersion}/graphql.json`,
+    path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
     headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: webhook.accessToken,

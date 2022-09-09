@@ -5,6 +5,7 @@ import {ShopifyClients} from './clients/types';
 import {ShopifyAuth} from './auth/types';
 import {ShopifySession} from './session/types';
 import {ShopifyUtils} from './utils/types';
+import {ShopifyWebhooks} from './webhooks/types';
 
 export interface ConfigParams {
   apiKey: string;
@@ -36,6 +37,7 @@ export interface Shopify {
   auth: ShopifyAuth;
   session: ShopifySession;
   utils: ShopifyUtils;
+  webhooks: ShopifyWebhooks;
 }
 
 export enum LogSeverity {

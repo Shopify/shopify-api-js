@@ -1,8 +1,10 @@
-import {WebhooksRegistry} from './registry';
+import {ConfigInterface} from '../base-types';
 
-const ShopifyWebhooks = {
-  Registry: WebhooksRegistry,
-};
+import {gdprTopics, webhooksRegistry} from './registry';
 
-export default ShopifyWebhooks;
-export {ShopifyWebhooks};
+export function shopifyWebhooks(config: ConfigInterface) {
+  return {
+    registry: webhooksRegistry(config),
+    gdprTopics,
+  };
+}
