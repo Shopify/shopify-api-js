@@ -49,7 +49,7 @@ export async function nodeConvertAndSendResponse(
   const res = adapterArgs.rawResponse;
 
   if (response.headers) {
-    await nodeConvertAndSendHeaders(response.headers, adapterArgs);
+    await nodeConvertAndSetHeaders(response.headers, adapterArgs);
   }
 
   if (response.body) {
@@ -62,7 +62,7 @@ export async function nodeConvertAndSendResponse(
   res.end();
 }
 
-export async function nodeConvertAndSendHeaders(
+export async function nodeConvertAndSetHeaders(
   headers: Headers,
   adapterArgs: NodeAdapterArgs,
 ): Promise<void> {

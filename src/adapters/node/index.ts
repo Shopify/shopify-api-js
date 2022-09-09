@@ -14,12 +14,12 @@ import {
   nodeConvertRequest,
   nodeConvertAndSendResponse,
   nodeCreateDefaultStorage,
-  nodeConvertAndSendHeaders,
+  nodeConvertAndSetHeaders,
 } from './adapter';
 
 setAbstractFetchFunc(nodeFetch);
 setAbstractConvertRequestFunc(nodeConvertRequest);
 setAbstractConvertResponseFunc(nodeConvertAndSendResponse);
-setAbstractConvertHeadersFunc(nodeConvertAndSendHeaders);
+setAbstractConvertHeadersFunc(nodeConvertAndSetHeaders);
 setAbstractCreateDefaultStorage(nodeCreateDefaultStorage);
 setCrypto(crypto as any);
