@@ -1,4 +1,4 @@
-import {Session} from '..';
+import {Session} from '../session';
 import {shopify} from '../../__tests__/test-helper';
 
 describe('session', () => {

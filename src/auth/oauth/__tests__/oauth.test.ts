@@ -14,7 +14,7 @@ import {
 import {
   queueMockResponse,
   shopify,
-  // signJWT
+  signJWT,
 } from '../../../__tests__/test-helper';
 import {createGetOfflineId} from '../../../session/session-utils';
 
@@ -152,18 +152,6 @@ describe('beginAuth', () => {
 
 describe('validateAuthCallback', () => {
   let request: NormalizedRequest;
-
-  function setCallbackCookieFromResponse(
-    request: NormalizedRequest,
-    response: NormalizedResponse,
-  ) {
-    // Set the oauth begin state cookie as the request here
-    const responseCookies = new Cookies({} as NormalizedRequest, response, {
-      keys: [shopify.config.apiSecretKey],
-    });
-
-    request.headers.Cookie = responseCookies.toHeaders().join(',');
-  }
 
   beforeEach(() => {
     request = {
@@ -425,9 +413,7 @@ describe('validateAuthCallback', () => {
     expect(session?.onlineAccessInfo).toEqual(expectedOnlineAccessInfo);
   });
 
-  // eslint-disable-next-line no-warning-comments
-  // TODO This is skipped until the function to load the current session is refactored (uncomment the end of the test)
-  test.skip('does not set an OAuth cookie for online, embedded apps', async () => {
+  test('does not set an OAuth cookie for online, embedded apps', async () => {
     shopify.config.isEmbeddedApp = true;
 
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
@@ -500,26 +486,26 @@ describe('validateAuthCallback', () => {
 
     // Simulate a subsequent JWT request to see if the session is loaded as the current one
 
-    // const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
-    // const jwtReq = {
-    //   method: 'GET',
-    //   url: 'https://my-test-app.myshopify.io/totally-real-request',
-    //   headers: {
-    //     authorization: `Bearer ${token}`,
-    //   },
-    // } as NormalizedRequest;
+    const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
+    const jwtReq = {
+      method: 'GET',
+      url: 'https://my-test-app.myshopify.io/totally-real-request',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    } as NormalizedRequest;
 
-    // const currentSession = await shopify.session.getCurrent({
-    //   isOnline: true,
-    //   rawRequest: jwtReq,
-    // });
-    // expect(currentSession).not.toBe(null);
-    // expect(currentSession?.id).toEqual(jwtSessionId);
+    const currentSession = await shopify.session.getCurrent({
+      isOnline: true,
+      rawRequest: jwtReq,
+    });
+    expect(currentSession).not.toBe(null);
+    expect(currentSession?.id).toEqual(jwtSessionId);
 
-    // const responseCookies = Cookies.parseCookies(callbackResponse.headers['Set-Cookie']);
-    // expect(
-    //   responseCookies.shopify_app_session,
-    // ).not.toBeDefined();
+    const responseCookies = Cookies.parseCookies(
+      callbackResponse.headers['Set-Cookie'],
+    );
+    expect(responseCookies.shopify_app_session).toBeUndefined();
   });
 
   test('properly updates the OAuth cookie for online, non-embedded apps', async () => {
@@ -644,7 +630,7 @@ describe('validateAuthCallback', () => {
     );
     expect(callbackResponse.session.expires?.getTime()).toBeUndefined();
 
-    expect(responseCookies.shopify_app_session).not.toBeDefined();
+    expect(responseCookies.shopify_app_session).toBeUndefined();
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
@@ -702,3 +688,15 @@ describe('validateAuthCallback', () => {
     expect(cookieSession).not.toBeUndefined();
   });
 });
+
+function setCallbackCookieFromResponse(
+  request: NormalizedRequest,
+  response: NormalizedResponse,
+) {
+  // Set the oauth begin state cookie as the request here
+  const responseCookies = new Cookies({} as NormalizedRequest, response, {
+    keys: [shopify.config.apiSecretKey],
+  });
+
+  request.headers.Cookie = responseCookies.toHeaders().join(',');
+}

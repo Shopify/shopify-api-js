@@ -6,7 +6,13 @@ import {MemorySessionStorage} from '../session/storage/memory';
 import {JwtPayload} from '../utils/types';
 import {getHMACKey} from '../utils/get-hmac-key';
 import {mockTestRequests} from '../adapters/mock/mock_test_requests';
-import {canonicalizeHeaders, NormalizedResponse} from '../runtime/http';
+import {
+  canonicalizeHeaders,
+  Cookies,
+  NormalizedRequest,
+  NormalizedResponse,
+} from '../runtime/http';
+import {Session} from '../session/session';
 import {RequestReturn} from '../clients/http_client/types';
 
 declare global {
@@ -86,4 +92,46 @@ export function queueMockResponses(
   for (const [body, response] of responses) {
     queueMockResponse(body, response);
   }
+}
+
+// Slightly hacky way to grab the Set-Cookie header from a response and use it as a request's Cookie header
+export async function setSignedSessionCookie({
+  request,
+  cookieId,
+}: {
+  request: NormalizedRequest;
+  cookieId: string;
+}) {
+  const cookies = new Cookies(request, {} as NormalizedResponse, {
+    keys: [shopify.config.apiSecretKey],
+  });
+  await cookies.setAndSign('shopify_app_session', cookieId, {
+    secure: true,
+  });
+
+  // eslint-disable-next-line require-atomic-updates
+  request.headers.Cookie = cookies.toHeaders().join(',');
+}
+
+export async function createAndSaveDummySession({
+  sessionId,
+  isOnline,
+  shop = 'test-shop.myshopify.io',
+  expires = undefined,
+  accessToken = undefined,
+}: {
+  sessionId: string;
+  isOnline: boolean;
+  shop?: string;
+  expires?: Date;
+  accessToken?: string;
+}): Promise<Session> {
+  const session = new Session(sessionId, shop, 'state', isOnline);
+  session.expires = expires;
+  session.accessToken = accessToken;
+  await expect(
+    shopify.config.sessionStorage.storeSession(session),
+  ).resolves.toEqual(true);
+
+  return session;
 }

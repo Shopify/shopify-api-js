@@ -1,8 +1,8 @@
-import {config} from '../../config';
-import {Session} from '../session';
-import {sessionEqual} from '../session-utils';
-import {SessionStorage} from '../session_storage';
-import {SessionInterface} from '../types';
+import {config} from '../../../config';
+import {Session} from '../../session';
+import {sessionEqual} from '../../session-utils';
+import {SessionStorage} from '../../session_storage';
+import {SessionInterface} from '../../types';
 
 import {sessionArraysEqual} from './session-test-utils';
 

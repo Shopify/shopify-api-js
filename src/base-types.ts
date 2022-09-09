@@ -3,7 +3,7 @@ import {SessionStorage} from './session/session_storage';
 import {BillingSettings} from './billing/types';
 import {ShopifyClients} from './clients/types';
 import {ShopifyAuth} from './auth/types';
-// import {ShopifySession} from './session/types';
+import {ShopifySession} from './session/types';
 import {ShopifyUtils} from './utils/types';
 
 export interface ConfigParams {
@@ -34,7 +34,7 @@ export interface Shopify {
   config: ConfigInterface;
   clients: ShopifyClients;
   auth: ShopifyAuth;
-  // session: ShopifySession;
+  session: ShopifySession;
   utils: ShopifyUtils;
 }
 

@@ -1,12 +1,7 @@
-import http from 'http';
-
 import {AdapterArgs} from '../runtime/http';
-
-// eslint-disable-next-line no-warning-comments
-// TODO: uncomment and fix issues once we've refactored the clients
 // import {SessionInterface} from '../session/types';
-// import {GraphqlClient} from '../clients/graphql';
-// import {RestClient} from '../clients/rest';
+// import {createRestClientClass} from '../clients/rest/rest_client';
+// import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 
 import type {shopifyUtils} from '.';
 
@@ -22,14 +17,6 @@ export interface JwtPayload {
   sid: string;
 }
 
-export interface WithSessionParams {
-  clientType: 'rest' | 'graphql';
-  isOnline: boolean;
-  req?: http.IncomingMessage;
-  res?: http.ServerResponse;
-  shop?: string;
-}
-
 export interface GetEmbeddedAppUrlParams extends AdapterArgs {}
 
 // interface WithSessionBaseResponse {
@@ -37,11 +24,11 @@ export interface GetEmbeddedAppUrlParams extends AdapterArgs {}
 // }
 
 // export interface RestWithSession extends WithSessionBaseResponse {
-//   client: RestClient;
+//   client: InstanceType<ReturnType<typeof createRestClientClass>>;
 // }
 
 // export interface GraphqlWithSession extends WithSessionBaseResponse {
-//   client: GraphqlClient;
+//   client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
 // }
 
 // export type WithSessionResponse = RestWithSession | GraphqlWithSession;
