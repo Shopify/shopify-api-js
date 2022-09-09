@@ -18,6 +18,7 @@ import {DataType, RequestReturn} from '../../clients/http_client/types';
 import {
   abstractConvertRequest,
   abstractConvertResponse,
+  abstractConvertHeaders,
   AdapterResponse,
   NormalizedResponse,
   Cookies,
@@ -50,11 +51,8 @@ export function createBegin(config: ConfigInterface) {
 
     const cleanShop = createSanitizeShop(config)(shop, true)!;
     const request = await abstractConvertRequest(adapterArgs);
-    const response: NormalizedResponse = {
-      headers: {},
-    };
 
-    const cookies = new Cookies(request, response, {
+    const cookies = new Cookies(request, {} as NormalizedResponse, {
       keys: [config.apiSecretKey],
       secure: true,
     });
@@ -77,11 +75,16 @@ export function createBegin(config: ConfigInterface) {
     const processedQuery = new ProcessedQuery();
     processedQuery.putAll(query);
 
-    response.statusCode = 302;
-    response.statusText = 'Found';
-    response.headers!.Location = `${
-      config.hostScheme
-    }://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`;
+    const response: NormalizedResponse = {
+      statusCode: 302,
+      statusText: 'Found',
+      headers: {
+        ...cookies.response.headers!,
+        Location: `${
+          config.hostScheme
+        }://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`,
+      },
+    };
 
     return abstractConvertResponse(response, adapterArgs);
   };
@@ -99,9 +102,8 @@ export function createCallback(config: ConfigInterface) {
     );
 
     const request = await abstractConvertRequest(adapterArgs);
-    const response: NormalizedResponse = {};
 
-    const cookies = new Cookies(request, response, {
+    const cookies = new Cookies(request, {} as NormalizedResponse, {
       keys: [config.apiSecretKey],
       secure: true,
     });
@@ -159,7 +161,10 @@ export function createCallback(config: ConfigInterface) {
     }
 
     return {
-      response,
+      headers: await abstractConvertHeaders(
+        cookies.response.headers!,
+        adapterArgs,
+      ),
       session,
     };
   };

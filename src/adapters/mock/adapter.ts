@@ -1,7 +1,9 @@
 import {MemorySessionStorage} from '../../session/storage/memory';
 import {
   AdapterArgs,
+  AdapterHeaders,
   canonicalizeHeaders,
+  Headers,
   NormalizedRequest,
   NormalizedResponse,
 } from '../../runtime/http';
@@ -23,6 +25,13 @@ export async function mockConvertResponse(
   _adapterArgs: MockAdapterArgs,
 ): Promise<NormalizedResponse> {
   return Promise.resolve(response);
+}
+
+export async function mockConvertHeaders(
+  headers: Headers,
+  _adapterArgs: MockAdapterArgs,
+): Promise<AdapterHeaders> {
+  return Promise.resolve(headers);
 }
 
 export async function mockFetch({

@@ -8,6 +8,7 @@ import {
   AdapterArgs,
   canonicalizeHeaders,
   flatHeaders,
+  Headers,
   NormalizedRequest,
   NormalizedResponse,
 } from '../../runtime/http';
@@ -48,23 +49,28 @@ export async function nodeConvertAndSendResponse(
   const res = adapterArgs.rawResponse;
 
   if (response.headers) {
-    Object.entries(response.headers).forEach(([header, value]) =>
-      res.setHeader(header, value),
-    );
+    await nodeConvertAndSendHeaders(response.headers, adapterArgs);
   }
 
   if (response.body) {
     res.write(response.body);
   }
 
-  if (response.statusCode) {
-    res.statusCode = response.statusCode;
-    if (response.statusText) {
-      res.statusMessage = response.statusText;
-    }
+  res.statusCode = response.statusCode;
+  res.statusMessage = response.statusText;
 
-    res.end();
-  }
+  res.end();
+}
+
+export async function nodeConvertAndSendHeaders(
+  headers: Headers,
+  adapterArgs: NodeAdapterArgs,
+): Promise<void> {
+  const res = adapterArgs.rawResponse;
+
+  Object.entries(headers).forEach(([header, value]) =>
+    res.setHeader(header, value),
+  );
 }
 
 export async function nodeFetch({

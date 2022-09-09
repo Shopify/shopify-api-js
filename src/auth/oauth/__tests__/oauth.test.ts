@@ -12,6 +12,7 @@ import {
   NormalizedResponse,
 } from '../../../runtime/http';
 import {
+  queueMockResponse,
   shopify,
   // signJWT
 } from '../../../__tests__/test-helper';
@@ -295,7 +296,7 @@ describe('validateAuthCallback', () => {
       },
     };
 
-    fetchMock.mockResponse(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     await expect(
       shopify.auth.callback({
@@ -331,7 +332,7 @@ describe('validateAuthCallback', () => {
       scope: shopify.config.scopes.toString(),
     };
 
-    fetchMock.mockResponse(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: false,
@@ -340,16 +341,10 @@ describe('validateAuthCallback', () => {
     });
 
     const expectedId = `offline_${shop}`;
-    const responseCookies = new Cookies(
-      {} as NormalizedRequest,
-      callbackResponse.response,
-      {
-        keys: [shopify.config.apiSecretKey],
-      },
+    const responseCookies = Cookies.parseCookies(
+      callbackResponse.headers['Set-Cookie'],
     );
-    expect(responseCookies.getOutgoing('shopify_app_session')).toEqual(
-      expectedId,
-    );
+    expect(responseCookies.shopify_app_session.value).toEqual(expectedId);
     expect(callbackResponse.session.accessToken).toBe(
       successResponse.access_token,
     );
@@ -401,7 +396,7 @@ describe('validateAuthCallback', () => {
       associated_user: successResponse.associated_user,
     };
 
-    fetchMock.mockResponse(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: true,
@@ -409,14 +404,10 @@ describe('validateAuthCallback', () => {
       rawRequest: request,
     });
 
-    const responseCookies = new Cookies(
-      {} as NormalizedRequest,
-      callbackResponse.response,
-      {
-        keys: [shopify.config.apiSecretKey],
-      },
+    const responseCookies = Cookies.parseCookies(
+      callbackResponse.headers['Set-Cookie'],
     );
-    expect(responseCookies.getOutgoing('shopify_app_session')).toEqual(
+    expect(responseCookies.shopify_app_session.value).toEqual(
       expect.stringMatching(
         /^[a-f0-9]{8,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{12,}/,
       ),
@@ -426,7 +417,7 @@ describe('validateAuthCallback', () => {
     );
 
     const session = await shopify.config.sessionStorage.loadSession(
-      responseCookies.getOutgoing('shopify_app_session')!,
+      responseCookies.shopify_app_session!.value,
     );
 
     expect(session?.accessToken).toBe(successResponse.access_token);
@@ -474,7 +465,7 @@ describe('validateAuthCallback', () => {
     );
     testCallbackQuery.hmac = expectedHmac;
 
-    fetchMock.mockResponse(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: true,
@@ -525,15 +516,9 @@ describe('validateAuthCallback', () => {
     // expect(currentSession).not.toBe(null);
     // expect(currentSession?.id).toEqual(jwtSessionId);
 
-    // const responseCookies = new Cookies(
-    //   {} as NormalizedRequest,
-    //   callbackResponse.response,
-    //   {
-    //     keys: [shopify.config.apiSecretKey],
-    //   },
-    // );
+    // const responseCookies = Cookies.parseCookies(callbackResponse.headers['Set-Cookie']);
     // expect(
-    //   responseCookies.getOutgoing('shopify_app_session'),
+    //   responseCookies.shopify_app_session,
     // ).not.toBeDefined();
   });
 
@@ -575,7 +560,7 @@ describe('validateAuthCallback', () => {
     );
     testCallbackQuery.hmac = expectedHmac;
 
-    fetchMock.mockResponse(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: true,
@@ -583,15 +568,11 @@ describe('validateAuthCallback', () => {
       rawRequest: request,
     });
 
-    const responseCookies = new Cookies(
-      {} as NormalizedRequest,
-      callbackResponse.response,
-      {
-        keys: [shopify.config.apiSecretKey],
-      },
+    const responseCookies = Cookies.parseCookies(
+      callbackResponse.headers['Set-Cookie'],
     );
 
-    const cookieId = responseCookies.getOutgoing('shopify_app_session');
+    const cookieId = responseCookies.shopify_app_session!.value;
     const expectedExpiration = new Date(
       Date.now() + successResponse.expires_in * 1000,
     ).getTime();
@@ -610,11 +591,11 @@ describe('validateAuthCallback', () => {
       1,
     );
     expect(
-      responseCookies.outgoingCookieJar.shopify_app_session.expires?.getTime(),
+      responseCookies.shopify_app_session.expires?.getTime(),
     ).toBeWithinSecondsOf(expectedExpiration, 1);
 
     const cookieSession = await shopify.config.sessionStorage.loadSession(
-      cookieId!,
+      cookieId,
     );
     expect(cookieSession).not.toBeUndefined();
   });
@@ -646,7 +627,7 @@ describe('validateAuthCallback', () => {
     );
     testCallbackQuery.hmac = expectedHmac;
 
-    fetchMock.mockResponse(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: false,
@@ -654,12 +635,8 @@ describe('validateAuthCallback', () => {
       rawRequest: request,
     });
 
-    const responseCookies = new Cookies(
-      {} as NormalizedRequest,
-      callbackResponse.response,
-      {
-        keys: [shopify.config.apiSecretKey],
-      },
+    const responseCookies = Cookies.parseCookies(
+      callbackResponse.headers['Set-Cookie'],
     );
 
     expect(callbackResponse.session.id).toEqual(
@@ -667,9 +644,7 @@ describe('validateAuthCallback', () => {
     );
     expect(callbackResponse.session.expires?.getTime()).toBeUndefined();
 
-    expect(
-      responseCookies.getOutgoing('shopify_app_session'),
-    ).not.toBeDefined();
+    expect(responseCookies.shopify_app_session).not.toBeDefined();
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
@@ -699,7 +674,7 @@ describe('validateAuthCallback', () => {
     );
     testCallbackQuery.hmac = expectedHmac;
 
-    fetchMock.mockResponse(JSON.stringify(successResponse));
+    queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: false,
@@ -707,14 +682,10 @@ describe('validateAuthCallback', () => {
       rawRequest: request,
     });
 
-    const responseCookies = new Cookies(
-      {} as NormalizedRequest,
-      callbackResponse.response,
-      {
-        keys: [shopify.config.apiSecretKey],
-      },
+    const responseCookies = Cookies.parseCookies(
+      callbackResponse.headers['Set-Cookie'],
     );
-    const cookieId = responseCookies.getOutgoing('shopify_app_session');
+    const cookieId = responseCookies.shopify_app_session!.value;
 
     expect(callbackResponse.session.id).toEqual(cookieId);
     expect(callbackResponse.session.id).toEqual(
@@ -722,11 +693,11 @@ describe('validateAuthCallback', () => {
     );
     expect(callbackResponse.session.expires?.getTime()).toBeUndefined();
     expect(
-      responseCookies.outgoingCookieJar.shopify_app_session.expires?.getTime(),
+      responseCookies.shopify_app_session.expires?.getTime(),
     ).toBeUndefined();
 
     const cookieSession = await shopify.config.sessionStorage.loadSession(
-      cookieId!,
+      cookieId,
     );
     expect(cookieSession).not.toBeUndefined();
   });

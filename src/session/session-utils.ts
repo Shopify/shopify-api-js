@@ -1,6 +1,6 @@
 import {ConfigInterface} from '../base-types';
 import {SESSION_COOKIE_NAME} from '../auth/oauth/oauth';
-import {Cookies} from '../runtime/http';
+import {Cookies, NormalizedResponse} from '../runtime/http';
 import {createSanitizeShop} from '../utils/shop-validator';
 import {createDecodeSessionToken} from '../utils/decode-session-token';
 import * as ShopifyErrors from '../error';
@@ -151,7 +151,9 @@ export function createGetCurrentSessionId(config: ConfigInterface) {
         }
       }
     } else {
-      const cookies = new Cookies(request, {}, {keys: [config.apiSecretKey]});
+      const cookies = new Cookies(request, {} as NormalizedResponse, {
+        keys: [config.apiSecretKey],
+      });
       return cookies.getAndVerify(SESSION_COOKIE_NAME);
     }
 

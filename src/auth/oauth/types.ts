@@ -1,5 +1,5 @@
 import {Session} from '../../session/session';
-import {AdapterArgs, NormalizedResponse} from '../../runtime/http/types';
+import {AdapterArgs, AdapterHeaders} from '../../runtime/http/types';
 
 export interface AuthQuery {
   code: string;
@@ -22,7 +22,7 @@ export interface CallbackParams extends AdapterArgs {
 }
 
 export interface CallbackResponse {
-  response: NormalizedResponse;
+  headers: AdapterHeaders;
   session: Session;
 }
 

@@ -10,14 +10,15 @@ export interface NormalizedRequest {
 }
 
 export interface NormalizedResponse {
-  statusCode?: number;
-  statusText?: string;
+  statusCode: number;
+  statusText: string;
   headers?: Headers;
   body?: string;
 }
 
 export type AdapterRequest = any;
 export type AdapterResponse = any;
+export type AdapterHeaders = any;
 export interface AdapterArgs {
   rawRequest: AdapterRequest;
   rawResponse?: AdapterResponse;
@@ -35,3 +36,8 @@ export type AbstractConvertResponseFunc = (
   response: NormalizedResponse,
   adapterArgs: AdapterArgs,
 ) => Promise<AdapterResponse>;
+
+export type AbstractConvertHeadersFunc = (
+  headers: Headers,
+  adapterArgs: AdapterArgs,
+) => Promise<AdapterHeaders>;

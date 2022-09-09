@@ -133,10 +133,6 @@ export class Cookies {
     return this.receivedCookieJar[name]?.value;
   }
 
-  getOutgoing(name: string): string | undefined {
-    return this.outgoingCookieJar[name]?.value;
-  }
-
   deleteCookie(name: string) {
     this.set(name, '', {
       path: '/',
