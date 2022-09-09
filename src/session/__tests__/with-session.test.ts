@@ -9,6 +9,7 @@ import {NormalizedRequest} from '../../runtime/http';
 import {createGetJwtSessionId, createGetOfflineId} from '../session-utils';
 import {JwtPayload} from '../../utils/types';
 import {GraphqlWithSession, RestWithSession} from '../types';
+import {ClientType} from '../../base-types';
 
 describe('withSession', () => {
   const shop = 'test-shop.myshopify.io';
@@ -67,21 +68,21 @@ describe('withSession', () => {
 
     await expect(
       shopify.session.withSession({
-        clientType: 'rest',
+        clientType: ClientType.Rest,
         isOnline: false,
         rawRequest: request,
       }),
     ).rejects.toThrow(ShopifyErrors.SessionNotFound);
     await expect(
       shopify.session.withSession({
-        clientType: 'graphql',
+        clientType: ClientType.Graphql,
         isOnline: true,
         rawRequest: request,
       }),
     ).rejects.toThrowError(ShopifyErrors.SessionNotFound);
   });
 
-  it('throws an error when the session is not yet authenticated', async () => {
+  it('throws an error when the session is not yet authenticated (has no access token)', async () => {
     shopify.config.isEmbeddedApp = true;
 
     const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
@@ -100,7 +101,7 @@ describe('withSession', () => {
 
     await expect(
       shopify.session.withSession({
-        clientType: 'rest',
+        clientType: ClientType.Rest,
         isOnline: false,
         rawRequest: request,
       }),
@@ -126,13 +127,13 @@ describe('withSession', () => {
     });
 
     const restRequestCtx = (await shopify.session.withSession({
-      clientType: 'rest',
+      clientType: ClientType.Rest,
       isOnline: false,
       rawRequest: request,
     })) as RestWithSession;
 
     const gqlRequestCtx = (await shopify.session.withSession({
-      clientType: 'graphql',
+      clientType: ClientType.Graphql,
       isOnline: false,
       rawRequest: request,
     })) as GraphqlWithSession;
@@ -164,13 +165,13 @@ describe('withSession', () => {
     });
 
     const restRequestCtx = (await shopify.session.withSession({
-      clientType: 'rest',
+      clientType: ClientType.Rest,
       isOnline: true,
       rawRequest: request,
     })) as RestWithSession;
 
     const gqlRequestCtx = (await shopify.session.withSession({
-      clientType: 'graphql',
+      clientType: ClientType.Graphql,
       isOnline: true,
       rawRequest: request,
     })) as GraphqlWithSession;
@@ -203,13 +204,13 @@ describe('withSession', () => {
     });
 
     const restRequestCtx = (await shopify.session.withSession({
-      clientType: 'rest',
+      clientType: ClientType.Rest,
       isOnline: true,
       rawRequest: request,
     })) as RestWithSession;
 
     const gqlRequestCtx = (await shopify.session.withSession({
-      clientType: 'graphql',
+      clientType: ClientType.Graphql,
       isOnline: true,
       rawRequest: request,
     })) as GraphqlWithSession;

@@ -61,3 +61,7 @@ export enum ShopifyHeader {
   Topic = 'X-Shopify-Topic',
   Domain = 'X-Shopify-Shop-Domain',
 }
+export enum ClientType {
+  Rest = 'rest',
+  Graphql = 'graphql',
+}

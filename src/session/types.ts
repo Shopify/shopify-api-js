@@ -3,6 +3,7 @@ import {AdapterArgs, NormalizedRequest} from '../runtime/http';
 import {OnlineAccessInfo} from '../auth/oauth/types';
 import {createRestClientClass} from '../clients/rest/rest_client';
 import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {ClientType} from '../base-types';
 
 import type {shopifySession} from '.';
 
@@ -41,7 +42,7 @@ export interface GetCurrentSessionIdParams {
 }
 
 export interface WithSessionParams extends AdapterArgs {
-  clientType: 'rest' | 'graphql';
+  clientType: ClientType;
   isOnline: boolean;
 }
 

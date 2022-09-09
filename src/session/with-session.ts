@@ -1,5 +1,5 @@
 import * as ShopifyErrors from '../error';
-import {ConfigInterface} from '../base-types';
+import {ClientType, ConfigInterface} from '../base-types';
 import {createRestClientClass} from '../clients/rest/rest_client';
 import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 
@@ -17,14 +17,14 @@ export function createWithSession(config: ConfigInterface) {
       throw new ShopifyErrors.SessionNotFound('No session found.');
     } else if (!session.accessToken) {
       throw new ShopifyErrors.InvalidSession(
-        'Requested session does not contain an accessToken.',
+        'Requested session does not contain an access token.',
       );
     }
 
     const RestClient = createRestClientClass({config});
     const GraphqlClient = createGraphqlClientClass({config});
     switch (clientType) {
-      case 'rest':
+      case ClientType.Rest:
         return {
           client: new RestClient({
             domain: session.shop,
@@ -32,7 +32,7 @@ export function createWithSession(config: ConfigInterface) {
           }),
           session,
         };
-      case 'graphql':
+      case ClientType.Graphql:
         return {
           client: new GraphqlClient({
             domain: session.shop,
