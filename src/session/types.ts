@@ -1,5 +1,8 @@
-import {OnlineAccessInfo} from '../auth/oauth/types';
 import {AuthScopes} from '../auth/scopes';
+import {AdapterArgs, NormalizedRequest} from '../runtime/http';
+import {OnlineAccessInfo} from '../auth/oauth/types';
+
+// import type {shopifySession} from '.';
 
 export interface SessionInterface {
   readonly id: string;
@@ -12,3 +15,18 @@ export interface SessionInterface {
   onlineAccessInfo?: OnlineAccessInfo;
   isActive(scopes: AuthScopes | string | string[]): boolean;
 }
+
+export interface SessionGetCurrentParams extends AdapterArgs {
+  isOnline: boolean;
+}
+
+export interface SessionDeleteCurrentParams extends AdapterArgs {
+  isOnline: boolean;
+}
+
+export interface GetCurrentSessionIdParams {
+  request: NormalizedRequest;
+  isOnline: boolean;
+}
+
+// export type ShopifySession = ReturnType<typeof shopifySession>;

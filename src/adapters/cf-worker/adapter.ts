@@ -5,6 +5,7 @@ import {
   AdapterArgs,
   NormalizedRequest,
   NormalizedResponse,
+  Headers,
 } from '../../runtime/http';
 
 interface WorkerAdapterArgs extends AdapterArgs {
@@ -26,12 +27,20 @@ export async function workerConvertRequest(
 
 export async function workerConvertResponse(
   resp: NormalizedResponse,
+  adapterArgs: WorkerAdapterArgs,
 ): Promise<Response> {
   return new Response(resp.body, {
     status: resp.statusCode,
     statusText: resp.statusText,
-    headers: flatHeaders(resp.headers ?? {}),
+    headers: await workerConvertHeaders(resp.headers ?? {}, adapterArgs),
   });
+}
+
+export async function workerConvertHeaders(
+  headers: Headers,
+  _adapterArgs: WorkerAdapterArgs,
+): Promise<string[][]> {
+  return Promise.resolve(flatHeaders(headers ?? {}));
 }
 
 export async function workerFetch({

@@ -1,6 +1,8 @@
 import {ConfigParams, Shopify} from './base-types';
 import {validateConfig} from './config';
 import {createClientClasses} from './clients';
+import {shopifyAuth} from './auth';
+// import {shopifySession} from './session';
 import {shopifyUtils} from './utils';
 
 export * from './error';
@@ -13,6 +15,8 @@ export function shopifyApi(config: ConfigParams): Shopify {
   return {
     config: validatedConfig,
     clients: createClientClasses(validatedConfig),
+    auth: shopifyAuth(validatedConfig),
+    // session: shopifySession(validatedConfig),
     utils: shopifyUtils(validatedConfig),
   };
 }

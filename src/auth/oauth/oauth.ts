@@ -1,63 +1,65 @@
-import http from 'http';
-import querystring from 'querystring';
-
 import {v4 as uuidv4} from 'uuid';
-import Cookies from 'cookies';
 
-import {config, throwIfConfigNotSet, throwIfPrivateApp} from '../../config';
-import nonce from '../../utils/nonce';
-import validateHmac from '../../utils/hmac-validator';
-import safeCompare from '../../utils/safe-compare';
-import decodeSessionToken from '../../utils/decode-session-token';
-import {Session} from '../session';
-import {HttpClient} from '../../clients/http_client/http_client';
-import {DataType, RequestReturn} from '../../clients/http_client/types';
+import ProcessedQuery from '../../utils/processed-query';
+import {ConfigInterface} from '../../base-types';
 import * as ShopifyErrors from '../../error';
-import {SessionInterface} from '../session/types';
-import {sanitizeShop} from '../../utils/shop-validator';
+import {nonce} from '../../utils/nonce';
+import {createValidateHmac} from '../../utils/hmac-validator';
+import {safeCompare} from '../../utils/safe-compare';
+import {createSanitizeShop} from '../../utils/shop-validator';
+import {Session} from '../../session/session';
+import {SessionInterface} from '../../session/types';
+import {
+  createGetJwtSessionId,
+  createGetOfflineId,
+} from '../../session/session-utils';
+import {createHttpClientClass} from '../../clients/http_client/http_client';
+import {DataType, RequestReturn} from '../../clients/http_client/types';
+import {
+  abstractConvertRequest,
+  abstractConvertResponse,
+  abstractConvertHeaders,
+  AdapterResponse,
+  NormalizedResponse,
+  Cookies,
+} from '../../runtime/http';
 
 import {
+  BeginParams,
+  CallbackParams,
   AuthQuery,
   AccessTokenResponse,
   OnlineAccessResponse,
   OnlineAccessInfo,
+  CallbackResponse,
 } from './types';
 
-const ShopifyOAuth = {
-  SESSION_COOKIE_NAME: 'shopify_app_session',
-  STATE_COOKIE_NAME: 'shopify_app_state',
+export const SESSION_COOKIE_NAME = 'shopify_app_session';
+export const STATE_COOKIE_NAME = 'shopify_app_state';
 
-  /**
-   * Initializes a session and cookie for the OAuth process, and returns the necessary authorization url.
-   *
-   * @param request Current HTTP Request
-   * @param response Current HTTP Response
-   * @param shop Shop url: {shop}.myshopify.com
-   * @param redirect Redirect url for callback
-   * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token.
-   *                 During final oauth request, will receive back the online access token and current online session information.
-   *                 Defaults to online access.
-   */
-  async beginAuth(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
-    shop: string,
-    redirectPath: string,
-    isOnline = true,
-  ): Promise<string> {
-    throwIfConfigNotSet();
-    throwIfPrivateApp('Cannot perform OAuth for private apps');
-    const cleanShop = sanitizeShop(shop, true)!;
+export function createBegin(config: ConfigInterface) {
+  return async ({
+    shop,
+    callbackPath,
+    isOnline,
+    ...adapterArgs
+  }: BeginParams): Promise<AdapterResponse> => {
+    throwIfPrivateApp(
+      config.isPrivateApp,
+      'Cannot perform OAuth for private apps',
+    );
 
-    const cookies = new Cookies(request, response, {
+    const cleanShop = createSanitizeShop(config)(shop, true)!;
+    const request = await abstractConvertRequest(adapterArgs);
+
+    const cookies = new Cookies(request, {} as NormalizedResponse, {
       keys: [config.apiSecretKey],
       secure: true,
     });
 
-    const state = isOnline ? `online_${nonce()}` : `offline_${nonce()}`;
+    const state = nonce();
 
-    cookies.set(ShopifyOAuth.STATE_COOKIE_NAME, state, {
-      signed: true,
+    await cookies.setAndSign(STATE_COOKIE_NAME, state, {
       expires: new Date(Date.now() + 60000),
       sameSite: 'lax',
       secure: true,
@@ -66,54 +68,57 @@ const ShopifyOAuth = {
     const query = {
       client_id: config.apiKey,
       scope: config.scopes.toString(),
-      redirect_uri: `${config.hostScheme}://${config.hostName}${redirectPath}`,
+      redirect_uri: `${config.hostScheme}://${config.hostName}${callbackPath}`,
       state,
       'grant_options[]': isOnline ? 'per-user' : '',
     };
+    const processedQuery = new ProcessedQuery();
+    processedQuery.putAll(query);
 
-    const queryString = querystring.stringify(query);
+    const response: NormalizedResponse = {
+      statusCode: 302,
+      statusText: 'Found',
+      headers: {
+        ...cookies.response.headers!,
+        Location: `${
+          config.hostScheme
+        }://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`,
+      },
+    };
 
-    return `https://${cleanShop}/admin/oauth/authorize?${queryString}`;
-  },
+    return abstractConvertResponse(response, adapterArgs);
+  };
+}
 
-  /**
-   * Validates the received callback query.
-   * If valid, will make the subsequent request to update the current session with the appropriate access token.
-   * Throws errors for missing sessions and invalid callbacks.
-   *
-   * @param request Current HTTP Request
-   * @param response Current HTTP Response
-   * @param query Current HTTP Request Query, containing the information to be validated.
-   *              Depending on framework, this may need to be cast as "unknown" before being passed.
-   * @param isOnline Boolean value. Defaults to true (online access).
-   * @returns SessionInterface
-   */
-  async validateAuthCallback(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
-    query: AuthQuery,
-  ): Promise<SessionInterface> {
-    throwIfConfigNotSet();
-    throwIfPrivateApp('Cannot perform OAuth for private apps');
-
-    const stateFromCookie = getValueFromCookie(
-      request,
-      response,
-      this.STATE_COOKIE_NAME,
+export function createCallback(config: ConfigInterface) {
+  return async ({
+    query,
+    isOnline,
+    ...adapterArgs
+  }: CallbackParams): Promise<CallbackResponse> => {
+    throwIfPrivateApp(
+      config.isPrivateApp,
+      'Cannot perform OAuth for private apps',
     );
-    deleteCookie(request, response, this.STATE_COOKIE_NAME);
 
+    const request = await abstractConvertRequest(adapterArgs);
+
+    const cookies = new Cookies(request, {} as NormalizedResponse, {
+      keys: [config.apiSecretKey],
+      secure: true,
+    });
+
+    const stateFromCookie = await cookies.getAndVerify(STATE_COOKIE_NAME);
+    cookies.deleteCookie(STATE_COOKIE_NAME);
     if (!stateFromCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
       );
     }
 
-    if (!validQuery(query, stateFromCookie)) {
+    if (!(await validQuery({config, query, stateFromCookie}))) {
       throw new ShopifyErrors.InvalidOAuthError('Invalid OAuth callback.');
     }
-
-    const isOnline = stateFromCookie.startsWith('online_');
 
     const body = {
       client_id: config.apiKey,
@@ -126,26 +131,22 @@ const ShopifyOAuth = {
       type: DataType.JSON,
       data: body,
     };
-    const cleanShop = sanitizeShop(query.shop, true)!;
+    const cleanShop = createSanitizeShop(config)(query.shop, true)!;
 
-    const client = new HttpClient(cleanShop);
+    const HttpClient = createHttpClientClass(config);
+    const client = new HttpClient({domain: cleanShop});
     const postResponse = await client.post(postParams);
 
-    const session: Session = createSession(
+    const session: Session = createSession({
       postResponse,
-      cleanShop,
+      shop: cleanShop,
       stateFromCookie,
       isOnline,
-    );
+      config,
+    });
 
     if (!config.isEmbeddedApp) {
-      const cookies = new Cookies(request, response, {
-        keys: [config.apiSecretKey],
-        secure: true,
-      });
-
-      cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
-        signed: true,
+      await cookies.setAndSign(SESSION_COOKIE_NAME, session.id, {
         expires: session.expires,
         sameSite: 'lax',
         secure: true,
@@ -159,155 +160,63 @@ const ShopifyOAuth = {
       );
     }
 
-    return session;
-  },
-
-  /**
-   * Loads the current session id from the session cookie.
-   *
-   * @param request HTTP request object
-   * @param response HTTP response object
-   */
-  getCookieSessionId(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
-  ): string | undefined {
-    return getValueFromCookie(request, response, this.SESSION_COOKIE_NAME);
-  },
-
-  /**
-   * Builds a JWT session id from the current shop and user.
-   *
-   * @param shop Shopify shop domain
-   * @param userId Current actor id
-   */
-  getJwtSessionId(shop: string, userId: string): string {
-    return `${sanitizeShop(shop, true)}_${userId}`;
-  },
-
-  /**
-   * Builds an offline session id for the given shop.
-   *
-   * @param shop Shopify shop domain
-   */
-  getOfflineSessionId(shop: string): string {
-    return `offline_${sanitizeShop(shop, true)}`;
-  },
-
-  /**
-   * Extracts the current session id from the request / response pair.
-   *
-   * @param request  HTTP request object
-   * @param response HTTP response object
-   * @param isOnline Whether to load online (default) or offline sessions (optional)
-   */
-  getCurrentSessionId(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
-    isOnline = true,
-  ): string | undefined {
-    let currentSessionId: string | undefined;
-
-    if (config.isEmbeddedApp) {
-      const authHeader = request.headers.authorization;
-      if (authHeader) {
-        const matches = authHeader.match(/^Bearer (.+)$/);
-        if (!matches) {
-          throw new ShopifyErrors.MissingJwtTokenError(
-            'Missing Bearer token in authorization header',
-          );
-        }
-
-        const jwtPayload = decodeSessionToken(matches[1]);
-        const shop = jwtPayload.dest.replace(/^https:\/\//, '');
-        if (isOnline) {
-          currentSessionId = this.getJwtSessionId(shop, jwtPayload.sub);
-        } else {
-          currentSessionId = this.getOfflineSessionId(shop);
-        }
-      }
-    }
-
-    // Non-embedded apps will always load sessions using cookies. However, we fall back to the cookie session for
-    // embedded apps to allow apps to load their skeleton page after OAuth, so they can set up App Bridge and get a new
-    // JWT.
-    if (!currentSessionId) {
-      // We still want to get the offline session id from the cookie to make sure it's validated
-      currentSessionId = getValueFromCookie(
-        request,
-        response,
-        this.SESSION_COOKIE_NAME,
-      );
-    }
-
-    return currentSessionId;
-  },
-};
-
-/**
- * Uses the validation utils validateHmac, and safeCompare to assess whether the callback is valid.
- *
- * @param query Current HTTP Request Query
- * @param stateFromCookie state value from the current cookie
- */
-function validQuery(query: AuthQuery, stateFromCookie: string): boolean {
-  return validateHmac(query) && safeCompare(query.state, stateFromCookie);
+    return {
+      headers: await abstractConvertHeaders(
+        cookies.response.headers!,
+        adapterArgs,
+      ),
+      session,
+    };
+  };
 }
 
-/**
- * Loads a given value from the cookie
- *
- * @param request HTTP request object
- * @param response HTTP response object
- * @param name Name of the cookie to load
- */
-function getValueFromCookie(
-  request: http.IncomingMessage,
-  response: http.ServerResponse,
-  name: string,
-): string | undefined {
-  const cookies = new Cookies(request, response, {
-    secure: true,
-    keys: [config.apiSecretKey],
-  });
-  return cookies.get(name, {signed: true});
+async function validQuery({
+  config,
+  query,
+  stateFromCookie,
+}: {
+  config: ConfigInterface;
+  query: AuthQuery;
+  stateFromCookie: string;
+}): Promise<boolean> {
+  return (
+    (await createValidateHmac(config)(query)) &&
+    safeCompare(query.state, stateFromCookie)
+  );
 }
 
-/**
- * Loads a given value from the cookie
- *
- * @param request HTTP request object
- * @param response HTTP response object
- * @param name Name of the cookie to load
- */
-function deleteCookie(
-  request: http.IncomingMessage,
-  response: http.ServerResponse,
-  name: string,
-): void {
-  const cookies = new Cookies(request, response, {
-    secure: true,
-    keys: [config.apiSecretKey],
-  });
-  cookies.set(name);
-}
-
-/**
- * Creates a new session from the response from the access token request.
- *
- * @param postResponse Response from the access token request
- * @param shop Shop url: {shop}.myshopify.com
- * @param stateFromCookie State from the cookie received by the OAuth callback
- * @param isOnline Boolean indicating if the access token is for online access
- * @returns SessionInterface
- */
-function createSession(
-  postResponse: RequestReturn,
-  shop: string,
-  stateFromCookie: string,
-  isOnline: boolean,
-): SessionInterface {
+function createSession({
+  config,
+  postResponse,
+  shop,
+  stateFromCookie,
+  isOnline,
+}: {
+  config: ConfigInterface;
+  postResponse: RequestReturn;
+  shop: string;
+  stateFromCookie: string;
+  isOnline: boolean;
+}): SessionInterface {
   let session: Session;
+
+  if (
+    !isOnline &&
+    (postResponse.body as OnlineAccessResponse).associated_user
+  ) {
+    throw new ShopifyErrors.InvalidOAuthError(
+      "Attempted to complete offline OAuth flow, but received an online token response. This is likely because you're not setting the isOnline parameter consistently between begin() and callback()",
+    );
+  }
+
+  if (
+    isOnline &&
+    !(postResponse.body as OnlineAccessResponse).associated_user
+  ) {
+    throw new ShopifyErrors.InvalidOAuthError(
+      "Attempted to complete online OAuth flow, but received an offline token response. This is likely because you're not setting the isOnline parameter consistently between begin() and callback()",
+    );
+  }
 
   if (isOnline) {
     let sessionId: string;
@@ -318,7 +227,7 @@ function createSession(
     );
 
     if (config.isEmbeddedApp) {
-      sessionId = ShopifyOAuth.getJwtSessionId(
+      sessionId = createGetJwtSessionId(config)(
         shop,
         `${(rest as OnlineAccessInfo).associated_user.id}`,
       );
@@ -334,7 +243,7 @@ function createSession(
   } else {
     const responseBody = postResponse.body as AccessTokenResponse;
     session = new Session(
-      ShopifyOAuth.getOfflineSessionId(shop),
+      createGetOfflineId(config)(shop),
       shop,
       stateFromCookie,
       isOnline,
@@ -346,4 +255,8 @@ function createSession(
   return session;
 }
 
-export {ShopifyOAuth};
+function throwIfPrivateApp(isPrivateApp: boolean, message: string): void {
+  if (isPrivateApp) {
+    throw new ShopifyErrors.PrivateAppError(message);
+  }
+}

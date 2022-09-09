@@ -8,6 +8,7 @@ import {
   AdapterArgs,
   canonicalizeHeaders,
   flatHeaders,
+  Headers,
   NormalizedRequest,
   NormalizedResponse,
 } from '../../runtime/http';
@@ -21,7 +22,11 @@ export async function nodeConvertRequest(
   adapterArgs: NodeAdapterArgs,
 ): Promise<NormalizedRequest> {
   const req = adapterArgs.rawRequest;
-  const body = await new Promise<string>((resolve, reject) => {
+  const body = await new Promise<string | undefined>((resolve, reject) => {
+    if ((req as any).writableFinished) {
+      resolve(undefined);
+    }
+
     let str = '';
     req.on('data', (chunk) => {
       str += chunk.toString();
@@ -42,20 +47,30 @@ export async function nodeConvertAndSendResponse(
   adapterArgs: NodeAdapterArgs,
 ): Promise<void> {
   const res = adapterArgs.rawResponse;
-  res.statusCode = response.statusCode;
-  res.statusMessage = response.statusText;
 
   if (response.headers) {
-    Object.entries(response.headers).forEach(([header, value]) =>
-      res.setHeader(header, value),
-    );
+    await nodeConvertAndSetHeaders(response.headers, adapterArgs);
   }
 
   if (response.body) {
     res.write(response.body);
   }
 
+  res.statusCode = response.statusCode;
+  res.statusMessage = response.statusText;
+
   res.end();
+}
+
+export async function nodeConvertAndSetHeaders(
+  headers: Headers,
+  adapterArgs: NodeAdapterArgs,
+): Promise<void> {
+  const res = adapterArgs.rawResponse;
+
+  Object.entries(headers).forEach(([header, value]) =>
+    res.setHeader(header, value),
+  );
 }
 
 export async function nodeFetch({

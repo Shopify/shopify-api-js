@@ -3,6 +3,7 @@ import type {
   AbstractConvertRequestFunc,
   AbstractConvertResponseFunc,
   NormalizedResponse,
+  AbstractConvertHeadersFunc,
 } from './types';
 
 export * from './cookies';
@@ -50,4 +51,16 @@ export function setAbstractConvertResponseFunc(
   func: AbstractConvertResponseFunc,
 ) {
   abstractConvertResponse = func;
+}
+
+// eslint-disable-next-line import/no-mutable-exports
+export let abstractConvertHeaders: AbstractConvertHeadersFunc = () => {
+  throw new Error(
+    "Missing adapter implementation for 'abstractConvertHeaders' - make sure to import the appropriate adapter for your platform",
+  );
+};
+export function setAbstractConvertHeadersFunc(
+  func: AbstractConvertHeadersFunc,
+) {
+  abstractConvertHeaders = func;
 }

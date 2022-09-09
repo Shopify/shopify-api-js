@@ -1,3 +1,6 @@
+import {Session} from '../../session/session';
+import {AdapterArgs, AdapterHeaders} from '../../runtime/http/types';
+
 export interface AuthQuery {
   code: string;
   timestamp: string;
@@ -5,6 +8,22 @@ export interface AuthQuery {
   shop: string;
   host?: string;
   hmac?: string;
+}
+
+export interface BeginParams extends AdapterArgs {
+  shop: string;
+  callbackPath: string;
+  isOnline: boolean;
+}
+
+export interface CallbackParams extends AdapterArgs {
+  query: AuthQuery;
+  isOnline: boolean;
+}
+
+export interface CallbackResponse {
+  headers: AdapterHeaders;
+  session: Session;
 }
 
 export interface AccessTokenResponse {
