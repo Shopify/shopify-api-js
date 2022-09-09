@@ -1,6 +1,9 @@
 import {AuthScopes} from '../auth/scopes';
 import {AdapterArgs, NormalizedRequest} from '../runtime/http';
 import {OnlineAccessInfo} from '../auth/oauth/types';
+import {createRestClientClass} from '../clients/rest/rest_client';
+import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {ClientType} from '../base-types';
 
 import type {shopifySession} from '.';
 
@@ -37,5 +40,24 @@ export interface GetCurrentSessionIdParams {
   request: NormalizedRequest;
   isOnline: boolean;
 }
+
+export interface WithSessionParams extends AdapterArgs {
+  clientType: ClientType;
+  isOnline: boolean;
+}
+
+interface WithSessionBaseResponse {
+  session: SessionInterface;
+}
+
+export interface RestWithSession extends WithSessionBaseResponse {
+  client: InstanceType<ReturnType<typeof createRestClientClass>>;
+}
+
+export interface GraphqlWithSession extends WithSessionBaseResponse {
+  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+}
+
+export type WithSessionResponse = RestWithSession | GraphqlWithSession;
 
 export type ShopifySession = ReturnType<typeof shopifySession>;

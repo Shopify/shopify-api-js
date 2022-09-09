@@ -1,13 +1,15 @@
-import jose from 'jose';
 import express, {Request, Response} from 'express';
 import request from 'supertest';
 
-import '../../__tests__/shopify-global';
-import {Session} from '../../session';
+import {
+  queueMockResponses,
+  shopify,
+  signJWT,
+} from '../../__tests__/test-helper';
+import {Session} from '../../session/session';
 import {InvalidSession, SessionNotFound} from '../../error';
-import graphqlProxy from '../graphql_proxy';
-import {config, setConfig} from '../../config';
-import {JwtPayload} from '../decode-session-token';
+import {JwtPayload} from '../types';
+import {canonicalizeHeaders, NormalizedRequest} from '../../runtime/http';
 
 const successResponse = {
   data: {
@@ -39,10 +41,24 @@ let token = '';
 
 describe('GraphQL proxy with session', () => {
   const app = express();
+  app.use(express.text());
+  app.use(express.json());
   app.post('/proxy', async (req: Request, res: Response) => {
     try {
-      const response = await graphqlProxy(req, res);
-      res.send(response.body);
+      // Convert the request to a normalized request here because we're using the mock adapter, rather than the node one
+      const request: NormalizedRequest = {
+        headers: canonicalizeHeaders({...req.headers} as any),
+        method: req.method ?? 'GET',
+        url: req.url!,
+        body: req.body,
+      };
+
+      const testResponse = await shopify.utils.graphqlProxy({
+        body: request.body!,
+        rawRequest: request,
+      });
+
+      res.send(testResponse.body);
     } catch (err) {
       res.status(400);
       res.send(JSON.stringify(err.message));
@@ -50,12 +66,12 @@ describe('GraphQL proxy with session', () => {
   });
 
   beforeEach(async () => {
-    config.isEmbeddedApp = true;
-    setConfig(config);
+    shopify.config.isEmbeddedApp = true;
+
     const jwtPayload: JwtPayload = {
       iss: 'https://shop.myshopify.com/admin',
       dest: 'https://shop.myshopify.com',
-      aud: config.apiKey,
+      aud: shopify.config.apiKey,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -71,20 +87,19 @@ describe('GraphQL proxy with session', () => {
       true,
     );
     session.accessToken = accessToken;
-    await config.sessionStorage.storeSession(session);
-    token = jwt.sign(jwtPayload, config.apiSecretKey, {
-      algorithm: 'HS256',
-    });
+    await shopify.config.sessionStorage.storeSession(session);
+    token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
   });
 
   it('can forward query and return response', async () => {
-    fetchMock.mockResponses(
-      JSON.stringify(successResponse),
-      JSON.stringify(successResponse),
+    queueMockResponses(
+      [JSON.stringify(successResponse)],
+      [JSON.stringify(successResponse)],
     );
 
     const firstResponse = await request(app)
       .post('/proxy')
+      .set('content-type', 'text/plain')
       .set('authorization', `Bearer ${token}`)
       .send(shopQuery)
       .expect(200);
@@ -93,6 +108,7 @@ describe('GraphQL proxy with session', () => {
 
     const nextResponse = await request(app)
       .post('/proxy')
+      .set('content-type', 'application/json')
       .set('authorization', `Bearer ${token}`)
       .send(objectQuery)
       .expect(200);
@@ -112,12 +128,12 @@ describe('GraphQL proxy with session', () => {
 
 describe('GraphQL proxy', () => {
   it('throws an error if no token', async () => {
-    config.isEmbeddedApp = true;
-    setConfig(config);
+    shopify.config.isEmbeddedApp = true;
+
     const jwtPayload: JwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: config.apiKey,
+      aud: shopify.config.apiKey,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -126,29 +142,41 @@ describe('GraphQL proxy', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, config.apiSecretKey, {
-      algorithm: 'HS256',
-    });
-    const req = {
+    const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
+    const request: NormalizedRequest = {
+      method: 'GET',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-    } as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
+      url: 'https://my-test-app.myshopify.io/auth/begin',
+    };
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop,
       'state',
       true,
     );
-    config.sessionStorage.storeSession(session);
+    shopify.config.sessionStorage.storeSession(session);
 
-    await expect(graphqlProxy(req, res)).rejects.toThrow(InvalidSession);
+    await expect(
+      shopify.utils.graphqlProxy({
+        body: '',
+        rawRequest: request,
+      }),
+    ).rejects.toThrow(InvalidSession);
   });
 
   it('throws an error if no session', async () => {
-    const req = {headers: {}} as http.IncomingMessage;
-    const res = {} as http.ServerResponse;
-    await expect(graphqlProxy(req, res)).rejects.toThrow(SessionNotFound);
+    const request: NormalizedRequest = {
+      method: 'GET',
+      headers: {},
+      url: 'https://my-test-app.myshopify.io/auth/begin',
+    };
+    await expect(
+      shopify.utils.graphqlProxy({
+        body: '',
+        rawRequest: request,
+      }),
+    ).rejects.toThrow(SessionNotFound);
   });
 });

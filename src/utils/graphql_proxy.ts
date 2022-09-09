@@ -1,18 +1,20 @@
-import http from 'http';
-
 import {ConfigInterface} from '../base-types';
-import {GraphqlClient} from '../clients/graphql';
 import {RequestReturn} from '../clients/http_client/types';
 import * as ShopifyErrors from '../error';
+import {createGetCurrent} from '../session/get-current';
+import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 
-import {createLoadCurrentSession} from './load-current-session';
+import {GraphqlProxyParams} from './types';
 
 export function createGraphqlProxy(config: ConfigInterface) {
-  return async (
-    userReq: http.IncomingMessage,
-    userRes: http.ServerResponse,
-  ): Promise<RequestReturn> => {
-    const session = await createLoadCurrentSession(config)(userReq, userRes);
+  return async ({
+    body,
+    ...adapterArgs
+  }: GraphqlProxyParams): Promise<RequestReturn> => {
+    const session = await createGetCurrent(config)({
+      isOnline: true,
+      ...adapterArgs,
+    });
     if (!session) {
       throw new ShopifyErrors.SessionNotFound(
         'Cannot proxy query. No session found.',
@@ -23,34 +25,13 @@ export function createGraphqlProxy(config: ConfigInterface) {
       );
     }
 
-    const shopName: string = session.shop;
-    const token: string = session.accessToken;
-    let reqBodyString = '';
-
-    return new Promise((resolve, reject) => {
-      userReq.on('data', (chunk) => {
-        reqBodyString += chunk;
-      });
-
-      userReq.on('end', async () => {
-        let reqBodyObject: {[key: string]: unknown} | undefined;
-        try {
-          reqBodyObject = JSON.parse(reqBodyString);
-        } catch (err) {
-          // we can just continue and attempt to pass the string
-        }
-
-        try {
-          const options = {
-            data: reqBodyObject ? reqBodyObject : reqBodyString,
-          };
-          const client = new GraphqlClient(shopName, token);
-          const response = await client.query(options);
-          return resolve(response);
-        } catch (err) {
-          return reject(err);
-        }
-      });
+    const GraphqlClient = createGraphqlClientClass({config});
+    const client = new GraphqlClient({
+      domain: session.shop,
+      accessToken: session.accessToken,
+    });
+    return client.query({
+      data: body,
     });
   };
 }

@@ -13,9 +13,6 @@ export default {
     '<rootDir>/__tests__/base-rest-resource.test.ts',
     '<rootDir>/webhooks',
     '<rootDir>/billing',
-    // These tests depend on the auth component and can't be fixed until it's refactored
-    '<rootDir>/utils/__tests__/graphql_proxy.test.ts',
-    '<rootDir>/utils/__tests__/with-session.test.ts',
   ],
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
 };
