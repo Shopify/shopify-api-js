@@ -51,8 +51,6 @@
     "src/webhooks/**/*.ts",
     "src/billing/**/*.ts",
     "src/utils/with-session.ts",
-    "src/utils/graphql_proxy.ts",
-    "src/utils/load-offline-session.ts",
-    "src/utils/delete-offline-session.ts"
+    "src/utils/graphql_proxy.ts"
   ],
 }
