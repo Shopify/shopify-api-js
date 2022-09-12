@@ -3,7 +3,7 @@ import Cookies from 'cookies';
 import * as ShopifyErrors from '../error';
 import {validateConfig} from '../config';
 import {ApiVersion, ConfigParams} from '../base-types';
-import {MemorySessionStorage} from '../session/storage/memory';
+import {MemorySessionStorage} from '../session-storage/memory';
 
 jest.mock('cookies');
 

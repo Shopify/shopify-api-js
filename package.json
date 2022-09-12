@@ -7,6 +7,10 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./session-storage/*": {
+      "import": "./dist/session-storage/*.js",
+      "types": "./dist/session-storage/*.d.ts"
+    },
     "./adapters/node": {
       "import": "./dist/adapters/node/index.js",
       "types": "./dist/adapters/node/index.d.ts"
@@ -16,6 +20,8 @@
       "types": "./dist/adapters/cf-worker/index.d.ts"
     }
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "prettier": "@shopify/prettier-config",
   "scripts": {
     "test:all": "jest",

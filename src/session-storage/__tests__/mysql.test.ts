@@ -17,7 +17,7 @@ describe('MySQLSessionStorage', () => {
   let containerId: string;
   beforeAll(async () => {
     const runCommand = await exec(
-      'docker run -d -e MYSQL_DATABASE=shopitest -e MYSQL_USER=shopify -e MYSQL_PASSWORD=passify -e MYSQL_RANDOM_ROOT_PASSWORD=1 -p 3306:3306 mysql:8-oracle',
+      'podman run -d -e MYSQL_DATABASE=shopitest -e MYSQL_USER=shopify -e MYSQL_PASSWORD=passify -e MYSQL_RANDOM_ROOT_PASSWORD=1 -p 3306:3306 mysql:8-oracle',
       {encoding: 'utf8'},
     );
     containerId = runCommand.stdout.trim();
@@ -39,7 +39,7 @@ describe('MySQLSessionStorage', () => {
 
   afterAll(async () => {
     await storage.disconnect();
-    await exec(`docker rm -f ${containerId}`);
+    await exec(`podman rm -f ${containerId}`);
   });
 
   batteryOfTests(async () => storage);

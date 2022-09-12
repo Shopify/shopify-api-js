@@ -1,6 +1,7 @@
-import {Session} from '../session';
+import {shopify} from '../../__tests__/test-helper';
+import {Session} from '../../session/session';
 import {CustomSessionStorage} from '../custom';
-import {SessionStorageError} from '../../../error';
+import {SessionStorageError} from '../../error';
 
 describe('custom session storage', () => {
   test('can perform core actions', async () => {
@@ -30,6 +31,7 @@ describe('custom session storage', () => {
         return Promise.resolve(true);
       },
     );
+    storage.setConfig(shopify.config);
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
     expect(storeCalled).toBe(true);
@@ -91,6 +93,7 @@ describe('custom session storage', () => {
         }
       },
     );
+    storage.setConfig(shopify.config);
 
     await expect(
       storage.findSessionsByShop('shop1_sessions.myshopify.io'),
@@ -128,6 +131,7 @@ describe('custom session storage', () => {
         return Promise.resolve(true);
       },
     );
+    storage.setConfig(shopify.config);
 
     await expect(
       storage.findSessionsByShop('shop1_sessions.myshopify.io'),
@@ -158,6 +162,7 @@ describe('custom session storage', () => {
       () => Promise.resolve(undefined),
       () => Promise.resolve(false),
     );
+    storage.setConfig(shopify.config);
 
     expect(storage.storeSession(session)).resolves.toBe(false);
     expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
@@ -168,6 +173,7 @@ describe('custom session storage', () => {
       () => Promise.reject(new Error('Failed to load!')),
       () => Promise.reject(new Error('Failed to delete!')),
     );
+    storage.setConfig(shopify.config);
 
     const expectedStore = expect(storage.storeSession(session)).rejects;
     expectedStore.toThrow(SessionStorageError);
@@ -186,6 +192,7 @@ describe('custom session storage', () => {
       () => Promise.resolve('this is not a Session' as any),
       () => Promise.resolve(true),
     );
+    storage.setConfig(shopify.config);
 
     expect(storage.loadSession(sessionId)).rejects.toThrow(SessionStorageError);
   });
@@ -216,6 +223,7 @@ describe('custom session storage', () => {
         return Promise.resolve(true);
       },
     );
+    storage.setConfig(shopify.config);
 
     await storage.storeSession(session);
     expect(typeof session.expires).toBe('string');
@@ -267,6 +275,7 @@ describe('custom session storage', () => {
         return Promise.resolve(true);
       },
     );
+    storage.setConfig(shopify.config);
 
     expect(serializedSession).toHaveLength(0);
     await storage.storeSession(session);
@@ -299,6 +308,7 @@ describe('custom session storage', () => {
         return Promise.resolve(true);
       },
     );
+    storage.setConfig(shopify.config);
 
     expect(serializedSession).toHaveLength(0);
     await storage.storeSession(session);

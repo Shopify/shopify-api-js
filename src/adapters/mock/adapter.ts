@@ -1,4 +1,4 @@
-import {MemorySessionStorage} from '../../session/storage/memory';
+import {MemorySessionStorage} from '../../session-storage/memory';
 import {
   AdapterArgs,
   AdapterHeaders,

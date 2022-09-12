@@ -3,7 +3,7 @@ import path from 'path';
 
 import fetch from 'node-fetch';
 
-import {SQLiteSessionStorage} from '../../session/storage/sqlite';
+import {SQLiteSessionStorage} from '../../session-storage/sqlite';
 import {
   AdapterArgs,
   canonicalizeHeaders,
