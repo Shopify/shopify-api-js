@@ -93,7 +93,6 @@ export function createBegin(config: ConfigInterface) {
 
 export function createCallback(config: ConfigInterface) {
   return async function callback<T = AdapterHeaders>({
-    query,
     isOnline,
     ...adapterArgs
   }: CallbackParams): Promise<CallbackResponse<T>> {
@@ -104,6 +103,11 @@ export function createCallback(config: ConfigInterface) {
 
     const request = await abstractConvertRequest(adapterArgs);
 
+    const query = new URL(
+      request.url,
+      `${config.hostScheme}://${config.hostName}`,
+    ).searchParams;
+
     const cookies = new Cookies(request, {} as NormalizedResponse, {
       keys: [config.apiSecretKey],
       secure: true,
@@ -113,18 +117,21 @@ export function createCallback(config: ConfigInterface) {
     cookies.deleteCookie(STATE_COOKIE_NAME);
     if (!stateFromCookie) {
       throw new ShopifyErrors.CookieNotFound(
-        `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
+        `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.get(
+          'shop',
+        )!}`,
       );
     }
 
-    if (!(await validQuery({config, query, stateFromCookie}))) {
+    const authQuery: AuthQuery = Object.fromEntries(query.entries());
+    if (!(await validQuery({config, query: authQuery, stateFromCookie}))) {
       throw new ShopifyErrors.InvalidOAuthError('Invalid OAuth callback.');
     }
 
     const body = {
       client_id: config.apiKey,
       client_secret: config.apiSecretKey,
-      code: query.code,
+      code: query.get('code'),
     };
 
     const postParams = {
@@ -132,7 +139,7 @@ export function createCallback(config: ConfigInterface) {
       type: DataType.JSON,
       data: body,
     };
-    const cleanShop = createSanitizeShop(config)(query.shop, true)!;
+    const cleanShop = createSanitizeShop(config)(query.get('shop')!, true)!;
 
     const HttpClient = createHttpClientClass(config);
     const client = new HttpClient({domain: cleanShop});
@@ -182,7 +189,7 @@ async function validQuery({
 }): Promise<boolean> {
   return (
     (await createValidateHmac(config)(query)) &&
-    safeCompare(query.state, stateFromCookie)
+    safeCompare(query.state!, stateFromCookie)
   );
 }
 

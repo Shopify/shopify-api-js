@@ -2,11 +2,7 @@ import {Session} from '../../session/session';
 import {AdapterArgs, AdapterHeaders} from '../../runtime/http/types';
 
 export interface AuthQuery {
-  code: string;
-  timestamp: string;
-  state: string;
-  shop: string;
-  host?: string;
+  [key: string]: string | undefined;
   hmac?: string;
 }
 
@@ -17,7 +13,6 @@ export interface BeginParams extends AdapterArgs {
 }
 
 export interface CallbackParams extends AdapterArgs {
-  query: AuthQuery;
   isOnline: boolean;
 }
 

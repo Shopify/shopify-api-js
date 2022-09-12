@@ -11,7 +11,7 @@ function stringifyQuery(query: AuthQuery): string {
   const processedQuery = new ProcessedQuery();
   Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
-    .forEach((key: keyof AuthQuery) => processedQuery.put(key, query[key]));
+    .forEach((key: string) => processedQuery.put(key, query[key]));
 
   return processedQuery.stringify(true);
 }
