@@ -20,8 +20,9 @@ import {
   abstractConvertResponse,
   abstractConvertHeaders,
   AdapterResponse,
-  NormalizedResponse,
   Cookies,
+  NormalizedResponse,
+  AdapterHeaders,
 } from '../../runtime/http';
 
 import {
@@ -91,11 +92,11 @@ export function createBegin(config: ConfigInterface) {
 }
 
 export function createCallback(config: ConfigInterface) {
-  return async ({
+  return async function callback<T = AdapterHeaders>({
     query,
     isOnline,
     ...adapterArgs
-  }: CallbackParams): Promise<CallbackResponse> => {
+  }: CallbackParams): Promise<CallbackResponse<T>> {
     throwIfPrivateApp(
       config.isPrivateApp,
       'Cannot perform OAuth for private apps',
@@ -161,10 +162,10 @@ export function createCallback(config: ConfigInterface) {
     }
 
     return {
-      headers: await abstractConvertHeaders(
+      headers: (await abstractConvertHeaders(
         cookies.response.headers!,
         adapterArgs,
-      ),
+      )) as T,
       session,
     };
   };

@@ -150,7 +150,7 @@ describe('beginAuth', () => {
   });
 });
 
-describe('validateAuthCallback', () => {
+describe('callback', () => {
   let request: NormalizedRequest;
 
   beforeEach(() => {
@@ -241,7 +241,7 @@ describe('validateAuthCallback', () => {
   });
 
   test('throws a SessionStorageError when storeSession returns false', async () => {
-    // create new storage with broken storeCallback for validateAuthCallback to use
+    // create new storage with broken storeCallback for callback to use
     shopify.config.sessionStorage = new CustomSessionStorage(
       () => Promise.resolve(false),
       () => Promise.resolve(undefined),
@@ -698,5 +698,8 @@ function setCallbackCookieFromResponse(
     keys: [shopify.config.apiSecretKey],
   });
 
-  request.headers.Cookie = responseCookies.toHeaders().join(',');
+  request.headers.Cookie = [
+    `shopify_app_state=${responseCookies.outgoingCookieJar.shopify_app_state.value}`,
+    `shopify_app_state.sig=${responseCookies.outgoingCookieJar['shopify_app_state.sig'].value}`,
+  ].join(';');
 }

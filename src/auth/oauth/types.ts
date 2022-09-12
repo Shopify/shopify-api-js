@@ -21,8 +21,8 @@ export interface CallbackParams extends AdapterArgs {
   isOnline: boolean;
 }
 
-export interface CallbackResponse {
-  headers: AdapterHeaders;
+export interface CallbackResponse<T = AdapterHeaders> {
+  headers: T;
   session: Session;
 }
 
