@@ -133,7 +133,7 @@ export function createHttpClientClass(config: ConfigInterface) {
         }
       }
 
-      const url = `https://${this.domain}${this.getRequestPath(
+      const url = `http://${this.domain}${this.getRequestPath(
         params.path,
       )}${ProcessedQuery.stringify(params.query)}`;
       const request: NormalizedRequest = {
