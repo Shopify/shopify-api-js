@@ -4,18 +4,21 @@ By following this guide, you will have a fully functional Shopify app. However, 
 
 ## Notes on session handling
 
-Before you start writing your application, please note that the Shopify library stores some information for OAuth in sessions. Since each application may choose a different strategy to store information, the library cannot dictate any specific storage strategy. By default, `config` is initialized with `SQLiteSessionStorage`, which will enable you to start developing your app by storing sessions using the file-based SQLite package. You can quickly get your app set up using it, but please keep the following in mind.
+Before you start writing your application, please note that the Shopify library stores some information in sessions, like the API access token and the approved scopes.
 
-`MemorySessionStorage` is **purposely** designed to be a single-process, development-only solution. It **will leak** memory in most cases and delete all sessions when your app restarts. You should **never** use it in production apps.
+Browsers are making it increasingly more difficult to use 3rd party cookies (e.g. [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/cookies#tracking_protection)), and because embedded apps run in an iframe, their cookies are considered 3rd party cookies. **That means that this library cannot rely on cookies for sessions**, which is how web frameworks typically store sessions by default.
 
-`SQLiteSessionStorage` is designed to be a single-process solution and _may_ be sufficient for your production needs depending on your applications design and needs.
+This library can use your app's data storage to store sessions to work around that issue, using `SessionStorage`.
+Each app may choose a different data storage, so the library cannot assume any specific strategy will be available, but [we provide some options](../src/session-storage/README.md) to help you quickly set up your app.
 
-The other storage adapters (`MongoDBSessionStorage`, `MySQLSessionStorage`, `PostgreSQLSessionStorage`, `RedisSessionStorage`) cover a variety of production-grade storage options, but require further setup from the app.
+- By default, Node.js apps will use `SQLiteSessionStorage`, which will enable you to start developing your app by storing sessions using the file-based SQLite package.
+  - It will use a file named `database.sqlite` by default.
+  - It's designed to be a single-process solution and _may_ be sufficient for your production needs depending on your applications design and needs.
+- For runtimes that don't support file-system access, we also provide `MemorySessionStorage`.
+  - We don't default to this strategy for CloudFlare workers, because it only works if you're running all your endpoints on the same worker.
+  - This strategy is **purposely** designed to be a single-process, development-only solution. It **will leak** memory in most cases and delete all sessions when your app restarts. You should **never** use it in production apps.
 
-By default, this is how each runtime adapter behaves:
-
-- Node will use `SQLiteSessionStorage`, saving to a local `database.sqlite` file. This enables you to quickly set up a running app with persistent storage.
-- CloudFlare will load `MemorySessionStorage` because there is no option we can use a default that doesn't require configuration, but it won't be able to properly load sessions without a distributed database. You **_must_** change this setting for CF workers.
+The other storage adapters (`MongoDBSessionStorage`, `MySQLSessionStorage`, `PostgreSQLSessionStorage`, `RedisSessionStorage`) cover a variety of production-grade storage options, but require further setup from the app to provide database access.
 
 If you wish to have an alternative storage solution, you must use a `CustomSessionStorage` solution in your production app- you can reference our [usage example with redis](usage/customsessions.md) to get started.
 

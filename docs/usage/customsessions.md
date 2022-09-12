@@ -3,7 +3,7 @@
 This library comes with various session management options:
 
 - `CustomSessionStorage` - to allow for a custom session storage solution (see below for details).
-- `MemorySessionStorage` - uses memory exists as an option to help you get started developing your apps as quickly as possible. It's perfect for working in your development and testing environments. However, this storage solution is **not** meant to be used in production [due to its limitations](../issues.md).
+- `MemorySessionStorage` - uses memory as an option to help you get started developing your apps as quickly as possible. It's perfect for working in your development and testing environments. However, this storage solution is **not** meant to be used in production [due to its limitations](../issues.md).
 - `MongoDBSessionStorage`
 - `MySQLSessionStorage`
 - `PostgreSQLSessionStorage`
@@ -14,15 +14,15 @@ If you wish to use an alternative session storage solution for production, you'l
 
 ## Callback methods
 
-- All of the callbacks used to create a new instance of `CustomSessionStorage` should be `async` functions and return a `Promise` that resolves to a specified type, as outlined below.
+All of the callbacks used to create a new instance of `CustomSessionStorage` should be `async` functions and return a `Promise` that resolves to a specified type, as outlined below.
 
 | Method           | Arg type           | Return type                                                          | Notes                                                                                                                                                                                                               |
 | ---------------- | ------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `storeCallback`  | `SessionInterface` | `Promise<boolean>`                                                   | Takes in the `Session` to be stored or updated, returns a `boolean` (`true` if stored successfully). <br/> This callback is used both to save new a `Session` and to **update an existing `Session`**.              |
 | `loadCallback`   | `string`           | `Promise<SessionInterface \| Record<string, unknown> \| undefined> ` | Takes in the id of the `Session` to load (as a `string`) and returns either an instance of a `Session`, an object to be used to instantiate a `Session`, or `undefined` if no record is found for the specified id. |
-| `deleteCallback` | `string`           | `Promise<boolean>`                                                   | Takes in the id of the `Session` to load (as a `string`) and returns a `booelan` (`true` if deleted successfully).                                                                                                  |
+| `deleteCallback` | `string`           | `Promise<boolean>`                                                   | Takes in the id of the `Session` to load (as a `string`) and returns a `boolean` (`true` if deleted successfully).                                                                                                  |
 
-- There are two optional callbacks methods that also be passed in during initialization:
+There are two optional callbacks methods that also be passed in during initialization. They're not used internally in the library but can be useful to have in your app if you call `shopify.config.sessionStorage.deleteSessions` or `findSessionsByShop`.
 
 | Optional Method              | Arg type   | Return type                    | Notes                                                                                                                                  |
 | ---------------------------- | ---------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
@@ -39,7 +39,7 @@ Before starting this tutorial, make sure to [set up your app](../../README.md).
 
 First, make sure you have Redis installed on your machine. You can follow their [Quick Start guide](https://redis.io/topics/quickstart) to get up and running, and then come back here to continue with this example.
 
-_(**Tip**: Mac users should be able to just run `brew install redis` to install redis using homebrew)_
+**Note**: Mac users should be able to just run `brew install redis` to install redis using homebrew
 
 Once you have Redis installed globally, you will need to add the `redis` client to your project by running:
 
@@ -132,30 +132,23 @@ Now we can import our custom storage class into our `index.ts` and use it to set
 ```ts
 /* index.ts */
 
-import Shopify, {ApiVersion, AuthQuery} from '@shopify/shopify-api';
+import {shopifyApi, LATEST_API_VERSION} from '@shopify/shopify-api';
+import {CustomSessionStorage} from '@shopify/shopify-api/session-storage/custom';
+
 // Import our custom storage class
 import RedisStore from './redis-store';
 
-require('dotenv').config();
-
-const {API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST} = process.env;
-
 // Create a new instance of the custom storage class
-const sessionStorage = new RedisStore();
+const redisStore = new RedisStore();
 
 // Setup config with CustomSessionStorage
-setConfig({
-  apiKey: API_KEY,
-  apiSecretKey: API_SECRET_KEY,
-  scopes: SCOPES,
-  hostName: HOST,
-  isEmbeddedApp: true,
-  apiVersion: ApiVersion.unstable,
+const shopify = shopifyApi({
+  ...
   // Pass the sessionStorage methods to pass into a new instance of `CustomSessionStorage`
-  sessionStorage: new Shopify.Session.CustomSessionStorage(
-    sessionStorage.storeCallback.bind(sessionStorage),
-    sessionStorage.loadCallback.bind(sessionStorage),
-    sessionStorage.deleteCallback.bind(sessionStorage),
+  sessionStorage: new CustomSessionStorage(
+    redisStore.storeCallback.bind(redisStore),
+    redisStore.loadCallback.bind(redisStore),
+    redisStore.deleteCallback.bind(redisStore),
   ),
 });
 
