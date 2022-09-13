@@ -11,6 +11,10 @@
       "import": "./dist/session-storage/*.js",
       "types": "./dist/session-storage/*.d.ts"
     },
+    "./rest/admin/*": {
+      "import": "./dist/rest/admin/*/index.js",
+      "types": "./dist/rest/admin/*/index.d.ts"
+    },
     "./adapters/node": {
       "import": "./dist/adapters/node/index.js",
       "types": "./dist/adapters/node/index.d.ts"
@@ -29,7 +33,7 @@
     "pretest:adapters": "yarn build",
     "test:adapters": "jest --selectProjects adapters:mock adapters:node adapters:cf-worker",
     "test:session_storage": "jest --selectProjects session_storage",
-    "test:rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --testPathPattern=\\\"{}\\\" || exit 255'",
+    "test:rest_resources": "jest --selectProjects rest_resources",
     "lint": "jest --selectProjects lint",
     "test:dev": "jest --selectProjects library lint",
     "build": "tsc",

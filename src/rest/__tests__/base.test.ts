@@ -1,23 +1,43 @@
-import {Session} from '../session';
-import {ApiVersion} from '../base-types';
-import {config} from '../config';
-import {RestResourceError, HttpResponseError} from '../error';
+import {Session} from '../../session/session';
+import {HttpResponseError} from '../../error';
+import {
+  testConfig,
+  queueMockResponse,
+  queueMockResponses,
+} from '../../__tests__/test-helper';
+import {Shopify} from '../../base-types';
+import {shopifyApi} from '../..';
 
-import FakeResource from './fake-resource';
-import FakeResourceWithCustomPrefix from './fake-resource-with-custom-prefix';
+import {restResources} from './test-resources';
+
+let prefix: string;
+let shopify: Shopify<typeof restResources>;
+
+beforeEach(() => {
+  shopify = shopifyApi({
+    ...testConfig,
+    restResources,
+  });
+
+  prefix = `/admin/api/${shopify.config.apiVersion}`;
+});
 
 describe('Base REST resource', () => {
   const domain = 'test-shop.myshopify.io';
-  const prefix = '/admin/api/unstable';
   const headers = {'X-Shopify-Access-Token': 'access-token'};
-  const session = new Session('1234', domain, '1234', true);
+  const session = new Session({
+    id: '1234',
+    shop: domain,
+    state: '1234',
+    isOnline: true,
+  });
   session.accessToken = 'access-token';
 
   it('finds resource by id', async () => {
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
-    const got = await FakeResource.find({id: 1, session} as any);
+    const got = await shopify.rest.FakeResource.find({id: 1, session});
 
     expect([got!.id, got!.attribute]).toEqual([1, 'attribute']);
     expect({
@@ -30,13 +50,13 @@ describe('Base REST resource', () => {
 
   it('finds resource with param', async () => {
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
-    const got = await FakeResource.find({
+    const got = await shopify.rest.FakeResource.find({
       id: 1,
       session,
       params: {param: 'value'},
-    } as any);
+    });
 
     expect([got!.id, got!.attribute]).toEqual([1, 'attribute']);
     expect({
@@ -56,19 +76,21 @@ describe('Base REST resource', () => {
         has_many_attribute: [{id: 3, attribute: 'attribute3'}],
       },
     };
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
-    const got = await FakeResource.find({id: 1, session} as any);
+    const got = await shopify.rest.FakeResource.find({id: 1, session});
 
     expect([got!.id, got!.attribute]).toEqual([1, 'attribute1']);
 
-    expect(got!.has_one_attribute!.constructor).toEqual(FakeResource);
+    expect(got!.has_one_attribute!.constructor.name).toEqual('FakeResource');
     expect([
       got!.has_one_attribute!.id,
       got!.has_one_attribute!.attribute,
     ]).toEqual([2, 'attribute2']);
 
-    expect(got!.has_many_attribute![0].constructor).toEqual(FakeResource);
+    expect(got!.has_many_attribute![0].constructor.name).toEqual(
+      'FakeResource',
+    );
     expect([
       got!.has_many_attribute![0].id,
       got!.has_many_attribute![0].attribute,
@@ -84,14 +106,14 @@ describe('Base REST resource', () => {
 
   it('fails on finding nonexistent resource by id', async () => {
     const body = {errors: 'Not Found'};
-    fetchMock.mockResponseOnce(JSON.stringify(body), {
-      status: 404,
+    queueMockResponse(JSON.stringify(body), {
+      statusCode: 404,
       statusText: 'Not Found',
       headers: {'X-Test-Header': 'value'},
     });
 
     const expectedError = await expect(
-      FakeResource.find({id: 1, session} as any),
+      shopify.rest.FakeResource.find({id: 1, session}),
     ).rejects;
     expectedError.toThrowError(HttpResponseError);
     expectedError.toMatchObject({
@@ -118,9 +140,9 @@ describe('Base REST resource', () => {
         {id: 2, attribute: 'attribute2'},
       ],
     };
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
-    const got = await FakeResource.all({session});
+    const got = await shopify.rest.FakeResource.all({session});
 
     expect([got![0].id, got![0].attribute]).toEqual([1, 'attribute1']);
     expect([got![1].id, got![1].attribute]).toEqual([2, 'attribute2']);
@@ -135,9 +157,9 @@ describe('Base REST resource', () => {
   it('saves', async () => {
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+    queueMockResponse(JSON.stringify(responseBody));
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
     await resource.save();
 
@@ -154,9 +176,9 @@ describe('Base REST resource', () => {
   it('saves and updates', async () => {
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+    queueMockResponse(JSON.stringify(responseBody));
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
     await resource.saveAndUpdate();
 
@@ -175,9 +197,9 @@ describe('Base REST resource', () => {
       fake_resource: {id: 1, attribute: 'attribute'},
     };
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+    queueMockResponse(JSON.stringify(responseBody));
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.id = 1;
     resource.attribute = 'attribute';
     await resource.save();
@@ -204,18 +226,18 @@ describe('Base REST resource', () => {
         ],
       },
     };
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
-    const child1 = new FakeResource({session});
+    const child1 = new shopify.rest.FakeResource({session});
     child1.attribute = 'attribute1';
 
-    const child2 = new FakeResource({session});
+    const child2 = new shopify.rest.FakeResource({session});
     child2.attribute = 'attribute2';
 
-    const child3 = new FakeResource({session});
+    const child3 = new shopify.rest.FakeResource({session});
     child3.attribute = 'attribute3';
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.id = 1;
     resource.attribute = 'attribute';
     resource.has_one_attribute = child1;
@@ -236,9 +258,9 @@ describe('Base REST resource', () => {
     const responseBody = {
       fake_resource: {attribute: 'attribute', 'unknown?': 'some-value'},
     };
-    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+    queueMockResponse(JSON.stringify(responseBody));
 
-    const got = await FakeResource.find({id: 1, session} as any);
+    const got = await shopify.rest.FakeResource.find({id: 1, session});
 
     expect(got!.attribute).toEqual('attribute');
     expect(got!['unknown?']).toEqual('some-value');
@@ -247,9 +269,9 @@ describe('Base REST resource', () => {
 
   it('saves with unknown attribute', async () => {
     const expectedRequestBody = {fake_resource: {unknown: 'some-value'}};
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.unknown = 'some-value';
     await resource.save();
 
@@ -266,9 +288,9 @@ describe('Base REST resource', () => {
     const expectedRequestBody = {
       fake_resource: {id: 1, has_one_attribute: null},
     };
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.id = 1;
     resource.has_one_attribute = null;
     await resource.save();
@@ -285,9 +307,9 @@ describe('Base REST resource', () => {
   it('ignores unsaveable attribute', async () => {
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(responseBody));
+    queueMockResponse(JSON.stringify(responseBody));
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
     resource.unsaveable_attribute = 'unsaveable_attribute';
     await resource.save();
@@ -303,9 +325,9 @@ describe('Base REST resource', () => {
   });
 
   it('deletes existing resource', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.id = 1;
 
     await resource.delete();
@@ -319,9 +341,9 @@ describe('Base REST resource', () => {
   });
 
   it('deletes with other resource', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({}));
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.id = 1;
     resource.other_resource_id = 2;
 
@@ -337,12 +359,12 @@ describe('Base REST resource', () => {
 
   it('fails to delete nonexistent resource', async () => {
     const body = {errors: 'Not Found'};
-    fetchMock.mockResponseOnce(JSON.stringify(body), {
-      status: 404,
+    queueMockResponse(JSON.stringify(body), {
+      statusCode: 404,
       statusText: 'Not Found',
     });
 
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.id = 1;
 
     await expect(resource.delete()).rejects.toThrowError(HttpResponseError);
@@ -357,9 +379,9 @@ describe('Base REST resource', () => {
 
   it('makes custom request', async () => {
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
-    const got = await FakeResource.custom({
+    const got = await shopify.rest.FakeResource.custom({
       session,
       id: 1,
       other_resource_id: 2,
@@ -375,11 +397,11 @@ describe('Base REST resource', () => {
   });
 
   it('paginates requests', async () => {
-    const previousUrl = `https://${domain}/admin/api/unstable/fake_resources.json?page_info=previousToken`;
-    const nextUrl = `https://${domain}/admin/api/unstable/fake_resources.json?page_info=nextToken`;
+    const previousUrl = `https://${domain}/admin/api/${shopify.config.apiVersion}/fake_resources.json?page_info=previousToken`;
+    const nextUrl = `https://${domain}/admin/api/${shopify.config.apiVersion}/fake_resources.json?page_info=nextToken`;
 
     const body = {fake_resources: []};
-    fetchMock.mockResponses(
+    queueMockResponses(
       [JSON.stringify(body), {headers: {link: `<${nextUrl}>; rel="next"`}}],
       [
         JSON.stringify(body),
@@ -388,23 +410,23 @@ describe('Base REST resource', () => {
       [JSON.stringify(body), {}],
     );
 
-    await FakeResource.all({session});
-    expect(FakeResource.NEXT_PAGE_INFO).not.toBeUndefined();
-    expect(FakeResource.PREV_PAGE_INFO).toBeUndefined();
+    await shopify.rest.FakeResource.all({session});
+    expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).not.toBeUndefined();
+    expect(shopify.rest.FakeResource.PREV_PAGE_INFO).toBeUndefined();
 
-    await FakeResource.all({
+    await shopify.rest.FakeResource.all({
       session,
-      params: FakeResource.NEXT_PAGE_INFO?.query,
+      params: shopify.rest.FakeResource.NEXT_PAGE_INFO?.query,
     });
-    expect(FakeResource.NEXT_PAGE_INFO).toBeUndefined();
-    expect(FakeResource.PREV_PAGE_INFO).not.toBeUndefined();
+    expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).toBeUndefined();
+    expect(shopify.rest.FakeResource.PREV_PAGE_INFO).not.toBeUndefined();
 
-    await FakeResource.all({
+    await shopify.rest.FakeResource.all({
       session,
-      params: FakeResource.PREV_PAGE_INFO?.query,
+      params: shopify.rest.FakeResource.PREV_PAGE_INFO?.query,
     });
-    expect(FakeResource.NEXT_PAGE_INFO).toBeUndefined();
-    expect(FakeResource.PREV_PAGE_INFO).toBeUndefined();
+    expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).toBeUndefined();
+    expect(shopify.rest.FakeResource.PREV_PAGE_INFO).toBeUndefined();
 
     expect({
       method: 'GET',
@@ -430,9 +452,12 @@ describe('Base REST resource', () => {
     const body = {
       fake_resource_with_custom_prefix: {id: 1, attribute: 'attribute'},
     };
-    fetchMock.mockResponseOnce(JSON.stringify(body));
+    queueMockResponse(JSON.stringify(body));
 
-    const got = await FakeResourceWithCustomPrefix.find({id: 1, session});
+    const got = await shopify.rest.FakeResourceWithCustomPrefix.find({
+      id: 1,
+      session,
+    });
 
     expect([got!.id, got!.attribute]).toEqual([1, 'attribute']);
     expect({
@@ -443,18 +468,8 @@ describe('Base REST resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('throws an error if the API versions mismatch', async () => {
-    config.apiVersion = ApiVersion.January22;
-
-    await expect(FakeResource.all({session})).rejects.toThrowError(
-      new RestResourceError(
-        `Current config.apiVersion '${ApiVersion.January22}' does not match resource version ${ApiVersion.Unstable}`,
-      ),
-    );
-  });
-
   it('includes unsaveable attributes when default serialize called', async () => {
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
     resource.unsaveable_attribute = 'unsaveable_attribute';
 
@@ -465,7 +480,7 @@ describe('Base REST resource', () => {
   });
 
   it('excludes unsaveable attributes when serialize called for saving', async () => {
-    const resource = new FakeResource({session});
+    const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
     resource.unsaveable_attribute = 'unsaveable_attribute';
 

@@ -4,7 +4,7 @@ module.exports = {
     es2021: true,
   },
   extends: ['plugin:@shopify/typescript', 'plugin:@shopify/prettier'],
-  ignorePatterns: ['dist/', 'src/rest-resources'],
+  ignorePatterns: ['dist/'],
   rules: {
     'import/no-named-as-default': 0,
     'no-mixed-operators': 0,

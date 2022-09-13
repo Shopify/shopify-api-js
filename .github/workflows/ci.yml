@@ -19,9 +19,8 @@ jobs:
         run: yarn lint
       - name: Test
         run: yarn test
-      # TODO reinstate these tests once we re-introduce the wrappers
-      # - name: Test REST resources
-      #   run: yarn test:rest:resources
+      - name: Test REST resources
+        run: yarn test:rest_resources
       - name: Test SessionStorage implementations
         run: yarn test:session_storage
       - name: Run isomorphic adapter tests

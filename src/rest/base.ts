@@ -1,46 +1,27 @@
-import {RestResourceError} from './error';
-import {SessionInterface} from './session/types';
-import {RestClient} from './clients/rest';
-import {RestRequestReturn} from './clients/rest/types';
-import {DataType, GetRequestParams} from './clients/http_client/types';
-import {ApiVersion} from './base-types';
-import {config} from './config';
+import {RestResourceError} from '../error';
+import {SessionInterface} from '../session/types';
+import {RestRequestReturn} from '../clients/rest/types';
+import {DataType, GetRequestParams} from '../clients/http_client/types';
+import {createRestClientClass} from '../clients/rest/rest_client';
 
-export interface IdSet {
-  [id: string]: string | number | null;
-}
+import {IdSet, Body, ResourcePath, ParamSet} from './types';
 
-export interface ParamSet {
-  [key: string]: any;
-}
-
-export interface Body {
-  [key: string]: any;
-}
-
-export interface ResourcePath {
-  http_method: string;
-  operation: string;
-  ids: string[];
-  path: string;
-}
-
-export interface BaseFindArgs {
+interface BaseFindArgs {
   session: SessionInterface;
   params?: ParamSet;
   urlIds: IdSet;
 }
 
-export interface RequestArgs extends BaseFindArgs {
+interface BaseConstructorArgs {
+  session: SessionInterface;
+  fromData?: Body | null;
+}
+
+interface RequestArgs extends BaseFindArgs {
   http_method: string;
   operation: string;
   body?: Body | null;
   entity?: Base | null;
-}
-
-export interface BaseConstructorArgs {
-  session: SessionInterface;
-  fromData?: Body | null;
 }
 
 interface GetPathArgs {
@@ -50,14 +31,16 @@ interface GetPathArgs {
   entity?: Base | null;
 }
 
-class Base {
+export class Base {
   // For instance attributes
   [key: string]: any;
 
-  public static API_VERSION: ApiVersion;
   public static NEXT_PAGE_INFO: GetRequestParams | undefined;
   public static PREV_PAGE_INFO: GetRequestParams | undefined;
 
+  public static CLIENT: ReturnType<typeof createRestClientClass>;
+
+  public static API_VERSION: string;
   protected static NAME = '';
   protected static PLURAL_NAME = '';
   protected static PRIMARY_KEY = 'id';
@@ -69,12 +52,12 @@ class Base {
 
   protected static PATHS: ResourcePath[] = [];
 
-  protected static async baseFind({
+  protected static async baseFind<T extends Base = Base>({
     session,
     urlIds,
     params,
-  }: BaseFindArgs): Promise<Base[]> {
-    const response = await this.request({
+  }: BaseFindArgs): Promise<T[]> {
+    const response = await this.request<T>({
       http_method: 'get',
       operation: 'get',
       session,
@@ -85,10 +68,10 @@ class Base {
     this.NEXT_PAGE_INFO = response.pageInfo?.nextPage ?? undefined;
     this.PREV_PAGE_INFO = response.pageInfo?.prevPage ?? undefined;
 
-    return this.createInstancesFromResponse(session, response.body as Body);
+    return this.createInstancesFromResponse<T>(session, response.body as Body);
   }
 
-  protected static async request({
+  protected static async request<T = unknown>({
     session,
     http_method,
     operation,
@@ -96,14 +79,11 @@ class Base {
     params,
     body,
     entity,
-  }: RequestArgs): Promise<RestRequestReturn> {
-    if (config.apiVersion !== this.API_VERSION) {
-      throw new RestResourceError(
-        `Current config.apiVersion '${config.apiVersion}' does not match resource version ${this.API_VERSION}`,
-      );
-    }
-
-    const client = new RestClient(session.shop, session.accessToken);
+  }: RequestArgs): Promise<RestRequestReturn<T>> {
+    const client = new this.CLIENT({
+      domain: session.shop,
+      accessToken: session.accessToken,
+    });
 
     const path = this.getPath({http_method, operation, urlIds, entity});
 
@@ -118,23 +98,23 @@ class Base {
 
     switch (http_method) {
       case 'get':
-        return client.get({path, query: cleanParams});
+        return client.get<T>({path, query: cleanParams});
       case 'post':
-        return client.post({
+        return client.post<T>({
           path,
           query: cleanParams,
           data: body!,
           type: DataType.JSON,
         });
       case 'put':
-        return client.put({
+        return client.put<T>({
           path,
           query: cleanParams,
           data: body!,
           type: DataType.JSON,
         });
       case 'delete':
-        return client.delete({path, query: cleanParams});
+        return client.delete<T>({path, query: cleanParams});
       default:
         throw new Error(`Unrecognized HTTP method "${http_method}"`);
     }
@@ -144,7 +124,7 @@ class Base {
     return this.name.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
   }
 
-  private static getPath({
+  protected static getPath({
     http_method,
     operation,
     urlIds,
@@ -206,31 +186,31 @@ class Base {
     }
   }
 
-  private static createInstancesFromResponse(
+  protected static createInstancesFromResponse<T extends Base = Base>(
     session: SessionInterface,
     data: Body,
-  ): Base[] {
+  ): T[] {
     if (data[this.PLURAL_NAME] || Array.isArray(data[this.NAME])) {
       return (data[this.PLURAL_NAME] || data[this.NAME]).reduce(
-        (acc: Base[], entry: Body) =>
-          acc.concat(this.createInstance(session, entry)),
+        (acc: T[], entry: Body) =>
+          acc.concat(this.createInstance<T>(session, entry)),
         [],
       );
     }
 
     if (data[this.NAME]) {
-      return [this.createInstance(session, data[this.NAME])];
+      return [this.createInstance<T>(session, data[this.NAME])];
     }
 
     return [];
   }
 
-  private static createInstance(
+  protected static createInstance<T extends Base = Base>(
     session: SessionInterface,
     data: Body,
-    prevInstance?: Base,
-  ): Base {
-    const instance: Base = prevInstance
+    prevInstance?: T,
+  ): T {
+    const instance: T = prevInstance
       ? prevInstance
       : new (this as any)({session});
 
@@ -313,6 +293,10 @@ class Base {
     }, {});
   }
 
+  public request<T = unknown>(args: RequestArgs) {
+    return this.resource().request<T>(args);
+  }
+
   protected setData(data: Body): void {
     const {HAS_MANY, HAS_ONE} = this.resource();
 
@@ -349,5 +333,3 @@ class Base {
           .serialize(saving);
   }
 }
-
-export default Base;

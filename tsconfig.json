@@ -47,7 +47,6 @@
   "exclude": [
     "**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*",
     // TODO remove these as we progress through the refactoring
-    "src/base-rest-resource.ts",
     "src/billing/**/*.ts"
   ],
 }

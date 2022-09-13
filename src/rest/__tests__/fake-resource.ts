@@ -1,6 +1,7 @@
-import Base, {ParamSet, ResourcePath} from '../base-rest-resource';
-import {SessionInterface} from '../session/types';
-import {ApiVersion} from '../base-types';
+import {Base} from '../base';
+import {ParamSet, ResourcePath} from '../types';
+import {SessionInterface} from '../../session/types';
+import {LATEST_API_VERSION} from '../../base-types';
 
 interface FakeResourceFindArgs {
   params?: ParamSet;
@@ -20,19 +21,19 @@ interface FakeResourceCustomArgs {
   other_resource_id: number;
 }
 
-export default class FakeResource extends Base {
-  public static API_VERSION = ApiVersion.Unstable;
+export class FakeResource extends Base {
+  public static API_VERSION = LATEST_API_VERSION;
   protected static NAME = 'fake_resource';
   protected static PLURAL_NAME = 'fake_resources';
 
   protected static READ_ONLY_ATTRIBUTES: string[] = ['unsaveable_attribute'];
 
   protected static HAS_ONE = {
-    has_one_attribute: FakeResource,
+    has_one_attribute: this,
   };
 
   protected static HAS_MANY = {
-    has_many_attribute: FakeResource,
+    has_many_attribute: this,
   };
 
   protected static PATHS: ResourcePath[] = [
@@ -86,46 +87,46 @@ export default class FakeResource extends Base {
     },
   ];
 
-  public static find = async ({
+  public static async find({
     session,
     params,
     id,
     other_resource_id = null,
     ...otherArgs
-  }: FakeResourceFindArgs): Promise<FakeResource | null> => {
-    const result = await FakeResource.baseFind({
+  }: FakeResourceFindArgs): Promise<FakeResource | null> {
+    const result = await this.baseFind<FakeResource>({
       session,
       urlIds: {id, other_resource_id},
       params: {...params, ...otherArgs},
     });
-    return result ? (result[0] as FakeResource) : null;
-  };
+    return result ? result[0] : null;
+  }
 
-  public static all = async ({
+  public static async all({
     session,
     params,
-  }: FakeResourceAllArgs): Promise<FakeResource[]> => {
-    return FakeResource.baseFind({
+  }: FakeResourceAllArgs): Promise<FakeResource[]> {
+    return this.baseFind<FakeResource>({
       session,
       params,
       urlIds: {},
     });
-  };
+  }
 
-  public static custom = async ({
+  public static async custom({
     session,
     id,
     other_resource_id,
-  }: FakeResourceCustomArgs): Promise<Body> => {
-    const response = await FakeResource.request({
+  }: FakeResourceCustomArgs): Promise<Body> {
+    const response = await this.request<Body>({
       http_method: 'get',
       operation: 'custom',
       session,
       urlIds: {id, other_resource_id},
     });
 
-    return response.body as Body;
-  };
+    return response.body;
+  }
 
   id?: number | string | null;
   attribute?: string | null;
