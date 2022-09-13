@@ -20,9 +20,9 @@ import {
   abstractConvertResponse,
   abstractConvertHeaders,
   AdapterResponse,
+  AdapterHeaders,
   Cookies,
   NormalizedResponse,
-  AdapterHeaders,
 } from '../../runtime/http';
 
 import {
