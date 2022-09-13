@@ -5,7 +5,7 @@ import {AuthQuery} from '../types';
 import {createGenerateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/types';
 import {nonce} from '../../../utils/nonce';
-import {CustomSessionStorage} from '../../../session/storage/custom';
+import {CustomSessionStorage} from '../../../session-storage/custom';
 import {
   Cookies,
   NormalizedRequest,

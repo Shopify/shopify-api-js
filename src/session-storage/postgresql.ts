@@ -1,28 +1,31 @@
-import mysql from 'mysql2/promise';
+import pg from 'pg';
 
-import {SessionInterface} from '../types';
-import {SessionStorage} from '../session_storage';
-import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {createSanitizeShop} from '../../utils/shop-validator';
+import {SessionInterface} from '../session/types';
+import {SessionStorage} from '../session/session_storage';
+import {sessionEntries, sessionFromEntries} from '../session/session-utils';
+import {createSanitizeShop} from '../utils/shop-validator';
 
-export interface MySQLSessionStorageOptions {
+export interface PostgreSQLSessionStorageOptions {
   sessionTableName: string;
+  port: number;
 }
-const defaultMySQLSessionStorageOptions: MySQLSessionStorageOptions = {
-  sessionTableName: 'shopify_sessions',
-};
+const defaultPostgreSQLSessionStorageOptions: PostgreSQLSessionStorageOptions =
+  {
+    sessionTableName: 'shopify_sessions',
+    port: 3211,
+  };
 
-export class MySQLSessionStorage extends SessionStorage {
+export class PostgreSQLSessionStorage extends SessionStorage {
   static withCredentials(
     host: string,
     dbName: string,
     username: string,
     password: string,
-    opts: Partial<MySQLSessionStorageOptions>,
+    opts: Partial<PostgreSQLSessionStorageOptions>,
   ) {
-    return new MySQLSessionStorage(
+    return new PostgreSQLSessionStorage(
       new URL(
-        `mysql://${encodeURIComponent(username)}:${encodeURIComponent(
+        `postgres://${encodeURIComponent(username)}:${encodeURIComponent(
           password,
         )}@${host}/${encodeURIComponent(dbName)}`,
       ),
@@ -31,19 +34,19 @@ export class MySQLSessionStorage extends SessionStorage {
   }
 
   public readonly ready: Promise<void>;
-  private options: MySQLSessionStorageOptions;
-  private connection: mysql.Connection;
+  private options: PostgreSQLSessionStorageOptions;
+  private client: pg.Client;
 
   constructor(
     private dbUrl: URL,
-    opts: Partial<MySQLSessionStorageOptions> = {},
+    opts: Partial<PostgreSQLSessionStorageOptions> = {},
   ) {
     super();
 
     if (typeof this.dbUrl === 'string') {
       this.dbUrl = new URL(this.dbUrl);
     }
-    this.options = {...defaultMySQLSessionStorageOptions, ...opts};
+    this.options = {...defaultPostgreSQLSessionStorageOptions, ...opts};
     this.ready = this.init();
   }
 
@@ -52,9 +55,12 @@ export class MySQLSessionStorage extends SessionStorage {
 
     const entries = sessionEntries(session);
     const query = `
-      REPLACE INTO ${this.options.sessionTableName}
+      INSERT INTO ${this.options.sessionTableName}
       (${entries.map(([key]) => key).join(', ')})
-      VALUES (${entries.map(() => `?`).join(', ')})
+      VALUES (${entries.map((_, i) => `$${i + 1}`).join(', ')})
+      ON CONFLICT (id) DO UPDATE SET ${entries
+        .map(([key]) => `${key} = Excluded.${key}`)
+        .join(', ')};
     `;
     await this.query(
       query,
@@ -66,10 +72,10 @@ export class MySQLSessionStorage extends SessionStorage {
   public async loadSession(id: string): Promise<SessionInterface | undefined> {
     await this.ready;
     const query = `
-      SELECT * FROM \`${this.options.sessionTableName}\`
-      WHERE id = ?;
+      SELECT * FROM ${this.options.sessionTableName}
+      WHERE id = $1;
     `;
-    const [rows] = await this.query(query, [id]);
+    const rows = await this.query(query, [id]);
     if (!Array.isArray(rows) || rows?.length !== 1) return undefined;
     const rawResult = rows[0] as any;
     return sessionFromEntries(Object.entries(rawResult));
@@ -79,7 +85,7 @@ export class MySQLSessionStorage extends SessionStorage {
     await this.ready;
     const query = `
       DELETE FROM ${this.options.sessionTableName}
-      WHERE id = ?;
+      WHERE id = $1;
     `;
     await this.query(query, [id]);
     return true;
@@ -89,7 +95,7 @@ export class MySQLSessionStorage extends SessionStorage {
     await this.ready;
     const query = `
       DELETE FROM ${this.options.sessionTableName}
-      WHERE id IN (${ids.map(() => '?').join(',')});
+      WHERE id IN (${ids.map((_, i) => `$${i + 1}`).join(', ')});
     `;
     await this.query(query, ids);
     return true;
@@ -101,9 +107,9 @@ export class MySQLSessionStorage extends SessionStorage {
 
     const query = `
       SELECT * FROM ${this.options.sessionTableName}
-      WHERE shop = ?;
+      WHERE shop = $1;
     `;
-    const [rows] = await this.query(query, [cleanShop]);
+    const rows = await this.query(query, [cleanShop]);
     if (!Array.isArray(rows) || rows?.length === 0) return [];
 
     const results: SessionInterface[] = rows.map((row) => {
@@ -112,20 +118,25 @@ export class MySQLSessionStorage extends SessionStorage {
     return results;
   }
 
-  public async disconnect(): Promise<void> {
-    await this.connection.end();
+  public disconnect(): Promise<void> {
+    return this.client.end();
   }
 
   private async init() {
-    this.connection = await mysql.createConnection(this.dbUrl.toString());
+    this.client = new pg.Client({connectionString: this.dbUrl.toString()});
+    await this.connectClient();
     await this.createTable();
+  }
+
+  private async connectClient(): Promise<void> {
+    await this.client.connect();
   }
 
   private async hasSessionTable(): Promise<boolean> {
     const query = `
-      SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?;
+      SELECT * FROM pg_catalog.pg_tables WHERE tablename = $1
     `;
-    const [rows] = await this.query(query, [this.options.sessionTableName]);
+    const rows = await this.query(query, [this.options.sessionTableName]);
     return Array.isArray(rows) && rows.length === 1;
   }
 
@@ -137,7 +148,7 @@ export class MySQLSessionStorage extends SessionStorage {
           id varchar(255) NOT NULL PRIMARY KEY,
           shop varchar(255) NOT NULL,
           state varchar(255) NOT NULL,
-          isOnline tinyint NOT NULL,
+          isOnline boolean NOT NULL,
           scope varchar(255),
           expires integer,
           onlineAccessInfo varchar(255),
@@ -148,7 +159,8 @@ export class MySQLSessionStorage extends SessionStorage {
     }
   }
 
-  private query(sql: string, params: any[] = []): Promise<any> {
-    return this.connection.query(sql, params);
+  private async query(sql: string, params: any[] = []): Promise<any> {
+    const result = await this.client.query(sql, params);
+    return result.rows;
   }
 }

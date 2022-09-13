@@ -1,9 +1,9 @@
 import sqlite3 from 'sqlite3';
 
-import {SessionInterface} from '../types';
-import {SessionStorage} from '../session_storage';
-import {sessionFromEntries, sessionEntries} from '../session-utils';
-import {createSanitizeShop} from '../../utils/shop-validator';
+import {SessionInterface} from '../session/types';
+import {SessionStorage} from '../session/session_storage';
+import {sessionFromEntries, sessionEntries} from '../session/session-utils';
+import {createSanitizeShop} from '../utils/shop-validator';
 
 export interface SQLiteSessionStorageOptions {
   sessionTableName: string;

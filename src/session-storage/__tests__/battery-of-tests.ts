@@ -1,7 +1,7 @@
-import {config} from '../../../config';
-import {Session} from '../../session';
-import {sessionEqual} from '../../session-utils';
-import {SessionStorage} from '../../session_storage';
+import {shopify} from '../../__tests__/test-helper';
+import {Session} from '../../session/session';
+import {sessionEqual} from '../../session/session-utils';
+import {SessionStorage} from '../../session/session_storage';
 import {SessionInterface} from '../../types';
 
 import {sessionArraysEqual} from './session-test-utils';
@@ -11,7 +11,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const sessionFactories = [
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
-        session.scope = config.scopes.toString();
+        session.scope = shopify.config.scopes.toString();
         session.accessToken = '123';
         return session;
       },
@@ -21,20 +21,20 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
         expiryDate.setMinutes(expiryDate.getMinutes() + 60);
         session.expires = expiryDate;
         session.accessToken = '123';
-        session.scope = config.scopes.toString();
+        session.scope = shopify.config.scopes.toString();
         return session;
       },
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
         session.expires = null as any;
-        session.scope = config.scopes.toString();
+        session.scope = shopify.config.scopes.toString();
         session.accessToken = '123';
         return session;
       },
       async () => {
         const session = new Session(sessionId, 'shop', 'state', false);
         session.expires = undefined;
-        session.scope = config.scopes.toString();
+        session.scope = shopify.config.scopes.toString();
         session.accessToken = '123';
         return session;
       },
@@ -42,7 +42,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
         const session = new Session(sessionId, 'shop', 'state', false);
         session.onlineAccessInfo = {associated_user: {}} as any;
         session.onlineAccessInfo!.associated_user.id = 123;
-        session.scope = config.scopes.toString();
+        session.scope = shopify.config.scopes.toString();
         session.accessToken = '123';
         return session;
       },
@@ -50,6 +50,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
 
     const sessionId = 'test_session';
     const storage = await storageFactory();
+    storage.setConfig(shopify.config);
     for (const factory of sessionFactories) {
       const session = await factory();
 
@@ -61,7 +62,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
       await expect(storage.storeSession(session)).resolves.toBe(true);
       const loadedSession = await storage.loadSession(sessionId);
       expect(sessionEqual(loadedSession, session)).toBe(true);
-      expect(loadedSession?.isActive()).toBe(true);
+      expect(loadedSession?.isActive(shopify.config.scopes)).toBe(true);
 
       await expect(storage.deleteSession(sessionId)).resolves.toBe(true);
       await expect(storage.loadSession(sessionId)).resolves.toBeUndefined();
@@ -73,6 +74,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
 
   it('can store sessions with unexpected fields', async () => {
     const storage = await storageFactory();
+    storage.setConfig(shopify.config);
     const sessionId = 'test_session';
     const session = new Session(sessionId, 'shop', 'state', true);
     (session as any).someField = 'lol';
@@ -85,6 +87,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
 
   it('can store and delete sessions with online tokens', async () => {
     const storage = await storageFactory();
+    storage.setConfig(shopify.config);
     const sessionId = 'test_session';
     const session = new Session(sessionId, 'shop', 'state', true);
 
@@ -96,6 +99,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
 
   it('wrong ids return null sessions', async () => {
     const storage = await storageFactory();
+    storage.setConfig(shopify.config);
     await expect(
       storage.loadSession('not_a_session_id'),
     ).resolves.toBeUndefined();
@@ -103,6 +107,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
 
   it('can find all the sessions for a given shop', async () => {
     const storage = await storageFactory();
+    storage.setConfig(shopify.config);
     const prefix = 'find_sessions';
     const sessions = [
       new Session(
@@ -154,6 +159,7 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
 
   it('can delete the sessions for a given array of ids', async () => {
     const storage = await storageFactory();
+    storage.setConfig(shopify.config);
     const prefix = 'delete_sessions';
     const sessions = [
       new Session(

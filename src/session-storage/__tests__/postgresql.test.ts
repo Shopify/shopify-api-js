@@ -17,7 +17,7 @@ describe('PostgreSQLSessionStorage', () => {
   let containerId: string;
   beforeAll(async () => {
     const runCommand = await exec(
-      'docker run -d -e POSTGRES_DB=shopitest -e POSTGRES_USER=shopify -e POSTGRES_PASSWORD=passify -p 5432:5432 postgres:14',
+      'podman run -d -e POSTGRES_DB=shopitest -e POSTGRES_USER=shopify -e POSTGRES_PASSWORD=passify -p 5432:5432 postgres:14',
       {encoding: 'utf8'},
     );
     containerId = runCommand.stdout.trim();
@@ -46,7 +46,7 @@ describe('PostgreSQLSessionStorage', () => {
 
   afterAll(async () => {
     await storage.disconnect();
-    await exec(`docker rm -f ${containerId}`);
+    await exec(`podman rm -f ${containerId}`);
   });
 
   batteryOfTests(async () => storage);

@@ -18,7 +18,7 @@ describe('MongoDBSessionStorage', () => {
   let containerId: string;
   beforeAll(async () => {
     const runCommand = await exec(
-      'docker run -d -e MONGO_INITDB_DATABASE=shopitest -e MONGO_INITDB_ROOT_USERNAME=shopify -e MONGO_INITDB_ROOT_PASSWORD=passify -p 27017:27017 mongo:5',
+      'podman run -d -e MONGO_INITDB_DATABASE=shopitest -e MONGO_INITDB_ROOT_USERNAME=shopify -e MONGO_INITDB_ROOT_PASSWORD=passify -p 27017:27017 mongo:5',
       {encoding: 'utf8'},
     );
     containerId = runCommand.stdout.trim();
@@ -42,7 +42,7 @@ describe('MongoDBSessionStorage', () => {
 
   afterAll(async () => {
     await storage.disconnect();
-    await exec(`docker rm -f ${containerId}`);
+    await exec(`podman rm -f ${containerId}`);
   });
 
   batteryOfTests(async () => storage);
