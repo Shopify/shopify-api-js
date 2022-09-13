@@ -63,7 +63,14 @@ export enum ShopifyHeader {
   Topic = 'X-Shopify-Topic',
   Domain = 'X-Shopify-Shop-Domain',
 }
+
 export enum ClientType {
   Rest = 'rest',
   Graphql = 'graphql',
 }
+
+export const gdprTopics: string[] = [
+  'CUSTOMERS_DATA_REQUEST',
+  'CUSTOMERS_REDACT',
+  'SHOP_REDACT',
+];

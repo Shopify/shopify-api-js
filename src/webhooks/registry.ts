@@ -5,22 +5,23 @@ import {StatusCode} from '@shopify/network';
 
 import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 import {createHttpClientClass} from '../clients/http_client/http_client';
-import {ConfigInterface, ShopifyHeader} from '../base-types';
+import {ConfigInterface, gdprTopics, ShopifyHeader} from '../base-types';
 import {safeCompare} from '../utils/safe-compare';
 import * as ShopifyErrors from '../error';
 
 import {
+  AddHandlerParams,
+  AddHandlersProps,
+  BuildCheckQueryParams,
+  BuildQueryParams,
   DeliveryMethod,
-  RegisterOptions,
+  GetHandlerParams,
+  RegisterParams,
   RegisterReturn,
   WebhookRegistryEntry,
   WebhookCheckResponse,
-  ShortenedRegisterOptions,
+  ShortenedRegisterParams,
 } from './types';
-
-export interface AddHandlersProps {
-  [topic: string]: WebhookRegistryEntry;
-}
 
 export interface RegistryInterface {
   webhookRegistry: {[topic: string]: WebhookRegistryEntry};
@@ -28,10 +29,9 @@ export interface RegistryInterface {
   /**
    * Sets the handler for the given topic. If a handler was previously set for the same topic, it will be overridden.
    *
-   * @param topic String used to add a handler
-   * @param options Paramters to add a handler which are path and webHookHandler
+   * @param params Parameter object for adding a handler (topic, registryEntry)
    */
-  addHandler(topic: string, options: WebhookRegistryEntry): void;
+  addHandler(params: AddHandlerParams): void;
 
   /**
    * Sets a list of handlers for the given topics using the `addHandler` function
@@ -43,9 +43,9 @@ export interface RegistryInterface {
   /**
    * Fetches the handler for the given topic. Returns null if no handler was registered.
    *
-   * @param topic The topic to check
+   * @param params Parameter object for getting a handler (topic)
    */
-  getHandler(topic: string): WebhookRegistryEntry | null;
+  getHandler(params: GetHandlerParams): WebhookRegistryEntry | null;
 
   /**
    * Gets all topics
@@ -57,14 +57,14 @@ export interface RegistryInterface {
    *
    * @param options Parameters to register a handler, including topic, listening address, delivery method
    */
-  register(options: RegisterOptions): Promise<RegisterReturn>;
+  register(options: RegisterParams): Promise<RegisterReturn>;
 
   /**
    * Registers multiple Webhook Handler functions.
    *
    * @param options Parameters to register a handler, including topic, listening address, delivery method
    */
-  registerAll(options: ShortenedRegisterOptions): Promise<RegisterReturn>;
+  registerAll(options: ShortenedRegisterParams): Promise<RegisterReturn>;
 
   /**
    * Processes the webhook request received from the Shopify API
@@ -116,7 +116,7 @@ function validateDeliveryMethod(_deliveryMethod: DeliveryMethod) {
   return true;
 }
 
-export function buildCheckQuery(topic: string): string {
+export function buildCheckQuery({topic}: BuildCheckQueryParams): string {
   return `{
     webhookSubscriptions(first: 1, topics: ${topic}) {
       edges {
@@ -141,12 +141,12 @@ export function buildCheckQuery(topic: string): string {
   }`;
 }
 
-export function buildQuery(
-  topic: string,
-  address: string,
-  deliveryMethod: DeliveryMethod = DeliveryMethod.Http,
-  webhookId?: string,
-): string {
+export function buildQuery({
+  topic,
+  address,
+  deliveryMethod = DeliveryMethod.Http,
+  webhookId,
+}: BuildQueryParams): string {
   validateDeliveryMethod(deliveryMethod);
   let identifier: string;
   if (webhookId) {
@@ -199,271 +199,274 @@ export function buildQuery(
   `;
 }
 
-export const gdprTopics: string[] = [
-  'CUSTOMERS_DATA_REQUEST',
-  'CUSTOMERS_REDACT',
-  'SHOP_REDACT',
-];
+export const webhookRegistry: {[topic: string]: WebhookRegistryEntry} = {};
 
-export function webhooksRegistry(config: ConfigInterface): RegistryInterface {
+export function resetWebhookRegistry() {
+  for (const key in webhookRegistry) {
+    if ({}.hasOwnProperty.call(webhookRegistry, key)) {
+      delete webhookRegistry[key];
+    }
+  }
+}
+
+export function addHandler({topic, registryEntry}: AddHandlerParams) {
+  webhookRegistry[topic] = registryEntry;
+}
+
+export function addHandlers(handlers: AddHandlersProps): void {
+  for (const topic in handlers) {
+    if ({}.hasOwnProperty.call(handlers, topic)) {
+      addHandler({topic, registryEntry: handlers[topic]});
+    }
+  }
+}
+
+export function getHandler({
+  topic,
+}: GetHandlerParams): WebhookRegistryEntry | null {
+  return webhookRegistry[topic] ?? null;
+}
+
+export function getTopics(): string[] {
+  return Object.keys(webhookRegistry);
+}
+
+export function createRegister(config: ConfigInterface) {
   const HttpClient = createHttpClientClass(config);
   const GraphqlClient = createGraphqlClientClass({config, HttpClient});
 
-  const WebhooksRegistry: RegistryInterface = {
-    webhookRegistry: {},
+  return async function register({
+    path,
+    topic,
+    accessToken,
+    shop,
+    deliveryMethod = DeliveryMethod.Http,
+  }: RegisterParams): Promise<RegisterReturn> {
+    const registerReturn: RegisterReturn = {};
 
-    addHandler(
-      topic: string,
-      {path, webhookHandler}: WebhookRegistryEntry,
-    ): void {
-      WebhooksRegistry.webhookRegistry[topic] = {path, webhookHandler};
-    },
+    if (gdprTopics.includes(topic)) {
+      registerReturn[topic] = {
+        success: false,
+        result: {
+          errors: [
+            {
+              message: `GDPR topic '${topic}' cannot be registered here. Please set the appropriate webhook endpoint in the 'GDPR mandatory webhooks' section of 'App setup' in the Partners Dashboard`,
+            },
+          ],
+        },
+      };
 
-    addHandlers(handlers: AddHandlersProps): void {
-      for (const topic in handlers) {
-        if ({}.hasOwnProperty.call(handlers, topic)) {
-          WebhooksRegistry.addHandler(topic, handlers[topic]);
-        }
-      }
-    },
-
-    getHandler(topic: string): WebhookRegistryEntry | null {
-      return WebhooksRegistry.webhookRegistry[topic] ?? null;
-    },
-
-    getTopics(): string[] {
-      return Object.keys(WebhooksRegistry.webhookRegistry);
-    },
-
-    async register({
-      path,
-      topic,
-      accessToken,
-      shop,
-      deliveryMethod = DeliveryMethod.Http,
-    }: RegisterOptions): Promise<RegisterReturn> {
-      const registerReturn: RegisterReturn = {};
-
-      if (gdprTopics.includes(topic)) {
-        registerReturn[topic] = {
-          success: false,
-          result: {
-            errors: [
-              {
-                message: `GDPR topic '${topic}' cannot be registered here. Please set the appropriate webhook endpoint in the 'GDPR mandatory webhooks' section of 'App setup' in the Partners Dashboard`,
-              },
-            ],
-          },
-        };
-
-        return registerReturn;
-      }
-
-      validateDeliveryMethod(deliveryMethod);
-      const client = new GraphqlClient({domain: shop, accessToken});
-      const address =
-        deliveryMethod === DeliveryMethod.Http
-          ? `${config.hostScheme}://${config.hostName}${path}`
-          : path;
-
-      let checkResult;
-      try {
-        checkResult = await client.query<WebhookCheckResponse>({
-          data: buildCheckQuery(topic),
-        });
-      } catch (error) {
-        const result =
-          error instanceof ShopifyErrors.GraphqlQueryError
-            ? error.response
-            : {};
-        registerReturn[topic] = {success: false, result};
-        return registerReturn;
-      }
-
-      let webhookId: string | undefined;
-      let mustRegister = true;
-
-      if (checkResult.body.data.webhookSubscriptions.edges.length) {
-        const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
-        let endpointAddress = '';
-        if (node.endpoint.__typename === 'WebhookHttpEndpoint') {
-          endpointAddress = node.endpoint.callbackUrl;
-        } else if (node.endpoint.__typename === 'WebhookEventBridgeEndpoint') {
-          endpointAddress = node.endpoint.arn;
-        }
-
-        webhookId = node.id;
-        if (endpointAddress === address) {
-          mustRegister = false;
-        }
-      }
-
-      if (mustRegister) {
-        const result = await client.query({
-          data: buildQuery(topic, address, deliveryMethod, webhookId),
-        });
-        registerReturn[topic] = {
-          success: isSuccess(result.body, deliveryMethod, webhookId),
-          result: result.body,
-        };
-      } else {
-        registerReturn[topic] = {
-          success: true,
-          result: {},
-        };
-      }
       return registerReturn;
-    },
+    }
 
-    async registerAll({
-      accessToken,
-      shop,
-      deliveryMethod = DeliveryMethod.Http,
-    }: ShortenedRegisterOptions): Promise<RegisterReturn> {
-      let registerReturn = {};
-      const topics = WebhooksRegistry.getTopics();
+    validateDeliveryMethod(deliveryMethod);
+    const client = new GraphqlClient({domain: shop, accessToken});
+    const address =
+      deliveryMethod === DeliveryMethod.Http
+        ? `${config.hostScheme}://${config.hostName}${path}`
+        : path;
 
-      for (const topic of topics) {
-        const handler = WebhooksRegistry.getHandler(topic);
-        if (handler) {
-          const {path} = handler;
-          const webhook: RegisterOptions = {
-            path,
-            topic,
-            accessToken,
-            shop,
-            deliveryMethod,
-          };
-          const returnedRegister = await WebhooksRegistry.register(webhook);
-          registerReturn = {...registerReturn, ...returnedRegister};
-        }
-      }
+    let checkResult;
+    try {
+      checkResult = await client.query<WebhookCheckResponse>({
+        data: buildCheckQuery({topic}),
+      });
+    } catch (error) {
+      const result =
+        error instanceof ShopifyErrors.GraphqlQueryError ? error.response : {};
+      registerReturn[topic] = {success: false, result};
       return registerReturn;
-    },
+    }
 
-    async process(
-      request: http.IncomingMessage,
-      response: http.ServerResponse,
-    ): Promise<void> {
-      let reqBody = '';
+    let webhookId: string | undefined;
+    let mustRegister = true;
 
-      const promise: Promise<void> = new Promise((resolve, reject) => {
-        request.on('data', (chunk) => {
-          reqBody += chunk;
-        });
+    if (checkResult.body.data.webhookSubscriptions.edges.length) {
+      const {node} = checkResult.body.data.webhookSubscriptions.edges[0];
+      let endpointAddress = '';
+      if (node.endpoint.__typename === 'WebhookHttpEndpoint') {
+        endpointAddress = node.endpoint.callbackUrl;
+      } else if (node.endpoint.__typename === 'WebhookEventBridgeEndpoint') {
+        endpointAddress = node.endpoint.arn;
+      }
 
-        request.on('end', async () => {
-          if (!reqBody.length) {
-            response.writeHead(StatusCode.BadRequest);
-            response.end();
-            return reject(
-              new ShopifyErrors.InvalidWebhookError(
-                'No body was received when processing webhook',
-              ),
-            );
-          }
+      webhookId = node.id;
+      if (endpointAddress === address) {
+        mustRegister = false;
+      }
+    }
 
-          let hmac: string | string[] | undefined;
-          let topic: string | string[] | undefined;
-          let domain: string | string[] | undefined;
-          Object.entries(request.headers).map(([header, value]) => {
-            switch (header.toLowerCase()) {
-              case ShopifyHeader.Hmac.toLowerCase():
-                hmac = value;
-                break;
-              case ShopifyHeader.Topic.toLowerCase():
-                topic = value;
-                break;
-              case ShopifyHeader.Domain.toLowerCase():
-                domain = value;
-                break;
-            }
-          });
+    if (mustRegister) {
+      const result = await client.query({
+        data: buildQuery({topic, address, deliveryMethod, webhookId}),
+      });
+      registerReturn[topic] = {
+        success: isSuccess(result.body, deliveryMethod, webhookId),
+        result: result.body,
+      };
+    } else {
+      registerReturn[topic] = {
+        success: true,
+        result: {},
+      };
+    }
+    return registerReturn;
+  };
+}
 
-          const missingHeaders: ShopifyHeader[] = [];
-          if (!hmac) {
-            missingHeaders.push(ShopifyHeader.Hmac);
-          }
-          if (!topic) {
-            missingHeaders.push(ShopifyHeader.Topic);
-          }
-          if (!domain) {
-            missingHeaders.push(ShopifyHeader.Domain);
-          }
+export function createRegisterAll(config: ConfigInterface) {
+  const register = createRegister(config);
 
-          if (missingHeaders.length) {
-            response.writeHead(StatusCode.BadRequest);
-            response.end();
-            return reject(
-              new ShopifyErrors.InvalidWebhookError(
-                `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
-                  ', ',
-                )}]`,
-              ),
-            );
-          }
+  return async function registerAll({
+    accessToken,
+    shop,
+    deliveryMethod = DeliveryMethod.Http,
+  }: ShortenedRegisterParams): Promise<RegisterReturn> {
+    let registerReturn = {};
+    const topics = getTopics();
 
-          let statusCode: StatusCode | undefined;
-          let responseError: Error | undefined;
-          const headers = {};
+    for (const topic of topics) {
+      const handler = getHandler({topic});
+      if (handler) {
+        const {path} = handler;
+        const webhook: RegisterParams = {
+          path,
+          topic,
+          accessToken,
+          shop,
+          deliveryMethod,
+        };
+        const returnedRegister = await register(webhook);
+        registerReturn = {...registerReturn, ...returnedRegister};
+      }
+    }
+    return registerReturn;
+  };
+}
 
-          const generatedHash = createHmac('sha256', config.apiSecretKey)
-            .update(reqBody, 'utf8')
-            .digest('base64');
+export function createProcess(config: ConfigInterface) {
+  return async function process(
+    request: http.IncomingMessage,
+    response: http.ServerResponse,
+  ): Promise<void> {
+    let reqBody = '';
 
-          if (safeCompare(generatedHash, hmac as string)) {
-            const graphqlTopic = (topic as string)
-              .toUpperCase()
-              .replace(/\//g, '_');
-            const webhookEntry = WebhooksRegistry.getHandler(graphqlTopic);
-
-            if (webhookEntry) {
-              try {
-                await webhookEntry.webhookHandler(
-                  graphqlTopic,
-                  domain as string,
-                  reqBody,
-                );
-                statusCode = StatusCode.Ok;
-              } catch (error) {
-                statusCode = StatusCode.InternalServerError;
-                responseError = error;
-              }
-            } else {
-              statusCode = StatusCode.NotFound;
-              responseError = new ShopifyErrors.InvalidWebhookError(
-                `No webhook is registered for topic ${topic}`,
-              );
-            }
-          } else {
-            statusCode = StatusCode.Unauthorized;
-            responseError = new ShopifyErrors.InvalidWebhookError(
-              `Could not validate request for topic ${topic}`,
-            );
-          }
-
-          response.writeHead(statusCode, headers);
-          response.end();
-          if (responseError) {
-            return reject(responseError);
-          } else {
-            return resolve();
-          }
-        });
+    const promise: Promise<void> = new Promise((resolve, reject) => {
+      request.on('data', (chunk) => {
+        reqBody += chunk;
       });
 
-      return promise;
-    },
-
-    isWebhookPath(path: string): boolean {
-      for (const key in WebhooksRegistry.webhookRegistry) {
-        if (WebhooksRegistry.webhookRegistry[key].path === path) {
-          return true;
+      request.on('end', async () => {
+        if (!reqBody.length) {
+          response.writeHead(StatusCode.BadRequest);
+          response.end();
+          return reject(
+            new ShopifyErrors.InvalidWebhookError(
+              'No body was received when processing webhook',
+            ),
+          );
         }
-      }
-      return false;
-    },
-  };
 
-  return WebhooksRegistry;
+        let hmac: string | string[] | undefined;
+        let topic: string | string[] | undefined;
+        let domain: string | string[] | undefined;
+        Object.entries(request.headers).map(([header, value]) => {
+          switch (header.toLowerCase()) {
+            case ShopifyHeader.Hmac.toLowerCase():
+              hmac = value;
+              break;
+            case ShopifyHeader.Topic.toLowerCase():
+              topic = value;
+              break;
+            case ShopifyHeader.Domain.toLowerCase():
+              domain = value;
+              break;
+          }
+        });
+
+        const missingHeaders: ShopifyHeader[] = [];
+        if (!hmac) {
+          missingHeaders.push(ShopifyHeader.Hmac);
+        }
+        if (!topic) {
+          missingHeaders.push(ShopifyHeader.Topic);
+        }
+        if (!domain) {
+          missingHeaders.push(ShopifyHeader.Domain);
+        }
+
+        if (missingHeaders.length) {
+          response.writeHead(StatusCode.BadRequest);
+          response.end();
+          return reject(
+            new ShopifyErrors.InvalidWebhookError(
+              `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
+                ', ',
+              )}]`,
+            ),
+          );
+        }
+
+        let statusCode: StatusCode | undefined;
+        let responseError: Error | undefined;
+        const headers = {};
+
+        const generatedHash = createHmac('sha256', config.apiSecretKey)
+          .update(reqBody, 'utf8')
+          .digest('base64');
+
+        if (safeCompare(generatedHash, hmac as string)) {
+          const graphqlTopic = (topic as string)
+            .toUpperCase()
+            .replace(/\//g, '_');
+          const webhookEntry = getHandler({
+            topic: graphqlTopic,
+          });
+
+          if (webhookEntry) {
+            try {
+              await webhookEntry.webhookHandler(
+                graphqlTopic,
+                domain as string,
+                reqBody,
+              );
+              statusCode = StatusCode.Ok;
+            } catch (error) {
+              statusCode = StatusCode.InternalServerError;
+              responseError = error;
+            }
+          } else {
+            statusCode = StatusCode.NotFound;
+            responseError = new ShopifyErrors.InvalidWebhookError(
+              `No webhook is registered for topic ${topic}`,
+            );
+          }
+        } else {
+          statusCode = StatusCode.Unauthorized;
+          responseError = new ShopifyErrors.InvalidWebhookError(
+            `Could not validate request for topic ${topic}`,
+          );
+        }
+
+        response.writeHead(statusCode, headers);
+        response.end();
+        if (responseError) {
+          return reject(responseError);
+        } else {
+          return resolve();
+        }
+      });
+    });
+
+    return promise;
+  };
+}
+
+export function isWebhookPath(path: string): boolean {
+  for (const key in webhookRegistry) {
+    if (webhookRegistry[key].path === path) {
+      return true;
+    }
+  }
+  return false;
 }
