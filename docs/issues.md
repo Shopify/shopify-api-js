@@ -13,7 +13,7 @@ Each app may choose a different data storage, so the library cannot assume any s
 
 - By default, Node.js apps will use `SQLiteSessionStorage`, which will enable you to start developing your app by storing sessions using the file-based SQLite package.
   - It will use a file named `database.sqlite` by default.
-  - It's designed to be a single-process solution and _may_ be sufficient for your production needs depending on your applications design and needs.
+  - It's designed to be a single-process solution and _may_ be sufficient for your production needs depending on your application's design and needs.
 - For runtimes that don't support file-system access, we also provide `MemorySessionStorage`.
   - We don't default to this strategy for CloudFlare workers, because it only works if you're running all your endpoints on the same worker.
   - This strategy is **purposely** designed to be a single-process, development-only solution. It **will leak** memory in most cases and delete all sessions when your app restarts. You should **never** use it in production apps.
