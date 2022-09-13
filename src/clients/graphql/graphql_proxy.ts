@@ -1,10 +1,10 @@
-import {ConfigInterface} from '../base-types';
-import {RequestReturn} from '../clients/http_client/types';
-import * as ShopifyErrors from '../error';
-import {createGetCurrent} from '../session/get-current';
-import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {ConfigInterface} from '../../base-types';
+import {RequestReturn} from '../http_client/types';
+import * as ShopifyErrors from '../../error';
+import {createGetCurrent} from '../../session/get-current';
 
 import {GraphqlProxyParams} from './types';
+import {createGraphqlClientClass} from './graphql_client';
 
 export function createGraphqlProxy(config: ConfigInterface) {
   return async ({

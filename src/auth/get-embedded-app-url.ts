@@ -1,8 +1,8 @@
 import * as ShopifyErrors from '../error';
 import {ConfigInterface} from '../base-types';
 import {abstractConvertRequest} from '../runtime/http';
+import {createSanitizeHost} from '../utils/shop-validator';
 
-import {createSanitizeHost} from './shop-validator';
 import {GetEmbeddedAppUrlParams} from './types';
 
 export function createGetEmbeddedAppUrl(config: ConfigInterface) {

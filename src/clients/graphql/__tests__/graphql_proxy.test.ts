@@ -5,11 +5,11 @@ import {
   queueMockResponses,
   shopify,
   signJWT,
-} from '../../__tests__/test-helper';
-import {Session} from '../../session/session';
-import {InvalidSession, SessionNotFound} from '../../error';
-import {JwtPayload} from '../types';
-import {canonicalizeHeaders, NormalizedRequest} from '../../runtime/http';
+} from '../../../__tests__/test-helper';
+import {Session} from '../../../session/session';
+import {InvalidSession, SessionNotFound} from '../../../error';
+import {JwtPayload} from '../../../utils/types';
+import {canonicalizeHeaders, NormalizedRequest} from '../../../runtime/http';
 
 const successResponse = {
   data: {
@@ -53,7 +53,7 @@ describe('GraphQL proxy with session', () => {
         body: req.body,
       };
 
-      const testResponse = await shopify.utils.graphqlProxy({
+      const testResponse = await shopify.clients.graphqlProxy({
         body: request.body!,
         rawRequest: request,
       });
@@ -159,7 +159,7 @@ describe('GraphQL proxy', () => {
     shopify.config.sessionStorage.storeSession(session);
 
     await expect(
-      shopify.utils.graphqlProxy({
+      shopify.clients.graphqlProxy({
         body: '',
         rawRequest: request,
       }),
@@ -173,7 +173,7 @@ describe('GraphQL proxy', () => {
       url: 'https://my-test-app.myshopify.io/auth/begin',
     };
     await expect(
-      shopify.utils.graphqlProxy({
+      shopify.clients.graphqlProxy({
         body: '',
         rawRequest: request,
       }),
