@@ -3,6 +3,13 @@ import http from 'http';
 
 import {StatusCode} from '@shopify/network';
 
+import {
+  abstractConvertRequest,
+  AdapterArgs,
+  getHeader,
+  NormalizedRequest,
+  NormalizedResponse,
+} from '../runtime/http';
 import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 import {createHttpClientClass} from '../clients/http_client/http_client';
 import {ConfigInterface, gdprTopics, ShopifyHeader} from '../base-types';
@@ -343,46 +350,40 @@ export function createRegisterAll(config: ConfigInterface) {
     return registerReturn;
   };
 }
+export interface WebhookProcessParams extends AdapterArgs {
+  rawBody: string;
+}
 
 export function createProcess(config: ConfigInterface) {
-  return async function process(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
-  ): Promise<void> {
-    let reqBody = '';
+  return async function process({
+    rawBody,
+    ...adapterArgs
+  }: WebhookProcessParams): Promise<NormalizedResponse> {
+    const request: NormalizedRequest = await abstractConvertRequest(
+      adapterArgs,
+    );
+    const response: NormalizedResponse = {
+      statusCode: StatusCode.Ok,
+      statusText: 'OK',
+      headers: {},
+    };
+    let responseError: Error | undefined;
 
-    const promise: Promise<void> = new Promise((resolve, reject) => {
-      request.on('data', (chunk) => {
-        reqBody += chunk;
-      });
-
-      request.on('end', async () => {
-        if (!reqBody.length) {
-          response.writeHead(StatusCode.BadRequest);
-          response.end();
+    const promise: Promise<NormalizedResponse> = new Promise(
+      (resolve, reject) => {
+        if (!rawBody.length) {
           return reject(
-            new ShopifyErrors.InvalidWebhookError(
-              'No body was received when processing webhook',
-            ),
+            new ShopifyErrors.InvalidWebhookError({
+              message: 'No body was received when processing webhook',
+              code: StatusCode.BadRequest,
+              statusText: 'Bad Request',
+            }),
           );
         }
 
-        let hmac: string | string[] | undefined;
-        let topic: string | string[] | undefined;
-        let domain: string | string[] | undefined;
-        Object.entries(request.headers).map(([header, value]) => {
-          switch (header.toLowerCase()) {
-            case ShopifyHeader.Hmac.toLowerCase():
-              hmac = value;
-              break;
-            case ShopifyHeader.Topic.toLowerCase():
-              topic = value;
-              break;
-            case ShopifyHeader.Domain.toLowerCase():
-              domain = value;
-              break;
-          }
-        });
+        const hmac = getHeader(request.headers, ShopifyHeader.Hmac);
+        const topic = getHeader(request.headers, ShopifyHeader.Topic);
+        const domain = getHeader(request.headers, ShopifyHeader.Domain);
 
         const missingHeaders: ShopifyHeader[] = [];
         if (!hmac) {
@@ -396,23 +397,21 @@ export function createProcess(config: ConfigInterface) {
         }
 
         if (missingHeaders.length) {
-          response.writeHead(StatusCode.BadRequest);
-          response.end();
           return reject(
-            new ShopifyErrors.InvalidWebhookError(
-              `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
+            new ShopifyErrors.InvalidWebhookError({
+              message: `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
                 ', ',
               )}]`,
-            ),
+              code: StatusCode.BadRequest,
+              statusText: 'Bad Request',
+            }),
           );
         }
 
         let statusCode: StatusCode | undefined;
-        let responseError: Error | undefined;
-        const headers = {};
 
         const generatedHash = createHmac('sha256', config.apiSecretKey)
-          .update(reqBody, 'utf8')
+          .update(rawBody, 'utf8')
           .digest('base64');
 
         if (safeCompare(generatedHash, hmac as string)) {
@@ -425,38 +424,46 @@ export function createProcess(config: ConfigInterface) {
 
           if (webhookEntry) {
             try {
-              await webhookEntry.webhookHandler(
+              webhookEntry.webhookHandler(
                 graphqlTopic,
                 domain as string,
-                reqBody,
+                rawBody,
               );
               statusCode = StatusCode.Ok;
             } catch (error) {
               statusCode = StatusCode.InternalServerError;
-              responseError = error;
+              responseError = new ShopifyErrors.InvalidWebhookError({
+                message: error.message,
+                code: StatusCode.InternalServerError,
+                statusText: 'Not Found',
+                cause: error,
+              });
             }
           } else {
             statusCode = StatusCode.NotFound;
-            responseError = new ShopifyErrors.InvalidWebhookError(
-              `No webhook is registered for topic ${topic}`,
-            );
+            responseError = new ShopifyErrors.InvalidWebhookError({
+              message: `No webhook is registered for topic ${topic}`,
+              code: StatusCode.NotFound,
+              statusText: 'Not Found',
+            });
           }
         } else {
           statusCode = StatusCode.Unauthorized;
-          responseError = new ShopifyErrors.InvalidWebhookError(
-            `Could not validate request for topic ${topic}`,
-          );
+          responseError = new ShopifyErrors.InvalidWebhookError({
+            message: `Could not validate request for topic ${topic}`,
+            code: StatusCode.Unauthorized,
+            statusText: 'Unauthorized',
+          });
         }
 
-        response.writeHead(statusCode, headers);
-        response.end();
+        response.statusCode = statusCode;
         if (responseError) {
           return reject(responseError);
         } else {
-          return resolve();
+          return resolve(response);
         }
-      });
-    });
+      },
+    );
 
     return promise;
   };

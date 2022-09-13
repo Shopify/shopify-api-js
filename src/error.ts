@@ -84,7 +84,34 @@ export class SessionNotFound extends ShopifyError {}
 export class CookieNotFound extends ShopifyError {}
 export class InvalidSession extends ShopifyError {}
 
-export class InvalidWebhookError extends ShopifyError {}
+interface InvalidWebhookParams extends HttpResponseData {
+  message: string;
+  cause?: Error;
+}
+export class InvalidWebhookError extends ShopifyError {
+  readonly response: HttpResponseData;
+
+  public constructor({
+    message,
+    code,
+    statusText,
+    body,
+    headers,
+    cause,
+  }: InvalidWebhookParams) {
+    if (cause) {
+      super(message, {cause});
+    } else {
+      super(message);
+    }
+    this.response = {
+      code,
+      statusText,
+      body,
+      headers,
+    };
+  }
+}
 export class SessionStorageError extends ShopifyError {}
 
 export class MissingRequiredArgument extends ShopifyError {}
