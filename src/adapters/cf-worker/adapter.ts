@@ -19,7 +19,6 @@ export async function workerConvertRequest(
   adapterArgs: WorkerAdapterArgs,
 ): Promise<NormalizedRequest> {
   const request = adapterArgs.rawRequest;
-  const body = await request.text();
   const headers = {};
   for (const [key, value] of request.headers.entries()) {
     addHeader(headers, key, value);
@@ -28,7 +27,6 @@ export async function workerConvertRequest(
     headers,
     method: request.method ?? 'GET',
     url: request.url!,
-    body,
   };
 }
 
