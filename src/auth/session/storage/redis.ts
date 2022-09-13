@@ -1,12 +1,14 @@
-import {createClient, RedisClientType, RedisClientOptions} from 'redis';
+import {createClient, RedisClientOptions} from 'redis';
 
 import {SessionInterface} from '../types';
 import {SessionStorage} from '../session_storage';
 import {sessionFromEntries, sessionEntries} from '../session-utils';
 import {sanitizeShop} from '../../../utils/shop-validator';
 
+type RedisClient = ReturnType<typeof createClient>;
 export interface RedisSessionStorageOptions extends RedisClientOptions {
   sessionKeyPrefix: string;
+  onError?: (...args: any[]) => void;
 }
 const defaultRedisSessionStorageOptions: RedisSessionStorageOptions = {
   sessionKeyPrefix: 'shopify_sessions',
@@ -32,7 +34,7 @@ export class RedisSessionStorage implements SessionStorage {
 
   public readonly ready: Promise<void>;
   private options: RedisSessionStorageOptions;
-  private client: RedisClientType;
+  private client: RedisClient;
 
   constructor(
     private dbUrl: URL,
@@ -108,6 +110,9 @@ export class RedisSessionStorage implements SessionStorage {
       ...this.options,
       url: this.dbUrl.toString(),
     });
+    if (this.options.onError) {
+      this.client.on('error', this.options.onError);
+    }
     await this.client.connect();
   }
 }

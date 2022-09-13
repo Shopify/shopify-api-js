@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
 
-const JWT_PERMITTED_CLOCK_TOLERANCE = 5;
+const JWT_PERMITTED_CLOCK_TOLERANCE = 10;
 
 interface JwtPayload {
   iss: string;
