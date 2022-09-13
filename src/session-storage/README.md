@@ -5,6 +5,7 @@ This folder contains implementations of the `SessionStorage` interface that work
 ## SQLite (default for Node)
 
 ```js
+import '@shopify/shopify-api/adapters/node';
 import {shopifyApi} from '@shopify/shopify-api';
 import {SQLiteSessionStorage} from '@shopify/shopify-api/session-storage/sqlite';
 
