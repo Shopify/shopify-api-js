@@ -1,12 +1,12 @@
 # Performing OAuth
 
 Once you set up the library for your project, you'll be able to use it to interact with the APIs, and add your own functionality.
-The first thing your app will need to do is to get an access token to the Admin API by performing the OAuth process. Learn more about [OAuth on the Shopify platform](https://shopify.dev/apps/auth/oauth).
+The first thing your app will need to do is to get a token to access the Admin API by performing the OAuth process. Learn more about [OAuth on the Shopify platform](https://shopify.dev/apps/auth/oauth).
 
 To perform OAuth, you will need to create two endpoints in your app:
 
-1. [Start the process](#start-endpoint) by taking the merchant to Shopify to ask for permission to install the app.
-1. [Receive the merchant back](#callback-endpoint) once they approve the app installation, to set up a session with an API access token.
+1. [Start the process](#start-endpoint) by directing the merchant to Shopify to ask for permission to install the app.
+1. [Return the merchant to your app](#callback-endpoint) once they approve the app installation, to set up a session with an API access token.
 
 Once you complete the OAuth process, you'll be able to [use the session it creates](#using-sessions) to create API clients.
 

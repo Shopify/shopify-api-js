@@ -21,7 +21,7 @@ Once you set up your app with the right adapter, you can follow the next section
 
 We've refactored the way objects are exported by this library, to remove the main "static" `Shopify` object with global settings stored in `Shopify.Context`.
 
-Even though that object has no business logic, the fact that the configuration is global made it hard to mock it for tests and set up multiple instances of it.
+Even though that object has no business logic, the fact that the configuration is global made it hard to mock for tests and to set up multiple instances of it.
 Part of the changes we made were to create a library object with local settings, to make it feel more idiomatic and easier to work with.
 
 In general, those changes don't affect any library functionality, unless explicitly mentioned below.
@@ -63,7 +63,7 @@ You will probably need to search and replace most of the imports to this library
 
 ## Passing in framework requests / responses
 
-In the Node-only library, apps would generally call library functions like so:
+In the Node-only library, apps would generally call library functions as follows:
 
 ```ts
 app.get(
@@ -139,7 +139,7 @@ async function handleFetch(request: Request): Promise<Response> {
 
 The OAuth methods still behave the same way, but we've updated their signatures to make it easier to work with them. See the [updated OAuth instructions](./usage/oauth.md) for a complete example.
 
-1. `Shopify.Auth.beginAuth()` is now `shopify.auth.begin()`, it takes in an object, and it now also triggers a redirect response to the right endpoint.
+1. `Shopify.Auth.beginAuth()` is now `shopify.auth.begin()`, it takes in an object, and it now also triggers a redirect response to the correct endpoint.
    <div>Before
 
    ```ts
@@ -353,7 +353,7 @@ Utils functions are now located in `shopify.utils`.
 
    </div>
 
-1. `Shopify.Utils.graphqlProxy` is now `shopify.utils.graphqlProxy`, and it takes the body as an argument instead of parsing it from the body. This will make it easier for apps to use a body parser with this function.
+1. `Shopify.Utils.graphqlProxy` is now `shopify.utils.graphqlProxy`, and it takes the body as an argument instead of parsing it from the request. This will make it easier for apps to use a body parser with this function.
    <div>Before
 
    ```ts
@@ -372,7 +372,7 @@ Utils functions are now located in `shopify.utils`.
 
    </div>
 
-1. `Shopify.Utils.getEmbeddedAppUrl` is now `shopify.utils.getEmbeddedAppUrl`, and it's now `async` and takes an object.
+1. `Shopify.Utils.getEmbeddedAppUrl` is now `shopify.utils.getEmbeddedAppUrl`, is `async` and takes an object.
    <div>Before
 
    ```ts

@@ -3,7 +3,7 @@
 This library comes with various session management options:
 
 - `CustomSessionStorage` - to allow for a custom session storage solution (see below for details).
-- `MemorySessionStorage` - uses memory as an option to help you get started developing your apps as quickly as possible. It's perfect for working in your development and testing environments. However, this storage solution is **not** meant to be used in production [due to its limitations](../issues.md).
+- `MemorySessionStorage` - uses memory as an option to help you start developing your apps as quickly as possible. It's perfect for working in your development and testing environments. However, this storage solution is **not** meant to be used in production [due to its limitations](../issues.md).
 - `MongoDBSessionStorage`
 - `MySQLSessionStorage`
 - `PostgreSQLSessionStorage`
@@ -22,7 +22,7 @@ All of the callbacks used to create a new instance of `CustomSessionStorage` sho
 | `loadCallback`   | `string`           | `Promise<SessionInterface \| Record<string, unknown> \| undefined> ` | Takes in the id of the `Session` to load (as a `string`) and returns either an instance of a `Session`, an object to be used to instantiate a `Session`, or `undefined` if no record is found for the specified id. |
 | `deleteCallback` | `string`           | `Promise<boolean>`                                                   | Takes in the id of the `Session` to load (as a `string`) and returns a `boolean` (`true` if deleted successfully).                                                                                                  |
 
-There are two optional callbacks methods that also be passed in during initialization. They're not used internally in the library but can be useful to have in your app if you call `shopify.config.sessionStorage.deleteSessions` or `findSessionsByShop`.
+There are two optional callbacks methods that can also be passed in during initialization. They're not used internally in the library but can be useful to have in your app if you call `shopify.config.sessionStorage.deleteSessions` or `findSessionsByShop`.
 
 | Optional Method              | Arg type   | Return type                    | Notes                                                                                                                                  |
 | ---------------------------- | ---------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
