@@ -22,23 +22,10 @@ export async function nodeConvertRequest(
   adapterArgs: NodeAdapterArgs,
 ): Promise<NormalizedRequest> {
   const req = adapterArgs.rawRequest;
-  const body = await new Promise<string | undefined>((resolve, reject) => {
-    if ((req as any).writableFinished) {
-      resolve(undefined);
-    }
-
-    let str = '';
-    req.on('data', (chunk) => {
-      str += chunk.toString();
-    });
-    req.on('error', (error) => reject(error));
-    req.on('end', () => resolve(str));
-  });
   return {
     headers: canonicalizeHeaders({...req.headers} as any),
     method: req.method ?? 'GET',
     url: req.url!,
-    body,
   };
 }
 
@@ -96,4 +83,8 @@ export function nodeCreateDefaultStorage() {
   );
 
   return new SQLiteSessionStorage(dbFile);
+}
+
+export function nodeRuntimeString() {
+  return `Node ${process.version}`;
 }

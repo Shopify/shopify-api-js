@@ -89,10 +89,10 @@ export function removeHeader(headers: Headers, needle: string) {
     // ...
   ]
 */
-export function flatHeaders(headers: Headers): string[][] {
+export function flatHeaders(headers: Headers): [string, string][] {
   return Object.entries(headers).flatMap(([header, values]) =>
     Array.isArray(values)
-      ? values.map((value) => [header, value])
+      ? values.map((value): [string, string] => [header, value])
       : [[header, values]],
   );
 }

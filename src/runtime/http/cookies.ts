@@ -108,7 +108,7 @@ export class Cookies {
     if (keys) this.keys = keys;
 
     const cookieReqHdr = getHeader(request.headers, 'Cookie') ?? '';
-    this.receivedCookieJar = Cookies.parseCookies(cookieReqHdr.split(','));
+    this.receivedCookieJar = Cookies.parseCookies(cookieReqHdr.split(';'));
     const cookieResHdr = getHeaders(response.headers, 'Set-Cookie') ?? [];
     this.outgoingCookieJar = Cookies.parseCookies(cookieResHdr);
   }

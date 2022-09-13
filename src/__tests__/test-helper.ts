@@ -110,7 +110,7 @@ export async function setSignedSessionCookie({
   });
 
   // eslint-disable-next-line require-atomic-updates
-  request.headers.Cookie = cookies.toHeaders().join(',');
+  request.headers.Cookie = cookies.toHeaders().join(';');
 }
 
 export async function createAndSaveDummySession({

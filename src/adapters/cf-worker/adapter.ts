@@ -6,21 +6,28 @@ import {
   NormalizedRequest,
   NormalizedResponse,
   Headers,
+  addHeader,
 } from '../../runtime/http';
 
 interface WorkerAdapterArgs extends AdapterArgs {
   rawRequest: Request;
 }
 
+type WorkerHeaders = [string, string][];
+
 export async function workerConvertRequest(
   adapterArgs: WorkerAdapterArgs,
 ): Promise<NormalizedRequest> {
-  const req = adapterArgs.rawRequest;
-  const body = await req.text();
+  const request = adapterArgs.rawRequest;
+  const body = await request.text();
+  const headers = {};
+  for (const [key, value] of request.headers.entries()) {
+    addHeader(headers, key, value);
+  }
   return {
-    headers: canonicalizeHeaders(req.headers as any),
-    method: req.method ?? 'GET',
-    url: req.url!,
+    headers,
+    method: request.method ?? 'GET',
+    url: request.url!,
     body,
   };
 }
@@ -39,7 +46,7 @@ export async function workerConvertResponse(
 export async function workerConvertHeaders(
   headers: Headers,
   _adapterArgs: WorkerAdapterArgs,
-): Promise<string[][]> {
+): Promise<WorkerHeaders> {
   return Promise.resolve(flatHeaders(headers ?? {}));
 }
 
@@ -63,4 +70,8 @@ export function workerCreateDefaultStorage(): never {
   throw new ShopifyError(
     'You must specify a session storage implementation for CloudFlare workers',
   );
+}
+
+export function workerRuntimeString(): string {
+  return 'Cloudflare worker';
 }

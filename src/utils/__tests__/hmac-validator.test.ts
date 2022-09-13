@@ -65,10 +65,13 @@ test('queries with extra keys are not included in hmac querystring', async () =>
     .update(queryString)
     .digest('hex');
 
-  const testQueryWithExtraParam = Object.assign(queryObjectWithoutHmac, {
-    hmac: localHmac,
-    shopify: ['callback'],
-  });
+  const testQueryWithExtraParam: AuthQuery = Object.assign(
+    queryObjectWithoutHmac,
+    {
+      hmac: localHmac,
+      'shopify[]': 'callback',
+    },
+  );
 
   await expect(
     shopify.utils.validateHmac(testQueryWithExtraParam),

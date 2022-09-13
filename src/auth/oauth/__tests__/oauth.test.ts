@@ -1,7 +1,6 @@
 import querystring from 'querystring';
 
 import * as ShopifyErrors from '../../../error';
-import {AuthQuery} from '../types';
 import {createGenerateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/types';
 import {nonce} from '../../../utils/nonce';
@@ -20,6 +19,10 @@ import {createGetOfflineId} from '../../../session/session-utils';
 
 const VALID_NONCE = 'noncenoncenonce';
 jest.mock('../../../utils/nonce', () => ({nonce: jest.fn(() => VALID_NONCE)}));
+
+interface QueryMock {
+  [key: string]: any;
+}
 
 let shop: string;
 
@@ -150,7 +153,7 @@ describe('beginAuth', () => {
   });
 });
 
-describe('validateAuthCallback', () => {
+describe('callback', () => {
   let request: NormalizedRequest;
 
   beforeEach(() => {
@@ -167,19 +170,17 @@ describe('validateAuthCallback', () => {
     expect(
       shopify.auth.callback({
         isOnline: true,
-        query: {} as AuthQuery,
         rawRequest: request,
       }),
     ).rejects.toThrow(ShopifyErrors.PrivateAppError);
   });
 
   test("throws an error when receiving a callback for a shop that doesn't have a state cookie", async () => {
+    request.url += '?shop=I+do+not+exist';
+
     await expect(
       shopify.auth.callback({
         isOnline: true,
-        query: {
-          shop: 'I do not exist',
-        } as AuthQuery,
         rawRequest: request,
       }),
     ).rejects.toThrow(ShopifyErrors.CookieNotFound);
@@ -194,18 +195,18 @@ describe('validateAuthCallback', () => {
     });
     setCallbackCookieFromResponse(request, response);
 
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
     testCallbackQuery.hmac = 'definitely the wrong hmac';
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     await expect(
       shopify.auth.callback({
         isOnline: true,
-        query: testCallbackQuery,
         rawRequest: request,
       }),
     ).rejects.toThrow(ShopifyErrors.InvalidOAuthError);
@@ -220,7 +221,7 @@ describe('validateAuthCallback', () => {
     });
     setCallbackCookieFromResponse(request, response);
 
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: 'incorrect state',
       timestamp: Number(new Date()).toString(),
@@ -230,18 +231,18 @@ describe('validateAuthCallback', () => {
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     await expect(
       shopify.auth.callback({
         isOnline: true,
-        query: testCallbackQuery,
         rawRequest: request,
       }),
     ).rejects.toThrow(ShopifyErrors.InvalidOAuthError);
   });
 
   test('throws a SessionStorageError when storeSession returns false', async () => {
-    // create new storage with broken storeCallback for validateAuthCallback to use
+    // create new storage with broken storeCallback for callback to use
     shopify.config.sessionStorage = new CustomSessionStorage(
       () => Promise.resolve(false),
       () => Promise.resolve(undefined),
@@ -256,7 +257,7 @@ describe('validateAuthCallback', () => {
     });
     setCallbackCookieFromResponse(request, response);
 
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
@@ -266,6 +267,7 @@ describe('validateAuthCallback', () => {
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     const successResponse = {
       access_token: 'some access token',
@@ -289,7 +291,6 @@ describe('validateAuthCallback', () => {
     await expect(
       shopify.auth.callback({
         isOnline: true,
-        query: testCallbackQuery,
         rawRequest: request,
       }),
     ).rejects.toThrow(ShopifyErrors.SessionStorageError);
@@ -304,7 +305,7 @@ describe('validateAuthCallback', () => {
     });
     setCallbackCookieFromResponse(request, beginResponse);
 
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
@@ -314,6 +315,7 @@ describe('validateAuthCallback', () => {
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     const successResponse = {
       access_token: 'some access token string',
@@ -324,7 +326,6 @@ describe('validateAuthCallback', () => {
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: false,
-      query: testCallbackQuery,
       rawRequest: request,
     });
 
@@ -350,7 +351,7 @@ describe('validateAuthCallback', () => {
     });
     setCallbackCookieFromResponse(request, beginResponse);
 
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
@@ -360,6 +361,7 @@ describe('validateAuthCallback', () => {
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     const successResponse = {
       access_token: 'some access token',
@@ -388,7 +390,6 @@ describe('validateAuthCallback', () => {
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: true,
-      query: testCallbackQuery,
       rawRequest: request,
     });
 
@@ -440,7 +441,7 @@ describe('validateAuthCallback', () => {
         collaborator: true,
       },
     };
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
@@ -450,12 +451,12 @@ describe('validateAuthCallback', () => {
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: true,
-      query: testCallbackQuery,
       rawRequest: request,
     });
 
@@ -535,7 +536,7 @@ describe('validateAuthCallback', () => {
         collaborator: true,
       },
     };
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
@@ -545,12 +546,12 @@ describe('validateAuthCallback', () => {
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: true,
-      query: testCallbackQuery,
       rawRequest: request,
     });
 
@@ -602,7 +603,7 @@ describe('validateAuthCallback', () => {
       scope: 'pet_kitties, walk_dogs',
       expires_in: 525600,
     };
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
@@ -612,12 +613,12 @@ describe('validateAuthCallback', () => {
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: false,
-      query: testCallbackQuery,
       rawRequest: request,
     });
 
@@ -649,7 +650,7 @@ describe('validateAuthCallback', () => {
       scope: 'pet_kitties, walk_dogs',
       expires_in: 525600,
     };
-    const testCallbackQuery: AuthQuery = {
+    const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
       timestamp: Number(new Date()).toString(),
@@ -659,12 +660,12 @@ describe('validateAuthCallback', () => {
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
+    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
     queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
       isOnline: false,
-      query: testCallbackQuery,
       rawRequest: request,
     });
 
@@ -698,5 +699,8 @@ function setCallbackCookieFromResponse(
     keys: [shopify.config.apiSecretKey],
   });
 
-  request.headers.Cookie = responseCookies.toHeaders().join(',');
+  request.headers.Cookie = [
+    `shopify_app_state=${responseCookies.outgoingCookieJar.shopify_app_state.value}`,
+    `shopify_app_state.sig=${responseCookies.outgoingCookieJar['shopify_app_state.sig'].value}`,
+  ].join(';');
 }

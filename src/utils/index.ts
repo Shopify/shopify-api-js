@@ -12,6 +12,8 @@ import {
   createBuildEmbeddedAppUrl,
 } from './get-embedded-app-url';
 
+// eslint-disable-next-line no-warning-comments
+// TODO refactor utils functions to take in objects for consistency (and update docs)
 export function shopifyUtils(config: ConfigInterface) {
   return {
     decodeSessionToken: createDecodeSessionToken(config),

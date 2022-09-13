@@ -57,3 +57,7 @@ export async function mockFetch({
 export function mockCreateDefaultStorage() {
   return new MemorySessionStorage();
 }
+
+export function mockRuntimeString() {
+  return 'Mock adapter';
+}

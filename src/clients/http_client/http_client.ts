@@ -14,6 +14,7 @@ import {
   NormalizedRequest,
   NormalizedResponse,
 } from '../../runtime/http';
+import {abstractRuntimeString} from '../../runtime/platform';
 
 import {
   DataType,
@@ -86,7 +87,7 @@ export function createHttpClientClass(config: ConfigInterface) {
         );
       }
 
-      let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
+      let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | ${abstractRuntimeString()}`;
 
       if (config.userAgentPrefix) {
         userAgent = `${config.userAgentPrefix} | ${userAgent}`;
@@ -128,7 +129,7 @@ export function createHttpClientClass(config: ConfigInterface) {
           headers = {
             ...headers,
             'Content-Type': type,
-            'Content-Length': Buffer.byteLength(body as string),
+            'Content-Length': new TextEncoder().encode(body).length,
           };
         }
       }
