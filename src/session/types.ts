@@ -7,7 +7,7 @@ import {ClientType} from '../base-types';
 
 import type {shopifySession} from '.';
 
-export interface SessionInterface {
+export interface SessionParams {
   readonly id: string;
   shop: string;
   state: string;
@@ -16,6 +16,9 @@ export interface SessionInterface {
   expires?: Date;
   accessToken?: string;
   onlineAccessInfo?: OnlineAccessInfo;
+}
+
+export interface SessionInterface extends SessionParams {
   isActive(scopes: AuthScopes | string | string[]): boolean;
 }
 

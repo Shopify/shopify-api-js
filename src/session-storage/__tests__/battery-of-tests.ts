@@ -10,40 +10,64 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
   it('can store and delete all kinds of sessions', async () => {
     const sessionFactories = [
       async () => {
-        const session = new Session(sessionId, 'shop', 'state', false);
-        session.scope = shopify.config.scopes.toString();
-        session.accessToken = '123';
+        const session = new Session({
+          id: sessionId,
+          shop: 'shop',
+          state: 'state',
+          isOnline: false,
+          scope: shopify.config.scopes.toString(),
+          accessToken: '123',
+        });
         return session;
       },
       async () => {
-        const session = new Session(sessionId, 'shop', 'state', false);
         const expiryDate = new Date();
         expiryDate.setMinutes(expiryDate.getMinutes() + 60);
-        session.expires = expiryDate;
-        session.accessToken = '123';
-        session.scope = shopify.config.scopes.toString();
+        const session = new Session({
+          id: sessionId,
+          shop: 'shop',
+          state: 'state',
+          isOnline: false,
+          expires: expiryDate,
+          accessToken: '123',
+          scope: shopify.config.scopes.toString(),
+        });
         return session;
       },
       async () => {
-        const session = new Session(sessionId, 'shop', 'state', false);
-        session.expires = null as any;
-        session.scope = shopify.config.scopes.toString();
-        session.accessToken = '123';
+        const session = new Session({
+          id: sessionId,
+          shop: 'shop',
+          state: 'state',
+          isOnline: false,
+          expires: null as any,
+          scope: shopify.config.scopes.toString(),
+          accessToken: '123',
+        });
         return session;
       },
       async () => {
-        const session = new Session(sessionId, 'shop', 'state', false);
-        session.expires = undefined;
-        session.scope = shopify.config.scopes.toString();
-        session.accessToken = '123';
+        const session = new Session({
+          id: sessionId,
+          shop: 'shop',
+          state: 'state',
+          isOnline: false,
+          expires: undefined,
+          scope: shopify.config.scopes.toString(),
+          accessToken: '123',
+        });
         return session;
       },
       async () => {
-        const session = new Session(sessionId, 'shop', 'state', false);
-        session.onlineAccessInfo = {associated_user: {}} as any;
-        session.onlineAccessInfo!.associated_user.id = 123;
-        session.scope = shopify.config.scopes.toString();
-        session.accessToken = '123';
+        const session = new Session({
+          id: sessionId,
+          shop: 'shop',
+          state: 'state',
+          isOnline: false,
+          onlineAccessInfo: {associated_user: {id: 123}} as any,
+          scope: shopify.config.scopes.toString(),
+          accessToken: '123',
+        });
         return session;
       },
     ];
@@ -76,7 +100,12 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const storage = await storageFactory();
     storage.setConfig(shopify.config);
     const sessionId = 'test_session';
-    const session = new Session(sessionId, 'shop', 'state', true);
+    const session = new Session({
+      id: sessionId,
+      shop: 'shop',
+      state: 'state',
+      isOnline: true,
+    });
     (session as any).someField = 'lol';
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
@@ -89,7 +118,12 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     const storage = await storageFactory();
     storage.setConfig(shopify.config);
     const sessionId = 'test_session';
-    const session = new Session(sessionId, 'shop', 'state', true);
+    const session = new Session({
+      id: sessionId,
+      shop: 'shop',
+      state: 'state',
+      isOnline: true,
+    });
 
     await expect(storage.storeSession(session)).resolves.toBe(true);
     expect(sessionEqual(await storage.loadSession(sessionId), session)).toBe(
@@ -110,30 +144,30 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     storage.setConfig(shopify.config);
     const prefix = 'find_sessions';
     const sessions = [
-      new Session(
-        `${prefix}_1`,
-        'find-shop1-sessions.myshopify.io',
-        'state',
-        true,
-      ),
-      new Session(
-        `${prefix}_2`,
-        'do-not-find-shop2-sessions.myshopify.io',
-        'state',
-        true,
-      ),
-      new Session(
-        `${prefix}_3`,
-        'find-shop1-sessions.myshopify.io',
-        'state',
-        true,
-      ),
-      new Session(
-        `${prefix}_4`,
-        'do-not-find-shop3-sessions.myshopify.io',
-        'state',
-        true,
-      ),
+      new Session({
+        id: `${prefix}_1`,
+        shop: 'find-shop1-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_2`,
+        shop: 'do-not-find-shop2-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_3`,
+        shop: 'find-shop1-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_4`,
+        shop: 'do-not-find-shop3-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
     ];
 
     for (const session of sessions) {
@@ -162,30 +196,30 @@ export function batteryOfTests(storageFactory: () => Promise<SessionStorage>) {
     storage.setConfig(shopify.config);
     const prefix = 'delete_sessions';
     const sessions = [
-      new Session(
-        `${prefix}_1`,
-        'delete-shop1-sessions.myshopify.io',
-        'state',
-        true,
-      ),
-      new Session(
-        `${prefix}_2`,
-        'do-not-delete-shop2-sessions.myshopify.io',
-        'state',
-        true,
-      ),
-      new Session(
-        `${prefix}_3`,
-        'delete-shop1-sessions.myshopify.io',
-        'state',
-        true,
-      ),
-      new Session(
-        `${prefix}_4`,
-        'do-not-delete-shop3-sessions.myshopify.io',
-        'state',
-        true,
-      ),
+      new Session({
+        id: `${prefix}_1`,
+        shop: 'delete-shop1-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_2`,
+        shop: 'do-not-delete-shop2-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_3`,
+        shop: 'delete-shop1-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_4`,
+        shop: 'do-not-delete-shop3-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
     ];
 
     for (const session of sessions) {

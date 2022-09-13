@@ -6,12 +6,12 @@ import {SessionStorageError} from '../../error';
 describe('custom session storage', () => {
   test('can perform core actions', async () => {
     const sessionId = 'test_session';
-    let session: Session | undefined = new Session(
-      sessionId,
-      'shop-url',
-      'state',
-      true,
-    );
+    let session: Session | undefined = new Session({
+      id: sessionId,
+      shop: 'shop-url',
+      state: 'state',
+      isOnline: true,
+    });
 
     let storeCalled = false;
     let loadCalled = false;
@@ -61,10 +61,30 @@ describe('custom session storage', () => {
   test('can perform optional actions', async () => {
     const prefix = 'custom_sessions';
     let sessions = [
-      new Session(`${prefix}_1`, 'shop1-sessions.myshopify.io', 'state', true),
-      new Session(`${prefix}_2`, 'shop2-sessions.myshopify.io', 'state', true),
-      new Session(`${prefix}_3`, 'shop1-sessions.myshopify.io', 'state', true),
-      new Session(`${prefix}_4`, 'shop3-sessions.myshopify.io', 'state', true),
+      new Session({
+        id: `${prefix}_1`,
+        shop: 'shop1-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_2`,
+        shop: 'shop2-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_3`,
+        shop: 'shop1-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
+      new Session({
+        id: `${prefix}_4`,
+        shop: 'shop3-sessions.myshopify.io',
+        state: 'state',
+        isOnline: true,
+      }),
     ];
 
     let deleteSessionsCalled = false;
@@ -113,12 +133,12 @@ describe('custom session storage', () => {
   test('missing optional actions generate warnings', async () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
     const prefix = 'custom_sessions';
-    const session = new Session(
-      `${prefix}_1`,
-      'shop1-sessions.myshopify.io',
-      'state',
-      true,
-    );
+    const session = new Session({
+      id: `${prefix}_1`,
+      shop: 'shop1-sessions.myshopify.io',
+      state: 'state',
+      isOnline: true,
+    });
 
     const storage = new CustomSessionStorage(
       () => {
@@ -150,12 +170,12 @@ describe('custom session storage', () => {
 
   test('failures and exceptions are raised', () => {
     const sessionId = 'test_session';
-    const session = new Session(
-      sessionId,
-      'shop-url.myshopify.io',
-      'state',
-      true,
-    );
+    const session = new Session({
+      id: sessionId,
+      shop: 'shop-url.myshopify.io',
+      state: 'state',
+      isOnline: true,
+    });
 
     let storage = new CustomSessionStorage(
       () => Promise.resolve(false),
@@ -202,13 +222,13 @@ describe('custom session storage', () => {
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + 10);
 
-    let session: Session | undefined = new Session(
-      sessionId,
-      'shop',
-      'state',
-      true,
-    );
-    session.expires = expiration;
+    let session: Session | undefined = new Session({
+      id: sessionId,
+      shop: 'shop',
+      state: 'state',
+      isOnline: true,
+      expires: expiration,
+    });
 
     const storage = new CustomSessionStorage(
       () => {
@@ -236,30 +256,29 @@ describe('custom session storage', () => {
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + 10);
 
-    let session: Session | undefined = new Session(
-      sessionId,
-      'test.myshopify.io',
-      '1234',
-      true,
-    );
-    session.scope = 'read_products';
-    session.expires = expiration;
-    session.isOnline = true;
-    session.accessToken = '12356';
-    session.onlineAccessInfo = {
-      associated_user_scope: 'read_products',
-      expires_in: 12345,
-      associated_user: {
-        id: 54321,
-        account_owner: true,
-        collaborator: true,
-        email: 'not@email',
-        email_verified: true,
-        first_name: 'first',
-        last_name: 'last',
-        locale: 'en',
+    let session: Session | undefined = new Session({
+      id: sessionId,
+      shop: 'test.myshopify.io',
+      state: '1234',
+      isOnline: true,
+      scope: 'read_products',
+      expires: expiration,
+      accessToken: '12356',
+      onlineAccessInfo: {
+        associated_user_scope: 'read_products',
+        expires_in: 12345,
+        associated_user: {
+          id: 54321,
+          account_owner: true,
+          collaborator: true,
+          email: 'not@email',
+          email_verified: true,
+          first_name: 'first',
+          last_name: 'last',
+          locale: 'en',
+        },
       },
-    };
+    });
 
     let serializedSession = '';
     const storage = new CustomSessionStorage(
@@ -287,12 +306,12 @@ describe('custom session storage', () => {
   it('allows empty fields in serialized object', async () => {
     const sessionId = 'test_session';
 
-    let session: Session | undefined = new Session(
-      sessionId,
-      'shop.myshopify.io',
-      'state',
-      true,
-    );
+    let session: Session | undefined = new Session({
+      id: sessionId,
+      shop: 'shop.myshopify.io',
+      state: 'state',
+      isOnline: true,
+    });
 
     let serializedSession = '';
     const storage = new CustomSessionStorage(

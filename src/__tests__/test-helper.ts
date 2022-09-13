@@ -126,9 +126,14 @@ export async function createAndSaveDummySession({
   expires?: Date;
   accessToken?: string;
 }): Promise<Session> {
-  const session = new Session(sessionId, shop, 'state', isOnline);
-  session.expires = expires;
-  session.accessToken = accessToken;
+  const session = new Session({
+    id: sessionId,
+    shop,
+    state: 'state',
+    isOnline,
+    expires,
+    accessToken,
+  });
   await expect(
     shopify.config.sessionStorage.storeSession(session),
   ).resolves.toEqual(true);
