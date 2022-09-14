@@ -86,9 +86,8 @@ export interface AddHandlersProps {
   [topic: string]: WebhookRegistryEntry;
 }
 
-export interface AddHandlerParams {
+export interface AddHandlerParams extends WebhookRegistryEntry {
   topic: string;
-  registryEntry: WebhookRegistryEntry;
 }
 
 export interface GetHandlerParams {

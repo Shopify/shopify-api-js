@@ -218,14 +218,15 @@ export function resetWebhookRegistry() {
   }
 }
 
-export function addHandler({topic, registryEntry}: AddHandlerParams) {
-  webhookRegistry[topic] = registryEntry;
+export function addHandler(params: AddHandlerParams) {
+  const {topic, ...rest} = params;
+  webhookRegistry[topic] = rest as WebhookRegistryEntry;
 }
 
 export function addHandlers(handlers: AddHandlersProps): void {
   Object.entries(handlers).forEach(
     ([topic, registryEntry]: [string, WebhookRegistryEntry]) => {
-      addHandler({topic, registryEntry});
+      addHandler({topic, ...registryEntry});
     },
   );
 }
