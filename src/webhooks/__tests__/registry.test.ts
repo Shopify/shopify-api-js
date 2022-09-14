@@ -21,7 +21,6 @@ import {
 } from '../registry';
 import {queueMockResponse, shopify} from '../../__tests__/test-helper';
 import {mockTestRequests} from '../../adapters/mock/mock_test_requests';
-import {NormalizedResponse} from '../../runtime/http';
 
 interface MockResponse {
   [key: string]: unknown;
@@ -375,25 +374,22 @@ describe('shopify.webhooks.process', () => {
     app.use(parseRawBody);
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
-      let response: NormalizedResponse = {
-        statusCode: 200,
-        statusText: 'OK',
-      };
       try {
-        response = await shopify.webhooks.process({
+        await shopify.webhooks.process({
           rawBody: (req as any).rawBody,
           rawRequest: req,
           rawResponse: res,
         });
-        res.writeHead(response.statusCode);
+        // needed for test case to pass - shopify.webhooks.process() would have
+        // already sent a response in an actual app
+        res.writeHead(StatusCode.Ok);
         res.end();
       } catch (error) {
         errorThrown = true;
-        res.writeHead(error.response.code);
+        res.writeHead(error.response.statusCode);
         res.end();
       }
       expect(errorThrown).toBeFalsy();
-      expect(response.statusCode).toBe(200);
     });
 
     await request(app)
@@ -415,25 +411,22 @@ describe('shopify.webhooks.process', () => {
     app.use(parseRawBody);
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
-      let response: NormalizedResponse = {
-        statusCode: 200,
-        statusText: 'OK',
-      };
       try {
-        response = await shopify.webhooks.process({
+        await shopify.webhooks.process({
           rawBody: (req as any).rawBody,
           rawRequest: req,
           rawResponse: res,
         });
-        res.writeHead(response.statusCode);
+        // needed for test case to pass - shopify.webhooks.process() would have
+        // already sent a response in an actual app
+        res.writeHead(StatusCode.Ok);
         res.end();
       } catch (error) {
         errorThrown = true;
-        res.writeHead(error.response.code);
+        res.writeHead(error.response.statusCode);
         res.end();
       }
       expect(errorThrown).toBeFalsy();
-      expect(response.statusCode).toBe(200);
     });
 
     await request(app)
@@ -469,7 +462,7 @@ describe('shopify.webhooks.process', () => {
         });
       } catch (error) {
         errorThrown = true;
-        res.writeHead(error.response.code);
+        res.writeHead(error.response.statusCode);
         res.end();
         expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
       }
@@ -504,7 +497,7 @@ describe('shopify.webhooks.process', () => {
         });
       } catch (error) {
         errorThrown = true;
-        res.writeHead(error.response.code);
+        res.writeHead(error.response.statusCode);
         res.end();
         expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
       }
@@ -539,7 +532,7 @@ describe('shopify.webhooks.process', () => {
         });
       } catch (error) {
         errorThrown = true;
-        res.writeHead(error.response.code);
+        res.writeHead(error.response.statusCode);
         res.end();
         expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
       }
@@ -573,7 +566,7 @@ describe('shopify.webhooks.process', () => {
         });
       } catch (error) {
         errorThrown = true;
-        res.writeHead(error.response.code);
+        res.writeHead(error.response.statusCode);
         res.end();
         expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
       }
@@ -624,7 +617,7 @@ describe('shopify.webhooks.process', () => {
         });
       } catch (error) {
         errorThrown = true;
-        res.writeHead(error.response.code);
+        res.writeHead(error.response.statusCode);
         res.end();
         expect(error.message).toEqual(errorMessage);
       }

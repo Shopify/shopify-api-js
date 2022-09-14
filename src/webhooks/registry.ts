@@ -5,8 +5,11 @@ import {StatusCode} from '@shopify/network';
 
 import {
   abstractConvertRequest,
+  abstractConvertResponse,
   AdapterArgs,
   getHeader,
+  Headers,
+  isOK,
   NormalizedRequest,
   NormalizedResponse,
 } from '../runtime/http';
@@ -354,11 +357,71 @@ export interface WebhookProcessParams extends AdapterArgs {
   rawBody: string;
 }
 
+const statusTextLookup: {[key: string]: string} = {
+  [StatusCode.Ok]: 'OK',
+  [StatusCode.BadRequest]: 'Bad Request',
+  [StatusCode.Unauthorized]: 'Unauthorized',
+  [StatusCode.NotFound]: 'Not Found',
+  [StatusCode.InternalServerError]: 'Internal Server Error',
+};
+
+function checkWebhookRequest(
+  rawBody: string,
+  headers: Headers,
+): {
+  webhookOk: boolean;
+  errorMessage: string;
+  hmac: string;
+  topic: string;
+  domain: string;
+} {
+  const retVal = {
+    webhookOk: true,
+    errorMessage: '',
+    hmac: '',
+    topic: '',
+    domain: '',
+  };
+
+  if (rawBody.length) {
+    const hmac = getHeader(headers, ShopifyHeader.Hmac);
+    const topic = getHeader(headers, ShopifyHeader.Topic);
+    const domain = getHeader(headers, ShopifyHeader.Domain);
+
+    const missingHeaders: ShopifyHeader[] = [];
+    if (!hmac) {
+      missingHeaders.push(ShopifyHeader.Hmac);
+    }
+    if (!topic) {
+      missingHeaders.push(ShopifyHeader.Topic);
+    }
+    if (!domain) {
+      missingHeaders.push(ShopifyHeader.Domain);
+    }
+
+    if (missingHeaders.length) {
+      retVal.webhookOk = false;
+      retVal.errorMessage = `Missing one or more of the required HTTP headers to process webhowebhookOks: [${missingHeaders.join(
+        ', ',
+      )}]`;
+    } else {
+      retVal.hmac = hmac as string;
+      retVal.topic = topic as string;
+      retVal.domain = domain as string;
+    }
+  } else {
+    retVal.webhookOk = false;
+    retVal.errorMessage = 'No body was received when processing webhook';
+  }
+
+  return retVal;
+}
+
 export function createProcess(config: ConfigInterface) {
   return async function process({
     rawBody,
     ...adapterArgs
-  }: WebhookProcessParams): Promise<NormalizedResponse> {
+  }: WebhookProcessParams): Promise<void> {
     const request: NormalizedRequest = await abstractConvertRequest(
       adapterArgs,
     );
@@ -367,105 +430,52 @@ export function createProcess(config: ConfigInterface) {
       statusText: 'OK',
       headers: {},
     };
-    let responseError: Error | undefined;
 
-    const promise: Promise<NormalizedResponse> = new Promise(
-      (resolve, reject) => {
-        if (!rawBody.length) {
-          return reject(
-            new ShopifyErrors.InvalidWebhookError({
-              message: 'No body was received when processing webhook',
-              code: StatusCode.BadRequest,
-              statusText: 'Bad Request',
-            }),
-          );
-        }
+    const webhookCheck = checkWebhookRequest(rawBody, request.headers);
+    const {webhookOk, hmac, topic, domain} = webhookCheck;
+    let {errorMessage} = webhookCheck;
 
-        const hmac = getHeader(request.headers, ShopifyHeader.Hmac);
-        const topic = getHeader(request.headers, ShopifyHeader.Topic);
-        const domain = getHeader(request.headers, ShopifyHeader.Domain);
+    if (webhookOk) {
+      const generatedHash = createHmac('sha256', config.apiSecretKey)
+        .update(rawBody, 'utf8')
+        .digest('base64');
 
-        const missingHeaders: ShopifyHeader[] = [];
-        if (!hmac) {
-          missingHeaders.push(ShopifyHeader.Hmac);
-        }
-        if (!topic) {
-          missingHeaders.push(ShopifyHeader.Topic);
-        }
-        if (!domain) {
-          missingHeaders.push(ShopifyHeader.Domain);
-        }
+      if (safeCompare(generatedHash, hmac)) {
+        const graphqlTopic = topic.toUpperCase().replace(/\//g, '_');
+        const webhookEntry = getHandler({
+          topic: graphqlTopic,
+        });
 
-        if (missingHeaders.length) {
-          return reject(
-            new ShopifyErrors.InvalidWebhookError({
-              message: `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
-                ', ',
-              )}]`,
-              code: StatusCode.BadRequest,
-              statusText: 'Bad Request',
-            }),
-          );
-        }
-
-        let statusCode: StatusCode | undefined;
-
-        const generatedHash = createHmac('sha256', config.apiSecretKey)
-          .update(rawBody, 'utf8')
-          .digest('base64');
-
-        if (safeCompare(generatedHash, hmac as string)) {
-          const graphqlTopic = (topic as string)
-            .toUpperCase()
-            .replace(/\//g, '_');
-          const webhookEntry = getHandler({
-            topic: graphqlTopic,
-          });
-
-          if (webhookEntry) {
-            try {
-              webhookEntry.webhookHandler(
-                graphqlTopic,
-                domain as string,
-                rawBody,
-              );
-              statusCode = StatusCode.Ok;
-            } catch (error) {
-              statusCode = StatusCode.InternalServerError;
-              responseError = new ShopifyErrors.InvalidWebhookError({
-                message: error.message,
-                code: StatusCode.InternalServerError,
-                statusText: 'Not Found',
-                cause: error,
-              });
-            }
-          } else {
-            statusCode = StatusCode.NotFound;
-            responseError = new ShopifyErrors.InvalidWebhookError({
-              message: `No webhook is registered for topic ${topic}`,
-              code: StatusCode.NotFound,
-              statusText: 'Not Found',
-            });
+        if (webhookEntry) {
+          try {
+            webhookEntry.webhookHandler(graphqlTopic, domain, rawBody);
+            response.statusCode = StatusCode.Ok;
+          } catch (error) {
+            response.statusCode = StatusCode.InternalServerError;
+            errorMessage = error.message;
           }
         } else {
-          statusCode = StatusCode.Unauthorized;
-          responseError = new ShopifyErrors.InvalidWebhookError({
-            message: `Could not validate request for topic ${topic}`,
-            code: StatusCode.Unauthorized,
-            statusText: 'Unauthorized',
-          });
+          response.statusCode = StatusCode.NotFound;
+          errorMessage = `No webhook is registered for topic ${topic}`;
         }
+      } else {
+        response.statusCode = StatusCode.Unauthorized;
+        errorMessage = `Could not validate request for topic ${topic}`;
+      }
+    } else {
+      response.statusCode = StatusCode.BadRequest;
+    }
 
-        response.statusCode = statusCode;
-        if (responseError) {
-          return reject(responseError);
-        } else {
-          return resolve(response);
-        }
-      },
-    );
+    response.statusText = statusTextLookup[response.statusCode];
+    abstractConvertResponse(response, adapterArgs);
+    if (!isOK(response)) {
+      throw new ShopifyErrors.InvalidWebhookError({
+        message: errorMessage,
+        response,
+      });
+    }
 
-    return promise;
+    return Promise.resolve();
   };
 }
 
