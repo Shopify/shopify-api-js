@@ -14,7 +14,6 @@ import {
   NormalizedResponse,
 } from '../runtime/http';
 import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
-import {createHttpClientClass} from '../clients/http_client/http_client';
 import {ConfigInterface, gdprTopics, ShopifyHeader} from '../base-types';
 import {safeCompare} from '../utils/safe-compare';
 import * as ShopifyErrors from '../error';
@@ -224,11 +223,11 @@ export function addHandler({topic, registryEntry}: AddHandlerParams) {
 }
 
 export function addHandlers(handlers: AddHandlersProps): void {
-  for (const topic in handlers) {
-    if ({}.hasOwnProperty.call(handlers, topic)) {
-      addHandler({topic, registryEntry: handlers[topic]});
-    }
-  }
+  Object.entries(handlers).forEach(
+    ([topic, registryEntry]: [string, WebhookRegistryEntry]) => {
+      addHandler({topic, registryEntry});
+    },
+  );
 }
 
 export function getHandler({
@@ -242,8 +241,7 @@ export function getTopics(): string[] {
 }
 
 export function createRegister(config: ConfigInterface) {
-  const HttpClient = createHttpClientClass(config);
-  const GraphqlClient = createGraphqlClientClass({config, HttpClient});
+  const GraphqlClient = createGraphqlClientClass({config});
 
   return async function register({
     path,

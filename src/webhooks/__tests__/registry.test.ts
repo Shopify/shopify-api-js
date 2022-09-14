@@ -354,6 +354,25 @@ describe('shopify.webhooks.process', () => {
     });
   };
 
+  const app = express();
+  app.use(parseRawBody);
+  app.post('/webhooks', async (req, res) => {
+    let errorThrown = false;
+    let statusCode = StatusCode.Ok;
+    try {
+      await shopify.webhooks.process({
+        rawBody: (req as any).rawBody,
+        rawRequest: req,
+        rawResponse: res,
+      });
+    } catch (error) {
+      errorThrown = true;
+      expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
+      statusCode = error.response.statusCode;
+    }
+    res.status(statusCode).json({errorThrown});
+  });
+
   beforeEach(async () => {
     shopify.config.apiSecretKey = 'kitties are cute';
     shopify.config.apiVersion = ApiVersion.Unstable;
@@ -370,33 +389,13 @@ describe('shopify.webhooks.process', () => {
       },
     });
 
-    const app = express();
-    app.use(parseRawBody);
-    app.post('/webhooks', async (req, res) => {
-      let errorThrown = false;
-      try {
-        await shopify.webhooks.process({
-          rawBody: (req as any).rawBody,
-          rawRequest: req,
-          rawResponse: res,
-        });
-        // needed for test case to pass - shopify.webhooks.process() would have
-        // already sent a response in an actual app
-        res.writeHead(StatusCode.Ok);
-        res.end();
-      } catch (error) {
-        errorThrown = true;
-        res.writeHead(error.response.statusCode);
-        res.end();
-      }
-      expect(errorThrown).toBeFalsy();
-    });
-
-    await request(app)
+    const response = await request(app)
       .post('/webhooks')
       .set(headers({hmac: hmac(shopify.config.apiSecretKey, rawBody)}))
-      .send(rawBody)
-      .expect(StatusCode.Ok);
+      .send(rawBody);
+
+    expect(response.status).toEqual(StatusCode.Ok);
+    expect(response.body.errorThrown).toBeFalsy();
   });
 
   it('handles lower case headers', async () => {
@@ -407,29 +406,8 @@ describe('shopify.webhooks.process', () => {
         webhookHandler: genericWebhookHandler,
       },
     });
-    const app = express();
-    app.use(parseRawBody);
-    app.post('/webhooks', async (req, res) => {
-      let errorThrown = false;
-      try {
-        await shopify.webhooks.process({
-          rawBody: (req as any).rawBody,
-          rawRequest: req,
-          rawResponse: res,
-        });
-        // needed for test case to pass - shopify.webhooks.process() would have
-        // already sent a response in an actual app
-        res.writeHead(StatusCode.Ok);
-        res.end();
-      } catch (error) {
-        errorThrown = true;
-        res.writeHead(error.response.statusCode);
-        res.end();
-      }
-      expect(errorThrown).toBeFalsy();
-    });
 
-    await request(app)
+    const response = await request(app)
       .post('/webhooks')
       .set(
         headers({
@@ -437,8 +415,10 @@ describe('shopify.webhooks.process', () => {
           lowercase: true,
         }),
       )
-      .send(rawBody)
-      .expect(StatusCode.Ok);
+      .send(rawBody);
+
+    expect(response.status).toEqual(StatusCode.Ok);
+    expect(response.body.errorThrown).toBeFalsy();
   });
 
   it('handles the request and returns Not Found when topic is not registered', async () => {
@@ -450,30 +430,13 @@ describe('shopify.webhooks.process', () => {
       },
     });
 
-    const app = express();
-    app.use(parseRawBody);
-    app.post('/webhooks', async (req, res) => {
-      let errorThrown = false;
-      try {
-        await shopify.webhooks.process({
-          rawBody: (req as any).rawBody,
-          rawRequest: req,
-          rawResponse: res,
-        });
-      } catch (error) {
-        errorThrown = true;
-        res.writeHead(error.response.statusCode);
-        res.end();
-        expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
-      }
-      expect(errorThrown).toBeTruthy();
-    });
-
-    await request(app)
+    const response = await request(app)
       .post('/webhooks')
       .set(headers({hmac: hmac(shopify.config.apiSecretKey, rawBody)}))
-      .send(rawBody)
-      .expect(StatusCode.NotFound);
+      .send(rawBody);
+
+    expect(response.status).toEqual(StatusCode.NotFound);
+    expect(response.body.errorThrown).toBeTruthy();
   });
 
   it('handles the request and returns Unauthorized when hmac does not match', async () => {
@@ -485,30 +448,13 @@ describe('shopify.webhooks.process', () => {
       },
     });
 
-    const app = express();
-    app.use(parseRawBody);
-    app.post('/webhooks', async (req, res) => {
-      let errorThrown = false;
-      try {
-        await shopify.webhooks.process({
-          rawBody: (req as any).rawBody,
-          rawRequest: req,
-          rawResponse: res,
-        });
-      } catch (error) {
-        errorThrown = true;
-        res.writeHead(error.response.statusCode);
-        res.end();
-        expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
-      }
-      expect(errorThrown).toBeTruthy();
-    });
-
-    await request(app)
+    const response = await request(app)
       .post('/webhooks')
       .set(headers({hmac: hmac('incorrect secret', rawBody)}))
-      .send(rawBody)
-      .expect(StatusCode.Unauthorized);
+      .send(rawBody);
+
+    expect(response.status).toEqual(StatusCode.Unauthorized);
+    expect(response.body.errorThrown).toBeTruthy();
   });
 
   it('fails if the given body is empty', async () => {
@@ -520,29 +466,10 @@ describe('shopify.webhooks.process', () => {
       },
     });
 
-    const app = express();
-    app.use(parseRawBody);
-    app.post('/webhooks', async (req, res) => {
-      let errorThrown = false;
-      try {
-        await shopify.webhooks.process({
-          rawBody: (req as any).rawBody,
-          rawRequest: req,
-          rawResponse: res,
-        });
-      } catch (error) {
-        errorThrown = true;
-        res.writeHead(error.response.statusCode);
-        res.end();
-        expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
-      }
-      expect(errorThrown).toBeTruthy();
-    });
+    const response = await request(app).post('/webhooks').set(headers());
 
-    await request(app)
-      .post('/webhooks')
-      .set(headers())
-      .expect(StatusCode.BadRequest);
+    expect(response.status).toEqual(StatusCode.BadRequest);
+    expect(response.body.errorThrown).toBeTruthy();
   });
 
   it('fails if the any of the required headers are missing', async () => {
@@ -554,42 +481,29 @@ describe('shopify.webhooks.process', () => {
       },
     });
 
-    const app = express();
-    app.use(parseRawBody);
-    app.post('/webhooks', async (req, res) => {
-      let errorThrown = false;
-      try {
-        await shopify.webhooks.process({
-          rawBody: (req as any).rawBody,
-          rawRequest: req,
-          rawResponse: res,
-        });
-      } catch (error) {
-        errorThrown = true;
-        res.writeHead(error.response.statusCode);
-        res.end();
-        expect(error).toBeInstanceOf(ShopifyErrors.InvalidWebhookError);
-      }
-      expect(errorThrown).toBeTruthy();
-    });
-
-    await request(app)
+    let response = await request(app)
       .post('/webhooks')
       .set(headers({hmac: ''}))
-      .send(rawBody)
-      .expect(StatusCode.BadRequest);
+      .send(rawBody);
 
-    await request(app)
+    expect(response.status).toEqual(StatusCode.BadRequest);
+    expect(response.body.errorThrown).toBeTruthy();
+
+    response = await request(app)
       .post('/webhooks')
       .set(headers({topic: ''}))
-      .send(rawBody)
-      .expect(StatusCode.BadRequest);
+      .send(rawBody);
 
-    await request(app)
+    expect(response.status).toEqual(StatusCode.BadRequest);
+    expect(response.body.errorThrown).toBeTruthy();
+
+    response = await request(app)
       .post('/webhooks')
       .set(headers({domain: ''}))
-      .send(rawBody)
-      .expect(StatusCode.BadRequest);
+      .send(rawBody);
+
+    expect(response.status).toEqual(StatusCode.BadRequest);
+    expect(response.body.errorThrown).toBeTruthy();
   });
 
   it('catches handler errors but still responds', async () => {
@@ -605,30 +519,13 @@ describe('shopify.webhooks.process', () => {
       },
     });
 
-    const app = express();
-    app.use(parseRawBody);
-    app.post('/webhooks', async (req, res) => {
-      let errorThrown = false;
-      try {
-        await shopify.webhooks.process({
-          rawBody: (req as any).rawBody,
-          rawRequest: req,
-          rawResponse: res,
-        });
-      } catch (error) {
-        errorThrown = true;
-        res.writeHead(error.response.statusCode);
-        res.end();
-        expect(error.message).toEqual(errorMessage);
-      }
-      expect(errorThrown).toBeTruthy();
-    });
-
-    await request(app)
+    const response = await request(app)
       .post('/webhooks')
       .set(headers({hmac: hmac(shopify.config.apiSecretKey, rawBody)}))
-      .send(rawBody)
-      .expect(500);
+      .send(rawBody);
+
+    expect(response.status).toEqual(StatusCode.InternalServerError);
+    expect(response.body.errorThrown).toBeTruthy();
   });
 });
 
