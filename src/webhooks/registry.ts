@@ -7,6 +7,7 @@ import {
   abstractConvertRequest,
   abstractConvertResponse,
   AdapterArgs,
+  AdapterResponse,
   getHeader,
   Headers,
   isOK,
@@ -420,13 +421,13 @@ export function createProcess(config: ConfigInterface) {
   return async function process({
     rawBody,
     ...adapterArgs
-  }: WebhookProcessParams): Promise<void> {
+  }: WebhookProcessParams): Promise<AdapterResponse> {
     const request: NormalizedRequest = await abstractConvertRequest(
       adapterArgs,
     );
     const response: NormalizedResponse = {
       statusCode: StatusCode.Ok,
-      statusText: 'OK',
+      statusText: statusTextLookup[StatusCode.Ok],
       headers: {},
     };
 
@@ -466,7 +467,7 @@ export function createProcess(config: ConfigInterface) {
     }
 
     response.statusText = statusTextLookup[response.statusCode];
-    abstractConvertResponse(response, adapterArgs);
+    const returnResponse = await abstractConvertResponse(response, adapterArgs);
     if (!isOK(response)) {
       throw new ShopifyErrors.InvalidWebhookError({
         message: errorMessage,
@@ -474,7 +475,7 @@ export function createProcess(config: ConfigInterface) {
       });
     }
 
-    return Promise.resolve();
+    return Promise.resolve(returnResponse);
   };
 }
 
