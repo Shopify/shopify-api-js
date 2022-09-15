@@ -1,8 +1,25 @@
-import {WebhooksRegistry} from './registry';
+import {ConfigInterface} from '../base-types';
 
-const ShopifyWebhooks = {
-  Registry: WebhooksRegistry,
-};
+import {
+  addHandler,
+  addHandlers,
+  createProcess,
+  createRegister,
+  createRegisterAll,
+  getHandler,
+  getTopics,
+  isWebhookPath,
+} from './registry';
 
-export default ShopifyWebhooks;
-export {ShopifyWebhooks};
+export function shopifyWebhooks(config: ConfigInterface) {
+  return {
+    addHandler,
+    addHandlers,
+    getHandler,
+    getTopics,
+    isWebhookPath,
+    process: createProcess(config),
+    register: createRegister(config),
+    registerAll: createRegisterAll(config),
+  };
+}

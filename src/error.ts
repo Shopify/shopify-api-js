@@ -1,3 +1,5 @@
+import {AdapterResponse} from './runtime/http';
+
 export class ShopifyError extends Error {
   constructor(...args: any) {
     super(...args);
@@ -84,7 +86,18 @@ export class SessionNotFound extends ShopifyError {}
 export class CookieNotFound extends ShopifyError {}
 export class InvalidSession extends ShopifyError {}
 
-export class InvalidWebhookError extends ShopifyError {}
+interface InvalidWebhookParams {
+  message: string;
+  response: AdapterResponse;
+}
+export class InvalidWebhookError extends ShopifyError {
+  readonly response: AdapterResponse;
+
+  public constructor({message, response}: InvalidWebhookParams) {
+    super(message);
+    this.response = response;
+  }
+}
 export class SessionStorageError extends ShopifyError {}
 
 export class MissingRequiredArgument extends ShopifyError {}
