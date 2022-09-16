@@ -6,7 +6,7 @@ import {
 } from '../../__tests__/test-helper';
 import * as ShopifyErrors from '../../error';
 import {NormalizedRequest} from '../../runtime/http';
-import {JwtPayload} from '../../utils/types';
+import {JwtPayload} from '../types';
 import {createGetOfflineId} from '../session-utils';
 import {Session} from '../session';
 

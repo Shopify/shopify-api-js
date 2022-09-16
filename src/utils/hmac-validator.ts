@@ -3,8 +3,8 @@ import {createSHA256HMAC} from '../runtime/crypto';
 import {HmacReturnFormat} from '../runtime/crypto/types';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
+import {safeCompare} from '../auth/oauth/safe-compare';
 
-import {safeCompare} from './safe-compare';
 import ProcessedQuery from './processed-query';
 
 function stringifyQuery(query: AuthQuery): string {

@@ -22,6 +22,18 @@ export interface SessionInterface extends SessionParams {
   isActive(scopes: AuthScopes | string | string[]): boolean;
 }
 
+export interface JwtPayload {
+  iss: string;
+  dest: string;
+  aud: string;
+  sub: string;
+  exp: number;
+  nbf: number;
+  iat: number;
+  jti: string;
+  sid: string;
+}
+
 export interface SessionGetCurrentParams extends AdapterArgs {
   isOnline: boolean;
 }

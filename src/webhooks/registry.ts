@@ -16,7 +16,7 @@ import {
 } from '../runtime/http';
 import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 import {ConfigInterface, gdprTopics, ShopifyHeader} from '../base-types';
-import {safeCompare} from '../utils/safe-compare';
+import {safeCompare} from '../auth/oauth/safe-compare';
 import * as ShopifyErrors from '../error';
 
 import {

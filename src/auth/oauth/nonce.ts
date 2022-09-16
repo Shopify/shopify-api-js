@@ -1,4 +1,4 @@
-import {crypto} from '../runtime/crypto';
+import {crypto} from '../../runtime/crypto';
 
 export function nonce(): string {
   const length = 15;

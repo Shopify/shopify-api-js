@@ -2,10 +2,10 @@ import {ConfigInterface} from '../base-types';
 import {SESSION_COOKIE_NAME} from '../auth/oauth/oauth';
 import {Cookies, NormalizedResponse} from '../runtime/http';
 import {createSanitizeShop} from '../utils/shop-validator';
-import {createDecodeSessionToken} from '../utils/decode-session-token';
 import * as ShopifyErrors from '../error';
 
 import {Session} from './session';
+import {createDecodeSessionToken} from './decode-session-token';
 import type {GetCurrentSessionIdParams, SessionInterface} from './types';
 
 /**

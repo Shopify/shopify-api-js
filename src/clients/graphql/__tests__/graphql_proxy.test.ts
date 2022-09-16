@@ -8,7 +8,7 @@ import {
 } from '../../../__tests__/test-helper';
 import {Session} from '../../../session/session';
 import {InvalidSession, SessionNotFound} from '../../../error';
-import {JwtPayload} from '../../../utils/types';
+import {JwtPayload} from '../../../session/types';
 import {canonicalizeHeaders, NormalizedRequest} from '../../../runtime/http';
 
 const successResponse = {

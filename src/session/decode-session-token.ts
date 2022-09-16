@@ -2,8 +2,8 @@ import * as jose from 'jose';
 
 import {ConfigInterface} from '../base-types';
 import * as ShopifyErrors from '../error';
+import {getHMACKey} from '../utils/get-hmac-key';
 
-import {getHMACKey} from './get-hmac-key';
 import {JwtPayload} from './types';
 
 const JWT_PERMITTED_CLOCK_TOLERANCE = 10;

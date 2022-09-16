@@ -2,8 +2,8 @@ import querystring from 'querystring';
 
 import * as ShopifyErrors from '../../../error';
 import {createGenerateLocalHmac} from '../../../utils/hmac-validator';
-import {JwtPayload} from '../../../utils/types';
-import {nonce} from '../../../utils/nonce';
+import {JwtPayload} from '../../../session/types';
+import {nonce} from '../nonce';
 import {CustomSessionStorage} from '../../../session-storage/custom';
 import {
   Cookies,
@@ -18,7 +18,7 @@ import {
 import {createGetOfflineId} from '../../../session/session-utils';
 
 const VALID_NONCE = 'noncenoncenonce';
-jest.mock('../../../utils/nonce', () => ({nonce: jest.fn(() => VALID_NONCE)}));
+jest.mock('../nonce', () => ({nonce: jest.fn(() => VALID_NONCE)}));
 
 interface QueryMock {
   [key: string]: any;
