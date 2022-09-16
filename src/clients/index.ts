@@ -4,6 +4,7 @@ import {createHttpClientClass} from './http_client/http_client';
 import {createRestClientClass} from './rest/rest_client';
 import {createGraphqlClientClass} from './graphql/graphql_client';
 import {createStorefrontClientClass} from './graphql/storefront_client';
+import {createGraphqlProxy} from './graphql/graphql_proxy';
 
 export interface CreateClientClassParams {
   config: ConfigInterface;
@@ -16,5 +17,6 @@ export function createClientClasses(config: ConfigInterface) {
     Rest: createRestClientClass({config, HttpClient}),
     Graphql: createGraphqlClientClass({config, HttpClient}),
     Storefront: createStorefrontClientClass({config, HttpClient}),
+    graphqlProxy: createGraphqlProxy(config),
   };
 }

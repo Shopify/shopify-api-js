@@ -1,5 +1,3 @@
-import {AdapterArgs} from '../runtime/http';
-
 import type {shopifyUtils} from '.';
 
 export interface JwtPayload {
@@ -12,12 +10,6 @@ export interface JwtPayload {
   iat: number;
   jti: string;
   sid: string;
-}
-
-export interface GetEmbeddedAppUrlParams extends AdapterArgs {}
-
-export interface GraphqlProxyParams extends AdapterArgs {
-  body: string;
 }
 
 export type ShopifyUtils = ReturnType<typeof shopifyUtils>;

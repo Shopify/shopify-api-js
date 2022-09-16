@@ -9,7 +9,7 @@ describe('getEmbeddedAppUrl', () => {
 
   test('throws an error when no request is passed', async () => {
     await expect(
-      shopify.utils.getEmbeddedAppUrl({rawRequest: undefined}),
+      shopify.auth.getEmbeddedAppUrl({rawRequest: undefined}),
     ).rejects.toThrow(ShopifyErrors.MissingRequiredArgument);
   });
 
@@ -22,7 +22,7 @@ describe('getEmbeddedAppUrl', () => {
     };
 
     await expect(
-      shopify.utils.getEmbeddedAppUrl({rawRequest: req}),
+      shopify.auth.getEmbeddedAppUrl({rawRequest: req}),
     ).rejects.toThrow(ShopifyErrors.InvalidRequestError);
   });
 
@@ -36,7 +36,7 @@ describe('getEmbeddedAppUrl', () => {
     };
 
     await expect(
-      shopify.utils.getEmbeddedAppUrl({rawRequest: req}),
+      shopify.auth.getEmbeddedAppUrl({rawRequest: req}),
     ).rejects.toThrow(ShopifyErrors.InvalidRequestError);
   });
 
@@ -50,7 +50,7 @@ describe('getEmbeddedAppUrl', () => {
     };
 
     await expect(
-      shopify.utils.getEmbeddedAppUrl({rawRequest: req}),
+      shopify.auth.getEmbeddedAppUrl({rawRequest: req}),
     ).rejects.toThrow(ShopifyErrors.InvalidHostError);
   });
 
@@ -66,7 +66,7 @@ describe('getEmbeddedAppUrl', () => {
       },
     };
 
-    expect(await shopify.utils.getEmbeddedAppUrl({rawRequest: req})).toBe(
+    expect(await shopify.auth.getEmbeddedAppUrl({rawRequest: req})).toBe(
       `https://${host}/apps/${shopify.config.apiKey}`,
     );
   });

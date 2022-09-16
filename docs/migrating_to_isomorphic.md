@@ -234,7 +234,9 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 ## Utility functions
 
 The previous `Shopify.Utils` object contained functions that relied on the global configuration object, but those have been refactored to use the instance-specific configuration.
-Utils functions are now located in `shopify.utils`.
+We also felt that the `Utils` object had some functions that belong to other parts of the library, so some of these functions have been moved to other sub-objects - keep an eye out for those changes in the list below!
+
+Here are all the specific changes that we made to the `Utils` object:
 
 1. The `storeSession` method was removed since sessions shouldn't be stored using the library unless the library is doing it. Apps can still save data to their sessions as they please, as long as the data is properly exported to the library via the configured `SessionStorage`.
 1. `validateHmac`, `generateLocalHmac`, `decodeSessionToken` are now `async`.
@@ -384,7 +386,7 @@ Utils functions are now located in `shopify.utils`.
 
    </div>
 
-1. `Shopify.Utils.graphqlProxy` is now `shopify.utils.graphqlProxy`, and it takes the body as an argument instead of parsing it from the request. This will make it easier for apps to use a body parser with this function.
+1. `Shopify.Utils.graphqlProxy` is now `shopify.clients.graphqlProxy`, and it takes the body as an argument instead of parsing it from the request. This will make it easier for apps to use a body parser with this function.
    <div>Before
 
    ```ts
@@ -394,7 +396,7 @@ Utils functions are now located in `shopify.utils`.
    </div><div>After
 
    ```ts
-   const response = await shopify.utils.graphqlProxy({
+   const response = await shopify.clients.graphqlProxy({
      body: req.rawBody, // From my app
      rawRequest: req,
      rawResponse: res,
@@ -403,17 +405,17 @@ Utils functions are now located in `shopify.utils`.
 
    </div>
 
-1. `Shopify.Utils.getEmbeddedAppUrl` is now `shopify.utils.getEmbeddedAppUrl`, is `async` and takes an object.
+1. `Shopify.Utils.getEmbeddedAppUrl` is now `shopify.auth.getEmbeddedAppUrl`, is `async` and takes an object.
    <div>Before
 
    ```ts
-   const redirectUrl = await Shopify.Utils.getEmbeddedAppUrl(req, res);
+   const redirectUrl = Shopify.Utils.getEmbeddedAppUrl(req, res);
    ```
 
    </div><div>After
 
    ```ts
-   const redirectUrl = await shopify.utils.getEmbeddedAppUrl({
+   const redirectUrl = await shopify.auth.getEmbeddedAppUrl({
      rawRequest: req,
      rawResponse: res,
    });
