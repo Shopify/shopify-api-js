@@ -206,14 +206,13 @@ function createSession({
   stateFromCookie: string;
   isOnline: boolean;
 }): SessionInterface {
-  let session: Session;
-
   if (
     !isOnline &&
     (postResponse.body as OnlineAccessResponse).associated_user
   ) {
     throw new ShopifyErrors.InvalidOAuthError(
-      "Attempted to complete offline OAuth flow, but received an online token response. This is likely because you're not setting the isOnline parameter consistently between begin() and callback()",
+      'Attempted to complete offline OAuth flow, but received an online token response. This is likely because ' +
+        "you're not setting the isOnline parameter consistently between begin() and callback()",
     );
   }
 
@@ -222,7 +221,8 @@ function createSession({
     !(postResponse.body as OnlineAccessResponse).associated_user
   ) {
     throw new ShopifyErrors.InvalidOAuthError(
-      "Attempted to complete online OAuth flow, but received an offline token response. This is likely because you're not setting the isOnline parameter consistently between begin() and callback()",
+      'Attempted to complete online OAuth flow, but received an offline token response. This is likely because ' +
+        "you're not setting the isOnline parameter consistently between begin() and callback()",
     );
   }
 
@@ -243,24 +243,27 @@ function createSession({
       sessionId = uuidv4();
     }
 
-    session = new Session(sessionId, shop, stateFromCookie, isOnline);
-    session.accessToken = access_token;
-    session.scope = scope;
-    session.expires = sessionExpiration;
-    session.onlineAccessInfo = rest;
+    return new Session({
+      id: sessionId,
+      shop,
+      state: stateFromCookie,
+      isOnline,
+      accessToken: access_token,
+      scope,
+      expires: sessionExpiration,
+      onlineAccessInfo: rest,
+    });
   } else {
     const responseBody = postResponse.body as AccessTokenResponse;
-    session = new Session(
-      createGetOfflineId(config)(shop),
+    return new Session({
+      id: createGetOfflineId(config)(shop),
       shop,
-      stateFromCookie,
+      state: stateFromCookie,
       isOnline,
-    );
-    session.accessToken = responseBody.access_token;
-    session.scope = responseBody.scope;
+      accessToken: responseBody.access_token,
+      scope: responseBody.scope,
+    });
   }
-
-  return session;
 }
 
 function throwIfPrivateApp(isPrivateApp: boolean, message: string): void {

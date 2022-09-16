@@ -97,7 +97,7 @@ async function handleFetch(request: Request): Promise<Response> {
 },
 ```
 
-## Changes to `SessionStorage`
+## Changes to `Session` and `SessionStorage`
 
 1. `SessionStorage` is no longer an interface, but an abstract class. If you're using your own implementation of the interface, you need to replace `implements SessionStorage` with `extends SessionStorage`.
    <div>Before
@@ -131,6 +131,37 @@ async function handleFetch(request: Request): Promise<Response> {
 
    ```ts
    import {MemorySessionStorage} from '@shopify/shopify-api/session-storage/memory';
+   ```
+
+   </div>
+
+1. The `Session` constructor now takes an object which allows all properties of a session, and `Session.cloneSession` was removed since we can use a session as arguments for the clone.
+   <div>Before
+
+   ```ts
+   import {Session} from '@shopify/shopify-api';
+   const session = new Session(
+     'session-id',
+     'shop.myshopify.com',
+     'state1234',
+     true,
+   );
+   session.accessToken = 'token';
+   const clone = Session.cloneSession(session, 'newId');
+   ```
+
+   </div><div>After
+
+   ```ts
+   import {Session} from '@shopify/shopify-api';
+   const session = new Session({
+     id: 'session-id',
+     shop: 'shop.myshopify.com',
+     state: 'state1234',
+     isOnline: true,
+     accessToken: 'token',
+   });
+   const clone = new Session({...session, id: 'newId'});
    ```
 
    </div>

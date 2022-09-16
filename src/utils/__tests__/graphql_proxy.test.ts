@@ -80,13 +80,13 @@ describe('GraphQL proxy with session', () => {
       sid: 'abc123',
     };
 
-    const session = new Session(
-      `shop.myshopify.com_${jwtPayload.sub}`,
+    const session = new Session({
+      id: `shop.myshopify.com_${jwtPayload.sub}`,
       shop,
-      'state',
-      true,
-    );
-    session.accessToken = accessToken;
+      state: 'state',
+      isOnline: true,
+      accessToken,
+    });
     await shopify.config.sessionStorage.storeSession(session);
     token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
   });
@@ -150,12 +150,12 @@ describe('GraphQL proxy', () => {
       },
       url: 'https://my-test-app.myshopify.io/auth/begin',
     };
-    const session = new Session(
-      `test-shop.myshopify.io_${jwtPayload.sub}`,
+    const session = new Session({
+      id: `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop,
-      'state',
-      true,
-    );
+      state: 'state',
+      isOnline: true,
+    });
     shopify.config.sessionStorage.storeSession(session);
 
     await expect(

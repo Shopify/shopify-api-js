@@ -52,13 +52,7 @@ export class CustomSessionStorage extends SessionStorage {
 
         return result as SessionInterface;
       } else if (result instanceof Object && 'id' in result) {
-        let session = new Session(
-          result.id as string,
-          result.shop as string,
-          result.state as string,
-          result.isOnline as boolean,
-        );
-        session = {...session, ...(result as SessionInterface)};
+        const session = new Session({...(result as SessionInterface)});
 
         if (session.expires && typeof session.expires === 'string') {
           session.expires = new Date(session.expires);
