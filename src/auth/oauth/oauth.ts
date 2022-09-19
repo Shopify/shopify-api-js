@@ -3,9 +3,7 @@ import {v4 as uuidv4} from 'uuid';
 import ProcessedQuery from '../../utils/processed-query';
 import {ConfigInterface} from '../../base-types';
 import * as ShopifyErrors from '../../error';
-import {nonce} from '../../utils/nonce';
 import {createValidateHmac} from '../../utils/hmac-validator';
-import {safeCompare} from '../../utils/safe-compare';
 import {createSanitizeShop} from '../../utils/shop-validator';
 import {Session} from '../../session/session';
 import {SessionInterface} from '../../session/types';
@@ -34,6 +32,8 @@ import {
   OnlineAccessInfo,
   CallbackResponse,
 } from './types';
+import {nonce} from './nonce';
+import {safeCompare} from './safe-compare';
 
 export const SESSION_COOKIE_NAME = 'shopify_app_session';
 export const STATE_COOKIE_NAME = 'shopify_app_state';

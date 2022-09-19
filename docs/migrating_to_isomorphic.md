@@ -238,22 +238,41 @@ We also felt that the `Utils` object had some functions that belong to other par
 
 Here are all the specific changes that we made to the `Utils` object:
 
+1. `Shopify.Utils.generateLocalHmac` was removed because it's only meant to be used internally by the library.
 1. The `storeSession` method was removed since sessions shouldn't be stored using the library unless the library is doing it. Apps can still save data to their sessions as they please, as long as the data is properly exported to the library via the configured `SessionStorage`.
-1. `validateHmac`, `generateLocalHmac`, `decodeSessionToken` are now `async`.
+1. `validateHmac` is now `async`.
    <div>Before
 
    ```ts
    const isValid = Shopify.Utils.validateHmac(req.query);
-   const hmac = Shopify.Utils.generateLocalHmac(req.query);
-   const payload = Shopify.Utils.decodeSessionToken(token);
    ```
 
    </div><div>After
 
    ```ts
    const isValid = await shopify.utils.validateHmac(req.query);
-   const hmac = await shopify.utils.generateLocalHmac(req.query);
-   const payload = await shopify.utils.decodeSessionToken(token);
+   ```
+
+   </div>
+
+1. `nonce`, `safeCompare`, and `getEmbeddedAppUrl` have moved to `shopify.auth`. `getEmbeddedAppUrl` is now `async` and takes in an object.
+   <div>Before
+
+   ```ts
+   const nonce = Shopify.Utils.nonce();
+   const match = Shopify.Utils.safeCompare(strA, strB);
+   const redirectUrl = Shopify.Utils.getEmbeddedAppUrl(req, res);
+   ```
+
+   </div><div>After
+
+   ```ts
+   const nonce = shopify.auth.nonce();
+   const match = shopify.auth.safeCompare(strA, strB);
+   const redirectUrl = await shopify.auth.getEmbeddedAppUrl({
+     rawRequest: req,
+     rawResponse: res,
+   });
    ```
 
    </div>
@@ -276,6 +295,21 @@ Here are all the specific changes that we made to the `Utils` object:
        );
      },
    });
+   ```
+
+   </div>
+
+1. `Shopify.Utils.decodeSessionToken` is now `shopify.session.decodeSessionToken`, and it's `async`.
+   <div>Before
+
+   ```ts
+   const payload = Shopify.Utils.decodeSessionToken(token);
+   ```
+
+   </div><div>After
+
+   ```ts
+   const payload = await shopify.session.decodeSessionToken(token);
    ```
 
    </div>
@@ -398,24 +432,6 @@ Here are all the specific changes that we made to the `Utils` object:
    ```ts
    const response = await shopify.clients.graphqlProxy({
      body: req.rawBody, // From my app
-     rawRequest: req,
-     rawResponse: res,
-   });
-   ```
-
-   </div>
-
-1. `Shopify.Utils.getEmbeddedAppUrl` is now `shopify.auth.getEmbeddedAppUrl`, is `async` and takes an object.
-   <div>Before
-
-   ```ts
-   const redirectUrl = Shopify.Utils.getEmbeddedAppUrl(req, res);
-   ```
-
-   </div><div>After
-
-   ```ts
-   const redirectUrl = await shopify.auth.getEmbeddedAppUrl({
      rawRequest: req,
      rawResponse: res,
    });

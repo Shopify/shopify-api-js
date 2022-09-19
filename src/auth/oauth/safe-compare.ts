@@ -1,4 +1,4 @@
-import * as ShopifyErrors from '../error';
+import * as ShopifyErrors from '../../error';
 
 export function safeCompare(
   strA: string | {[key: string]: string} | string[] | number[],

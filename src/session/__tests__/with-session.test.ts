@@ -7,8 +7,7 @@ import {
 import * as ShopifyErrors from '../../error';
 import {NormalizedRequest} from '../../runtime/http';
 import {createGetJwtSessionId, createGetOfflineId} from '../session-utils';
-import {JwtPayload} from '../../utils/types';
-import {GraphqlWithSession, RestWithSession} from '../types';
+import {JwtPayload, GraphqlWithSession, RestWithSession} from '../types';
 import {ClientType} from '../../base-types';
 
 describe('withSession', () => {
