@@ -109,9 +109,15 @@ const client = new shopify.clients.Rest({
   domain: session.shop,
   accessToken: session.accessToken,
 });
+// the following line sends a HTTP GET request to this constructed URL:
+// 'https://${session.shop}/admin/api/${shopify.config.api_version}/products.json?limit=1'
 const response = await client.get<ProductResponse>({path: 'products', query: {limit: 1}});
 
 // Apps needs to dig into the response body to find the object
+// The following sends a HTTP PUT request to this constructed URL...
+// 'https://${session.shop}/admin/api/${shopify.config.api_version}/products/${response.body.product.id}.json'
+// ... with this body
+// {"product":{"id":response.body.product.id,"title":"A new title"}}
 response.body.product.title = 'A new title';
 await client.put({
   path: `products/${response.body.product.id}`,
