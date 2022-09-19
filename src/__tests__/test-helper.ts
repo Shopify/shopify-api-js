@@ -27,9 +27,11 @@ declare global {
 
 // eslint-disable-next-line import/no-mutable-exports
 let shopify: Shopify;
+// eslint-disable-next-line import/no-mutable-exports
+let testConfig: ConfigParams;
 
 beforeEach(() => {
-  const testConfig: ConfigParams = {
+  testConfig = {
     apiKey: 'test_key',
     apiSecretKey: 'test_secret_key',
     scopes: ['test_scope'],
@@ -46,7 +48,7 @@ beforeEach(() => {
   shopify = shopifyApi(testConfig);
 });
 
-export {shopify};
+export {shopify, testConfig};
 
 export async function signJWT(
   secret: string,

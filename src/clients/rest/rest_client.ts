@@ -21,6 +21,7 @@ export function createRestClientClass(params: CreateClientClassParams) {
   return class RestClient extends HttpClient {
     static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
     static DEFAULT_LIMIT = '50';
+
     readonly accessToken: string;
 
     public constructor({domain, accessToken}: RestClientParams) {

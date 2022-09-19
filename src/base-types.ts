@@ -6,8 +6,9 @@ import {ShopifyAuth} from './auth/types';
 import {ShopifySession} from './session/types';
 import {ShopifyUtils} from './utils/types';
 import {ShopifyWebhooks} from './webhooks/types';
+import {ShopifyRestResources} from './rest/types';
 
-export interface ConfigParams {
+export interface ConfigParams<T extends ShopifyRestResources = any> {
   apiKey: string;
   apiSecretKey: string;
   scopes: string[] | AuthScopes;
@@ -22,22 +23,26 @@ export interface ConfigParams {
   privateAppStorefrontAccessToken?: string;
   customShopDomains?: (RegExp | string)[];
   billing?: BillingSettings;
+  restResources?: T;
 }
 
-export interface ConfigInterface extends ConfigParams {
+export interface ConfigInterface extends Omit<ConfigParams, 'restResources'> {
   hostScheme: 'http' | 'https';
   sessionStorage: SessionStorage;
   scopes: AuthScopes;
   isPrivateApp: boolean;
 }
 
-export interface Shopify {
+export interface Shopify<
+  T extends ShopifyRestResources = ShopifyRestResources,
+> {
   config: ConfigInterface;
   clients: ShopifyClients;
   auth: ShopifyAuth;
   session: ShopifySession;
   utils: ShopifyUtils;
   webhooks: ShopifyWebhooks;
+  rest: T;
 }
 
 export enum LogSeverity {
