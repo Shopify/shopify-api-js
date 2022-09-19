@@ -8,6 +8,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## 7.3.0
 
 ### Minor Changes
@@ -195,6 +196,10 @@
 - Rather than create a temporary session in order to store a session id in a cookie for the OAuth transaction, we can store the `state` in the cookie instead, that can then be compared against the `state` provided by Shopify in the callback. [#438](https://github.com/Shopify/shopify-api-js/pull/438)
 =======
 =======
+=======
+## [5.1.0] - 2022-09-19
+
+>>>>>>> 888ddd18 (v5.1.0)
 - Increased tolerance for expired JWT session tokens from 5s to 10s [#462](https://github.com/Shopify/shopify-api-node/pull/462)
 >>>>>>> ffea7e52 (Increase JWT validation tolerance)
 - Add support for billing to the library [#449](https://github.com/Shopify/shopify-api-node/pull/449)
