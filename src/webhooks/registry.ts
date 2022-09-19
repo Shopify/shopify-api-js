@@ -471,7 +471,7 @@ export function createProcess(config: ConfigInterface) {
     if (!isOK(response)) {
       throw new ShopifyErrors.InvalidWebhookError({
         message: errorMessage,
-        response,
+        response: returnResponse,
       });
     }
 
