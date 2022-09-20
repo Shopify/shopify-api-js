@@ -1,4 +1,4 @@
-# Migrating from the Node.js-only version
+# Migrating to v6
 
 We've extended the functionality of this library so that it can now run on JavaScript runtimes other than Node.js, as long as there is a runtime adapter for it.
 
