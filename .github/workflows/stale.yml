@@ -12,9 +12,14 @@ jobs:
     steps:
       - uses: actions/stale@v5
         with:
+<<<<<<< HEAD
           days-before-issue-stale: 60
           days-before-issue-close: 14
           operations-per-run: 1000
+=======
+          days-before-issue-stale: 90
+          days-before-issue-close: 14
+>>>>>>> 0d03c4d2 (add workflows)
           stale-issue-label: "Stale"
           stale-issue-message: >
             This issue is stale because it has been open for 90 days with no activity. It will be closed if no further action occurs in 14 days. 
