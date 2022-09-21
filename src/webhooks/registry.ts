@@ -1,6 +1,3 @@
-import {createHmac} from 'crypto';
-import http from 'http';
-
 import {StatusCode} from '@shopify/network';
 
 import {
@@ -18,6 +15,8 @@ import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 import {ConfigInterface, gdprTopics, ShopifyHeader} from '../base-types';
 import {safeCompare} from '../auth/oauth/safe-compare';
 import * as ShopifyErrors from '../error';
+import {createSHA256HMAC} from '../runtime/crypto';
+import {HashFormat} from '../runtime/crypto/types';
 
 import {
   AddHandlerParams,
@@ -32,68 +31,6 @@ import {
   WebhookCheckResponse,
   ShortenedRegisterParams,
 } from './types';
-
-export interface RegistryInterface {
-  webhookRegistry: {[topic: string]: WebhookRegistryEntry};
-
-  /**
-   * Sets the handler for the given topic. If a handler was previously set for the same topic, it will be overridden.
-   *
-   * @param params Parameter object for adding a handler (topic, registryEntry)
-   */
-  addHandler(params: AddHandlerParams): void;
-
-  /**
-   * Sets a list of handlers for the given topics using the `addHandler` function
-   *
-   * @param handlers Object in format {topic: WebhookRegistryEntry}
-   */
-  addHandlers(handlers: AddHandlersProps): void;
-
-  /**
-   * Fetches the handler for the given topic. Returns null if no handler was registered.
-   *
-   * @param params Parameter object for getting a handler (topic)
-   */
-  getHandler(params: GetHandlerParams): WebhookRegistryEntry | null;
-
-  /**
-   * Gets all topics
-   */
-  getTopics(): string[];
-
-  /**
-   * Registers a Webhook Handler function for a given topic.
-   *
-   * @param options Parameters to register a handler, including topic, listening address, delivery method
-   */
-  register(options: RegisterParams): Promise<RegisterReturn>;
-
-  /**
-   * Registers multiple Webhook Handler functions.
-   *
-   * @param options Parameters to register a handler, including topic, listening address, delivery method
-   */
-  registerAll(options: ShortenedRegisterParams): Promise<RegisterReturn>;
-
-  /**
-   * Processes the webhook request received from the Shopify API
-   *
-   * @param request HTTP request received from Shopify
-   * @param response HTTP response to the request
-   */
-  process(
-    request: http.IncomingMessage,
-    response: http.ServerResponse,
-  ): Promise<void>;
-
-  /**
-   * Confirms that the given path is a webhook path
-   *
-   * @param string path component of a URI
-   */
-  isWebhookPath(path: string): boolean;
-}
 
 function isSuccess(
   result: any,
@@ -436,9 +373,11 @@ export function createProcess(config: ConfigInterface) {
     let {errorMessage} = webhookCheck;
 
     if (webhookOk) {
-      const generatedHash = createHmac('sha256', config.apiSecretKey)
-        .update(rawBody, 'utf8')
-        .digest('base64');
+      const generatedHash = await createSHA256HMAC(
+        config.apiSecretKey,
+        rawBody,
+        HashFormat.Base64,
+      );
 
       if (safeCompare(generatedHash, hmac)) {
         const graphqlTopic = topic.toUpperCase().replace(/\//g, '_');

@@ -65,6 +65,7 @@ expect.extend({
 
     for (let i = 0; i < attempts; i++) {
       const matchingRequest = mockTestRequests.getRequest();
+
       const requestUrl = new URL(matchingRequest!.url);
       const requestQueryItems = Array.from(
         requestUrl.searchParams.entries(),
@@ -78,7 +79,10 @@ expect.extend({
       expect(requestQueryItems).toEqual(searchQueryItems);
 
       if (data) {
-        if (typeof data === 'string') {
+        if (
+          typeof data === 'string' ||
+          data.constructor.name === 'StringContaining'
+        ) {
           expect(matchingRequest!.body).toEqual(data);
         } else {
           const requestBody =

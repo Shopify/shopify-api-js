@@ -1,10 +1,12 @@
+import {ShopifyError} from '../../error';
+
 import {crypto} from './crypto';
-import {HmacReturnFormat} from './types';
+import {HashFormat} from './types';
 
 export async function createSHA256HMAC(
   secret: string,
   payload: string,
-  returnFormat: HmacReturnFormat = HmacReturnFormat.Base64,
+  returnFormat: HashFormat = HashFormat.Base64,
 ): Promise<string> {
   const cryptoLib =
     typeof (crypto as any)?.webcrypto === 'undefined'
@@ -31,7 +33,7 @@ export async function createSHA256HMAC(
       key,
       enc.encode(payload),
     );
-    return returnFormat === HmacReturnFormat.Base64
+    return returnFormat === HashFormat.Base64
       ? asBase64(signature)
       : asHex(signature);
   }
@@ -78,4 +80,17 @@ export function asBase64(buffer: ArrayBuffer): string {
       LookupTable[enc4];
   }
   return output;
+}
+
+export function hashString(str: string, returnFormat: HashFormat): string {
+  const buffer = new TextEncoder().encode(str);
+
+  switch (returnFormat) {
+    case HashFormat.Base64:
+      return asBase64(buffer);
+    case HashFormat.Hex:
+      return asHex(buffer);
+    default:
+      throw new ShopifyError(`Unrecognized hash format '${returnFormat}'`);
+  }
 }

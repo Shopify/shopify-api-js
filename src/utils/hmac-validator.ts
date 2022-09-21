@@ -1,6 +1,6 @@
 import {ConfigInterface} from '../base-types';
 import {createSHA256HMAC} from '../runtime/crypto';
-import {HmacReturnFormat} from '../runtime/crypto/types';
+import {HashFormat} from '../runtime/crypto/types';
 import {AuthQuery} from '../auth/oauth/types';
 import * as ShopifyErrors from '../error';
 import {safeCompare} from '../auth/oauth/safe-compare';
@@ -32,11 +32,7 @@ export function createGenerateLocalHmac(config: ConfigInterface) {
       ...(host && {host}),
     });
 
-    return createSHA256HMAC(
-      config.apiSecretKey,
-      queryString,
-      HmacReturnFormat.Hex,
-    );
+    return createSHA256HMAC(config.apiSecretKey, queryString, HashFormat.Hex);
   };
 }
 

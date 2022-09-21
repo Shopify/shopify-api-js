@@ -1,39 +1,58 @@
-import {config} from '../config';
-import {BillingError} from '../error';
-import {GraphqlClient} from '../clients/graphql';
+import {ConfigInterface} from '../base-types';
 import {SessionInterface} from '../session/types';
+import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {BillingError} from '../error';
 
 import {isRecurring} from './is_recurring';
 import {
   ActiveSubscriptions,
+  BillingConfig,
   CurrentAppInstallations,
   OneTimePurchases,
 } from './types';
 
-export async function hasActivePayment(
-  session: SessionInterface,
-  isTest: boolean,
-): Promise<boolean> {
-  if (isRecurring()) {
-    return hasActiveSubscription(session, isTest);
-  } else {
-    return hasActiveOneTimePurchase(session, isTest);
-  }
+interface HasActivePaymentParams {
+  session: SessionInterface;
+  isTest: boolean;
 }
 
-async function hasActiveSubscription(
-  session: SessionInterface,
-  isTest: boolean,
-): Promise<boolean> {
-  if (!config.billing) {
-    throw new BillingError({
-      message: 'Attempted to look for subscriptions without billing configs',
-      errorData: [],
+interface HasActivePaymentInternalParams {
+  config: BillingConfig;
+  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+  isTest: boolean;
+}
+
+export function createHasActivePayment(config: ConfigInterface) {
+  return async function ({
+    session,
+    isTest,
+  }: HasActivePaymentParams): Promise<boolean> {
+    if (!config.billing) {
+      throw new BillingError({
+        message: 'Attempted to look for purchases without billing configs',
+        errorData: [],
+      });
+    }
+
+    const GraphqlClient = createGraphqlClientClass({config});
+    const client = new GraphqlClient({
+      domain: session.shop,
+      accessToken: session.accessToken,
     });
-  }
 
-  const client = new GraphqlClient(session.shop, session.accessToken);
+    if (isRecurring(config.billing)) {
+      return hasActiveSubscription({config: config.billing, client, isTest});
+    } else {
+      return hasActiveOneTimePurchase({config: config.billing, client, isTest});
+    }
+  };
+}
 
+async function hasActiveSubscription({
+  config,
+  client,
+  isTest,
+}: HasActivePaymentInternalParams): Promise<boolean> {
   const currentInstallations = await client.query<
     CurrentAppInstallations<ActiveSubscriptions>
   >({
@@ -42,25 +61,15 @@ async function hasActiveSubscription(
 
   return currentInstallations.body.data.currentAppInstallation.activeSubscriptions.some(
     (subscription) =>
-      subscription.name === config.billing!.chargeName &&
-      (isTest || !subscription.test),
+      subscription.name === config.chargeName && (isTest || !subscription.test),
   );
 }
 
-async function hasActiveOneTimePurchase(
-  session: SessionInterface,
-  isTest: boolean,
-): Promise<boolean> {
-  if (!config.billing) {
-    throw new BillingError({
-      message:
-        'Attempted to look for one time purchases without billing configs',
-      errorData: [],
-    });
-  }
-
-  const client = new GraphqlClient(session.shop, session.accessToken);
-
+async function hasActiveOneTimePurchase({
+  config,
+  client,
+  isTest,
+}: HasActivePaymentInternalParams): Promise<boolean> {
   let installation: OneTimePurchases;
   let endCursor = null;
   do {
@@ -77,7 +86,7 @@ async function hasActiveOneTimePurchase(
     if (
       installation.oneTimePurchases.edges.some(
         (purchase) =>
-          purchase.node.name === config.billing!.chargeName &&
+          purchase.node.name === config.chargeName &&
           (isTest || !purchase.node.test) &&
           purchase.node.status === 'ACTIVE',
       )

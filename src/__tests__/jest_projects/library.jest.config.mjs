@@ -9,8 +9,6 @@ export default {
     '<rootDir>/session-storage',
     '<rootDir>/adapters',
     '<rootDir>/runtime',
-    // TODO remove these as we refactor components, keep the ones above as they run in their own suites
-    '<rootDir>/billing',
   ],
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
 };

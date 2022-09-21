@@ -1,36 +1,31 @@
-import {config} from '../config';
-import {SessionInterface} from '../session/types';
+import {ConfigInterface} from '../base-types';
 
-import {hasActivePayment} from './has_active_payment';
-import {requestPayment} from './request_payment';
+import {createHasActivePayment} from './has_active_payment';
+import {createRequestPayment} from './request_payment';
+import {CheckInterface, CheckReturn} from './types';
 
-interface CheckInterface {
-  session: SessionInterface;
-  isTest?: boolean;
-}
+export function createCheck(config: ConfigInterface) {
+  return async function ({
+    session,
+    isTest = true,
+  }: CheckInterface): Promise<CheckReturn> {
+    if (!config.billing) {
+      return {hasPayment: true, confirmBillingUrl: undefined};
+    }
 
-interface CheckReturn {
-  hasPayment: boolean;
-  confirmBillingUrl?: string;
-}
+    let hasPayment: boolean;
+    let confirmBillingUrl: string | undefined;
 
-export async function check({
-  session,
-  isTest = true,
-}: CheckInterface): Promise<CheckReturn> {
-  if (!config.billing) {
-    return {hasPayment: true, confirmBillingUrl: undefined};
-  }
+    if (await createHasActivePayment(config)({session, isTest})) {
+      hasPayment = true;
+    } else {
+      hasPayment = false;
+      confirmBillingUrl = await createRequestPayment(config)({
+        session,
+        isTest,
+      });
+    }
 
-  let hasPayment: boolean;
-  let confirmBillingUrl: string | undefined;
-
-  if (await hasActivePayment(session, isTest)) {
-    hasPayment = true;
-  } else {
-    hasPayment = false;
-    confirmBillingUrl = await requestPayment(session, isTest);
-  }
-
-  return {hasPayment, confirmBillingUrl};
+    return {hasPayment, confirmBillingUrl};
+  };
 }

@@ -36,17 +36,11 @@
     "baseUrl": ".",
     "rootDir": "src"
   },
-  "files": [
-    // TODO remove these as we progress through the refactoring
-    "src/billing/types.ts"
-  ],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
   "exclude": [
     "**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*",
-    // TODO remove these as we progress through the refactoring
-    "src/billing/**/*.ts"
   ],
 }
