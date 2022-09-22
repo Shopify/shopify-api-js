@@ -467,8 +467,6 @@ describe('HTTP client', () => {
   it('fails with invalid retry count', async () => {
     const client = new HttpClient({domain});
 
-    queueMockResponse(buildMockResponse(successResponse));
-
     await expect(
       client.get({path: '/url/path', tries: -1}),
     ).rejects.toBeInstanceOf(ShopifyErrors.HttpRequestError);
@@ -514,7 +512,6 @@ describe('HTTP client', () => {
         JSON.stringify({errors: 'Something went wrong!'}),
         {statusCode: 403, statusText: 'Did not work'},
       ],
-      [buildMockResponse(successResponse), {statusCode: 200}],
     );
 
     await expect(
@@ -534,10 +531,6 @@ describe('HTTP client', () => {
     const client = new HttpClient({domain});
 
     queueMockResponses(
-      [
-        JSON.stringify({errors: 'Something went wrong!'}),
-        {statusCode: 500, statusText: 'Did not work'},
-      ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
         {statusCode: 500, statusText: 'Did not work'},

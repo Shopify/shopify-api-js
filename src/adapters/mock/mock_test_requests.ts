@@ -9,6 +9,7 @@ interface MockedAdapter {
   queueResponse: (response: NormalizedResponse) => void;
   queueError: (error: Error) => void;
   getRequest: () => RequestListEntry | undefined;
+  getResponses: () => ResponseListEntry[];
   reset: () => void;
 }
 
@@ -26,6 +27,10 @@ export const mockTestRequests: MockedAdapter = {
 
   getRequest(): RequestListEntry | undefined {
     return this.requestList.shift();
+  },
+
+  getResponses(): ResponseListEntry[] {
+    return this.responseList;
   },
 
   reset() {

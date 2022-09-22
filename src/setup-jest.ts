@@ -6,6 +6,19 @@ beforeEach(() => {
   mockTestRequests.reset();
 });
 
+afterEach(() => {
+  const remainingResponses = mockTestRequests.getResponses();
+  if (remainingResponses.length) {
+    throw new Error(
+      `Test did not check all expected responses, responses: ${JSON.stringify(
+        remainingResponses,
+        undefined,
+        2,
+      )}`,
+    );
+  }
+});
+
 interface AssertHttpRequestParams {
   method: string;
   domain: string;
@@ -65,6 +78,15 @@ expect.extend({
 
     for (let i = 0; i < attempts; i++) {
       const matchingRequest = mockTestRequests.getRequest();
+      if (!matchingRequest) {
+        throw new Error(
+          `No request was made, but expected ${JSON.stringify(
+            {method, domain, path},
+            undefined,
+            2,
+          )}`,
+        );
+      }
 
       const requestUrl = new URL(matchingRequest!.url);
       const requestQueryItems = Array.from(
