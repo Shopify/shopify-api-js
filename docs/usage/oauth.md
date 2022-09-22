@@ -1,6 +1,6 @@
 # Performing OAuth
 
-Once you set up the library for your project, you'll be able to use it to interact with the APIs, and add your own functionality.
+After you set up the library for your project, you'll be able to use it to interact with the APIs, and add your own functionality.
 The first thing your app will need to do is to get a token to access the Admin API by performing the OAuth process. Learn more about [OAuth on the Shopify platform](https://shopify.dev/apps/auth/oauth).
 
 To perform OAuth, you will need to create two endpoints in your app:
@@ -130,6 +130,7 @@ app.get('/fetch-some-data', async (req, res) => {
   });
 
   // Build a client and make requests with session.accessToken
+  // See the REST, GraphQL, or Storefront API documentation for more information
 });
 ```
 
@@ -160,7 +161,7 @@ When an app's scopes change, it needs to request merchants to go through OAuth a
 ```ts
 const session: Session; // Loaded from one of the methods above
 
-if (!config.scopes.equals(session.scope)) {
+if (!shopify.config.scopes.equals(session.scope)) {
   // Scopes have changed, the app should redirect the merchant to OAuth
 }
 ```
