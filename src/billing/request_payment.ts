@@ -20,7 +20,7 @@ interface RequestPaymentParams {
 }
 
 interface RequestPaymentInternalParams {
-  config: BillingConfig;
+  billingConfig: BillingConfig;
   client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
   returnUrl: string;
   isTest: boolean;
@@ -51,7 +51,7 @@ export function createRequestPayment(config: ConfigInterface) {
     let data: RequestResponse;
     if (isRecurring(config.billing)) {
       const mutationResponse = await requestRecurringPayment({
-        config: config.billing,
+        billingConfig: config.billing,
         client,
         returnUrl,
         isTest,
@@ -59,7 +59,7 @@ export function createRequestPayment(config: ConfigInterface) {
       data = mutationResponse.data.appSubscriptionCreate;
     } else {
       const mutationResponse = await requestSinglePayment({
-        config: config.billing,
+        billingConfig: config.billing,
         client,
         returnUrl,
         isTest,
@@ -79,7 +79,7 @@ export function createRequestPayment(config: ConfigInterface) {
 }
 
 async function requestRecurringPayment({
-  config,
+  billingConfig,
   client,
   returnUrl,
   isTest,
@@ -88,15 +88,15 @@ async function requestRecurringPayment({
     data: {
       query: RECURRING_PURCHASE_MUTATION,
       variables: {
-        name: config.chargeName,
+        name: billingConfig.chargeName,
         lineItems: [
           {
             plan: {
               appRecurringPricingDetails: {
-                interval: config.interval,
+                interval: billingConfig.interval,
                 price: {
-                  amount: config.amount,
-                  currencyCode: config.currencyCode,
+                  amount: billingConfig.amount,
+                  currencyCode: billingConfig.currencyCode,
                 },
               },
             },
@@ -119,7 +119,7 @@ async function requestRecurringPayment({
 }
 
 async function requestSinglePayment({
-  config,
+  billingConfig,
   client,
   returnUrl,
   isTest,
@@ -128,10 +128,10 @@ async function requestSinglePayment({
     data: {
       query: ONE_TIME_PURCHASE_MUTATION,
       variables: {
-        name: config.chargeName,
+        name: billingConfig.chargeName,
         price: {
-          amount: config.amount,
-          currencyCode: config.currencyCode,
+          amount: billingConfig.amount,
+          currencyCode: billingConfig.currencyCode,
         },
         returnUrl,
         test: isTest,

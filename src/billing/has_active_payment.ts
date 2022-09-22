@@ -17,7 +17,7 @@ interface HasActivePaymentParams {
 }
 
 interface HasActivePaymentInternalParams {
-  config: BillingConfig;
+  billingConfig: BillingConfig;
   client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
   isTest: boolean;
 }
@@ -41,15 +41,23 @@ export function createHasActivePayment(config: ConfigInterface) {
     });
 
     if (isRecurring(config.billing)) {
-      return hasActiveSubscription({config: config.billing, client, isTest});
+      return hasActiveSubscription({
+        billingConfig: config.billing,
+        client,
+        isTest,
+      });
     } else {
-      return hasActiveOneTimePurchase({config: config.billing, client, isTest});
+      return hasActiveOneTimePurchase({
+        billingConfig: config.billing,
+        client,
+        isTest,
+      });
     }
   };
 }
 
 async function hasActiveSubscription({
-  config,
+  billingConfig,
   client,
   isTest,
 }: HasActivePaymentInternalParams): Promise<boolean> {
@@ -61,12 +69,13 @@ async function hasActiveSubscription({
 
   return currentInstallations.body.data.currentAppInstallation.activeSubscriptions.some(
     (subscription) =>
-      subscription.name === config.chargeName && (isTest || !subscription.test),
+      subscription.name === billingConfig.chargeName &&
+      (isTest || !subscription.test),
   );
 }
 
 async function hasActiveOneTimePurchase({
-  config,
+  billingConfig,
   client,
   isTest,
 }: HasActivePaymentInternalParams): Promise<boolean> {
@@ -86,7 +95,7 @@ async function hasActiveOneTimePurchase({
     if (
       installation.oneTimePurchases.edges.some(
         (purchase) =>
-          purchase.node.name === config.chargeName &&
+          purchase.node.name === billingConfig.chargeName &&
           (isTest || !purchase.node.test) &&
           purchase.node.status === 'ACTIVE',
       )
