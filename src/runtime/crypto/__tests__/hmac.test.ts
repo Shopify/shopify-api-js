@@ -1,6 +1,9 @@
 import {execSync} from 'child_process';
 
 import {createSHA256HMAC, asBase64} from '..';
+import {ShopifyError} from '../../../error';
+import {HashFormat} from '../types';
+import {hashString} from '../utils';
 
 const NUM_FUZZS = 100;
 describe('Wrapper to create HMACs', () => {
@@ -36,5 +39,28 @@ describe('Base64 encoder', () => {
 
       expect(b64Encoding).toEqual(output[i].base64);
     }
+  });
+});
+
+describe('hashString', () => {
+  it('can convert to base64', () => {
+    const testString = 'this is my test string';
+    expect(hashString(testString, HashFormat.Base64)).toEqual(
+      'dGhpcyBpcyBteSB0ZXN0IHN0cmluZw==',
+    );
+  });
+
+  it('can convert to hex', () => {
+    const testString = 'this is my test string';
+    expect(hashString(testString, HashFormat.Hex)).toEqual(
+      '74686973206973206d79207465737420737472696e67',
+    );
+  });
+
+  it('throws on unexpected format', () => {
+    const testString = 'this is my test string';
+    expect(() => hashString(testString, 'not-a-format' as any)).toThrowError(
+      ShopifyError,
+    );
   });
 });

@@ -1,6 +1,6 @@
 import {AuthScopes} from './auth/scopes';
 import {SessionStorage} from './session/session_storage';
-import {BillingSettings} from './billing/types';
+import {BillingConfig, ShopifyBilling} from './billing/types';
 import {ShopifyClients} from './clients/types';
 import {ShopifyAuth} from './auth/types';
 import {ShopifySession} from './session/types';
@@ -22,7 +22,7 @@ export interface ConfigParams<T extends ShopifyRestResources = any> {
   userAgentPrefix?: string;
   privateAppStorefrontAccessToken?: string;
   customShopDomains?: (RegExp | string)[];
-  billing?: BillingSettings;
+  billing?: BillingConfig;
   restResources?: T;
 }
 
@@ -42,6 +42,7 @@ export interface Shopify<
   session: ShopifySession;
   utils: ShopifyUtils;
   webhooks: ShopifyWebhooks;
+  billing: ShopifyBilling;
   rest: T;
 }
 
@@ -79,3 +80,9 @@ export const gdprTopics: string[] = [
   'CUSTOMERS_REDACT',
   'SHOP_REDACT',
 ];
+
+export enum BillingInterval {
+  OneTime = 'ONE_TIME',
+  Every30Days = 'EVERY_30_DAYS',
+  Annual = 'ANNUAL',
+}

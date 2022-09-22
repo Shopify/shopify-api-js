@@ -1,78 +1,102 @@
-import {GraphqlClient} from '../clients/graphql';
+import {ConfigInterface} from '../base-types';
 import {SessionInterface} from '../session/types';
-import {config} from '../config';
 import {BillingError} from '../error';
-import {buildEmbeddedAppUrl} from '../utils/get-embedded-app-url';
+import {createBuildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
+import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {hashString} from '../runtime/crypto';
+import {HashFormat} from '../runtime/crypto/types';
 
 import {isRecurring} from './is_recurring';
 import {
   RequestResponse,
   RecurringPaymentResponse,
   SinglePaymentResponse,
+  BillingConfig,
 } from './types';
 
-export async function requestPayment(
-  session: SessionInterface,
-  isTest: boolean,
-): Promise<string | undefined> {
-  const returnUrl = buildEmbeddedAppUrl(
-    Buffer.from(`${session.shop}/admin`).toString('base64'),
-  );
-
-  let data: RequestResponse;
-  if (isRecurring()) {
-    const mutationResponse = await requestRecurringPayment(
-      session,
-      returnUrl,
-      isTest,
-    );
-    data = mutationResponse.data.appSubscriptionCreate;
-  } else {
-    const mutationResponse = await requestSinglePayment(
-      session,
-      returnUrl,
-      isTest,
-    );
-    data = mutationResponse.data.appPurchaseOneTimeCreate;
-  }
-
-  if (data.userErrors?.length) {
-    throw new BillingError({
-      message: 'Error while billing the store',
-      errorData: data.userErrors,
-    });
-  }
-
-  return data.confirmationUrl;
+interface RequestPaymentParams {
+  session: SessionInterface;
+  isTest: boolean;
 }
 
-async function requestRecurringPayment(
-  session: SessionInterface,
-  returnUrl: string,
-  isTest: boolean,
-): Promise<RecurringPaymentResponse> {
-  if (!config.billing) {
-    throw new BillingError({
-      message: 'Attempted to request recurring payment without billing configs',
-      errorData: [],
+interface RequestPaymentInternalParams {
+  billingConfig: BillingConfig;
+  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+  returnUrl: string;
+  isTest: boolean;
+}
+
+export function createRequestPayment(config: ConfigInterface) {
+  return async function ({
+    session,
+    isTest,
+  }: RequestPaymentParams): Promise<string | undefined> {
+    if (!config.billing) {
+      throw new BillingError({
+        message: 'Attempted to request payment without billing configs',
+        errorData: [],
+      });
+    }
+
+    const returnUrl = createBuildEmbeddedAppUrl(config)(
+      hashString(`${session.shop}/admin`, HashFormat.Base64),
+    );
+
+    const GraphqlClient = createGraphqlClientClass({config});
+    const client = new GraphqlClient({
+      domain: session.shop,
+      accessToken: session.accessToken,
     });
-  }
 
-  const client = new GraphqlClient(session.shop, session.accessToken);
+    let data: RequestResponse;
+    if (isRecurring(config.billing)) {
+      const mutationResponse = await requestRecurringPayment({
+        billingConfig: config.billing,
+        client,
+        returnUrl,
+        isTest,
+      });
+      data = mutationResponse.data.appSubscriptionCreate;
+    } else {
+      const mutationResponse = await requestSinglePayment({
+        billingConfig: config.billing,
+        client,
+        returnUrl,
+        isTest,
+      });
+      data = mutationResponse.data.appPurchaseOneTimeCreate;
+    }
 
+    if (data.userErrors?.length) {
+      throw new BillingError({
+        message: 'Error while billing the store',
+        errorData: data.userErrors,
+      });
+    }
+
+    return data.confirmationUrl;
+  };
+}
+
+async function requestRecurringPayment({
+  billingConfig,
+  client,
+  returnUrl,
+  isTest,
+}: RequestPaymentInternalParams): Promise<RecurringPaymentResponse> {
   const mutationResponse = await client.query<RecurringPaymentResponse>({
     data: {
       query: RECURRING_PURCHASE_MUTATION,
       variables: {
-        name: config.billing.chargeName,
+        name: billingConfig.chargeName,
         lineItems: [
           {
             plan: {
               appRecurringPricingDetails: {
-                interval: config.billing.interval,
+                interval: billingConfig.interval,
                 price: {
-                  amount: config.billing.amount,
-                  currencyCode: config.billing.currencyCode,
+                  amount: billingConfig.amount,
+                  currencyCode: billingConfig.currencyCode,
                 },
               },
             },
@@ -94,28 +118,20 @@ async function requestRecurringPayment(
   return mutationResponse.body;
 }
 
-async function requestSinglePayment(
-  session: SessionInterface,
-  returnUrl: string,
-  isTest: boolean,
-): Promise<SinglePaymentResponse> {
-  if (!config.billing) {
-    throw new BillingError({
-      message: 'Attempted to request single payment without billing configs',
-      errorData: [],
-    });
-  }
-
-  const client = new GraphqlClient(session.shop, session.accessToken);
-
+async function requestSinglePayment({
+  billingConfig,
+  client,
+  returnUrl,
+  isTest,
+}: RequestPaymentInternalParams): Promise<SinglePaymentResponse> {
   const mutationResponse = await client.query<SinglePaymentResponse>({
     data: {
       query: ONE_TIME_PURCHASE_MUTATION,
       variables: {
-        name: config.billing.chargeName,
+        name: billingConfig.chargeName,
         price: {
-          amount: config.billing.amount,
-          currencyCode: config.billing.currencyCode,
+          amount: billingConfig.amount,
+          currencyCode: billingConfig.currencyCode,
         },
         returnUrl,
         test: isTest,

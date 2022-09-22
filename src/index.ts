@@ -5,6 +5,7 @@ import {shopifyAuth} from './auth';
 import {shopifySession} from './session';
 import {shopifyUtils} from './utils';
 import {shopifyWebhooks} from './webhooks';
+import {shopifyBilling} from './billing';
 import {loadRestResources} from './rest/load-rest-resources';
 import {ShopifyRestResources} from './rest/types';
 
@@ -25,6 +26,7 @@ export function shopifyApi<T extends ShopifyRestResources>(
     session: shopifySession(validatedConfig),
     utils: shopifyUtils(validatedConfig),
     webhooks: shopifyWebhooks(validatedConfig),
+    billing: shopifyBilling(validatedConfig),
     rest: {} as T,
   };
 

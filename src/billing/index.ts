@@ -1,8 +1,9 @@
-import {check} from './check';
+import {ConfigInterface} from '../base-types';
 
-const ShopifyBilling = {
-  check,
-};
+import {createCheck} from './check';
 
-export {ShopifyBilling};
-export default ShopifyBilling;
+export function shopifyBilling(config: ConfigInterface) {
+  return {
+    check: createCheck(config),
+  };
+}

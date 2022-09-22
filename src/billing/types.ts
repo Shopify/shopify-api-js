@@ -1,14 +1,23 @@
-export enum BillingInterval {
-  OneTime = 'ONE_TIME',
-  Every30Days = 'EVERY_30_DAYS',
-  Annual = 'ANNUAL',
-}
+import {SessionInterface} from '../session/types';
+import {BillingInterval} from '../base-types';
 
-export interface BillingSettings {
+import {shopifyBilling} from '.';
+
+export interface BillingConfig {
   chargeName: string;
   amount: number;
   currencyCode: string;
   interval: BillingInterval;
+}
+
+export interface CheckInterface {
+  session: SessionInterface;
+  isTest?: boolean;
+}
+
+export interface CheckReturn {
+  hasPayment: boolean;
+  confirmBillingUrl?: string;
 }
 
 export interface ActiveSubscription {
@@ -63,3 +72,5 @@ export interface SinglePaymentResponse {
   };
   errors?: string[];
 }
+
+export type ShopifyBilling = ReturnType<typeof shopifyBilling>;

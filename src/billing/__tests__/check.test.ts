@@ -1,100 +1,106 @@
+import {testConfig, queueMockResponses} from '../../__tests__/test-helper';
 import {Session} from '../../session/session';
-import {config} from '../../config';
 import {BillingError} from '../../error';
-import {check} from '../check';
-import {BillingInterval} from '../types';
+import {LATEST_API_VERSION, Shopify, BillingInterval} from '../../base-types';
+import {shopifyApi} from '../..';
 
-import {
-  TEST_CHARGE_NAME,
-  CONFIRMATION_URL,
-  EMPTY_SUBSCRIPTIONS,
-  EXISTING_ONE_TIME_PAYMENT,
-  EXISTING_ONE_TIME_PAYMENT_WITH_PAGINATION,
-  EXISTING_INACTIVE_ONE_TIME_PAYMENT,
-  EXISTING_SUBSCRIPTION,
-  PURCHASE_ONE_TIME_RESPONSE,
-  PURCHASE_SUBSCRIPTION_RESPONSE,
-  PURCHASE_ONE_TIME_RESPONSE_WITH_USER_ERRORS,
-  PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
-} from './check_responses';
+import * as CheckResponses from './check_responses';
+
+const DOMAIN = 'test-shop.myshopify.io';
+const ACCESS_TOKEN = 'access-token';
+const GRAPHQL_BASE_REQUEST = {
+  method: 'POST',
+  domain: DOMAIN,
+  path: `/admin/api/${LATEST_API_VERSION}/graphql.json`,
+  headers: {'X-Shopify-Access-Token': ACCESS_TOKEN},
+};
+
+let shopify: Shopify;
 
 describe('check', () => {
-  const session = new Session('1234', 'test-shop.myshopify.io', '1234', true);
-  session.accessToken = 'access-token';
-  session.scope = config.scopes.toString();
+  const session = new Session({
+    id: '1234',
+    shop: DOMAIN,
+    state: '1234',
+    isOnline: true,
+    accessToken: ACCESS_TOKEN,
+    scope: 'write_products',
+  });
 
   describe('with non-recurring config', () => {
     beforeEach(() => {
-      config.billing = {
-        amount: 5,
-        chargeName: TEST_CHARGE_NAME,
-        currencyCode: 'USD',
-        interval: BillingInterval.OneTime,
-      };
+      shopify = shopifyApi({
+        ...testConfig,
+        billing: {
+          amount: 5,
+          chargeName: CheckResponses.TEST_CHARGE_NAME,
+          currencyCode: 'USD',
+          interval: BillingInterval.OneTime,
+        },
+      });
     });
 
     [true, false].forEach((isTest) =>
       test(`requests a single payment if there is none (isTest: ${isTest})`, async () => {
-        fetchMock.mockResponses(
-          EMPTY_SUBSCRIPTIONS,
-          PURCHASE_ONE_TIME_RESPONSE,
+        queueMockResponses(
+          [CheckResponses.EMPTY_SUBSCRIPTIONS],
+          [CheckResponses.PURCHASE_ONE_TIME_RESPONSE],
         );
 
-        const response = await check({
+        const response = await shopify.billing.check({
           session,
           isTest,
         });
 
         expect(response).toEqual({
           hasPayment: false,
-          confirmBillingUrl: CONFIRMATION_URL,
+          confirmBillingUrl: CheckResponses.CONFIRMATION_URL,
         });
-        expect(fetchMock).toHaveBeenCalledTimes(2);
-        expect(fetchMock).toHaveBeenNthCalledWith(
-          1,
-          expect.anything(),
-          expect.objectContaining({
-            body: expect.stringContaining('oneTimePurchases'),
-            headers: expect.objectContaining({
-              'X-Shopify-Access-Token': session.accessToken,
-            }),
-          }),
-        );
 
-        const parsedBody = JSON.parse(
-          fetchMock.mock.calls[1][1]!.body!.toString(),
-        );
-        expect(parsedBody).toMatchObject({
-          query: expect.stringContaining('appPurchaseOneTimeCreate'),
-          variables: expect.objectContaining({test: isTest}),
-        });
+        expect({
+          ...GRAPHQL_BASE_REQUEST,
+          data: expect.stringContaining('oneTimePurchases'),
+        }).toMatchMadeHttpRequest();
+        expect({
+          ...GRAPHQL_BASE_REQUEST,
+          data: {
+            query: expect.stringContaining('appPurchaseOneTimeCreate'),
+            variables: expect.objectContaining({test: isTest}),
+          },
+        }).toMatchMadeHttpRequest();
       }),
     );
 
     test('defaults to test purchases', async () => {
-      fetchMock.mockResponses(EMPTY_SUBSCRIPTIONS, PURCHASE_ONE_TIME_RESPONSE);
+      queueMockResponses(
+        [CheckResponses.EMPTY_SUBSCRIPTIONS],
+        [CheckResponses.PURCHASE_ONE_TIME_RESPONSE],
+      );
 
-      const response = await check({session});
+      const response = await shopify.billing.check({session});
 
       expect(response).toEqual({
         hasPayment: false,
-        confirmBillingUrl: CONFIRMATION_URL,
+        confirmBillingUrl: CheckResponses.CONFIRMATION_URL,
       });
-      expect(fetchMock).toHaveBeenCalledTimes(2);
 
-      const parsedBody = JSON.parse(
-        fetchMock.mock.calls[1][1]!.body!.toString(),
-      );
-      expect(parsedBody).toMatchObject({
-        query: expect.stringContaining('appPurchaseOneTimeCreate'),
-        variables: expect.objectContaining({test: true}),
-      });
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('oneTimePurchases'),
+      }).toMatchMadeHttpRequest();
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: {
+          query: expect.stringContaining('appPurchaseOneTimeCreate'),
+          variables: expect.objectContaining({test: true}),
+        },
+      }).toMatchMadeHttpRequest();
     });
 
     test('does not request payment if there is one', async () => {
-      fetchMock.mockResponses(EXISTING_ONE_TIME_PAYMENT);
+      queueMockResponses([CheckResponses.EXISTING_ONE_TIME_PAYMENT]);
 
-      const response = await check({
+      const response = await shopify.billing.check({
         session,
         isTest: true,
       });
@@ -103,52 +109,46 @@ describe('check', () => {
         hasPayment: true,
         confirmBillingUrl: undefined,
       });
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(fetchMock).toHaveBeenNthCalledWith(
-        1,
-        expect.anything(),
-        expect.objectContaining({
-          body: expect.stringContaining('oneTimePurchases'),
-        }),
-      );
+
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('oneTimePurchases'),
+      }).toMatchMadeHttpRequest();
     });
 
     test('ignores non-active payments', async () => {
-      fetchMock.mockResponses(
-        EXISTING_INACTIVE_ONE_TIME_PAYMENT,
-        PURCHASE_ONE_TIME_RESPONSE,
+      queueMockResponses(
+        [CheckResponses.EXISTING_INACTIVE_ONE_TIME_PAYMENT],
+        [CheckResponses.PURCHASE_ONE_TIME_RESPONSE],
       );
 
-      const response = await check({
+      const response = await shopify.billing.check({
         session,
         isTest: true,
       });
 
       expect(response).toEqual({
         hasPayment: false,
-        confirmBillingUrl: CONFIRMATION_URL,
+        confirmBillingUrl: CheckResponses.CONFIRMATION_URL,
       });
-      expect(fetchMock).toHaveBeenCalledTimes(2);
-      expect(fetchMock).toHaveBeenNthCalledWith(
-        1,
-        expect.anything(),
-        expect.objectContaining({
-          body: expect.stringContaining('oneTimePurchases'),
-        }),
-      );
-      expect(fetchMock).toHaveBeenNthCalledWith(
-        2,
-        expect.anything(),
-        expect.objectContaining({
-          body: expect.stringContaining('appPurchaseOneTimeCreate'),
-        }),
-      );
+
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('oneTimePurchases'),
+      }).toMatchMadeHttpRequest();
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('appPurchaseOneTimeCreate'),
+      }).toMatchMadeHttpRequest();
     });
 
     test('paginates until a payment is found', async () => {
-      fetchMock.mockResponses(...EXISTING_ONE_TIME_PAYMENT_WITH_PAGINATION);
+      queueMockResponses(
+        [CheckResponses.EXISTING_ONE_TIME_PAYMENT_WITH_PAGINATION[0]],
+        [CheckResponses.EXISTING_ONE_TIME_PAYMENT_WITH_PAGINATION[1]],
+      );
 
-      const response = await check({
+      const response = await shopify.billing.check({
         session,
         isTest: true,
       });
@@ -157,113 +157,121 @@ describe('check', () => {
         hasPayment: true,
         confirmBillingUrl: undefined,
       });
-      expect(fetchMock).toHaveBeenCalledTimes(2);
 
-      let parsedBody = JSON.parse(fetchMock.mock.calls[0][1]!.body!.toString());
-      expect(parsedBody).toMatchObject({
-        query: expect.stringContaining('oneTimePurchases'),
-        variables: expect.objectContaining({endCursor: null}),
-      });
-
-      parsedBody = JSON.parse(fetchMock.mock.calls[1][1]!.body!.toString());
-      expect(parsedBody).toMatchObject({
-        query: expect.stringContaining('oneTimePurchases'),
-        variables: expect.objectContaining({endCursor: 'end_cursor'}),
-      });
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: {
+          query: expect.stringContaining('oneTimePurchases'),
+          variables: expect.objectContaining({endCursor: null}),
+        },
+      }).toMatchMadeHttpRequest();
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: {
+          query: expect.stringContaining('oneTimePurchases'),
+          variables: expect.objectContaining({endCursor: 'end_cursor'}),
+        },
+      }).toMatchMadeHttpRequest();
     });
 
     test('throws on userErrors', async () => {
-      fetchMock.mockResponses(
-        EMPTY_SUBSCRIPTIONS,
-        PURCHASE_ONE_TIME_RESPONSE_WITH_USER_ERRORS,
+      queueMockResponses(
+        [CheckResponses.EMPTY_SUBSCRIPTIONS],
+        [CheckResponses.PURCHASE_ONE_TIME_RESPONSE_WITH_USER_ERRORS],
       );
 
       await expect(() =>
-        check({
+        shopify.billing.check({
           session,
           isTest: true,
         }),
       ).rejects.toThrow(BillingError);
 
-      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('oneTimePurchases'),
+      }).toMatchMadeHttpRequest();
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('appPurchaseOneTimeCreate'),
+      }).toMatchMadeHttpRequest();
     });
   });
 
   describe('with recurring config', () => {
     beforeEach(() => {
-      config.billing = {
-        amount: 5,
-        chargeName: TEST_CHARGE_NAME,
-        currencyCode: 'USD',
-        interval: BillingInterval.Every30Days,
-      };
+      shopify = shopifyApi({
+        ...testConfig,
+        billing: {
+          amount: 5,
+          chargeName: CheckResponses.TEST_CHARGE_NAME,
+          currencyCode: 'USD',
+          interval: BillingInterval.Every30Days,
+        },
+      });
     });
 
     [true, false].forEach((isTest) =>
       test(`requests a subscription if there is none (isTest: ${isTest})`, async () => {
-        fetchMock.mockResponses(
-          EMPTY_SUBSCRIPTIONS,
-          PURCHASE_SUBSCRIPTION_RESPONSE,
+        queueMockResponses(
+          [CheckResponses.EMPTY_SUBSCRIPTIONS],
+          [CheckResponses.PURCHASE_SUBSCRIPTION_RESPONSE],
         );
 
-        const response = await check({
+        const response = await shopify.billing.check({
           session,
           isTest,
         });
 
         expect(response).toEqual({
           hasPayment: false,
-          confirmBillingUrl: CONFIRMATION_URL,
+          confirmBillingUrl: CheckResponses.CONFIRMATION_URL,
         });
-        expect(fetchMock).toHaveBeenCalledTimes(2);
-        expect(fetchMock).toHaveBeenNthCalledWith(
-          1,
-          expect.anything(),
-          expect.objectContaining({
-            body: expect.stringContaining('activeSubscriptions'),
-            headers: expect.objectContaining({
-              'X-Shopify-Access-Token': session.accessToken,
-            }),
-          }),
-        );
 
-        const parsedBody = JSON.parse(
-          fetchMock.mock.calls[1][1]!.body!.toString(),
-        );
-        expect(parsedBody).toMatchObject({
-          query: expect.stringContaining('appSubscriptionCreate'),
-          variables: expect.objectContaining({test: isTest}),
-        });
+        expect({
+          ...GRAPHQL_BASE_REQUEST,
+          data: expect.stringContaining('activeSubscriptions'),
+        }).toMatchMadeHttpRequest();
+        expect({
+          ...GRAPHQL_BASE_REQUEST,
+          data: {
+            query: expect.stringContaining('appSubscriptionCreate'),
+            variables: expect.objectContaining({test: isTest}),
+          },
+        }).toMatchMadeHttpRequest();
       }),
     );
 
     test('defaults to test purchases', async () => {
-      fetchMock.mockResponses(
-        EMPTY_SUBSCRIPTIONS,
-        PURCHASE_SUBSCRIPTION_RESPONSE,
+      queueMockResponses(
+        [CheckResponses.EMPTY_SUBSCRIPTIONS],
+        [CheckResponses.PURCHASE_SUBSCRIPTION_RESPONSE],
       );
 
-      const response = await check({session});
+      const response = await shopify.billing.check({session});
 
       expect(response).toEqual({
         hasPayment: false,
-        confirmBillingUrl: CONFIRMATION_URL,
+        confirmBillingUrl: CheckResponses.CONFIRMATION_URL,
       });
-      expect(fetchMock).toHaveBeenCalledTimes(2);
 
-      const parsedBody = JSON.parse(
-        fetchMock.mock.calls[1][1]!.body!.toString(),
-      );
-      expect(parsedBody).toMatchObject({
-        query: expect.stringContaining('appSubscriptionCreate'),
-        variables: expect.objectContaining({test: true}),
-      });
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('activeSubscriptions'),
+      }).toMatchMadeHttpRequest();
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: {
+          query: expect.stringContaining('appSubscriptionCreate'),
+          variables: expect.objectContaining({test: true}),
+        },
+      }).toMatchMadeHttpRequest();
     });
 
     test('does not request subscription if there is one', async () => {
-      fetchMock.mockResponses(EXISTING_SUBSCRIPTION);
+      queueMockResponses([CheckResponses.EXISTING_SUBSCRIPTION]);
 
-      const response = await check({
+      const response = await shopify.billing.check({
         session,
         isTest: true,
       });
@@ -273,30 +281,33 @@ describe('check', () => {
         confirmBillingUrl: undefined,
       });
 
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(fetchMock).toHaveBeenNthCalledWith(
-        1,
-        expect.anything(),
-        expect.objectContaining({
-          body: expect.stringContaining('activeSubscriptions'),
-        }),
-      );
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('activeSubscriptions'),
+      }).toMatchMadeHttpRequest();
     });
 
     test('throws on userErrors', async () => {
-      fetchMock.mockResponses(
-        EMPTY_SUBSCRIPTIONS,
-        PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
+      queueMockResponses(
+        [CheckResponses.EMPTY_SUBSCRIPTIONS],
+        [CheckResponses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS],
       );
 
       await expect(() =>
-        check({
+        shopify.billing.check({
           session,
           isTest: true,
         }),
       ).rejects.toThrow(BillingError);
 
-      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('activeSubscriptions'),
+      }).toMatchMadeHttpRequest();
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining('appSubscriptionCreate'),
+      }).toMatchMadeHttpRequest();
     });
   });
 });

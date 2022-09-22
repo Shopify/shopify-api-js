@@ -1,20 +1,12 @@
-import {config} from '../config';
-import {BillingError} from '../error';
+import {BillingInterval} from '../base-types';
 
-import {BillingInterval} from './types';
+import {BillingConfig} from './types';
 
 const RECURRING_INTERVALS: BillingInterval[] = [
   BillingInterval.Every30Days,
   BillingInterval.Annual,
 ];
 
-export function isRecurring(): boolean {
-  if (!config.billing) {
-    throw new BillingError({
-      message: 'Attempted to request billing without billing configs',
-      errorData: [],
-    });
-  }
-
-  return RECURRING_INTERVALS.includes(config.billing.interval!);
+export function isRecurring(config: BillingConfig): boolean {
+  return RECURRING_INTERVALS.includes(config.interval!);
 }
