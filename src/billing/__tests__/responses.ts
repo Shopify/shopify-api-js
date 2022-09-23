@@ -1,4 +1,7 @@
-export const TEST_CHARGE_NAME = 'Shopify app test billing';
+export const PLAN_1 = 'Shopify app plan 1';
+export const PLAN_2 = 'Shopify app plan 2';
+export const ALL_PLANS = [PLAN_1, PLAN_2];
+
 export const CONFIRMATION_URL = 'totally-real-url';
 
 export const EMPTY_SUBSCRIPTIONS = JSON.stringify({
@@ -20,7 +23,7 @@ export const EXISTING_ONE_TIME_PAYMENT = JSON.stringify({
       oneTimePurchases: {
         edges: [
           {
-            node: {name: TEST_CHARGE_NAME, test: true, status: 'ACTIVE'},
+            node: {name: PLAN_1, test: true, status: 'ACTIVE'},
           },
         ],
         pageInfo: {hasNextPage: false, endCursor: null},
@@ -53,7 +56,7 @@ export const EXISTING_ONE_TIME_PAYMENT_WITH_PAGINATION = [
           edges: [
             {
               node: {
-                name: TEST_CHARGE_NAME,
+                name: PLAN_1,
                 test: true,
                 status: 'ACTIVE',
               },
@@ -74,7 +77,7 @@ export const EXISTING_INACTIVE_ONE_TIME_PAYMENT = JSON.stringify({
         edges: [
           {
             node: {
-              name: TEST_CHARGE_NAME,
+              name: PLAN_1,
               test: true,
               status: 'PENDING',
             },
@@ -94,7 +97,7 @@ export const EXISTING_SUBSCRIPTION = JSON.stringify({
         edges: [],
         pageInfo: {hasNextPage: false, endCursor: null},
       },
-      activeSubscriptions: [{name: TEST_CHARGE_NAME, test: true}],
+      activeSubscriptions: [{name: PLAN_1, test: true}],
     },
   },
 });

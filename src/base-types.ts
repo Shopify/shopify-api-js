@@ -86,3 +86,14 @@ export enum BillingInterval {
   Every30Days = 'EVERY_30_DAYS',
   Annual = 'ANNUAL',
 }
+
+export type RecurringBillingIntervals = Exclude<
+  BillingInterval,
+  BillingInterval.OneTime
+>;
+
+export enum BillingReplacementBehavior {
+  ApplyImmediately = 'APPLY_IMMEDIATELY',
+  ApplyOnNextBillingCycle = 'APPLY_ON_NEXT_BILLING_CYCLE',
+  Standard = 'STANDARD',
+}
