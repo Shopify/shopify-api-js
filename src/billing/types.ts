@@ -1,41 +1,59 @@
 import {SessionInterface} from '../session/types';
-import {BillingInterval} from '../base-types';
+import {
+  BillingInterval,
+  BillingReplacementBehavior,
+  RecurringBillingIntervals,
+} from '../base-types';
 
 import {shopifyBilling} from '.';
 
-export interface BillingConfig {
-  chargeName: string;
+export interface BillingConfigPlan {
   amount: number;
   currencyCode: string;
-  interval: BillingInterval;
 }
 
-export interface CheckInterface {
+export interface BillingConfigOneTimePlan extends BillingConfigPlan {
+  interval: BillingInterval.OneTime;
+}
+
+export interface BillingConfigSubscriptionPlan extends BillingConfigPlan {
+  interval: RecurringBillingIntervals;
+  trialDays?: number;
+  replacementBehavior?: BillingReplacementBehavior;
+}
+
+export interface BillingConfig {
+  [plan: string]: BillingConfigOneTimePlan | BillingConfigSubscriptionPlan;
+}
+
+export interface CheckParams {
   session: SessionInterface;
+  plans: string[] | string;
   isTest?: boolean;
 }
 
-export interface CheckReturn {
-  hasPayment: boolean;
-  confirmBillingUrl?: string;
+export interface RequestParams {
+  session: SessionInterface;
+  plan: string;
+  isTest?: boolean;
 }
 
-export interface ActiveSubscription {
+interface ActiveSubscription {
   name: string;
   test: boolean;
 }
 
-export interface ActiveSubscriptions {
+interface ActiveSubscriptions {
   activeSubscriptions: ActiveSubscription[];
 }
 
-export interface OneTimePurchase {
+interface OneTimePurchase {
   name: string;
   test: boolean;
   status: string;
 }
 
-export interface OneTimePurchases {
+interface OneTimePurchases {
   oneTimePurchases: {
     edges: {
       node: OneTimePurchase;
@@ -47,10 +65,12 @@ export interface OneTimePurchases {
   };
 }
 
-export interface CurrentAppInstallations<T> {
+export type CurrentAppInstallation = OneTimePurchases & ActiveSubscriptions;
+
+export interface CurrentAppInstallations {
   userErrors: string[];
   data: {
-    currentAppInstallation: T;
+    currentAppInstallation: CurrentAppInstallation;
   };
 }
 
