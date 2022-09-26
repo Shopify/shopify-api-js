@@ -13,11 +13,15 @@ jobs:
       - uses: actions/stale@v5
         with:
 <<<<<<< HEAD
+<<<<<<< HEAD
           days-before-issue-stale: 60
           days-before-issue-close: 14
           operations-per-run: 1000
 =======
           days-before-issue-stale: 90
+=======
+          days-before-issue-stale: 270
+>>>>>>> fceae6d4 (change stale date to start of the year)
           days-before-issue-close: 14
 >>>>>>> 0d03c4d2 (add workflows)
           stale-issue-label: "Stale"
