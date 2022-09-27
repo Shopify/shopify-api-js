@@ -12,7 +12,7 @@ export function sanitizeShop(
   shop: string,
   throwOnInvalid = false,
 ): string | null {
-  const domainsRegex = ['myshopify\\.com', 'myshopify\\.io'];
+  const domainsRegex = ['myshopify\\.com', 'myshopify\\.io', '.*\\.spin\\.dev'];
   if (Context.CUSTOM_SHOP_DOMAINS) {
     domainsRegex.push(
       ...Context.CUSTOM_SHOP_DOMAINS.map((regex) =>

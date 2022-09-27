@@ -6,6 +6,7 @@ const VALID_SHOP_URL_1 = 'someshop.myshopify.com';
 const VALID_SHOP_URL_2 = 'devshop.myshopify.io';
 const VALID_SHOP_URL_3 = 'test-shop.myshopify.com';
 const VALID_SHOP_URL_4 = 'dev-shop-.myshopify.io';
+const VALID_SHOP_URL_5 = 'super-cool.shopify.constellation.in.spin.dev';
 
 const INVALID_SHOP_URL_1 = 'notshopify.com';
 const INVALID_SHOP_URL_2 = '-invalid.myshopify.io';
@@ -36,6 +37,7 @@ describe('sanitizeShop', () => {
     expect(sanitizeShop(VALID_SHOP_URL_2)).toEqual(VALID_SHOP_URL_2);
     expect(sanitizeShop(VALID_SHOP_URL_3)).toEqual(VALID_SHOP_URL_3);
     expect(sanitizeShop(VALID_SHOP_URL_4)).toEqual(VALID_SHOP_URL_4);
+    expect(sanitizeShop(VALID_SHOP_URL_5)).toEqual(VALID_SHOP_URL_5);
   });
 
   test('returns null for invalid URLs', () => {
