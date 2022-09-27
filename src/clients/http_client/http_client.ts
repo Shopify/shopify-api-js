@@ -108,7 +108,8 @@ export function createHttpClientClass(config: ConfigInterface) {
       };
       let body;
       if (params.method === Method.Post || params.method === Method.Put) {
-        const {type, data} = params as PostRequestParams;
+        const type = (params as PostRequestParams).type ?? DataType.JSON;
+        const data = (params as PostRequestParams).data;
         if (data) {
           switch (type) {
             case DataType.JSON:
@@ -128,7 +129,7 @@ export function createHttpClientClass(config: ConfigInterface) {
           }
           headers = {
             ...headers,
-            'Content-Type': type,
+            'Content-Type': type!,
             'Content-Length': new TextEncoder().encode(body).length,
           };
         }

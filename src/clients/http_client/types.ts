@@ -29,7 +29,6 @@ export interface GetRequestParams {
 }
 
 export type PostRequestParams = GetRequestParams & {
-  type: DataType;
   data: {[key: string]: unknown} | string;
 };
 
