@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [5.1.0] - 2022-09-19
+
 - Increased tolerance for expired JWT session tokens from 5s to 10s [#462](https://github.com/Shopify/shopify-api-node/pull/462)
 - Add support for billing to the library [#449](https://github.com/Shopify/shopify-api-node/pull/449)
 - Allow dynamically typing the body of REST and GraphQL request responses, so callers don't need to cast it [#447](https://github.com/Shopify/shopify-api-node/pull/447)
