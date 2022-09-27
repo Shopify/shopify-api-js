@@ -1,4 +1,4 @@
-# Make a GraphQL API call
+# GraphQL Admin API client
 
 Once OAuth is complete, we can use this library to interact with the Admin GraphQL API.
 To do that, create an instance of `shopify.clients.Graphql` using the current shop URL and session `accessToken` in your app's endpoint.

@@ -1,4 +1,4 @@
-# Make a REST API call
+# REST Admin API client
 
 Once OAuth is complete, we can use this library to interact with the Admin REST API.
 It can do that in two different ways:
