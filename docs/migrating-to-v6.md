@@ -15,23 +15,26 @@ This automatically sets the library up to run on the Node.js runtime.
 In addition to making the library compatible with multiple runtimes, we've also improved its public interface to make it easier for apps to load only the features they need from the library.
 Once you set up your app with the right adapter, you can follow the next sections for instructions on how to upgrade the individual methods that were changed.
 
-**Note**: the examples below are assuming your app is running using Express.js, but the library still works with different frameworks as before.
+**Note 1**: the examples below are assuming your app is running using Express.js, but the library still works with different frameworks as before.
+**Note 2**: any references to "the Node-only library" generally means version 5.x or earlier versions.
+**Note 3**: in general, method calls in v6 of the library take parameter objects instead of positional parameters. An :exclamation: symbol will highlight where these changes have occurred below, as forgetting to migrate the parameters into parameter objects can result in confusing app behaviour.
 
 ## Table of contents
 
 To make it easier to navigate this guide, here is an overview of the sections it contains:
 
-- [Renamed `Shopify.Context` to `shopify.config`](#renamed-shopifycontext-to-shopifyconfig)
-- [Passing in framework requests / responses](#passing-in-framework-requests--responses)
-- [Changes to `Session` and `SessionStorage`](#changes-to-session-and-sessionstorage)
-- [Changes to authentication functions](#changes-to-authentication-functions)
-- [Changes to API clients](#changes-to-api-clients)
-- [Billing](#billing)
-- [Utility functions](#utility-functions)
+- [1. Renamed `Shopify.Context` to `shopify.config`](#1-renamed-shopifycontext-to-shopifyconfig)
+- [2. Passing in framework requests / responses](#2-passing-in-framework-requests--responses)
+- [3. Changes to `Session` and `SessionStorage`](#3-changes-to-session-and-sessionstorage)
+- [4. Changes to authentication functions](#4-changes-to-authentication-functions)
+- [5. Changes to API clients](#5-changes-to-api-clients)
+- [6. Billing](#6-billing)
+- [7. Utility functions](#7-utility-functions)
+- [8. Changes to webhook functions](#8-changes-to-webhook-functions)
 
-## Renamed `Shopify.Context` to `shopify.config`
+## 1. Renamed `Shopify.Context` to `shopify.config`
 
-We've refactored the way objects are exported by this library, to remove the main "static" `Shopify` object with global settings stored in `Shopify.Context`.
+We've refactored the way objects are exported by this library, to remove the main "static" singleton `Shopify` object with global settings stored in `Shopify.Context`.
 
 Even though that object has no business logic, the fact that the configuration is global made it hard to mock for tests and to set up multiple instances of it.
 Part of the changes we made were to create a library object with local settings, to make it feel more idiomatic and easier to work with.
@@ -73,9 +76,9 @@ You will probably need to search and replace most of the imports to this library
 
 1. `Shopify.Context.throwIfUnitialized` and `UninitializedContextError` were removed.
 
-## Passing in framework requests / responses
+## 2. Passing in framework requests / responses
 
-In the Node-only library, apps would generally call library functions as follows:
+Using the Node-only library, apps would generally call library functions as follows:
 
 ```ts
 app.get(
@@ -109,7 +112,7 @@ async function handleFetch(request: Request): Promise<Response> {
 },
 ```
 
-## Changes to `Session` and `SessionStorage`
+## 3. Changes to `Session` and `SessionStorage`
 
 1. `SessionStorage` is no longer an interface, but an abstract class. If you're using your own implementation of the interface, you need to replace `implements SessionStorage` with `extends SessionStorage`.
    <div>Before
@@ -162,7 +165,7 @@ async function handleFetch(request: Request): Promise<Response> {
    const clone = Session.cloneSession(session, 'newId');
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    import {Session} from '@shopify/shopify-api';
@@ -178,7 +181,7 @@ async function handleFetch(request: Request): Promise<Response> {
 
    </div>
 
-## Changes to authentication functions
+## 4. Changes to authentication functions
 
 The OAuth methods still behave the same way, but we've updated their signatures to make it easier to work with them. See the [updated OAuth instructions](./usage/oauth.md) for a complete example.
 
@@ -197,7 +200,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
    res.redirect(redirectUri);
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    // Library handles redirecting
@@ -225,7 +228,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
    res.redirect('url');
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const callbackResponse = shopify.auth.callback({
@@ -243,7 +246,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 
 1. There is a new `shopify.session` object which contains session-specific functions. See the [Utility functions](#utility-functions) section for the specific changes.
 
-## Changes to API clients
+## 5. Changes to API clients
 
 The API clients this package provides now take an object of arguments, rather than positional ones. The returned objects behave the same way they did before, so you'll only need to update the constructor calls.
 
@@ -258,7 +261,7 @@ The API clients this package provides now take an object of arguments, rather th
    );
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const restClient = new shopify.clients.Rest({
@@ -280,7 +283,7 @@ The API clients this package provides now take an object of arguments, rather th
    );
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const graphqlClient = new shopify.clients.Graphql({
@@ -302,7 +305,7 @@ The API clients this package provides now take an object of arguments, rather th
    );
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const storefrontClient = new shopify.clients.Storefront({
@@ -337,7 +340,7 @@ catch (err) {
 
 </div>
 
-## Billing
+## 6. Billing
 
 The billing functionality hasn't changed, but the main difference is that the library now provides separate methods for checking and requesting payment, which gives apps more freedom to implement their billing logic.
 
@@ -412,7 +415,7 @@ Note that when calling `check`, apps can pass in one or more plans, and it will 
 
 </div>
 
-## Utility functions
+## 7. Utility functions
 
 The previous `Shopify.Utils` object contained functions that relied on the global configuration object, but those have been refactored to use the instance-specific configuration.
 We also felt that the `Utils` object had some functions that belong to other parts of the library, so some of these functions have been moved to other sub-objects - keep an eye out for those changes in the list below!
@@ -445,7 +448,7 @@ Here are all the specific changes that we made to the `Utils` object:
    const redirectUrl = Shopify.Utils.getEmbeddedAppUrl(req, res);
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const nonce = shopify.auth.nonce();
@@ -502,7 +505,7 @@ Here are all the specific changes that we made to the `Utils` object:
    const session = await Shopify.Utils.loadCurrentSession(req, res);
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const session = await shopify.session.getCurrent({
@@ -521,7 +524,7 @@ Here are all the specific changes that we made to the `Utils` object:
    const session = await Shopify.Utils.deleteCurrentSession(req, res);
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const session = await shopify.session.deleteCurrent({
@@ -543,7 +546,7 @@ Here are all the specific changes that we made to the `Utils` object:
    );
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const session = await shopify.session.getOffline({
@@ -563,7 +566,7 @@ Here are all the specific changes that we made to the `Utils` object:
    );
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const success = await shopify.session.deleteOffline({
@@ -608,7 +611,7 @@ Here are all the specific changes that we made to the `Utils` object:
    const response = await Shopify.Utils.graphqlProxy(req, res);
    ```
 
-   </div><div>After
+   </div><div>:exclamation: After
 
    ```ts
    const response = await shopify.clients.graphqlProxy({
@@ -619,3 +622,8 @@ Here are all the specific changes that we made to the `Utils` object:
    ```
 
    </div>
+
+## 8. Changes to webhook functions
+
+1. 
+
