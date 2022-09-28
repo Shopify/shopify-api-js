@@ -25,6 +25,7 @@ To make it easier to navigate this guide, here is an overview of the sections it
 - [Passing in framework requests / responses](#passing-in-framework-requests--responses)
 - [Changes to `Session` and `SessionStorage`](#changes-to-session-and-sessionstorage)
 - [Changes to authentication functions](#changes-to-authentication-functions)
+- [Changes to API clients](#changes-to-api-clients)
 - [Billing](#billing)
 - [Utility functions](#utility-functions)
 
@@ -241,6 +242,76 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 1. The `shopify.auth` component only exports the key functions now to make the API simpler, so `getCookieSessionId`, `getJwtSessionId`, `getOfflineSessionId`, `getCurrentSessionId` are no longer exported. They're internal library functions.
 
 1. There is a new `shopify.session` object which contains session-specific functions. See the [Utility functions](#utility-functions) section for the specific changes.
+
+## Changes to API clients
+
+The API clients this package provides now take an object of arguments, rather than positional ones. The returned objects behave the same way they did before, so you'll only need to update the contructor calls.
+
+1. REST Admin API client:
+
+   <div>Before
+
+   ```ts
+   const restClient = new Shopify.Clients.Rest(
+     session.shop,
+     session.accessToken,
+   );
+   ```
+
+   </div><div>After
+
+   ```ts
+   const restClient = new shopify.clients.Rest({
+     domain: session.shop,
+     accessToken: session.accessToken,
+   });
+   ```
+
+   </div>
+
+1. GraphQL Admin API client:
+
+   <div>Before
+
+   ```ts
+   const graphqlClient = new Shopify.Clients.Graphql(
+     session.shop,
+     session.accessToken,
+   );
+   ```
+
+   </div><div>After
+
+   ```ts
+   const graphqlClient = new shopify.clients.Graphql({
+     domain: session.shop,
+     accessToken: session.accessToken,
+   });
+   ```
+
+   </div>
+
+1. Storefront API client:
+
+   <div>Before
+
+   ```ts
+   const storefrontClient = new Shopify.Clients.Storefront(
+     session.shop,
+     storefrontAccessToken,
+   );
+   ```
+
+   </div><div>After
+
+   ```ts
+   const storefrontClient = new shopify.clients.Storefront({
+     domain: session.shop,
+     accessToken: storefrontAccessToken,
+   });
+   ```
+
+   </div>
 
 ## Billing
 
