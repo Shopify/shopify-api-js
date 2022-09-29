@@ -17,6 +17,17 @@ Once you set up your app with the right adapter, you can follow the next section
 
 **Note**: the examples below are assuming your app is running using Express.js, but the library still works with different frameworks as before.
 
+## Table of contents
+
+To make it easier to navigate this guide, here is an overview of the sections it contains:
+
+- [Renamed `Shopify.Context` to `shopify.config`](#renamed-shopifycontext-to-shopifyconfig)
+- [Passing in framework requests / responses](#passing-in-framework-requests--responses)
+- [Changes to `Session` and `SessionStorage`](#changes-to-session-and-sessionstorage)
+- [Changes to authentication functions](#changes-to-authentication-functions)
+- [Billing](#billing)
+- [Utility functions](#utility-functions)
+
 ## Renamed `Shopify.Context` to `shopify.config`
 
 We've refactored the way objects are exported by this library, to remove the main "static" `Shopify` object with global settings stored in `Shopify.Context`.
@@ -230,6 +241,81 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 1. The `shopify.auth` component only exports the key functions now to make the API simpler, so `getCookieSessionId`, `getJwtSessionId`, `getOfflineSessionId`, `getCurrentSessionId` are no longer exported. They're internal library functions.
 
 1. There is a new `shopify.session` object which contains session-specific functions. See the [Utility functions](#utility-functions) section for the specific changes.
+
+## Billing
+
+The billing functionality hasn't changed, but the main difference is that the library now provides separate methods for checking and requesting payment, which gives apps more freedom to implement their billing logic.
+
+To configure billing, you can now pass in more than one billing plan, and they're indexed by plan name:
+
+<div>Before
+
+```ts
+Shopify.Context.initialize({
+  // ...
+  billing: {
+    chargeName: 'My plan',
+    amount: 5.0,
+    currencyCode: 'USD',
+    interval: BillingInterval.Every30Days,
+  },
+});
+```
+
+</div><div>After
+
+```ts
+const shopify = shopifyApi({
+  // ...
+  billing: {
+    'My plan': {
+      amount: 5.0,
+      currencyCode: 'USD',
+      interval: BillingInterval.Every30Days,
+    },
+  },
+});
+```
+
+</div>
+
+We broke the `Shopify.Billing.check` method up into `shopify.billing.check` and `shopify.billing.request`, as mentioned above:
+
+<div>Before
+
+```ts
+const {hasPayment, confirmBillingUrl} = await Shopify.Billing.check({
+  session,
+  isTest: true,
+});
+
+if (!hasPayment) {
+  return redirect(confirmBillingUrl);
+}
+```
+
+</div><div>After
+
+```ts
+const hasPayment = await shopify.billing.check({
+  session,
+  plans: 'My plan',
+  isTest: true,
+});
+
+if (!hasPayment) {
+  const confirmationUrl = await shopify.billing.request({
+    session,
+    plan: 'My plan',
+    isTest: true,
+  });
+  return redirect(confirmationUrl);
+}
+```
+
+Note that when calling `check`, apps can pass in one or more plans, and it will return true if any of them match. The `request` method creates a charge using the configuration of the given plan name.
+
+</div>
 
 ## Utility functions
 
