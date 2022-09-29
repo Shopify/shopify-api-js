@@ -8,7 +8,7 @@ This library provides support for billing apps by:
 1. Checking if the store has already paid for the app
 1. Triggering a charge for the merchant if not
 
-**Note**: this package uses the Admin GraphQL API to look for / request payment, which means an app must go through OAuth before it can charge merchants.
+**Note**: this package uses the GraphQL Admin API to look for / request payment, which means an app must go through OAuth before it can charge merchants.
 
 Learn more about [how billing works](https://shopify.dev/apps/billing).
 
@@ -24,6 +24,10 @@ import {
 } from '@shopify/shopify-api';
 
 const shopify = shopifyApi({
+  apiKey: ...,
+  apiSecretKey: ...,
+  :
+  :
   billing: {
     'My billing plan': {
       amount: 1,
@@ -42,8 +46,8 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 | `amount`              | `number`                     |    Yes    |       -       | The amount to charge                                                                                                                                                                           |
 | `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                                                     |
 | `interval`            | `BillingInterval`            |    Yes    |       -       | `BillingInterval` value                                                                                                                                                                        |
-| `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging. Not available for `OneTime` plans                                                                                                               |
-| `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/api/admin-graphql/2022-07/mutations/appSubscriptionCreate) for more information. Not available for `OneTime` plans |
+| `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging. _Not available for `OneTime` plans_                                                                                                             |
+| `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/api/admin-graphql/2022-07/mutations/appSubscriptionCreate) for more information. _Not available for `OneTime` plans_ |
 
 ## Checking for payment
 
@@ -76,7 +80,7 @@ function billingMiddleware(req, res, next) {
 app.use('/requires-payment/*', billingMiddleware);
 ```
 
-**Note**: this method will always query Shopify's API because merchants can cancel subscriptions at any point. Depending on the number of requests your app handles, you might want to cache a merchant's payment status, but you should make sure to periodically call this method to ensure you're blocking unpaid access.
+**Note**: the `check` method will always query Shopify's API because merchants can cancel subscriptions at any point. Depending on the number of requests your app handles, you might want to cache a merchant's payment status, but you should periodically call this method to ensure you're blocking unpaid access.
 
 The `check` method accepts the following parameters:
 
@@ -103,7 +107,7 @@ app.get('/auth/callback', async () => {
     rawResponse: res,
   });
 
-  // Check if we require payment
+  // Check if we require payment ... see example above
 
   const confirmationUrl = await shopify.billing.request({
     session: callback.session,
