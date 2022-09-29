@@ -313,7 +313,7 @@ if (!hasPayment) {
 }
 ```
 
-Note that when calling `check`, apps can pass in one or more plans, and it will return true if any of them match. The `request` method creates a charge using the given plan's configs.
+Note that when calling `check`, apps can pass in one or more plans, and it will return true if any of them match. The `request` method creates a charge using the configuration of the given plan name.
 
 </div>
 

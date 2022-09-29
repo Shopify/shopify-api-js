@@ -6,7 +6,7 @@ The Admin API provides endpoints that enable apps to trigger purchases in the Sh
 This library provides support for billing apps by:
 
 1. Checking if the store has already paid for the app
-1. Triggering a charge for the merchant if not
+1. Triggering a charge for the merchant if the store has not paid
 
 **Note**: this package uses the GraphQL Admin API to look for / request payment, which means an app must go through OAuth before it can charge merchants.
 
@@ -151,7 +151,7 @@ The `request` method accepts the following parameters:
 
 It will return a `string` containing a URL - we don't redirect right away to make it possible for apps to run their own code after it creates the payment request.
 
-The app must redirect the merchant to this URL so that they can confirm the charge before Shopify applies it.
+The app **must** redirect the merchant to this URL so that they can confirm the charge before Shopify applies it.
 The merchant will be sent back to your app's main page after the process is complete.
 
 ## When should the app check for payment?
