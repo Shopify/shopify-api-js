@@ -313,6 +313,30 @@ The API clients this package provides now take an object of arguments, rather th
 
    </div>
 
+The `HttpResponseError`, `HttpRetriableError`, `HttpInternalError`, and `HttpThrottlingError` classes were updated to include more information on the errors.
+
+<div>Before
+
+```ts
+catch (err) {
+  if (err instanceof HttpResponseError) {
+    console.log(err.code, err.statusText);
+  }
+}
+```
+
+</div><div>After
+
+```ts
+catch (err) {
+  if (err instanceof HttpResponseError) {
+    console.log(err.response.code, err.response.statusText, err.response);
+  }
+}
+```
+
+</div>
+
 ## Billing
 
 The billing functionality hasn't changed, but the main difference is that the library now provides separate methods for checking and requesting payment, which gives apps more freedom to implement their billing logic.
