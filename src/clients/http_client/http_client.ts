@@ -36,7 +36,10 @@ interface HttpClientParams {
   domain: string;
 }
 
-export function createHttpClientClass(config: ConfigInterface) {
+export function createHttpClientClass(
+  config: ConfigInterface,
+  scheme = 'https',
+) {
   return class HttpClient {
     // 1 second
     static readonly RETRY_WAIT_TIME = 1000;
@@ -134,7 +137,7 @@ export function createHttpClientClass(config: ConfigInterface) {
         }
       }
 
-      const url = `https://${this.domain}${this.getRequestPath(
+      const url = `${scheme}://${this.domain}${this.getRequestPath(
         params.path,
       )}${ProcessedQuery.stringify(params.query)}`;
       const request: NormalizedRequest = {

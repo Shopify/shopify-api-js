@@ -3,7 +3,7 @@ import {Method} from '@shopify/network';
 import {Headers} from '../../runtime/http';
 
 export interface HeaderParams {
-  [key: string]: string | number;
+  [key: string]: string | number | string[];
 }
 
 export enum DataType {
