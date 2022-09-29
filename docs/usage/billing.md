@@ -41,12 +41,12 @@ const shopify = shopifyApi({
 
 This setting is a collection of billing plans. Each billing plan allows the following properties:
 
-| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                                                          |
-| --------------------- | ---------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `amount`              | `number`                     |    Yes    |       -       | The amount to charge                                                                                                                                                                           |
-| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                                                     |
-| `interval`            | `BillingInterval`            |    Yes    |       -       | `BillingInterval` value                                                                                                                                                                        |
-| `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging. _Not available for `OneTime` plans_                                                                                                             |
+| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                                                            |
+| --------------------- | ---------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `amount`              | `number`                     |    Yes    |       -       | The amount to charge                                                                                                                                                                             |
+| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                                                       |
+| `interval`            | `BillingInterval`            |    Yes    |       -       | `BillingInterval` value                                                                                                                                                                          |
+| `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging. _Not available for `OneTime` plans_                                                                                                               |
 | `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/api/admin-graphql/2022-07/mutations/appSubscriptionCreate) for more information. _Not available for `OneTime` plans_ |
 
 ## Checking for payment
@@ -56,7 +56,8 @@ Once the app has an access token, you can call `shopify.billing.check` to look f
 Here's a typical example of how apps might do that:
 
 ```ts
-// This can happen at any point after the merchant goes through the OAuth process
+// This can happen at any point after the merchant goes through the OAuth process, as long as there is a session object
+// The session can come from either shopify.session.getCurrent or shopify.session.getOffline
 function billingMiddleware(req, res, next) {
   const session = shopify.session.getCurrent({
     isOnline: true,
