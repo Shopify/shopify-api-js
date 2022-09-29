@@ -1,12 +1,13 @@
-import {createServer, IncomingMessage, ServerResponse} from 'http';
-
-import '../node';
-import {Headers} from '../../runtime/http';
-import {DataType} from '../../clients/http_client/types';
-import {createHttpClientClass} from '../../clients/http_client/http_client';
-
-import {config, matchHeaders} from './utils';
-import {TestResponse, TestConfig, TestRequest} from './test_config_types';
+import '../../cf-worker';
+import {Headers} from '../../../runtime/http';
+import {
+  DataType,
+  PutRequestParams,
+  PostRequestParams,
+} from '../../../clients/http_client/types';
+import {createHttpClientClass} from '../../../clients/http_client/http_client';
+import {config, matchHeaders} from '../utils';
+import {TestResponse, TestConfig, TestRequest} from '../test_config_types';
 
 /* Codes for different Colours */
 const RED = '\x1b[31m';
@@ -15,42 +16,51 @@ const RESET = '\x1b[39m';
 
 const HttpClient = createHttpClientClass(config, 'http');
 
-/* eslint-disable no-process-env */
-const apiServerPort: number = parseInt(
-  process.env.HTTP_SERVER_PORT || '3000',
-  10,
-);
-const appPort: number = parseInt(process.env.PORT || '8787', 10);
-/* eslint-enable no-process-env */
-const apiServer = `localhost:${apiServerPort}`;
-const client = new HttpClient({domain: apiServer});
 const defaultRetryTimer = HttpClient.RETRY_WAIT_TIME;
 let testCount = 0;
 
-const server = createServer(
-  async (request: IncomingMessage, appResponse: ServerResponse) => {
-    if (request.method === 'POST') {
-      const testConfig: TestConfig =
-        await getJSONDataFromRequestStream<TestConfig>(request);
+function params(
+  testRequest: TestRequest,
+): PutRequestParams | PostRequestParams {
+  return {
+    path: testRequest.url,
+    type: testRequest.bodyType as DataType,
+    data: JSON.stringify(testRequest.body),
+  };
+}
+
+function setRestClientRetryTime(time: number) {
+  // We de-type HttpClient here so we can alter its readonly time property
+  (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
+}
+
+/* eslint-disable-next-line import/no-anonymous-default-export */
+export default {
+  async fetch(req: any, _env: any, _ctx: any) {
+    const apiServerPort: number = parseInt(
+      (globalThis as any).HTTP_SERVER_PORT || '3000',
+      10,
+    );
+    const client = new HttpClient({
+      domain: `localhost:${apiServerPort}`,
+    });
+
+    if (req.method === 'POST') {
+      const testConfig: TestConfig = await req.json();
       const testRequest: TestRequest = testConfig.testRequest;
       const expectedResponse: TestResponse = testConfig.expectedResponse;
       const tries = testRequest.tries || 1;
-      const params = {
-        path: testRequest.url,
-        type: testRequest.bodyType as DataType,
-        data: JSON.stringify(testRequest.body),
-      };
       let testPassed = false;
       let timedOut = false;
+      let retryTimeout;
       let testFailedDebug = '';
       let response;
-      let retryTimeout;
 
       setRestClientRetryTime(defaultRetryTimer);
 
       testCount++;
       console.log(
-        `[node] testRequest #${testCount} = ${JSON.stringify(
+        `[cfWorker] testRequest #${testCount} = ${JSON.stringify(
           testRequest,
           undefined,
           2,
@@ -60,13 +70,13 @@ const server = createServer(
       if (typeof testRequest.retryTimeoutTimer !== 'undefined') {
         setRestClientRetryTime(testRequest.retryTimeoutTimer);
         console.log(
-          `[node] RETRY_TIME_WAIT (BEFORE) = ${HttpClient.RETRY_WAIT_TIME} ms\n\n`,
+          `[cfWorker] RETRY_TIME_WAIT (BEFORE) = ${HttpClient.RETRY_WAIT_TIME}\n`,
         );
-
         if (testRequest.retryTimeoutTimer !== 0) {
           console.log(
-            `[node] setting setTimeout @ ${HttpClient.RETRY_WAIT_TIME} ms\n`,
+            `[cfWorker] setting setTimeout @ ${HttpClient.RETRY_WAIT_TIME} ms\n`,
           );
+
           retryTimeout = setTimeout(() => {
             try {
               throw new Error(
@@ -74,7 +84,7 @@ const server = createServer(
               );
             } catch (error) {
               console.log(
-                `[node] ${RED}setTimeout fired!${RESET} @ ${HttpClient.RETRY_WAIT_TIME}\n`,
+                `[cfWorker] ${RED}setTimeout fired!${RESET} @ ${HttpClient.RETRY_WAIT_TIME}\n`,
               );
               testFailedDebug = JSON.stringify({
                 errorMessageReceived: error.message,
@@ -95,7 +105,7 @@ const server = createServer(
             });
             if (timedOut) {
               console.log(
-                `[node] timedOut=${timedOut}, testPassed=${testPassed}, testFailedDebug=${testFailedDebug}\n`,
+                `[cfWorker] timedOut=${timedOut}, testPassed=${testPassed}, testFailedDebug=${testFailedDebug}\n`,
               );
             } else {
               testPassed =
@@ -146,12 +156,12 @@ const server = createServer(
           }
           break;
         case 'post':
-          response = await client.post(params);
+          response = await client.post(params(testRequest));
           testPassed = JSON.stringify(response.body) === expectedResponse.body;
           break;
 
         case 'put':
-          response = await client.put(params);
+          response = await client.put(params(testRequest));
           testPassed = JSON.stringify(response.body) === expectedResponse.body;
           break;
 
@@ -173,7 +183,7 @@ const server = createServer(
       }
 
       console.log(
-        `[node] test #${testCount} passed=${
+        `[cfWorker] test #${testCount} passed=${
           testPassed ? GREEN : RED
         }${testPassed}${RESET}, debug=${JSON.stringify(
           testFailedDebug,
@@ -183,44 +193,17 @@ const server = createServer(
       );
 
       if (testPassed) {
-        appResponse.statusCode = 200;
-        appResponse.end('Test passed!');
+        return new Response('Test passed!', {status: 200});
       } else {
-        appResponse.statusCode = 500;
-        appResponse.setHeader('Content-Type', 'application/json');
-        appResponse.end(testFailedDebug);
+        return new Response(testFailedDebug, {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
       }
     } else {
-      appResponse.statusCode = 200;
-      appResponse.end('Ready!');
+      return new Response('Ready!', {status: 200});
     }
   },
-);
-
-function getJSONDataFromRequestStream<T>(request: IncomingMessage): Promise<T> {
-  return new Promise((resolve) => {
-    const chunks: any = [];
-    request.on('data', (chunk) => {
-      chunks.push(chunk);
-    });
-    request.on('end', () => {
-      resolve(JSON.parse(Buffer.concat(chunks).toString()));
-    });
-  });
-}
-
-function handle(_signal: any): void {
-  process.exit(0);
-}
-
-function setRestClientRetryTime(time: number) {
-  // We de-type HttpClient here so we can alter its readonly time property
-  (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
-}
-
-process.on('SIGINT', handle);
-process.on('SIGTERM', handle);
-
-server.listen(appPort, () => {
-  console.log(`Listening on :${appPort}`);
-});
+};

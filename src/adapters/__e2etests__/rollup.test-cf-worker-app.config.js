@@ -4,7 +4,7 @@ import cjs from '@rollup/plugin-commonjs';
 
 /* eslint-disable-next-line import/no-anonymous-default-export */
 export default {
-  input: 'dist/adapters/__e2etests__/test-cf-worker-app.js',
+  input: 'dist/adapters/__e2etests__/test_apps/test-cf-worker-app.js',
   output: {
     dir: 'bundle',
     format: 'esm',

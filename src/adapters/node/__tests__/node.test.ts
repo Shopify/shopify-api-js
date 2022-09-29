@@ -14,7 +14,7 @@ const nodeEnvironment: E2eTestEnvironment = {
   dummyServerPort,
   process: spawn(
     'yarn',
-    ['node', 'dist/adapters/__e2etests__/test-node-app.js'],
+    ['node', 'dist/adapters/__e2etests__/test_apps/test-node-app.js'],
     {
       env: {
         ...process.env, // eslint-disable-line no-process-env

@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-import {E2eTestEnvironment} from './types';
+import {E2eTestEnvironment} from './test_config_types';
 
 function sleep(ms: number) {
   return new Promise((resolve) => {

@@ -2,12 +2,11 @@ import {spawn} from 'child_process';
 
 import fetch from 'node-fetch';
 
-import {TestConfig} from './test_config_types';
+import {TestConfig, E2eTestEnvironment} from './test_config_types';
 import {runEnvironments, shutdownEnvironments} from './test_environments';
 import {testSuite} from './test_suite';
-import {E2eTestEnvironment} from './types';
 
-export {E2eTestEnvironment} from './types';
+export {E2eTestEnvironment} from './test_config_types';
 
 export function runTests(env: E2eTestEnvironment) {
   const dummyShopifyServerEnvironment = {
@@ -16,7 +15,10 @@ export function runTests(env: E2eTestEnvironment) {
     dummyServerPort: 'not actually used',
     process: spawn(
       'yarn',
-      ['node', 'dist/adapters/__e2etests__/http_server.js'],
+      [
+        'node',
+        'dist/adapters/__e2etests__/test_apps/test-dummy-shopify-server.js',
+      ],
       {
         env: {
           ...process.env, // eslint-disable-line no-process-env

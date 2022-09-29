@@ -5,10 +5,9 @@ import {
   Headers,
   NormalizedRequest,
   NormalizedResponse,
-} from '../../runtime/http';
-
-import {initTestRequest, initTestResponse} from './test_config_types';
-import {matchHeaders} from './utils';
+} from '../../../runtime/http';
+import {initTestRequest, initTestResponse} from '../test_config_types';
+import {matchHeaders} from '../utils';
 
 interface Test {
   expectedRequest: NormalizedRequest;

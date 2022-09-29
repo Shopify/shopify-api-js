@@ -1,3 +1,5 @@
+import {ChildProcess} from 'child_process';
+
 import {NormalizedRequest, NormalizedResponse} from '../../runtime/http';
 import {DataType} from '../../clients/http_client/types';
 
@@ -44,4 +46,13 @@ export function initTestResponse(
     ...defaults,
     ...options,
   };
+}
+
+export interface E2eTestEnvironment {
+  name: string;
+  domain: string;
+  dummyServerPort: string;
+  process: ChildProcess;
+  testable: boolean;
+  ready: boolean;
 }
