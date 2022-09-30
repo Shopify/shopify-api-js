@@ -20,7 +20,6 @@ import {HashFormat} from '../runtime/crypto/types';
 
 import {
   AddHandlerParams,
-  AddHandlersProps,
   BuildCheckQueryParams,
   BuildQueryParams,
   DeliveryMethod,
@@ -159,12 +158,8 @@ export function addHttpHandler(params: AddHandlerParams) {
   webhookRegistry[topicForStorage(topic)] = handler;
 }
 
-export function addHttpHandlers(handlers: AddHandlersProps): void {
-  Object.entries(handlers).forEach(
-    ([topic, handler]: [string, WebhookHandlerFunction]) => {
-      addHttpHandler({topic, handler});
-    },
-  );
+export function addHttpHandlers(handlers: AddHandlerParams[]): void {
+  handlers.forEach((handlerParam) => addHttpHandler(handlerParam));
 }
 
 export function getHttpHandler(topic: string): WebhookHandlerFunction | null {

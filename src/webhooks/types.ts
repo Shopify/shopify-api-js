@@ -73,10 +73,6 @@ export interface BuildQueryParams {
   webhookId?: string;
 }
 
-export interface AddHandlersProps {
-  [topic: string]: WebhookHandlerFunction;
-}
-
 export interface AddHandlerParams {
   topic: string;
   handler: WebhookHandlerFunction;

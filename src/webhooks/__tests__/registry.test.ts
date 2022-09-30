@@ -531,8 +531,6 @@ describe('shopify.webhooks.addHttpHandler', () => {
       handler: genericWebhookHandler,
     });
     expect(Object.keys(webhookRegistry)).toHaveLength(1);
-
-    // expect(webhookRegistry.PRODUCTS.path).toBe('/webhookspath');
   });
 
   it('adds handler with lowercase/slash format to the webhook registry', async () => {
@@ -551,10 +549,10 @@ describe('shopify.webhooks.addHttpHandlers', () => {
   });
 
   it('adds two unique handlers to the webhook registry', async () => {
-    await shopify.webhooks.addHttpHandlers({
-      PRODUCTS_CREATE: genericWebhookHandler,
-      PRODUCTS: genericWebhookHandler,
-    });
+    await shopify.webhooks.addHttpHandlers([
+      {topic: 'PRODUCTS_CREATE', handler: genericWebhookHandler},
+      {topic: 'PRODUCTS', handler: genericWebhookHandler},
+    ]);
     expect(Object.keys(webhookRegistry)).toHaveLength(2);
     expect(Object.keys(webhookRegistry)).toEqual([
       'PRODUCTS_CREATE',
@@ -567,22 +565,21 @@ describe('shopify.webhooks.addHttpHandlers', () => {
       topic: 'PRODUCTS',
       handler: genericWebhookHandler,
     });
-    await shopify.webhooks.addHttpHandlers({
-      PRODUCTS_CREATE: genericWebhookHandler,
-      PRODUCTS: genericWebhookHandler,
-    });
+    await shopify.webhooks.addHttpHandlers([
+      {topic: 'PRODUCTS_CREATE', handler: genericWebhookHandler},
+      {topic: 'PRODUCTS', handler: genericWebhookHandler},
+    ]);
     expect(Object.keys(webhookRegistry)).toHaveLength(2);
     expect(Object.keys(webhookRegistry).sort()).toEqual(
       ['PRODUCTS_CREATE', 'PRODUCTS'].sort(),
     );
-    // expect(webhookRegistry.PRODUCTS.path).toBe('/newerpath');
   });
 
   it('adds handlers with lowercase/slash format to the webhook registry', async () => {
-    await shopify.webhooks.addHttpHandlers({
-      'products/create': genericWebhookHandler,
-      'products/delete': genericWebhookHandler,
-    });
+    await shopify.webhooks.addHttpHandlers([
+      {topic: 'products/create', handler: genericWebhookHandler},
+      {topic: 'products/delete', handler: genericWebhookHandler},
+    ]);
     expect(Object.keys(webhookRegistry)).toHaveLength(2);
     expect(Object.keys(webhookRegistry)).toEqual([
       'PRODUCTS_CREATE',

@@ -663,7 +663,7 @@ Here are all the specific changes that we made to the `Utils` object:
    </div>
 
 
-1. `Shopify.Webhooks.Registry.addHandlers` is now `shopify.webhooks.addHttpHandlers`, and no longer takes a `path` per registery entry for each topic/handler.
+1. `Shopify.Webhooks.Registry.addHandlers` is now `shopify.webhooks.addHttpHandlers`, and now takes an array of `addHttpHandler` params.
    <div>Before
 
    ```ts
@@ -681,10 +681,10 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>After
 
    ```ts
-   shopify.webhooks.addHttpHandlers({
-     PRODUCTS_CREATE: productCreateWebhookHandler,
-     PRODUCTS_DELETE: productDeleteWebhookHandler,
-   });
+   shopify.webhooks.addHttpHandlers([
+     {topic: 'PRODUCTS_CREATE', handler: productCreateWebhookHandler},
+     {topic: 'PRODUCTS_DELETE', handler: productDeleteWebhookHandler},
+   ]);
    ```
 
    </div>
@@ -715,7 +715,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-1. `Shopify.Webhooks.Registry.registerAll` is now `shopify.webhooks.registerAllHttp`, and now accepts a `path` in its parameter object with which to register all topics handlers added to the registry.
+1. `Shopify.Webhooks.Registry.registerAll` is now `shopify.webhooks.registerAllHttp`, and now accepts a `path` in its parameter object with which to register all topic handlers added to the registry.
    <div>Before
 
    ```ts
@@ -737,7 +737,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-1. `Shopify.Webhooks.Registry.isWebhookPath` is no longer available.
+1. `Shopify.Webhooks.Registry.isWebhookPath` has been deprecated.
 
 1. `Shopify.Webhooks.Registry.process` is now `shopify.webhooks.process`, and it takes the body as an argument instead of parsing it from the request. This will make it easier for apps to use a body parser with this function.
    <div>Before
@@ -822,10 +822,10 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>After
 
    ```ts
-   shopify.webhooks.addHttpHandlers({
-     PRODUCTS_CREATE: productCreateWebhookHandler,
-     PRODUCTS_DELETE: productDeleteWebhookHandler,
-   });
+   shopify.webhooks.addHttpHandlers([
+     {topic: 'PRODUCTS_CREATE', handler: productCreateWebhookHandler},
+     {topic: 'PRODUCTS_DELETE', handler: productDeleteWebhookHandler},
+   ]);
 
    const topics = shopify.webhooks.getTopics();
    // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
