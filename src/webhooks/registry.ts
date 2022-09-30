@@ -3,7 +3,6 @@ import {StatusCode} from '@shopify/network';
 import {
   abstractConvertRequest,
   abstractConvertResponse,
-  AdapterArgs,
   AdapterResponse,
   getHeader,
   Headers,
@@ -27,6 +26,7 @@ import {
   RegisterReturn,
   WebhookCheckResponse,
   WebhookHandlerFunction,
+  WebhookProcessParams,
   ShortenedRegisterParams,
 } from './types';
 
@@ -279,10 +279,6 @@ export function createRegisterAllHttp(config: ConfigInterface) {
     return registerReturn;
   };
 }
-export interface WebhookProcessParams extends AdapterArgs {
-  rawBody: string;
-}
-
 const statusTextLookup: {[key: string]: string} = {
   [StatusCode.Ok]: 'OK',
   [StatusCode.BadRequest]: 'Bad Request',

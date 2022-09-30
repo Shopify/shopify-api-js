@@ -1,3 +1,5 @@
+import {AdapterArgs} from '../runtime';
+
 import type {shopifyWebhooks} from '.';
 
 export enum DeliveryMethod {
@@ -76,6 +78,10 @@ export interface BuildQueryParams {
 export interface AddHandlerParams {
   topic: string;
   handler: WebhookHandlerFunction;
+}
+
+export interface WebhookProcessParams extends AdapterArgs {
+  rawBody: string;
 }
 
 export type ShopifyWebhooks = ReturnType<typeof shopifyWebhooks>;
