@@ -570,6 +570,17 @@ describe('shopify.webhooks.addHandler', () => {
 
     expect(webhookRegistry.PRODUCTS.path).toBe('/webhookspath');
   });
+
+  it('adds handler with lowercase/slash format to the webhook registry', async () => {
+    await shopify.webhooks.addHandler({
+      topic: 'products/create',
+      ...genericRegistryEntry,
+    });
+    expect(Object.keys(webhookRegistry)).toHaveLength(1);
+    expect(Object.keys(webhookRegistry)).toEqual([
+      'PRODUCTS_CREATE',
+    ]);
+  });
 });
 
 describe('shopify.webhooks.addHandlers', () => {
@@ -610,6 +621,21 @@ describe('shopify.webhooks.addHandlers', () => {
     );
     expect(webhookRegistry.PRODUCTS.path).toBe('/newerpath');
   });
+
+  it('adds handlers with lowercase/slash format to the webhook registry', async () => {
+    await shopify.webhooks.addHandlers({
+      ['products/create']: {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
+      ['products/delete']: {path: '/webhooks', webhookHandler: genericWebhookHandler},
+    });
+    expect(Object.keys(webhookRegistry)).toHaveLength(2);
+    expect(Object.keys(webhookRegistry)).toEqual([
+      'PRODUCTS_CREATE',
+      'PRODUCTS_DELETE',
+    ]);
+  });
 });
 
 describe('shopify.webhooks.getHandler', () => {
@@ -627,6 +653,28 @@ describe('shopify.webhooks.getHandler', () => {
       ...genericRegistryEntry,
     });
     expect(shopify.webhooks.getHandler('PRODUCTS')).toStrictEqual({
+      path: '/webhooks',
+      webhookHandler: genericWebhookHandler,
+    });
+  });
+
+  it('gets a handler using lowercase and slash format', async () => {
+    shopify.webhooks.addHandler({
+      topic: 'PRODUCTS_CREATE',
+      ...genericRegistryEntry,
+    });
+    expect(shopify.webhooks.getHandler('products/create')).toStrictEqual({
+      path: '/webhooks',
+      webhookHandler: genericWebhookHandler,
+    });
+  });
+
+  it('gets a handler registered using lowercase and slash format using uppercase format', async () => {
+    shopify.webhooks.addHandler({
+      topic: 'products/create',
+      ...genericRegistryEntry,
+    });
+    expect(shopify.webhooks.getHandler('PRODUCTS_CREATE')).toStrictEqual({
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });
