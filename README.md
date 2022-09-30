@@ -128,7 +128,7 @@ These are all the configuration values `shopifyApi` supports.
 - [REST Admin API client](docs/usage/rest.md)
   - [Using REST resources](docs/usage/rest.md#using-rest-resources)
 - [GraphQL Admin API client](docs/usage/graphql.md)
-- [Storefront API client](docs/usage/storefront.md)
+- [GraphqL Storefront API client](docs/usage/storefront.md)
 - [Webhooks](docs/usage/webhooks.md)
   - [Register a Webhook](docs/usage/webhooks.md#register-a-webhook)
   - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
