@@ -48,7 +48,7 @@ When a shop triggers an event you subscribed to, the `process` method [below](#w
 | `shop`               | `string` | The shop for which the webhook was triggered.    |
 | `webhookRequestBody` | `string` | The payload of the POST request made by Shopify. |
 
-**Note**: You only need to add handlers for webhooks delivered to your app via HTTPS. [Learn more about webhook configuration](https://shopify.dev/apps/webhooks/configuration).
+**Note**: You only need to add handlers for webhooks delivered to your app via HTTPS. For webhooks delivered to Amazon EventBridge or Google Cloud Pub/Sub, you don't add any handlers - you just call `register` (see [webhook registration](#webhook-registration) and [EventBridge and Pub/Sub webhooks](#eventbridge-and-pubsub-webhooks) for more details).
 
 A similar `addHandlers` method is also provided for convenience, which takes in an object with `topic` property names, each pointing to a `WebhookRegistryEntry` (`path` and `webhookHandler`), e.g.,
 
