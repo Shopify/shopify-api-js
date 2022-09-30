@@ -15,6 +15,10 @@
       "import": "./dist/rest/admin/*/index.js",
       "types": "./dist/rest/admin/*/index.d.ts"
     },
+    "./runtime": {
+      "import": "./dist/runtime/index.js",
+      "types": "./dist/runtime/index.d.ts"
+    },
     "./adapters/node": {
       "import": "./dist/adapters/node/index.js",
       "types": "./dist/adapters/node/index.d.ts"

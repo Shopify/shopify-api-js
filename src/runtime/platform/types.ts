@@ -1,1 +1,1 @@
-export type AbstractRuntimeString = () => string;
+export type AbstractRuntimeStringFunc = () => string;
