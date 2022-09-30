@@ -24,6 +24,8 @@ import {
 } from '../../runtime/http';
 
 import {
+  SESSION_COOKIE_NAME,
+  STATE_COOKIE_NAME,
   BeginParams,
   CallbackParams,
   AuthQuery,
@@ -34,9 +36,6 @@ import {
 } from './types';
 import {nonce} from './nonce';
 import {safeCompare} from './safe-compare';
-
-export const SESSION_COOKIE_NAME = 'shopify_app_session';
-export const STATE_COOKIE_NAME = 'shopify_app_state';
 
 export function createBegin(config: ConfigInterface) {
   return async ({

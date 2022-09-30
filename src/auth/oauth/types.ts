@@ -1,6 +1,9 @@
 import {Session} from '../../session/session';
 import {AdapterArgs, AdapterHeaders} from '../../runtime/http/types';
 
+export const SESSION_COOKIE_NAME = 'shopify_app_session';
+export const STATE_COOKIE_NAME = 'shopify_app_state';
+
 export interface AuthQuery {
   [key: string]: string | undefined;
   hmac?: string;

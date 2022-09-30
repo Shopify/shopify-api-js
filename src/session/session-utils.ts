@@ -1,5 +1,5 @@
 import {ConfigInterface} from '../base-types';
-import {SESSION_COOKIE_NAME} from '../auth/oauth/oauth';
+import {SESSION_COOKIE_NAME} from '../auth/oauth/types';
 import {Cookies, NormalizedResponse} from '../runtime/http';
 import {createSanitizeShop} from '../utils/shop-validator';
 import * as ShopifyErrors from '../error';
