@@ -46,7 +46,7 @@ setAbstractRuntimeString(myRuntimeStringFunc);
 
 const myRuntimeHeaderFunc: AbstractConvertHeadersFunc = async (
   headers: Headers,
-  adapterArgs: AdapterArgs,
+  adapterArgs: MyRuntimeAdapterArgs,
 ) => {
   return magicHeaderConversion(headers);
 };
