@@ -1,5 +1,7 @@
 import {AbstractCreateDefaultStorageFunc} from './types';
 
+export * from './types';
+
 // eslint-disable-next-line import/no-mutable-exports
 export let abstractCreateDefaultStorage: AbstractCreateDefaultStorageFunc =
   () => {

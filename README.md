@@ -133,6 +133,7 @@ These are all the configuration values `shopifyApi` supports.
   - [Register a Webhook](docs/usage/webhooks.md#register-a-webhook)
   - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
 - [Billing](docs/usage/billing.md)
+- [Adding custom runtimes](docs/usage/runtimes.md)
 - [Known issues and caveats](docs/issues.md)
   - [Notes on session handling](docs/issues.md#notes-on-session-handling)
 

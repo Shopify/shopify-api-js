@@ -5,10 +5,10 @@ import {
   setAbstractConvertRequestFunc,
   setAbstractConvertResponseFunc,
   setAbstractConvertHeadersFunc,
-} from '../../runtime/http';
-import {setCrypto} from '../../runtime/crypto';
-import {setAbstractCreateDefaultStorage} from '../../runtime/session';
-import {setAbstractRuntimeString} from '../../runtime/platform';
+  setCrypto,
+  setAbstractCreateDefaultStorage,
+  setAbstractRuntimeString,
+} from '../../runtime';
 
 import {
   mockFetch,
