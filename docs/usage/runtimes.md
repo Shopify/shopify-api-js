@@ -1,14 +1,14 @@
 # Adding custom runtimes
 
 This package provides support for a set of JavaScript runtimes, but it won't cover all possible use cases.
-We designed it in a way that can support any runtime, as long as an adapter provides the implementations for runtime-specific functionality.
+It's designed in a way that can support any runtime, as long as an adapter provides the implementations for runtime-specific functionality.
 
-**Note**: this is an advanced feature, so we strongly recommend using TypeScript and an IDE with intellisense to help guide you through the implementation.
+**Note**: this is an advanced feature, so using TypeScript and an IDE with intellisense is strongly recommended to help guide you through the implementation.
 
 See the [available adapters](../../src/adapters/) for some implementation examples.
-In general, an adapter needs to teach the library to convert its own request / response objects into the `NormalizedRequest` and `NormalizedResponse` objects used by the library, and to define some reasonable defaults for the runtime, like a session storage strategy.
+In general, an adapter needs to teach the library to convert the runtime's own request / response objects into the `NormalizedRequest` and `NormalizedResponse` objects used by the library, and to define some reasonable defaults for the runtime, like a session storage strategy.
 
-To create an adapter, you'll need to import the runtime functions provide implementations.
+To create an adapter, you'll need to import the runtime functions to provide implementations.
 These are the functions you'll need to create:
 
 - `setAbstractFetchFunc`
