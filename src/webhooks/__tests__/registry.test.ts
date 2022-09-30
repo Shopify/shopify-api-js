@@ -577,9 +577,7 @@ describe('shopify.webhooks.addHandler', () => {
       ...genericRegistryEntry,
     });
     expect(Object.keys(webhookRegistry)).toHaveLength(1);
-    expect(Object.keys(webhookRegistry)).toEqual([
-      'PRODUCTS_CREATE',
-    ]);
+    expect(Object.keys(webhookRegistry)).toEqual(['PRODUCTS_CREATE']);
   });
 });
 
@@ -624,11 +622,14 @@ describe('shopify.webhooks.addHandlers', () => {
 
   it('adds handlers with lowercase/slash format to the webhook registry', async () => {
     await shopify.webhooks.addHandlers({
-      ['products/create']: {
+      'products/create': {
         path: '/webhooks',
         webhookHandler: genericWebhookHandler,
       },
-      ['products/delete']: {path: '/webhooks', webhookHandler: genericWebhookHandler},
+      'products/delete': {
+        path: '/webhooks',
+        webhookHandler: genericWebhookHandler,
+      },
     });
     expect(Object.keys(webhookRegistry)).toHaveLength(2);
     expect(Object.keys(webhookRegistry)).toEqual([
