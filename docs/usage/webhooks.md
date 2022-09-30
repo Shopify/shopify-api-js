@@ -60,7 +60,8 @@ A similar `addHandlers` method is also provided for convenience, which takes in 
     },
     PRODUCTS_DELETE: {
       path: '/webhooks',
-      webhookHandler: productDeleteWebhookHandler},
+      webhookHandler: productDeleteWebhookHandler,
+    },
   });
 ```
 
@@ -78,7 +79,8 @@ To see topics loaded in the registry, `shopify.webhooks.getTopics` returns an ar
     },
     PRODUCTS_DELETE: {
       path: '/webhooks',
-      webhookHandler: productDeleteWebhookHandler},
+      webhookHandler: productDeleteWebhookHandler
+    },
   });
   const topics = shopify.webhooks.getTopics();
   // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
@@ -174,7 +176,7 @@ To process an HTTPS webhook, you need to listen on the route(s) you provided dur
 
 The `process` method will handle extracting the necessary information from your request and response objects, and triggering the appropriate handler with the parameters detailed above. If it can't find a handler for a topic, it will raise an error.
 
-**Note**: The `process` method will always respond to Shopify, even if your call throws an error. You can catch and log errors, but you can't change the response.
+**Note**: In Node, the `process` method will always respond to Shopify, even if your call throws an error. You can catch and log errors, but you can't change the response.
 
 ```typescript
 app.post('/webhooks', express.text({type: '*/*'}), async (req, res) => {
@@ -190,6 +192,24 @@ app.post('/webhooks', express.text({type: '*/*'}), async (req, res) => {
     console.log(error.message);
   }
 });
+```
+
+**Note**: In a worker environment, e.g., CloudFlare Workers, the return value of the `process` method can be used to reply to Shopify. If the `process` call throws an error, the response will be contained in the thrown error, in `error.response`.  This will enable the calling method in a worker environment to return a suitable response to Shopify.
+
+```typescript
+  let response;
+
+  try {
+    response = await shopify.webhooks.process({
+      rawBody: req.body,
+      rawRequest: req,
+      rawResponse: res,
+    });
+  } catch (error) {
+    console.log(error.message);
+    response = error.response;
+  }
+  return response;
 ```
 
 ### Note regarding use of body parsers
