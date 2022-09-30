@@ -245,7 +245,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 
 ## Changes to API clients
 
-The API clients this package provides now take an object of arguments, rather than positional ones. The returned objects behave the same way they did before, so you'll only need to update the contructor calls.
+The API clients this package provides now take an object of arguments, rather than positional ones. The returned objects behave the same way they did before, so you'll only need to update the constructor calls.
 
 1. REST Admin API client:
 

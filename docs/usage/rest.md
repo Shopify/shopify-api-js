@@ -87,7 +87,7 @@ They will return an object containing the response `headers` and `body` from Sho
 The Admin API has a lot of endpoints, and the differences between them can be subtle.
 To make it easier to interact with the API, this library provides resource classes, which map these endpoints to OO code and can make API queries feel more natural.
 
-**Note**: we provide auto-generated resources for all **_stable_** API versions, so your app must include the appropriate set (see [mounting REST resources](#mounting-rest-resources) below), matching your `apiVersion` configuration. The library will throw if the versions don't match.
+**Note**: we provide auto-generated resources for all **_stable_** API versions, so your app must include the appropriate set (see [mounting REST resources](#mounting-rest-resources) below), matching your `apiVersion` configuration. The library will throw an error if the versions don't match.
 
 Below is an example of how REST resources can make it easier to fetch the first product and update it:
 

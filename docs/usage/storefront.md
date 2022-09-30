@@ -1,4 +1,4 @@
-# Storefront API client
+# GraphQL Storefront API client
 
 The library also allows you to send GraphQL requests to the [Shopify Storefront API](https://shopify.dev/docs/storefront-api). To do that, you can use `shopify.clients.Storefront` with the current shop URL and a storefront-specific `accessToken`.
 
@@ -12,7 +12,7 @@ If you are building a private app, you can set a default Storefront Access Token
 
 ## Creating and using tokens
 
-The `Storefront` client extends the `Graphql` client, so it supports the same parameters. Please refer to the [Graphql documentation](graphql.md) for details.
+The `Storefront` client extends the `Graphql` client, so it supports the same parameters. Please refer to the [Graphql client documentation](graphql.md) for details.
 
 Below is a (simplified) example of how you may create a token (see [REST](https://shopify.dev/api/admin-rest/2022-07/resources/storefrontaccesstoken) or [GraphQL](https://shopify.dev/api/admin-graphql/2022-07/mutations/storefrontAccessTokenCreate) Admin API reference) and make a request:
 

@@ -6,7 +6,7 @@ To do that, create an instance of `shopify.clients.Graphql` using the current sh
 To create a client, you'll need a session, for example:
 
 ```ts
-// Requests to /my-endpoint must be made with authenticatedFetch for embedded apps
+// Requests to /my-endpoint must be made with authenticatedFetch from App Bridge for embedded apps
 app.get('/my-endpoint', async () => {
   const session = await shopify.session.getCurrent({
     isOnline: true,
