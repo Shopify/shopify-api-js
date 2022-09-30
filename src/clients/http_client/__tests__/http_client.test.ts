@@ -101,6 +101,56 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('defaults to JSON type for POST and PUT', async () => {
+    const client = new HttpClient({domain});
+
+    queueMockResponses(
+      [buildMockResponse(successResponse)],
+      [buildMockResponse(successResponse)],
+    );
+
+    const postData = {
+      title: 'Test product',
+      amount: 10,
+    };
+
+    expect(
+      await client.post({
+        path: '/url/path',
+        data: postData,
+      }),
+    ).toEqual(buildExpectedResponse(successResponse));
+    expect(
+      await client.put({
+        path: '/url/path',
+        data: postData,
+      }),
+    ).toEqual(buildExpectedResponse(successResponse));
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/url/path',
+      headers: {
+        'Content-Length': JSON.stringify(postData).length,
+        'Content-Type': DataType.JSON.toString(),
+        'User-Agent': expect.stringContaining('Shopify API Library v'),
+      },
+      data: JSON.stringify(postData),
+    }).toMatchMadeHttpRequest();
+    expect({
+      method: 'PUT',
+      domain,
+      path: '/url/path',
+      headers: {
+        'Content-Length': JSON.stringify(postData).length,
+        'Content-Type': DataType.JSON.toString(),
+        'User-Agent': expect.stringContaining('Shopify API Library v'),
+      },
+      data: JSON.stringify(postData),
+    }).toMatchMadeHttpRequest();
+  });
+
   it('can make POST request with type JSON and data is already formatted', async () => {
     const client = new HttpClient({domain});
 
