@@ -25,7 +25,7 @@ The parameters this method accepts are:
 We also provide a similar `addHandlers` method for convenience, which takes in an object of with `topic` as a property pointing to a `WebhookRegistryEntry`, e.g.,
 
 ```typescript
-  await shopify.webhooks.addHandlers({
+  shopify.webhooks.addHandlers({
     PRODUCTS_CREATE: {
       path: '/webhooks',
       webhookHandler: productCreateWebhookHandler,
@@ -62,6 +62,38 @@ shopify.webhooks.addHandler({
 ```
 
 **Note**: You only need to add handlers for webhooks delivered to your app via HTTPS. [Learn more about webhook configuration](https://shopify.dev/apps/webhooks/configuration).
+
+## Get Webhook registry information
+
+The library provides some utility methods to see what topics are loaded in the registry and to retrieve the handler details for a given topic.
+
+To see topics loaded in the registry, `shopify.webhooks.getTopics` returns an array of topics names, as strings, or an empty array if there are no topics and handlers loaded.
+
+```typescript
+  shopify.webhooks.addHandlers({
+    PRODUCTS_CREATE: {
+      path: '/webhooks',
+      webhookHandler: productCreateWebhookHandler,
+    },
+    PRODUCTS_DELETE: {
+      path: '/webhooks',
+      webhookHandler: productDeleteWebhookHandler},
+  });
+  const topics = shopify.webhooks.getTopics();
+  // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
+```
+
+To retrieve the handler information for a given topic, `shopify.webhooks.getHandler()` takes a topic string as an argument and returns the handler properties (path, handler) or `null` if not found.
+
+```typescript
+  Shopify.Webhooks.Registry.addHandler({
+    topic: 'PRODUCTS',
+    path: '/webhooks',
+    webhookHandler: 'productsWebhookHandler,
+  });
+  const productsHandler = Shopify.Webhooks.Registry.getHandler('PRODUCTS');
+  // productsHandler = {path: '/webhooks', webhookHandler: genericWebhookHandler}
+```
 
 ## Webhook Registration
 

@@ -23,16 +23,18 @@ Once you set up your app with the right adapter, you can follow the next section
 
 To make it easier to navigate this guide, here is an overview of the sections it contains:
 
-- [1. Renamed `Shopify.Context` to `shopify.config`](#1-renamed-shopifycontext-to-shopifyconfig)
-- [2. Passing in framework requests / responses](#2-passing-in-framework-requests--responses)
-- [3. Changes to `Session` and `SessionStorage`](#3-changes-to-session-and-sessionstorage)
-- [4. Changes to authentication functions](#4-changes-to-authentication-functions)
-- [5. Changes to API clients](#5-changes-to-api-clients)
-- [6. Billing](#6-billing)
-- [7. Utility functions](#7-utility-functions)
-- [8. Changes to webhook functions](#8-changes-to-webhook-functions)
+- [Renamed `Shopify.Context` to `shopify.config`](#renamed-shopifycontext-to-shopifyconfig)
+- [Passing in framework requests / responses](#passing-in-framework-requests--responses)
+- [Changes to `Session` and `SessionStorage`](#changes-to-session-and-sessionstorage)
+- [Changes to authentication functions](#changes-to-authentication-functions)
+- [Changes to API clients](#changes-to-api-clients)
+- [Billing](#billing)
+- [Utility functions](#utility-functions)
+- [Changes to webhook functions](#changes-to-webhook-functions)
 
-## 1. Renamed `Shopify.Context` to `shopify.config`
+---
+
+## Renamed `Shopify.Context` to `shopify.config`
 
 We've refactored the way objects are exported by this library, to remove the main "static" singleton `Shopify` object with global settings stored in `Shopify.Context`.
 
@@ -76,7 +78,9 @@ You will probably need to search and replace most of the imports to this library
 
 1. `Shopify.Context.throwIfUnitialized` and `UninitializedContextError` were removed.
 
-## 2. Passing in framework requests / responses
+---
+
+## Passing in framework requests / responses
 
 Using the Node-only library, apps would generally call library functions as follows:
 
@@ -112,7 +116,9 @@ async function handleFetch(request: Request): Promise<Response> {
 },
 ```
 
-## 3. Changes to `Session` and `SessionStorage`
+---
+
+## Changes to `Session` and `SessionStorage`
 
 1. `SessionStorage` is no longer an interface, but an abstract class. If you're using your own implementation of the interface, you need to replace `implements SessionStorage` with `extends SessionStorage`.
    <div>Before
@@ -181,7 +187,9 @@ async function handleFetch(request: Request): Promise<Response> {
 
    </div>
 
-## 4. Changes to authentication functions
+---
+
+## Changes to authentication functions
 
 The OAuth methods still behave the same way, but we've updated their signatures to make it easier to work with them. See the [updated OAuth instructions](./usage/oauth.md) for a complete example.
 
@@ -246,7 +254,9 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 
 1. There is a new `shopify.session` object which contains session-specific functions. See the [Utility functions](#utility-functions) section for the specific changes.
 
-## 5. Changes to API clients
+---
+
+## Changes to API clients
 
 The API clients this package provides now take an object of arguments, rather than positional ones. The returned objects behave the same way they did before, so you'll only need to update the constructor calls.
 
@@ -340,7 +350,9 @@ catch (err) {
 
 </div>
 
-## 6. Billing
+---
+
+## Billing
 
 The billing functionality hasn't changed, but the main difference is that the library now provides separate methods for checking and requesting payment, which gives apps more freedom to implement their billing logic.
 
@@ -415,7 +427,9 @@ Note that when calling `check`, apps can pass in one or more plans, and it will 
 
 </div>
 
-## 7. Utility functions
+---
+
+## Utility functions
 
 The previous `Shopify.Utils` object contained functions that relied on the global configuration object, but those have been refactored to use the instance-specific configuration.
 We also felt that the `Utils` object had some functions that belong to other parts of the library, so some of these functions have been moved to other sub-objects - keep an eye out for those changes in the list below!
@@ -623,7 +637,226 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-## 8. Changes to webhook functions
+---
 
-1. 
+## Changes to webhook functions
 
+1. `Shopify.Webhooks.Registry.addHandler` is now `shopify.webhooks.addHandler`, and the parameters are now in a single object parameter.
+   <div>Before
+
+   ```ts
+   Shopify.Webhooks.Registry.addHandler("PRODUCTS_CREATE", {
+     path: "/webhooks",
+     webhookHandler: handleWebhookRequest,
+   });
+   ```
+
+   </div><div>:exclamation: After
+
+   ```ts
+   shopify.webhooks.addHandler({
+     topic: "PRODUCTS_CREATE",
+     path: "/webhooks",
+     webhookHandler: handleWebhookRequest,
+   });
+   ```
+
+   </div>
+
+
+1. `Shopify.Webhooks.Registry.addHandlers` is now `shopify.webhooks.addHandlers`.
+   <div>Before
+
+   ```ts
+   Shopify.Webhooks.Registry.addHandlers({
+     PRODUCTS_CREATE: {
+       path: '/webhooks',
+       webhookHandler: productCreateWebhookHandler,
+     },
+     PRODUCTS_DELETE: {
+       path: '/webhooks',
+       webhookHandler: productDeleteWebhookHandler},
+   });
+   ```
+
+   </div><div>After
+
+   ```ts
+   shopify.webhooks.addHandlers({
+     PRODUCTS_CREATE: {
+       path: '/webhooks',
+       webhookHandler: productCreateWebhookHandler,
+     },
+     PRODUCTS_DELETE: {
+       path: '/webhooks',
+       webhookHandler: productDeleteWebhookHandler},
+   });
+   ```
+
+   </div>
+
+
+1. `Shopify.Webhooks.Registry.register` is now `shopify.webhooks.register`
+   <div>Before
+
+   ```ts
+   const response = await Shopify.Webhooks.Registry.register({
+     path: '/webhooks',
+     topic: 'PRODUCTS_CREATE',
+     accessToken: session.accessToken,
+     shop: session.shop,
+   });
+   ```
+
+   </div><div>After
+
+   ```ts
+   const response = await shopify.webhooks.register({
+     path: '/webhooks',
+     topic: 'PRODUCTS_CREATE',
+     accessToken: session.accessToken,
+     shop: session.shop,
+   });
+   ```
+
+   </div>
+
+1. `Shopify.Webhooks.Registry.registerAll` is now `shopify.webhooks.registerAll`
+   <div>Before
+
+   ```ts
+   const response = await Shopify.Webhooks.Registry.registerAll({
+     accessToken: session.accessToken,
+     shop: session.shop,
+   });
+   ```
+
+   </div><div>After
+
+   ```ts
+   const response = await shopify.webhooks.registerAll({
+     accessToken: session.accessToken,
+     shop: session.shop,
+   });
+   ```
+
+   </div>
+
+1. `Shopify.Webhooks.Registry.isWebhookPath` is now `shopify.webhooks.isWebhookPath`
+   <div>Before
+
+   ```ts
+   if (Shopify.Webhooks.Registry.isWebhookPath(pathName)) {
+     // request path received is a registered webhook path ... process the webhook request
+   }
+   ```
+
+   </div><div>After
+
+   ```ts
+   if (shopify.webhooks.isWebhookPath(pathName)) {
+     // request path received is a registered webhook path ... process the webhook request
+   }
+   ```
+
+   </div>
+
+1. `Shopify.Webhooks.Registry.process` is now `shopify.webhooks.process`, and it takes the body as an argument instead of parsing it from the request. This will make it easier for apps to use a body parser with this function.
+   <div>Before
+
+   ```ts
+   app.post('/webhooks', async (req, res) => {
+     try {
+       await Shopify.Webhooks.Registry.process(req, res);
+     } catch (error) {
+       console.log(error.message);
+     }
+   });
+   ```
+
+   </div><div>:exclamation: After
+
+   ```ts
+   app.post('/webhooks', async (req, res) => {
+     try {
+       // Note: this example assumes that the raw content of the body of the request
+       // has been read and is available at req.rawBody; this will likely differ
+       // depending on which body parser is used.
+       await shopify.webhooks.process({
+         rawBody: (req as any).rawBody, // as a string
+         rawRequest: req,
+         rawResponse: res,
+       });
+     } catch (error) {
+       console.log(error.message);
+     }
+   });
+   ```
+
+   </div>
+
+1. `Shopify.Webhooks.Registry.getHandler` is now `shopify.webhooks.getHandler`
+   <div>Before
+
+   ```ts
+   Shopify.Webhooks.Registry.addHandler({
+     topic: 'PRODUCTS',
+     path: '/webhooks',
+     webhookHandler: 'productsWebhookHandler,
+   });
+
+   const productsHandler = Shopify.Webhooks.Registry.getHandler('PRODUCTS');
+   // productsHandler = {path: '/webhooks', webhookHandler: genericWebhookHandler}
+   ```
+
+   </div><div>After
+
+   ```ts
+   shopify.webhooks.addHandler({
+     topic: 'PRODUCTS',
+     path: '/webhooks',
+     webhookHandler: 'productsWebhookHandler,
+   });
+
+   const productsHandler = shopify.webhooks.getHandler('PRODUCTS');
+   // productsHandler = {path: '/webhooks', webhookHandler: genericWebhookHandler}
+   ```
+
+   </div>
+
+1. `Shopify.Webhooks.Registry.getTopics` is now `shopify.webhooks.getTopics`
+   <div>Before
+
+   ```ts
+   Shopify.Webhooks.Registry.addHandlers({
+     PRODUCTS_CREATE: {
+       path: '/webhooks',
+       webhookHandler: productCreateWebhookHandler,
+     },
+     PRODUCTS_DELETE: {
+       path: '/webhooks',
+       webhookHandler: productDeleteWebhookHandler},
+   });
+
+   const topics = Shopify.Webhooks.Registry.getTopics();
+   // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
+   ```
+
+   </div><div>After
+
+   ```ts
+   shopify.webhooks.addHandlers({
+     PRODUCTS_CREATE: {
+       path: '/webhooks',
+       webhookHandler: productCreateWebhookHandler,
+     },
+     PRODUCTS_DELETE: {
+       path: '/webhooks',
+       webhookHandler: productDeleteWebhookHandler},
+   });
+
+   const topics = shopify.webhooks.getTopics();
+   // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
+   ```
+
+   </div>
