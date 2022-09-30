@@ -618,7 +618,7 @@ describe('shopify.webhooks.getHandler', () => {
   });
 
   it('gets a nonexistent handler', async () => {
-    expect(shopify.webhooks.getHandler({topic: 'PRODUCTS'})).toBe(null);
+    expect(shopify.webhooks.getHandler('PRODUCTS')).toBe(null);
   });
 
   it('gets a handler', async () => {
@@ -626,7 +626,7 @@ describe('shopify.webhooks.getHandler', () => {
       topic: 'PRODUCTS',
       ...genericRegistryEntry,
     });
-    expect(shopify.webhooks.getHandler({topic: 'PRODUCTS'})).toStrictEqual({
+    expect(shopify.webhooks.getHandler('PRODUCTS')).toStrictEqual({
       path: '/webhooks',
       webhookHandler: genericWebhookHandler,
     });

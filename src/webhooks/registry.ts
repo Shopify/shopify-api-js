@@ -24,7 +24,6 @@ import {
   BuildCheckQueryParams,
   BuildQueryParams,
   DeliveryMethod,
-  GetHandlerParams,
   RegisterParams,
   RegisterReturn,
   WebhookRegistryEntry,
@@ -169,9 +168,7 @@ export function addHandlers(handlers: AddHandlersProps): void {
   );
 }
 
-export function getHandler({
-  topic,
-}: GetHandlerParams): WebhookRegistryEntry | null {
+export function getHandler(topic: string): WebhookRegistryEntry | null {
   return webhookRegistry[topic] ?? null;
 }
 
@@ -273,7 +270,7 @@ export function createRegisterAll(config: ConfigInterface) {
     const topics = getTopics();
 
     for (const topic of topics) {
-      const handler = getHandler({topic});
+      const handler = getHandler(topic);
       if (handler) {
         const {path} = handler;
         const webhook: RegisterParams = {
@@ -381,9 +378,7 @@ export function createProcess(config: ConfigInterface) {
 
       if (safeCompare(generatedHash, hmac)) {
         const graphqlTopic = topic.toUpperCase().replace(/\//g, '_');
-        const webhookEntry = getHandler({
-          topic: graphqlTopic,
-        });
+        const webhookEntry = getHandler(graphqlTopic);
 
         if (webhookEntry) {
           try {

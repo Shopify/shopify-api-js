@@ -90,8 +90,4 @@ export interface AddHandlerParams extends WebhookRegistryEntry {
   topic: string;
 }
 
-export interface GetHandlerParams {
-  topic: string;
-}
-
 export type ShopifyWebhooks = ReturnType<typeof shopifyWebhooks>;
