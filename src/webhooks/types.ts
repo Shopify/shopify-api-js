@@ -13,16 +13,15 @@ export type WebhookHandlerFunction = (
 ) => Promise<void>;
 
 export interface ShortenedRegisterParams {
-  // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
   path: string;
   shop: string;
   accessToken: string;
-  deliveryMethod?: DeliveryMethod;
 }
 
 export interface RegisterParams extends ShortenedRegisterParams {
   // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
   topic: string;
+  deliveryMethod?: DeliveryMethod;
 }
 
 export interface RegisterReturn {

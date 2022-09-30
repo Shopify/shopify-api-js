@@ -256,14 +256,13 @@ export function createRegister(config: ConfigInterface) {
   };
 }
 
-export function createRegisterAll(config: ConfigInterface) {
+export function createRegisterAllHttp(config: ConfigInterface) {
   const register = createRegister(config);
 
-  return async function registerAll({
+  return async function registerAllHttp({
     path,
     accessToken,
     shop,
-    deliveryMethod = DeliveryMethod.Http,
   }: ShortenedRegisterParams): Promise<RegisterReturn> {
     let registerReturn = {};
     const topics = getTopics();
@@ -276,7 +275,7 @@ export function createRegisterAll(config: ConfigInterface) {
           topic,
           accessToken,
           shop,
-          deliveryMethod,
+          deliveryMethod: DeliveryMethod.Http,
         };
         const returnedRegister = await register(webhook);
         registerReturn = {...registerReturn, ...returnedRegister};

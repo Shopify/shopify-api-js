@@ -287,7 +287,7 @@ describe('shopify.webhooks.register', () => {
   });
 });
 
-describe('shopify.webhooks.registerAll', () => {
+describe('shopify.webhooks.registerAllHttp', () => {
   const shortenedRegisterParams: ShortenedRegisterParams = {
     path: '/webhooks',
     accessToken: 'some token',
@@ -319,7 +319,7 @@ describe('shopify.webhooks.registerAll', () => {
       queueMockResponse(JSON.stringify(webhookCheckEmptyResponse));
       queueMockResponse(JSON.stringify(successResponse));
 
-      await shopify.webhooks.registerAll(shortenedRegisterParams);
+      await shopify.webhooks.registerAllHttp(shortenedRegisterParams);
 
       expect(mockTestRequests.requestList).toHaveLength(2);
       assertWebhookCheckRequest(productsCreate);
