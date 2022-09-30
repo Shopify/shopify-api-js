@@ -16,8 +16,8 @@ In addition to making the library compatible with multiple runtimes, we've also 
 Once you set up your app with the right adapter, you can follow the next sections for instructions on how to upgrade the individual methods that were changed.
 
 **Note 1**: the examples below are assuming your app is running using Express.js, but the library still works with different frameworks as before.
-**Note 2**: any references to "the Node-only library" generally means version 5.x or earlier versions.
-**Note 3**: in general, method calls in v6 of the library take parameter objects instead of positional parameters. An :exclamation: symbol will highlight where these changes have occurred below, as forgetting to migrate the parameters into parameter objects can result in confusing app behaviour.
+
+**Note 2**: in general, method calls in v6 of the library take parameter objects instead of positional parameters. A :warning: symbol will highlight where these changes have occurred below, as forgetting to migrate the parameters into parameter objects can result in confusing app behaviour.
 
 ## Table of contents
 
@@ -36,7 +36,7 @@ To make it easier to navigate this guide, here is an overview of the sections it
 
 ## Renamed `Shopify.Context` to `shopify.config`
 
-We've refactored the way objects are exported by this library, to remove the main "static" singleton `Shopify` object with global settings stored in `Shopify.Context`.
+We've refactored the way objects are exported by this library, to remove the main static singleton `Shopify` object with global settings stored in `Shopify.Context`.
 
 Even though that object has no business logic, the fact that the configuration is global made it hard to mock for tests and to set up multiple instances of it.
 Part of the changes we made were to create a library object with local settings, to make it feel more idiomatic and easier to work with.
@@ -82,7 +82,7 @@ You will probably need to search and replace most of the imports to this library
 
 ## Passing in framework requests / responses
 
-Using the Node-only library, apps would generally call library functions as follows:
+Using the v5 or earlier version of the library, apps would generally call library functions as follows:
 
 ```ts
 app.get(
@@ -171,7 +171,7 @@ async function handleFetch(request: Request): Promise<Response> {
    const clone = Session.cloneSession(session, 'newId');
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    import {Session} from '@shopify/shopify-api';
@@ -208,7 +208,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
    res.redirect(redirectUri);
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    // Library handles redirecting
@@ -236,7 +236,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
    res.redirect('url');
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const callbackResponse = shopify.auth.callback({
@@ -271,7 +271,7 @@ The API clients this package provides now take an object of arguments, rather th
    );
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const restClient = new shopify.clients.Rest({
@@ -293,7 +293,7 @@ The API clients this package provides now take an object of arguments, rather th
    );
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const graphqlClient = new shopify.clients.Graphql({
@@ -315,7 +315,7 @@ The API clients this package provides now take an object of arguments, rather th
    );
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const storefrontClient = new shopify.clients.Storefront({
@@ -462,7 +462,7 @@ Here are all the specific changes that we made to the `Utils` object:
    const redirectUrl = Shopify.Utils.getEmbeddedAppUrl(req, res);
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const nonce = shopify.auth.nonce();
@@ -519,7 +519,7 @@ Here are all the specific changes that we made to the `Utils` object:
    const session = await Shopify.Utils.loadCurrentSession(req, res);
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const session = await shopify.session.getCurrent({
@@ -538,7 +538,7 @@ Here are all the specific changes that we made to the `Utils` object:
    const session = await Shopify.Utils.deleteCurrentSession(req, res);
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const session = await shopify.session.deleteCurrent({
@@ -560,7 +560,7 @@ Here are all the specific changes that we made to the `Utils` object:
    );
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const session = await shopify.session.getOffline({
@@ -580,7 +580,7 @@ Here are all the specific changes that we made to the `Utils` object:
    );
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const success = await shopify.session.deleteOffline({
@@ -625,7 +625,7 @@ Here are all the specific changes that we made to the `Utils` object:
    const response = await Shopify.Utils.graphqlProxy(req, res);
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    const response = await shopify.clients.graphqlProxy({
@@ -651,7 +651,7 @@ Here are all the specific changes that we made to the `Utils` object:
    });
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    shopify.webhooks.addHandler({
@@ -774,7 +774,7 @@ Here are all the specific changes that we made to the `Utils` object:
    });
    ```
 
-   </div><div>:exclamation: After
+   </div><div>:warning: After
 
    ```ts
    app.post('/webhooks', async (req, res) => {
@@ -802,11 +802,11 @@ Here are all the specific changes that we made to the `Utils` object:
    Shopify.Webhooks.Registry.addHandler({
      topic: 'PRODUCTS',
      path: '/webhooks',
-     webhookHandler: 'productsWebhookHandler,
+     webhookHandler: productsWebhookHandler,
    });
 
    const productsHandler = Shopify.Webhooks.Registry.getHandler('PRODUCTS');
-   // productsHandler = {path: '/webhooks', webhookHandler: genericWebhookHandler}
+   // productsHandler = {path: '/webhooks', webhookHandler: productsWebhookHandler}
    ```
 
    </div><div>After
@@ -815,11 +815,11 @@ Here are all the specific changes that we made to the `Utils` object:
    shopify.webhooks.addHandler({
      topic: 'PRODUCTS',
      path: '/webhooks',
-     webhookHandler: 'productsWebhookHandler,
+     webhookHandler: productsWebhookHandler,
    });
 
    const productsHandler = shopify.webhooks.getHandler('PRODUCTS');
-   // productsHandler = {path: '/webhooks', webhookHandler: genericWebhookHandler}
+   // productsHandler = {path: '/webhooks', webhookHandler: productsWebhookHandler}
    ```
 
    </div>
