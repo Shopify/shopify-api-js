@@ -7,7 +7,7 @@ import {
   createRegister,
   createRegisterAllHttp,
   getHttpHandler,
-  getTopics,
+  getTopicsAdded,
 } from './registry';
 
 export function shopifyWebhooks(config: ConfigInterface) {
@@ -15,7 +15,7 @@ export function shopifyWebhooks(config: ConfigInterface) {
     addHttpHandler,
     addHttpHandlers,
     getHttpHandler,
-    getTopics,
+    getTopicsAdded,
     process: createProcess(config),
     register: createRegister(config),
     registerAllHttp: createRegisterAllHttp(config),

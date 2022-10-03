@@ -13,7 +13,7 @@ To subscribe to webhooks using this library, there are 3 main steps to take:
 
 ## Load your handlers
 
-The first step to process webhooks in your app is telling the library how you expect to handle them. To do that, you can call the `shopify.webhooks.addHandler` method to set the callback you want the library to trigger when a certain topic is received.
+The first step to process webhooks in your app is telling the library how you expect to handle them. To do that, you can call the `shopify.webhooks.addHttpHandler` method to set the callback you want the library to trigger when a certain topic is received.
 
 For example, you can load one or more handlers when setting up your app's `config` (or any other location, as long as it happens before the call to `shopify.webhooks.process`) by running:
 
@@ -25,7 +25,7 @@ const handleWebhookRequest = async (topic: string, shop: string, webhookRequestB
   // handler triggered when a webhook is sent by the Shopify platform to your application
 }
 
-shopify.webhooks.addHandler({
+shopify.webhooks.addHttpHandler({
   topic: "PRODUCTS_CREATE",
   handler: handleWebhookRequest,
 });
@@ -48,38 +48,36 @@ When a shop triggers an event you subscribed to, the `process` method [below](#w
 
 **Note**: You only need to add handlers for webhooks delivered to your app via HTTPS. For webhooks delivered to Amazon EventBridge or Google Cloud Pub/Sub, you don't add any handlers - you just call `register` (see [webhook registration](#webhook-registration) and [EventBridge and Pub/Sub webhooks](#eventbridge-and-pubsub-webhooks) for more details).
 
-A similar `addHandlers` method is also provided for convenience, which takes in an object with `topic` property names, each pointing to a `WebhookHandlerFunction`, e.g.,
+A similar `addHttpHandlers` method is also provided for convenience, which takes in an array of objects with `topic` and `handler` properties, e.g.,
 
 ```typescript
-  shopify.webhooks.addHandlers({
-    PRODUCTS_CREATE: productCreateWebhookHandler,
-    PRODUCTS_DELETE: productDeleteWebhookHandler,
-  });
+  shopify.webhooks.addHttpHandlers([
+    {topic: 'PRODUCTS_CREATE', handler: productCreateWebhookHandler},
+    {topic: 'PRODUCTS_DELETE', handler: productDeleteWebhookHandler},
+  ]);
 ```
 
-## Get Webhook registry information
+## Get HTTP webhook registry information
 
-The library provides some utility methods to see what topics are loaded in the registry and to retrieve the handler details for a given topic.
-
-To see topics loaded in the registry, `shopify.webhooks.getTopics` returns an array of topics names, as strings, or an empty array if there are no topics and handlers loaded.
+To see topics loaded in the HTTP registry, `shopify.webhooks.getTopicsAdded` returns an array of topics names, as strings, or an empty array if there are no topics and handlers loaded.
 
 ```typescript
-  shopify.webhooks.addHandlers({
-    PRODUCTS_CREATE: productCreateWebhookHandler,
-    PRODUCTS_DELETE: productDeleteWebhookHandler,
-  });
-  const topics = shopify.webhooks.getTopics();
+  shopify.webhooks.addHttpHandlers([
+    {topic: 'PRODUCTS_CREATE', handler: productCreateWebhookHandler},
+    {topic: 'PRODUCTS_DELETE', handler: productDeleteWebhookHandler},
+  ]);
+  const topics = shopify.webhooks.getTopicsAdded();
   // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
 ```
 
-To retrieve the handler information for a given topic, `shopify.webhooks.getHandler()` takes a topic string as an argument and returns the handler or `null` if not found.
+To retrieve the handler information for a given topic, `shopify.webhooks.getHttpHandler()` takes a topic string as an argument and returns the handler or `null` if not found.
 
 ```typescript
-  Shopify.Webhooks.Registry.addHandler({
+  shopify.webhooks.addHttpHandler({
     topic: 'PRODUCTS',
     handler: productsWebhookHandler,
   });
-  const productsHandler = Shopify.Webhooks.Registry.getHandler('PRODUCTS');
+  const productsHandler = shopify.webhooks.getHttpHandler('PRODUCTS');
   // productsHandler = productsWebhookHandler
 ```
 

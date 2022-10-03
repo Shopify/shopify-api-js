@@ -690,7 +690,7 @@ Here are all the specific changes that we made to the `Utils` object:
    </div>
 
 
-1. `Shopify.Webhooks.Registry.register` is now `shopify.webhooks.register`
+1. `Shopify.Webhooks.Registry.register` is now `shopify.webhooks.register`.
    <div>Before
 
    ```ts
@@ -715,7 +715,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-1. `Shopify.Webhooks.Registry.registerAll` is now `shopify.webhooks.registerAllHttp`, and now accepts a `path` in its parameter object with which to register all topic handlers added to the registry.
+1. `Shopify.Webhooks.Registry.registerAll` is now `shopify.webhooks.registerAllHttp`, and now accepts a `path` in its parameter object with which to register all topic handlers added to the HTTP registry.
    <div>Before
 
    ```ts
@@ -773,7 +773,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-1. `Shopify.Webhooks.Registry.getHandler` is now `shopify.webhooks.getHandler`, and simply returns the handler function for the given topic.
+1. `Shopify.Webhooks.Registry.getHandler` is now `shopify.webhooks.getHttpHandler`, and simply returns the handler function for the given topic.
    <div>Before
 
    ```ts
@@ -795,13 +795,13 @@ Here are all the specific changes that we made to the `Utils` object:
      handler: productsWebhookHandler,
    });
 
-   const productsHandler = shopify.webhooks.getHandler('PRODUCTS');
+   const productsHandler = shopify.webhooks.getHttpHandler('PRODUCTS');
    // productsHandler = productsWebhookHandler
    ```
 
    </div>
 
-1. `Shopify.Webhooks.Registry.getTopics` is now `shopify.webhooks.getTopics`
+1. `Shopify.Webhooks.Registry.getTopics` is now `shopify.webhooks.getTopicsAdded`, to indicate that it returns the topics added using either `addHttpHandler` or `addHttpHandlers`.
    <div>Before
 
    ```ts
@@ -827,7 +827,7 @@ Here are all the specific changes that we made to the `Utils` object:
      {topic: 'PRODUCTS_DELETE', handler: productDeleteWebhookHandler},
    ]);
 
-   const topics = shopify.webhooks.getTopics();
+   const topics = shopify.webhooks.getTopicsAdded();
    // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
    ```
 

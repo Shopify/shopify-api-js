@@ -166,7 +166,7 @@ export function getHttpHandler(topic: string): WebhookHandlerFunction | null {
   return webhookRegistry[topicForStorage(topic)] ?? null;
 }
 
-export function getTopics(): string[] {
+export function getTopicsAdded(): string[] {
   return Object.keys(webhookRegistry);
 }
 
@@ -260,7 +260,7 @@ export function createRegisterAllHttp(config: ConfigInterface) {
     shop,
   }: ShortenedRegisterParams): Promise<RegisterReturn> {
     let registerReturn = {};
-    const topics = getTopics();
+    const topics = getTopicsAdded();
 
     for (const topic of topics) {
       const handler = getHttpHandler(topic);

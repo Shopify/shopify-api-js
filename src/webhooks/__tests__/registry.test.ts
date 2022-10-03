@@ -239,7 +239,7 @@ describe('shopify.webhooks.register', () => {
     await shopify.webhooks.register(webhook);
     expect(Object.keys(webhookRegistry)).toHaveLength(2);
 
-    // Make sure we have one of each topic in the registry
+    // Make sure we have one of each topic in the HTTP registry
     const actualTopics = Object.keys(webhookRegistry);
     expect(actualTopics).toEqual(['PRODUCTS_CREATE', 'PRODUCTS_UPDATE']);
   });
@@ -501,14 +501,14 @@ describe('shopify.webhooks.addHttpHandler', () => {
     resetWebhookRegistry();
   });
 
-  it('adds two handlers to the webhook registry', async () => {
-    await shopify.webhooks.addHttpHandler({
+  it('adds two handlers to the HTTP webhook registry', async () => {
+    shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS_CREATE',
       handler: genericWebhookHandler,
     });
     expect(Object.keys(webhookRegistry)).toHaveLength(1);
 
-    await shopify.webhooks.addHttpHandler({
+    shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
       handler: genericWebhookHandler,
     });
@@ -520,21 +520,21 @@ describe('shopify.webhooks.addHttpHandler', () => {
   });
 
   it('adds a handler and replaces it with a new one', async () => {
-    await shopify.webhooks.addHttpHandler({
+    shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
       handler: genericWebhookHandler,
     });
     expect(Object.keys(webhookRegistry)).toHaveLength(1);
 
-    await shopify.webhooks.addHttpHandler({
+    shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
       handler: genericWebhookHandler,
     });
     expect(Object.keys(webhookRegistry)).toHaveLength(1);
   });
 
-  it('adds handler with lowercase/slash format to the webhook registry', async () => {
-    await shopify.webhooks.addHttpHandler({
+  it('adds handler with lowercase/slash format to the HTTP webhook registry', async () => {
+    shopify.webhooks.addHttpHandler({
       topic: 'products/create',
       handler: genericWebhookHandler,
     });
@@ -548,8 +548,8 @@ describe('shopify.webhooks.addHttpHandlers', () => {
     resetWebhookRegistry();
   });
 
-  it('adds two unique handlers to the webhook registry', async () => {
-    await shopify.webhooks.addHttpHandlers([
+  it('adds two unique handlers to the HTTP webhook registry', async () => {
+    shopify.webhooks.addHttpHandlers([
       {topic: 'PRODUCTS_CREATE', handler: genericWebhookHandler},
       {topic: 'PRODUCTS', handler: genericWebhookHandler},
     ]);
@@ -561,11 +561,11 @@ describe('shopify.webhooks.addHttpHandlers', () => {
   });
 
   it('adds multiple handlers with duplicates', async () => {
-    await shopify.webhooks.addHttpHandler({
+    shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
       handler: genericWebhookHandler,
     });
-    await shopify.webhooks.addHttpHandlers([
+    shopify.webhooks.addHttpHandlers([
       {topic: 'PRODUCTS_CREATE', handler: genericWebhookHandler},
       {topic: 'PRODUCTS', handler: genericWebhookHandler},
     ]);
@@ -575,8 +575,8 @@ describe('shopify.webhooks.addHttpHandlers', () => {
     );
   });
 
-  it('adds handlers with lowercase/slash format to the webhook registry', async () => {
-    await shopify.webhooks.addHttpHandlers([
+  it('adds handlers with lowercase/slash format to the HTTP webhook registry', async () => {
+    shopify.webhooks.addHttpHandlers([
       {topic: 'products/create', handler: genericWebhookHandler},
       {topic: 'products/delete', handler: genericWebhookHandler},
     ]);
@@ -628,13 +628,13 @@ describe('shopify.webhooks.getHttpHandler', () => {
   });
 });
 
-describe('shopify.webhooks.getTopics', () => {
+describe('shopify.webhooks.getTopicsAdded', () => {
   beforeEach(async () => {
     resetWebhookRegistry();
   });
 
   it('gets an empty list of topics', async () => {
-    expect(shopify.webhooks.getTopics()).toStrictEqual([]);
+    expect(shopify.webhooks.getTopicsAdded()).toStrictEqual([]);
   });
 
   it('adds two handlers and gets them', async () => {
@@ -646,7 +646,7 @@ describe('shopify.webhooks.getTopics', () => {
       topic: 'PRODUCTS_CREATE',
       handler: genericWebhookHandler,
     });
-    expect(shopify.webhooks.getTopics()).toStrictEqual([
+    expect(shopify.webhooks.getTopicsAdded()).toStrictEqual([
       'PRODUCTS',
       'PRODUCTS_CREATE',
     ]);
