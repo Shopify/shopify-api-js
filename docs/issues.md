@@ -18,7 +18,7 @@ Each app may choose a different storage strategy, so the library cannot assume a
   - This strategy is **purposely** designed to be a single-process, development-only solution. It **will leak** memory in most cases and delete all sessions when your app restarts. You should **never** use it in production apps.
   - We don't default to this strategy for CloudFlare workers, because it only works if you're running all your endpoints on the same worker, which won't always happen.
 
-The other storage adapters (`MongoDBSessionStorage`, `MySQLSessionStorage`, `PostgreSQLSessionStorage`, `RedisSessionStorage`) cover a variety of production-grade storage options, but require further setup from the app to provide database access.
+The other storage adapters cover a variety of production-grade storage options, but require further setup from the app to provide database access.
 
 If you wish to have an alternative storage solution, you must use a `CustomSessionStorage` solution in your production app- you can reference our [usage example with redis](usage/customsessions.md) to get started.
 

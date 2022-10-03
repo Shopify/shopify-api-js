@@ -2,7 +2,22 @@
 
 This folder contains implementations of the `SessionStorage` interface that works with the most common databases.
 
-## SQLite (default for Node)
+Below is a summary of the options and their runtime compatibility:
+
+| Storage option                  |      Node.js      | CloudFlare Workers |
+| ------------------------------- | :---------------: | :----------------: |
+| [SQLite](#sqlite)               |  Yes (_default_)  |                    |
+| [MySQL](#mysql)                 |        Yes        |                    |
+| [PostgreSQL](#postgresql)       |        Yes        |                    |
+| [MongoDB](#mongodb)             |        Yes        |                    |
+| [Redis](#redis)                 |        Yes        |                    |
+| [CloudFlare KV](#cloudflare-kv) |                   |        Yes         |
+| [Custom](#custom)               |        Yes        |        Yes         |
+| [In-Memory](#in-memory)         | Yes (development) | Yes (development)  |
+
+> **Note**: there is no default for CloudFlare Workers because any production-grade option requires configuration from the app.
+
+## SQLite
 
 ```js
 import '@shopify/shopify-api/adapters/node';
@@ -113,19 +128,45 @@ const shopify = shopifyApi({
 });
 ```
 
-## In-Memory
+## CloudFlare KV
+
+CloudFlare's [KV] storage can be used on worker runtimes.
+Before using it, you'll need to set up a namespace for your sessions and pass in a `KVNamespace` object.
+You can do that either when creating an instance of `KVSessionStorage`, or by calling the `setBucket` method.
 
 ```js
 import {shopifyApi} from '@shopify/shopify-api';
-import {MemorySessionStorage} from '@shopify/shopify-api/session-storage/memory';
+import {KVSessionStorage} from '@shopify/shopify-api/session-storage/kv';
 
 const shopify = shopifyApi({
-  sessionStorage: new MemorySessionStorage(),
+  sessionStorage: new KVSessionStorage(),
+  ...
+});
+
+export default {
+  async fetch(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext
+  ): Promise<Response> {
+    shopify.config.sessionStorage.setBucket(env.MY_KV_BUCKET);
+
+    // Handle request
+  },
+};
+
+// OR
+
+import {Miniflare} from 'miniflare';
+
+const mf = new Miniflare({
+  kvNamespaces: ['MY_KV_BUCKET'],
+});
+const shopify = shopifyApi({
+  sessionStorage: new KVSessionStorage(await mf.getKVNamespace('MY_KV_BUCKET')),
   ...
 });
 ```
-
-**Note**: all sessions will be lost if the app process gets restarted or redeployed. This session storage model is for local development only.
 
 ## Custom
 
@@ -149,6 +190,22 @@ const shopify = shopifyApi({
 });
 ```
 
-While mostly written for automated tests, it can also be used to write ad-hoc `SessionStorage` implementations.
+While mostly written for automated tests, it can also be used to write ad-hoc `SessionStorage` implementations. You can find [an example using Redis here](../../docs/usage/customsessions.md).
+
+## In-Memory
+
+```js
+import {shopifyApi} from '@shopify/shopify-api';
+import {MemorySessionStorage} from '@shopify/shopify-api/session-storage/memory';
+
+const shopify = shopifyApi({
+  sessionStorage: new MemorySessionStorage(),
+  ...
+});
+```
+
+> **Note**: This session storage model is for local development only, to make it easier for developers to get started.
+> It will delete all sessions if the app process gets restarted or redeployed, and is not meant for production use [due to its limitations](../../docs/issues.md).
 
 [sqlite]: https://www.sqlite.org/
+[kv]: https://developers.cloudflare.com/workers/runtime-apis/kv/
