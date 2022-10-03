@@ -22,12 +22,13 @@ import {
   BuildCheckQueryParams,
   BuildQueryParams,
   DeliveryMethod,
+  HttpWebhookRegistry,
   RegisterParams,
   RegisterReturn,
+  ShortenedRegisterParams,
   WebhookCheckResponse,
   WebhookHandlerFunction,
   WebhookProcessParams,
-  ShortenedRegisterParams,
 } from './types';
 
 function isSuccess(
@@ -143,31 +144,42 @@ function topicForStorage(topic: string): string {
   return topic.toUpperCase().replace(/\//g, '_');
 }
 
-export const webhookRegistry: {[topic: string]: WebhookHandlerFunction} = {};
-
-export function resetWebhookRegistry() {
-  for (const key in webhookRegistry) {
-    if ({}.hasOwnProperty.call(webhookRegistry, key)) {
-      delete webhookRegistry[key];
+export function resetHttpWebhookRegistry(
+  httpWebhookRegistry: HttpWebhookRegistry,
+) {
+  for (const key in httpWebhookRegistry) {
+    if ({}.hasOwnProperty.call(httpWebhookRegistry, key)) {
+      delete httpWebhookRegistry[key];
     }
   }
 }
 
-export function addHttpHandler(params: AddHandlerParams) {
-  const {topic, handler} = params;
-  webhookRegistry[topicForStorage(topic)] = handler;
+export function createAddHttpHandler(httpWebhookRegistry: HttpWebhookRegistry) {
+  return function addHttpHandler(params: AddHandlerParams) {
+    const {topic, handler} = params;
+    httpWebhookRegistry[topicForStorage(topic)] = handler;
+  };
 }
 
-export function addHttpHandlers(handlers: AddHandlerParams[]): void {
-  handlers.forEach((handlerParam) => addHttpHandler(handlerParam));
+export function createAddHttpHandlers(
+  httpWebhookRegistry: HttpWebhookRegistry,
+) {
+  const addHttpHandler = createAddHttpHandler(httpWebhookRegistry);
+  return function addHttpHandlers(handlers: AddHandlerParams[]): void {
+    handlers.forEach((handlerParam) => addHttpHandler(handlerParam));
+  };
 }
 
-export function getHttpHandler(topic: string): WebhookHandlerFunction | null {
-  return webhookRegistry[topicForStorage(topic)] ?? null;
+export function createGetHttpHandler(httpWebhookRegistry: HttpWebhookRegistry) {
+  return function getHttpHandler(topic: string): WebhookHandlerFunction | null {
+    return httpWebhookRegistry[topicForStorage(topic)] ?? null;
+  };
 }
 
-export function getTopicsAdded(): string[] {
-  return Object.keys(webhookRegistry);
+export function createGetTopicsAdded(httpWebhookRegistry: HttpWebhookRegistry) {
+  return function getTopicsAdded(): string[] {
+    return Object.keys(httpWebhookRegistry);
+  };
 }
 
 export function createRegister(config: ConfigInterface) {
@@ -251,8 +263,13 @@ export function createRegister(config: ConfigInterface) {
   };
 }
 
-export function createRegisterAllHttp(config: ConfigInterface) {
+export function createRegisterAllHttp(
+  config: ConfigInterface,
+  httpWebhookRegistry: HttpWebhookRegistry,
+) {
   const register = createRegister(config);
+  const getTopicsAdded = createGetTopicsAdded(httpWebhookRegistry);
+  const getHttpHandler = createGetHttpHandler(httpWebhookRegistry);
 
   return async function registerAllHttp({
     path,
@@ -339,7 +356,12 @@ function checkWebhookRequest(
   return retVal;
 }
 
-export function createProcess(config: ConfigInterface) {
+export function createProcess(
+  config: ConfigInterface,
+  httpWebhookRegistry: HttpWebhookRegistry,
+) {
+  const getHttpHandler = createGetHttpHandler(httpWebhookRegistry);
+
   return async function process({
     rawBody,
     ...adapterArgs

@@ -14,6 +14,10 @@ export type WebhookHandlerFunction = (
   body: string,
 ) => Promise<void>;
 
+export interface HttpWebhookRegistry {
+  [topic: string]: WebhookHandlerFunction;
+}
+
 export interface ShortenedRegisterParams {
   path: string;
   shop: string;
@@ -84,4 +88,7 @@ export interface WebhookProcessParams extends AdapterArgs {
   rawBody: string;
 }
 
-export type ShopifyWebhooks = ReturnType<typeof shopifyWebhooks>;
+export type ShopifyWebhooks = Omit<
+  ReturnType<typeof shopifyWebhooks>,
+  'testing'
+>;
