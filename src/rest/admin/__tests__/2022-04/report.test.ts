@@ -31,7 +31,7 @@ describe('Report resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-04-05T13:05:24-04:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
+    queueMockResponse(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-10-03T12:44:45-04:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
 
     await shopify.rest.Report.all({
       session: session,
@@ -48,6 +48,24 @@ describe('Report resource', () => {
   });
 
   it('test_2', async () => {
+    queueMockResponse(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-10-03T12:44:45-04:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
+
+    await shopify.rest.Report.all({
+      session: session,
+      updated_at_min: "2005-07-31 15:57:11 EDT -04:00",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-04/reports.json',
+      query: 'updated_at_min=2005-07-31+15%3A57%3A11+EDT+-04%3A00',
+      headers,
+      data: undefined
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_3', async () => {
     queueMockResponse(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
 
     await shopify.rest.Report.all({
@@ -65,25 +83,25 @@ describe('Report resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-04-05T13:05:24-04:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
+  it('test_4', async () => {
+    queueMockResponse(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}, {"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-10-03T12:44:45-04:00", "category": "custom_app_reports"}]}));
 
     await shopify.rest.Report.all({
       session: session,
-      updated_at_min: "2005-07-31 15:57:11 EDT -04:00",
+      since_id: "123",
     });
 
     expect({
       method: 'GET',
       domain,
       path: '/admin/api/2022-04/reports.json',
-      query: 'updated_at_min=2005-07-31+15%3A57%3A11+EDT+-04%3A00',
+      query: 'since_id=123',
       headers,
       data: undefined
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_4', async () => {
+  it('test_5', async () => {
     queueMockResponse(JSON.stringify({"reports": [{"id": 752357116, "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales"}, {"id": 517154478, "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today"}]}));
 
     await shopify.rest.Report.all({
@@ -101,26 +119,8 @@ describe('Report resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_5', async () => {
-    queueMockResponse(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}, {"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-04-05T13:05:24-04:00", "category": "custom_app_reports"}]}));
-
-    await shopify.rest.Report.all({
-      session: session,
-      since_id: "123",
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-04/reports.json',
-      query: 'since_id=123',
-      headers,
-      data: undefined
-    }).toMatchMadeHttpRequest();
-  });
-
   it('test_6', async () => {
-    queueMockResponse(JSON.stringify({"report": {"id": 1016888664, "name": "A new app report", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -1m UNTIL today ORDER BY total_sales", "updated_at": "2022-04-05T13:05:35-04:00", "category": "custom_app_reports"}}));
+    queueMockResponse(JSON.stringify({"report": {"id": 1016888664, "name": "A new app report", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -1m UNTIL today ORDER BY total_sales", "updated_at": "2022-10-03T12:53:33-04:00", "category": "custom_app_reports"}}));
 
     const report = new shopify.rest.Report({session: session});
     report.name = "A new app report";
@@ -175,7 +175,7 @@ describe('Report resource', () => {
   });
 
   it('test_9', async () => {
-    queueMockResponse(JSON.stringify({"report": {"name": "Changed Report Name", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales", "id": 517154478, "updated_at": "2022-04-05T13:05:37-04:00", "category": "custom_app_reports"}}));
+    queueMockResponse(JSON.stringify({"report": {"name": "Changed Report Name", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales", "id": 517154478, "updated_at": "2022-10-03T12:53:27-04:00", "category": "custom_app_reports"}}));
 
     const report = new shopify.rest.Report({session: session});
     report.id = 517154478;

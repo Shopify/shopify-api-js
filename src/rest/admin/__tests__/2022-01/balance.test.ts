@@ -31,7 +31,7 @@ describe('Balance resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"balance": [{"currency": "USD", "amount": "53.99"}]}));
+    queueMockResponse(JSON.stringify({"balance": [{"amount": "53.99", "currency": "USD"}]}));
 
     await shopify.rest.Balance.all({
       session: session,

@@ -31,23 +31,6 @@ describe('Redirect resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"redirects": [{"id": 304339089, "path": "/products.php", "target": "/products"}, {"id": 668809255, "path": "/leopard", "target": "/pages/macosx"}, {"id": 950115854, "path": "/ibook", "target": "/products/macbook"}]}));
-
-    await shopify.rest.Redirect.all({
-      session: session,
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-04/redirects.json',
-      query: '',
-      headers,
-      data: undefined
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_2', async () => {
     queueMockResponse(JSON.stringify({"redirects": [{"id": 950115854, "path": "/ibook", "target": "/products/macbook"}]}));
 
     await shopify.rest.Redirect.all({
@@ -65,43 +48,24 @@ describe('Redirect resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('test_2', async () => {
+    queueMockResponse(JSON.stringify({"redirects": [{"id": 304339089, "path": "/products.php", "target": "/products"}, {"id": 668809255, "path": "/leopard", "target": "/pages/macosx"}, {"id": 950115854, "path": "/ibook", "target": "/products/macbook"}]}));
+
+    await shopify.rest.Redirect.all({
+      session: session,
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-04/redirects.json',
+      query: '',
+      headers,
+      data: undefined
+    }).toMatchMadeHttpRequest();
+  });
+
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"redirect": {"id": 984542199, "path": "/ipod", "target": "/pages/itunes"}}));
-
-    const redirect = new shopify.rest.Redirect({session: session});
-    redirect.path = "/ipod";
-    redirect.target = "/pages/itunes";
-    await redirect.save({});
-
-    expect({
-      method: 'POST',
-      domain,
-      path: '/admin/api/2022-04/redirects.json',
-      query: '',
-      headers,
-      data: { "redirect": {"path": "/ipod", "target": "/pages/itunes"} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_4', async () => {
-    queueMockResponse(JSON.stringify({"redirect": {"id": 984542200, "path": "/forums", "target": "http://forums.apple.com/"}}));
-
-    const redirect = new shopify.rest.Redirect({session: session});
-    redirect.path = "http://www.apple.com/forums";
-    redirect.target = "http://forums.apple.com";
-    await redirect.save({});
-
-    expect({
-      method: 'POST',
-      domain,
-      path: '/admin/api/2022-04/redirects.json',
-      query: '',
-      headers,
-      data: { "redirect": {"path": "http://www.apple.com/forums", "target": "http://forums.apple.com"} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_5', async () => {
     queueMockResponse(JSON.stringify({"count": 3}));
 
     await shopify.rest.Redirect.count({
@@ -118,7 +82,7 @@ describe('Redirect resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_6', async () => {
+  it('test_4', async () => {
     queueMockResponse(JSON.stringify({"redirect": {"id": 668809255, "path": "/leopard", "target": "/pages/macosx"}}));
 
     await shopify.rest.Redirect.find({
@@ -136,43 +100,7 @@ describe('Redirect resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_7', async () => {
-    queueMockResponse(JSON.stringify({"redirect": {"path": "/tiger", "target": "/pages/macosx", "id": 668809255}}));
-
-    const redirect = new shopify.rest.Redirect({session: session});
-    redirect.id = 668809255;
-    redirect.path = "/tiger";
-    await redirect.save({});
-
-    expect({
-      method: 'PUT',
-      domain,
-      path: '/admin/api/2022-04/redirects/668809255.json',
-      query: '',
-      headers,
-      data: { "redirect": {"path": "/tiger"} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_8', async () => {
-    queueMockResponse(JSON.stringify({"redirect": {"target": "/pages/macpro", "path": "/leopard", "id": 668809255}}));
-
-    const redirect = new shopify.rest.Redirect({session: session});
-    redirect.id = 668809255;
-    redirect.target = "/pages/macpro";
-    await redirect.save({});
-
-    expect({
-      method: 'PUT',
-      domain,
-      path: '/admin/api/2022-04/redirects/668809255.json',
-      query: '',
-      headers,
-      data: { "redirect": {"target": "/pages/macpro"} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_9', async () => {
+  it('test_5', async () => {
     queueMockResponse(JSON.stringify({"redirect": {"path": "/powermac", "target": "/pages/macpro", "id": 950115854}}));
 
     const redirect = new shopify.rest.Redirect({session: session});
@@ -191,7 +119,43 @@ describe('Redirect resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_10', async () => {
+  it('test_6', async () => {
+    queueMockResponse(JSON.stringify({"redirect": {"path": "/tiger", "target": "/pages/macosx", "id": 668809255}}));
+
+    const redirect = new shopify.rest.Redirect({session: session});
+    redirect.id = 668809255;
+    redirect.path = "/tiger";
+    await redirect.save({});
+
+    expect({
+      method: 'PUT',
+      domain,
+      path: '/admin/api/2022-04/redirects/668809255.json',
+      query: '',
+      headers,
+      data: { "redirect": {"path": "/tiger"} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_7', async () => {
+    queueMockResponse(JSON.stringify({"redirect": {"target": "/pages/macpro", "path": "/leopard", "id": 668809255}}));
+
+    const redirect = new shopify.rest.Redirect({session: session});
+    redirect.id = 668809255;
+    redirect.target = "/pages/macpro";
+    await redirect.save({});
+
+    expect({
+      method: 'PUT',
+      domain,
+      path: '/admin/api/2022-04/redirects/668809255.json',
+      query: '',
+      headers,
+      data: { "redirect": {"target": "/pages/macpro"} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_8', async () => {
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.Redirect.delete({
@@ -206,6 +170,42 @@ describe('Redirect resource', () => {
       query: '',
       headers,
       data: undefined
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_9', async () => {
+    queueMockResponse(JSON.stringify({"redirect": {"id": 984542199, "path": "/ipod", "target": "/pages/itunes"}}));
+
+    const redirect = new shopify.rest.Redirect({session: session});
+    redirect.path = "/ipod";
+    redirect.target = "/pages/itunes";
+    await redirect.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-04/redirects.json',
+      query: '',
+      headers,
+      data: { "redirect": {"path": "/ipod", "target": "/pages/itunes"} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_10', async () => {
+    queueMockResponse(JSON.stringify({"redirect": {"id": 984542200, "path": "/forums", "target": "http://forums.apple.com/"}}));
+
+    const redirect = new shopify.rest.Redirect({session: session});
+    redirect.path = "http://www.apple.com/forums";
+    redirect.target = "http://forums.apple.com";
+    await redirect.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-04/redirects.json',
+      query: '',
+      headers,
+      data: { "redirect": {"path": "http://www.apple.com/forums", "target": "http://forums.apple.com"} }
     }).toMatchMadeHttpRequest();
   });
 
