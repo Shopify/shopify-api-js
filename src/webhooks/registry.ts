@@ -3,7 +3,6 @@ import {StatusCode} from '@shopify/network';
 import {
   abstractConvertRequest,
   abstractConvertResponse,
-  AdapterArgs,
   AdapterResponse,
   getHeader,
   Headers,
@@ -20,14 +19,14 @@ import {HashFormat} from '../runtime/crypto/types';
 
 import {
   AddHandlerParams,
-  AddHandlersProps,
   BuildCheckQueryParams,
   BuildQueryParams,
   DeliveryMethod,
   RegisterParams,
   RegisterReturn,
-  WebhookRegistryEntry,
   WebhookCheckResponse,
+  WebhookHandlerFunction,
+  WebhookProcessParams,
   ShortenedRegisterParams,
 } from './types';
 
@@ -56,10 +55,6 @@ function isSuccess(
       result.data[endpoint] &&
       result.data[endpoint].webhookSubscription,
   );
-}
-
-function validateDeliveryMethod(_deliveryMethod: DeliveryMethod) {
-  return true;
 }
 
 export function buildCheckQuery({topic}: BuildCheckQueryParams): string {
@@ -93,7 +88,6 @@ export function buildQuery({
   deliveryMethod = DeliveryMethod.Http,
   webhookId,
 }: BuildQueryParams): string {
-  validateDeliveryMethod(deliveryMethod);
   let identifier: string;
   if (webhookId) {
     identifier = `id: "${webhookId}"`;
@@ -149,7 +143,7 @@ function topicForStorage(topic: string): string {
   return topic.toUpperCase().replace(/\//g, '_');
 }
 
-export const webhookRegistry: {[topic: string]: WebhookRegistryEntry} = {};
+export const webhookRegistry: {[topic: string]: WebhookHandlerFunction} = {};
 
 export function resetWebhookRegistry() {
   for (const key in webhookRegistry) {
@@ -159,24 +153,20 @@ export function resetWebhookRegistry() {
   }
 }
 
-export function addHandler(params: AddHandlerParams) {
-  const {topic, ...rest} = params;
-  webhookRegistry[topicForStorage(topic)] = rest as WebhookRegistryEntry;
+export function addHttpHandler(params: AddHandlerParams) {
+  const {topic, handler} = params;
+  webhookRegistry[topicForStorage(topic)] = handler;
 }
 
-export function addHandlers(handlers: AddHandlersProps): void {
-  Object.entries(handlers).forEach(
-    ([topic, registryEntry]: [string, WebhookRegistryEntry]) => {
-      addHandler({topic, ...registryEntry});
-    },
-  );
+export function addHttpHandlers(handlers: AddHandlerParams[]): void {
+  handlers.forEach((handlerParam) => addHttpHandler(handlerParam));
 }
 
-export function getHandler(topic: string): WebhookRegistryEntry | null {
+export function getHttpHandler(topic: string): WebhookHandlerFunction | null {
   return webhookRegistry[topicForStorage(topic)] ?? null;
 }
 
-export function getTopics(): string[] {
+export function getTopicsAdded(): string[] {
   return Object.keys(webhookRegistry);
 }
 
@@ -207,7 +197,6 @@ export function createRegister(config: ConfigInterface) {
       return registerReturn;
     }
 
-    validateDeliveryMethod(deliveryMethod);
     const client = new GraphqlClient({domain: shop, accessToken});
     const address =
       deliveryMethod === DeliveryMethod.Http
@@ -262,27 +251,26 @@ export function createRegister(config: ConfigInterface) {
   };
 }
 
-export function createRegisterAll(config: ConfigInterface) {
+export function createRegisterAllHttp(config: ConfigInterface) {
   const register = createRegister(config);
 
-  return async function registerAll({
+  return async function registerAllHttp({
+    path,
     accessToken,
     shop,
-    deliveryMethod = DeliveryMethod.Http,
   }: ShortenedRegisterParams): Promise<RegisterReturn> {
     let registerReturn = {};
-    const topics = getTopics();
+    const topics = getTopicsAdded();
 
     for (const topic of topics) {
-      const handler = getHandler(topic);
+      const handler = getHttpHandler(topic);
       if (handler) {
-        const {path} = handler;
         const webhook: RegisterParams = {
           path,
           topic,
           accessToken,
           shop,
-          deliveryMethod,
+          deliveryMethod: DeliveryMethod.Http,
         };
         const returnedRegister = await register(webhook);
         registerReturn = {...registerReturn, ...returnedRegister};
@@ -291,10 +279,6 @@ export function createRegisterAll(config: ConfigInterface) {
     return registerReturn;
   };
 }
-export interface WebhookProcessParams extends AdapterArgs {
-  rawBody: string;
-}
-
 const statusTextLookup: {[key: string]: string} = {
   [StatusCode.Ok]: 'OK',
   [StatusCode.BadRequest]: 'Bad Request',
@@ -382,11 +366,11 @@ export function createProcess(config: ConfigInterface) {
 
       if (safeCompare(generatedHash, hmac)) {
         const graphqlTopic = topicForStorage(topic);
-        const webhookEntry = getHandler(graphqlTopic);
+        const handler = getHttpHandler(graphqlTopic);
 
-        if (webhookEntry) {
+        if (handler) {
           try {
-            webhookEntry.webhookHandler(graphqlTopic, domain, rawBody);
+            handler(graphqlTopic, domain, rawBody);
             response.statusCode = StatusCode.Ok;
           } catch (error) {
             response.statusCode = StatusCode.InternalServerError;
@@ -415,13 +399,4 @@ export function createProcess(config: ConfigInterface) {
 
     return Promise.resolve(returnResponse);
   };
-}
-
-export function isWebhookPath(path: string): boolean {
-  for (const key in webhookRegistry) {
-    if (webhookRegistry[key].path === path) {
-      return true;
-    }
-  }
-  return false;
 }

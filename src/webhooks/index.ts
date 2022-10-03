@@ -1,25 +1,23 @@
 import {ConfigInterface} from '../base-types';
 
 import {
-  addHandler,
-  addHandlers,
+  addHttpHandler,
+  addHttpHandlers,
   createProcess,
   createRegister,
-  createRegisterAll,
-  getHandler,
-  getTopics,
-  isWebhookPath,
+  createRegisterAllHttp,
+  getHttpHandler,
+  getTopicsAdded,
 } from './registry';
 
 export function shopifyWebhooks(config: ConfigInterface) {
   return {
-    addHandler,
-    addHandlers,
-    getHandler,
-    getTopics,
-    isWebhookPath,
+    addHttpHandler,
+    addHttpHandlers,
+    getHttpHandler,
+    getTopicsAdded,
     process: createProcess(config),
     register: createRegister(config),
-    registerAll: createRegisterAll(config),
+    registerAllHttp: createRegisterAllHttp(config),
   };
 }

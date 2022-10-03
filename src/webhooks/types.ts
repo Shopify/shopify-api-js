@@ -1,3 +1,5 @@
+import {AdapterArgs} from '../runtime';
+
 import type {shopifyWebhooks} from '.';
 
 export enum DeliveryMethod {
@@ -6,25 +8,21 @@ export enum DeliveryMethod {
   PubSub = 'pubsub',
 }
 
-type WebhookHandlerFunction = (
+export type WebhookHandlerFunction = (
   topic: string,
   shop_domain: string,
   body: string,
 ) => Promise<void>;
 
-export interface RegisterParams {
-  // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
-  topic: string;
+export interface ShortenedRegisterParams {
   path: string;
   shop: string;
   accessToken: string;
-  deliveryMethod?: DeliveryMethod;
 }
 
-export interface ShortenedRegisterParams {
+export interface RegisterParams extends ShortenedRegisterParams {
   // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
-  shop: string;
-  accessToken: string;
+  topic: string;
   deliveryMethod?: DeliveryMethod;
 }
 
@@ -33,11 +31,6 @@ export interface RegisterReturn {
     success: boolean;
     result: unknown;
   };
-}
-
-export interface WebhookRegistryEntry {
-  path: string;
-  webhookHandler: WebhookHandlerFunction;
 }
 
 interface WebhookCheckResponseNode<
@@ -82,12 +75,13 @@ export interface BuildQueryParams {
   webhookId?: string;
 }
 
-export interface AddHandlersProps {
-  [topic: string]: WebhookRegistryEntry;
+export interface AddHandlerParams {
+  topic: string;
+  handler: WebhookHandlerFunction;
 }
 
-export interface AddHandlerParams extends WebhookRegistryEntry {
-  topic: string;
+export interface WebhookProcessParams extends AdapterArgs {
+  rawBody: string;
 }
 
 export type ShopifyWebhooks = ReturnType<typeof shopifyWebhooks>;
