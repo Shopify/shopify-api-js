@@ -31,24 +31,25 @@ describe('ScriptTag resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"script_tags": [{"id": 421379493, "src": "https://js.example.org/bar.js", "event": "onload", "created_at": "2022-05-27T09:15:09-04:00", "updated_at": "2022-05-27T09:15:09-04:00", "display_scope": "all"}, {"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2022-05-27T09:15:09-04:00", "updated_at": "2022-05-27T09:15:09-04:00", "display_scope": "all"}]}));
+    queueMockResponse(JSON.stringify({"script_tags": [{"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2022-10-03T12:44:45-04:00", "updated_at": "2022-10-03T12:44:45-04:00", "display_scope": "all"}]}));
 
     await shopify.rest.ScriptTag.all({
       session: session,
+      since_id: "421379493",
     });
 
     expect({
       method: 'GET',
       domain,
       path: '/admin/api/2022-01/script_tags.json',
-      query: '',
+      query: 'since_id=421379493',
       headers,
       data: undefined
     }).toMatchMadeHttpRequest();
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"script_tags": [{"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2022-05-27T09:15:09-04:00", "updated_at": "2022-05-27T09:15:09-04:00", "display_scope": "all"}]}));
+    queueMockResponse(JSON.stringify({"script_tags": [{"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2022-10-03T12:44:45-04:00", "updated_at": "2022-10-03T12:44:45-04:00", "display_scope": "all"}]}));
 
     await shopify.rest.ScriptTag.all({
       session: session,
@@ -66,42 +67,23 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"script_tags": [{"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2022-05-27T09:15:09-04:00", "updated_at": "2022-05-27T09:15:09-04:00", "display_scope": "all"}]}));
+    queueMockResponse(JSON.stringify({"script_tags": [{"id": 421379493, "src": "https://js.example.org/bar.js", "event": "onload", "created_at": "2022-10-03T12:44:45-04:00", "updated_at": "2022-10-03T12:44:45-04:00", "display_scope": "all"}, {"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2022-10-03T12:44:45-04:00", "updated_at": "2022-10-03T12:44:45-04:00", "display_scope": "all"}]}));
 
     await shopify.rest.ScriptTag.all({
       session: session,
-      since_id: "421379493",
     });
 
     expect({
       method: 'GET',
       domain,
       path: '/admin/api/2022-01/script_tags.json',
-      query: 'since_id=421379493',
+      query: '',
       headers,
       data: undefined
     }).toMatchMadeHttpRequest();
   });
 
   it('test_4', async () => {
-    queueMockResponse(JSON.stringify({"script_tag": {"id": 870402688, "src": "https://example.com/my_script.js", "event": "onload", "created_at": "2022-05-27T09:15:51-04:00", "updated_at": "2022-05-27T09:15:51-04:00", "display_scope": "all", "cache": false}}));
-
-    const script_tag = new shopify.rest.ScriptTag({session: session});
-    script_tag.event = "onload";
-    script_tag.src = "https://example.com/my_script.js";
-    await script_tag.save({});
-
-    expect({
-      method: 'POST',
-      domain,
-      path: '/admin/api/2022-01/script_tags.json',
-      query: '',
-      headers,
-      data: { "script_tag": {"event": "onload", "src": "https://example.com/my_script.js"} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_5', async () => {
     queueMockResponse(JSON.stringify({"count": 2}));
 
     await shopify.rest.ScriptTag.count({
@@ -118,8 +100,8 @@ describe('ScriptTag resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_6', async () => {
-    queueMockResponse(JSON.stringify({"script_tag": {"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2022-05-27T09:15:09-04:00", "updated_at": "2022-05-27T09:15:09-04:00", "display_scope": "all", "cache": false}}));
+  it('test_5', async () => {
+    queueMockResponse(JSON.stringify({"script_tag": {"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2022-10-03T12:44:45-04:00", "updated_at": "2022-10-03T12:44:45-04:00", "display_scope": "all", "cache": false}}));
 
     await shopify.rest.ScriptTag.find({
       session: session,
@@ -136,8 +118,8 @@ describe('ScriptTag resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_7', async () => {
-    queueMockResponse(JSON.stringify({"script_tag": {"src": "https://somewhere-else.com/another.js", "cache": false, "id": 596726825, "event": "onload", "created_at": "2022-05-27T09:15:09-04:00", "updated_at": "2022-05-27T09:15:54-04:00", "display_scope": "all"}}));
+  it('test_6', async () => {
+    queueMockResponse(JSON.stringify({"script_tag": {"src": "https://somewhere-else.com/another.js", "cache": false, "id": 596726825, "event": "onload", "created_at": "2022-10-03T12:44:45-04:00", "updated_at": "2022-10-03T12:46:10-04:00", "display_scope": "all"}}));
 
     const script_tag = new shopify.rest.ScriptTag({session: session});
     script_tag.id = 596726825;
@@ -154,7 +136,7 @@ describe('ScriptTag resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_8', async () => {
+  it('test_7', async () => {
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.ScriptTag.delete({
@@ -169,6 +151,24 @@ describe('ScriptTag resource', () => {
       query: '',
       headers,
       data: undefined
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_8', async () => {
+    queueMockResponse(JSON.stringify({"script_tag": {"id": 870402687, "src": "https://example.com/my_script.js", "event": "onload", "created_at": "2022-10-03T12:46:20-04:00", "updated_at": "2022-10-03T12:46:20-04:00", "display_scope": "all", "cache": false}}));
+
+    const script_tag = new shopify.rest.ScriptTag({session: session});
+    script_tag.event = "onload";
+    script_tag.src = "https://example.com/my_script.js";
+    await script_tag.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-01/script_tags.json',
+      query: '',
+      headers,
+      data: { "script_tag": {"event": "onload", "src": "https://example.com/my_script.js"} }
     }).toMatchMadeHttpRequest();
   });
 

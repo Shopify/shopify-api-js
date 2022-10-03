@@ -14,6 +14,10 @@ interface FindArgs {
   id: number | string;
   fields?: unknown;
 }
+interface DeleteArgs {
+  session: SessionInterface;
+  id: number | string;
+}
 interface AllArgs {
   [key: string]: unknown;
   session: SessionInterface;
@@ -63,6 +67,7 @@ export class Customer extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customers/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
@@ -87,6 +92,23 @@ export class Customer extends Base {
       params: {"fields": fields},
     });
     return result ? result[0] : null;
+  }
+
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
+    const response = await this.request<Customer>({
+      http_method: "delete",
+      operation: "delete",
+      session: session,
+      urlIds: {"id": id},
+      params: {},
+    });
+
+    return response ? response.body : null;
   }
 
   public static async all(

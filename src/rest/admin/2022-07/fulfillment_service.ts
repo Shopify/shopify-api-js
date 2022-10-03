@@ -85,7 +85,6 @@ export class FulfillmentService extends Base {
 
   public admin_graphql_api_id: string | null;
   public callback_url: string | null;
-  public format: string | null;
   public fulfillment_orders_opt_in: boolean | null;
   public handle: string | null;
   public id: number | null;

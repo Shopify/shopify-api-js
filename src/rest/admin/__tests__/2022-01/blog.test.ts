@@ -31,7 +31,7 @@ describe('Blog resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"blogs": [{"id": 382285388, "handle": "banana-blog", "title": "A Gnu Blog", "updated_at": "2006-02-02T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:51:55-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/382285388"}, {"id": 241253187, "handle": "apple-blog", "title": "Mah Blog", "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:51:55-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}]}));
+    queueMockResponse(JSON.stringify({"blogs": [{"id": 382285388, "handle": "banana-blog", "title": "A Gnu Blog", "updated_at": "2006-02-02T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T12:44:45-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/382285388"}, {"id": 241253187, "handle": "apple-blog", "title": "Mah Blog", "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T12:44:45-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}]}));
 
     await shopify.rest.Blog.all({
       session: session,
@@ -48,7 +48,7 @@ describe('Blog resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"blogs": [{"id": 382285388, "handle": "banana-blog", "title": "A Gnu Blog", "updated_at": "2006-02-02T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:51:55-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/382285388"}, {"id": 1008414249, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2022-04-05T12:53:55-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:53:55-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414249"}]}));
+    queueMockResponse(JSON.stringify({"blogs": [{"id": 382285388, "handle": "banana-blog", "title": "A Gnu Blog", "updated_at": "2006-02-02T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T12:44:45-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/382285388"}, {"id": 1008414252, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2022-10-03T13:06:38-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T13:06:38-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414252"}]}));
 
     await shopify.rest.Blog.all({
       session: session,
@@ -66,7 +66,7 @@ describe('Blog resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"blog": {"id": 1008414252, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2022-04-05T12:54:03-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:54:03-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414252"}}));
+    queueMockResponse(JSON.stringify({"blog": {"id": 1008414248, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2022-10-03T13:06:19-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T13:06:19-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414248"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.title = "Apple main blog";
@@ -83,7 +83,7 @@ describe('Blog resource', () => {
   });
 
   it('test_4', async () => {
-    queueMockResponse(JSON.stringify({"blog": {"id": 1008414253, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2022-04-05T12:54:05-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:54:05-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414253"}}));
+    queueMockResponse(JSON.stringify({"blog": {"id": 1008414250, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2022-10-03T13:06:31-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T13:06:31-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414250"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.title = "Apple main blog";
@@ -125,24 +125,6 @@ describe('Blog resource', () => {
   });
 
   it('test_6', async () => {
-    queueMockResponse(JSON.stringify({"blog": {"id": 241253187, "handle": "apple-blog", "title": "Mah Blog", "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:51:55-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
-
-    await shopify.rest.Blog.find({
-      session: session,
-      id: 241253187,
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-01/blogs/241253187.json',
-      query: '',
-      headers,
-      data: undefined
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_7', async () => {
     queueMockResponse(JSON.stringify({"blog": {"id": 241253187, "title": "Mah Blog"}}));
 
     await shopify.rest.Blog.find({
@@ -161,8 +143,26 @@ describe('Blog resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('test_7', async () => {
+    queueMockResponse(JSON.stringify({"blog": {"id": 241253187, "handle": "apple-blog", "title": "Mah Blog", "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T12:44:45-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
+
+    await shopify.rest.Blog.find({
+      session: session,
+      id: 241253187,
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/blogs/241253187.json',
+      query: '',
+      headers,
+      data: undefined
+    }).toMatchMadeHttpRequest();
+  });
+
   it('test_8', async () => {
-    queueMockResponse(JSON.stringify({"blog": {"title": "IPod Updates", "handle": "apple-blog", "id": 241253187, "updated_at": "2022-04-05T12:54:10-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:51:55-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
+    queueMockResponse(JSON.stringify({"blog": {"title": "IPod Updates", "handle": "apple-blog", "id": 241253187, "updated_at": "2022-10-03T13:06:22-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T12:44:45-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.id = 241253187;
@@ -180,7 +180,7 @@ describe('Blog resource', () => {
   });
 
   it('test_9', async () => {
-    queueMockResponse(JSON.stringify({"blog": {"title": "IPod Updates", "handle": "ipod-updates", "commentable": "moderate", "id": 241253187, "updated_at": "2022-04-05T12:54:11-04:00", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:51:55-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
+    queueMockResponse(JSON.stringify({"blog": {"title": "IPod Updates", "handle": "ipod-updates", "commentable": "moderate", "id": 241253187, "updated_at": "2022-10-03T13:06:29-04:00", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T12:44:45-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.id = 241253187;
@@ -200,7 +200,7 @@ describe('Blog resource', () => {
   });
 
   it('test_10', async () => {
-    queueMockResponse(JSON.stringify({"blog": {"title": "Mah Blog", "handle": "apple-blog", "id": 241253187, "updated_at": "2022-04-05T12:54:12-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-04-05T12:51:55-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
+    queueMockResponse(JSON.stringify({"blog": {"title": "Mah Blog", "handle": "apple-blog", "id": 241253187, "updated_at": "2022-10-03T13:06:34-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2022-10-03T12:44:45-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.id = 241253187;
