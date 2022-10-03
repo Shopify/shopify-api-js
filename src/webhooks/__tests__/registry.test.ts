@@ -10,27 +10,20 @@ import {
   RegisterReturn,
   ShortenedRegisterParams,
 } from '../types';
-import {
-  ApiVersion,
-  ConfigParams,
-  gdprTopics,
-  LATEST_API_VERSION,
-  ShopifyHeader,
-} from '../../base-types';
+import {ApiVersion, gdprTopics, Shopify, ShopifyHeader} from '../../base-types';
 import {DataType} from '../../clients/types';
 import * as ShopifyErrors from '../../error';
 import {
   buildQuery as createWebhookQuery,
   buildCheckQuery as createWebhookCheckQuery,
 } from '../registry';
-import {queueMockResponse, shopify} from '../../__tests__/test-helper';
+import {
+  getNewTestConfig,
+  queueMockResponse,
+  shopify,
+} from '../../__tests__/test-helper';
 import {mockTestRequests} from '../../adapters/mock/mock_test_requests';
 import {shopifyApi} from '../..';
-import {MemorySessionStorage} from '../../session-storage/memory';
-import type {shopifyWebhooks} from '..';
-
-type ShopifyWebhooksWithTesting = ReturnType<typeof shopifyWebhooks>;
-type ShopifyWebhooksTesting = ReturnType<typeof shopifyWebhooks>['testing'];
 
 interface MockResponse {
   [key: string]: unknown;
@@ -66,11 +59,8 @@ async function genericWebhookHandler(
 const TEST_WEBHOOK_ID = 'gid://shopify/WebhookSubscription/12345';
 
 describe('shopify.webhooks.register', () => {
-  let testing: ShopifyWebhooksTesting;
-
   beforeEach(async () => {
     shopify.config.apiVersion = ApiVersion.Unstable;
-    testing = (shopify.webhooks as ShopifyWebhooksWithTesting).testing;
   });
 
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
@@ -226,7 +216,7 @@ describe('shopify.webhooks.register', () => {
       handler: genericWebhookHandler,
     });
     await shopify.webhooks.register(webhook);
-    expect(testing.topicInHttpWebhookRegistry('PRODUCTS_CREATE')).toBe(true);
+    expect(topicInHttpWebhookRegistry(shopify, 'PRODUCTS_CREATE')).toBe(true);
 
     // Add a second handler
     queueMockResponse(JSON.stringify(webhookCheckEmptyResponse));
@@ -242,18 +232,18 @@ describe('shopify.webhooks.register', () => {
       handler: genericWebhookHandler,
     });
     await shopify.webhooks.register(webhook);
-    expect(testing.topicInHttpWebhookRegistry('PRODUCTS_UPDATE')).toBe(true);
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(2);
+    expect(topicInHttpWebhookRegistry(shopify, 'PRODUCTS_UPDATE')).toBe(true);
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
 
     // Update the second handler and make sure we still have the two of them
     queueMockResponse(JSON.stringify(webhookCheckResponse));
     queueMockResponse(JSON.stringify(successUpdateResponse));
     webhook.path = '/webhooks/new';
     await shopify.webhooks.register(webhook);
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(2);
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
 
     // Make sure we have one of each topic in the HTTP registry
-    const actualTopics = testing.httpWebhookRegistryKeys();
+    const actualTopics = shopify.webhooks.getTopicsAdded();
     expect(actualTopics).toEqual(['PRODUCTS_CREATE', 'PRODUCTS_UPDATE']);
   });
 
@@ -310,12 +300,9 @@ describe('shopify.webhooks.registerAllHttp', () => {
     topic: 'PRODUCTS_CREATE',
     ...shortenedRegisterParams,
   };
-  let testing: ShopifyWebhooksTesting;
 
   beforeEach(async () => {
     shopify.config.apiVersion = ApiVersion.Unstable;
-    testing = (shopify.webhooks as ShopifyWebhooksWithTesting).testing;
-    testing.resetHttpWebhookRegistry();
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS_CREATE',
       handler: genericWebhookHandler,
@@ -328,8 +315,8 @@ describe('shopify.webhooks.registerAllHttp', () => {
         topic: gdprTopic,
         handler: genericWebhookHandler,
       });
-      expect(testing.topicInHttpWebhookRegistry(gdprTopic)).toBe(true);
-      expect(testing.httpWebhookRegistryKeys()).toHaveLength(2);
+      expect(topicInHttpWebhookRegistry(shopify, gdprTopic)).toBe(true);
+      expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
 
       queueMockResponse(JSON.stringify(webhookCheckEmptyResponse));
       queueMockResponse(JSON.stringify(successResponse));
@@ -345,7 +332,6 @@ describe('shopify.webhooks.registerAllHttp', () => {
 
 describe('shopify.webhooks.process', () => {
   const rawBody = '{"foo": "bar"}';
-  let testing: ShopifyWebhooksTesting;
 
   const parseRawBody = (req: any, _res: any, next: any) => {
     req.setEncoding('utf8');
@@ -381,8 +367,6 @@ describe('shopify.webhooks.process', () => {
     shopify.config.apiSecretKey = 'kitties are cute';
     shopify.config.apiVersion = ApiVersion.Unstable;
     shopify.config.isEmbeddedApp = true;
-    testing = (shopify.webhooks as ShopifyWebhooksWithTesting).testing;
-    testing.resetHttpWebhookRegistry();
   });
 
   it('handles the request when topic is already registered', async () => {
@@ -514,26 +498,19 @@ describe('shopify.webhooks.process', () => {
 });
 
 describe('shopify.webhooks.addHttpHandler', () => {
-  let testing: ShopifyWebhooksTesting;
-
-  beforeEach(async () => {
-    testing = (shopify.webhooks as ShopifyWebhooksWithTesting).testing;
-    testing.resetHttpWebhookRegistry();
-  });
-
   it('adds two handlers to the HTTP webhook registry', async () => {
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS_CREATE',
       handler: genericWebhookHandler,
     });
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(1);
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(1);
 
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
       handler: genericWebhookHandler,
     });
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(2);
-    expect(testing.httpWebhookRegistryKeys()).toEqual([
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
+    expect(shopify.webhooks.getTopicsAdded()).toEqual([
       'PRODUCTS_CREATE',
       'PRODUCTS',
     ]);
@@ -544,13 +521,13 @@ describe('shopify.webhooks.addHttpHandler', () => {
       topic: 'PRODUCTS',
       handler: genericWebhookHandler,
     });
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(1);
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(1);
 
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
       handler: genericWebhookHandler,
     });
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(1);
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(1);
   });
 
   it('adds handler with lowercase/slash format to the HTTP webhook registry', async () => {
@@ -558,26 +535,19 @@ describe('shopify.webhooks.addHttpHandler', () => {
       topic: 'products/create',
       handler: genericWebhookHandler,
     });
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(1);
-    expect(testing.httpWebhookRegistryKeys()).toEqual(['PRODUCTS_CREATE']);
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(1);
+    expect(shopify.webhooks.getTopicsAdded()).toEqual(['PRODUCTS_CREATE']);
   });
 });
 
 describe('shopify.webhooks.addHttpHandlers', () => {
-  let testing: ShopifyWebhooksTesting;
-
-  beforeEach(async () => {
-    testing = (shopify.webhooks as ShopifyWebhooksWithTesting).testing;
-    testing.resetHttpWebhookRegistry();
-  });
-
   it('adds two unique handlers to the HTTP webhook registry', async () => {
     shopify.webhooks.addHttpHandlers([
       {topic: 'PRODUCTS_CREATE', handler: genericWebhookHandler},
       {topic: 'PRODUCTS', handler: genericWebhookHandler},
     ]);
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(2);
-    expect(testing.httpWebhookRegistryKeys()).toEqual([
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
+    expect(shopify.webhooks.getTopicsAdded()).toEqual([
       'PRODUCTS_CREATE',
       'PRODUCTS',
     ]);
@@ -592,8 +562,8 @@ describe('shopify.webhooks.addHttpHandlers', () => {
       {topic: 'PRODUCTS_CREATE', handler: genericWebhookHandler},
       {topic: 'PRODUCTS', handler: genericWebhookHandler},
     ]);
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(2);
-    expect(testing.httpWebhookRegistryKeys().sort()).toEqual(
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
+    expect(shopify.webhooks.getTopicsAdded().sort()).toEqual(
       ['PRODUCTS_CREATE', 'PRODUCTS'].sort(),
     );
   });
@@ -603,8 +573,8 @@ describe('shopify.webhooks.addHttpHandlers', () => {
       {topic: 'products/create', handler: genericWebhookHandler},
       {topic: 'products/delete', handler: genericWebhookHandler},
     ]);
-    expect(testing.httpWebhookRegistryKeys()).toHaveLength(2);
-    expect(testing.httpWebhookRegistryKeys()).toEqual([
+    expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
+    expect(shopify.webhooks.getTopicsAdded()).toEqual([
       'PRODUCTS_CREATE',
       'PRODUCTS_DELETE',
     ]);
@@ -612,13 +582,6 @@ describe('shopify.webhooks.addHttpHandlers', () => {
 });
 
 describe('shopify.webhooks.getHttpHandler', () => {
-  let testing: ShopifyWebhooksTesting;
-
-  beforeEach(async () => {
-    testing = (shopify.webhooks as ShopifyWebhooksWithTesting).testing;
-    testing.resetHttpWebhookRegistry();
-  });
-
   it('gets a nonexistent handler', async () => {
     expect(shopify.webhooks.getHttpHandler('PRODUCTS')).toBe(null);
   });
@@ -655,13 +618,6 @@ describe('shopify.webhooks.getHttpHandler', () => {
 });
 
 describe('shopify.webhooks.getTopicsAdded', () => {
-  let testing: ShopifyWebhooksTesting;
-
-  beforeEach(async () => {
-    testing = (shopify.webhooks as ShopifyWebhooksWithTesting).testing;
-    testing.resetHttpWebhookRegistry();
-  });
-
   it('gets an empty list of topics', async () => {
     expect(shopify.webhooks.getTopicsAdded()).toStrictEqual([]);
   });
@@ -683,24 +639,7 @@ describe('shopify.webhooks.getTopicsAdded', () => {
 });
 
 describe('dual webhook registry instances', () => {
-  let testing: ShopifyWebhooksTesting;
-  let testing2: ShopifyWebhooksTesting;
-
-  const testConfig2: ConfigParams = {
-    apiKey: 'test_key_2',
-    apiSecretKey: 'dogs are cute too',
-    scopes: ['test_scope2'],
-    hostName: 'test_host_name_2',
-    hostScheme: 'https',
-    apiVersion: LATEST_API_VERSION,
-    isEmbeddedApp: true,
-    isPrivateApp: false,
-    sessionStorage: new MemorySessionStorage(),
-    customShopDomains: undefined,
-    billing: undefined,
-  };
-
-  const shopify2 = shopifyApi(testConfig2);
+  let shopify2: Shopify;
 
   let webhookHandlerCalled = false;
   async function webhookHandler(
@@ -721,13 +660,12 @@ describe('dual webhook registry instances', () => {
   }
 
   beforeEach(async () => {
-    testing = (shopify.webhooks as ShopifyWebhooksWithTesting).testing;
-    testing2 = (shopify2.webhooks as ShopifyWebhooksWithTesting).testing;
-    testing.resetHttpWebhookRegistry();
-    testing2.resetHttpWebhookRegistry();
-
     shopify.config.apiSecretKey = 'kitties are cute';
     shopify.config.isEmbeddedApp = true;
+
+    shopify2 = shopifyApi(getNewTestConfig());
+    shopify2.config.apiSecretKey = 'dogs are cute too';
+    shopify2.config.isEmbeddedApp = true;
 
     webhookHandlerCalled = false;
     webhookHandler2Called = false;
@@ -959,6 +897,10 @@ function assertWebhookRegistrationRequest(
       webhookId,
     }),
   }).toMatchMadeHttpRequest();
+}
+
+function topicInHttpWebhookRegistry(api: Shopify, topic: string) {
+  return api.webhooks.getTopicsAdded().includes(topic);
 }
 
 const webhookCheckEmptyResponse: MockResponse = {

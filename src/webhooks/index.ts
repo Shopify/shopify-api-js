@@ -6,12 +6,9 @@ import {
   createAddHttpHandlers,
   createGetHttpHandler,
   createGetTopicsAdded,
-  createHttpWebhookRegistryKeys,
   createProcess,
   createRegister,
   createRegisterAllHttp,
-  createResetHttpWebhookRegistry,
-  createTopicInHttpWebhookRegistry,
 } from './registry';
 
 export function shopifyWebhooks(config: ConfigInterface) {
@@ -25,13 +22,5 @@ export function shopifyWebhooks(config: ConfigInterface) {
     process: createProcess(config, httpWebhookRegistry),
     register: createRegister(config),
     registerAllHttp: createRegisterAllHttp(config, httpWebhookRegistry),
-    testing: {
-      topicInHttpWebhookRegistry:
-        createTopicInHttpWebhookRegistry(httpWebhookRegistry),
-      httpWebhookRegistryKeys:
-        createHttpWebhookRegistryKeys(httpWebhookRegistry),
-      resetHttpWebhookRegistry:
-        createResetHttpWebhookRegistry(httpWebhookRegistry),
-    },
   };
 }

@@ -144,34 +144,6 @@ function topicForStorage(topic: string): string {
   return topic.toUpperCase().replace(/\//g, '_');
 }
 
-export function createResetHttpWebhookRegistry(
-  httpWebhookRegistry: HttpWebhookRegistry,
-) {
-  return function resetHttpWebhookRegistry() {
-    for (const key in httpWebhookRegistry) {
-      if ({}.hasOwnProperty.call(httpWebhookRegistry, key)) {
-        delete httpWebhookRegistry[key];
-      }
-    }
-  };
-}
-
-export function createHttpWebhookRegistryKeys(
-  httpWebhookRegistry: HttpWebhookRegistry,
-) {
-  return function httpWebhookRegistryKeys(): string[] {
-    return Object.keys(httpWebhookRegistry);
-  };
-}
-
-export function createTopicInHttpWebhookRegistry(
-  httpWebhookRegistry: HttpWebhookRegistry,
-) {
-  return function topicInHttpWebhookRegistry(topic: string): boolean {
-    return topic in httpWebhookRegistry;
-  };
-}
-
 export function createAddHttpHandler(httpWebhookRegistry: HttpWebhookRegistry) {
   return function addHttpHandler(params: AddHandlerParams) {
     const {topic, handler} = params;
