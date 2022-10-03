@@ -4,8 +4,10 @@ import {ConfigInterface, ConfigParams, LATEST_API_VERSION} from './base-types';
 import {AuthScopes} from './auth/scopes';
 import {abstractCreateDefaultStorage} from './runtime/session';
 
-export function validateConfig(params: ConfigParams): ConfigInterface {
-  const config: ConfigInterface = {
+export function validateConfig<S extends SessionStorage = SessionStorage>(
+  params: ConfigParams<any, S>,
+): ConfigInterface<S> {
+  const config: ConfigInterface<S> = {
     apiKey: '',
     apiSecretKey: '',
     scopes: new AuthScopes([]),
@@ -16,7 +18,7 @@ export function validateConfig(params: ConfigParams): ConfigInterface {
     isPrivateApp: false,
     // TS hack as sessionStorage is guaranteed to be set
     // to a correct value in `initialize()`.
-    sessionStorage: null as unknown as SessionStorage,
+    sessionStorage: null as unknown as S,
   };
 
   // Make sure that the essential params actually have content in them

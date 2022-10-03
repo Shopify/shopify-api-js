@@ -8,18 +8,20 @@ import {shopifyWebhooks} from './webhooks';
 import {shopifyBilling} from './billing';
 import {loadRestResources} from './rest/load-rest-resources';
 import {ShopifyRestResources} from './rest/types';
+import {SessionStorage} from './session/session_storage';
 
 export * from './error';
 export * from './types';
 export * from './session/classes';
 
-export function shopifyApi<T extends ShopifyRestResources>(
-  config: ConfigParams<T>,
-): Shopify<T> {
+export function shopifyApi<
+  T extends ShopifyRestResources,
+  S extends SessionStorage = SessionStorage,
+>(config: ConfigParams<T, S>): Shopify<T, S> {
   const {restResources, ...libConfig} = config;
   const validatedConfig = validateConfig(libConfig);
 
-  const shopify: Shopify<T> = {
+  const shopify: Shopify<T, S> = {
     config: validatedConfig,
     clients: createClientClasses(validatedConfig),
     auth: shopifyAuth(validatedConfig),
