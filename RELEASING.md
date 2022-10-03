@@ -18,13 +18,13 @@
    git add CHANGELOG.md src/version.ts
    ```
 
-1. To update the version, create the appropriate tag, commit all staged changes and push to the remote repository
+1. The following command updates the version (in `package.json`), creates the appropriate tag, commits all staged changes and pushes to the remote repository
 
    ```shell
    yarn version [ --patch | --minor | --major ]
    ```
 
-   Select the applicable option to the `yarn version` command to increment the appropriate part of the version number, i.e., for a version of `x.y.z`,
+   Select the applicable option to the `yarn version` command to increment the corresponding part of the version number, i.e., for a version of `x.y.z`,
 
    - `--patch` to increment the `z`
    - `--minor` to increment the `y`
@@ -32,4 +32,46 @@
 
    The `preversion` and `postversion` scripts in `package.json` take care of the pre (testing) and post (pushing) actions.
 
-1. Login to `shipit` and press Deploy on the appropriate commit (the commit description will be the version number).
+1. Login to `shipit` and press _Deploy_ on the appropriate commit (the commit description will be the version number).
+
+## Release Candidates
+
+For significant API changes that could result in significant refactoring on the part of developers, consider releasing a few _Release Candidate_ versions in advance of the final version.  `shipit` is configured to do this from the `shopify_api_next` branch.
+
+1. Ensure your local repo is up-to-date
+
+   ```shell
+   git checkout shopify_api_next && git pull
+   ```
+
+1. (optional) Add an entry for the release candidate to `CHANGELOG.md`
+
+1. Increment the version in `src/version.ts`, ensuring that it ends with `-rcN`, where `N` starts at `1` and increments with each Release Candidate.
+
+1. Update the version in `package.json` to match that in `src/version.ts`
+
+1. Stage the `CHANGELOG.md`, `src/version.ts`, and `package.json` files
+
+   ```shell
+   git add CHANGELOG.md src/version.ts package.json
+   ```
+
+1. Commit the files to the repo
+
+   ```shell
+   git commit -m "Packaging for release vX.Y.Z-rcN"
+   ```
+
+1. Tag the commit.  Note that it's very important that the tag includes `-rc` as part of the tag name - this is how `shipit` will recognize that it's a release candidate, not a general release.
+
+   ```shell
+   git tag vX.Y.Z-rcN
+   ```
+
+1. Push the files to the remote repository
+
+   ```shell
+   git push origin shopify_api_next --follow-tags
+   ```
+
+1. Login to `shipit`, search for the _next_ environment for `shopify-api-node`, and press _Deploy_ on the appropriate commit (the commit description will be the version number).
