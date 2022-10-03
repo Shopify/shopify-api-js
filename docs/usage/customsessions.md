@@ -1,14 +1,6 @@
 # Create a `CustomSessionStorage` solution
 
-This library comes with various session management options:
-
-- `CustomSessionStorage` - to allow for a custom session storage solution (see below for details).
-- `MemorySessionStorage` - uses memory as an option to help you start developing your apps as quickly as possible. It's perfect for working in your development and testing environments. However, this storage solution is **not** meant to be used in production [due to its limitations](../issues.md).
-- `MongoDBSessionStorage`
-- `MySQLSessionStorage`
-- `PostgreSQLSessionStorage`
-- `RedisSessionStorage`
-- `SQLiteSessionStorage`
+This library comes with various session management options, see our [documentation on session storage strategies](../../src/session-storage/README.md) for more details.
 
 If you wish to use an alternative session storage solution for production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `config`. The `CustomSessionStorage` class expects to be initialized with the following three mandatory callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
 
