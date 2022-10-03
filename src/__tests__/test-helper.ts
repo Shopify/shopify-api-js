@@ -47,7 +47,8 @@ export function getNewTestConfig(): ConfigParams {
 }
 
 beforeEach(() => {
-  shopify = shopifyApi(getNewTestConfig());
+  testConfig = getNewTestConfig();
+  shopify = shopifyApi(testConfig);
 });
 
 export {shopify, testConfig};

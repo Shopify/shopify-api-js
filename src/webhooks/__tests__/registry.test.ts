@@ -333,19 +333,7 @@ describe('shopify.webhooks.registerAllHttp', () => {
 describe('shopify.webhooks.process', () => {
   const rawBody = '{"foo": "bar"}';
 
-  const parseRawBody = (req: any, _res: any, next: any) => {
-    req.setEncoding('utf8');
-    req.rawBody = '';
-    req.on('data', (chunk: any) => {
-      req.rawBody += chunk;
-    });
-    req.on('end', () => {
-      next();
-    });
-  };
-
-  const app = express();
-  app.use(parseRawBody);
+  const app = getTestExpressApp();
   app.post('/webhooks', async (req, res) => {
     let errorThrown = false;
     let statusCode = StatusCode.Ok;
@@ -714,19 +702,7 @@ describe('dual webhook registry instances', () => {
   });
 
   const rawBody = '{"foo": "bar"}';
-  const parseRawBody = (req: any, _res: any, next: any) => {
-    req.setEncoding('utf8');
-    req.rawBody = '';
-    req.on('data', (chunk: any) => {
-      req.rawBody += chunk;
-    });
-    req.on('end', () => {
-      next();
-    });
-  };
-
-  const app = express();
-  app.use(parseRawBody);
+  const app = getTestExpressApp();
   app.post('/webhooks', async (req, res) => {
     let errorThrown = false;
     let statusCode = StatusCode.Ok;
@@ -901,6 +877,23 @@ function assertWebhookRegistrationRequest(
 
 function topicInHttpWebhookRegistry(api: Shopify, topic: string) {
   return api.webhooks.getTopicsAdded().includes(topic);
+}
+
+function getTestExpressApp() {
+  const parseRawBody = (req: any, _res: any, next: any) => {
+    req.setEncoding('utf8');
+    req.rawBody = '';
+    req.on('data', (chunk: any) => {
+      req.rawBody += chunk;
+    });
+    req.on('end', () => {
+      next();
+    });
+  };
+
+  const app = express();
+  app.use(parseRawBody);
+  return app;
 }
 
 const webhookCheckEmptyResponse: MockResponse = {

@@ -88,7 +88,4 @@ export interface WebhookProcessParams extends AdapterArgs {
   rawBody: string;
 }
 
-export type ShopifyWebhooks = Omit<
-  ReturnType<typeof shopifyWebhooks>,
-  'testing'
->;
+export type ShopifyWebhooks = ReturnType<typeof shopifyWebhooks>;
