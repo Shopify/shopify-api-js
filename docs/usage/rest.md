@@ -10,7 +10,7 @@ For detailed information on individual endpoints, please visit our [REST API ref
 
 ## Using the client class
 
-The simplest way to interact with the API is using an instance of `shopify.clients.Rest`. To create a client, you'll need a session, for example:
+The simplest way to interact with the API is using an instance of `clients.Rest` ([see reference](../reference/clients/Rest.md)). To create a client, you'll need a session, for example:
 
 ```ts
 // Requests to /my-endpoint must be made with authenticatedFetch for embedded apps
@@ -25,76 +25,25 @@ app.get('/my-endpoint', async (req, res) => {
     domain: session.shop,
     accessToken: session.accessToken,
   });
+
+  const {body} = await client.get({path: 'products'});
 });
 ```
-
-Once you've constructed a client, you can use it to call API endpoints by their methods:
-
-- `client.get`
-- `client.post`
-- `client.put`
-- `client.delete`
-
-For example, this is how you can make `GET` and `POST` requests to the `/products.json` endpoint using the client created above:
-
-```ts
-const response = await client.get({
-  path: 'products',
-});
-console.log(response.headers, response.body);
-
-const response = await client.post({
-  path: 'products',
-  data: {
-    title: 'My product title',
-  },
-});
-console.log(response.headers, response.body);
-```
-
-Note that if you're using TypeScript, you can also pass in a type argument to cast the response body:
-
-```ts
-interface MyResponseBodyType {
-  products: {
-    /* ... */
-  };
-}
-
-const response = await client.get<MyResponseBodyType>({
-  path: 'products',
-});
-
-// response.body will be of type MyResponseBodyType
-console.log(response.body.products);
-```
-
-The `get`, `post`, `put`, and `delete` methods accept the following arguments:
-
-| Parameter      | Type                                |   Required?   |  Default Value  | Notes                                                                                                                                                                                                                                                                                    |
-| -------------- | ----------------------------------- | :-----------: | :-------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `path`         | `string`                            |      Yes      |        -        | The requested API endpoint path. This can be one of two formats:<ul><li>The path starting after the `/admin/api/{version}/` prefix, such as `'products'`, which executes `/admin/api/{version}/products.json`</li><li>The full path, such as `/admin/oauth/access_scopes.json`</li></ul> |
-| `data`         | `Record<string, unknown> \| string` | `post`, `put` |        -        | The request payload                                                                                                                                                                                                                                                                      |
-| `query`        | `Record<string, string \| number>`  |      No       |        -        | An optional query argument object to append to the request URL                                                                                                                                                                                                                           |
-| `extraHeaders` | `Record<string, string \| number>`  |      No       |        -        | Add custom headers to the request                                                                                                                                                                                                                                                        |
-| `type`         | `DataType`                          |      No       | `DataType.JSON` | The `Content-Type` for the request (`JSON`, `GraphQL`, `URLEncoded`)                                                                                                                                                                                                                     |
-| `tries`        | `number`                            |      No       |       `1`       | The maximum number of times to retry the request _(must be >= 0)_                                                                                                                                                                                                                        |
-
-They will return an object containing the response `headers` and `body` from Shopify.
 
 ## Using REST resources
 
 The Admin API has a lot of endpoints, and the differences between them can be subtle.
 To make it easier to interact with the API, this library provides resource classes, which map these endpoints to OO code and can make API queries feel more natural.
 
-**Note**: we provide auto-generated resources for all **_stable_** API versions, so your app must include the appropriate set (see [mounting REST resources](#mounting-rest-resources) below), matching your `apiVersion` configuration. The library will throw an error if the versions don't match.
+> **Note**: we provide auto-generated resources for all **_stable_** API versions, so your app must include the appropriate set (see [mounting REST resources](#mounting-rest-resources) below), matching your `apiVersion` configuration.
+> The library will throw an error if the versions don't match.
 
 Below is an example of how REST resources can make it easier to fetch the first product and update it:
 
 <div>With a plain REST client:
 
 ```ts
-// App must provide response types
+// App has to provide response types
 interface ProductResponse {
   product: {
     id: number;
