@@ -14,6 +14,10 @@ export type WebhookHandlerFunction = (
   body: string,
 ) => Promise<void>;
 
+export interface HttpWebhookRegistry {
+  [topic: string]: WebhookHandlerFunction;
+}
+
 export interface ShortenedRegisterParams {
   path: string;
   shop: string;

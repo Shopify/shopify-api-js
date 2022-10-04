@@ -30,8 +30,8 @@ let shopify: Shopify;
 // eslint-disable-next-line import/no-mutable-exports
 let testConfig: ConfigParams;
 
-beforeEach(() => {
-  testConfig = {
+export function getNewTestConfig(): ConfigParams {
+  return {
     apiKey: 'test_key',
     apiSecretKey: 'test_secret_key',
     scopes: ['test_scope'],
@@ -44,7 +44,10 @@ beforeEach(() => {
     customShopDomains: undefined,
     billing: undefined,
   };
+}
 
+beforeEach(() => {
+  testConfig = getNewTestConfig();
   shopify = shopifyApi(testConfig);
 });
 
