@@ -4,6 +4,7 @@ This section of the documentation provides thorough details on the parameters an
 
 ## [shopifyApi](./shopifyApi.md)
 
+<<<<<<< HEAD
 | Property                            | Description                                                                                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | config                              | The options used to set up the object, containing the parameters of this function.                                                                      |
@@ -16,3 +17,16 @@ This section of the documentation provides thorough details on the parameters an
 | [rest](../guides/rest-resources.md) | Object containing OO representations of the Admin REST API. See the [API reference documentation](https://shopify.dev/docs/api/admin-rest) for details. |
 
 [Back to main page](../../README.md)
+=======
+<!-- ### shopify.[clients](./clients/README.md) -->
+
+### shopify.[auth](./auth/README.md)
+
+<!-- ### shopify.[session](./session/README.md) -->
+
+<!-- ### shopify.[utils](./utils/README.md) -->
+
+<!-- ### shopify.[webhooks](./webhooks/README.md) -->
+
+<!-- ### shopify.[billing](./billing/README.md) -->
+>>>>>>> af919a3c (Add OAuth reference docs pages)
