@@ -382,7 +382,7 @@ export function createProcess(
 
         if (handler) {
           try {
-            handler(graphqlTopic, domain, rawBody);
+            await handler(graphqlTopic, domain, rawBody);
             response.statusCode = StatusCode.Ok;
           } catch (error) {
             response.statusCode = StatusCode.InternalServerError;
