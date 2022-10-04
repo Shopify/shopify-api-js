@@ -24,10 +24,11 @@ export enum ApiVersion {
   January22 = '2022-01',
   April22 = '2022-04',
   July22 = '2022-07',
+  October22 = '2022-10',
   Unstable = 'unstable',
 }
 
-export const LATEST_API_VERSION = ApiVersion.July22;
+export const LATEST_API_VERSION = ApiVersion.October22;
 
 export enum ShopifyHeader {
   AccessToken = 'X-Shopify-Access-Token',
