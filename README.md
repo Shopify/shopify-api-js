@@ -63,7 +63,7 @@ Next, configure the library - you'll need some values in advance:
 - Your app's API secret from Partners dashboard
 - The [scopes](https://shopify.dev/api/usage/access-scopes) you need for your app
 
-Call `shopifyApi` to create your library object before setting up your app itself:
+Call `shopifyApi` ([see reference](./docs/reference/shopifyApi.md)) to create your library object before setting up your app itself:
 
 ```ts
 import '@shopify/shopify-api/adapters/node';
@@ -95,28 +95,6 @@ To do that, apps will need to:
    1. [Fetch the current session](docs/usage/oauth.md#using-sessions) created in the OAuth process.
    1. Create a [REST](docs/usage/rest.md) or [GraphQL](docs/usage/graphql.md) API client.
    1. Use the client to query the appropriate [Admin API](https://shopify.dev/api/admin).
-
-### Configurations
-
-These are all the configuration values `shopifyApi` supports.
-
-| Value                           | Type                     | Required |       Default        | Description                                                                                                                                                                  |
-| ------------------------------- | ------------------------ | :------: | :------------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| apiKey                          | `string`                 |   Yes    |          -           | API key from Partners Dashboard                                                                                                                                              |
-| apiSecretKey                    | `string`                 |   Yes    |          -           | API secret from Partners Dashboard                                                                                                                                           |
-| scopes                          | `string[] \| AuthScopes` |   Yes    |          -           | [App scopes](https://shopify.dev/api/usage/access-scopes)                                                                                                                    |
-| hostName                        | `string`                 |   Yes    |          -           | App host name in the format `my-host-name.com`. Do **not** include the scheme or leading or trailing slashes                                                                 |
-| hostScheme                      | `"https" \| "http"`      |    No    |      `"https"`       | The scheme for your app's public URL                                                                                                                                         |
-| apiVersion                      | `ApiVersion`             |    No    | `LATEST_API_VERSION` | API version your app will be querying. E.g. `ApiVersion.January20`                                                                                                           |
-| isEmbeddedApp                   | `boolean`                |    No    |        `true`        | Whether your app will run within the Shopify Admin                                                                                                                           |
-| sessionStorage                  | `SessionStorage`         |   Yes    | _Depends on runtime_ | The storage strategy for your user sessions. Learn more about the [available strategies](docs/usage/customsessions.md)                                                       |
-| isPrivateApp                    | `boolean`                |    No    |       `false`        | Whether you are building a private app for a store                                                                                                                           |
-| logFile                         | `string`                 |    No    |     `undefined`      | File path where the library may log some events                                                                                                                              |
-| userAgentPrefix                 | `string`                 |    No    |     `undefined`      | Any prefix you wish to include in the `User-Agent` for requests made by the library                                                                                          |
-| privateAppStorefrontAccessToken | `string`                 |    No    |     `undefined`      | Fixed Storefront API access token for private apps                                                                                                                           |
-| customShopDomains               | `(RegExp \| string)[]`   |    No    |     `undefined`      | Use this if you need to allow values other than `myshopify.com`                                                                                                              |
-| billing                         | `BillingConfig`          |    No    |     `undefined`      | Billing configurations. [See documentation](docs/usage/billing.md) for full description                                                                                      |
-| restResources                   | `ShopifyRestResources`   |    No    |          -           | Mounts the given REST resources onto the object. Must use the same version as `apiVersion`. Learn more about [using REST resources](docs/usage/rest.md#using-rest-resources) |
 
 ## Features
 
