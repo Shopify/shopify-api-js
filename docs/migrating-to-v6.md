@@ -187,6 +187,33 @@ async function handleFetch(request: Request): Promise<Response> {
 
    </div>
 
+1. The `isActive()` method of `Session` now takes a `scopes` parameter.  If the scopes of the session don't match the scopes of the application (e.g., app has been restarted with new scopes), the session is deemed to be inactive and OAuth should be initiated again.
+   <div>Before
+
+   ```ts
+   const session = await Shopify.Utils.loadCurrentSession(req, res);
+
+   if (!session.isActive()) {
+    // current session is not active - either expired or scopes have changed
+   }
+   ```
+
+   </div><div>:warning: After
+
+   ```ts
+   const session = await shopify.session.getCurrent({
+     isOnline: true,
+     rawRequest: req,
+     rawResponse: res,
+   });
+
+   if (!session.isActive(shopify.config.scopes)) {
+    // current session is not active - either expired or scopes have changed
+   }
+   ```
+
+   </div>
+
 ---
 
 ## Changes to authentication functions
