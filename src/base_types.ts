@@ -26,6 +26,7 @@ export interface ContextParams {
 }
 
 export enum ApiVersion {
+<<<<<<< HEAD:src/base_types.ts
   April19 = '2019-04',
   July19 = '2019-07',
   October19 = '2019-10',
@@ -34,10 +35,22 @@ export enum ApiVersion {
   July20 = '2020-07',
   October20 = '2020-10',
   January21 = '2021-01',
+=======
+  October21 = '2021-10',
+  January22 = '2022-01',
+  April22 = '2022-04',
+  July22 = '2022-07',
+  October22 = '2022-10',
+>>>>>>> 1f7ba05d (Add support for 2022-10 version):src/base-types.ts
   Unstable = 'unstable',
   Unversioned = 'unversioned',
 }
 
+<<<<<<< HEAD:src/base_types.ts
+=======
+export const LATEST_API_VERSION = ApiVersion.October22;
+
+>>>>>>> 1f7ba05d (Add support for 2022-10 version):src/base-types.ts
 export enum ShopifyHeader {
   AccessToken = 'X-Shopify-Access-Token',
   Hmac = 'X-Shopify-Hmac-Sha256',
