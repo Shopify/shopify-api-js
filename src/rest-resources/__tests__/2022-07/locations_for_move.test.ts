@@ -23,13 +23,13 @@ describe('LocationsForMove resource', () => {
 
     await LocationsForMove.all({
       session: test_session,
-      fulfillment_order_id: 1046000825,
+      fulfillment_order_id: 1046000830,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-07/fulfillment_orders/1046000825/locations_for_move.json',
+      path: '/admin/api/2022-07/fulfillment_orders/1046000830/locations_for_move.json',
       query: '',
       headers,
       data: null

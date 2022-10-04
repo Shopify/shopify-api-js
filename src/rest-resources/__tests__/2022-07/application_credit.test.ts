@@ -38,7 +38,7 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636129, "amount": "5.00", "description": "application credit for refund", "test": null}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636127, "amount": "5.00", "description": "application credit for refund", "test": null}}));
 
     const application_credit = new ApplicationCredit({session: test_session});
     application_credit.description = "application credit for refund";

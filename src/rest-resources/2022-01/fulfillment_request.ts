@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {ApiVersion} from '../../base-types';
 
@@ -9,6 +13,8 @@ interface AcceptArgs {
 interface RejectArgs {
   [key: string]: unknown;
   message?: unknown;
+  reason?: unknown;
+  line_items?: unknown;
   body?: {[key: string]: unknown} | null;
 }
 
@@ -48,6 +54,8 @@ export class FulfillmentRequest extends Base {
   public async reject(
     {
       message = null,
+      reason = null,
+      line_items = null,
       body = null,
       ...otherArgs
     }: RejectArgs
@@ -57,7 +65,7 @@ export class FulfillmentRequest extends Base {
       operation: "reject",
       session: this.session,
       urlIds: {"fulfillment_order_id": this.fulfillment_order_id},
-      params: {"message": message, ...otherArgs},
+      params: {"message": message, "reason": reason, "line_items": line_items, ...otherArgs},
       body: body,
       entity: this,
     });

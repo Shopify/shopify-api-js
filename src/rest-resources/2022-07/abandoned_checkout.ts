@@ -13,13 +13,13 @@ import {DiscountCode} from './discount_code';
 interface CheckoutsArgs {
   [key: string]: unknown;
   session: SessionInterface;
-  limit?: unknown;
   since_id?: unknown;
   created_at_min?: unknown;
   created_at_max?: unknown;
   updated_at_min?: unknown;
   updated_at_max?: unknown;
   status?: unknown;
+  limit?: unknown;
 }
 
 export class AbandonedCheckout extends Base {
@@ -35,19 +35,20 @@ export class AbandonedCheckout extends Base {
     "discount_codes": DiscountCode
   };
   protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];
 
   public static async checkouts(
     {
       session,
-      limit = null,
       since_id = null,
       created_at_min = null,
       created_at_max = null,
       updated_at_min = null,
       updated_at_max = null,
       status = null,
+      limit = null,
       ...otherArgs
     }: CheckoutsArgs
   ): Promise<unknown> {
@@ -56,7 +57,7 @@ export class AbandonedCheckout extends Base {
       operation: "checkouts",
       session: session,
       urlIds: {},
-      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, ...otherArgs},
+      params: {"since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, "limit": limit, ...otherArgs},
       body: {},
       entity: null,
     });

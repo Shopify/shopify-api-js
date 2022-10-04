@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import {Session} from '../../../auth/session';
 import {Context} from '../../../context';
 import {ApiVersion} from '../../../base-types';
@@ -19,13 +23,13 @@ describe('LocationsForMove resource', () => {
 
     await LocationsForMove.all({
       session: test_session,
-      fulfillment_order_id: 1046000783,
+      fulfillment_order_id: 1046000830,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-04/fulfillment_orders/1046000783/locations_for_move.json',
+      path: '/admin/api/2022-04/fulfillment_orders/1046000830/locations_for_move.json',
       query: '',
       headers,
       data: null

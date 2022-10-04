@@ -86,6 +86,18 @@ expect.extend({
     data = null,
     tries = 1,
   }: AssertHttpRequestParams) {
+    const searchUrl = new URL(
+      `https://${domain}${path}${
+        query ? `?${query.replace(/\+/g, '%20')}` : ''
+      }`,
+    );
+
+    // We compare the sorted query items, so we can expect arguments in a different order
+    const searchQueryItems = Array.from(
+      searchUrl.searchParams.entries(),
+    ).sort();
+    const cleanSearchUrl = searchUrl.toString().split('?')[0];
+
     const bodyObject = data && typeof data !== 'string';
     const maxCall = currentCall + tries;
     for (let i = currentCall; i < maxCall; i++) {
@@ -94,15 +106,18 @@ expect.extend({
       const mockCall = fetchMock.mock.calls[i];
       expect(mockCall).not.toBeUndefined();
 
+      const requestUrl = new URL(mockCall[0] as string);
+      const requestQueryItems = Array.from(
+        requestUrl.searchParams.entries(),
+      ).sort();
+      const cleanRequestUrl = requestUrl.toString().split('?')[0];
+
       if (bodyObject && mockCall[1]) {
         mockCall[1].body = JSON.parse(mockCall[1].body as string);
       }
 
-      expect(mockCall[0]).toEqual(
-        `https://${domain}${path}${
-          query ? `?${query.replace(/\+/g, '%20')}` : ''
-        }`,
-      );
+      expect(cleanRequestUrl).toEqual(cleanSearchUrl);
+      expect(requestQueryItems).toEqual(searchQueryItems);
       expect(mockCall[1]).toMatchObject({method, headers, body: data});
     }
 

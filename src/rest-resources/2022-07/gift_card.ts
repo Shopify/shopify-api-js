@@ -30,6 +30,10 @@ interface SearchArgs {
   query?: unknown;
   limit?: unknown;
   fields?: unknown;
+  created_at_min?: unknown;
+  created_at_max?: unknown;
+  updated_at_min?: unknown;
+  updated_at_max?: unknown;
 }
 interface DisableArgs {
   [key: string]: unknown;
@@ -113,6 +117,10 @@ export class GiftCard extends Base {
       query = null,
       limit = null,
       fields = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
       ...otherArgs
     }: SearchArgs
   ): Promise<unknown> {
@@ -121,7 +129,7 @@ export class GiftCard extends Base {
       operation: "search",
       session: session,
       urlIds: {},
-      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
       body: {},
       entity: null,
     });
