@@ -10,7 +10,7 @@ import {
   RegisterReturn,
   ShortenedRegisterParams,
 } from '../types';
-import {ApiVersion, gdprTopics, Shopify, ShopifyHeader} from '../../base-types';
+import {gdprTopics, Shopify, ShopifyHeader} from '../../base-types';
 import {DataType} from '../../clients/types';
 import * as ShopifyErrors from '../../error';
 import {
@@ -59,10 +59,6 @@ async function genericWebhookHandler(
 const TEST_WEBHOOK_ID = 'gid://shopify/WebhookSubscription/12345';
 
 describe('shopify.webhooks.register', () => {
-  beforeEach(async () => {
-    shopify.config.apiVersion = ApiVersion.Unstable;
-  });
-
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
     const topic = 'PRODUCTS_CREATE';
     const webhook = await registerWebhook({
@@ -302,7 +298,6 @@ describe('shopify.webhooks.registerAllHttp', () => {
   };
 
   beforeEach(async () => {
-    shopify.config.apiVersion = ApiVersion.Unstable;
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS_CREATE',
       handler: genericWebhookHandler,
@@ -351,16 +346,35 @@ describe('shopify.webhooks.process', () => {
     res.status(statusCode).json({errorThrown});
   });
 
+  let blockingWebhookHandlerCalled: boolean;
+  async function blockingWebhookHandler(
+    topic: string,
+    shopDomain: string,
+    body: string,
+  ): Promise<void> {
+    await new Promise((resolve, reject) => {
+      if (!topic || !shopDomain || !body) {
+        reject(new Error('Missing webhook parameters'));
+      }
+
+      setTimeout(() => {
+        blockingWebhookHandlerCalled = true;
+        resolve(true);
+      }, 10);
+    });
+  }
+
   beforeEach(async () => {
     shopify.config.apiSecretKey = 'kitties are cute';
-    shopify.config.apiVersion = ApiVersion.Unstable;
     shopify.config.isEmbeddedApp = true;
+
+    blockingWebhookHandlerCalled = false;
   });
 
   it('handles the request when topic is already registered', async () => {
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
-      handler: genericWebhookHandler,
+      handler: blockingWebhookHandler,
     });
 
     const response = await request(app)
@@ -370,12 +384,13 @@ describe('shopify.webhooks.process', () => {
 
     expect(response.status).toEqual(StatusCode.Ok);
     expect(response.body.errorThrown).toBeFalsy();
+    expect(blockingWebhookHandlerCalled).toBeTruthy();
   });
 
   it('handles lower case headers', async () => {
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
-      handler: genericWebhookHandler,
+      handler: blockingWebhookHandler,
     });
 
     const response = await request(app)
@@ -390,12 +405,13 @@ describe('shopify.webhooks.process', () => {
 
     expect(response.status).toEqual(StatusCode.Ok);
     expect(response.body.errorThrown).toBeFalsy();
+    expect(blockingWebhookHandlerCalled).toBeTruthy();
   });
 
   it('handles the request and returns Not Found when topic is not registered', async () => {
     shopify.webhooks.addHttpHandler({
       topic: 'NONSENSE_TOPIC',
-      handler: genericWebhookHandler,
+      handler: blockingWebhookHandler,
     });
 
     const response = await request(app)
@@ -405,12 +421,13 @@ describe('shopify.webhooks.process', () => {
 
     expect(response.status).toEqual(StatusCode.NotFound);
     expect(response.body.errorThrown).toBeTruthy();
+    expect(blockingWebhookHandlerCalled).toBeFalsy();
   });
 
   it('handles the request and returns Unauthorized when hmac does not match', async () => {
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
-      handler: genericWebhookHandler,
+      handler: blockingWebhookHandler,
     });
 
     const response = await request(app)
@@ -420,24 +437,26 @@ describe('shopify.webhooks.process', () => {
 
     expect(response.status).toEqual(StatusCode.Unauthorized);
     expect(response.body.errorThrown).toBeTruthy();
+    expect(blockingWebhookHandlerCalled).toBeFalsy();
   });
 
   it('fails if the given body is empty', async () => {
     shopify.webhooks.addHttpHandler({
       topic: 'NONSENSE_TOPIC',
-      handler: genericWebhookHandler,
+      handler: blockingWebhookHandler,
     });
 
     const response = await request(app).post('/webhooks').set(headers());
 
     expect(response.status).toEqual(StatusCode.BadRequest);
     expect(response.body.errorThrown).toBeTruthy();
+    expect(blockingWebhookHandlerCalled).toBeFalsy();
   });
 
   it('fails if the any of the required headers are missing', async () => {
     shopify.webhooks.addHttpHandler({
       topic: 'PRODUCTS',
-      handler: genericWebhookHandler,
+      handler: blockingWebhookHandler,
     });
 
     let response = await request(app)
@@ -447,6 +466,7 @@ describe('shopify.webhooks.process', () => {
 
     expect(response.status).toEqual(StatusCode.BadRequest);
     expect(response.body.errorThrown).toBeTruthy();
+    expect(blockingWebhookHandlerCalled).toBeFalsy();
 
     response = await request(app)
       .post('/webhooks')
@@ -455,6 +475,7 @@ describe('shopify.webhooks.process', () => {
 
     expect(response.status).toEqual(StatusCode.BadRequest);
     expect(response.body.errorThrown).toBeTruthy();
+    expect(blockingWebhookHandlerCalled).toBeFalsy();
 
     response = await request(app)
       .post('/webhooks')
@@ -463,6 +484,7 @@ describe('shopify.webhooks.process', () => {
 
     expect(response.status).toEqual(StatusCode.BadRequest);
     expect(response.body.errorThrown).toBeTruthy();
+    expect(blockingWebhookHandlerCalled).toBeFalsy();
   });
 
   it('catches handler errors but still responds', async () => {
