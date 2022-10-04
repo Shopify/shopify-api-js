@@ -5,6 +5,7 @@ This section of the documentation provides thorough details on the parameters an
 ## [shopifyApi](./shopifyApi.md)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 | Property                            | Description                                                                                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | config                              | The options used to set up the object, containing the parameters of this function.                                                                      |
@@ -19,6 +20,9 @@ This section of the documentation provides thorough details on the parameters an
 [Back to main page](../../README.md)
 =======
 <!-- ### shopify.[clients](./clients/README.md) -->
+=======
+### shopify.[clients](./clients/README.md)
+>>>>>>> fad3ab98 (Add clients reference docs)
 
 ### shopify.[auth](./auth/README.md)
 
