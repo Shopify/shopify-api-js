@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import {Session} from '../../../auth/session';
 import {Context} from '../../../context';
 import {ApiVersion} from '../../../base-types';
@@ -50,7 +54,7 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_service": {"id": 1061774488, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": false, "include_pending_stock": false, "provider_id": null, "location_id": 1072404543, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774488"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_service": {"id": 1061774487, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": false, "include_pending_stock": false, "provider_id": null, "location_id": 1072404542, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774487"}}));
 
     const fulfillment_service = new FulfillmentService({session: test_session});
     fulfillment_service.name = "Jupiter Fulfillment";

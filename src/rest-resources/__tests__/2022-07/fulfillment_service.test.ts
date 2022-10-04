@@ -54,7 +54,7 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_service": {"id": 1061774487, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": true, "include_pending_stock": false, "provider_id": null, "location_id": 1072404542, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774487", "permits_sku_sharing": false}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_service": {"id": 1061774488, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": true, "include_pending_stock": false, "provider_id": null, "location_id": 1072404543, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774488", "permits_sku_sharing": true}}));
 
     const fulfillment_service = new FulfillmentService({session: test_session});
     fulfillment_service.name = "Jupiter Fulfillment";
@@ -63,6 +63,7 @@ describe('FulfillmentService resource', () => {
     fulfillment_service.tracking_support = true;
     fulfillment_service.requires_shipping_method = true;
     fulfillment_service.format = "json";
+    fulfillment_service.permits_sku_sharing = true;
     fulfillment_service.fulfillment_orders_opt_in = true;
     await fulfillment_service.save({});
 
@@ -72,7 +73,7 @@ describe('FulfillmentService resource', () => {
       path: '/admin/api/2022-07/fulfillment_services.json',
       query: '',
       headers,
-      data: { "fulfillment_service": {"name": "Jupiter Fulfillment", "callback_url": "http://google.com", "inventory_management": true, "tracking_support": true, "requires_shipping_method": true, "format": "json", "fulfillment_orders_opt_in": true} }
+      data: { "fulfillment_service": {"name": "Jupiter Fulfillment", "callback_url": "http://google.com", "inventory_management": true, "tracking_support": true, "requires_shipping_method": true, "format": "json", "permits_sku_sharing": true, "fulfillment_orders_opt_in": true} }
     }).toMatchMadeHttpRequest();
   });
 

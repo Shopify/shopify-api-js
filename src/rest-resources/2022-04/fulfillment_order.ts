@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
@@ -237,6 +241,7 @@ export class FulfillmentOrder extends Base {
   public delivery_method: {[key: string]: unknown} | null;
   public destination: {[key: string]: unknown} | null;
   public fulfill_at: string | null;
+  public fulfill_by: string | null;
   public fulfillment_holds: {[key: string]: unknown}[] | null;
   public id: number | null;
   public international_duties: {[key: string]: unknown} | null;

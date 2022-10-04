@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
@@ -8,6 +12,10 @@ interface FindArgs {
   session: SessionInterface;
   id: number | string;
   fields?: unknown;
+}
+interface DeleteArgs {
+  session: SessionInterface;
+  id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
@@ -58,6 +66,7 @@ export class Customer extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customers/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
@@ -82,6 +91,23 @@ export class Customer extends Base {
       params: {"fields": fields},
     });
     return result ? result[0] as Customer : null;
+  }
+
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
+    const response = await Customer.request({
+      http_method: "delete",
+      operation: "delete",
+      session: session,
+      urlIds: {"id": id},
+      params: {},
+    });
+
+    return response ? response.body : null;
   }
 
   public static async all(
@@ -225,6 +251,8 @@ export class Customer extends Base {
   public multipass_identifier: string | null;
   public note: string | null;
   public orders_count: number | null;
+  public password: string | null;
+  public password_confirmation: string | null;
   public phone: string | null;
   public sms_marketing_consent: {[key: string]: unknown} | null;
   public state: string | null;

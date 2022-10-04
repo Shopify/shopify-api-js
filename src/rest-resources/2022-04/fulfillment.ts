@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
@@ -30,6 +34,18 @@ interface CountArgs {
   updated_at_min?: unknown;
   updated_at_max?: unknown;
 }
+interface CancelArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
+interface CompleteArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
+interface OpenArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
 interface UpdateTrackingArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
@@ -47,7 +63,14 @@ export class Fulfillment extends Base {
     {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"},
-    {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"}
+    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillments/<id>/cancel.json"},
+    {"http_method": "post", "operation": "cancel", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/cancel.json"},
+    {"http_method": "post", "operation": "complete", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/complete.json"},
+    {"http_method": "post", "operation": "open", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/open.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
+    {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"},
+    {"http_method": "put", "operation": "put", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"}
   ];
 
   public static async find(
@@ -109,6 +132,63 @@ export class Fulfillment extends Base {
       params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
       body: {},
       entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async cancel(
+    {
+      body = null,
+      ...otherArgs
+    }: CancelArgs
+  ): Promise<unknown> {
+    const response = await Fulfillment.request({
+      http_method: "post",
+      operation: "cancel",
+      session: this.session,
+      urlIds: {"id": this.id, "order_id": this.order_id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async complete(
+    {
+      body = null,
+      ...otherArgs
+    }: CompleteArgs
+  ): Promise<unknown> {
+    const response = await Fulfillment.request({
+      http_method: "post",
+      operation: "complete",
+      session: this.session,
+      urlIds: {"id": this.id, "order_id": this.order_id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async open(
+    {
+      body = null,
+      ...otherArgs
+    }: OpenArgs
+  ): Promise<unknown> {
+    const response = await Fulfillment.request({
+      http_method: "post",
+      operation: "open",
+      session: this.session,
+      urlIds: {"id": this.id, "order_id": this.order_id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
     });
 
     return response ? response.body : null;

@@ -36,17 +36,17 @@ describe('ApplePayCertificate resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"apple_pay_certificate": {"id": 1068938275, "status": "csr", "merchant_id": null}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"apple_pay_certificate": {"id": 1068938276, "status": "csr", "merchant_id": null}}));
 
     await ApplePayCertificate.find({
       session: test_session,
-      id: 1068938275,
+      id: 1068938276,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-07/apple_pay_certificates/1068938275.json',
+      path: '/admin/api/2022-07/apple_pay_certificates/1068938276.json',
       query: '',
       headers,
       data: null
@@ -96,13 +96,13 @@ describe('ApplePayCertificate resource', () => {
 
     await ApplePayCertificate.csr({
       session: test_session,
-      id: 1068938276,
+      id: 1068938275,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-07/apple_pay_certificates/1068938276/csr.json',
+      path: '/admin/api/2022-07/apple_pay_certificates/1068938275/csr.json',
       query: '',
       headers,
       data: null

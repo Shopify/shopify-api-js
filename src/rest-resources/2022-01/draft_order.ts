@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
@@ -38,6 +42,7 @@ interface SendInvoiceArgs {
 }
 interface CompleteArgs {
   [key: string]: unknown;
+  payment_gateway_id?: unknown;
   payment_pending?: unknown;
   body?: {[key: string]: unknown} | null;
 }
@@ -160,6 +165,7 @@ export class DraftOrder extends Base {
 
   public async complete(
     {
+      payment_gateway_id = null,
       payment_pending = null,
       body = null,
       ...otherArgs
@@ -170,7 +176,7 @@ export class DraftOrder extends Base {
       operation: "complete",
       session: this.session,
       urlIds: {"id": this.id},
-      params: {"payment_pending": payment_pending, ...otherArgs},
+      params: {"payment_gateway_id": payment_gateway_id, "payment_pending": payment_pending, ...otherArgs},
       body: body,
       entity: this,
     });

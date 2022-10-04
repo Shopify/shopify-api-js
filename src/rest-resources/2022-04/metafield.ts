@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
@@ -15,6 +19,7 @@ interface FindArgs {
   product_image_id?: number | string | null;
   product_id?: number | string | null;
   variant_id?: number | string | null;
+  fields?: unknown;
 }
 interface DeleteArgs {
   session: SessionInterface;
@@ -52,7 +57,6 @@ interface AllArgs {
   namespace?: unknown;
   key?: unknown;
   type?: unknown;
-  value_type?: unknown;
   fields?: unknown;
   metafield?: {[key: string]: unknown} | null;
 }
@@ -88,6 +92,7 @@ export class Metafield extends Base {
     {"http_method": "delete", "operation": "delete", "ids": ["order_id", "id"], "path": "orders/<order_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["page_id", "id"], "path": "pages/<page_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["product_image_id", "id"], "path": "product_images/<product_image_id>/metafields/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_image_id", "id"], "path": "product_images/<product_image_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": ["article_id"], "path": "articles/<article_id>/metafields/count.json"},
@@ -98,11 +103,13 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "count", "ids": [], "path": "metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["page_id"], "path": "pages/<page_id>/metafields/count.json"},
+    {"http_method": "get", "operation": "count", "ids": ["page_id"], "path": "pages/<page_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["product_image_id"], "path": "product_images/<product_image_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["variant_id"], "path": "variants/<variant_id>/metafields/count.json"},
     {"http_method": "get", "operation": "get", "ids": ["article_id"], "path": "articles/<article_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["article_id", "id"], "path": "articles/<article_id>/metafields/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["collection_id"], "path": "collections/<collection_id>/metafields.json"},
@@ -111,7 +118,6 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "get", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["draft_order_id"], "path": "draft_orders/<draft_order_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["draft_order_id", "id"], "path": "draft_orders/<draft_order_id>/metafields/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "metafields.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/metafields.json"},
@@ -123,6 +129,7 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["product_id", "id"], "path": "products/<product_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["variant_id"], "path": "variants/<variant_id>/metafields.json"},
+    {"http_method": "get", "operation": "get", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["article_id"], "path": "articles/<article_id>/metafields.json"},
     {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
@@ -161,13 +168,14 @@ export class Metafield extends Base {
       page_id = null,
       product_image_id = null,
       product_id = null,
-      variant_id = null
+      variant_id = null,
+      fields = null
     }: FindArgs
   ): Promise<Metafield | null> {
     const result = await Metafield.baseFind({
       session: session,
       urlIds: {"id": id, "article_id": article_id, "blog_id": blog_id, "collection_id": collection_id, "customer_id": customer_id, "draft_order_id": draft_order_id, "order_id": order_id, "page_id": page_id, "product_image_id": product_image_id, "product_id": product_id, "variant_id": variant_id},
-      params: {},
+      params: {"fields": fields},
     });
     return result ? result[0] as Metafield : null;
   }
@@ -221,7 +229,6 @@ export class Metafield extends Base {
       namespace = null,
       key = null,
       type = null,
-      value_type = null,
       fields = null,
       metafield = null,
       ...otherArgs
@@ -230,7 +237,7 @@ export class Metafield extends Base {
     const response = await Metafield.baseFind({
       session: session,
       urlIds: {"article_id": article_id, "blog_id": blog_id, "collection_id": collection_id, "customer_id": customer_id, "draft_order_id": draft_order_id, "order_id": order_id, "page_id": page_id, "product_image_id": product_image_id, "product_id": product_id, "variant_id": variant_id},
-      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "namespace": namespace, "key": key, "type": type, "value_type": value_type, "fields": fields, "metafield": metafield, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "namespace": namespace, "key": key, "type": type, "fields": fields, "metafield": metafield, ...otherArgs},
     });
 
     return response as Metafield[];
@@ -284,6 +291,5 @@ export class Metafield extends Base {
   public product_image_id: number | null;
   public type: string | null;
   public updated_at: string | null;
-  public value_type: string | null;
   public variant_id: number | null;
 }

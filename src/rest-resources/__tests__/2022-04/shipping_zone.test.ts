@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import {Session} from '../../../auth/session';
 import {Context} from '../../../context';
 import {ApiVersion} from '../../../base-types';

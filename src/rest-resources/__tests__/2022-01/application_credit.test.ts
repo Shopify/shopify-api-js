@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import {Session} from '../../../auth/session';
 import {Context} from '../../../context';
 import {ApiVersion} from '../../../base-types';
@@ -15,25 +19,7 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636127, "amount": "5.00", "description": "application credit for refund", "test": null}}));
-
-    const application_credit = new ApplicationCredit({session: test_session});
-    application_credit.description = "application credit for refund";
-    application_credit.amount = 5.0;
-    await application_credit.save({});
-
-    expect({
-      method: 'POST',
-      domain,
-      path: '/admin/api/2022-01/application_credits.json',
-      query: '',
-      headers,
-      data: { "application_credit": {"description": "application credit for refund", "amount": 5.0} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636128, "amount": "5.00", "description": "application credit for refund", "test": true}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636125, "amount": "5.00", "description": "application credit for refund", "test": true}}));
 
     const application_credit = new ApplicationCredit({session: test_session});
     application_credit.description = "application credit for refund";
@@ -48,6 +34,24 @@ describe('ApplicationCredit resource', () => {
       query: '',
       headers,
       data: { "application_credit": {"description": "application credit for refund", "amount": 5.0, "test": true} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_2', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636127, "amount": "5.00", "description": "application credit for refund", "test": null}}));
+
+    const application_credit = new ApplicationCredit({session: test_session});
+    application_credit.description = "application credit for refund";
+    application_credit.amount = 5.0;
+    await application_credit.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-01/application_credits.json',
+      query: '',
+      headers,
+      data: { "application_credit": {"description": "application credit for refund", "amount": 5.0} }
     }).toMatchMadeHttpRequest();
   });
 

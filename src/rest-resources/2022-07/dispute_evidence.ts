@@ -57,7 +57,7 @@ export class DisputeEvidence extends Base {
   public product_description: {[key: string]: unknown} | null;
   public refund_policy_disclosure: string | null;
   public refund_refusal_explanation: string | null;
-  public shipping_address_attributes: {[key: string]: unknown} | null;
+  public shipping_address: {[key: string]: unknown} | null;
   public submitted: boolean | null;
   public uncategorized_text: string | null;
   public updated_on: string | null;

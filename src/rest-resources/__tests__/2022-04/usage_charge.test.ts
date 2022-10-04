@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import {Session} from '../../../auth/session';
 import {Context} from '../../../context';
 import {ApiVersion} from '../../../base-types';
@@ -15,7 +19,7 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"usage_charge": {"id": 1034618208, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2022-04-05T12:56:00-04:00", "billing_on": null, "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"usage_charge": {"id": 1034618208, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2022-10-03T12:53:15-04:00", "billing_on": null, "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
 
     const usage_charge = new UsageCharge({session: test_session});
     usage_charge.recurring_application_charge_id = 455696195;
@@ -34,7 +38,7 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"usage_charges": [{"id": 1034618211, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-04-05T12:56:03-04:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"usage_charges": [{"id": 1034618206, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-10-03T12:53:13-04:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
 
     await UsageCharge.all({
       session: test_session,
@@ -52,7 +56,7 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"usage_charge": {"id": 1034618210, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-04-05T12:56:01-04:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"usage_charge": {"id": 1034618210, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-10-03T12:53:16-04:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
 
     await UsageCharge.find({
       session: test_session,

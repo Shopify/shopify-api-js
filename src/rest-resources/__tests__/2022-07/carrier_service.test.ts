@@ -19,7 +19,7 @@ describe('CarrierService resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"id": 1036894955, "name": "Shipping Rate Provider", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894955", "format": "json", "callback_url": "http://shipping.example.com/"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"id": 1036894956, "name": "Shipping Rate Provider", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894956", "format": "json", "callback_url": "http://shipping.example.com/"}}));
 
     const carrier_service = new CarrierService({session: test_session});
     carrier_service.name = "Shipping Rate Provider";
@@ -38,7 +38,7 @@ describe('CarrierService resource', () => {
   });
 
   it('test_2', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"carrier_services": [{"id": 1036894957, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894957", "format": "json", "callback_url": "http://example.com/"}, {"id": 260046840, "name": "ups_shipping", "active": true, "service_discovery": true, "carrier_service_type": "legacy", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/260046840"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"carrier_services": [{"id": 1036894960, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894960", "format": "json", "callback_url": "http://example.com/"}, {"id": 260046840, "name": "ups_shipping", "active": true, "service_discovery": true, "carrier_service_type": "legacy", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/260046840"}]}));
 
     await CarrierService.all({
       session: test_session,
@@ -55,10 +55,10 @@ describe('CarrierService resource', () => {
   });
 
   it('test_3', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"active": false, "id": 1036894956, "name": "Some new name", "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894956", "format": "json", "callback_url": "http://example.com/"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"active": false, "id": 1036894958, "name": "Some new name", "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894958", "format": "json", "callback_url": "http://example.com/"}}));
 
     const carrier_service = new CarrierService({session: test_session});
-    carrier_service.id = 1036894956;
+    carrier_service.id = 1036894958;
     carrier_service.name = "Some new name";
     carrier_service.active = false;
     await carrier_service.save({});
@@ -66,7 +66,7 @@ describe('CarrierService resource', () => {
     expect({
       method: 'PUT',
       domain,
-      path: '/admin/api/2022-07/carrier_services/1036894956.json',
+      path: '/admin/api/2022-07/carrier_services/1036894958.json',
       query: '',
       headers,
       data: { "carrier_service": {"name": "Some new name", "active": false} }
@@ -74,17 +74,17 @@ describe('CarrierService resource', () => {
   });
 
   it('test_4', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"id": 1036894958, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894958", "format": "json", "callback_url": "http://example.com/"}}));
+    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"id": 1036894954, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894954", "format": "json", "callback_url": "http://example.com/"}}));
 
     await CarrierService.find({
       session: test_session,
-      id: 1036894958,
+      id: 1036894954,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-07/carrier_services/1036894958.json',
+      path: '/admin/api/2022-07/carrier_services/1036894954.json',
       query: '',
       headers,
       data: null
@@ -96,13 +96,13 @@ describe('CarrierService resource', () => {
 
     await CarrierService.delete({
       session: test_session,
-      id: 1036894959,
+      id: 1036894957,
     });
 
     expect({
       method: 'DELETE',
       domain,
-      path: '/admin/api/2022-07/carrier_services/1036894959.json',
+      path: '/admin/api/2022-07/carrier_services/1036894957.json',
       query: '',
       headers,
       data: null

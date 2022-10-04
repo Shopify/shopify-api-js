@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
 import {Session} from '../../../auth/session';
 import {Context} from '../../../context';
 import {ApiVersion} from '../../../base-types';
@@ -15,7 +19,7 @@ describe('Balance resource', () => {
   });
 
   it('test_1', async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({"balance": [{"currency": "USD", "amount": "53.99"}]}));
+    fetchMock.mockResponseOnce(JSON.stringify({"balance": [{"amount": "53.99", "currency": "USD"}]}));
 
     await Balance.all({
       session: test_session,
