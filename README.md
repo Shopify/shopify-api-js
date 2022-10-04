@@ -63,7 +63,7 @@ Next, configure the library - you'll need some values in advance:
 - Your app's API secret from Partners dashboard
 - The [scopes](https://shopify.dev/api/usage/access-scopes) you need for your app
 
-Call `shopifyApi` to create your library object before setting up your app itself:
+Call `shopifyApi` ([see reference](./docs/reference/shopifyApi.md)) to create your library object before setting up your app itself:
 
 ```ts
 import '@shopify/shopify-api/adapters/node';
