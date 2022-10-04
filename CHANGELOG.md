@@ -188,6 +188,8 @@
 
 - Added support for the `2022-10` API version [#535](https://github.com/Shopify/shopify-api-js/pull/535)
 
+## [5.2.0] - 2022-10-04
+
 - Added support for the `2022-10` API version [#535](https://github.com/Shopify/shopify-api-node/pull/535)
 
 ## [5.1.0] - 2022-09-19
