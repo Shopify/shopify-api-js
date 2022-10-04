@@ -15,7 +15,11 @@ interface FindArgs {
   fields?: unknown;
 }
 interface DeleteArgs {
+<<<<<<< HEAD:rest/admin/2022-07/customer.ts
   session: Session;
+=======
+  session: SessionInterface;
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-07/customer.ts
   id: number | string;
 }
 interface AllArgs {
@@ -69,8 +73,13 @@ export class Customer extends Base {
   protected static hasOne: {[key: string]: typeof Base} = {
     "metafield": Metafield
   };
+<<<<<<< HEAD:rest/admin/2022-07/customer.ts
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+=======
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-07/customer.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customers/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
@@ -105,6 +114,23 @@ export class Customer extends Base {
     }: DeleteArgs
   ): Promise<unknown> {
     const response = await this.request<Customer>({
+      http_method: "delete",
+      operation: "delete",
+      session: session,
+      urlIds: {"id": id},
+      params: {},
+    });
+
+    return response ? response.body : null;
+  }
+
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
+    const response = await Customer.request({
       http_method: "delete",
       operation: "delete",
       session: session,

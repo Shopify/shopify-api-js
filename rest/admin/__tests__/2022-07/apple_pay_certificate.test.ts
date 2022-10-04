@@ -48,10 +48,17 @@ describe('ApplePayCertificate resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD:rest/admin/__tests__/2022-07/apple_pay_certificate.test.ts
     queueMockResponse(JSON.stringify({"apple_pay_certificate": {"id": 1068938276, "status": "csr", "merchant_id": null}}));
 
     await shopify.rest.ApplePayCertificate.find({
       session: session,
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"apple_pay_certificate": {"id": 1068938276, "status": "csr", "merchant_id": null}}));
+
+    await ApplePayCertificate.find({
+      session: test_session,
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/__tests__/2022-07/apple_pay_certificate.test.ts
       id: 1068938276,
     });
 
@@ -106,8 +113,13 @@ describe('ApplePayCertificate resource', () => {
   it('test_5', async () => {
     queueMockResponse(JSON.stringify({"csr": {"key": "YXBwbGUtcGF5LWNzcg==\n"}}));
 
+<<<<<<< HEAD:rest/admin/__tests__/2022-07/apple_pay_certificate.test.ts
     await shopify.rest.ApplePayCertificate.csr({
       session: session,
+=======
+    await ApplePayCertificate.csr({
+      session: test_session,
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/__tests__/2022-07/apple_pay_certificate.test.ts
       id: 1068938275,
     });
 

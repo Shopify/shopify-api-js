@@ -2,10 +2,16 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD:rest/admin/2023-04/fulfillment.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/fulfillment.ts
 
 interface FindArgs {
   session: Session;
@@ -39,6 +45,17 @@ interface CancelArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
+<<<<<<< HEAD:rest/admin/2023-04/fulfillment.ts
+=======
+interface CompleteArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
+interface OpenArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/fulfillment.ts
 interface UpdateTrackingArgs {
   [key: string]: unknown;
   notify_customer?: unknown;
@@ -59,8 +76,18 @@ export class Fulfillment extends Base {
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"},
     {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillments/<id>/cancel.json"},
+<<<<<<< HEAD:rest/admin/2023-04/fulfillment.ts
     {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
     {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"}
+=======
+    {"http_method": "post", "operation": "cancel", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/cancel.json"},
+    {"http_method": "post", "operation": "complete", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/complete.json"},
+    {"http_method": "post", "operation": "open", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/open.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
+    {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"},
+    {"http_method": "put", "operation": "put", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"}
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/fulfillment.ts
   ];
 
   public static async find(
@@ -133,11 +160,57 @@ export class Fulfillment extends Base {
       ...otherArgs
     }: CancelArgs
   ): Promise<unknown> {
+<<<<<<< HEAD:rest/admin/2023-04/fulfillment.ts
     const response = await this.request<Fulfillment>({
       http_method: "post",
       operation: "cancel",
       session: this.session,
       urlIds: {"id": this.id},
+=======
+    const response = await Fulfillment.request({
+      http_method: "post",
+      operation: "cancel",
+      session: this.session,
+      urlIds: {"id": this.id, "order_id": this.order_id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async complete(
+    {
+      body = null,
+      ...otherArgs
+    }: CompleteArgs
+  ): Promise<unknown> {
+    const response = await Fulfillment.request({
+      http_method: "post",
+      operation: "complete",
+      session: this.session,
+      urlIds: {"id": this.id, "order_id": this.order_id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async open(
+    {
+      body = null,
+      ...otherArgs
+    }: OpenArgs
+  ): Promise<unknown> {
+    const response = await Fulfillment.request({
+      http_method: "post",
+      operation: "open",
+      session: this.session,
+      urlIds: {"id": this.id, "order_id": this.order_id},
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/fulfillment.ts
       params: {...otherArgs},
       body: body,
       entity: this,

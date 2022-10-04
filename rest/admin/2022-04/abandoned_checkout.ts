@@ -2,10 +2,16 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD:rest/admin/2022-04/abandoned_checkout.ts
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-01/abandoned_checkout.ts
 
 import {Currency} from './currency';
 import {Customer} from './customer';
@@ -13,7 +19,11 @@ import {DiscountCode} from './discount_code';
 
 interface CheckoutsArgs {
   [key: string]: unknown;
+<<<<<<< HEAD:rest/admin/2022-04/abandoned_checkout.ts
   session: Session;
+=======
+  session: SessionInterface;
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-01/abandoned_checkout.ts
   since_id?: unknown;
   created_at_min?: unknown;
   created_at_max?: unknown;
@@ -35,7 +45,11 @@ export class AbandonedCheckout extends Base {
   protected static hasMany: {[key: string]: typeof Base} = {
     "discount_codes": DiscountCode
   };
+<<<<<<< HEAD:rest/admin/2022-04/abandoned_checkout.ts
   protected static paths: ResourcePath[] = [
+=======
+  protected static PATHS: ResourcePath[] = [
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-01/abandoned_checkout.ts
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];
