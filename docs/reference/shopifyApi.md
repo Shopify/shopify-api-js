@@ -141,23 +141,23 @@ The options used to set up the object, containing the parameters of this functio
 
 Object containing functions to authenticate with Shopify APIs.
 
-### [clients](./clients/README.md)
+<!-- ### [clients](./clients/README.md) -->
 
 Object containing clients to access Shopify APIs.
 
-### [session](./session/README.md)
+<!-- ### [session](./session/README.md) -->
 
 Object containing functions to manage Shopify sessions.
 
-### [webhooks](./webhooks/README.md)
+<!-- ### [webhooks](./webhooks/README.md) -->
 
 Object containing functions to handle Shopify webhooks.
 
-### [billing](./billing/README.md)
+<!-- ### [billing](./billing/README.md) -->
 
 Object containing functions to enable apps to bill merchants.
 
-### [utils](./utils/README.md)
+<!-- ### [utils](./utils/README.md) -->
 
 Object containing general functions to help build apps.
 

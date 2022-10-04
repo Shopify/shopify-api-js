@@ -14,7 +14,7 @@ Once you complete the OAuth process, you'll be able to [use the session it creat
 
 ## Start endpoint
 
-The route for starting the OAuth process (in this case `/auth`) will use the library's `shopify.auth.begin` method. The method will set up the process and respond by redirecting the user to the Shopify Authentication screen, where the merchant will have to accept the required app scopes.
+The route for starting the OAuth process (in this case `/auth`) will use the library's `auth.begin` ([see reference](../reference/auth/begin.md)) method. The method will set up the process and respond by redirecting the user to the Shopify Authentication screen, where the merchant will have to accept the required app scopes.
 
 Example `/auth` endpoint in an Express.js app:
 
@@ -47,19 +47,9 @@ async function handleFetch(request: Request): Promise<Response> {
 }
 ```
 
-This method takes an object with the following properties:
-
-| Parameter      | Type              |      Required?       | Default Value | Notes                                                                                                                                           |
-| -------------- | ----------------- | :------------------: | :-----------: | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `shop`         | `string`          |         Yes          |       -       | A Shopify domain name in the form `{exampleshop}.myshopify.com`.                                                                                |
-| `callbackPath` | `string`          |         Yes          |       -       | The path to the callback endpoint, with a leading `/`. This URL must be allowed in the Partners dashboard, or using the CLI to run your app.    |
-| `isOnline`     | `bool`            |         Yes          |       -       | `true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/apps/auth/oauth/access-modes). |
-| `rawRequest`   | `AdapterRequest`  |         Yes          |       -       | The HTTP Request object used by your runtime.                                                                                                   |
-| `rawResponse`  | `AdapterResponse` | _Depends on runtime_ |       -       | The HTTP Response object used by your runtime. Required for Node.js.                                                                            |
-
 ## Callback endpoint
 
-Once the merchant approves the app's request for scopes, Shopify will redirect them back to your app, using the `callbackPath` parameter from `shopify.auth.begin`. Your app can then call `shopify.auth.callback` to complete the OAuth process, which will create a new Shopify `Session` and return the appropriate HTTP headers your app should respond with.
+Once the merchant approves the app's request for scopes, Shopify will redirect them back to your app, using the `callbackPath` parameter from `auth.begin`. Your app can then call `auth.callback` ([see reference](../reference/auth/callback.md)) to complete the OAuth process, which will create a new Shopify `Session` and return the appropriate HTTP headers your app should respond with.
 
 Example `/auth/callback` endpoint in an Express.js app:
 
@@ -98,21 +88,6 @@ async function handleFetch(request: Request): Promise<Response> {
 }
 ```
 
-This method takes an object with the following properties:
-
-| Parameter     | Type              |      Required?       | Default Value | Notes                                                                                          |
-| ------------- | ----------------- | :------------------: | :-----------: | ---------------------------------------------------------------------------------------------- |
-| `isOnline`    | `bool`            |         Yes          |       -       | `true` if the session is online and `false` otherwise. Must match the value from `auth.begin`. |
-| `rawRequest`  | `AdapterRequest`  |         Yes          |       -       | The HTTP Request object used by your runtime.                                                  |
-| `rawResponse` | `AdapterResponse` | _Depends on runtime_ |       -       | The HTTP Response object used by your runtime. Required for Node.js.                           |
-
-It will save a new session using your configured `sessionStorage`, and return an object containing:
-
-| Property  | Type             | Notes                                                                                                                                                                              |
-| --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `session` | `Session`        | The new Shopify session, containing the API access token.                                                                                                                          |
-| `headers` | `AdapterHeaders` | The HTTP headers to include in the response. In TypeScript, you can pass in a type to get a typed object back - see the Cloudflare example above. Returns `undefined` for Node.js. |
-
 ## Using sessions
 
 Once you set up both of the above endpoints, you can navigate to `{your ngrok address}/auth` in your browser to begin OAuth. When it completes, you will have a Shopify session that enables you to make requests to the Admin API, for instance [the REST Admin API client](./rest.md).
@@ -134,7 +109,7 @@ app.get('/fetch-some-data', async (req, res) => {
 });
 ```
 
-**Note**: this method will rely on cookies for non-embedded apps, and the `Authorization` HTTP header for embedded apps using [App Bridge session tokens](https://shopify.dev/apps/auth/oauth/session-tokens), making all apps safe to use in modern browsers that block 3rd party cookies.
+> **Note**: this method will rely on cookies for non-embedded apps, and the `Authorization` HTTP header for embedded apps using [App Bridge session tokens](https://shopify.dev/apps/auth/oauth/session-tokens), making all apps safe to use in modern browsers that block 3rd party cookies.
 
 For embedded apps, `shopify.session.getCurrent` will only be able to find a session if you use `authenticatedFetch` from the `@shopify/app-bridge-utils` client-side package. This function behaves like a [normal `fetch` call](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), but ensures the appropriate headers are set.
 
@@ -144,7 +119,7 @@ Learn more about [making authenticated requests](https://shopify.dev/apps/auth/o
 
 If your app needs to access the API while not handling a direct request, for example in a background job, you can use `shopify.session.getOffline` to load an offline access token for your script.
 
-**Note**: this method **_does not_** perform any validation on the `shop` parameter. You should **_never_** read the shop from user inputs or URLs.
+> **Note**: this method **_does not_** perform any validation on the `shop` parameter. You should **_never_** read the shop from user inputs or URLs.
 
 ```ts
 const session = await shopify.session.getOffline({
