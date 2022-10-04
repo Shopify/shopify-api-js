@@ -62,13 +62,13 @@ For significant API changes that could result in significant refactoring on the 
    git commit -m "Packaging for release vX.Y.Z-rcN"
    ```
 
-1. Tag the commit.  Note that it's very important that the tag includes `-rc` as part of the tag name - this is how `shipit` will recognize that it's a release candidate, not a general release.
+1. Tag the commit with an _annotated_ tag (required for the `--follow-tags` of the `push` command).  Note that it's very important that the tag includes `-rc` as part of the tag name - this is how `shipit` will recognize that it's a release candidate, not a general release.
 
    ```shell
-   git tag vX.Y.Z-rcN
+   git tag -a vX.Y.Z-rcN -m "Release candidate N of version X.Y.Z"
    ```
 
-1. Push the files to the remote repository
+1. Push the files to the remote repository, along with the annotated tag.
 
    ```shell
    git push origin shopify_api_next --follow-tags
