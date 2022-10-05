@@ -81,7 +81,7 @@ import {User} from './user';
 import {Variant} from './variant';
 import {Webhook} from './webhook';
 
-interface RestResources extends ShopifyRestResources {
+export interface RestResources extends ShopifyRestResources {
   AbandonedCheckout: typeof AbandonedCheckout;
   AccessScope: typeof AccessScope;
   AndroidPayKey: typeof AndroidPayKey;
