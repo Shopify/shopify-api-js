@@ -5,26 +5,32 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
+      "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./session-storage/*": {
       "import": "./dist/session-storage/*.js",
+      "require": "./dist/session-storage/*.js",
       "types": "./dist/session-storage/*.d.ts"
     },
     "./rest/admin/*": {
       "import": "./dist/rest/admin/*/index.js",
+      "require": "./dist/rest/admin/*/index.js",
       "types": "./dist/rest/admin/*/index.d.ts"
     },
     "./runtime": {
       "import": "./dist/runtime/index.js",
+      "require": "./dist/runtime/index.js",
       "types": "./dist/runtime/index.d.ts"
     },
     "./adapters/node": {
       "import": "./dist/adapters/node/index.js",
+      "require": "./dist/adapters/node/index.js",
       "types": "./dist/adapters/node/index.d.ts"
     },
     "./adapters/cf-worker": {
       "import": "./dist/adapters/cf-worker/index.js",
+      "require": "./dist/adapters/cf-worker/index.js",
       "types": "./dist/adapters/cf-worker/index.d.ts"
     }
   },
