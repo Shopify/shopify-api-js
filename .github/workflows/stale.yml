@@ -20,6 +20,7 @@ jobs:
           days-before-issue-stale: 60
           days-before-issue-close: 14
           operations-per-run: 1000
+<<<<<<< HEAD
 =======
           days-before-issue-stale: 90
 =======
@@ -27,6 +28,8 @@ jobs:
 >>>>>>> fceae6d4 (change stale date to start of the year)
           days-before-issue-close: 14
 >>>>>>> 0d03c4d2 (add workflows)
+=======
+>>>>>>> 01431a68 (Increase operations-per-run beyond default of 30)
           stale-issue-label: "Stale"
           stale-issue-message: >
             This issue is stale because it has been open for 90 days with no activity. It will be closed if no further action occurs in 14 days. 
