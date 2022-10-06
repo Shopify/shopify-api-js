@@ -54,7 +54,7 @@ describe('GraphQL proxy with session', () => {
       };
 
       const testResponse = await shopify.clients.graphqlProxy({
-        body: request.body!,
+        rawBody: request.body!,
         rawRequest: request,
       });
 
@@ -160,7 +160,7 @@ describe('GraphQL proxy', () => {
 
     await expect(
       shopify.clients.graphqlProxy({
-        body: '',
+        rawBody: '',
         rawRequest: request,
       }),
     ).rejects.toThrow(InvalidSession);
@@ -174,7 +174,7 @@ describe('GraphQL proxy', () => {
     };
     await expect(
       shopify.clients.graphqlProxy({
-        body: '',
+        rawBody: '',
         rawRequest: request,
       }),
     ).rejects.toThrow(SessionNotFound);
