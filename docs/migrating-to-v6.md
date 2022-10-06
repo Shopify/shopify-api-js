@@ -25,6 +25,7 @@ To make it easier to navigate this guide, here is an overview of the sections it
 
 - [Renamed `Shopify.Context` to `shopify.config`](#renamed-shopifycontext-to-shopifyconfig)
 - [Passing in framework requests / responses](#passing-in-framework-requests--responses)
+- [Simplified namespace for errors](#simplified-namespace-for-errors)
 - [Changes to `Session` and `SessionStorage`](#changes-to-session-and-sessionstorage)
 - [Changes to authentication functions](#changes-to-authentication-functions)
 - [Changes to API clients](#changes-to-api-clients)
@@ -114,6 +115,52 @@ async function handleFetch(request: Request): Promise<Response> {
   // Library will return the Response object
   return shopify.auth.begin({rawRequest: request});
 },
+```
+
+---
+
+## Simplified namespace for errors
+
+Using the v5 or earlier version of the library, error types were available via the `Shopify` instance, e.g., `Shopify.Errors.HttpResponseError`. In v6, they are now exported by the library and can be imported without any namespace prefix.
+
+<div>Before
+
+```ts
+app.post('/webhooks', async (req, res) => {
+  try {
+    await Shopify.Webhooks.Registry.process(req, res);
+  } catch (error) {
+    if (error instanceof Shopify.Errors.InvalidWebhookError) {
+      console.log(`Webhook processing error:\n\tmessage = ${error.message}`);
+    } else {
+      console.log('Other error:\n\t', error);
+    }
+  }
+});
+```
+
+</div><div>:warning: After
+
+```ts
+import {InvalidWebhookError} from '@shopify/shopify-api';
+
+// ...
+
+app.post('/webhooks', async (req, res) => {
+  try {
+    await shopify.webhooks.process({
+      rawBody: (req as any).rawBody, // as a string
+      rawRequest: req,
+      rawResponse: res,
+    });
+  } catch (error) {
+    if (error instanceof InvalidWebhookError) {
+      console.log(`Webhook processing error:\n\tmessage = ${error.message}\n\tresponse = ${error.response}`);
+    } else {
+      console.log('Other error:\n\t', error);
+    }
+  }
+});
 ```
 
 ---
