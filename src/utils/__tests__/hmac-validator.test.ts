@@ -50,12 +50,14 @@ test('queries without hmac key throw InvalidHmacError', async () => {
   );
 });
 
-test('queries with extra keys are not included in hmac querystring', async () => {
+test('queries with extra keys are included in hmac querystring', async () => {
   shopify.config.apiSecretKey = 'my super secret key';
+  // NB: keys are listed alphabetically
   const queryString =
-    'code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=a+number+as+a+string';
+    'code=some+code+goes+here&foo=bar&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=a+number+as+a+string';
   const queryObjectWithoutHmac = {
     code: 'some code goes here',
+    foo: 'bar',
     shop: 'the shop URL',
     state: 'some nonce passed from auth',
     timestamp: 'a number as a string',
@@ -65,15 +67,11 @@ test('queries with extra keys are not included in hmac querystring', async () =>
     .update(queryString)
     .digest('hex');
 
-  const testQueryWithExtraParam: AuthQuery = Object.assign(
-    queryObjectWithoutHmac,
-    {
-      hmac: localHmac,
-      'shopify[]': 'callback',
-    },
-  );
+  const queryObjectWithHmac: AuthQuery = Object.assign(queryObjectWithoutHmac, {
+    hmac: localHmac,
+  });
 
-  await expect(
-    shopify.utils.validateHmac(testQueryWithExtraParam),
-  ).resolves.toBe(true);
+  await expect(shopify.utils.validateHmac(queryObjectWithHmac)).resolves.toBe(
+    true,
+  );
 });
