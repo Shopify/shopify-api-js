@@ -28,12 +28,12 @@ Shopify.Context.initialize({
 // OR
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: Shopify.Auth.Session.MySQLSessionStorage.withCredentials({
+  SESSION_STORAGE: Shopify.Auth.Session.MySQLSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
     "username",
     "password",
-  }),
+  ),
   ...
 });
 ```
