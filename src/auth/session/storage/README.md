@@ -8,7 +8,7 @@ This folder contains implementations of the `SessionStorage` interface that work
 import Shopify from '@shopify/shopify-api';
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: new Shopify.Auth.Session.SQLiteSessionStorage("/path/to/your.db"),
+  SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage("/path/to/your.db"),
   ...
 });
 ```
@@ -21,14 +21,14 @@ Note that [SQLite] is a local, file-based SQL database. It persists all tables t
 import Shopify from '@shopify/shopify-api';
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: new Shopify.Auth.Session.MySQLSessionStorage("mysql://username:password@host/database"),
+  SESSION_STORAGE: new Shopify.Session.MySQLSessionStorage("mysql://username:password@host/database"),
   ...
 });
 
 // OR
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: Shopify.Auth.Session.MySQLSessionStorage.withCredentials(
+  SESSION_STORAGE: Shopify.Session.MySQLSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
     "username",
@@ -44,14 +44,14 @@ Shopify.Context.initialize({
 import Shopify from '@shopify/shopify-api';
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: new Shopify.Auth.Session.PostgreSQLSessionStorage("postgres://username:password@host/database"),
+  SESSION_STORAGE: new Shopify.Session.PostgreSQLSessionStorage("postgres://username:password@host/database"),
   ...
 });
 
 // OR
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: Shopify.Auth.Session.PostgreSQLSessionStorage.withCredentials(
+  SESSION_STORAGE: Shopify.Session.PostgreSQLSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
     "username",
@@ -67,14 +67,14 @@ Shopify.Context.initialize({
 import Shopify from '@shopify/shopify-api';
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: new Shopify.Auth.Session.MongoDBSessionStorage("mongodb://username:password@host/", "database"),
+  SESSION_STORAGE: new Shopify.Session.MongoDBSessionStorage("mongodb://username:password@host/", "database"),
   ...
 });
 
 // OR
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: Shopify.Auth.Session.MongoDBSessionStorage.withCredentials(
+  SESSION_STORAGE: Shopify.Session.MongoDBSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
     "username",
@@ -90,14 +90,14 @@ Shopify.Context.initialize({
 import Shopify from '@shopify/shopify-api';
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: new Shopify.Auth.Session.RedisSessionStorage("redis://username:password@host/database"),
+  SESSION_STORAGE: new Shopify.Session.RedisSessionStorage("redis://username:password@host/database"),
   ...
 });
 
 // OR
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: Shopify.Auth.Session.RedisSessionStorage.withCredentials(
+  SESSION_STORAGE: Shopify.Session.RedisSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
     "username",
@@ -113,7 +113,7 @@ Shopify.Context.initialize({
 import Shopify from '@shopify/shopify-api';
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: new Shopify.Auth.Session.MemorySessionStorage(),
+  SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
   ...
 });
 ```
@@ -126,7 +126,7 @@ Note that all sessions will be lost if the app process gets restarted or redeplo
 import Shopify from '@shopify/shopify-api';
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: new Shopify.Auth.Session.CustomSessionStorage(
+  SESSION_STORAGE: new Shopify.Session.CustomSessionStorage(
     async function storeCallback(session: SessionInterface): Promise<boolean> {
       // ..
     },
