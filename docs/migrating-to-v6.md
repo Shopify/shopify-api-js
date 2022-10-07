@@ -32,6 +32,7 @@ To make it easier to navigate this guide, here is an overview of the sections it
 - [Billing](#billing)
 - [Utility functions](#utility-functions)
 - [Changes to webhook functions](#changes-to-webhook-functions)
+- [Changes to use of REST resources](#changes-to-use-of-rest-resources)
 
 ---
 
@@ -736,7 +737,6 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-
 1. `Shopify.Webhooks.Registry.addHandlers` is now `shopify.webhooks.addHttpHandlers`, and now takes an array of `addHttpHandler` params.
    <div>Before
 
@@ -752,7 +752,7 @@ Here are all the specific changes that we made to the `Utils` object:
    });
    ```
 
-   </div><div>After
+   </div><div>:warning: After
 
    ```ts
    shopify.webhooks.addHttpHandlers([
@@ -762,7 +762,6 @@ Here are all the specific changes that we made to the `Utils` object:
    ```
 
    </div>
-
 
 1. `Shopify.Webhooks.Registry.register` is now `shopify.webhooks.register`.
    <div>Before
@@ -799,7 +798,7 @@ Here are all the specific changes that we made to the `Utils` object:
    });
    ```
 
-   </div><div>After
+   </div><div>:warning: After
 
    ```ts
    const response = await shopify.webhooks.registerAllHttp({
@@ -861,7 +860,7 @@ Here are all the specific changes that we made to the `Utils` object:
    // productsHandler = {path: '/webhooks', webhookHandler: productsWebhookHandler}
    ```
 
-   </div><div>After
+   </div><div>:warning: After
 
    ```ts
    shopify.webhooks.addHttpHandler({
@@ -893,7 +892,7 @@ Here are all the specific changes that we made to the `Utils` object:
    // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
    ```
 
-   </div><div>After
+   </div><div>:warning: After
 
    ```ts
    shopify.webhooks.addHttpHandlers([
@@ -906,3 +905,53 @@ Here are all the specific changes that we made to the `Utils` object:
    ```
 
    </div>
+
+---
+
+## Changes to use of REST resources
+
+REST resources were added to version 3 of the API library and were accessed by importing directly from the `dist` folder of the `@shopify/shopify-api`.
+
+Starting with v6, they can now be accessed via the shopify API directly.
+
+<div>Before
+
+```ts
+app.get("/api/products/count", async (req, res) => {
+  const session = await Shopify.Utils.loadCurrentSession(req, res, false);
+  const { Product } = await import(
+    `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
+  );
+
+  const countData = await Product.count({ session });
+  res.status(200).send(countData);
+});
+```
+
+</div><div>:warning: After
+
+```ts
+import {shopifyApi, ApiVersion} from "@shopify/shopify-api";
+import {restResources} from '@shopify/shopify-api/rest/admin/2022-10';  // must match apiVersion used for shopifyApi()
+
+const shopify = shopifyApi({
+  // ...
+  apiVersion: ApiVersion.October22,
+  restResources,
+});
+
+// ...
+
+app.get("/api/products/count", async (req, res) => {
+  const session = await shopify.session.getCurrent({
+    isOnline: false,
+    rawRequest: req,
+    rawResponse: res,
+  });
+
+  const countData = await shopify.rest.Product.count({ session });
+  res.status(200).send(countData);
+});
+```
+
+See [using REST resources](usage/rest.md#using-rest-resources) for more details.
