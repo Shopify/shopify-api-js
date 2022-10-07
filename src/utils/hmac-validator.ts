@@ -17,21 +17,9 @@ function stringifyQuery(query: AuthQuery): string {
 }
 
 export function createGenerateLocalHmac(config: ConfigInterface) {
-  return async ({
-    code,
-    timestamp,
-    state,
-    shop,
-    host,
-  }: AuthQuery): Promise<string> => {
-    const queryString = stringifyQuery({
-      code,
-      timestamp,
-      state,
-      shop,
-      ...(host && {host}),
-    });
-
+  return async (params: AuthQuery): Promise<string> => {
+    const {hmac, ...query} = params;
+    const queryString = stringifyQuery(query);
     return createSHA256HMAC(config.apiSecretKey, queryString, HashFormat.Hex);
   };
 }
