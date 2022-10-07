@@ -703,7 +703,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
    ```ts
    const response = await shopify.clients.graphqlProxy({
-     body: req.rawBody, // From my app
+     rawBody: req.rawBody, // From my app
      rawRequest: req,
      rawResponse: res,
    });

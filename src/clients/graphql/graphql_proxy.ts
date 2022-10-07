@@ -8,7 +8,7 @@ import {createGraphqlClientClass} from './graphql_client';
 
 export function createGraphqlProxy(config: ConfigInterface) {
   return async ({
-    body,
+    rawBody,
     ...adapterArgs
   }: GraphqlProxyParams): Promise<RequestReturn> => {
     const session = await createGetCurrent(config)({
@@ -31,7 +31,7 @@ export function createGraphqlProxy(config: ConfigInterface) {
       accessToken: session.accessToken,
     });
     return client.query({
-      data: body,
+      data: rawBody,
     });
   };
 }
