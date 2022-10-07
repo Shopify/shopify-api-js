@@ -9,7 +9,7 @@
     "target": "es5",
     "downlevelIteration": true,
     "esModuleInterop": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "noEmitOnError": false,
     "experimentalDecorators": true,
     "noUnusedParameters": true,

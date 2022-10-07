@@ -80,9 +80,7 @@ export function createBegin(config: ConfigInterface) {
       statusText: 'Found',
       headers: {
         ...cookies.response.headers!,
-        Location: `${
-          config.hostScheme
-        }://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`,
+        Location: `https://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`,
       },
     };
 

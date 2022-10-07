@@ -112,7 +112,7 @@ describe('beginAuth', () => {
 
     expect(response.statusCode).toBe(302);
     expect(response.headers?.Location).toBe(
-      `http://${shop}/admin/oauth/authorize?${expectedQueryString}`,
+      `https://${shop}/admin/oauth/authorize?${expectedQueryString}`,
     );
   });
 
