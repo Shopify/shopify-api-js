@@ -85,13 +85,19 @@ export class RedisSessionStorage implements SessionStorage {
     const cleanShop = sanitizeShop(shop, true)!;
 
     const keys = await this.client.keys('*');
+
     const results: SessionInterface[] = [];
     for (const key of keys) {
       const rawResult = await this.client.get(key);
       if (!rawResult) continue;
 
+      try {
+
       const session = sessionFromEntries(JSON.parse(rawResult));
-      if (session.shop === cleanShop) results.push(session);
+      if (session?.shop === cleanShop) results.push(session);
+      } 
+      // do nothing if the rawResult is not a parse-able session
+      catch {}
     }
 
     return results;
