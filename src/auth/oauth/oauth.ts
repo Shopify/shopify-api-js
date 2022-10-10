@@ -63,8 +63,7 @@ export function createBegin(config: ConfigInterface) {
       expires: new Date(Date.now() + 60000),
       sameSite: 'lax',
       secure: true,
-      overwrite: true,
-      path: callbackPath
+      path: callbackPath,
     });
 
     const query = {
