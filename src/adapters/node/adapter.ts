@@ -1,9 +1,8 @@
 import type {IncomingMessage, ServerResponse} from 'http';
-import path from 'path';
 
 import fetch from 'node-fetch';
 
-import {SQLiteSessionStorage} from '../../session-storage/sqlite';
+import {ShopifyError} from '../../error';
 import {
   AdapterArgs,
   canonicalizeHeaders,
@@ -76,13 +75,10 @@ export async function nodeFetch({
   };
 }
 
-export function nodeCreateDefaultStorage() {
-  const dbFile = path.join(
-    require.main ? path.dirname(require.main.filename) : process.cwd(),
-    'database.sqlite',
+export function nodeCreateDefaultStorage(): never {
+  throw new ShopifyError(
+    'You must specify a session storage implementation for node.js',
   );
-
-  return new SQLiteSessionStorage(dbFile);
 }
 
 export function nodeRuntimeString() {

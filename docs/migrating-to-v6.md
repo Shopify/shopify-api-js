@@ -23,16 +23,19 @@ Once you set up your app with the right adapter, you can follow the next section
 
 To make it easier to navigate this guide, here is an overview of the sections it contains:
 
-- [Renamed `Shopify.Context` to `shopify.config`](#renamed-shopifycontext-to-shopifyconfig)
-- [Passing in framework requests / responses](#passing-in-framework-requests--responses)
-- [Simplified namespace for errors](#simplified-namespace-for-errors)
-- [Changes to `Session` and `SessionStorage`](#changes-to-session-and-sessionstorage)
-- [Changes to authentication functions](#changes-to-authentication-functions)
-- [Changes to API clients](#changes-to-api-clients)
-- [Billing](#billing)
-- [Utility functions](#utility-functions)
-- [Changes to webhook functions](#changes-to-webhook-functions)
-- [Changes to use of REST resources](#changes-to-use-of-rest-resources)
+- [Migrating to v6](#migrating-to-v6)
+  - [Table of contents](#table-of-contents)
+  - [Renamed `Shopify.Context` to `shopify.config`](#renamed-shopifycontext-to-shopifyconfig)
+  - [Passing in Session Storage](#passing-in-session-storage)
+  - [Passing in framework requests / responses](#passing-in-framework-requests--responses)
+  - [Simplified namespace for errors](#simplified-namespace-for-errors)
+  - [Changes to `Session` and `SessionStorage`](#changes-to-session-and-sessionstorage)
+  - [Changes to authentication functions](#changes-to-authentication-functions)
+  - [Changes to API clients](#changes-to-api-clients)
+  - [Billing](#billing)
+  - [Utility functions](#utility-functions)
+  - [Changes to webhook functions](#changes-to-webhook-functions)
+  - [Changes to use of REST resources](#changes-to-use-of-rest-resources)
 
 ---
 
@@ -81,6 +84,28 @@ You will probably need to search and replace most of the imports to this library
 1. `Shopify.Context.throwIfUnitialized` and `UninitializedContextError` were removed.
 
 ---
+
+## Passing in Session Storage
+
+Using the v5 or earlier version of the library, `SESSION_STORAGE` defaulted to `SQLiteSessionStorage`.  This causes problems in environments where `sqlite3` is not available such as AWS (see [#410](https://github.com/Shopify/shopify-api-node/issues/410))
+
+1. Apps are now required to specify `sessionStorage`.
+   <div>Before
+
+   ```ts
+   import {Shopify} from '@shopify/shopify-api';
+   Shopify.Context.initialize({ ... });
+   ```
+
+   </div><div>After
+
+   ```ts
+   import {shopifyApi} from '@shopify/shopify-api';
+   import {...} from '@shopify/shopify-api/session-storage/...'
+   const shopify = shopifyApi({ sessionStorage: '...', ... });
+   ```
+
+   </div>
 
 ## Passing in framework requests / responses
 
