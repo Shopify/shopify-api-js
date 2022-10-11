@@ -293,15 +293,13 @@ export function createHttpClientClass(
         ) {
           this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
-          if (config.logFunction) {
-            const stack = new Error().stack;
-            const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
-              deprecation,
-            )}\n    Stack Trace: ${stack}\n`;
-            await config.logFunction(LogSeverity.Warning, log);
-          } else {
-            console.warn('API Deprecation Notice:', deprecation);
-          }
+          console.warn('API Deprecation Notice:', deprecation);
+
+          const stack = new Error().stack;
+          const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
+            deprecation,
+          )}\n    Stack Trace: ${stack}\n`;
+          await config.logFunction(LogSeverity.Warning, log);
         }
       }
 

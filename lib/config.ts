@@ -17,6 +17,7 @@ export function validateConfig<S extends SessionStorage = SessionStorage>(
     apiVersion: LATEST_API_VERSION,
     isEmbeddedApp: true,
     isPrivateApp: false,
+    logFunction: () => Promise.resolve(),
     // TS hack as sessionStorage is guaranteed to be set
     // to a correct value in `initialize()`.
     sessionStorage: null as unknown as S,

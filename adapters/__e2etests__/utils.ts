@@ -33,4 +33,5 @@ export const config: ConfigInterface = {
   isEmbeddedApp: true,
   isPrivateApp: false,
   sessionStorage: new MemorySessionStorage(),
+  logFunction: () => Promise.resolve(),
 };
