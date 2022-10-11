@@ -1,10 +1,8 @@
-export default {
-  preset: 'ts-jest/presets/default-esm', // or other ESM presets
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
+import type {Config} from 'jest';
+
+const config: Config = {
+  // or other ESM presets
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'js', 'json'],
   watchPathIgnorePatterns: ['./node_modules'],
@@ -12,3 +10,5 @@ export default {
   coverageDirectory: './coverage/',
   collectCoverage: false,
 };
+
+export default config;

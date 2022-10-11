@@ -1,8 +1,12 @@
-import baseConfig from './base.jest.config.mjs';
+import type {Config} from 'jest';
 
-export default {
+import baseConfig from './base.jest.config';
+
+const config: Config = {
   ...baseConfig,
   displayName: 'adapters:cf-worker',
   rootDir: '../../adapters/cf-worker',
   testEnvironment: 'miniflare',
 };
+
+export default config;
