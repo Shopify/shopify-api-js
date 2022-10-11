@@ -2,7 +2,12 @@ import {abstractCreateDefaultStorage} from '../runtime/session';
 
 import {ShopifyError} from './error';
 import {SessionStorage} from './session/session_storage';
-import {ConfigInterface, ConfigParams, LATEST_API_VERSION} from './base-types';
+import {
+  ConfigInterface,
+  ConfigParams,
+  LATEST_API_VERSION,
+  LogSeverity,
+} from './base-types';
 import {AuthScopes} from './auth/scopes';
 
 export function validateConfig<S extends SessionStorage = SessionStorage>(
@@ -17,7 +22,7 @@ export function validateConfig<S extends SessionStorage = SessionStorage>(
     apiVersion: LATEST_API_VERSION,
     isEmbeddedApp: true,
     isPrivateApp: false,
-    logFunction: () => Promise.resolve(),
+    logFunction: defaultLogFunction,
     // TS hack as sessionStorage is guaranteed to be set
     // to a correct value in `initialize()`.
     sessionStorage: null as unknown as S,
@@ -87,4 +92,21 @@ function notEmpty<T>(value: T): value is NonNullable<T> {
   return typeof value === 'string' || Array.isArray(value)
     ? value.length > 0
     : true;
+}
+
+async function defaultLogFunction(
+  severity: LogSeverity,
+  message: string,
+): Promise<void> {
+  switch (severity) {
+    case LogSeverity.Info:
+      console.log(message);
+      break;
+    case LogSeverity.Warning:
+      console.warn(message);
+      break;
+    case LogSeverity.Error:
+      console.error(message);
+      break;
+  }
 }

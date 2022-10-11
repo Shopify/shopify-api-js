@@ -646,7 +646,8 @@ describe('HTTP client', () => {
 
   it('logs deprecation headers to the console when they are present', async () => {
     const client = new HttpClient({domain});
-    console.warn = jest.fn();
+    const warnMock = jest.fn();
+    console.warn = warnMock;
 
     const postBody = {
       query: 'some query',
@@ -682,10 +683,18 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
-      message: 'This API endpoint has been deprecated',
-      path: 'https://test-shop.myshopify.io/url/path',
-    });
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(warnMock.mock.calls[0][0]).toContain('API Deprecation Notice');
+    expect(warnMock.mock.calls[0][0]).toContain(
+      JSON.stringify(
+        {
+          message: 'This API endpoint has been deprecated',
+          path: 'https://test-shop.myshopify.io/url/path',
+        },
+        null,
+        2,
+      ),
+    );
 
     await client.post({
       path: '/url/path',
@@ -693,11 +702,19 @@ describe('HTTP client', () => {
       data: postBody,
     });
 
-    expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
-      message: 'This API endpoint has been deprecated',
-      path: 'https://test-shop.myshopify.io/url/path',
-      body: `${JSON.stringify(postBody)}...`,
-    });
+    expect(console.warn).toHaveBeenCalledTimes(2);
+    expect(warnMock.mock.calls[1][0]).toContain('API Deprecation Notice');
+    expect(warnMock.mock.calls[1][0]).toContain(
+      JSON.stringify(
+        {
+          message: 'This API endpoint has been deprecated',
+          path: 'https://test-shop.myshopify.io/url/path',
+          body: `${JSON.stringify(postBody)}...`,
+        },
+        null,
+        2,
+      ),
+    );
   });
 
   it('will wait 5 minutes before logging repeat deprecation alerts', async () => {
@@ -785,7 +802,14 @@ describe('HTTP client', () => {
     expect(logMock.mock.calls[0][0]).toEqual(LogSeverity.Warning);
     expect(logMock.mock.calls[0][1]).toContain('API Deprecation Notice');
     expect(logMock.mock.calls[0][1]).toContain(
-      ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
+      JSON.stringify(
+        {
+          message: 'This API endpoint has been deprecated',
+          path: 'https://test-shop.myshopify.io/url/path',
+        },
+        null,
+        2,
+      ),
     );
     expect(logMock.mock.calls[0][1]).toContain(`Stack Trace: Error`);
   });
