@@ -9,7 +9,7 @@ Before you start writing your application, please note that the Shopify library 
 Browsers are making it increasingly more difficult to use 3rd party cookies (e.g. [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/cookies#tracking_protection)), and because embedded apps run in an iframe, their cookies are considered 3rd party cookies. **That means that this library cannot rely on cookies for sessions**, which is what web frameworks typically use for session management.
 
 This library can use your app's data storage to store sessions to work around that issue, using `SessionStorage`.
-Each app may choose a different storage strategy, so the library cannot assume any specific strategy will be available, but [we provide some options](../src/session-storage/README.md) to help you quickly set up your app.
+Each app may choose a different storage strategy, so the library cannot assume any specific strategy will be available, but [we provide some options](../session-storage/README.md) to help you quickly set up your app.
 
 - By default, Node.js apps will use `SQLiteSessionStorage`, which will enable you to start developing your app by storing sessions using the file-based SQLite package.
   - It will use a file named `database.sqlite` by default.

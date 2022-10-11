@@ -1,20 +1,20 @@
 import type {Config} from 'jest';
-
 import semver from 'semver';
 
 const projects = [
-  './src/__tests__/jest_projects/library.jest.config.ts',
-  './src/__tests__/jest_projects/session_storage.jest.config.ts',
-  './src/__tests__/jest_projects/rest_resources.jest.config.ts',
-  './src/__tests__/jest_projects/eslint.jest.config.ts',
-  './src/__tests__/jest_projects/adapters.mock.jest.config.ts',
-  './src/__tests__/jest_projects/adapters.node.jest.config.ts',
+  './lib/__tests__/jest_projects/library.jest.config.ts',
+  './lib/__tests__/jest_projects/session_storage.jest.config.ts',
+  './lib/__tests__/jest_projects/rest_resources.jest.config.ts',
+  './lib/__tests__/jest_projects/eslint.jest.config.ts',
+  './lib/__tests__/jest_projects/adapters.mock.jest.config.ts',
+  './lib/__tests__/jest_projects/adapters.node.jest.config.ts',
 ];
 
+// eslint-disable-next-line no-warning-comments
 // TODO Make all projects permanent after support for version 14 is dropped
 if (semver.gte(process.version, '15.0.0')) {
   projects.push(
-    './src/__tests__/jest_projects/adapters.cf-worker.jest.config.ts',
+    './lib/__tests__/jest_projects/adapters.cf-worker.jest.config.ts',
   );
 }
 
