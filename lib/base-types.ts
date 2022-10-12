@@ -36,6 +36,7 @@ export interface ConfigInterface<S extends SessionStorage = SessionStorage>
   sessionStorage: S;
   scopes: AuthScopes;
   isPrivateApp: boolean;
+  logFunction: (severity: LogSeverity, msg: string) => Promise<void>;
 }
 
 export interface Shopify<
