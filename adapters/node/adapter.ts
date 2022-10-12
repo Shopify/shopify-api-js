@@ -2,7 +2,7 @@ import type {IncomingMessage, ServerResponse} from 'http';
 
 import fetch from 'node-fetch';
 
-import {ShopifyError} from '../../error';
+import {ShopifyError} from '../../lib/error';
 import {
   AdapterArgs,
   canonicalizeHeaders,
