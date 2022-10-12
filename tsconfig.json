@@ -33,15 +33,17 @@
     ],
     "typeRoots": ["./node_modules/@types"],
     "types": ["@cloudflare/workers-types", "node", "jest"],
-    "outDir": "./dist",
     "baseUrl": ".",
-    "rootDir": "src"
+    "rootDir": "."
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
+    "lib/**/*.ts",
+    "adapters/**/*.ts",
+    "rest/**/*.ts",
+    "runtime/**/*.ts",
+    "session-storage/**/*.ts",
   ],
   "exclude": [
-    "**/*.test.ts", "**/*.test.tsx", "**/test/*", "**/__tests__/*",
+    "**/*.test.ts", "**/test/*", "**/__tests__/*",
   ],
 }
