@@ -10,12 +10,12 @@
 
 1. Add an entry for the new release to `CHANGELOG.md`, and/or move the contents from the _Unreleased_ to the new release
 
-1. Increment the version in `src/version.ts`.
+1. Increment the version in `lib/version.ts`.
 
-1. Stage the `CHANGELOG.md` and `src/version.ts` files
+1. Stage the `CHANGELOG.md` and `lib/version.ts` files
 
    ```shell
-   git add CHANGELOG.md src/version.ts
+   git add CHANGELOG.md lib/version.ts
    ```
 
 1. The following command updates the version (in `package.json`), creates the appropriate tag, commits all staged changes and pushes to the remote repository
@@ -36,7 +36,7 @@
 
 ## Release Candidates
 
-For significant API changes that could result in significant refactoring on the part of developers, consider releasing a few _Release Candidate_ versions in advance of the final version.  `shipit` is configured to do this from the `shopify_api_next` branch.
+For significant API changes that could result in significant refactoring on the part of developers, consider releasing a few _Release Candidate_ versions in advance of the final version. `shipit` is configured to do this from the `shopify_api_next` branch.
 
 1. Ensure your local repo is up-to-date
 
@@ -46,14 +46,14 @@ For significant API changes that could result in significant refactoring on the 
 
 1. (optional) Add an entry for the release candidate to `CHANGELOG.md`
 
-1. Increment the version in `src/version.ts`, ensuring that it ends with `-rcN`, where `N` starts at `1` and increments with each Release Candidate.
+1. Increment the version in `lib/version.ts`, ensuring that it ends with `-rcN`, where `N` starts at `1` and increments with each Release Candidate.
 
-1. Update the version in `package.json` to match that in `src/version.ts`
+1. Update the version in `package.json` to match that in `lib/version.ts`
 
-1. Stage the `CHANGELOG.md`, `src/version.ts`, and `package.json` files
+1. Stage the `CHANGELOG.md`, `lib/version.ts`, and `package.json` files
 
    ```shell
-   git add CHANGELOG.md src/version.ts package.json
+   git add CHANGELOG.md lib/version.ts package.json
    ```
 
 1. Commit the files to the repo
@@ -62,7 +62,7 @@ For significant API changes that could result in significant refactoring on the 
    git commit -m "Packaging for release vX.Y.Z-rcN"
    ```
 
-1. Tag the commit with an _annotated_ tag (required for the `--follow-tags` of the `push` command).  Note that it's very important that the tag includes `-rc` as part of the tag name - this is how `shipit` will recognize that it's a release candidate, not a general release.
+1. Tag the commit with an _annotated_ tag (required for the `--follow-tags` of the `push` command). Note that it's very important that the tag includes `-rc` as part of the tag name - this is how `shipit` will recognize that it's a release candidate, not a general release.
 
    ```shell
    git tag -a vX.Y.Z-rcN -m "Release candidate N of version X.Y.Z"

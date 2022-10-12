@@ -1,6 +1,6 @@
 # Create a `CustomSessionStorage` solution
 
-This library comes with various session management options, see our [documentation on session storage strategies](../../src/session-storage/README.md) for more details.
+This library comes with various session management options, see our [documentation on session storage strategies](../../session-storage/README.md) for more details.
 
 If you wish to use an alternative session storage solution for production, you'll need to set up a `CustomSessionStorage`, which you can then use in initializing your `config`. The `CustomSessionStorage` class expects to be initialized with the following three mandatory callbacks that link to your chosen storage solution and map to the `storeSession`, `loadSession`, and `deleteSession` methods on the class.
 
