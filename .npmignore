@@ -1,0 +1,14 @@
+node_modules
+.DS_STORE
+yarn-error.log
+dist
+coverage/
+yarn-error.log
+tsdocs/
+tsconfig.tsbuildinfo
+database.sqlite
+bundle/
+tsconfig.json
+
+*.ts
+!*.d.ts
