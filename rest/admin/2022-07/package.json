@@ -1,0 +1,4 @@
+{
+  "main": "../../../dist/rest/admin/2022-07/index.js",
+  "types": "../../../dist/rest/admin/2022-07/index.d.ts"
+}
