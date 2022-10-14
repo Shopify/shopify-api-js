@@ -1,6 +1,6 @@
-import {SessionInterface} from '../lib/session/types';
-import {SessionStorage} from '../lib/session/session_storage';
-import {createSanitizeShop} from '../lib/utils/shop-validator';
+import {SessionInterface} from '../../lib/session/types';
+import {SessionStorage} from '../../lib/session/session_storage';
+import {createSanitizeShop} from '../../lib/utils/shop-validator';
 
 export class MemorySessionStorage extends SessionStorage {
   private sessions: {[id: string]: SessionInterface} = {};

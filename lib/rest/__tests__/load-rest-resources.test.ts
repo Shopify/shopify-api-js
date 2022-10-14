@@ -1,7 +1,7 @@
 import {RestResourceError} from '../../error';
 import {testConfig} from '../../__tests__/test-helper';
 import {ApiVersion, LATEST_API_VERSION} from '../../base-types';
-import {shopifyApi} from '../../lib';
+import {shopifyApi} from '../..';
 
 import {restResources} from './test-resources';
 

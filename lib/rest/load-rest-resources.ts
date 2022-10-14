@@ -1,4 +1,4 @@
-import {RestResourceError} from '../lib/error';
+import {RestResourceError} from '../error';
 
 import {LoadRestResourcesParams, ShopifyRestResources} from './types';
 

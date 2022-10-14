@@ -1,8 +1,8 @@
-import {RestResourceError} from '../lib/error';
-import {SessionInterface} from '../lib/session/types';
-import {RestRequestReturn} from '../lib/clients/rest/types';
-import {DataType, GetRequestParams} from '../lib/clients/http_client/types';
-import {createRestClientClass} from '../lib/clients/rest/rest_client';
+import {RestResourceError} from '../error';
+import {SessionInterface} from '../session/types';
+import {RestRequestReturn} from '../clients/rest/types';
+import {DataType, GetRequestParams} from '../clients/http_client/types';
+import {createRestClientClass} from '../clients/rest/rest_client';
 
 import {IdSet, Body, ResourcePath, ParamSet} from './types';
 

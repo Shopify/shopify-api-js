@@ -1,8 +1,8 @@
-import {Session} from '../lib/session/session';
-import {SessionInterface} from '../lib/session/types';
-import {SessionStorage} from '../lib/session/session_storage';
-import * as ShopifyErrors from '../lib/error';
-import {createSanitizeShop} from '../lib/utils/shop-validator';
+import {Session} from '../../lib/session/session';
+import {SessionInterface} from '../../lib/session/types';
+import {SessionStorage} from '../../lib/session/session_storage';
+import * as ShopifyErrors from '../../lib/error';
+import {createSanitizeShop} from '../../lib/utils/shop-validator';
 
 export class CustomSessionStorage extends SessionStorage {
   constructor(

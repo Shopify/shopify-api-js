@@ -1,5 +1,5 @@
-import {ApiVersion} from '../lib/base-types';
-import {createRestClientClass} from '../lib/clients/rest/rest_client';
+import {ApiVersion} from '../base-types';
+import {createRestClientClass} from '../clients/rest/rest_client';
 
 import {Base} from './base';
 

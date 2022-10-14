@@ -1,9 +1,12 @@
 import * as mongodb from 'mongodb';
 
-import {SessionInterface} from '../lib/session/types';
-import {SessionStorage} from '../lib/session/session_storage';
-import {sessionFromEntries, sessionEntries} from '../lib/session/session-utils';
-import {createSanitizeShop} from '../lib/utils/shop-validator';
+import {SessionInterface} from '../../lib/session/types';
+import {SessionStorage} from '../../lib/session/session_storage';
+import {
+  sessionFromEntries,
+  sessionEntries,
+} from '../../lib/session/session-utils';
+import {createSanitizeShop} from '../../lib/utils/shop-validator';
 
 export interface MongoDBSessionStorageOptions {
   sessionCollectionName: string;

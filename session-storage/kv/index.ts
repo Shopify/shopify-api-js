@@ -1,7 +1,10 @@
-import {SessionInterface} from '../lib/session/types';
-import {SessionStorage} from '../lib/session/session_storage';
-import {createSanitizeShop} from '../lib/utils/shop-validator';
-import {sessionEntries, sessionFromEntries} from '../lib/session/session-utils';
+import {SessionInterface} from '../../lib/session/types';
+import {SessionStorage} from '../../lib/session/session_storage';
+import {createSanitizeShop} from '../../lib/utils/shop-validator';
+import {
+  sessionEntries,
+  sessionFromEntries,
+} from '../../lib/session/session-utils';
 
 export class KVSessionStorage extends SessionStorage {
   private bucket: KVNamespace;

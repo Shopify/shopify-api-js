@@ -1,5 +1,4 @@
-import {ShopifyRestResources} from '../rest/types';
-
+import {ShopifyRestResources} from './rest/types';
 import {AuthScopes} from './auth/scopes';
 import {SessionStorage} from './session/session_storage';
 import {BillingConfig, ShopifyBilling} from './billing/types';

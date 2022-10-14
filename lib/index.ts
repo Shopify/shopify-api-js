@@ -1,6 +1,3 @@
-import {loadRestResources} from '../rest/load-rest-resources';
-import {ShopifyRestResources} from '../rest/types';
-
 import {ConfigParams, Shopify} from './base-types';
 import {validateConfig} from './config';
 import {createClientClasses} from './clients';
@@ -10,6 +7,8 @@ import {shopifyUtils} from './utils';
 import {shopifyWebhooks} from './webhooks';
 import {shopifyBilling} from './billing';
 import {SessionStorage} from './session/session_storage';
+import {ShopifyRestResources} from './rest/types';
+import {loadRestResources} from './rest/load-rest-resources';
 
 export * from './error';
 export * from './types';
