@@ -8,7 +8,7 @@ export function sessionFromEntries(
   entries: [string, string | number][],
 ): SessionInterface {
   const obj = Object.fromEntries(
-    entries
+    Object.values(entries)
       .filter(([_key, value]) => value !== null && value !== undefined)
       // Sanitize keys
       .map(([key, value]) => {
