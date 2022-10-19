@@ -14,30 +14,59 @@ export type WebhookHandlerFunction = (
   body: string,
 ) => Promise<void>;
 
-export interface HttpWebhookRegistry {
-  [topic: string]: WebhookHandlerFunction;
+interface BaseWebhookHandler {
+  id?: string;
 }
 
-export interface ShortenedRegisterParams {
-  path: string;
+export interface HttpWebhookHandler extends BaseWebhookHandler {
+  deliveryMethod: DeliveryMethod.Http;
+  callbackUrl: string;
+  handler: WebhookHandlerFunction;
+}
+
+export interface EventBridgeWebhookHandler extends BaseWebhookHandler {
+  deliveryMethod: DeliveryMethod.EventBridge;
+  arn: string;
+}
+
+export interface PubSubWebhookHandler extends BaseWebhookHandler {
+  deliveryMethod: DeliveryMethod.PubSub;
+  pubSubProject: string;
+  pubSubTopic: string;
+}
+
+export type WebhookHandler =
+  | HttpWebhookHandler
+  | EventBridgeWebhookHandler
+  | PubSubWebhookHandler;
+
+export interface WebhookRegistry {
+  // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
+  [topic: string]: WebhookHandler[];
+}
+
+export enum WebhookOperation {
+  Create = 'create',
+  Update = 'update',
+  Delete = 'delete',
+}
+
+export interface RegisterParams {
   shop: string;
   accessToken: string;
 }
 
-export interface RegisterParams extends ShortenedRegisterParams {
-  // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
-  topic: string;
-  deliveryMethod?: DeliveryMethod;
+export interface RegisterResult {
+  success: boolean;
+  deliveryMethod: DeliveryMethod;
+  result: unknown;
 }
 
 export interface RegisterReturn {
-  [topic: string]: {
-    success: boolean;
-    result: unknown;
-  };
+  [topic: string]: RegisterResult[];
 }
 
-interface WebhookCheckResponseNode<
+export interface WebhookCheckResponseNode<
   T = {
     endpoint:
       | {
@@ -57,6 +86,7 @@ interface WebhookCheckResponseNode<
 > {
   node: {
     id: string;
+    topic: string;
   } & T;
 }
 
@@ -64,24 +94,16 @@ export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
   data: {
     webhookSubscriptions: {
       edges: T[];
+      pageInfo: {
+        endCursor: string;
+        hasNextPage: boolean;
+      };
     };
   };
 }
 
-export interface BuildCheckQueryParams {
-  topic: string;
-}
-
-export interface BuildQueryParams {
-  topic: string;
-  address: string;
-  deliveryMethod: DeliveryMethod;
-  webhookId?: string;
-}
-
-export interface AddHandlerParams {
-  topic: string;
-  handler: WebhookHandlerFunction;
+export interface AddHandlersParams {
+  [topic: string]: WebhookHandler | WebhookHandler[];
 }
 
 export interface WebhookProcessParams extends AdapterArgs {
