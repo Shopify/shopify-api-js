@@ -21,7 +21,7 @@ interface BaseWebhookHandler {
 export interface HttpWebhookHandler extends BaseWebhookHandler {
   deliveryMethod: DeliveryMethod.Http;
   callbackUrl: string;
-  handler: WebhookHandlerFunction;
+  callback: WebhookHandlerFunction;
 }
 
 export interface EventBridgeWebhookHandler extends BaseWebhookHandler {

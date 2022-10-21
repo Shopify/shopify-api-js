@@ -17,7 +17,25 @@ import {
   DeliveryMethod,
   WebhookCheckResponseNode,
   WebhookOperation,
+  RegisterResult,
 } from './types';
+
+interface RegisterTopicParams {
+  config: ConfigInterface;
+  shop: string;
+  accessToken: string;
+  topic: string;
+  existingHandlers: WebhookHandler[];
+  handlers: WebhookHandler[];
+}
+
+interface RunMutationsParams {
+  config: ConfigInterface;
+  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+  topic: string;
+  handlers: WebhookHandler[];
+  operation: WebhookOperation;
+}
 
 interface RunMutationParams {
   config: ConfigInterface;
@@ -25,7 +43,6 @@ interface RunMutationParams {
   topic: string;
   handler: WebhookHandler;
   operation: WebhookOperation;
-  registerReturn: RegisterReturn;
 }
 
 export function createRegister(
@@ -55,53 +72,18 @@ export function createRegister(
         continue;
       }
 
-      const handlers = createGetHandlers(webhookRegistry)(topic);
-
       if (gdprTopics.includes(topic)) {
         continue;
       }
 
-      const {toCreate, toUpdate, toDelete} = categorizeHandlers(
+      registerReturn[topic] = await registerTopic({
         config,
-        existingHandlers[topic] || [],
-        handlers,
-      );
-
-      const GraphqlClient = createGraphqlClientClass({config});
-      const client = new GraphqlClient({domain: shop, accessToken});
-
-      for (const handler of toCreate) {
-        await runMutation({
-          config,
-          client,
-          topic,
-          handler,
-          operation: WebhookOperation.Create,
-          registerReturn,
-        });
-      }
-
-      for (const handler of toUpdate) {
-        await runMutation({
-          config,
-          client,
-          topic,
-          handler,
-          operation: WebhookOperation.Update,
-          registerReturn,
-        });
-      }
-
-      for (const handler of toDelete) {
-        await runMutation({
-          config,
-          client,
-          topic,
-          handler,
-          operation: WebhookOperation.Delete,
-          registerReturn,
-        });
-      }
+        topic,
+        shop,
+        accessToken,
+        existingHandlers: existingHandlers[topic] || [],
+        handlers: createGetHandlers(webhookRegistry)(topic),
+      });
     }
 
     return registerReturn;
@@ -144,7 +126,7 @@ async function getExistingHandlers(
   return existingHandlers;
 }
 
-export function buildCheckQuery(endCursor: string | null) {
+function buildCheckQuery(endCursor: string | null) {
   return queryTemplate(TEMPLATE_GET_HANDLERS, {
     END_CURSOR: JSON.stringify(endCursor),
   });
@@ -162,7 +144,7 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
         deliveryMethod: DeliveryMethod.Http,
         callbackUrl: endpoint.callbackUrl,
         // This is a dummy for now because we don't really care about it
-        handler: async () => {},
+        callback: async () => {},
       };
       break;
     case 'WebhookEventBridgeEndpoint':
@@ -183,6 +165,43 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
   }
 
   return handler;
+}
+
+async function registerTopic({
+  config,
+  shop,
+  accessToken,
+  topic,
+  existingHandlers,
+  handlers,
+}: RegisterTopicParams): Promise<RegisterResult[]> {
+  let registerResults: RegisterResult[] = [];
+
+  const {toCreate, toUpdate, toDelete} = categorizeHandlers(
+    config,
+    existingHandlers,
+    handlers,
+  );
+
+  const GraphqlClient = createGraphqlClientClass({config});
+  const client = new GraphqlClient({domain: shop, accessToken});
+
+  let operation = WebhookOperation.Create;
+  registerResults = registerResults.concat(
+    await runMutations({config, client, topic, operation, handlers: toCreate}),
+  );
+
+  operation = WebhookOperation.Update;
+  registerResults = registerResults.concat(
+    await runMutations({config, client, topic, operation, handlers: toUpdate}),
+  );
+
+  operation = WebhookOperation.Delete;
+  registerResults = registerResults.concat(
+    await runMutations({config, client, topic, operation, handlers: toDelete}),
+  );
+
+  return registerResults;
 }
 
 interface HandlersByKey {
@@ -234,38 +253,59 @@ function categorizeHandlers(
   };
 }
 
+async function runMutations({
+  config,
+  client,
+  topic,
+  handlers,
+  operation,
+}: RunMutationsParams): Promise<RegisterResult[]> {
+  const registerResults: RegisterResult[] = [];
+
+  for (const handler of handlers) {
+    registerResults.push(
+      await runMutation({config, client, topic, handler, operation}),
+    );
+  }
+
+  return registerResults;
+}
+
 async function runMutation({
   config,
   client,
   topic,
   handler,
   operation,
-  registerReturn,
-}: RunMutationParams): Promise<void> {
+}: RunMutationParams): Promise<RegisterResult> {
+  let registerResult: RegisterResult;
+
   try {
     const query = buildMutation(config, topic, handler, operation);
 
     const result = await client.query({data: query});
 
-    registerReturn[topic].push({
+    registerResult = {
       deliveryMethod: handler.deliveryMethod,
       success: isSuccess(result.body, handler, operation),
       result: result.body,
-    });
+    };
   } catch (error) {
     if (error instanceof InvalidDeliveryMethodError) {
-      registerReturn[topic].push({
+      registerResult = {
         deliveryMethod: handler.deliveryMethod,
         success: false,
         result: {message: error.message},
-      });
+      };
     } else {
       throw error;
     }
   }
+
+  return registerResult;
 }
 
-export function buildMutation(
+function buildMutation(
   config: ConfigInterface,
   topic: string,
   handler: WebhookHandler,

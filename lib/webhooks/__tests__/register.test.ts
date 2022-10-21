@@ -70,7 +70,7 @@ describe('shopify.webhooks.register', () => {
     });
   });
 
-  it('sends an eventbridge registration GraphQL query for an eventbridge webhook registration', async () => {
+  it('sends an EventBridge registration GraphQL query for an EventBridge webhook registration', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler = EVENT_BRIDGE_HANDLER;
     const responses = [mockResponses.eventBridgeSuccessResponse];
@@ -84,7 +84,7 @@ describe('shopify.webhooks.register', () => {
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
-  it('sends a pubsub registration GraphQL query for a pubsub webhook registration', async () => {
+  it('sends a PubSub registration GraphQL query for a PubSub webhook registration', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler = PUB_SUB_HANDLER;
     const responses = [mockResponses.pubSubSuccessResponse];
@@ -99,7 +99,7 @@ describe('shopify.webhooks.register', () => {
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
-  it('deletes and recreates a webhook if the path changes', async () => {
+  it('creates a new webhook registration if the path changes, then deletes the old one', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...HTTP_HANDLER,
@@ -127,7 +127,7 @@ describe('shopify.webhooks.register', () => {
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
-  it('deletes and recreates a eventbridge webhook if the address changes', async () => {
+  it('creates a new EventBridge webhook registration if the address changes, then deletes the old one', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...EVENT_BRIDGE_HANDLER,
@@ -155,7 +155,7 @@ describe('shopify.webhooks.register', () => {
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
-  it('deletes and recreates a pubsub webhook if the address changes', async () => {
+  it('creates a new PubSub webhook registration if the address changes, then deletes the old one', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler = {...PUB_SUB_HANDLER, pubSubTopic: 'my-new-topic-id'};
     const responses = [

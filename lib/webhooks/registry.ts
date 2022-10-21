@@ -4,7 +4,6 @@ import {ConfigInterface, LogSeverity} from '../base-types';
 import {
   AddHandlersParams,
   DeliveryMethod,
-  HttpWebhookHandler,
   WebhookHandler,
   WebhookRegistry,
 } from './types';
@@ -92,7 +91,6 @@ function mergeOrAddHandler(
 
   const identifier = handlerIdentifier(config, handler);
 
-  let merged = false;
   for (const index in webhookRegistry[topic]) {
     if (!Object.prototype.hasOwnProperty.call(webhookRegistry[topic], index)) {
       continue;
@@ -105,23 +103,11 @@ function mergeOrAddHandler(
       continue;
     }
 
-    // We can merge HTTP handlers because we'll just chain the calls locally. We log this to inform callers that it's
-    // happening.
     if (handler.deliveryMethod === DeliveryMethod.Http) {
       config.logFunction(
         LogSeverity.Info,
         `Detected multiple handlers for '${topic}', webhooks.process will call them sequentially`,
       );
-
-      const currentHandler = (existingHandler as HttpWebhookHandler).handler;
-      const newHandler = handler.handler;
-      handler.handler = async (topic, shop, body) => {
-        await currentHandler(topic, shop, body);
-        await newHandler(topic, shop, body);
-      };
-
-      webhookRegistry[topic][index] = handler;
-      merged = true;
       break;
     } else {
       throw new InvalidDeliveryMethodError(
@@ -132,7 +118,5 @@ function mergeOrAddHandler(
     }
   }
 
-  if (!merged) {
-    webhookRegistry[topic].push(handler);
-  }
+  webhookRegistry[topic].push(handler);
 }

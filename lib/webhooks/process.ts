@@ -41,25 +41,22 @@ export function createProcess(
     let {errorMessage} = webhookCheck;
 
     if (webhookOk) {
-      const generatedHash = await createSHA256HMAC(
-        config.apiSecretKey,
-        rawBody,
-        HashFormat.Base64,
-      );
-
-      if (safeCompare(generatedHash, hmac)) {
+      if (await validateOkWebhook(config.apiSecretKey, rawBody, hmac)) {
         const graphqlTopic = topicForStorage(topic);
         const handlers = webhookRegistry[graphqlTopic] || [];
 
         let found = false;
         for (const handler of handlers) {
-          if (handler.deliveryMethod !== DeliveryMethod.Http) {
+          if (
+            handler.deliveryMethod !== DeliveryMethod.Http ||
+            handler.callbackUrl !== request.url
+          ) {
             continue;
           }
           found = true;
 
           try {
-            await handler.handler(graphqlTopic, domain, rawBody);
+            await handler.callback(graphqlTopic, domain, rawBody);
             response.statusCode = StatusCode.Ok;
           } catch (error) {
             response.statusCode = StatusCode.InternalServerError;
@@ -150,4 +147,18 @@ function checkWebhookRequest(
   }
 
   return retVal;
+}
+
+async function validateOkWebhook(
+  secret: string,
+  rawBody: string,
+  hmac: string,
+): Promise<boolean> {
+  const generatedHash = await createSHA256HMAC(
+    secret,
+    rawBody,
+    HashFormat.Base64,
+  );
+
+  return safeCompare(generatedHash, hmac);
 }

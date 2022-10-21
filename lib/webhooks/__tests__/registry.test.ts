@@ -20,11 +20,11 @@ describe('shopify.webhooks.addHandlers', () => {
   it('adds two handlers to the webhook registry', async () => {
     handler1 = {
       ...HTTP_HANDLER,
-      handler: jest.fn().mockImplementation(genericWebhookHandler),
+      callback: jest.fn().mockImplementation(genericWebhookHandler),
     };
     handler2 = {
       ...HTTP_HANDLER,
-      handler: jest.fn().mockImplementation(genericWebhookHandler),
+      callback: jest.fn().mockImplementation(genericWebhookHandler),
     };
 
     shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
@@ -38,16 +38,14 @@ describe('shopify.webhooks.addHandlers', () => {
     ]);
   });
 
-  it('merges an HTTP handler', async () => {
-    handler1 = {...HTTP_HANDLER, handler: jest.fn()};
-    handler2 = {...HTTP_HANDLER, handler: jest.fn()};
+  it('allows adding multiple of the same HTTP handler', async () => {
+    handler1 = {...HTTP_HANDLER, callback: jest.fn()};
+    handler2 = {...HTTP_HANDLER, callback: jest.fn()};
 
     const consoleLogMock = jest
       .spyOn(console, 'log')
       .mockImplementation(() => {});
 
-    // handler2.handler will be overwritten when we merge it in
-    const handler2Function = handler2.handler;
     shopify.webhooks.addHandlers({PRODUCTS_CREATE: [handler1, handler2]});
 
     expect(shopify.webhooks.getTopicsAdded()).toHaveLength(1);
@@ -57,14 +55,7 @@ describe('shopify.webhooks.addHandlers', () => {
     consoleLogMock.mockRestore();
 
     const handlers = shopify.webhooks.getHandlers('PRODUCTS_CREATE');
-    await (handlers[0] as HttpWebhookHandler).handler(
-      'PRODUCTS_CREATE',
-      'shop',
-      'body',
-    );
-
-    expect(handler1.handler).toHaveBeenCalled();
-    expect(handler2Function).toHaveBeenCalled();
+    expect(handlers).toEqual([handler1, handler2]);
   });
 
   it('fails if eventbridge handlers point to the same location', async () => {

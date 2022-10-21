@@ -8,7 +8,7 @@ import {
 export const HTTP_HANDLER: HttpWebhookHandler = {
   deliveryMethod: DeliveryMethod.Http,
   callbackUrl: '/webhooks',
-  handler: jest.fn(),
+  callback: jest.fn(),
 };
 
 export const EVENT_BRIDGE_HANDLER: EventBridgeWebhookHandler = {
