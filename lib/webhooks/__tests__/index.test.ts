@@ -30,6 +30,7 @@ describe('webhooks', () => {
     shopify.webhooks.addHandlers({[topic]: handler1});
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
+    // Create PRODUCTS_CREATE
     queueMockResponse(JSON.stringify(mockResponses.successResponse));
     await shopify.webhooks.register(REGISTER_PARAMS);
 
@@ -39,6 +40,7 @@ describe('webhooks', () => {
     shopify.webhooks.addHandlers({PRODUCTS_UPDATE: handler2});
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckResponse));
+    // Create PRODUCTS_UPDATE
     queueMockResponse(JSON.stringify(mockResponses.successResponse));
     await shopify.webhooks.register(REGISTER_PARAMS);
 

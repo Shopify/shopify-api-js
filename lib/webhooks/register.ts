@@ -140,7 +140,6 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
   switch (endpoint.__typename) {
     case 'WebhookHttpEndpoint':
       handler = {
-        id: edge.node.id,
         deliveryMethod: DeliveryMethod.Http,
         callbackUrl: endpoint.callbackUrl,
         // This is a dummy for now because we don't really care about it
@@ -149,20 +148,24 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
       break;
     case 'WebhookEventBridgeEndpoint':
       handler = {
-        id: edge.node.id,
         deliveryMethod: DeliveryMethod.EventBridge,
         arn: endpoint.arn,
       };
       break;
     case 'WebhookPubSubEndpoint':
       handler = {
-        id: edge.node.id,
         deliveryMethod: DeliveryMethod.PubSub,
         pubSubProject: endpoint.pubSubProject,
         pubSubTopic: endpoint.pubSubTopic,
       };
       break;
   }
+
+  // Set common fields
+  handler.id = edge.node.id;
+  handler.includeFields = edge.node.includeFields;
+  handler.metafieldNamespaces = edge.node.metafieldNamespaces;
+  handler.privateMetafieldNamespaces = edge.node.privateMetafieldNamespaces;
 
   return handler;
 }
@@ -213,12 +216,22 @@ function categorizeHandlers(
   existingHandlers: WebhookHandler[],
   handlers: WebhookHandler[],
 ) {
+  // We pre-sort the optional array fields to make them cheaper to compare, so we can minimize the number of update
+  // requests we make
   const handlersByKey = handlers.reduce((acc: HandlersByKey, value) => {
+    value.includeFields?.sort();
+    value.metafieldNamespaces?.sort();
+    value.privateMetafieldNamespaces?.sort();
+
     acc[handlerIdentifier(config, value)] = value;
     return acc;
   }, {});
   const existingHandlersByKey = existingHandlers.reduce(
     (acc: HandlersByKey, value) => {
+      value.includeFields?.sort();
+      value.metafieldNamespaces?.sort();
+      value.privateMetafieldNamespaces?.sort();
+
       acc[handlerIdentifier(config, value)] = value;
       return acc;
     },
@@ -236,11 +249,15 @@ function categorizeHandlers(
     }
 
     const existingHandler = existingHandlersByKey[existingKey];
+    const handler = handlersByKey[existingKey];
 
     if (existingKey in handlersByKey) {
       delete toCreate[existingKey];
-      // For now, there is nothing to update because we only save the identifier fields
-      // toUpdate.push(handler);
+
+      if (!areHandlerFieldsEqual(existingHandler, handler)) {
+        toUpdate[existingKey] = handler;
+        toUpdate[existingKey].id = existingHandler.id;
+      }
     } else {
       toDelete[existingKey] = existingHandler;
     }
@@ -251,6 +268,36 @@ function categorizeHandlers(
     toUpdate: Object.values(toUpdate),
     toDelete: Object.values(toDelete),
   };
+}
+function areHandlerFieldsEqual(
+  arr1: WebhookHandler,
+  arr2: WebhookHandler,
+): boolean {
+  return (
+    arraysEqual(arr1.includeFields || [], arr2.includeFields || []) &&
+    arraysEqual(
+      arr1.metafieldNamespaces || [],
+      arr2.metafieldNamespaces || [],
+    ) &&
+    arraysEqual(
+      arr1.privateMetafieldNamespaces || [],
+      arr2.privateMetafieldNamespaces || [],
+    )
+  );
+}
+
+function arraysEqual(arr1: any[], arr2: any[]): boolean {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0, len = arr1.length; i < len; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 async function runMutations({
@@ -341,6 +388,18 @@ function buildMutation(
     }
   }
 
+  if (handler.includeFields) {
+    params.includeFields = JSON.stringify(handler.includeFields);
+  }
+  if (handler.metafieldNamespaces) {
+    params.metafieldNamespaces = JSON.stringify(handler.metafieldNamespaces);
+  }
+  if (handler.privateMetafieldNamespaces) {
+    params.privateMetafieldNamespaces = JSON.stringify(
+      handler.privateMetafieldNamespaces,
+    );
+  }
+
   const paramsString = Object.entries(params)
     .map(([key, value]) => `${key}: ${value}`)
     .join(',\n      ');
@@ -405,6 +464,9 @@ export const TEMPLATE_GET_HANDLERS = `{
       node {
         id
         topic
+        includeFields
+        metafieldNamespaces
+        privateMetafieldNamespaces
         endpoint {
           __typename
           ... on WebhookHttpEndpoint {

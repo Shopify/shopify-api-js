@@ -99,6 +99,76 @@ describe('shopify.webhooks.register', () => {
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
+  it('updates a pre-existing webhook if the address stays the same', async () => {
+    const topic = 'PRODUCTS_CREATE';
+    const handler: WebhookHandler = {
+      ...HTTP_HANDLER,
+      includeFields: ['id', 'title'],
+    };
+    const responses = [mockResponses.successUpdateResponse];
+
+    const registerReturn = await registerWebhook({
+      topic,
+      handler,
+      checkMockResponse: mockResponses.webhookCheckResponse,
+      responses,
+    });
+
+    assertWebhookRegistrationRequest('webhookSubscriptionUpdate', {
+      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
+      callbackUrl: `"https://test_host_name/webhooks"`,
+      includeFields: '["id","title"]',
+    });
+    assertRegisterResponse({registerReturn, topic, responses});
+  });
+
+  it('updates a pre-existing eventbridge webhook if the address stays the same', async () => {
+    const topic = 'PRODUCTS_CREATE';
+    const handler: WebhookHandler = {
+      ...EVENT_BRIDGE_HANDLER,
+      metafieldNamespaces: ['new-namespace'],
+    };
+    const responses = [mockResponses.eventBridgeSuccessUpdateResponse];
+
+    const registerReturn = await registerWebhook({
+      topic,
+      handler,
+      checkMockResponse: mockResponses.eventBridgeWebhookCheckResponse,
+      responses,
+    });
+
+    assertWebhookRegistrationRequest('eventBridgeWebhookSubscriptionUpdate', {
+      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
+      arn: `"arn:test"`,
+      metafieldNamespaces: '["new-namespace"]',
+    });
+    assertRegisterResponse({registerReturn, topic, responses});
+  });
+
+  it('updates a pre-existing pubsub webhook if the address stays the same', async () => {
+    const topic = 'PRODUCTS_CREATE';
+    const handler: WebhookHandler = {
+      ...PUB_SUB_HANDLER,
+      privateMetafieldNamespaces: ['new-private-namespace'],
+    };
+    const responses = [mockResponses.pubSubSuccessUpdateResponse];
+
+    const registerReturn = await registerWebhook({
+      topic,
+      handler,
+      checkMockResponse: mockResponses.pubSubWebhookCheckResponse,
+      responses,
+    });
+
+    assertWebhookRegistrationRequest('pubSubWebhookSubscriptionUpdate', {
+      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
+      pubSubProject: '"my-project-id"',
+      pubSubTopic: '"my-topic-id"',
+      privateMetafieldNamespaces: '["new-private-namespace"]',
+    });
+    assertRegisterResponse({registerReturn, topic, responses});
+  });
+
   it('creates a new webhook registration if the path changes, then deletes the old one', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
@@ -179,21 +249,6 @@ describe('shopify.webhooks.register', () => {
       id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
     });
     assertRegisterResponse({registerReturn, topic, responses});
-  });
-
-  it('fully skips registering a webhook if it there are no path changes', async () => {
-    const topic = 'PRODUCTS_CREATE';
-    const handler = HTTP_HANDLER;
-    const responses: MockResponse[] = [];
-
-    const registerReturn = await registerWebhook({
-      topic,
-      handler,
-      checkMockResponse: mockResponses.webhookCheckResponse,
-      responses,
-    });
-
-    expect(registerReturn[topic]).toHaveLength(0);
   });
 
   it('fails if given an invalid DeliveryMethod', async () => {

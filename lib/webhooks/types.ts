@@ -16,6 +16,9 @@ export type WebhookHandlerFunction = (
 
 interface BaseWebhookHandler {
   id?: string;
+  includeFields?: string[];
+  metafieldNamespaces?: string[];
+  privateMetafieldNamespaces?: string[];
 }
 
 export interface HttpWebhookHandler extends BaseWebhookHandler {
@@ -87,6 +90,9 @@ export interface WebhookCheckResponseNode<
   node: {
     id: string;
     topic: string;
+    includeFields: string[];
+    metafieldNamespaces: string[];
+    privateMetafieldNamespaces: string[];
   } & T;
 }
 
