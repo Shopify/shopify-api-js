@@ -22,6 +22,7 @@ export async function nodeConvertRequest(
   adapterArgs: NodeAdapterArgs,
 ): Promise<NormalizedRequest> {
   const req = adapterArgs.rawRequest;
+
   return {
     headers: canonicalizeHeaders({...req.headers} as any),
     method: req.method ?? 'GET',

@@ -23,10 +23,12 @@ export async function workerConvertRequest(
   for (const [key, value] of request.headers.entries()) {
     addHeader(headers, key, value);
   }
+
+  const url = new URL(request.url!);
   return {
     headers,
     method: request.method ?? 'GET',
-    url: request.url!,
+    url: `${url.pathname}${url.search}${url.hash}`,
   };
 }
 

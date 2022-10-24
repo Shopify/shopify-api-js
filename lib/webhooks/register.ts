@@ -367,11 +367,18 @@ function buildMutation(
 ): string {
   const params: {[key: string]: string} = {};
 
+  let identifier: string;
   if (handler.id) {
-    params.id = `"${handler.id}"`;
+    identifier = `id: "${handler.id}"`;
   } else {
-    params.topic = topic;
+    identifier = `topic: ${topic}`;
   }
+
+  const mutationArguments = {
+    MUTATION_NAME: getMutationName(handler, operation),
+    IDENTIFIER: identifier,
+    MUTATION_PARAMS: '',
+  };
 
   if (operation !== WebhookOperation.Delete) {
     switch (handler.deliveryMethod) {
@@ -393,31 +400,30 @@ function buildMutation(
           `Unrecognized delivery method '${(handler as any).deliveryMethod}'`,
         );
     }
+
+    if (handler.includeFields) {
+      params.includeFields = JSON.stringify(handler.includeFields);
+    }
+    if (handler.metafieldNamespaces) {
+      params.metafieldNamespaces = JSON.stringify(handler.metafieldNamespaces);
+    }
+    if (
+      handler.deliveryMethod === DeliveryMethod.Http &&
+      handler.privateMetafieldNamespaces
+    ) {
+      params.privateMetafieldNamespaces = JSON.stringify(
+        handler.privateMetafieldNamespaces,
+      );
+    }
+
+    const paramsString = Object.entries(params)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join(', ');
+
+    mutationArguments.MUTATION_PARAMS = `webhookSubscription: {${paramsString}}`;
   }
 
-  if (handler.includeFields) {
-    params.includeFields = JSON.stringify(handler.includeFields);
-  }
-  if (handler.metafieldNamespaces) {
-    params.metafieldNamespaces = JSON.stringify(handler.metafieldNamespaces);
-  }
-  if (
-    handler.deliveryMethod === DeliveryMethod.Http &&
-    handler.privateMetafieldNamespaces
-  ) {
-    params.privateMetafieldNamespaces = JSON.stringify(
-      handler.privateMetafieldNamespaces,
-    );
-  }
-
-  const paramsString = Object.entries(params)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join(',\n      ');
-
-  return queryTemplate(TEMPLATE_MUTATION, {
-    MUTATION_NAME: getMutationName(handler, operation),
-    MUTATION_PARAMS: paramsString,
-  });
+  return queryTemplate(TEMPLATE_MUTATION, mutationArguments);
 }
 
 function getMutationName(
@@ -502,6 +508,7 @@ export const TEMPLATE_GET_HANDLERS = `{
 export const TEMPLATE_MUTATION = `
   mutation webhookSubscription {
     {{MUTATION_NAME}}(
+      {{IDENTIFIER}},
       {{MUTATION_PARAMS}}
     ) {
       userErrors {
