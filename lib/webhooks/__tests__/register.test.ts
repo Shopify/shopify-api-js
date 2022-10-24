@@ -103,7 +103,7 @@ describe('shopify.webhooks.register', () => {
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...HTTP_HANDLER,
-      includeFields: ['id', 'title'],
+      privateMetafieldNamespaces: ['new-private-namespace'],
     };
     const responses = [mockResponses.successUpdateResponse];
 
@@ -117,7 +117,7 @@ describe('shopify.webhooks.register', () => {
     assertWebhookRegistrationRequest('webhookSubscriptionUpdate', {
       id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
       callbackUrl: `"https://test_host_name/webhooks"`,
-      includeFields: '["id","title"]',
+      privateMetafieldNamespaces: '["new-private-namespace"]',
     });
     assertRegisterResponse({registerReturn, topic, responses});
   });
@@ -149,7 +149,7 @@ describe('shopify.webhooks.register', () => {
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...PUB_SUB_HANDLER,
-      privateMetafieldNamespaces: ['new-private-namespace'],
+      includeFields: ['id', 'title'],
     };
     const responses = [mockResponses.pubSubSuccessUpdateResponse];
 
@@ -164,7 +164,7 @@ describe('shopify.webhooks.register', () => {
       id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
       pubSubProject: '"my-project-id"',
       pubSubTopic: '"my-topic-id"',
-      privateMetafieldNamespaces: '["new-private-namespace"]',
+      includeFields: '["id","title"]',
     });
     assertRegisterResponse({registerReturn, topic, responses});
   });

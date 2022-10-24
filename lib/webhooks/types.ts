@@ -18,11 +18,11 @@ interface BaseWebhookHandler {
   id?: string;
   includeFields?: string[];
   metafieldNamespaces?: string[];
-  privateMetafieldNamespaces?: string[];
 }
 
 export interface HttpWebhookHandler extends BaseWebhookHandler {
   deliveryMethod: DeliveryMethod.Http;
+  privateMetafieldNamespaces?: string[];
   callbackUrl: string;
   callback: WebhookHandlerFunction;
 }

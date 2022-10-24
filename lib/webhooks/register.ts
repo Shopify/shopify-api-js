@@ -141,6 +141,7 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
     case 'WebhookHttpEndpoint':
       handler = {
         deliveryMethod: DeliveryMethod.Http,
+        privateMetafieldNamespaces: edge.node.privateMetafieldNamespaces,
         callbackUrl: endpoint.callbackUrl,
         // This is a dummy for now because we don't really care about it
         callback: async () => {},
@@ -165,7 +166,13 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
   handler.id = edge.node.id;
   handler.includeFields = edge.node.includeFields;
   handler.metafieldNamespaces = edge.node.metafieldNamespaces;
-  handler.privateMetafieldNamespaces = edge.node.privateMetafieldNamespaces;
+
+  // Sort the array fields to make them cheaper to compare later on
+  handler.includeFields?.sort();
+  handler.metafieldNamespaces?.sort();
+  if (handler.deliveryMethod === DeliveryMethod.Http) {
+    handler.privateMetafieldNamespaces?.sort();
+  }
 
   return handler;
 }
@@ -216,22 +223,12 @@ function categorizeHandlers(
   existingHandlers: WebhookHandler[],
   handlers: WebhookHandler[],
 ) {
-  // We pre-sort the optional array fields to make them cheaper to compare, so we can minimize the number of update
-  // requests we make
   const handlersByKey = handlers.reduce((acc: HandlersByKey, value) => {
-    value.includeFields?.sort();
-    value.metafieldNamespaces?.sort();
-    value.privateMetafieldNamespaces?.sort();
-
     acc[handlerIdentifier(config, value)] = value;
     return acc;
   }, {});
   const existingHandlersByKey = existingHandlers.reduce(
     (acc: HandlersByKey, value) => {
-      value.includeFields?.sort();
-      value.metafieldNamespaces?.sort();
-      value.privateMetafieldNamespaces?.sort();
-
       acc[handlerIdentifier(config, value)] = value;
       return acc;
     },
@@ -273,16 +270,26 @@ function areHandlerFieldsEqual(
   arr1: WebhookHandler,
   arr2: WebhookHandler,
 ): boolean {
-  return (
-    arraysEqual(arr1.includeFields || [], arr2.includeFields || []) &&
-    arraysEqual(
-      arr1.metafieldNamespaces || [],
-      arr2.metafieldNamespaces || [],
-    ) &&
+  const includeFieldsEqual = arraysEqual(
+    arr1.includeFields || [],
+    arr2.includeFields || [],
+  );
+  const metafieldNamespacesEqual = arraysEqual(
+    arr1.metafieldNamespaces || [],
+    arr2.metafieldNamespaces || [],
+  );
+  const privateMetafieldNamespacesEqual =
+    arr1.deliveryMethod !== DeliveryMethod.Http ||
+    arr2.deliveryMethod !== DeliveryMethod.Http ||
     arraysEqual(
       arr1.privateMetafieldNamespaces || [],
       arr2.privateMetafieldNamespaces || [],
-    )
+    );
+
+  return (
+    includeFieldsEqual &&
+    metafieldNamespacesEqual &&
+    privateMetafieldNamespacesEqual
   );
 }
 
@@ -394,7 +401,10 @@ function buildMutation(
   if (handler.metafieldNamespaces) {
     params.metafieldNamespaces = JSON.stringify(handler.metafieldNamespaces);
   }
-  if (handler.privateMetafieldNamespaces) {
+  if (
+    handler.deliveryMethod === DeliveryMethod.Http &&
+    handler.privateMetafieldNamespaces
+  ) {
     params.privateMetafieldNamespaces = JSON.stringify(
       handler.privateMetafieldNamespaces,
     );
