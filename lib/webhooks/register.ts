@@ -146,6 +146,9 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
         // This is a dummy for now because we don't really care about it
         callback: async () => {},
       };
+
+      // This field only applies to HTTP webhooks
+      handler.privateMetafieldNamespaces?.sort();
       break;
     case 'WebhookEventBridgeEndpoint':
       handler = {
@@ -170,9 +173,6 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
   // Sort the array fields to make them cheaper to compare later on
   handler.includeFields?.sort();
   handler.metafieldNamespaces?.sort();
-  if (handler.deliveryMethod === DeliveryMethod.Http) {
-    handler.privateMetafieldNamespaces?.sort();
-  }
 
   return handler;
 }
@@ -298,7 +298,7 @@ function arraysEqual(arr1: any[], arr2: any[]): boolean {
     return false;
   }
 
-  for (let i = 0, len = arr1.length; i < len; i++) {
+  for (let i = 0; i < arr1.length; i++) {
     if (arr1[i] !== arr2[i]) {
       return false;
     }
