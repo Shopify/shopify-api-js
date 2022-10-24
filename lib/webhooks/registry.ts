@@ -84,6 +84,12 @@ function mergeOrAddHandler(
   topic: string,
   handler: WebhookHandler,
 ) {
+  handler.includeFields?.sort();
+  handler.metafieldNamespaces?.sort();
+  if (handler.deliveryMethod === DeliveryMethod.Http) {
+    handler.privateMetafieldNamespaces?.sort();
+  }
+
   if (!(topic in webhookRegistry)) {
     webhookRegistry[topic] = [handler];
     return;
