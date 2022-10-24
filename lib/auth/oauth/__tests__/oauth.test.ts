@@ -160,7 +160,7 @@ describe('callback', () => {
     request = {
       method: 'GET',
       headers: {},
-      url: 'https://my-test-app.myshopify.io/auth/some-callback',
+      url: '/auth/some-callback',
     };
   });
 

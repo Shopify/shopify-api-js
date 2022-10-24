@@ -44,10 +44,11 @@ describe('shopify.webhooks.register', () => {
 
     const registerReturn = await registerWebhook({topic, handler, responses});
 
-    assertWebhookRegistrationRequest('webhookSubscriptionCreate', {
-      topic,
-      callbackUrl: `"https://test_host_name/webhooks"`,
-    });
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {callbackUrl: `"https://test_host_name/webhooks"`},
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -58,10 +59,11 @@ describe('shopify.webhooks.register', () => {
 
     const registerReturn = await registerWebhook({topic, handler, responses});
 
-    assertWebhookRegistrationRequest('webhookSubscriptionCreate', {
-      topic,
-      callbackUrl: `"https://test_host_name/webhooks"`,
-    });
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {callbackUrl: `"https://test_host_name/webhooks"`},
+    );
     assertRegisterResponse({
       registerReturn,
       topic,
@@ -77,10 +79,11 @@ describe('shopify.webhooks.register', () => {
 
     const registerReturn = await registerWebhook({topic, handler, responses});
 
-    assertWebhookRegistrationRequest('eventBridgeWebhookSubscriptionCreate', {
-      topic,
-      arn: '"arn:test"',
-    });
+    assertWebhookRegistrationRequest(
+      'eventBridgeWebhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {arn: '"arn:test"'},
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -91,11 +94,11 @@ describe('shopify.webhooks.register', () => {
 
     const registerReturn = await registerWebhook({topic, handler, responses});
 
-    assertWebhookRegistrationRequest('pubSubWebhookSubscriptionCreate', {
-      topic,
-      pubSubProject: '"my-project-id"',
-      pubSubTopic: '"my-topic-id"',
-    });
+    assertWebhookRegistrationRequest(
+      'pubSubWebhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {pubSubProject: '"my-project-id"', pubSubTopic: '"my-topic-id"'},
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -114,11 +117,14 @@ describe('shopify.webhooks.register', () => {
       responses,
     });
 
-    assertWebhookRegistrationRequest('webhookSubscriptionUpdate', {
-      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
-      callbackUrl: `"https://test_host_name/webhooks"`,
-      privateMetafieldNamespaces: '["new-private-namespace"]',
-    });
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionUpdate',
+      `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
+      {
+        callbackUrl: `"https://test_host_name/webhooks"`,
+        privateMetafieldNamespaces: '["new-private-namespace"]',
+      },
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -137,11 +143,14 @@ describe('shopify.webhooks.register', () => {
       responses,
     });
 
-    assertWebhookRegistrationRequest('eventBridgeWebhookSubscriptionUpdate', {
-      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
-      arn: `"arn:test"`,
-      metafieldNamespaces: '["new-namespace"]',
-    });
+    assertWebhookRegistrationRequest(
+      'eventBridgeWebhookSubscriptionUpdate',
+      `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
+      {
+        arn: `"arn:test"`,
+        metafieldNamespaces: '["new-namespace"]',
+      },
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -160,12 +169,15 @@ describe('shopify.webhooks.register', () => {
       responses,
     });
 
-    assertWebhookRegistrationRequest('pubSubWebhookSubscriptionUpdate', {
-      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
-      pubSubProject: '"my-project-id"',
-      pubSubTopic: '"my-topic-id"',
-      includeFields: '["id","title"]',
-    });
+    assertWebhookRegistrationRequest(
+      'pubSubWebhookSubscriptionUpdate',
+      `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
+      {
+        pubSubProject: '"my-project-id"',
+        pubSubTopic: '"my-topic-id"',
+        includeFields: '["id","title"]',
+      },
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -187,13 +199,15 @@ describe('shopify.webhooks.register', () => {
       responses,
     });
 
-    assertWebhookRegistrationRequest('webhookSubscriptionCreate', {
-      topic,
-      callbackUrl: `"https://test_host_name/webhooks/new"`,
-    });
-    assertWebhookRegistrationRequest('webhookSubscriptionDelete', {
-      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
-    });
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {callbackUrl: `"https://test_host_name/webhooks/new"`},
+    );
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionDelete',
+      `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -215,13 +229,15 @@ describe('shopify.webhooks.register', () => {
       responses,
     });
 
-    assertWebhookRegistrationRequest('eventBridgeWebhookSubscriptionCreate', {
-      topic,
-      arn: `"arn:test-new"`,
-    });
-    assertWebhookRegistrationRequest('webhookSubscriptionDelete', {
-      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
-    });
+    assertWebhookRegistrationRequest(
+      'eventBridgeWebhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {arn: `"arn:test-new"`},
+    );
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionDelete',
+      `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -240,14 +256,15 @@ describe('shopify.webhooks.register', () => {
       responses,
     });
 
-    assertWebhookRegistrationRequest('pubSubWebhookSubscriptionCreate', {
-      topic,
-      pubSubProject: '"my-project-id"',
-      pubSubTopic: '"my-new-topic-id"',
-    });
-    assertWebhookRegistrationRequest('webhookSubscriptionDelete', {
-      id: `"${mockResponses.TEST_WEBHOOK_ID}"`,
-    });
+    assertWebhookRegistrationRequest(
+      'pubSubWebhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {pubSubProject: '"my-project-id"', pubSubTopic: '"my-new-topic-id"'},
+    );
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionDelete',
+      `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
+    );
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
@@ -323,13 +340,6 @@ function createWebhookCheckQuery() {
   return queryTemplate(TEMPLATE_GET_HANDLERS, {END_CURSOR: 'null'});
 }
 
-function createWebhookQuery(mutationName: string, mutationParams: string) {
-  return queryTemplate(TEMPLATE_MUTATION, {
-    MUTATION_NAME: mutationName,
-    MUTATION_PARAMS: mutationParams,
-  });
-}
-
 function assertWebhookCheckRequest(REGISTER_PARAMS: RegisterParams) {
   expect({
     method: Method.Post.toString(),
@@ -345,11 +355,20 @@ function assertWebhookCheckRequest(REGISTER_PARAMS: RegisterParams) {
 
 function assertWebhookRegistrationRequest(
   mutationName: string,
-  mutationParams: MutationParams,
+  identifier: string,
+  mutationParams: MutationParams = {},
 ) {
   const paramsString = Object.entries(mutationParams)
     .map(([key, value]) => `${key}: ${value}`)
-    .join(',\n      ');
+    .join(', ');
+
+  const webhookQuery = queryTemplate(TEMPLATE_MUTATION, {
+    MUTATION_NAME: mutationName,
+    IDENTIFIER: identifier,
+    MUTATION_PARAMS: paramsString.length
+      ? `webhookSubscription: {${paramsString}}`
+      : '',
+  });
 
   expect({
     method: Method.Post.toString(),
@@ -359,6 +378,6 @@ function assertWebhookRegistrationRequest(
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: REGISTER_PARAMS.accessToken,
     },
-    data: createWebhookQuery(mutationName, paramsString),
+    data: webhookQuery,
   }).toMatchMadeHttpRequest();
 }
