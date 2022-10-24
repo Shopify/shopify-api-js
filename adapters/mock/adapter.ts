@@ -48,6 +48,11 @@ export async function mockFetch({
   });
 
   const next = mockTestRequests.responseList.shift()!;
+  if (!next) {
+    throw new Error(
+      `Missing mock for ${method} to ${url}, have you queued all required responses?`,
+    );
+  }
   if (next instanceof Error) {
     throw next;
   }
