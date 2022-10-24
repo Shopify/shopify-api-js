@@ -156,7 +156,9 @@ app.post('/webhooks', async (req, res) => {
     });
   } catch (error) {
     if (error instanceof InvalidWebhookError) {
-      console.log(`Webhook processing error:\n\tmessage = ${error.message}\n\tresponse = ${error.response}`);
+      console.log(
+        `Webhook processing error:\n\tmessage = ${error.message}\n\tresponse = ${error.response}`,
+      );
     } else {
       console.log('Other error:\n\t', error);
     }
@@ -235,14 +237,14 @@ app.post('/webhooks', async (req, res) => {
 
    </div>
 
-1. The `isActive()` method of `Session` now takes a `scopes` parameter.  If the scopes of the session don't match the scopes of the application (e.g., app has been restarted with new scopes), the session is deemed to be inactive and OAuth should be initiated again.
+1. The `isActive()` method of `Session` now takes a `scopes` parameter. If the scopes of the session don't match the scopes of the application (e.g., app has been restarted with new scopes), the session is deemed to be inactive and OAuth should be initiated again.
    <div>Before
 
    ```ts
    const session = await Shopify.Utils.loadCurrentSession(req, res);
 
    if (!session.isActive()) {
-    // current session is not active - either expired or scopes have changed
+     // current session is not active - either expired or scopes have changed
    }
    ```
 
@@ -256,7 +258,7 @@ app.post('/webhooks', async (req, res) => {
    });
 
    if (!session.isActive(shopify.config.scopes)) {
-    // current session is not active - either expired or scopes have changed
+     // current session is not active - either expired or scopes have changed
    }
    ```
 
@@ -716,12 +718,34 @@ Here are all the specific changes that we made to the `Utils` object:
 
 ## Changes to webhook functions
 
-1. `Shopify.Webhooks.Registry.addHandler` is now `shopify.webhooks.addHttpHandler`, and the parameters are now in a single object parameter. It also no longer takes a `path` in the parameter object.
+In v6, apps can now set up multiple handlers per webhook topic, and we simplified the library's interface to reduce the number of methods needed.
+
+The following methods are now available:
+
+- `addHandlers`
+- `register`
+- `process`
+- `getHandlers`
+- `getTopicsAdded` replaces the previous `getTopics`
+
+And the following methods are no longer supported:
+
+- `addHandler`
+- `registerAll`
+- `getHandler`
+- `isWebhookPath`
+
+For more details on the updated webhook functions, see the [documentation](./usage/webhooks.md).
+
+Below are instructions on how webhooks work now:
+
+1. You can call `shopify.webhooks.addHandlers` with a list of handlers, indexed by topic. Note that you must now use delivery method-specific fields instead of `path`, like `callbackUrl` and `arn`, to match the GrahpQL API behavior.
+
    <div>Before
 
    ```ts
-   Shopify.Webhooks.Registry.addHandler("PRODUCTS_CREATE", {
-     path: "/webhooks",
+   Shopify.Webhooks.Registry.addHandler('PRODUCTS_CREATE', {
+     path: '/webhooks',
      webhookHandler: handleWebhookRequest,
    });
    ```
@@ -729,41 +753,23 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>:warning: After
 
    ```ts
-   shopify.webhooks.addHttpHandler({
-     topic: "PRODUCTS_CREATE",
-     handler: handleWebhookRequest,
-   });
-   ```
-
-   </div>
-
-1. `Shopify.Webhooks.Registry.addHandlers` is now `shopify.webhooks.addHttpHandlers`, and now takes an array of `addHttpHandler` params.
-   <div>Before
-
-   ```ts
-   Shopify.Webhooks.Registry.addHandlers({
+   shopify.webhooks.addHandlers({
      PRODUCTS_CREATE: {
-       path: '/webhooks',
-       webhookHandler: productCreateWebhookHandler,
+       deliveryMethod: DeliveryMethod.Http,
+       callbackUrl: '/webhooks',
+       callback: handleWebhookRequest,
      },
-     PRODUCTS_DELETE: {
-       path: '/webhooks',
-       webhookHandler: productDeleteWebhookHandler},
+     TOPIC_1: [handler, handler2],
+     TOPIC_2: handler3,
    });
-   ```
-
-   </div><div>:warning: After
-
-   ```ts
-   shopify.webhooks.addHttpHandlers([
-     {topic: 'PRODUCTS_CREATE', handler: productCreateWebhookHandler},
-     {topic: 'PRODUCTS_DELETE', handler: productDeleteWebhookHandler},
-   ]);
    ```
 
    </div>
 
-1. `Shopify.Webhooks.Registry.register` is now `shopify.webhooks.register`.
+> **Note**: if you're using TypeScript, the handlers are typed based on the `deliveryMethod` you select.
+
+1. `Shopify.Webhooks.Registry.register` is now `shopify.webhooks.register`, and it now only takes in the session fields. It will register any handlers you added, and delete registrations that don't match the new configuration. That means the final webhooks registered for a shop will always match your configuration.
+
    <div>Before
 
    ```ts
@@ -779,38 +785,15 @@ Here are all the specific changes that we made to the `Utils` object:
 
    ```ts
    const response = await shopify.webhooks.register({
-     path: '/webhooks',
-     topic: 'PRODUCTS_CREATE',
      accessToken: session.accessToken,
      shop: session.shop,
    });
+
+   // Response will be a list indexed by topic:
+   console.log(response[topic][0].success, response[topic][0].result);
    ```
 
    </div>
-
-1. `Shopify.Webhooks.Registry.registerAll` is now `shopify.webhooks.registerAllHttp`, and now accepts a `path` in its parameter object with which to register all topic handlers added to the HTTP registry.
-   <div>Before
-
-   ```ts
-   const response = await Shopify.Webhooks.Registry.registerAll({
-     accessToken: session.accessToken,
-     shop: session.shop,
-   });
-   ```
-
-   </div><div>:warning: After
-
-   ```ts
-   const response = await shopify.webhooks.registerAllHttp({
-     path: '/webhooks',
-     accessToken: session.accessToken,
-     shop: session.shop,
-   });
-   ```
-
-   </div>
-
-1. `Shopify.Webhooks.Registry.isWebhookPath` has been deprecated.
 
 1. `Shopify.Webhooks.Registry.process` is now `shopify.webhooks.process`, and it takes the body as an argument instead of parsing it from the request. This will make it easier for apps to use a body parser with this function.
    <div>Before
@@ -846,7 +829,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-1. `Shopify.Webhooks.Registry.getHandler` is now `shopify.webhooks.getHttpHandler`, and simply returns the handler function for the given topic.
+1. `Shopify.Webhooks.Registry.getHandler` is now `shopify.webhooks.getHandlers`, and returns all handler configurations for that topic.
    <div>Before
 
    ```ts
@@ -863,13 +846,16 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>:warning: After
 
    ```ts
-   shopify.webhooks.addHttpHandler({
-     topic: 'PRODUCTS',
-     handler: productsWebhookHandler,
+   shopify.webhooks.addHandlers({
+     PRODUCTS: {
+       deliveryMethod: DeliveryMethod.Http,
+       callbackUrl: '/webhooks',
+       callback: productsWebhookHandler,
+     },
    });
 
-   const productsHandler = shopify.webhooks.getHttpHandler('PRODUCTS');
-   // productsHandler = productsWebhookHandler
+   // Is an array of handler configurations
+   const handlers = shopify.webhooks.getHandlers('PRODUCTS');
    ```
 
    </div>
@@ -885,7 +871,8 @@ Here are all the specific changes that we made to the `Utils` object:
      },
      PRODUCTS_DELETE: {
        path: '/webhooks',
-       webhookHandler: productDeleteWebhookHandler},
+       webhookHandler: productDeleteWebhookHandler,
+     },
    });
 
    const topics = Shopify.Webhooks.Registry.getTopics();
@@ -895,10 +882,18 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>:warning: After
 
    ```ts
-   shopify.webhooks.addHttpHandlers([
-     {topic: 'PRODUCTS_CREATE', handler: productCreateWebhookHandler},
-     {topic: 'PRODUCTS_DELETE', handler: productDeleteWebhookHandler},
-   ]);
+   shopify.webhooks.addHandlers({
+     PRODUCTS_CREATE: {
+       deliveryMethod: DeliveryMethod.Http,
+       callbackUrl: '/webhooks',
+       callback: productCreateWebhookHandler,
+     },
+     PRODUCTS_DELETE: {
+       deliveryMethod: DeliveryMethod.Http,
+       callbackUrl: '/webhooks',
+       callback: productDeleteWebhookHandler,
+     },
+   });
 
    const topics = shopify.webhooks.getTopicsAdded();
    // topics = ['PRODUCTS_CREATE', 'PRODUCTS_DELETE']
@@ -917,13 +912,13 @@ Starting with v6, they can now be accessed via the shopify API directly.
 <div>Before
 
 ```ts
-app.get("/api/products/count", async (req, res) => {
+app.get('/api/products/count', async (req, res) => {
   const session = await Shopify.Utils.loadCurrentSession(req, res, false);
-  const { Product } = await import(
+  const {Product} = await import(
     `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
   );
 
-  const countData = await Product.count({ session });
+  const countData = await Product.count({session});
   res.status(200).send(countData);
 });
 ```
@@ -931,8 +926,8 @@ app.get("/api/products/count", async (req, res) => {
 </div><div>:warning: After
 
 ```ts
-import {shopifyApi, ApiVersion} from "@shopify/shopify-api";
-import {restResources} from '@shopify/shopify-api/rest/admin/2022-10';  // must match apiVersion used for shopifyApi()
+import {shopifyApi, ApiVersion} from '@shopify/shopify-api';
+import {restResources} from '@shopify/shopify-api/rest/admin/2022-10'; // must match apiVersion used for shopifyApi()
 
 const shopify = shopifyApi({
   // ...
@@ -942,14 +937,14 @@ const shopify = shopifyApi({
 
 // ...
 
-app.get("/api/products/count", async (req, res) => {
+app.get('/api/products/count', async (req, res) => {
   const session = await shopify.session.getCurrent({
     isOnline: false,
     rawRequest: req,
     rawResponse: res,
   });
 
-  const countData = await shopify.rest.Product.count({ session });
+  const countData = await shopify.rest.Product.count({session});
   res.status(200).send(countData);
 });
 ```

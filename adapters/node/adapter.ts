@@ -26,7 +26,8 @@ export async function nodeConvertRequest(
   return {
     headers: canonicalizeHeaders({...req.headers} as any),
     method: req.method ?? 'GET',
-    url: req.url!,
+    // Express.js overrides the url property, so we want to use originalUrl for it
+    url: (req as any).originalUrl || req.url!,
   };
 }
 
