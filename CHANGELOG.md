@@ -7,9 +7,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-## [6.0.0-rc2] - 2022-10-04
+## [6.0.0-rc7] - 2022-10-25
 
-- ⚠️ [Breaking] Final release candidate for `6.0.0` release, which is a complete breaking change across all surfaces of the library
+- ⚠️ [Breaking] Latest release candidate for `6.0.0` release, which is a complete breaking change across all surfaces of the library
 
 ## [5.1.0] - 2022-09-19
 
