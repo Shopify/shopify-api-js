@@ -18,9 +18,9 @@ Examples:
   <summary>Node.js</summary>
 
 ```shell
-$ yarn init -y
-$ yarn add @shopify/shopify-api
-$ yarn add --dev dotenv typescript @types/node
+yarn init -y
+yarn add @shopify/shopify-api
+yarn add --dev dotenv typescript @types/node
 ```
 
 </details>
