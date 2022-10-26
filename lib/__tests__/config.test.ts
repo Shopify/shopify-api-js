@@ -1,11 +1,7 @@
-import Cookies from 'cookies';
-
 import * as ShopifyErrors from '../error';
 import {validateConfig} from '../config';
 import {ApiVersion, ConfigParams} from '../base-types';
 import {MemorySessionStorage} from '../../session-storage/memory';
-
-jest.mock('cookies');
 
 const validParams: ConfigParams = {
   apiKey: 'apiKey',
@@ -24,7 +20,6 @@ const originalWarn = console.warn;
 describe('Config object', () => {
   afterEach(() => {
     console.warn = originalWarn;
-    (Cookies as any).mockClear();
   });
 
   it('can initialize and update config', () => {
