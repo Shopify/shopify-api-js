@@ -54,11 +54,6 @@ export enum WebhookOperation {
   Delete = 'delete',
 }
 
-export interface RegisterParams {
-  shop: string;
-  accessToken: string;
-}
-
 export interface RegisterResult {
   success: boolean;
   deliveryMethod: DeliveryMethod;

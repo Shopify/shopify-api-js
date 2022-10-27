@@ -80,10 +80,7 @@ export class Base {
     body,
     entity,
   }: RequestArgs): Promise<RestRequestReturn<T>> {
-    const client = new this.CLIENT({
-      domain: session.shop,
-      accessToken: session.accessToken,
-    });
+    const client = new this.CLIENT(session);
 
     const path = this.getPath({http_method, operation, urlIds, entity});
 
