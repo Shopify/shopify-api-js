@@ -4,7 +4,7 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {DiscountCode} from './discount_code';
@@ -12,12 +12,12 @@ import {Order} from './order';
 import {GiftCard} from './gift_card';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   token: number | string;
 }
 interface ShippingRatesArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   token: number | string;
 }
 interface CompleteArgs {

@@ -4,29 +4,29 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Province} from './province';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   since_id?: unknown;
   fields?: unknown;
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
 }
 
 export class Country extends Base {

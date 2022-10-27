@@ -4,14 +4,14 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Currency} from './currency';
 
 interface TransactionsArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   since_id?: unknown;
   last_id?: unknown;
   test?: unknown;

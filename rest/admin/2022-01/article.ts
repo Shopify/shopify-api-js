@@ -4,25 +4,25 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Metafield} from './metafield';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   blog_id?: number | string | null;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   blog_id?: number | string | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   blog_id?: number | string | null;
   limit?: unknown;
   since_id?: unknown;
@@ -40,11 +40,11 @@ interface AllArgs {
 }
 interface AuthorsArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   blog_id?: number | string | null;
   created_at_min?: unknown;
   created_at_max?: unknown;
@@ -56,7 +56,7 @@ interface CountArgs {
 }
 interface TagsArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   blog_id?: number | string | null;
   limit?: unknown;
   popular?: unknown;

@@ -4,11 +4,11 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   article_id?: number | string | null;
   blog_id?: number | string | null;
@@ -23,7 +23,7 @@ interface FindArgs {
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   article_id?: number | string | null;
   blog_id?: number | string | null;
@@ -38,7 +38,7 @@ interface DeleteArgs {
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   article_id?: number | string | null;
   blog_id?: number | string | null;
   collection_id?: number | string | null;
@@ -64,7 +64,7 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   article_id?: number | string | null;
   blog_id?: number | string | null;
   collection_id?: number | string | null;

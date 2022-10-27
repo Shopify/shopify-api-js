@@ -4,21 +4,21 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   address?: unknown;
   created_at_max?: unknown;
   created_at_min?: unknown;
@@ -31,7 +31,7 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   address?: unknown;
   topic?: unknown;
 }

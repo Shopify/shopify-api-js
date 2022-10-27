@@ -4,7 +4,7 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Country} from './country';
@@ -12,7 +12,7 @@ import {Province} from './province';
 
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   fields?: unknown;
 }
 
