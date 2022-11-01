@@ -1,6 +1,6 @@
 import {Method, Header} from '@shopify/network';
 
-import {RegisterParams, RegisterReturn, WebhookHandler} from '../types';
+import {RegisterReturn, WebhookHandler} from '../types';
 import {gdprTopics, ShopifyHeader} from '../../base-types';
 import {DataType} from '../../clients/types';
 import {queueMockResponse, shopify} from '../../__tests__/test-helper';
@@ -8,6 +8,8 @@ import {mockTestRequests} from '../../../adapters/mock/mock_test_requests';
 import {queryTemplate} from '../query-template';
 import {TEMPLATE_GET_HANDLERS, TEMPLATE_MUTATION} from '../register';
 import {InvalidDeliveryMethodError} from '../../error';
+import {Session} from '../../session/session';
+import {JwtPayload} from '../../session/types';
 
 import * as mockResponses from './responses';
 import {MockResponse} from './responses';
@@ -31,12 +33,33 @@ interface MutationParams {
   [key: string]: any;
 }
 
-const REGISTER_PARAMS = {
-  accessToken: 'some token',
-  shop: 'shop1.myshopify.io',
-};
+const domain = 'test-shop.myshopify.io';
+const accessToken = 'dangit';
+let session: Session;
 
 describe('shopify.webhooks.register', () => {
+  beforeEach(() => {
+    const jwtPayload: JwtPayload = {
+      iss: 'https://test-shop.myshopify.io/admin',
+      dest: 'https://test-shop.myshopify.io',
+      aud: shopify.config.apiKey,
+      sub: '1',
+      exp: Date.now() / 1000 + 3600,
+      nbf: 1234,
+      iat: 1234,
+      jti: '4321',
+      sid: 'abc123',
+    };
+
+    session = new Session({
+      id: `test-shop.myshopify.io_${jwtPayload.sub}`,
+      shop: domain,
+      state: 'state',
+      isOnline: true,
+      accessToken,
+    });
+  });
+
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler = HTTP_HANDLER;
@@ -276,7 +299,7 @@ describe('shopify.webhooks.register', () => {
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
 
-    await expect(shopify.webhooks.register(REGISTER_PARAMS)).rejects.toThrow(
+    await expect(shopify.webhooks.register(session)).rejects.toThrow(
       InvalidDeliveryMethodError,
     );
   });
@@ -291,7 +314,7 @@ describe('shopify.webhooks.register', () => {
         JSON.stringify(mockResponses.webhookCheckEmptyResponse),
       );
 
-      const response = await shopify.webhooks.register(REGISTER_PARAMS);
+      const response = await shopify.webhooks.register(session);
 
       expect(mockTestRequests.requestList).toHaveLength(1);
       expect(response[gdprTopic]).toHaveLength(0);
@@ -313,11 +336,11 @@ async function registerWebhook({
     queueMockResponse(JSON.stringify(response));
   });
 
-  const result = await shopify.webhooks.register(REGISTER_PARAMS);
+  const result = await shopify.webhooks.register(session);
 
   expect(mockTestRequests.requestList).toHaveLength(responses.length + 1);
 
-  assertWebhookCheckRequest(REGISTER_PARAMS);
+  assertWebhookCheckRequest(session);
 
   return result;
 }
@@ -340,14 +363,14 @@ function createWebhookCheckQuery() {
   return queryTemplate(TEMPLATE_GET_HANDLERS, {END_CURSOR: 'null'});
 }
 
-function assertWebhookCheckRequest(REGISTER_PARAMS: RegisterParams) {
+function assertWebhookCheckRequest(session: Session) {
   expect({
     method: Method.Post.toString(),
-    domain: REGISTER_PARAMS.shop,
+    domain: session.shop,
     path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
     headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
-      [ShopifyHeader.AccessToken]: REGISTER_PARAMS.accessToken,
+      [ShopifyHeader.AccessToken]: session.accessToken,
     },
     data: createWebhookCheckQuery(),
   }).toMatchMadeHttpRequest();
@@ -372,11 +395,11 @@ function assertWebhookRegistrationRequest(
 
   expect({
     method: Method.Post.toString(),
-    domain: REGISTER_PARAMS.shop,
+    domain: session.shop,
     path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
     headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
-      [ShopifyHeader.AccessToken]: REGISTER_PARAMS.accessToken,
+      [ShopifyHeader.AccessToken]: session.accessToken,
     },
     data: webhookQuery,
   }).toMatchMadeHttpRequest();

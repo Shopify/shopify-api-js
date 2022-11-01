@@ -38,15 +38,15 @@ interface HttpClientParams {
 }
 
 export class HttpClient {
+  public static CONFIG: ConfigInterface;
+  public static SCHEME: string;
+
   // 1 second
   static readonly RETRY_WAIT_TIME = 1000;
   // 5 minutes
   static readonly DEPRECATION_ALERT_DELAY = 300000;
   LOGGED_DEPRECATIONS: {[key: string]: number} = {};
   readonly domain: string;
-
-  public static CONFIG: ConfigInterface;
-  public static SCHEME: string;
 
   public constructor(params: HttpClientParams) {
     this.domain = params.domain;

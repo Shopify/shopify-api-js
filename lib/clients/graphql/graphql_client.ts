@@ -13,12 +13,12 @@ export interface AccessTokenHeader {
 }
 
 export class GraphqlClient {
+  public static CONFIG: ConfigInterface;
+  public static HTTP_CLIENT: typeof HttpClient;
+
   baseApiPath = '/admin/api';
   readonly session: Session;
   readonly client: HttpClient;
-
-  public static CONFIG: ConfigInterface;
-  public static HTTP_CLIENT: typeof HttpClient;
 
   constructor(session: Session) {
     if (!this.graphqlClass().CONFIG.isPrivateApp && !session.accessToken) {

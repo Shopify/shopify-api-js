@@ -4,7 +4,6 @@ import * as ShopifyErrors from '../../../error';
 import {createGenerateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../session/types';
 import {nonce} from '../nonce';
-import {CustomSessionStorage} from '../../../../session-storage/custom';
 import {
   Cookies,
   NormalizedRequest,
@@ -241,61 +240,6 @@ describe('callback', () => {
     ).rejects.toThrow(ShopifyErrors.InvalidOAuthError);
   });
 
-  test('throws a SessionStorageError when storeSession returns false', async () => {
-    // create new storage with broken storeCallback for callback to use
-    shopify.config.sessionStorage = new CustomSessionStorage(
-      () => Promise.resolve(false),
-      () => Promise.resolve(undefined),
-      () => Promise.resolve(true),
-    );
-
-    const response: NormalizedResponse = await shopify.auth.begin({
-      shop,
-      isOnline: true,
-      callbackPath: '/some-callback',
-      rawRequest: request,
-    });
-    setCallbackCookieFromResponse(request, response);
-
-    const testCallbackQuery: QueryMock = {
-      shop,
-      state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
-      code: 'some random auth code',
-    };
-    const expectedHmac = await createGenerateLocalHmac(shopify.config)(
-      testCallbackQuery,
-    );
-    testCallbackQuery.hmac = expectedHmac;
-    request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
-
-    const successResponse = {
-      access_token: 'some access token',
-      scope: 'pet_kitties, walk_dogs',
-      expires_in: '525600',
-      associated_user_scope: 'pet_kitties',
-      associated_user: {
-        id: '8675309',
-        first_name: 'John',
-        last_name: 'Smith',
-        email: 'john@example.com',
-        email_verified: true,
-        account_owner: true,
-        locale: 'en',
-        collaborator: true,
-      },
-    };
-
-    queueMockResponse(JSON.stringify(successResponse));
-
-    await expect(
-      shopify.auth.callback({
-        isOnline: true,
-        rawRequest: request,
-      }),
-    ).rejects.toThrow(ShopifyErrors.SessionStorageError);
-  });
-
   test('requests access token for valid callbacks with offline access and creates session', async () => {
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
@@ -337,9 +281,6 @@ describe('callback', () => {
     expect(callbackResponse.session.accessToken).toBe(
       successResponse.access_token,
     );
-
-    const session = await shopify.config.sessionStorage.loadSession(expectedId);
-    expect(session?.accessToken).toBe(successResponse.access_token);
   });
 
   test('requests access token for valid callbacks with online access and creates session with expiration and onlineAccessInfo', async () => {
@@ -380,12 +321,6 @@ describe('callback', () => {
       },
     };
 
-    const expectedOnlineAccessInfo = {
-      expires_in: successResponse.expires_in,
-      associated_user_scope: successResponse.associated_user_scope,
-      associated_user: successResponse.associated_user,
-    };
-
     queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({
@@ -404,14 +339,6 @@ describe('callback', () => {
     expect(callbackResponse.session.accessToken).toBe(
       successResponse.access_token,
     );
-
-    const session = await shopify.config.sessionStorage.loadSession(
-      responseCookies.shopify_app_session!.value,
-    );
-
-    expect(session?.accessToken).toBe(successResponse.access_token);
-    expect(session?.expires).toBeInstanceOf(Date);
-    expect(session?.onlineAccessInfo).toEqual(expectedOnlineAccessInfo);
   });
 
   test('does not set an OAuth cookie for online, embedded apps', async () => {
@@ -475,18 +402,8 @@ describe('callback', () => {
     };
 
     const jwtSessionId = `${shop}_${jwtPayload.sub}`;
-    const actualJwtSession = await shopify.config.sessionStorage.loadSession(
-      jwtSessionId,
-    );
-    expect(actualJwtSession).not.toBeUndefined();
-    expect(actualJwtSession).toEqual(callbackResponse.session);
-    const actualJwtExpiration = actualJwtSession?.expires
-      ? actualJwtSession.expires.getTime() / 1000
-      : 0;
-    expect(actualJwtExpiration).toBeWithinSecondsOf(jwtPayload.exp, 1);
 
     // Simulate a subsequent JWT request to see if the session is loaded as the current one
-
     const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
     const jwtReq = {
       method: 'GET',
@@ -496,12 +413,12 @@ describe('callback', () => {
       },
     } as NormalizedRequest;
 
-    const currentSession = await shopify.session.getCurrent({
+    const currentSessionId = await shopify.session.getCurrentId({
       isOnline: true,
       rawRequest: jwtReq,
     });
-    expect(currentSession).not.toBe(null);
-    expect(currentSession?.id).toEqual(jwtSessionId);
+    expect(currentSessionId).not.toBe(null);
+    expect(currentSessionId).toEqual(jwtSessionId);
 
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
@@ -580,11 +497,6 @@ describe('callback', () => {
     expect(
       responseCookies.shopify_app_session.expires?.getTime(),
     ).toBeWithinSecondsOf(expectedExpiration, 1);
-
-    const cookieSession = await shopify.config.sessionStorage.loadSession(
-      cookieId,
-    );
-    expect(cookieSession).not.toBeUndefined();
   });
 
   test('does not set an OAuth cookie for offline, embedded apps', async () => {
@@ -682,11 +594,6 @@ describe('callback', () => {
     expect(
       responseCookies.shopify_app_session.expires?.getTime(),
     ).toBeUndefined();
-
-    const cookieSession = await shopify.config.sessionStorage.loadSession(
-      cookieId,
-    );
-    expect(cookieSession).not.toBeUndefined();
   });
 });
 

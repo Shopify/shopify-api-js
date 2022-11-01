@@ -7,7 +7,7 @@ import {
   signJWT,
 } from '../../../__tests__/test-helper';
 import {Session} from '../../../session/session';
-import {InvalidSession, SessionNotFound} from '../../../error';
+import {InvalidSession} from '../../../error';
 import {JwtPayload} from '../../../session/types';
 import {canonicalizeHeaders, NormalizedRequest} from '../../../../runtime/http';
 
@@ -37,6 +37,7 @@ const objectQuery = {
 };
 const shop = 'shop.myshopify.com';
 const accessToken = 'dangit';
+let session: Session;
 let token = '';
 
 describe('GraphQL proxy with session', () => {
@@ -53,9 +54,15 @@ describe('GraphQL proxy with session', () => {
         body: req.body,
       };
 
+      // const sessionId = await shopify.session.getCurrentId({
+      //   isOnline: true,
+      //   rawRequest: req,
+      //   rawResponse: res,
+      // });
+
       const testResponse = await shopify.clients.graphqlProxy({
         rawBody: request.body!,
-        rawRequest: request,
+        session,
       });
 
       res.send(testResponse.body);
@@ -80,14 +87,13 @@ describe('GraphQL proxy with session', () => {
       sid: 'abc123',
     };
 
-    const session = new Session({
+    session = new Session({
       id: `shop.myshopify.com_${jwtPayload.sub}`,
       shop,
       state: 'state',
       isOnline: true,
       accessToken,
     });
-    await shopify.config.sessionStorage.storeSession(session);
     token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
   });
 
@@ -142,41 +148,18 @@ describe('GraphQL proxy', () => {
       sid: 'abc123',
     };
 
-    const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
-    const request: NormalizedRequest = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      url: 'https://my-test-app.myshopify.io/auth/begin',
-    };
     const session = new Session({
       id: `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop,
       state: 'state',
       isOnline: true,
     });
-    shopify.config.sessionStorage.storeSession(session);
 
     await expect(
       shopify.clients.graphqlProxy({
         rawBody: '',
-        rawRequest: request,
+        session,
       }),
     ).rejects.toThrow(InvalidSession);
-  });
-
-  it('throws an error if no session', async () => {
-    const request: NormalizedRequest = {
-      method: 'GET',
-      headers: {},
-      url: 'https://my-test-app.myshopify.io/auth/begin',
-    };
-    await expect(
-      shopify.clients.graphqlProxy({
-        rawBody: '',
-        rawRequest: request,
-      }),
-    ).rejects.toThrow(SessionNotFound);
   });
 });

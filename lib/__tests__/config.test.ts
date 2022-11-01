@@ -1,7 +1,6 @@
 import * as ShopifyErrors from '../error';
 import {validateConfig} from '../config';
 import {ApiVersion, ConfigParams, LogSeverity} from '../base-types';
-import {MemorySessionStorage} from '../../session-storage/memory';
 
 let validParams: ConfigParams;
 
@@ -15,7 +14,6 @@ describe('Config object', () => {
       apiVersion: ApiVersion.Unstable,
       isEmbeddedApp: true,
       isPrivateApp: false,
-      sessionStorage: new MemorySessionStorage(),
       logger: {
         log: jest.fn(),
         level: LogSeverity.Debug,

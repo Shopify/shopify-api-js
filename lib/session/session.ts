@@ -18,19 +18,6 @@ const includedKeys = [
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.
  */
 export class Session {
-  readonly id: string;
-  public shop: string;
-  public state: string;
-  public isOnline: boolean;
-  public scope?: string;
-  public expires?: Date;
-  public accessToken?: string;
-  public onlineAccessInfo?: OnlineAccessInfo;
-
-  constructor(params: SessionParams) {
-    Object.assign(this, params);
-  }
-
   public static deserialize(entries: [string, string | number][]): Session {
     const obj = Object.fromEntries(
       entries
@@ -80,6 +67,19 @@ export class Session {
     Object.setPrototypeOf(obj, Session.prototype);
 
     return obj;
+  }
+
+  readonly id: string;
+  public shop: string;
+  public state: string;
+  public isOnline: boolean;
+  public scope?: string;
+  public expires?: Date;
+  public accessToken?: string;
+  public onlineAccessInfo?: OnlineAccessInfo;
+
+  constructor(params: SessionParams) {
+    Object.assign(this, params);
   }
 
   public isActive(scopes: AuthScopes | string | string[]): boolean {

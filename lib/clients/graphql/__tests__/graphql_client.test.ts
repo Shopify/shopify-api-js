@@ -1,8 +1,10 @@
 import * as ShopifyErrors from '../../../error';
 import {ShopifyHeader} from '../../../base-types';
 import {queueMockResponse, shopify} from '../../../__tests__/test-helper';
+import {Session} from '../../../session/session';
+import {JwtPayload} from '../../../session/types';
 
-const DOMAIN = 'shop.myshopify.io';
+const domain = 'test-shop.myshopify.io';
 const QUERY = `
 {
   shop {
@@ -19,12 +21,35 @@ const successResponse = {
   },
 };
 
+const accessToken = 'dangit';
+let session: Session;
+let jwtPayload: JwtPayload;
+
 describe('GraphQL client', () => {
-  it('can return response', async () => {
-    const client = new shopify.clients.Graphql({
-      domain: DOMAIN,
-      accessToken: 'bork',
+  beforeEach(() => {
+    jwtPayload = {
+      iss: 'https://test-shop.myshopify.io/admin',
+      dest: 'https://test-shop.myshopify.io',
+      aud: shopify.config.apiKey,
+      sub: '1',
+      exp: Date.now() / 1000 + 3600,
+      nbf: 1234,
+      iat: 1234,
+      jti: '4321',
+      sid: 'abc123',
+    };
+
+    session = new Session({
+      id: `test-shop.myshopify.io_${jwtPayload.sub}`,
+      shop: domain,
+      state: 'state',
+      isOnline: true,
+      accessToken,
     });
+  });
+
+  it('can return response', async () => {
+    const client = new shopify.clients.Graphql(session);
     queueMockResponse(JSON.stringify(successResponse));
 
     const response = await client.query({data: QUERY});
@@ -32,17 +57,14 @@ describe('GraphQL client', () => {
     expect(response).toEqual(buildExpectedResponse(successResponse));
     expect({
       method: 'POST',
-      domain: DOMAIN,
+      domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
     }).toMatchMadeHttpRequest();
   });
 
   it('merges custom headers with default', async () => {
-    const client = new shopify.clients.Graphql({
-      domain: DOMAIN,
-      accessToken: 'bork',
-    });
+    const client = new shopify.clients.Graphql(session);
     const customHeader: {[key: string]: string} = {
       'X-Glib-Glob': 'goobers',
     };
@@ -53,10 +75,10 @@ describe('GraphQL client', () => {
       client.query({extraHeaders: customHeader, data: QUERY}),
     ).resolves.toEqual(buildExpectedResponse(successResponse));
 
-    customHeader[ShopifyHeader.AccessToken] = 'bork';
+    customHeader[ShopifyHeader.AccessToken] = accessToken;
     expect({
       method: 'POST',
-      domain: DOMAIN,
+      domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: customHeader,
       data: QUERY,
@@ -66,7 +88,7 @@ describe('GraphQL client', () => {
   it('adapts to private app requests', async () => {
     shopify.config.isPrivateApp = true;
 
-    const client = new shopify.clients.Graphql({domain: DOMAIN});
+    const client = new shopify.clients.Graphql(session);
     queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
@@ -78,7 +100,7 @@ describe('GraphQL client', () => {
 
     expect({
       method: 'POST',
-      domain: DOMAIN,
+      domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers: customHeaders,
@@ -88,16 +110,20 @@ describe('GraphQL client', () => {
   });
 
   it('fails to instantiate without access token', () => {
-    expect(() => new shopify.clients.Graphql({domain: DOMAIN})).toThrow(
-      ShopifyErrors.MissingRequiredArgument,
-    );
+    const sessionWithoutAccessToken = new Session({
+      id: `test-shop.myshopify.io_${jwtPayload.sub}`,
+      shop: domain,
+      state: 'state',
+      isOnline: true,
+    });
+
+    expect(
+      () => new shopify.clients.Graphql(sessionWithoutAccessToken),
+    ).toThrow(ShopifyErrors.MissingRequiredArgument);
   });
 
   it('can handle queries with variables', async () => {
-    const client = new shopify.clients.Graphql({
-      domain: DOMAIN,
-      accessToken: 'bork',
-    });
+    const client = new shopify.clients.Graphql(session);
     const queryWithVariables = {
       query: `query FirstTwo($first: Int) {
         products(first: $first) {
@@ -139,22 +165,19 @@ describe('GraphQL client', () => {
 
     expect({
       method: 'POST',
-      domain: DOMAIN,
+      domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: {
         'Content-Length': 219,
         'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': 'bork',
+        'X-Shopify-Access-Token': accessToken,
       },
       data: JSON.stringify(queryWithVariables),
     }).toMatchMadeHttpRequest();
   });
 
   it('throws error when response contains an errors field', async () => {
-    const client = new shopify.clients.Graphql({
-      domain: DOMAIN,
-      accessToken: 'bork',
-    });
+    const client = new shopify.clients.Graphql(session);
     const query = {
       query: `query getProducts {
         products {
@@ -205,12 +228,12 @@ describe('GraphQL client', () => {
 
     expect({
       method: 'POST',
-      domain: DOMAIN,
+      domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: {
         'Content-Length': 156,
         'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': 'bork',
+        'X-Shopify-Access-Token': accessToken,
       },
       data: JSON.stringify(query),
     }).toMatchMadeHttpRequest();

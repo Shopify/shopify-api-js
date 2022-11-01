@@ -7,7 +7,6 @@ import {
   LogSeverity,
   Shopify,
 } from '../base-types';
-import {MemorySessionStorage} from '../../session-storage/memory';
 import {JwtPayload} from '../session/types';
 import {getHMACKey} from '../utils/get-hmac-key';
 import {mockTestRequests} from '../../adapters/mock/mock_test_requests';
@@ -45,7 +44,6 @@ export function getNewTestConfig(): ConfigParams {
     apiVersion: LATEST_API_VERSION,
     isEmbeddedApp: false,
     isPrivateApp: false,
-    sessionStorage: new MemorySessionStorage(),
     customShopDomains: undefined,
     billing: undefined,
     logger: {
@@ -129,7 +127,7 @@ export async function setSignedSessionCookie({
   request.headers.Cookie = cookies.toHeaders().join(';');
 }
 
-export async function createAndSaveDummySession({
+export async function createDummySession({
   sessionId,
   isOnline,
   shop = 'test-shop.myshopify.io',
@@ -150,9 +148,6 @@ export async function createAndSaveDummySession({
     expires,
     accessToken,
   });
-  await expect(
-    shopify.config.sessionStorage.storeSession(session),
-  ).resolves.toEqual(true);
 
   return session;
 }

@@ -4,8 +4,9 @@ import {RestClient} from '../clients/rest/rest_client';
 import {GraphqlClient} from '../clients/graphql/graphql_client';
 import {ClientType} from '../base-types';
 
-import type {shopifySession} from '.';
 import {Session} from './session';
+
+import type {shopifySession} from '.';
 
 export interface SessionParams {
   readonly id: string;
