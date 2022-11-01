@@ -18,3 +18,5 @@ export function logger(config: ConfigInterface) {
       log(LogSeverity.Error, message, context),
   };
 }
+
+export type ShopifyLogger = ReturnType<typeof logger>;

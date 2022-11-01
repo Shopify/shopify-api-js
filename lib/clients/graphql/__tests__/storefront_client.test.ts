@@ -1,5 +1,5 @@
 import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
-import {ShopifyHeader} from '../../../base-types';
+import {ShopifyHeader} from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 

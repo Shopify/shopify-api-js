@@ -10,7 +10,6 @@ module.exports = {
     'no-mixed-operators': 0,
     'no-console': 0,
     'lines-around-comment': 0,
-    'import/no-cycle': 0,
     '@typescript-eslint/naming-convention': 0,
   },
 };

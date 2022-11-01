@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 import express from 'express';
 
-import {ShopifyHeader} from '../../base-types';
+import {ShopifyHeader} from '../../types';
 
 export function getTestExpressApp() {
   const parseRawBody = (req: any, _res: any, next: any) => {

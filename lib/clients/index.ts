@@ -25,3 +25,5 @@ export function createClientClasses(config: ConfigInterface) {
     graphqlProxy: createGraphqlProxy(config),
   };
 }
+
+export type ShopifyClients = ReturnType<typeof createClientClasses>;

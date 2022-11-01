@@ -1,12 +1,8 @@
 import * as jose from 'jose';
 
-import {shopifyApi} from '..';
-import {
-  ConfigParams,
-  LATEST_API_VERSION,
-  LogSeverity,
-  Shopify,
-} from '../base-types';
+import {shopifyApi, Shopify} from '..';
+import {LATEST_API_VERSION, LogSeverity} from '../types';
+import {ConfigParams} from '../base-types';
 import {JwtPayload} from '../session/types';
 import {getHMACKey} from '../utils/get-hmac-key';
 import {mockTestRequests} from '../../adapters/mock/mock_test_requests';

@@ -12,3 +12,5 @@ export function shopifyUtils(config: ConfigInterface) {
     versionCompatible: createVersionCompatible(config),
   };
 }
+
+export type ShopifyUtils = ReturnType<typeof shopifyUtils>;

@@ -7,10 +7,11 @@ import {
   shopify,
 } from '../../__tests__/test-helper';
 import {HttpWebhookHandler} from '../types';
-import {LogSeverity, Shopify} from '../../base-types';
-import {Session} from '../../session/session';
 import {InvalidDeliveryMethodError, InvalidWebhookError} from '../../error';
-import {shopifyApi} from '../..';
+import {LogSeverity} from '../../types';
+import {shopifyApi, Shopify} from '../..';
+import {Session} from '../../session/session';
+import {JwtPayload} from '../../session/types';
 
 import * as mockResponses from './responses';
 import {EVENT_BRIDGE_HANDLER, HTTP_HANDLER, PUB_SUB_HANDLER} from './handlers';

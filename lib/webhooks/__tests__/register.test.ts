@@ -1,7 +1,7 @@
 import {Method, Header} from '@shopify/network';
 
 import {RegisterParams, RegisterReturn, WebhookHandler} from '../types';
-import {gdprTopics, ShopifyHeader} from '../../base-types';
+import {gdprTopics, ShopifyHeader} from '../../types';
 import {DataType} from '../../clients/types';
 import {queueMockResponse, shopify} from '../../__tests__/test-helper';
 import {mockTestRequests} from '../../../adapters/mock/mock_test_requests';

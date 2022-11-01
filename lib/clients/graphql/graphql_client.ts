@@ -1,4 +1,5 @@
-import {ConfigInterface, ShopifyHeader} from '../../base-types';
+import {ShopifyHeader} from '../../types';
+import {ConfigInterface} from '../../base-types';
 import {createHttpClientClass, HttpClient} from '../http_client/http_client';
 import {DataType, RequestReturn} from '../http_client/types';
 import {Session} from '../../session/session';

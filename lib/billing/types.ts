@@ -5,8 +5,6 @@ import {
   RecurringBillingIntervals,
 } from '../base-types';
 
-import {shopifyBilling} from '.';
-
 export interface BillingConfigPlan {
   amount: number;
   currencyCode: string;
@@ -92,5 +90,3 @@ export interface SinglePaymentResponse {
   };
   errors?: string[];
 }
-
-export type ShopifyBilling = ReturnType<typeof shopifyBilling>;

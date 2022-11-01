@@ -1,4 +1,4 @@
-import {ApiVersion} from '../lib/base-types';
+import {ApiVersion} from '../lib/types';
 import {RestClient} from '../lib/clients/rest/rest_client';
 
 import {Base} from './base';
