@@ -21,19 +21,19 @@ Note that [SQLite] is a local, file-based SQL database. It persists all tables t
 import Shopify from '@shopify/shopify-api';
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: new Shopify.Auth.Session.MySQLSessionStorage("mysql://username:password@host/database"),
+  SESSION_STORAGE: new Shopify.Session.MySQLSessionStorage("mysql://username:password@host/database"),
   ...
 });
 
 // OR
 
 Shopify.Context.initialize({
-  SESSION_STORAGE: Shopify.Auth.Session.MySQLSessionStorage.withCredentials({
+  SESSION_STORAGE: Shopify.Session.MySQLSessionStorage.withCredentials(
     "host.com",
     "thedatabase",
     "username",
     "password",
-  }),
+  ),
   ...
 });
 ```
