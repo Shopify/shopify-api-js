@@ -41,7 +41,6 @@
     "adapters/**/*.ts",
     "rest/**/*.ts",
     "runtime/**/*.ts",
-    "session-storage/**/*.ts",
   ],
   "exclude": [
     "**/*.test.ts", "**/test/*", "**/__tests__/*",

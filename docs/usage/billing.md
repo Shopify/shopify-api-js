@@ -57,13 +57,17 @@ Here's a typical example of how apps might do that:
 
 ```ts
 // This can happen at any point after the merchant goes through the OAuth process, as long as there is a session object
-// The session can come from either shopify.session.getCurrent or shopify.session.getOffline
+// The session can be retrieved from storage using the session id returned from shopify.session.getCurrentId
 function billingMiddleware(req, res, next) {
-  const session = shopify.session.getCurrent({
+  const sessionId = shopify.session.getCurrentId({
     isOnline: true,
     rawRequest: req,
     rawResponse: res,
   });
+
+  // use sessionId to retrieve session from app's session storage
+  // getSessionFromStorage() must be provided by application
+  const session = await getSessionFromStorage(sessionId);
 
   const hasPayment = await shopify.billing.check({
     session,
@@ -124,11 +128,15 @@ app.get('/auth/callback', async () => {
 
 ```ts
 app.post('/api/select-plan', async (req, res) => {
-  const session = shopify.session.getCurrent({
+  const sessionId = shopify.session.getCurrentId({
     isOnline: true,
     rawRequest: req,
     rawResponse: res,
   });
+
+  // use sessionId to retrieve session from app's session storage
+  // getSessionFromStorage() must be provided by application
+  const session = await getSessionFromStorage(sessionId);
 
   const confirmationUrl = await shopify.billing.request({
     session,
@@ -162,7 +170,7 @@ With the `check` method, your app can block access to specific endpoints, or to 
 If you're gating access to the entire app, you should check for billing:
 
 1. After OAuth completes, you'll get the session back from `shopify.auth.callback`. You can use the session to ensure billing takes place as part of the authentication flow.
-1. When validating requests from the frontend. Since the check requires API access, you can only run it in requests that work with `shopify.session.getCurrent`.
+1. When validating requests from the frontend. Since the check requires API access, you can only run it in requests that work with `shopify.session.getCurrentId`.
 
 **Note**: the merchant may refuse payment when prompted or cancel subscriptions later on, but the app will already be installed at that point. We recommend using [billing webhooks](https://shopify.dev/apps/billing#webhooks-for-billing) to revoke access for merchants when they cancel / decline payment.
 

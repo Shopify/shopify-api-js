@@ -8,11 +8,15 @@ To create a client, you'll need a session, for example:
 ```ts
 // Requests to /my-endpoint must be made with authenticatedFetch from App Bridge for embedded apps
 app.get('/my-endpoint', async () => {
-  const session = await shopify.session.getCurrent({
+  const sessionId = await shopify.session.getCurrentId({
     isOnline: true,
     rawRequest: req,
     rawResponse: res,
   });
+
+  // use sessionId to retrieve session from app's session storage
+  // getSessionFromStorage() must be provided by application
+  const session = await getSessionFromStorage(sessionId);
 
   const client = new shopify.clients.Graphql({
     domain: session.shop,

@@ -18,11 +18,15 @@ Below is a (simplified) example of how you may create a token (see [REST](https:
 
 ```ts
 app.get('/my-endpoint', async (req, res) => {
-  const session = await shopify.session.getCurrent({
+  const sessionId = await shopify.session.getCurrentId({
     isOnline: true,
     rawRequest: req,
     rawResponse: res,
   });
+
+  // use sessionId to retrieve session from app's session storage
+  // getSessionFromStorage() must be provided by application
+  const session = await getSessionFromStorage(sessionId);
 
   // Create a new storefront access token using the REST Admin API (you can also use the GraphQL API)
   const adminApiClient = new shopify.clients.Rest({
