@@ -5,7 +5,7 @@
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/base-types';
+import {ApiVersion} from '../../../lib/types';
 
 interface FindArgs {
   session: Session;
@@ -41,6 +41,8 @@ interface CancelArgs {
 }
 interface UpdateTrackingArgs {
   [key: string]: unknown;
+  notify_customer?: unknown;
+  tracking_info?: unknown;
   body?: {[key: string]: unknown} | null;
 }
 
@@ -146,6 +148,8 @@ export class Fulfillment extends Base {
 
   public async update_tracking(
     {
+      notify_customer = null,
+      tracking_info = null,
       body = null,
       ...otherArgs
     }: UpdateTrackingArgs
@@ -155,7 +159,7 @@ export class Fulfillment extends Base {
       operation: "update_tracking",
       session: this.session,
       urlIds: {"id": this.id},
-      params: {...otherArgs},
+      params: {"notify_customer": notify_customer, "tracking_info": tracking_info, ...otherArgs},
       body: body,
       entity: this,
     });

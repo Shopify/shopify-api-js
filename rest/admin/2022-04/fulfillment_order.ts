@@ -5,7 +5,7 @@
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/base-types';
+import {ApiVersion} from '../../../lib/types';
 
 interface FindArgs {
   session: Session;
@@ -34,7 +34,7 @@ interface HoldArgs {
 }
 interface MoveArgs {
   [key: string]: unknown;
-  new_location_id?: unknown;
+  fulfillment_order?: unknown;
   body?: {[key: string]: unknown} | null;
 }
 interface OpenArgs {
@@ -162,7 +162,7 @@ export class FulfillmentOrder extends Base {
 
   public async move(
     {
-      new_location_id = null,
+      fulfillment_order = null,
       body = null,
       ...otherArgs
     }: MoveArgs
@@ -172,7 +172,7 @@ export class FulfillmentOrder extends Base {
       operation: "move",
       session: this.session,
       urlIds: {"id": this.id},
-      params: {"new_location_id": new_location_id, ...otherArgs},
+      params: {"fulfillment_order": fulfillment_order, ...otherArgs},
       body: body,
       entity: this,
     });

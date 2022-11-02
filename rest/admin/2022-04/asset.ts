@@ -5,7 +5,7 @@
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/base-types';
+import {ApiVersion} from '../../../lib/types';
 
 interface DeleteArgs {
   session: Session;

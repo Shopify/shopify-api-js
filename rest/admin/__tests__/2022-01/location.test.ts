@@ -4,8 +4,8 @@
 
 import {Session} from '../../../../lib/session/session';
 import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
-import {ApiVersion, Shopify} from '../../../../lib/base-types';
-import {shopifyApi} from '../../../../lib';
+import {ApiVersion} from '../../../../lib/types';
+import {shopifyApi, Shopify} from '../../../../lib';
 
 import {restResources} from '../../2022-01';
 
