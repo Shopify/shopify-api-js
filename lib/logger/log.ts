@@ -1,4 +1,5 @@
-import {ConfigInterface, LogSeverity} from '../base-types';
+import {LogSeverity} from '../types';
+import {ConfigInterface} from '../base-types';
 
 import {LogContext} from './types';
 

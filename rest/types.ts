@@ -1,8 +1,3 @@
-import {ApiVersion} from '../lib/types';
-import {RestClient} from '../lib/clients/rest/rest_client';
-
-import {Base} from './base';
-
 export interface IdSet {
   [id: string]: string | number | null;
 }
@@ -23,11 +18,5 @@ export interface ResourcePath {
 }
 
 export interface ShopifyRestResources {
-  [resource: string]: typeof Base;
-}
-
-export interface LoadRestResourcesParams {
-  resources: ShopifyRestResources;
-  apiVersion: ApiVersion;
-  RestClient: typeof RestClient;
+  [resource: string]: any;
 }

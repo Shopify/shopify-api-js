@@ -1,9 +1,12 @@
-import {CreateGraphqlClientClassParams} from '..';
 import {ShopifyHeader} from '../../types';
 import {createHttpClientClass} from '../http_client/http_client';
 import {Session} from '../../session/session';
 
-import {AccessTokenHeader, GraphqlClient} from './graphql_client';
+import {
+  AccessTokenHeader,
+  GraphqlClient,
+  CreateGraphqlClientClassParams,
+} from './graphql_client';
 import {StorefrontClientParams} from './types';
 
 export class StorefrontClient extends GraphqlClient {

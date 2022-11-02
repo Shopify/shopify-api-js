@@ -32,10 +32,14 @@ import {
   AccessTokenResponse,
   OnlineAccessResponse,
   OnlineAccessInfo,
-  CallbackResponse,
 } from './types';
 import {nonce} from './nonce';
 import {safeCompare} from './safe-compare';
+
+export interface CallbackResponse<T = AdapterHeaders> {
+  headers: T;
+  session: Session;
+}
 
 export function createBegin(config: ConfigInterface) {
   return async ({

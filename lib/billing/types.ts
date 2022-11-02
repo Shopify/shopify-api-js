@@ -3,7 +3,7 @@ import {
   BillingInterval,
   BillingReplacementBehavior,
   RecurringBillingIntervals,
-} from '../base-types';
+} from '../types';
 
 export interface BillingConfigPlan {
   amount: number;

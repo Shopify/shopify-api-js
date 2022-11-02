@@ -1,4 +1,4 @@
-import {AdapterResponse} from '../runtime/http';
+import {AdapterResponse} from '../runtime/http/types';
 
 export class ShopifyError extends Error {
   constructor(...args: any) {

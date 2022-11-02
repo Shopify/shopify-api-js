@@ -1,4 +1,4 @@
-import {LogSeverity} from '../../base-types';
+import {LogSeverity} from '../../types';
 import {shopify} from '../../__tests__/test-helper';
 import {HttpWebhookHandler} from '../types';
 

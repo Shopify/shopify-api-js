@@ -2,6 +2,7 @@ export enum LogSeverity {
   Error,
   Warning,
   Info,
+  Debug,
 }
 
 export enum ApiVersion {

@@ -4,9 +4,13 @@ import {createHttpClientClass, HttpClient} from '../http_client/http_client';
 import {DataType, RequestReturn} from '../http_client/types';
 import {Session} from '../../session/session';
 import * as ShopifyErrors from '../../error';
-import {CreateGraphqlClientClassParams} from '..';
 
 import {GraphqlParams, GraphqlClientParams} from './types';
+
+export interface CreateGraphqlClientClassParams {
+  config: ConfigInterface;
+  HttpClient?: typeof HttpClient;
+}
 
 export interface AccessTokenHeader {
   header: string;

@@ -1,6 +1,14 @@
+import {ApiVersion} from '../lib/types';
 import {RestResourceError} from '../lib/error';
+import {RestClient} from '../lib/clients/rest/rest_client';
 
-import {LoadRestResourcesParams, ShopifyRestResources} from './types';
+import {ShopifyRestResources} from './types';
+
+export interface LoadRestResourcesParams {
+  resources: ShopifyRestResources;
+  apiVersion: ApiVersion;
+  RestClient: typeof RestClient;
+}
 
 export function loadRestResources({
   resources,
