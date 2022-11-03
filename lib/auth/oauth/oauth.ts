@@ -90,7 +90,7 @@ export function createBegin(config: ConfigInterface) {
       },
     };
 
-    log.debug(`OAuth startedm redirecting to ${redirectUrl}`, {shop, isOnline});
+    log.debug(`OAuth started, redirecting to ${redirectUrl}`, {shop, isOnline});
 
     return abstractConvertResponse(response, adapterArgs);
   };
