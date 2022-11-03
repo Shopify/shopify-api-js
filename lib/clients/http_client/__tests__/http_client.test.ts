@@ -646,8 +646,6 @@ describe('HTTP client', () => {
 
   it('logs deprecation headers to the console when they are present', async () => {
     const client = new HttpClient({domain});
-    const warnMock = jest.fn();
-    console.warn = warnMock;
 
     const postBody = {
       query: 'some query',
@@ -683,16 +681,18 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(warnMock.mock.calls[0][0]).toContain('API Deprecation Notice');
-    expect(warnMock.mock.calls[0][0]).toContain(
-      JSON.stringify(
-        {
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(1);
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining('API Deprecation Notice'),
+    );
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining(
+        JSON.stringify({
           message: 'This API endpoint has been deprecated',
           path: 'https://test-shop.myshopify.io/url/path',
-        },
-        null,
-        2,
+        }),
       ),
     );
 
@@ -702,17 +702,15 @@ describe('HTTP client', () => {
       data: postBody,
     });
 
-    expect(console.warn).toHaveBeenCalledTimes(2);
-    expect(warnMock.mock.calls[1][0]).toContain('API Deprecation Notice');
-    expect(warnMock.mock.calls[1][0]).toContain(
-      JSON.stringify(
-        {
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining(
+        JSON.stringify({
           message: 'This API endpoint has been deprecated',
           path: 'https://test-shop.myshopify.io/url/path',
           body: `${JSON.stringify(postBody)}...`,
-        },
-        null,
-        2,
+        }),
       ),
     );
   });
@@ -721,7 +719,6 @@ describe('HTTP client', () => {
     jest.useFakeTimers();
 
     const client = new HttpClient({domain});
-    console.warn = jest.fn();
 
     queueMockResponses(
       [
@@ -766,7 +763,11 @@ describe('HTTP client', () => {
     // this one should skip it
     await client.get({path: '/url/path'});
     // one warn so far
-    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(1);
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.anything(),
+    );
 
     // use jest.fn() to advance time by 5 minutes
     const currentTime = Date.now();
@@ -775,13 +776,14 @@ describe('HTTP client', () => {
     // should warn a second time since 5 mins have passed
     await client.get({path: '/url/path'});
 
-    expect(console.warn).toHaveBeenCalledTimes(2);
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.anything(),
+    );
   });
 
   it('calls log function with deprecation notice if one is specified in config', async () => {
-    const logMock = jest.fn();
-    shopify.config.logFunction = logMock;
-
     const client = new HttpClient({domain});
 
     queueMockResponse(
@@ -799,19 +801,23 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    expect(logMock.mock.calls[0][0]).toEqual(LogSeverity.Warning);
-    expect(logMock.mock.calls[0][1]).toContain('API Deprecation Notice');
-    expect(logMock.mock.calls[0][1]).toContain(
-      JSON.stringify(
-        {
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining('API Deprecation Notice'),
+    );
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining(
+        JSON.stringify({
           message: 'This API endpoint has been deprecated',
           path: 'https://test-shop.myshopify.io/url/path',
-        },
-        null,
-        2,
+        }),
       ),
     );
-    expect(logMock.mock.calls[0][1]).toContain(`Stack Trace: Error`);
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining('Stack Trace: Error'),
+    );
   });
 
   it('properly encodes strings in the error message', async () => {
@@ -964,6 +970,45 @@ describe('HTTP client', () => {
         headers: {'X-Text-Header': ['Error 403']},
       },
     });
+  });
+
+  it('does not log HTTP requests when the setting is off', async () => {
+    shopify.config.logger.httpRequests = false;
+    shopify.config.logger.log = jest.fn();
+
+    const data = {test: 'data'};
+    const client = new HttpClient({domain});
+    queueMockResponse(buildMockResponse(successResponse));
+
+    await client.post({path: '/url/path', data});
+
+    expect(shopify.config.logger.log).not.toHaveBeenCalled();
+  });
+
+  it('logs HTTP requests when the setting is on', async () => {
+    shopify.config.logger.httpRequests = true;
+    shopify.config.logger.log = jest.fn();
+
+    const data = {test: 'data'};
+    const client = new HttpClient({domain});
+    queueMockResponse(buildMockResponse(successResponse));
+
+    await client.post({path: '/url/path', data});
+
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Debug,
+      expect.anything(),
+    );
+    const logMessage = (shopify.config.logger.log as jest.Mock).mock
+      .calls[0][1];
+    expect(logMessage).toContain('Making HTTP request');
+    expect(logMessage).toContain(
+      'POST https://test-shop.myshopify.io/url/path',
+    );
+    expect(logMessage).toContain(
+      'Headers: {"User-Agent":["Shopify API Library',
+    );
+    expect(logMessage).toContain('Body: "{\\"test\\":\\"data\\"}"');
   });
 });
 

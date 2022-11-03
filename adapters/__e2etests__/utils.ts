@@ -1,6 +1,10 @@
 import {Headers, canonicalizeHeaders} from '../../runtime/http';
 import {MemorySessionStorage} from '../../session-storage/memory';
-import {ConfigInterface, LATEST_API_VERSION} from '../../lib/base-types';
+import {
+  ConfigInterface,
+  LATEST_API_VERSION,
+  LogSeverity,
+} from '../../lib/base-types';
 import {AuthScopes} from '../../lib/auth/scopes';
 
 export function matchHeaders(received: Headers, expected: Headers): boolean {
@@ -33,5 +37,10 @@ export const config: ConfigInterface = {
   isEmbeddedApp: true,
   isPrivateApp: false,
   sessionStorage: new MemorySessionStorage(),
-  logFunction: () => Promise.resolve(),
+  logger: {
+    log: () => Promise.resolve(),
+    level: LogSeverity.Debug,
+    httpRequests: false,
+    timestamps: false,
+  },
 };

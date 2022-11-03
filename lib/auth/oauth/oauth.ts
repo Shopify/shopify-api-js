@@ -22,6 +22,7 @@ import {
   Cookies,
   NormalizedResponse,
 } from '../../../runtime/http';
+import {logger} from '../../logger';
 
 import {
   SESSION_COOKIE_NAME,
@@ -48,6 +49,9 @@ export function createBegin(config: ConfigInterface) {
       config.isPrivateApp,
       'Cannot perform OAuth for private apps',
     );
+
+    const log = logger(config);
+    log.info('Beginning OAuth', {shop, isOnline, callbackPath});
 
     const cleanShop = createSanitizeShop(config)(shop, true)!;
     const request = await abstractConvertRequest(adapterArgs);
@@ -76,14 +80,17 @@ export function createBegin(config: ConfigInterface) {
     const processedQuery = new ProcessedQuery();
     processedQuery.putAll(query);
 
+    const redirectUrl = `https://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`;
     const response: NormalizedResponse = {
       statusCode: 302,
       statusText: 'Found',
       headers: {
         ...cookies.response.headers!,
-        Location: `https://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`,
+        Location: redirectUrl,
       },
     };
+
+    log.debug(`OAuth startedm redirecting to ${redirectUrl}`, {shop, isOnline});
 
     return abstractConvertResponse(response, adapterArgs);
   };
@@ -105,6 +112,10 @@ export function createCallback(config: ConfigInterface) {
       request.url,
       `${config.hostScheme}://${config.hostName}`,
     ).searchParams;
+    const shop = query.get('shop')!;
+
+    const log = logger(config);
+    log.info('Completing OAuth', {shop, isOnline});
 
     const cookies = new Cookies(request, {} as NormalizedResponse, {
       keys: [config.apiSecretKey],
@@ -114,17 +125,28 @@ export function createCallback(config: ConfigInterface) {
     const stateFromCookie = await cookies.getAndVerify(STATE_COOKIE_NAME);
     cookies.deleteCookie(STATE_COOKIE_NAME);
     if (!stateFromCookie) {
+      log.error('Could not find OAuth cookie', {shop, isOnline});
+
       throw new ShopifyErrors.CookieNotFound(
-        `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.get(
-          'shop',
-        )!}`,
+        `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${shop}`,
       );
     }
 
     const authQuery: AuthQuery = Object.fromEntries(query.entries());
     if (!(await validQuery({config, query: authQuery, stateFromCookie}))) {
+      log.error('Invalid OAuth callback', {
+        shop,
+        isOnline,
+        stateFromCookie,
+      });
+
       throw new ShopifyErrors.InvalidOAuthError('Invalid OAuth callback.');
     }
+
+    log.debug('OAuth request is valid, requesting access token', {
+      shop,
+      isOnline,
+    });
 
     const body = {
       client_id: config.apiKey,
@@ -142,6 +164,8 @@ export function createCallback(config: ConfigInterface) {
     const HttpClient = createHttpClientClass(config);
     const client = new HttpClient({domain: cleanShop});
     const postResponse = await client.post(postParams);
+
+    log.debug('Received access token, creating session', {shop, isOnline});
 
     const session: Session = createSession({
       postResponse,

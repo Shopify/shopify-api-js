@@ -15,6 +15,7 @@ import {HashFormat} from '../../runtime/crypto/types';
 import {ConfigInterface, ShopifyHeader} from '../base-types';
 import {safeCompare} from '../auth/oauth/safe-compare';
 import * as ShopifyErrors from '../error';
+import {logger} from '../logger';
 
 import {WebhookRegistry, WebhookProcessParams, DeliveryMethod} from './types';
 import {topicForStorage} from './registry';
@@ -40,8 +41,15 @@ export function createProcess(
     const {webhookOk, hmac, topic, domain} = webhookCheck;
     let {errorMessage} = webhookCheck;
 
+    const log = logger(config);
+    log.info('Processing webhook request', {topic, domain});
+
     if (webhookOk) {
+      log.debug('Webhook request is well formed', {topic, domain});
+
       if (await validateOkWebhook(config.apiSecretKey, rawBody, hmac)) {
+        log.debug('Webhook request is valid', {topic, domain});
+
         const graphqlTopic = topicForStorage(topic);
         const handlers = webhookRegistry[graphqlTopic] || [];
 
@@ -55,6 +63,8 @@ export function createProcess(
           }
           found = true;
 
+          log.debug('Found HTTP handler, triggering it', {topic, domain});
+
           try {
             await handler.callback(graphqlTopic, domain, rawBody);
             response.statusCode = StatusCode.Ok;
@@ -65,14 +75,20 @@ export function createProcess(
         }
 
         if (!found) {
+          log.debug('No HTTP handlers found', {topic, domain});
+
           response.statusCode = StatusCode.NotFound;
           errorMessage = `No HTTP webhooks registered for topic ${topic}`;
         }
       } else {
+        log.debug('Webhook validation failed', {topic, domain});
+
         response.statusCode = StatusCode.Unauthorized;
         errorMessage = `Could not validate request for topic ${topic}`;
       }
     } else {
+      log.debug('Webhook request is malformed', {topic, domain});
+
       response.statusCode = StatusCode.BadRequest;
     }
 

@@ -7,7 +7,7 @@ import {
   shopify,
 } from '../../__tests__/test-helper';
 import {HttpWebhookHandler} from '../types';
-import {Shopify} from '../../base-types';
+import {LogSeverity, Shopify} from '../../base-types';
 import {InvalidDeliveryMethodError, InvalidWebhookError} from '../../error';
 import {shopifyApi} from '../..';
 
@@ -27,7 +27,7 @@ describe('webhooks', () => {
     const handler2: HttpWebhookHandler = {...HTTP_HANDLER};
     const handler3: HttpWebhookHandler = {...HTTP_HANDLER, callback: jest.fn()};
 
-    shopify.webhooks.addHandlers({[topic]: handler1});
+    await shopify.webhooks.addHandlers({[topic]: handler1});
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
     queueMockResponse(JSON.stringify(mockResponses.successResponse));
@@ -36,7 +36,7 @@ describe('webhooks', () => {
     expect(shopify.webhooks.getTopicsAdded()).toContain('PRODUCTS_CREATE');
 
     // Add a second handler
-    shopify.webhooks.addHandlers({PRODUCTS_UPDATE: handler2});
+    await shopify.webhooks.addHandlers({PRODUCTS_UPDATE: handler2});
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckResponse));
     queueMockResponse(JSON.stringify(mockResponses.successResponse));
@@ -46,12 +46,13 @@ describe('webhooks', () => {
     expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
 
     // Update the first handler and make sure we still have the two of them
-    const consoleLogMock = jest.spyOn(console, 'log').mockImplementation();
-    shopify.webhooks.addHandlers({[topic]: handler3});
-    expect(consoleLogMock).toHaveBeenCalledWith(
-      "Detected multiple handlers for 'PRODUCTS_CREATE', webhooks.process will call them sequentially",
+    await shopify.webhooks.addHandlers({[topic]: handler3});
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Info,
+      expect.stringContaining(
+        "Detected multiple handlers for 'PRODUCTS_CREATE', webhooks.process will call them sequentially",
+      ),
     );
-    consoleLogMock.mockRestore();
 
     queueMockResponse(
       JSON.stringify(mockResponses.webhookCheckMultiHandlerResponse),
@@ -97,12 +98,13 @@ describe('webhooks', () => {
     const handler1 = HTTP_HANDLER;
     const handler2 = HTTP_HANDLER;
 
-    const consoleLogMock = jest.spyOn(console, 'log').mockImplementation();
-    shopify.webhooks.addHandlers({[topic]: [handler1, handler2]});
-    expect(consoleLogMock).toHaveBeenCalledWith(
-      "Detected multiple handlers for 'PRODUCTS_CREATE', webhooks.process will call them sequentially",
+    await shopify.webhooks.addHandlers({[topic]: [handler1, handler2]});
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Info,
+      expect.stringContaining(
+        "Detected multiple handlers for 'PRODUCTS_CREATE', webhooks.process will call them sequentially",
+      ),
     );
-    consoleLogMock.mockRestore();
 
     expect(shopify.webhooks.getHandlers(topic)).toEqual([handler1, handler2]);
 
@@ -124,7 +126,7 @@ describe('webhooks', () => {
       callback: jest.fn(),
     };
 
-    shopify.webhooks.addHandlers({[topic]: [handler1, handler2]});
+    await shopify.webhooks.addHandlers({[topic]: [handler1, handler2]});
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
     queueMockResponse(JSON.stringify(mockResponses.successResponse));
@@ -161,22 +163,22 @@ describe('webhooks', () => {
     const handler1 = EVENT_BRIDGE_HANDLER;
     const handler2 = EVENT_BRIDGE_HANDLER;
 
-    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
 
-    expect(() => {
-      shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
-    }).toThrowError(InvalidDeliveryMethodError);
+    await expect(
+      shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2}),
+    ).rejects.toThrowError(InvalidDeliveryMethodError);
   });
 
   it('fails to register multiple PubSub handlers for the same topic', async () => {
     const handler1 = PUB_SUB_HANDLER;
     const handler2 = PUB_SUB_HANDLER;
 
-    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
 
-    expect(() => {
-      shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
-    }).toThrowError(InvalidDeliveryMethodError);
+    await expect(
+      shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2}),
+    ).rejects.toThrowError(InvalidDeliveryMethodError);
   });
 });
 
@@ -202,7 +204,7 @@ describe('dual webhook registry instances', () => {
   });
 
   it('adds different handlers for different topics to each registry', async () => {
-    shopify.webhooks.addHandlers({PRODUCTS: handler1});
+    await shopify.webhooks.addHandlers({PRODUCTS: handler1});
     shopify2.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
 
     expect(shopify.webhooks.getTopicsAdded()).toStrictEqual(['PRODUCTS']);
@@ -218,7 +220,7 @@ describe('dual webhook registry instances', () => {
   });
 
   it('adds different handlers for same topic to each registry', async () => {
-    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
     shopify2.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
 
     expect(shopify.webhooks.getTopicsAdded()).toStrictEqual([
@@ -271,7 +273,7 @@ describe('dual webhook registry instances', () => {
   });
 
   it('can fire handlers from different instances', async () => {
-    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
     shopify2.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
 
     let response = await request(app)

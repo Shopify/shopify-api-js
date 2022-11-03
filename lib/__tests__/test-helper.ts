@@ -1,7 +1,12 @@
 import * as jose from 'jose';
 
 import {shopifyApi} from '..';
-import {ConfigParams, LATEST_API_VERSION, Shopify} from '../base-types';
+import {
+  ConfigParams,
+  LATEST_API_VERSION,
+  LogSeverity,
+  Shopify,
+} from '../base-types';
 import {MemorySessionStorage} from '../../session-storage/memory';
 import {JwtPayload} from '../session/types';
 import {getHMACKey} from '../utils/get-hmac-key';
@@ -43,6 +48,12 @@ export function getNewTestConfig(): ConfigParams {
     sessionStorage: new MemorySessionStorage(),
     customShopDomains: undefined,
     billing: undefined,
+    logger: {
+      log: jest.fn(),
+      level: LogSeverity.Debug,
+      httpRequests: false,
+      timestamps: false,
+    },
   };
 }
 

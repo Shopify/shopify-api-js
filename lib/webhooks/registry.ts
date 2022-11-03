@@ -1,5 +1,6 @@
 import {InvalidDeliveryMethodError} from '../error';
-import {ConfigInterface, LogSeverity} from '../base-types';
+import {ConfigInterface} from '../base-types';
+import {logger} from '../logger';
 
 import {
   AddHandlersParams,
@@ -20,18 +21,18 @@ export function createAddHandlers(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
 ) {
-  return function addHandlers(handlersToAdd: AddHandlersParams) {
-    Object.entries(handlersToAdd).forEach(([topic, handlers]) => {
+  return async function addHandlers(handlersToAdd: AddHandlersParams) {
+    for (const [topic, handlers] of Object.entries(handlersToAdd)) {
       const topicKey = topicForStorage(topic);
 
       if (Array.isArray(handlers)) {
         for (const handler of handlers) {
-          mergeOrAddHandler(config, webhookRegistry, topicKey, handler);
+          await mergeOrAddHandler(config, webhookRegistry, topicKey, handler);
         }
       } else {
-        mergeOrAddHandler(config, webhookRegistry, topicKey, handlers);
+        await mergeOrAddHandler(config, webhookRegistry, topicKey, handlers);
       }
-    });
+    }
   };
 }
 
@@ -78,7 +79,7 @@ export function addHostToCallbackUrl(
   }
 }
 
-function mergeOrAddHandler(
+async function mergeOrAddHandler(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
   topic: string,
@@ -110,8 +111,7 @@ function mergeOrAddHandler(
     }
 
     if (handler.deliveryMethod === DeliveryMethod.Http) {
-      config.logFunction(
-        LogSeverity.Info,
+      await logger(config).info(
         `Detected multiple handlers for '${topic}', webhooks.process will call them sequentially`,
       );
       break;
