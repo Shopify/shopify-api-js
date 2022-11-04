@@ -618,11 +618,11 @@ Here are all the specific changes that we made to the `Utils` object:
    // getSessionFromStorage() must be provided by application
    const session = await getSessionFromStorage(sessionId);
 
-   const gqlClient = await shopify.clients.Graphql(session);
+   const gqlClient = await shopify.clients.Graphql({session});
    // or
-   const restClient = await shopify.clients.Rest(session);
+   const restClient = await shopify.clients.Rest({session});
    // or
-   const storefrontClient = await shopify.clients.Storefront(session);
+   const storefrontClient = await shopify.clients.Storefront({session});
    ```
 
    </div>
