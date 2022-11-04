@@ -94,7 +94,7 @@ describe('shopify.logger', () => {
 
         expect(shopify.config.logger.log).toHaveBeenCalledWith(
           config.severity,
-          `[ShopifyAPI][${config.level}]: test message`,
+          `[shopify-api/${config.level}] test message`,
         );
       });
 
@@ -108,7 +108,7 @@ describe('shopify.logger', () => {
 
         expect(shopify.config.logger.log).toHaveBeenCalledWith(
           config.severity,
-          `[ShopifyAPI][${config.level}][key1: value1 | key2: 2 | key3: null | key4: undefined]: test message`,
+          `[shopify-api/${config.level}] test message | {key1: value1, key2: 2, key3: null, key4: undefined}`,
         );
       });
     });
@@ -167,7 +167,7 @@ describe('shopify.logger', () => {
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
-      '[ShopifyAPI][DEBUG]: debug message',
+      '[shopify-api/DEBUG] debug message',
     );
   });
 
@@ -180,7 +180,7 @@ describe('shopify.logger', () => {
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
-      '[2022-01-01T00:00:00Z][ShopifyAPI][DEBUG]: debug message',
+      '[2022-01-01T00:00:00Z] [shopify-api/DEBUG] debug message',
     );
   });
 
@@ -191,7 +191,7 @@ describe('shopify.logger', () => {
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
-      '[MyPackage][DEBUG]: debug message',
+      '[MyPackage/DEBUG] debug message',
     );
   });
 });

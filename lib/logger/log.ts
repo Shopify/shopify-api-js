@@ -24,33 +24,39 @@ export function createLog(config: ConfigInterface): LoggerFunction {
       prefix.push(`${new Date().toISOString().slice(0, -5)}Z`);
     }
 
-    prefix.push(context.package || 'ShopifyAPI');
+    let packageString = context.package || 'shopify-api';
     delete context.package;
 
     switch (severity) {
       case LogSeverity.Debug:
-        prefix.push('DEBUG');
+        packageString = `${packageString}/DEBUG`;
         break;
       case LogSeverity.Info:
-        prefix.push('INFO');
+        packageString = `${packageString}/INFO`;
         break;
       case LogSeverity.Warning:
-        prefix.push('WARNING');
+        packageString = `${packageString}/WARNING`;
         break;
       case LogSeverity.Error:
-        prefix.push('ERROR');
+        packageString = `${packageString}/ERROR`;
         break;
     }
+
+    prefix.push(packageString);
 
     const contextParts: string[] = [];
     Object.entries(context).forEach(([key, value]) => {
       contextParts.push(`${key}: ${value}`);
     });
 
+    let suffix = '';
     if (contextParts.length > 0) {
-      prefix.push(`${contextParts.join(' | ')}`);
+      suffix = ` | {${contextParts.join(', ')}}`;
     }
 
-    await config.logger.log(severity, `[${prefix.join('][')}]: ${message}`);
+    await config.logger.log(
+      severity,
+      `[${prefix.join('] [')}] ${message}${suffix}`,
+    );
   };
 }

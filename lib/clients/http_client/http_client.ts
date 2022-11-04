@@ -158,7 +158,7 @@ export function createHttpClientClass(
         ];
 
         if (body) {
-          message.push(`Body: ${JSON.stringify(body).replace(/\\n/g, '\n')}`);
+          message.push(`Body: ${JSON.stringify(body).replace(/\n/g, '\\n  ')}`);
         }
 
         logger(config).debug(message.join('  -  '));

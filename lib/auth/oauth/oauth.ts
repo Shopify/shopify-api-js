@@ -165,7 +165,7 @@ export function createCallback(config: ConfigInterface) {
     const client = new HttpClient({domain: cleanShop});
     const postResponse = await client.post(postParams);
 
-    log.debug('Received access token, creating session', {shop, isOnline});
+    log.info('Received access token, creating session', {shop, isOnline});
 
     const session: Session = createSession({
       postResponse,
