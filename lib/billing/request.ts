@@ -52,7 +52,7 @@ export function createRequest(config: ConfigInterface) {
     );
 
     const GraphqlClient = createGraphqlClientClass({config});
-    const client = new GraphqlClient(session);
+    const client = new GraphqlClient({session});
 
     let data: RequestResponse;
     if (billingConfig.interval === BillingInterval.OneTime) {

@@ -6,7 +6,7 @@ import {HttpClient} from '../http_client/http_client';
 import {Session} from '../../session/session';
 import {CreateRestClientClassParams} from '..';
 
-import {RestRequestReturn, PageInfo} from './types';
+import {RestRequestReturn, PageInfo, RestClientParams} from './types';
 
 export class RestClient extends HttpClient {
   static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
@@ -16,16 +16,16 @@ export class RestClient extends HttpClient {
 
   readonly session: Session;
 
-  public constructor(session: Session) {
-    super({domain: session.shop});
+  public constructor(params: RestClientParams) {
+    super({domain: params.session.shop});
 
-    if (!this.restClass().CONFIG.isPrivateApp && !session.accessToken) {
+    if (!this.restClass().CONFIG.isPrivateApp && !params.session.accessToken) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating REST client',
       );
     }
 
-    this.session = session;
+    this.session = params.session;
   }
 
   protected async request<T = unknown>(

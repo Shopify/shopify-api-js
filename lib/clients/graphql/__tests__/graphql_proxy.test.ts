@@ -54,12 +54,6 @@ describe('GraphQL proxy with session', () => {
         body: req.body,
       };
 
-      // const sessionId = await shopify.session.getCurrentId({
-      //   isOnline: true,
-      //   rawRequest: req,
-      //   rawResponse: res,
-      // });
-
       const testResponse = await shopify.clients.graphqlProxy({
         rawBody: request.body!,
         session,

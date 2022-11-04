@@ -68,3 +68,52 @@ describe('isActive', () => {
     expect(session.isActive(shopify.config.scopes)).toBeFalsy();
   });
 });
+
+describe('serialize', () => {
+  [
+    {
+      id: 'serialize',
+      shop: 'serialize-shop',
+      state: 'serialize-state',
+      isOnline: false,
+      scope: 'serialize-scope',
+      accessToken: 'serialize-token',
+      expires: new Date(Date.now() + 86400),
+    },
+    {
+      id: 'serialize',
+      shop: 'serialize-shop',
+      state: 'serialize-state',
+      isOnline: true,
+      scope: 'serialize-scope',
+      accessToken: 'serialize-token',
+      expires: new Date(Date.now() + 86400),
+      onlineAccessInfo: {
+        expires_in: 1,
+        associated_user_scope: 'serialize-user-scope',
+        associated_user: {
+          id: 1,
+          first_name: 'serialize-first-name',
+          last_name: 'serialize-last-name',
+          email: 'serialize-email',
+          locale: 'serialize-locale',
+          email_verified: true,
+          account_owner: true,
+          collaborator: false,
+        },
+      },
+    },
+  ].forEach((testSessionParams) => {
+    const onlineOrOffline = testSessionParams.isOnline ? 'online' : 'offline';
+    it(`returns a serialized ${onlineOrOffline} session`, () => {
+      const session = new Session(testSessionParams);
+      expect(session.serialize()).toStrictEqual(testSessionParams);
+    });
+
+    it(`recreates a Session from a serialized ${onlineOrOffline} session`, () => {
+      const session = new Session(testSessionParams);
+      const sessionCopy = new Session(session.serialize());
+      expect(session).toStrictEqual(sessionCopy);
+    });
+  });
+});

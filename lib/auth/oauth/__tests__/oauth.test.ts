@@ -417,7 +417,6 @@ describe('callback', () => {
       isOnline: true,
       rawRequest: jwtReq,
     });
-    expect(currentSessionId).not.toBe(null);
     expect(currentSessionId).toEqual(jwtSessionId);
 
     const responseCookies = Cookies.parseCookies(

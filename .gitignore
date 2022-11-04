@@ -12,3 +12,4 @@ bundle/
 *.d.ts.map
 *.js
 *.js.map
+*.tgz

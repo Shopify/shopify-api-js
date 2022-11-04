@@ -49,7 +49,7 @@ describe('GraphQL client', () => {
   });
 
   it('can return response', async () => {
-    const client = new shopify.clients.Graphql(session);
+    const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
 
     const response = await client.query({data: QUERY});
@@ -64,7 +64,7 @@ describe('GraphQL client', () => {
   });
 
   it('merges custom headers with default', async () => {
-    const client = new shopify.clients.Graphql(session);
+    const client = new shopify.clients.Graphql({session});
     const customHeader: {[key: string]: string} = {
       'X-Glib-Glob': 'goobers',
     };
@@ -88,7 +88,7 @@ describe('GraphQL client', () => {
   it('adapts to private app requests', async () => {
     shopify.config.isPrivateApp = true;
 
-    const client = new shopify.clients.Graphql(session);
+    const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
 
     await expect(client.query({data: QUERY})).resolves.toEqual(
@@ -118,12 +118,12 @@ describe('GraphQL client', () => {
     });
 
     expect(
-      () => new shopify.clients.Graphql(sessionWithoutAccessToken),
+      () => new shopify.clients.Graphql({session: sessionWithoutAccessToken}),
     ).toThrow(ShopifyErrors.MissingRequiredArgument);
   });
 
   it('can handle queries with variables', async () => {
-    const client = new shopify.clients.Graphql(session);
+    const client = new shopify.clients.Graphql({session});
     const queryWithVariables = {
       query: `query FirstTwo($first: Int) {
         products(first: $first) {
@@ -177,7 +177,7 @@ describe('GraphQL client', () => {
   });
 
   it('throws error when response contains an errors field', async () => {
-    const client = new shopify.clients.Graphql(session);
+    const client = new shopify.clients.Graphql({session});
     const query = {
       query: `query getProducts {
         products {

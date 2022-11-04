@@ -5,7 +5,7 @@ import {Session} from '../../session/session';
 import * as ShopifyErrors from '../../error';
 import {CreateGraphqlClientClassParams} from '..';
 
-import {GraphqlParams} from './types';
+import {GraphqlParams, GraphqlClientParams} from './types';
 
 export interface AccessTokenHeader {
   header: string;
@@ -20,14 +20,17 @@ export class GraphqlClient {
   readonly session: Session;
   readonly client: HttpClient;
 
-  constructor(session: Session) {
-    if (!this.graphqlClass().CONFIG.isPrivateApp && !session.accessToken) {
+  constructor(params: GraphqlClientParams) {
+    if (
+      !this.graphqlClass().CONFIG.isPrivateApp &&
+      !params.session.accessToken
+    ) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating GraphQL client',
       );
     }
 
-    this.session = session;
+    this.session = params.session;
     this.client = new (this.graphqlClass().HTTP_CLIENT)({
       domain: this.session.shop,
     });

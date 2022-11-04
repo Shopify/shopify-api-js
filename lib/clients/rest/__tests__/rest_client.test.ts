@@ -48,7 +48,7 @@ describe('REST client', () => {
   });
 
   it('can make GET request', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -63,7 +63,7 @@ describe('REST client', () => {
   });
 
   it('can make GET request with path in query', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
     const getRequest = {
@@ -84,7 +84,7 @@ describe('REST client', () => {
   });
 
   it('can make POST request with JSON data', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -107,7 +107,7 @@ describe('REST client', () => {
   });
 
   it('can make POST request with form data', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -134,7 +134,7 @@ describe('REST client', () => {
   });
 
   it('can make PUT request with JSON data', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -157,7 +157,7 @@ describe('REST client', () => {
   });
 
   it('can make DELETE request', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -173,7 +173,7 @@ describe('REST client', () => {
   });
 
   it('merges custom headers with the default ones', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     const customHeaders: {[key: string]: string} = {
       'X-Not-A-Real-Header': 'some_value',
@@ -196,7 +196,7 @@ describe('REST client', () => {
 
   it('includes pageInfo of type PageInfo in the returned object for calls with next or previous pages', async () => {
     const params = getDefaultPageInfo();
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
     const linkHeaders = [
       `<${params.previousPageUrl}>; rel="previous"`,
       `<${params.nextPageUrl}>; rel="next"`,
@@ -219,7 +219,7 @@ describe('REST client', () => {
 
   it('is able to make subsequent get requests to either pageInfo.nextPage or pageInfo.prevPage', async () => {
     const params = getDefaultPageInfo();
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
     const linkHeaders = [
       `<${params.previousPageUrl}>; rel="previous"`,
       `<${params.nextPageUrl}>; rel="next"`,
@@ -261,7 +261,7 @@ describe('REST client', () => {
 
   it('can request next pages until they run out', async () => {
     const params = getDefaultPageInfo();
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
     const linkHeaders = [
       `<${params.previousPageUrl}>; rel="previous"`,
       `<${params.nextPageUrl}>; rel="next"`,
@@ -300,7 +300,7 @@ describe('REST client', () => {
 
   it('can request previous pages until they run out', async () => {
     const params = getDefaultPageInfo();
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
     const linkHeaders = [
       `<${params.previousPageUrl}>; rel="previous"`,
       `<${params.nextPageUrl}>; rel="next"`,
@@ -344,7 +344,7 @@ describe('REST client', () => {
   it('adapts to private app requests', async () => {
     shopify.config.isPrivateApp = true;
 
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -373,13 +373,13 @@ describe('REST client', () => {
       isOnline: true,
     });
 
-    expect(() => new shopify.clients.Rest(sessionWithoutAccessToken)).toThrow(
-      ShopifyErrors.MissingRequiredArgument,
-    );
+    expect(
+      () => new shopify.clients.Rest({session: sessionWithoutAccessToken}),
+    ).toThrow(ShopifyErrors.MissingRequiredArgument);
   });
 
   it('allows paths with .json', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -394,7 +394,7 @@ describe('REST client', () => {
   });
 
   it('allows full paths', async () => {
-    const client = new shopify.clients.Rest(session);
+    const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 

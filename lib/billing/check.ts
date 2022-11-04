@@ -37,7 +37,7 @@ export function createCheck(config: ConfigInterface) {
     }
 
     const GraphqlClient = createGraphqlClientClass({config});
-    const client = new GraphqlClient(session);
+    const client = new GraphqlClient({session});
 
     const plansArray = Array.isArray(plans) ? plans : [plans];
     return hasActivePayment({

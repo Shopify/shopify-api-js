@@ -17,7 +17,7 @@ export function createGraphqlProxy(config: ConfigInterface) {
     }
 
     const GraphqlClient = createGraphqlClientClass({config});
-    const client = new GraphqlClient(session);
+    const client = new GraphqlClient({session});
     return client.query({
       data: rawBody,
     });

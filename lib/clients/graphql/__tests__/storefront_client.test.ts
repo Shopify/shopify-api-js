@@ -46,7 +46,7 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('can return response from specific access token', async () => {
-    const client = new shopify.clients.Storefront(session);
+    const client = new shopify.clients.Storefront({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -69,7 +69,7 @@ describe('Storefront GraphQL client', () => {
     shopify.config.isPrivateApp = true;
     shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
-    const client = new shopify.clients.Storefront(session);
+    const client = new shopify.clients.Storefront({session});
 
     queueMockResponse(JSON.stringify(successResponse));
 

@@ -1,3 +1,4 @@
+import {Session} from '../../session/session';
 import {RequestReturn, GetRequestParams} from '../http_client/types';
 
 export interface PageInfo {
@@ -12,3 +13,7 @@ export interface PageInfo {
 export type RestRequestReturn<T = unknown> = RequestReturn<T> & {
   pageInfo?: PageInfo;
 };
+
+export interface RestClientParams {
+  session: Session;
+}
