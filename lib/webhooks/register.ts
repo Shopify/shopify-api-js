@@ -22,6 +22,7 @@ import {
   WebhookCheckResponseNode,
   WebhookOperation,
   RegisterResult,
+  RegisterParams,
 } from './types';
 
 interface RegisterTopicParams {
@@ -52,7 +53,9 @@ export function createRegister(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
 ) {
-  return async function register(session: Session): Promise<RegisterReturn> {
+  return async function register({
+    session,
+  }: RegisterParams): Promise<RegisterReturn> {
     const log = logger(config);
     log.info('Registering webhooks', {shop: session.shop});
 
@@ -86,6 +89,27 @@ export function createRegister(
         topic,
         existingHandlers: existingHandlers[topic] || [],
         handlers: createGetHandlers(webhookRegistry)(topic),
+      });
+
+      // Remove this topic from the list of existing handlers so we have a list of leftovers
+      delete existingHandlers[topic];
+    }
+
+    // Delete any leftover handlers
+    for (const topic in existingHandlers) {
+      if (!Object.prototype.hasOwnProperty.call(existingHandlers, topic)) {
+        continue;
+      }
+
+      const GraphqlClient = createGraphqlClientClass({config});
+      const client = new GraphqlClient({session});
+
+      registerReturn[topic] = await runMutations({
+        config,
+        client,
+        topic,
+        handlers: existingHandlers[topic],
+        operation: WebhookOperation.Delete,
       });
     }
 

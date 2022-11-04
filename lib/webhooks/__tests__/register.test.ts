@@ -1,15 +1,14 @@
 import {Method, Header} from '@shopify/network';
 
-import {RegisterReturn, WebhookHandler} from '../types';
+import {RegisterParams, RegisterReturn, WebhookHandler} from '../types';
 import {gdprTopics, ShopifyHeader} from '../../base-types';
 import {DataType} from '../../clients/types';
 import {queueMockResponse, shopify} from '../../__tests__/test-helper';
 import {mockTestRequests} from '../../../adapters/mock/mock_test_requests';
 import {queryTemplate} from '../query-template';
 import {TEMPLATE_GET_HANDLERS, TEMPLATE_MUTATION} from '../register';
-import {InvalidDeliveryMethodError} from '../../error';
 import {Session} from '../../session/session';
-import {JwtPayload} from '../../session/types';
+import {InvalidDeliveryMethodError} from '../../error';
 
 import * as mockResponses from './responses';
 import {MockResponse} from './responses';
@@ -33,33 +32,15 @@ interface MutationParams {
   [key: string]: any;
 }
 
-const domain = 'test-shop.myshopify.io';
-const accessToken = 'dangit';
-let session: Session;
+const session = new Session({
+  id: 'test-session',
+  shop: 'shop1.myshopify.io',
+  accessToken: 'some token',
+  isOnline: true,
+  state: 'test-state',
+});
 
 describe('shopify.webhooks.register', () => {
-  beforeEach(() => {
-    const jwtPayload: JwtPayload = {
-      iss: 'https://test-shop.myshopify.io/admin',
-      dest: 'https://test-shop.myshopify.io',
-      aud: shopify.config.apiKey,
-      sub: '1',
-      exp: Date.now() / 1000 + 3600,
-      nbf: 1234,
-      iat: 1234,
-      jti: '4321',
-      sid: 'abc123',
-    };
-
-    session = new Session({
-      id: `test-shop.myshopify.io_${jwtPayload.sub}`,
-      shop: domain,
-      state: 'state',
-      isOnline: true,
-      accessToken,
-    });
-  });
-
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler = HTTP_HANDLER;
@@ -299,7 +280,7 @@ describe('shopify.webhooks.register', () => {
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
 
-    await expect(shopify.webhooks.register(session)).rejects.toThrow(
+    await expect(shopify.webhooks.register({session})).rejects.toThrow(
       InvalidDeliveryMethodError,
     );
   });
@@ -314,12 +295,33 @@ describe('shopify.webhooks.register', () => {
         JSON.stringify(mockResponses.webhookCheckEmptyResponse),
       );
 
-      const response = await shopify.webhooks.register(session);
+      const response = await shopify.webhooks.register({session});
 
       expect(mockTestRequests.requestList).toHaveLength(1);
       expect(response[gdprTopic]).toHaveLength(0);
       expect(shopify.webhooks.getTopicsAdded()).toContain(gdprTopic);
     });
+  });
+
+  it('deletes handlers not currently in the registry', async () => {
+    const topic = 'NEW_TOPIC_TO_ADD';
+    const handler = {...HTTP_HANDLER};
+    const responses = [
+      mockResponses.successResponse,
+      mockResponses.successDeleteResponse,
+    ];
+
+    const registerReturn = await registerWebhook({
+      topic,
+      handler,
+      checkMockResponse: mockResponses.webhookCheckResponse,
+      responses,
+    });
+
+    expect(Object.keys(registerReturn)).toEqual([
+      'NEW_TOPIC_TO_ADD',
+      'PRODUCTS_CREATE',
+    ]);
   });
 });
 
@@ -336,11 +338,11 @@ async function registerWebhook({
     queueMockResponse(JSON.stringify(response));
   });
 
-  const result = await shopify.webhooks.register(session);
+  const result = await shopify.webhooks.register({session});
 
   expect(mockTestRequests.requestList).toHaveLength(responses.length + 1);
 
-  assertWebhookCheckRequest(session);
+  assertWebhookCheckRequest({session});
 
   return result;
 }
@@ -363,7 +365,7 @@ function createWebhookCheckQuery() {
   return queryTemplate(TEMPLATE_GET_HANDLERS, {END_CURSOR: 'null'});
 }
 
-function assertWebhookCheckRequest(session: Session) {
+function assertWebhookCheckRequest({session}: RegisterParams) {
   expect({
     method: Method.Post.toString(),
     domain: session.shop,
