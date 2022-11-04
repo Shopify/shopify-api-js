@@ -737,7 +737,7 @@ Below are instructions on how webhooks work now:
 
 > **Note**: if you're using TypeScript, the handlers are typed based on the `deliveryMethod` you select.
 
-1. `Shopify.Webhooks.Registry.register` is now `shopify.webhooks.register`, and it now only takes in the session fields. It will register any handlers you added, and delete registrations that don't match the new configuration. That means the final webhooks registered for a shop will always match your configuration.
+1. `Shopify.Webhooks.Registry.register` is now `shopify.webhooks.register`, and it now only takes in the session. It will register any handlers you added, and delete registrations that don't match the new configuration. That means the final webhooks registered for a shop will always match your configuration.
 
    <div>Before
 
@@ -753,10 +753,7 @@ Below are instructions on how webhooks work now:
    </div><div>After
 
    ```ts
-   const response = await shopify.webhooks.register({
-     accessToken: session.accessToken,
-     shop: session.shop,
-   });
+   const response = await shopify.webhooks.register({session: session});
 
    // Response will be a list indexed by topic:
    console.log(response[topic][0].success, response[topic][0].result);
