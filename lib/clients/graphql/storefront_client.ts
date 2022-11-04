@@ -3,17 +3,24 @@ import {ShopifyHeader} from '../../base-types';
 import {createHttpClientClass} from '../http_client/http_client';
 
 import {AccessTokenHeader, GraphqlClient} from './graphql_client';
+import {StorefrontClientParams} from './types';
 
 export class StorefrontClient extends GraphqlClient {
   baseApiPath = '/api';
+  readonly storefrontAccessToken: string;
+
+  constructor(params: StorefrontClientParams) {
+    super({session: params.session});
+    this.storefrontAccessToken = params.storefrontAccessToken;
+  }
 
   protected getAccessTokenHeader(): AccessTokenHeader {
     return {
       header: ShopifyHeader.StorefrontAccessToken,
       value: (this.storefrontClass().CONFIG.isPrivateApp
         ? this.storefrontClass().CONFIG.privateAppStorefrontAccessToken ||
-          this.session.accessToken
-        : this.session.accessToken) as string,
+          this.storefrontAccessToken
+        : this.storefrontAccessToken) as string,
     };
   }
 

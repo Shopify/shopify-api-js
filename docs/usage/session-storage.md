@@ -34,10 +34,10 @@ The previous implementations of `SessionStorage` are now included in the [`shopi
    });
 
    // app stores Session in its own storage mechanism
-   await addSessionToStorage(callbackResponse.session.serialize());
+   await addSessionToStorage(callbackResponse.session.toObject());
    ```
 
-   The `Session` class includes a `.serialize` method that returns the data-only properties of the `Session` as a JavaScript object.  This return value is identical to the parameters used to create a `Session` instance.  In other words,
+   The `Session` class includes a `.toObject` method that returns the data-only properties of the `Session` as a JavaScript object.  This return value is identical to the parameters used to create a `Session` instance.  In other words,
 
    ```ts
    const callbackResponse = shopify.auth.callback({
@@ -46,11 +46,62 @@ The previous implementations of `SessionStorage` are now included in the [`shopi
      rawResponse: res,
    });
 
-   const sessionCopy = new Session(callbackResponse.session.serialize());
+   const sessionCopy = new Session(callbackResponse.session.toObject());
    // sessionCopy is an identical copy of the callbackResponse.session instance
    ```
 
    Now that the app has a JavaScript object containing the data of a `Session`, it can convert the data into whatever means necessary to store it in the apps preferred storage mechanism.  Again, the developer is free to explore various implementations of session storage in the [`shopify-app-express` package](https://github.com/Shopify/shopify-app-express/tree/main/src/session-storage).
+
+   The `Session` class also includes an instance method called `.toPropertyArray` that returns an array of key-value pairs, e.g.,
+
+   ```ts
+   const {session, headers} = shopify.auth.callback({
+     isOnline: true,
+     rawRequest: req,
+     rawResponse: res,
+   });
+   /*
+     If session has the following data content...
+     {
+       id: 'online_session_id',
+       shop: 'online-session-shop',
+       state: 'online-session-state',
+       isOnline: true,
+       scope: 'online-session-scope',
+       accessToken: 'online-session-token',
+       expires: 2022-01-01T05:00:00.000Z,  // Date object
+       onlineAccessInfo: {
+         expires_in: 1,
+         associated_user_scope: 'online-session-user-scope',
+         associated_user: {
+           id: 1,
+           first_name: 'online-session-first-name',
+           last_name: 'online-session-last-name',
+           email: 'online-session-email',
+           locale: 'online-session-locale',
+           email_verified: true,
+           account_owner: true,
+           collaborator: false,
+         },
+       }
+     }
+    */
+
+   const sessionProperties = session.toPropertyArray();
+   /*
+     ... then sessionProperties will have the following data...
+     [
+       ['id', 'online_session_id'],
+       ['shop', 'online-session-shop'],
+       ['state', 'online-session-state'],
+       ['isOnline', true],
+       ['scope', 'online-session-scope'],
+       ['accessToken', 'online-session-token'],
+       ['expires', 1641013200],  // number, seconds since Jan 1, 1970
+       ['onlineAccessInfo', 1],  // only the `id` property of the `associated_user` property is stored
+     ]
+    */
+   ```
 
 ### Load a session from storage
 
@@ -73,3 +124,42 @@ The previous implementations of `SessionStorage` are now included in the [`shopi
    ```
 
    Once the `Session` is found, the app must ensure that it converts it from the stored format into the `SessionParams` object, so that a `Session` instance can be instantiated for passing to the library calls.  In the example above, `getSessionFromStorage` will have returned a `Session` object created using `new Session(params)`, where `params` are the values retrieved from storage converted into a `SessionParams` object.
+
+   If the `.toPropertyArray` method was used to obtain the session data, the `Session` class has a `.fromPropertyArray` static method that can be used to convert the array data back into a session.
+
+   ```ts
+   const sessionProperties = session.toPropertyArray();
+   /*
+     if sessionProperties has the following data...
+     [
+       ['id', 'online_session_id'],
+       ['shop', 'online-session-shop'],
+       ['state', 'online-session-state'],
+       ['isOnline', true],
+       ['scope', 'online-session-scope'],
+       ['accessToken', 'online-session-token'],
+       ['expires', 1641013200],  // example = January 1, 2022, as number of seconds since Jan 1, 1970
+       ['onlineAccessInfo', 1],  // only the `id` property of the `associated_user` property is stored
+     ]
+    */
+
+   const session = Session.fromPropertyArray(sessionProperties);
+   /*
+     ... then session will have the following data...
+     {
+       id: 'online_session_id',
+       shop: 'online-session-shop',
+       state: 'online-session-state',
+       isOnline: true,
+       scope: 'online-session-scope',
+       accessToken: 'online-session-token',
+       expires: 2022-01-01T05:00:00.000Z,  // Date object
+       onlineAccessInfo: {
+         associated_user: {
+           id: 1,
+         },
+       }
+     }
+    */
+
+   ```

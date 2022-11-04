@@ -20,6 +20,7 @@ const successResponse = {
   },
 };
 const accessToken = 'dangit';
+const storefrontAccessToken = 'storefrontAccessToken-dangit';
 let session: Session;
 
 describe('Storefront GraphQL client', () => {
@@ -46,7 +47,10 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('can return response from specific access token', async () => {
-    const client = new shopify.clients.Storefront({session});
+    const client = new shopify.clients.Storefront({
+      session,
+      storefrontAccessToken,
+    });
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -55,7 +59,7 @@ describe('Storefront GraphQL client', () => {
     );
 
     const headers: {[key: string]: unknown} = {};
-    headers[ShopifyHeader.StorefrontAccessToken] = accessToken;
+    headers[ShopifyHeader.StorefrontAccessToken] = storefrontAccessToken;
     expect({
       method: 'POST',
       domain,
@@ -69,7 +73,10 @@ describe('Storefront GraphQL client', () => {
     shopify.config.isPrivateApp = true;
     shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
-    const client = new shopify.clients.Storefront({session});
+    const client = new shopify.clients.Storefront({
+      session,
+      storefrontAccessToken,
+    });
 
     queueMockResponse(JSON.stringify(successResponse));
 

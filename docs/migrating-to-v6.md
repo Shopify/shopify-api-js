@@ -234,7 +234,7 @@ app.post('/webhooks', async (req, res) => {
 
    </div>
 
-1. The `Session` class now includes a `.serialize` method to support the app in storing `Session` objects.  The return value of `.serialize` can be passed to `new Session()` to create a `Session` object.
+1. The `Session` class now includes a `.toObject` method to support the app in storing `Session` objects.  The return value of `.toObject` can be passed to `new Session()` to create a `Session` object.
 
    ```ts
    const callbackResponse = shopify.auth.callback({
@@ -244,7 +244,7 @@ app.post('/webhooks', async (req, res) => {
    });
 
    // app stores Session in its own storage mechanism
-   await addSessionToStorage(callbackResponse.session.serialize());
+   await addSessionToStorage(callbackResponse.session.toObject());
    ```
 
 ---
@@ -334,10 +334,7 @@ The API clients this package provides now take an object of arguments, rather th
    </div><div>:warning: After
 
    ```ts
-   const restClient = new shopify.clients.Rest({
-     domain: session.shop,
-     accessToken: session.accessToken,
-   });
+   const restClient = new shopify.clients.Rest({session});
    ```
 
    </div>
@@ -356,10 +353,7 @@ The API clients this package provides now take an object of arguments, rather th
    </div><div>:warning: After
 
    ```ts
-   const graphqlClient = new shopify.clients.Graphql({
-     domain: session.shop,
-     accessToken: session.accessToken,
-   });
+   const graphqlClient = new shopify.clients.Graphql({session});
    ```
 
    </div>
@@ -379,8 +373,8 @@ The API clients this package provides now take an object of arguments, rather th
 
    ```ts
    const storefrontClient = new shopify.clients.Storefront({
-     domain: session.shop,
-     accessToken: storefrontAccessToken,
+     session,
+     storefrontAccessToken
    });
    ```
 
@@ -622,7 +616,10 @@ Here are all the specific changes that we made to the `Utils` object:
    // or
    const restClient = await shopify.clients.Rest({session});
    // or
-   const storefrontClient = await shopify.clients.Storefront({session});
+   const storefrontClient = await shopify.clients.Storefront({
+     session,
+     storefrontAccessToken
+   });
    ```
 
    </div>
