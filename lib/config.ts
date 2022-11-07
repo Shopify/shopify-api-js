@@ -22,10 +22,15 @@ export function validateConfig<S extends SessionStorage = SessionStorage>(
     apiVersion: LATEST_API_VERSION,
     isEmbeddedApp: true,
     isPrivateApp: false,
-    logFunction: defaultLogFunction,
     // TS hack as sessionStorage is guaranteed to be set
     // to a correct value in `initialize()`.
     sessionStorage: null as unknown as S,
+    logger: {
+      log: defaultLogFunction,
+      level: LogSeverity.Info,
+      httpRequests: false,
+      timestamps: false,
+    },
   };
 
   // Make sure that the essential params actually have content in them
@@ -55,7 +60,7 @@ export function validateConfig<S extends SessionStorage = SessionStorage>(
     hostScheme,
     isPrivateApp,
     userAgentPrefix,
-    logFunction,
+    logger,
     privateAppStorefrontAccessToken,
     customShopDomains,
     billing,
@@ -73,7 +78,7 @@ export function validateConfig<S extends SessionStorage = SessionStorage>(
     isPrivateApp:
       isPrivateApp === undefined ? config.isPrivateApp : isPrivateApp,
     userAgentPrefix: userAgentPrefix ?? config.userAgentPrefix,
-    logFunction: logFunction ?? config.logFunction,
+    logger: {...config.logger, ...(logger || {})},
     privateAppStorefrontAccessToken:
       privateAppStorefrontAccessToken ?? config.privateAppStorefrontAccessToken,
     customShopDomains: customShopDomains ?? config.customShopDomains,
@@ -99,6 +104,9 @@ async function defaultLogFunction(
   message: string,
 ): Promise<void> {
   switch (severity) {
+    case LogSeverity.Debug:
+      console.debug(message);
+      break;
     case LogSeverity.Info:
       console.log(message);
       break;

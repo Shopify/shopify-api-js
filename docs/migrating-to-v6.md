@@ -552,28 +552,6 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-1. `Shopify.Context.LOG_FILE` was replaced with `shopify.config.logFunction` so it can work without file-system access.
-   <div>Before
-
-   ```ts
-   Shopify.Context.initialize({LOG_FILE: 'path/to/file.log'});
-   ```
-
-   </div><div>After
-
-   ```ts
-   const shopify = new shopifyApi({
-     logFunction: async (severity: string, message: string) => {
-       fs.appendFile(
-         'path/to/file.log',
-         `${new Date()} [${severity}]: ${message}`,
-       );
-     },
-   });
-   ```
-
-   </div>
-
 1. `Shopify.Utils.decodeSessionToken` is now `shopify.session.decodeSessionToken`, and it's `async`.
    <div>Before
 
@@ -714,6 +692,34 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
+### Logging
+
+`Shopify.Context.LOG_FILE` was replaced with `shopify.config.logger.log` so it can work without file-system access.
+
+<div>Before
+
+```ts
+Shopify.Context.initialize({LOG_FILE: 'path/to/file.log'});
+```
+
+</div><div>After
+
+```ts
+const shopify = new shopifyApi({
+  logger: {
+    log: async (_severity: string, message: string) => {
+      fs.appendFile('path/to/file.log', message);
+    },
+  },
+});
+```
+
+</div>
+
+We've also added more logging to this package to make it easier for apps to debug issues and track what's happening.
+See [the documentation](../README.md#configurations) for `logger` settings.
+The package formats the message in a consistent way before calling the `log` function.
+
 ---
 
 ## Changes to webhook functions
@@ -739,30 +745,33 @@ For more details on the updated webhook functions, see the [documentation](./usa
 
 Below are instructions on how webhooks work now:
 
-1. You can call `shopify.webhooks.addHandlers` with a list of handlers, indexed by topic. Note that you must now use delivery method-specific fields instead of `path`, like `callbackUrl` and `arn`, to match the GrahpQL API behavior.
+1. You can call `shopify.webhooks.addHandlers` with a list of handlers, indexed by topic. Note that:
+
+- you must now use delivery method-specific fields instead of `path`, like `callbackUrl` and `arn`, to match the GrahpQL API behavior
+- this is now `async`, so you'll need to `await` it
 
    <div>Before
 
-   ```ts
-   Shopify.Webhooks.Registry.addHandler('PRODUCTS_CREATE', {
-     path: '/webhooks',
-     webhookHandler: handleWebhookRequest,
-   });
-   ```
+  ```ts
+  Shopify.Webhooks.Registry.addHandler('PRODUCTS_CREATE', {
+    path: '/webhooks',
+    webhookHandler: handleWebhookRequest,
+  });
+  ```
 
-   </div><div>:warning: After
+      </div><div>:warning: After
 
-   ```ts
-   shopify.webhooks.addHandlers({
-     PRODUCTS_CREATE: {
-       deliveryMethod: DeliveryMethod.Http,
-       callbackUrl: '/webhooks',
-       callback: handleWebhookRequest,
-     },
-     TOPIC_1: [handler, handler2],
-     TOPIC_2: handler3,
-   });
-   ```
+  ```ts
+  await shopify.webhooks.addHandlers({
+    PRODUCTS_CREATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: '/webhooks',
+      callback: handleWebhookRequest,
+    },
+    TOPIC_1: [handler, handler2],
+    TOPIC_2: handler3,
+  });
+  ```
 
    </div>
 
@@ -846,7 +855,7 @@ Below are instructions on how webhooks work now:
    </div><div>:warning: After
 
    ```ts
-   shopify.webhooks.addHandlers({
+   await shopify.webhooks.addHandlers({
      PRODUCTS: {
        deliveryMethod: DeliveryMethod.Http,
        callbackUrl: '/webhooks',
@@ -882,7 +891,7 @@ Below are instructions on how webhooks work now:
    </div><div>:warning: After
 
    ```ts
-   shopify.webhooks.addHandlers({
+   await shopify.webhooks.addHandlers({
      PRODUCTS_CREATE: {
        deliveryMethod: DeliveryMethod.Http,
        callbackUrl: '/webhooks',

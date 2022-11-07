@@ -1,6 +1,7 @@
 import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
 import {ConfigInterface, gdprTopics} from '../base-types';
+import {logger} from '../logger';
 
 import {
   addHostToCallbackUrl,
@@ -53,6 +54,9 @@ export function createRegister(
     accessToken,
     shop,
   }: RegisterParams): Promise<RegisterReturn> {
+    const log = logger(config);
+    log.info('Registering webhooks', {shop});
+
     const registerReturn: RegisterReturn = Object.keys(webhookRegistry).reduce(
       (acc: RegisterReturn, topic) => {
         acc[topic] = [];
@@ -65,6 +69,11 @@ export function createRegister(
       config,
       shop,
       accessToken,
+    );
+
+    log.debug(
+      `Existing topics: [${Object.keys(existingHandlers).join(', ')}]`,
+      {shop},
     );
 
     for (const topic in webhookRegistry) {
@@ -333,6 +342,8 @@ async function runMutation({
   operation,
 }: RunMutationParams): Promise<RegisterResult> {
   let registerResult: RegisterResult;
+
+  logger(config).debug(`Running webhook mutation`, {topic, operation});
 
   try {
     const query = buildMutation(config, topic, handler, operation);

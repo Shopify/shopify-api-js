@@ -9,6 +9,7 @@ import {shopifySession} from './session';
 import {shopifyUtils} from './utils';
 import {shopifyWebhooks} from './webhooks';
 import {shopifyBilling} from './billing';
+import {logger} from './logger';
 import {SessionStorage} from './session/session_storage';
 
 export * from './error';
@@ -30,6 +31,7 @@ export function shopifyApi<
     utils: shopifyUtils(validatedConfig),
     webhooks: shopifyWebhooks(validatedConfig),
     billing: shopifyBilling(validatedConfig),
+    logger: logger(validatedConfig),
     rest: {} as T,
   };
 

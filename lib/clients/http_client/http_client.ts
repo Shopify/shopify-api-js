@@ -3,7 +3,7 @@ import {Method, StatusCode} from '@shopify/network';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import ProcessedQuery from '../../utils/processed-query';
-import {ConfigInterface, LogSeverity} from '../../base-types';
+import {ConfigInterface} from '../../base-types';
 import {createSHA256HMAC} from '../../../runtime/crypto';
 import {HashFormat} from '../../../runtime/crypto/types';
 import {
@@ -15,6 +15,7 @@ import {
   NormalizedResponse,
 } from '../../../runtime/http';
 import {abstractRuntimeString} from '../../../runtime/platform';
+import {logger} from '../../logger';
 
 import {
   DataType,
@@ -141,12 +142,27 @@ export function createHttpClientClass(
       const url = `${scheme}://${this.domain}${this.getRequestPath(
         params.path,
       )}${ProcessedQuery.stringify(params.query)}`;
+
       const request: NormalizedRequest = {
         method: params.method,
         url,
         headers: canonicalizeHeaders(headers as any),
         body,
       };
+
+      if (config.logger.httpRequests) {
+        const message = [
+          'Making HTTP request',
+          `${request.method} ${request.url}`,
+          `Headers: ${JSON.stringify(headers)}`,
+        ];
+
+        if (body) {
+          message.push(`Body: ${JSON.stringify(body).replace(/\n/g, '\\n  ')}`);
+        }
+
+        logger(config).debug(message.join('  -  '));
+      }
 
       async function sleep(waitTime: number): Promise<void> {
         return new Promise((resolve) => setTimeout(resolve, waitTime));
@@ -249,7 +265,15 @@ export function createHttpClientClass(
     public async doRequest<T = unknown>(
       request: NormalizedRequest,
     ): Promise<RequestReturn<T>> {
+      const log = logger(config);
+
       const response: NormalizedResponse = await abstractFetch(request);
+
+      if (config.logger.httpRequests) {
+        log.debug(
+          `Completed HTTP request, received ${response.statusCode} ${response.statusText}`,
+        );
+      }
 
       let body: {[key: string]: string} | string | T = {};
 
@@ -294,12 +318,10 @@ export function createHttpClientClass(
           this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
           const stack = new Error().stack;
-          const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
+          const message = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
             deprecation,
-            null,
-            2,
-          )}\n    Stack Trace: ${stack}\n`;
-          await config.logFunction(LogSeverity.Warning, log);
+          )}  -  Stack Trace: ${stack}`;
+          await log.warning(message);
         }
       }
 

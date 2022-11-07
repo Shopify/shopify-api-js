@@ -30,7 +30,7 @@ const handleWebhookRequest = async (
   // handler triggered when a webhook is sent by the Shopify platform to your application
 };
 
-shopify.webhooks.addHandlers({
+await shopify.webhooks.addHandlers({
   PRODUCTS_CREATE: [
     {
       deliveryMethod: DeliveryMethod.Http,

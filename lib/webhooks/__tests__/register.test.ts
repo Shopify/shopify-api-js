@@ -272,7 +272,7 @@ describe('shopify.webhooks.register', () => {
     const topic = 'PRODUCTS_CREATE';
     const handler = {...HTTP_HANDLER, deliveryMethod: 'invalid' as any};
 
-    shopify.webhooks.addHandlers({[topic]: handler});
+    await shopify.webhooks.addHandlers({[topic]: handler});
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
 
@@ -285,7 +285,7 @@ describe('shopify.webhooks.register', () => {
     it(`does not send a register for ${gdprTopic}`, async () => {
       const handler = HTTP_HANDLER;
 
-      shopify.webhooks.addHandlers({[gdprTopic]: handler});
+      await shopify.webhooks.addHandlers({[gdprTopic]: handler});
 
       queueMockResponse(
         JSON.stringify(mockResponses.webhookCheckEmptyResponse),
@@ -306,7 +306,7 @@ async function registerWebhook({
   checkMockResponse = mockResponses.webhookCheckEmptyResponse,
   responses = [],
 }: RegisterTestWebhook): Promise<RegisterReturn> {
-  shopify.webhooks.addHandlers({[topic]: handler});
+  await shopify.webhooks.addHandlers({[topic]: handler});
 
   queueMockResponse(JSON.stringify(checkMockResponse));
   responses.forEach((response) => {

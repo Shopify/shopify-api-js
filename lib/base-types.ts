@@ -8,6 +8,9 @@ import {ShopifyAuth} from './auth/types';
 import {ShopifySession} from './session/types';
 import {ShopifyUtils} from './utils/types';
 import {ShopifyWebhooks} from './webhooks/types';
+import {ShopifyLogger} from './logger/types';
+
+export type LogFunction = (severity: LogSeverity, msg: string) => Promise<void>;
 
 export interface ConfigParams<
   T extends ShopifyRestResources = any,
@@ -22,12 +25,17 @@ export interface ConfigParams<
   isEmbeddedApp: boolean;
   isPrivateApp?: boolean;
   sessionStorage?: S;
-  logFunction?: (severity: LogSeverity, msg: string) => Promise<void>;
   userAgentPrefix?: string;
   privateAppStorefrontAccessToken?: string;
   customShopDomains?: (RegExp | string)[];
   billing?: BillingConfig;
   restResources?: T;
+  logger?: {
+    log?: LogFunction;
+    level?: LogSeverity;
+    httpRequests?: boolean;
+    timestamps?: boolean;
+  };
 }
 
 export interface ConfigInterface<S extends SessionStorage = SessionStorage>
@@ -36,7 +44,12 @@ export interface ConfigInterface<S extends SessionStorage = SessionStorage>
   sessionStorage: S;
   scopes: AuthScopes;
   isPrivateApp: boolean;
-  logFunction: (severity: LogSeverity, msg: string) => Promise<void>;
+  logger: {
+    log: LogFunction;
+    level: LogSeverity;
+    httpRequests: boolean;
+    timestamps: boolean;
+  };
 }
 
 export interface Shopify<
@@ -50,6 +63,7 @@ export interface Shopify<
   utils: ShopifyUtils;
   webhooks: ShopifyWebhooks;
   billing: ShopifyBilling;
+  logger: ShopifyLogger;
   rest: T;
 }
 
@@ -57,6 +71,7 @@ export enum LogSeverity {
   Error,
   Warning,
   Info,
+  Debug,
 }
 
 export enum ApiVersion {

@@ -1,25 +1,28 @@
 import * as ShopifyErrors from '../error';
 import {validateConfig} from '../config';
-import {ApiVersion, ConfigParams} from '../base-types';
+import {ApiVersion, ConfigParams, LogSeverity} from '../base-types';
 import {MemorySessionStorage} from '../../session-storage/memory';
 
-const validParams: ConfigParams = {
-  apiKey: 'apiKey',
-  apiSecretKey: 'secret_key',
-  scopes: ['scope'],
-  hostName: 'host_name',
-  apiVersion: ApiVersion.Unstable,
-  isEmbeddedApp: true,
-  isPrivateApp: false,
-  logFunction: () => Promise.resolve(),
-  sessionStorage: new MemorySessionStorage(),
-};
-
-const originalWarn = console.warn;
+let validParams: ConfigParams;
 
 describe('Config object', () => {
-  afterEach(() => {
-    console.warn = originalWarn;
+  beforeEach(() => {
+    validParams = {
+      apiKey: 'apiKey',
+      apiSecretKey: 'secret_key',
+      scopes: ['scope'],
+      hostName: 'host_name',
+      apiVersion: ApiVersion.Unstable,
+      isEmbeddedApp: true,
+      isPrivateApp: false,
+      sessionStorage: new MemorySessionStorage(),
+      logger: {
+        log: jest.fn(),
+        level: LogSeverity.Debug,
+        httpRequests: false,
+        timestamps: false,
+      },
+    };
   });
 
   it('can initialize and update config', () => {
@@ -79,8 +82,25 @@ describe('Config object', () => {
       hostName: '',
       apiVersion: ApiVersion.Unstable,
       isEmbeddedApp: true,
-      logFunction: undefined,
+      logger: undefined,
     };
     expect(() => validateConfig(empty)).toThrow(ShopifyErrors.ShopifyError);
+  });
+
+  it('can partially override logger settings', () => {
+    const configWithLogger = {...validParams};
+    configWithLogger.logger = {
+      level: LogSeverity.Error,
+      httpRequests: true,
+    };
+
+    const config = validateConfig(configWithLogger);
+
+    expect(config.logger).toEqual({
+      log: expect.any(Function),
+      level: LogSeverity.Error,
+      httpRequests: true,
+      timestamps: false,
+    });
   });
 });
