@@ -170,7 +170,7 @@ app.post('/webhooks', async (req, res) => {
 
 ## Changes to `Session` and `SessionStorage`
 
-1. The `SessionStorage` interface has been removed and any provided implementions have been removed from the library.  The library only provides methods to obtain sessionId's.  Responsibility for storing sessions is delegated to the application.  Note: the previous implementations of session storage have been added to the `shopify-app-express` package, so that Express applications that use that package do not need to provide their own session storage.
+1. The `SessionStorage` interface has been removed and any provided implementions have been removed from the library. The library only provides methods to obtain sessionId's. Responsibility for storing sessions is delegated to the application. Note: the previous implementations of session storage have been added to the `shopify-app-express` package, so that Express applications that use that package do not need to provide their own session storage.
 
 1. The `Session` constructor now takes an object which allows all properties of a session, and `Session.cloneSession` was removed since we can use a session as arguments for the clone.
    <div>Before
@@ -234,7 +234,7 @@ app.post('/webhooks', async (req, res) => {
 
    </div>
 
-1. The `Session` class now includes a `.toObject` method to support the app in storing `Session` objects.  The return value of `.toObject` can be passed to `new Session()` to create a `Session` object.
+1. The `Session` class now includes a `.toObject` method to support the app in storing `Session` objects. The return value of `.toObject` can be passed to `new Session()` to create a `Session` object.
 
    ```ts
    const callbackResponse = shopify.auth.callback({
@@ -374,7 +374,7 @@ The API clients this package provides now take an object of arguments, rather th
    ```ts
    const storefrontClient = new shopify.clients.Storefront({
      session,
-     storefrontAccessToken
+     storefrontAccessToken,
    });
    ```
 
@@ -492,7 +492,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
 1. `Shopify.Utils.generateLocalHmac` was removed because it's only meant to be used internally by the library.
 1. The `storeSession` method was removed since sessions are no longer stored by the library. Apps are now fully responsible for implementating session storage and can save data to their sessions as they please ... TODO.
-, as long as the data is properly exported to the library via the configured `SessionStorage`.
+   , as long as the data is properly exported to the library via the configured `SessionStorage`.
 1. `validateHmac` is now `async`.
    <div>Before
 
@@ -566,7 +566,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
 1. `Shopify.Utils.deleteCurrentSession` has been removed, as the library no longer handles the storage of sessions.
 
-1. `Shopify.Utils.loadOfflineSession` is now `shopify.session.getOfflineId`, and takes a `shop` argument as its only parameter. It still **_does not_** validate the given arguments and should only be used if you trust the source of the shop argument.  It returns a session id that can then be used to retrieve the session details from app-provided storage.
+1. `Shopify.Utils.loadOfflineSession` is now `shopify.session.getOfflineId`, and takes a `shop` argument as its only parameter. It still **_does not_** validate the given arguments and should only be used if you trust the source of the shop argument. It returns a session id that can then be used to retrieve the session details from app-provided storage.
    <div>Before
 
    ```ts
@@ -579,14 +579,16 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>:warning: After
 
    ```ts
-   const sessionId = await shopify.session.getOfflineId('my-shop.myshopify.com');
+   const sessionId = await shopify.session.getOfflineId(
+     'my-shop.myshopify.com',
+   );
    ```
 
    </div>
 
 1. `Shopify.Utils.deleteOfflineSession` has been removed, as the library no longer handles the storage of sessions.
 
-1. `Shopify.Utils.withSession` has been removed, as the library no longer handles the storage of sessions.  The various clients have been updated to take a session as an argument.
+1. `Shopify.Utils.withSession` has been removed, as the library no longer handles the storage of sessions. The various clients have been updated to take a session as an argument.
    <div>Before
 
    ```ts
@@ -618,7 +620,7 @@ Here are all the specific changes that we made to the `Utils` object:
    // or
    const storefrontClient = await shopify.clients.Storefront({
      session,
-     storefrontAccessToken
+     storefrontAccessToken,
    });
    ```
 
@@ -826,7 +828,7 @@ Below are instructions on how webhooks work now:
 
    </div>
 
-1. `Shopify.Webhooks.Registry.getTopics` is now `shopify.webhooks.getTopicsAdded`, to indicate that it returns the topics added using either `addHttpHandler` or `addHttpHandlers`.
+1. `Shopify.Webhooks.Registry.getTopics` is now `shopify.webhooks.getTopicsAdded`, to indicate that it returns the topics added using `addHandlers`.
    <div>Before
 
    ```ts
