@@ -4,13 +4,13 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Transaction} from './transaction';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   order_id?: number | string | null;
   fields?: unknown;
@@ -18,7 +18,7 @@ interface FindArgs {
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   order_id?: number | string | null;
   limit?: unknown;
   fields?: unknown;

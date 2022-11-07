@@ -1,4 +1,3 @@
-import {MemorySessionStorage} from '../../session-storage/memory';
 import {
   AdapterArgs,
   AdapterHeaders,
@@ -57,10 +56,6 @@ export async function mockFetch({
     throw next;
   }
   return next;
-}
-
-export function mockCreateDefaultStorage() {
-  return new MemorySessionStorage();
 }
 
 export function mockRuntimeString() {

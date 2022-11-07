@@ -1,14 +1,12 @@
 import {
   shopify,
   setSignedSessionCookie,
-  createAndSaveDummySession,
   signJWT,
 } from '../../__tests__/test-helper';
 import * as ShopifyErrors from '../../error';
 import {NormalizedRequest} from '../../../runtime/http';
 import {JwtPayload} from '../types';
 import {createGetOfflineId} from '../session-utils';
-import {Session} from '../session';
 
 describe('loadCurrentSession', () => {
   let jwtPayload: JwtPayload;
@@ -27,7 +25,7 @@ describe('loadCurrentSession', () => {
     };
   });
 
-  it('gets the current session from cookies for non-embedded apps', async () => {
+  it('gets the current session id from cookies for non-embedded apps', async () => {
     shopify.config.isEmbeddedApp = false;
 
     const request: NormalizedRequest = {
@@ -39,17 +37,12 @@ describe('loadCurrentSession', () => {
     const cookieId = '1234-this-is-a-cookie-session-id';
     await setSignedSessionCookie({request, cookieId});
 
-    const session = await createAndSaveDummySession({
-      sessionId: cookieId,
-      isOnline: true,
-    });
-
     await expect(
-      shopify.session.getCurrent({isOnline: true, rawRequest: request}),
-    ).resolves.toEqual(session);
+      shopify.session.getCurrentId({isOnline: true, rawRequest: request}),
+    ).resolves.toEqual(cookieId);
   });
 
-  it('loads nothing if there is no session for non-embedded apps', async () => {
+  it('loads nothing if there is no session id for non-embedded apps', async () => {
     shopify.config.isEmbeddedApp = false;
 
     const request: NormalizedRequest = {
@@ -59,11 +52,11 @@ describe('loadCurrentSession', () => {
     };
 
     await expect(
-      shopify.session.getCurrent({isOnline: true, rawRequest: request}),
+      shopify.session.getCurrentId({isOnline: true, rawRequest: request}),
     ).resolves.toBeUndefined();
   });
 
-  it('gets the current session from JWT token for embedded apps', async () => {
+  it('gets the current session id from JWT token for embedded apps', async () => {
     shopify.config.isEmbeddedApp = true;
 
     const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
@@ -75,14 +68,9 @@ describe('loadCurrentSession', () => {
       url: 'https://my-test-app.myshopify.io/my-endpoint',
     };
 
-    const session = await createAndSaveDummySession({
-      sessionId: `test-shop.myshopify.io_${jwtPayload.sub}`,
-      isOnline: true,
-    });
-
     await expect(
-      shopify.session.getCurrent({isOnline: true, rawRequest: request}),
-    ).resolves.toEqual(session);
+      shopify.session.getCurrentId({isOnline: true, rawRequest: request}),
+    ).resolves.toEqual(`test-shop.myshopify.io_${jwtPayload.sub}`);
   });
 
   it('loads nothing if no authorization header is present', async () => {
@@ -95,24 +83,7 @@ describe('loadCurrentSession', () => {
     };
 
     await expect(
-      shopify.session.getCurrent({isOnline: true, rawRequest: request}),
-    ).resolves.toBeUndefined();
-  });
-
-  it('loads nothing if there is no session for embedded apps', async () => {
-    shopify.config.isEmbeddedApp = true;
-
-    const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
-    const request: NormalizedRequest = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      url: 'https://my-test-app.myshopify.io/my-endpoint',
-    };
-
-    await expect(
-      shopify.session.getCurrent({isOnline: true, rawRequest: request}),
+      shopify.session.getCurrentId({isOnline: true, rawRequest: request}),
     ).resolves.toBeUndefined();
   });
 
@@ -128,11 +99,11 @@ describe('loadCurrentSession', () => {
     };
 
     await expect(() =>
-      shopify.session.getCurrent({isOnline: true, rawRequest: request}),
+      shopify.session.getCurrentId({isOnline: true, rawRequest: request}),
     ).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
   });
 
-  it('loads offline sessions from cookies', async () => {
+  it('loads offline session id from cookies', async () => {
     shopify.config.isEmbeddedApp = false;
 
     const request: NormalizedRequest = {
@@ -145,17 +116,12 @@ describe('loadCurrentSession', () => {
     );
     await setSignedSessionCookie({request, cookieId});
 
-    const session = await createAndSaveDummySession({
-      sessionId: cookieId,
-      isOnline: false,
-    });
-
     await expect(
-      shopify.session.getCurrent({isOnline: false, rawRequest: request}),
-    ).resolves.toEqual(session);
+      shopify.session.getCurrentId({isOnline: false, rawRequest: request}),
+    ).resolves.toEqual(cookieId);
   });
 
-  it('loads offline sessions from JWT token', async () => {
+  it('loads offline session id from JWT token', async () => {
     shopify.config.isEmbeddedApp = true;
 
     const token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
@@ -167,17 +133,16 @@ describe('loadCurrentSession', () => {
       url: 'https://my-test-app.myshopify.io/my-endpoint',
     };
 
-    const session = await createAndSaveDummySession({
-      sessionId: createGetOfflineId(shopify.config)('test-shop.myshopify.io'),
-      isOnline: false,
-    });
+    const offlineSessionId = createGetOfflineId(shopify.config)(
+      'test-shop.myshopify.io',
+    );
 
     await expect(
-      shopify.session.getCurrent({isOnline: false, rawRequest: request}),
-    ).resolves.toEqual(session);
+      shopify.session.getCurrentId({isOnline: false, rawRequest: request}),
+    ).resolves.toEqual(offlineSessionId);
   });
 
-  test('fails to load a cookie session for embedded apps', async () => {
+  test('fails to load a cookie session id for embedded apps', async () => {
     shopify.config.isEmbeddedApp = true;
 
     const request: NormalizedRequest = {
@@ -189,14 +154,8 @@ describe('loadCurrentSession', () => {
     const cookieId = '1234-this-is-a-cookie-session-id';
     await setSignedSessionCookie({request, cookieId});
 
-    const session = await createAndSaveDummySession({
-      sessionId: cookieId,
-      isOnline: true,
-    });
-
-    expect(session).toBeInstanceOf(Session);
     await expect(
-      shopify.session.getCurrent({isOnline: true, rawRequest: request}),
+      shopify.session.getCurrentId({isOnline: true, rawRequest: request}),
     ).resolves.toBeUndefined();
   });
 });

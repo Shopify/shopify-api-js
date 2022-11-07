@@ -4,28 +4,28 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Country} from './country';
 import {Province} from './province';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   order_id?: number | string | null;
   fulfillment_id?: number | string | null;
   event_id?: unknown;
 }
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   order_id?: number | string | null;
   fulfillment_id?: number | string | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   order_id?: number | string | null;
   fulfillment_id?: number | string | null;
 }

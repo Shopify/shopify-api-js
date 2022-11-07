@@ -4,7 +4,7 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Currency} from './currency';
@@ -13,7 +13,7 @@ import {DiscountCode} from './discount_code';
 
 interface CheckoutsArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   since_id?: unknown;
   created_at_min?: unknown;
   created_at_max?: unknown;

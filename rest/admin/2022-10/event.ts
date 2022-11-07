@@ -4,17 +4,17 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   fields?: unknown;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   order_id?: number | string | null;
   product_id?: number | string | null;
   limit?: unknown;
@@ -27,7 +27,7 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   created_at_min?: unknown;
   created_at_max?: unknown;
 }

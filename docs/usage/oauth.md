@@ -119,15 +119,19 @@ Once you set up both of the above endpoints, you can navigate to `{your ngrok ad
 
 ### Loading a session while handling a request
 
-To load a session while handling a request, you can use `shopify.session.getCurrent` to authenticate a request for both online and offline sessions:
+To load a session while handling a request, you can use `shopify.session.getCurrentId` to obtain the session id to then load the session to authenticate a request:
 
 ```ts
 app.get('/fetch-some-data', async (req, res) => {
-  const session = await shopify.session.getCurrent({
+  const sessionId = await shopify.session.getCurrentId({
     isOnline: true,
     rawRequest: req,
     rawResponse: res,
   });
+
+  // use sessionId to retrieve session from app's session storage
+  // getSessionFromStorage() must be provided by application
+  const session = await getSessionFromStorage(sessionId);
 
   // Build a client and make requests with session.accessToken
   // See the REST, GraphQL, or Storefront API documentation for more information
@@ -136,20 +140,24 @@ app.get('/fetch-some-data', async (req, res) => {
 
 **Note**: this method will rely on cookies for non-embedded apps, and the `Authorization` HTTP header for embedded apps using [App Bridge session tokens](https://shopify.dev/apps/auth/oauth/session-tokens), making all apps safe to use in modern browsers that block 3rd party cookies.
 
-For embedded apps, `shopify.session.getCurrent` will only be able to find a session if you use `authenticatedFetch` from the `@shopify/app-bridge-utils` client-side package. This function behaves like a [normal `fetch` call](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), but ensures the appropriate headers are set.
+For embedded apps, `shopify.session.getCurrentId` will only be able to find a session id if you use `authenticatedFetch` from the `@shopify/app-bridge-utils` client-side package. This function behaves like a [normal `fetch` call](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), but ensures the appropriate headers are set.
 
 Learn more about [making authenticated requests](https://shopify.dev/apps/auth/oauth/session-tokens/getting-started#step-2-authenticate-your-requests) using App Bridge.
 
 ### Loading a session for a background job
 
-If your app needs to access the API while not handling a direct request, for example in a background job, you can use `shopify.session.getOffline` to load an offline access token for your script.
+If your app needs to access the API while not handling a direct request, for example in a background job, you can use `shopify.session.getOfflineId` to generate an offline session id for the given shop that can then be used to load an offline access token for your script.
 
 **Note**: this method **_does not_** perform any validation on the `shop` parameter. You should **_never_** read the shop from user inputs or URLs.
 
 ```ts
-const session = await shopify.session.getOffline({
+const offlineSessionId = await shopify.session.getOfflineId({
   shop: '{exampleshop}.myshopify.com',
 });
+
+// use sessionId to retrieve session from app's session storage
+// getSessionFromStorage() must be provided by application
+const session = await getSessionFromStorage(offlineSessionId);
 ```
 
 ## Detecting scope changes

@@ -1,19 +1,19 @@
 import {RestResourceError} from '../lib/error';
-import {SessionInterface} from '../lib/session/types';
+import {Session} from '../lib/session/session';
 import {RestRequestReturn} from '../lib/clients/rest/types';
 import {DataType, GetRequestParams} from '../lib/clients/http_client/types';
-import {createRestClientClass} from '../lib/clients/rest/rest_client';
+import {RestClient} from '../lib/clients/rest/rest_client';
 
 import {IdSet, Body, ResourcePath, ParamSet} from './types';
 
 interface BaseFindArgs {
-  session: SessionInterface;
+  session: Session;
   params?: ParamSet;
   urlIds: IdSet;
 }
 
 interface BaseConstructorArgs {
-  session: SessionInterface;
+  session: Session;
   fromData?: Body | null;
 }
 
@@ -38,7 +38,7 @@ export class Base {
   public static NEXT_PAGE_INFO: GetRequestParams | undefined;
   public static PREV_PAGE_INFO: GetRequestParams | undefined;
 
-  public static CLIENT: ReturnType<typeof createRestClientClass>;
+  public static CLIENT: typeof RestClient;
 
   public static API_VERSION: string;
   protected static NAME = '';
@@ -80,10 +80,7 @@ export class Base {
     body,
     entity,
   }: RequestArgs): Promise<RestRequestReturn<T>> {
-    const client = new this.CLIENT({
-      domain: session.shop,
-      accessToken: session.accessToken,
-    });
+    const client = new this.CLIENT({session});
 
     const path = this.getPath({http_method, operation, urlIds, entity});
 
@@ -187,7 +184,7 @@ export class Base {
   }
 
   protected static createInstancesFromResponse<T extends Base = Base>(
-    session: SessionInterface,
+    session: Session,
     data: Body,
   ): T[] {
     if (data[this.PLURAL_NAME] || Array.isArray(data[this.NAME])) {
@@ -206,7 +203,7 @@ export class Base {
   }
 
   protected static createInstance<T extends Base = Base>(
-    session: SessionInterface,
+    session: Session,
     data: Body,
     prevInstance?: T,
   ): T {
@@ -221,7 +218,7 @@ export class Base {
     return instance;
   }
 
-  public session: SessionInterface;
+  public session: Session;
 
   constructor({session, fromData}: BaseConstructorArgs) {
     this.session = session;

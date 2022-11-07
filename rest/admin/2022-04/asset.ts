@@ -4,17 +4,17 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   theme_id?: number | string | null;
   asset?: {[key: string]: unknown} | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   theme_id?: number | string | null;
   fields?: unknown;
   asset?: {[key: string]: unknown} | null;

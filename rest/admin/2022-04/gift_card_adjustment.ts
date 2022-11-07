@@ -4,17 +4,17 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   gift_card_id?: number | string | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   gift_card_id?: number | string | null;
 }
 

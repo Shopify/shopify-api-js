@@ -4,25 +4,25 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Transaction} from './transaction';
 import {Checkout} from './checkout';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   checkout_id?: number | string | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   checkout_id?: number | string | null;
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   checkout_id?: number | string | null;
 }
 

@@ -4,11 +4,11 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   dispute_id?: number | string | null;
 }

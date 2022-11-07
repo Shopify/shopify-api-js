@@ -1,7 +1,9 @@
 import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
 import {ShopifyHeader} from '../../../base-types';
+import {Session} from '../../../session/session';
+import {JwtPayload} from '../../../session/types';
 
-const DOMAIN = 'shop.myshopify.io';
+const domain = 'test-shop.myshopify.io';
 const QUERY = `
 {
   shop {
@@ -17,12 +19,37 @@ const successResponse = {
     },
   },
 };
+const accessToken = 'dangit';
+const storefrontAccessToken = 'storefrontAccessToken-dangit';
+let session: Session;
 
 describe('Storefront GraphQL client', () => {
+  beforeEach(() => {
+    const jwtPayload: JwtPayload = {
+      iss: 'https://test-shop.myshopify.io/admin',
+      dest: 'https://test-shop.myshopify.io',
+      aud: shopify.config.apiKey,
+      sub: '1',
+      exp: Date.now() / 1000 + 3600,
+      nbf: 1234,
+      iat: 1234,
+      jti: '4321',
+      sid: 'abc123',
+    };
+
+    session = new Session({
+      id: `test-shop.myshopify.io_${jwtPayload.sub}`,
+      shop: domain,
+      state: 'state',
+      isOnline: true,
+      accessToken,
+    });
+  });
+
   it('can return response from specific access token', async () => {
     const client = new shopify.clients.Storefront({
-      domain: DOMAIN,
-      accessToken: 'bork',
+      domain: session.shop,
+      storefrontAccessToken,
     });
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -32,10 +59,10 @@ describe('Storefront GraphQL client', () => {
     );
 
     const headers: {[key: string]: unknown} = {};
-    headers[ShopifyHeader.StorefrontAccessToken] = 'bork';
+    headers[ShopifyHeader.StorefrontAccessToken] = storefrontAccessToken;
     expect({
       method: 'POST',
-      domain: DOMAIN,
+      domain,
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers,
@@ -46,7 +73,10 @@ describe('Storefront GraphQL client', () => {
     shopify.config.isPrivateApp = true;
     shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
-    const client = new shopify.clients.Storefront({domain: DOMAIN});
+    const client = new shopify.clients.Storefront({
+      domain: session.shop,
+      storefrontAccessToken,
+    });
 
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -58,7 +88,7 @@ describe('Storefront GraphQL client', () => {
     headers[ShopifyHeader.StorefrontAccessToken] = 'private_token';
     expect({
       method: 'POST',
-      domain: DOMAIN,
+      domain,
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers,

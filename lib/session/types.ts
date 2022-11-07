@@ -1,9 +1,10 @@
-import {AuthScopes} from '../auth/scopes';
-import {AdapterArgs, NormalizedRequest} from '../../runtime/http';
+import {AdapterArgs} from '../../runtime/http';
 import {OnlineAccessInfo} from '../auth/oauth/types';
-import {createRestClientClass} from '../clients/rest/rest_client';
-import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {RestClient} from '../clients/rest/rest_client';
+import {GraphqlClient} from '../clients/graphql/graphql_client';
 import {ClientType} from '../base-types';
+
+import {Session} from './session';
 
 import type {shopifySession} from '.';
 
@@ -18,10 +19,6 @@ export interface SessionParams {
   onlineAccessInfo?: OnlineAccessInfo;
 }
 
-export interface SessionInterface extends SessionParams {
-  isActive(scopes: AuthScopes | string | string[]): boolean;
-}
-
 export interface JwtPayload {
   iss: string;
   dest: string;
@@ -34,43 +31,26 @@ export interface JwtPayload {
   sid: string;
 }
 
-export interface SessionGetCurrentParams extends AdapterArgs {
+export interface GetCurrentSessionIdParams extends AdapterArgs {
   isOnline: boolean;
 }
 
-export interface SessionDeleteCurrentParams extends AdapterArgs {
-  isOnline: boolean;
-}
-
-export interface SessionGetOfflineParams {
-  shop: string;
-  includeExpired?: boolean;
-}
-
-export interface SessionDeleteOfflineParams {
-  shop: string;
-}
-
-export interface GetCurrentSessionIdParams {
-  request: NormalizedRequest;
-  isOnline: boolean;
-}
-
-export interface WithSessionParams extends AdapterArgs {
+export interface WithSessionParams {
+  session: Session;
   clientType: ClientType;
   isOnline: boolean;
 }
 
 interface WithSessionBaseResponse {
-  session: SessionInterface;
+  session: Session;
 }
 
 export interface RestWithSession extends WithSessionBaseResponse {
-  client: InstanceType<ReturnType<typeof createRestClientClass>>;
+  client: RestClient;
 }
 
 export interface GraphqlWithSession extends WithSessionBaseResponse {
-  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+  client: GraphqlClient;
 }
 
 export type WithSessionResponse = RestWithSession | GraphqlWithSession;

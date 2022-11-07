@@ -1,5 +1,8 @@
 import {ConfigInterface} from '../base-types';
-import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {
+  createGraphqlClientClass,
+  GraphqlClient,
+} from '../clients/graphql/graphql_client';
 import {BillingError} from '../error';
 
 import {
@@ -10,7 +13,7 @@ import {
 
 interface CheckInternalParams {
   plans: string[];
-  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+  client: GraphqlClient;
   isTest: boolean;
 }
 
@@ -34,10 +37,7 @@ export function createCheck(config: ConfigInterface) {
     }
 
     const GraphqlClient = createGraphqlClientClass({config});
-    const client = new GraphqlClient({
-      domain: session.shop,
-      accessToken: session.accessToken,
-    });
+    const client = new GraphqlClient({session});
 
     const plansArray = Array.isArray(plans) ? plans : [plans];
     return hasActivePayment({

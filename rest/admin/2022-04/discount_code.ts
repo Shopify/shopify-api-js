@@ -4,41 +4,41 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   price_rule_id?: number | string | null;
 }
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   price_rule_id?: number | string | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   price_rule_id?: number | string | null;
   batch_id?: number | string | null;
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   times_used?: unknown;
   times_used_min?: unknown;
   times_used_max?: unknown;
 }
 interface GetAllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   price_rule_id?: number | string | null;
   batch_id?: number | string | null;
 }
 interface LookupArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   code?: unknown;
 }
 interface BatchArgs {

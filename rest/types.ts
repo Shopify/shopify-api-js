@@ -1,5 +1,5 @@
 import {ApiVersion} from '../lib/base-types';
-import {createRestClientClass} from '../lib/clients/rest/rest_client';
+import {RestClient} from '../lib/clients/rest/rest_client';
 
 import {Base} from './base';
 
@@ -29,5 +29,5 @@ export interface ShopifyRestResources {
 export interface LoadRestResourcesParams {
   resources: ShopifyRestResources;
   apiVersion: ApiVersion;
-  RestClient: ReturnType<typeof createRestClientClass>;
+  RestClient: typeof RestClient;
 }

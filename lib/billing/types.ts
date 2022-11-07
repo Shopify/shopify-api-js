@@ -1,4 +1,4 @@
-import {SessionInterface} from '../session/types';
+import {Session} from '../session/session';
 import {
   BillingInterval,
   BillingReplacementBehavior,
@@ -27,13 +27,13 @@ export interface BillingConfig {
 }
 
 export interface CheckParams {
-  session: SessionInterface;
+  session: Session;
   plans: string[] | string;
   isTest?: boolean;
 }
 
 export interface RequestParams {
-  session: SessionInterface;
+  session: Session;
   plan: string;
   isTest?: boolean;
 }

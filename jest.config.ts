@@ -3,7 +3,6 @@ import semver from 'semver';
 
 const projects = [
   './lib/__tests__/jest_projects/library.jest.config.ts',
-  './lib/__tests__/jest_projects/session_storage.jest.config.ts',
   './lib/__tests__/jest_projects/rest_resources.jest.config.ts',
   './lib/__tests__/jest_projects/eslint.jest.config.ts',
   './lib/__tests__/jest_projects/adapters.mock.jest.config.ts',

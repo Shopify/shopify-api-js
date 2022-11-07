@@ -4,23 +4,23 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Metafield} from './metafield';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: SessionInterface;
+  session: Session;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   ids?: unknown;
   since_id?: unknown;
   created_at_min?: unknown;
@@ -32,17 +32,17 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
 }
 interface OrdersArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   id: number | string;
   status?: unknown;
 }
 interface SearchArgs {
   [key: string]: unknown;
-  session: SessionInterface;
+  session: Session;
   order?: unknown;
   query?: unknown;
   limit?: unknown;

@@ -4,13 +4,13 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {SessionInterface} from '../../../lib/session/types';
+import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/base-types';
 
 import {Fulfillment} from './fulfillment';
 
 interface FindArgs {
-  session: SessionInterface;
+  session: Session;
   dispute_id: number | string;
 }
 

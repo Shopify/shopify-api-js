@@ -1,7 +1,11 @@
-import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {
+  createGraphqlClientClass,
+  GraphqlClient,
+} from '../clients/graphql/graphql_client';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
 import {ConfigInterface, gdprTopics} from '../base-types';
 import {logger} from '../logger';
+import {Session} from '../session/session';
 
 import {
   addHostToCallbackUrl,
@@ -11,7 +15,6 @@ import {
 import {queryTemplate} from './query-template';
 import {
   WebhookRegistry,
-  RegisterParams,
   RegisterReturn,
   WebhookHandler,
   WebhookCheckResponse,
@@ -23,8 +26,7 @@ import {
 
 interface RegisterTopicParams {
   config: ConfigInterface;
-  shop: string;
-  accessToken: string;
+  session: Session;
   topic: string;
   existingHandlers: WebhookHandler[];
   handlers: WebhookHandler[];
@@ -32,7 +34,7 @@ interface RegisterTopicParams {
 
 interface RunMutationsParams {
   config: ConfigInterface;
-  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+  client: GraphqlClient;
   topic: string;
   handlers: WebhookHandler[];
   operation: WebhookOperation;
@@ -40,7 +42,7 @@ interface RunMutationsParams {
 
 interface RunMutationParams {
   config: ConfigInterface;
-  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+  client: GraphqlClient;
   topic: string;
   handler: WebhookHandler;
   operation: WebhookOperation;
@@ -50,12 +52,9 @@ export function createRegister(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
 ) {
-  return async function register({
-    accessToken,
-    shop,
-  }: RegisterParams): Promise<RegisterReturn> {
+  return async function register(session: Session): Promise<RegisterReturn> {
     const log = logger(config);
-    log.info('Registering webhooks', {shop});
+    log.info('Registering webhooks', {shop: session.shop});
 
     const registerReturn: RegisterReturn = Object.keys(webhookRegistry).reduce(
       (acc: RegisterReturn, topic) => {
@@ -65,15 +64,11 @@ export function createRegister(
       {},
     );
 
-    const existingHandlers = await getExistingHandlers(
-      config,
-      shop,
-      accessToken,
-    );
+    const existingHandlers = await getExistingHandlers(config, session);
 
     log.debug(
       `Existing topics: [${Object.keys(existingHandlers).join(', ')}]`,
-      {shop},
+      {shop: session.shop},
     );
 
     for (const topic in webhookRegistry) {
@@ -87,9 +82,8 @@ export function createRegister(
 
       registerReturn[topic] = await registerTopic({
         config,
+        session,
         topic,
-        shop,
-        accessToken,
         existingHandlers: existingHandlers[topic] || [],
         handlers: createGetHandlers(webhookRegistry)(topic),
       });
@@ -101,11 +95,10 @@ export function createRegister(
 
 async function getExistingHandlers(
   config: ConfigInterface,
-  shop: string,
-  accessToken: string | undefined,
+  session: Session,
 ): Promise<WebhookRegistry> {
   const GraphqlClient = createGraphqlClientClass({config});
-  const client = new GraphqlClient({domain: shop, accessToken});
+  const client = new GraphqlClient({session});
 
   const existingHandlers: WebhookRegistry = {};
 
@@ -188,8 +181,7 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
 
 async function registerTopic({
   config,
-  shop,
-  accessToken,
+  session,
   topic,
   existingHandlers,
   handlers,
@@ -203,7 +195,7 @@ async function registerTopic({
   );
 
   const GraphqlClient = createGraphqlClientClass({config});
-  const client = new GraphqlClient({domain: shop, accessToken});
+  const client = new GraphqlClient({session});
 
   let operation = WebhookOperation.Create;
   registerResults = registerResults.concat(

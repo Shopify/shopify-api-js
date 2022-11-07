@@ -170,41 +170,7 @@ app.post('/webhooks', async (req, res) => {
 
 ## Changes to `Session` and `SessionStorage`
 
-1. `SessionStorage` is no longer an interface, but an abstract class. If you're using your own implementation of the interface, you need to replace `implements SessionStorage` with `extends SessionStorage`.
-   <div>Before
-
-   ```ts
-   import {SessionStorage} from '@shopify/shopify-api';
-   class MySessionStorage implements SessionStorage {
-     // ...
-   }
-   ```
-
-   </div><div>After
-
-   ```ts
-   import {SessionStorage} from '@shopify/shopify-api';
-   class MySessionStorage extends SessionStorage {
-     // ...
-   }
-   ```
-
-   </div>
-
-1. Since not all adapters work on all runtimes, they've been separated in their own import path. To use the provided storage options, you can import them directly using the following pattern:
-   <div>Before
-
-   ```ts
-   import {MemorySessionStorage} from '@shopify/shopify-api';
-   ```
-
-   </div><div>After
-
-   ```ts
-   import {MemorySessionStorage} from '@shopify/shopify-api/session-storage/memory';
-   ```
-
-   </div>
+1. The `SessionStorage` interface has been removed and any provided implementions have been removed from the library.  The library only provides methods to obtain sessionId's.  Responsibility for storing sessions is delegated to the application.  Note: the previous implementations of session storage have been added to the `shopify-app-express` package, so that Express applications that use that package do not need to provide their own session storage.
 
 1. The `Session` constructor now takes an object which allows all properties of a session, and `Session.cloneSession` was removed since we can use a session as arguments for the clone.
    <div>Before
@@ -251,11 +217,15 @@ app.post('/webhooks', async (req, res) => {
    </div><div>:warning: After
 
    ```ts
-   const session = await shopify.session.getCurrent({
+   const sessionId = await shopify.session.getCurrentId({
      isOnline: true,
      rawRequest: req,
      rawResponse: res,
    });
+
+   // use sessionId to retrieve session from app's session storage
+   // getSessionFromStorage() must be provided by application
+   const session = await getSessionFromStorage(sessionId);
 
    if (!session.isActive(shopify.config.scopes)) {
      // current session is not active - either expired or scopes have changed
@@ -263,6 +233,19 @@ app.post('/webhooks', async (req, res) => {
    ```
 
    </div>
+
+1. The `Session` class now includes a `.toObject` method to support the app in storing `Session` objects.  The return value of `.toObject` can be passed to `new Session()` to create a `Session` object.
+
+   ```ts
+   const callbackResponse = shopify.auth.callback({
+     isOnline: true,
+     rawRequest: req,
+     rawResponse: res,
+   });
+
+   // app stores Session in its own storage mechanism
+   await addSessionToStorage(callbackResponse.session.toObject());
+   ```
 
 ---
 
@@ -351,10 +334,7 @@ The API clients this package provides now take an object of arguments, rather th
    </div><div>:warning: After
 
    ```ts
-   const restClient = new shopify.clients.Rest({
-     domain: session.shop,
-     accessToken: session.accessToken,
-   });
+   const restClient = new shopify.clients.Rest({session});
    ```
 
    </div>
@@ -373,10 +353,7 @@ The API clients this package provides now take an object of arguments, rather th
    </div><div>:warning: After
 
    ```ts
-   const graphqlClient = new shopify.clients.Graphql({
-     domain: session.shop,
-     accessToken: session.accessToken,
-   });
+   const graphqlClient = new shopify.clients.Graphql({session});
    ```
 
    </div>
@@ -396,8 +373,8 @@ The API clients this package provides now take an object of arguments, rather th
 
    ```ts
    const storefrontClient = new shopify.clients.Storefront({
-     domain: session.shop,
-     accessToken: storefrontAccessToken,
+     session,
+     storefrontAccessToken
    });
    ```
 
@@ -514,7 +491,8 @@ We also felt that the `Utils` object had some functions that belong to other par
 Here are all the specific changes that we made to the `Utils` object:
 
 1. `Shopify.Utils.generateLocalHmac` was removed because it's only meant to be used internally by the library.
-1. The `storeSession` method was removed since sessions shouldn't be stored using the library unless the library is doing it. Apps can still save data to their sessions as they please, as long as the data is properly exported to the library via the configured `SessionStorage`.
+1. The `storeSession` method was removed since sessions are no longer stored by the library. Apps are now fully responsible for implementating session storage and can save data to their sessions as they please ... TODO.
+, as long as the data is properly exported to the library via the configured `SessionStorage`.
 1. `validateHmac` is now `async`.
    <div>Before
 
@@ -567,7 +545,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-1. `Shopify.Utils.loadCurrentSession` is now `shopify.session.getCurrent`, it takes in an object, and the `isOnline` param is mandatory.
+1. `Shopify.Utils.loadCurrentSession` is now `shopify.session.getCurrentId`, it takes in an object, the `isOnline` param is mandatory, and it now returns a session id, that can then be used to retrieve the session details from app-provided storage.
    <div>Before
 
    ```ts
@@ -577,7 +555,7 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>:warning: After
 
    ```ts
-   const session = await shopify.session.getCurrent({
+   const sessionId = await shopify.session.getCurrentId({
      isOnline: true,
      rawRequest: req,
      rawResponse: res,
@@ -586,26 +564,9 @@ Here are all the specific changes that we made to the `Utils` object:
 
    </div>
 
-1. `Shopify.Utils.deleteCurrentSession` is now `shopify.session.deleteCurrent`, it takes in an object, and the `isOnline` param is mandatory.
-   <div>Before
+1. `Shopify.Utils.deleteCurrentSession` has been removed, as the library no longer handles the storage of sessions.
 
-   ```ts
-   const session = await Shopify.Utils.deleteCurrentSession(req, res);
-   ```
-
-   </div><div>:warning: After
-
-   ```ts
-   const session = await shopify.session.deleteCurrent({
-     isOnline: true,
-     rawRequest: req,
-     rawResponse: res,
-   });
-   ```
-
-   </div>
-
-1. `Shopify.Utils.loadOfflineSession` is now `shopify.session.getOffline`, and it now takes an object. It still **_does not_** validate the given arguments and should only be used if you trust the source of the shop argument.
+1. `Shopify.Utils.loadOfflineSession` is now `shopify.session.getOfflineId`, and takes a `shop` argument as its only parameter. It still **_does not_** validate the given arguments and should only be used if you trust the source of the shop argument.  It returns a session id that can then be used to retrieve the session details from app-provided storage.
    <div>Before
 
    ```ts
@@ -618,34 +579,14 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>:warning: After
 
    ```ts
-   const session = await shopify.session.getOffline({
-     shop: 'my-shop.myshopify.com',
-     includeExpired: true,
-   });
+   const sessionId = await shopify.session.getOfflineId('my-shop.myshopify.com');
    ```
 
    </div>
 
-1. `Shopify.Utils.deleteOfflineSession` is now `shopify.session.deleteOffline`, and it now takes an object.
-   <div>Before
+1. `Shopify.Utils.deleteOfflineSession` has been removed, as the library no longer handles the storage of sessions.
 
-   ```ts
-   const success = await Shopify.Utils.deleteOfflineSession(
-     'my-shop.myshopify.com',
-   );
-   ```
-
-   </div><div>:warning: After
-
-   ```ts
-   const success = await shopify.session.deleteOffline({
-     shop: 'my-shop.myshopify.com',
-   });
-   ```
-
-   </div>
-
-1. `Shopify.Utils.withSession` is now `shopify.session.withSession`, and it no longer takes a `shop` argument, it will always authenticate the request to get the shop. The client type is now an enum to make it easier to see the available options.
+1. `Shopify.Utils.withSession` has been removed, as the library no longer handles the storage of sessions.  The various clients have been updated to take a session as an argument.
    <div>Before
 
    ```ts
@@ -658,22 +599,32 @@ Here are all the specific changes that we made to the `Utils` object:
    });
    ```
 
-   </div><div>After
+   </div><div>:warning: After
 
    ```ts
-   import {ClientType} from '@shopify/shopify-api';
-
-   const {client, session} = await shopify.session.withSession({
-     clientType: ClientType.Rest,
+   const sessionId = await shopify.session.getCurrentId({
      isOnline: true,
      rawRequest: req,
      rawResponse: res,
+   });
+
+   // use sessionId to retrieve session from app's session storage
+   // getSessionFromStorage() must be provided by application
+   const session = await getSessionFromStorage(sessionId);
+
+   const gqlClient = await shopify.clients.Graphql({session});
+   // or
+   const restClient = await shopify.clients.Rest({session});
+   // or
+   const storefrontClient = await shopify.clients.Storefront({
+     session,
+     storefrontAccessToken
    });
    ```
 
    </div>
 
-1. `Shopify.Utils.graphqlProxy` is now `shopify.clients.graphqlProxy`, and it takes the body as an argument instead of parsing it from the request. This will make it easier for apps to use a body parser with this function.
+1. `Shopify.Utils.graphqlProxy` is now `shopify.clients.graphqlProxy`, it takes a session argument, and it also takes the body as an argument instead of parsing it from the request. This will make it easier for apps to use a body parser with this function.
    <div>Before
 
    ```ts
@@ -683,10 +634,19 @@ Here are all the specific changes that we made to the `Utils` object:
    </div><div>:warning: After
 
    ```ts
-   const response = await shopify.clients.graphqlProxy({
-     rawBody: req.rawBody, // From my app
+   const sessionId = await shopify.session.getCurrentId({
+     isOnline: true,
      rawRequest: req,
      rawResponse: res,
+   });
+
+   // use sessionId to retrieve session from app's session storage
+   // getSessionFromStorage() must be provided by application
+   const session = await getSessionFromStorage(sessionId);
+
+   const response = await shopify.clients.graphqlProxy({
+     session,
+     rawBody: req.rawBody, // From my app
    });
    ```
 
@@ -947,11 +907,15 @@ const shopify = shopifyApi({
 // ...
 
 app.get('/api/products/count', async (req, res) => {
-  const session = await shopify.session.getCurrent({
+  const sessionId = await shopify.session.getCurrentId({
     isOnline: false,
     rawRequest: req,
     rawResponse: res,
   });
+
+  // use sessionId to retrieve session from app's session storage
+  // getSessionFromStorage() must be provided by application
+  const session = await getSessionFromStorage(sessionId);
 
   const countData = await shopify.rest.Product.count({session});
   res.status(200).send(countData);

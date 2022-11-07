@@ -1,21 +1,60 @@
-import {CreateClientClassParams} from '..';
+import {CreateGraphqlClientClassParams} from '..';
 import {ShopifyHeader} from '../../base-types';
+import {createHttpClientClass} from '../http_client/http_client';
+import {Session} from '../../session/session';
 
-import {createGraphqlClientClass, AccessTokenHeader} from './graphql_client';
+import {AccessTokenHeader, GraphqlClient} from './graphql_client';
+import {StorefrontClientParams} from './types';
 
-export function createStorefrontClientClass(params: CreateClientClassParams) {
-  const GraphqlClient = createGraphqlClientClass(params);
+export class StorefrontClient extends GraphqlClient {
+  baseApiPath = '/api';
+  readonly domain: string;
+  readonly storefrontAccessToken: string;
 
-  return class StorefrontClient extends GraphqlClient {
-    baseApiPath = '/api';
+  constructor(params: StorefrontClientParams) {
+    const session = new Session({
+      shop: params.domain,
+      id: '',
+      state: '',
+      isOnline: true,
+      accessToken: params.storefrontAccessToken,
+    });
+    super({session});
+    this.domain = params.domain;
+    this.storefrontAccessToken = params.storefrontAccessToken;
+  }
 
-    getAccessTokenHeader(): AccessTokenHeader {
-      return {
-        header: ShopifyHeader.StorefrontAccessToken,
-        value: (params.config.isPrivateApp
-          ? params.config.privateAppStorefrontAccessToken || this.accessToken
-          : this.accessToken) as string,
-      };
-    }
-  };
+  protected getAccessTokenHeader(): AccessTokenHeader {
+    return {
+      header: ShopifyHeader.StorefrontAccessToken,
+      value: (this.storefrontClass().CONFIG.isPrivateApp
+        ? this.storefrontClass().CONFIG.privateAppStorefrontAccessToken ||
+          this.storefrontAccessToken
+        : this.storefrontAccessToken) as string,
+    };
+  }
+
+  private storefrontClass() {
+    return this.constructor as typeof StorefrontClient;
+  }
+}
+
+export function createStorefrontClientClass(
+  params: CreateGraphqlClientClassParams,
+) {
+  const {config} = params;
+  let {HttpClient} = params;
+  if (!HttpClient) {
+    HttpClient = createHttpClientClass(config);
+  }
+  class NewStorefrontClient extends StorefrontClient {
+    public static CONFIG = config;
+    public static HTTP_CLIENT = HttpClient!;
+  }
+
+  Reflect.defineProperty(NewStorefrontClient, 'name', {
+    value: 'StorefrontClient',
+  });
+
+  return NewStorefrontClient as typeof StorefrontClient;
 }

@@ -1,122 +1,132 @@
 import {getHeader} from '../../../runtime/http';
-import {ShopifyHeader} from '../../base-types';
+import {ConfigInterface, ShopifyHeader} from '../../base-types';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
-import {createHttpClientClass} from '../http_client/http_client';
-import {CreateClientClassParams} from '..';
+import {HttpClient} from '../http_client/http_client';
+import {Session} from '../../session/session';
+import {CreateRestClientClassParams} from '..';
 
-import {RestRequestReturn, PageInfo} from './types';
+import {RestRequestReturn, PageInfo, RestClientParams} from './types';
 
-export interface RestClientParams {
-  domain: string;
-  accessToken?: string;
-}
+export class RestClient extends HttpClient {
+  static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
+  static DEFAULT_LIMIT = '50';
 
-export function createRestClientClass(params: CreateClientClassParams) {
-  const {config} = params;
-  let {HttpClient} = params;
-  if (!HttpClient) {
-    HttpClient = createHttpClientClass(params.config);
-  }
-  return class RestClient extends HttpClient {
-    static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
-    static DEFAULT_LIMIT = '50';
+  public static CONFIG: ConfigInterface;
 
-    readonly accessToken: string;
+  readonly session: Session;
 
-    public constructor({domain, accessToken}: RestClientParams) {
-      super({domain});
+  public constructor(params: RestClientParams) {
+    super({domain: params.session.shop});
 
-      if (!config.isPrivateApp && !accessToken) {
-        throw new ShopifyErrors.MissingRequiredArgument(
-          'Missing access token when creating REST client',
-        );
-      }
-      if (accessToken) {
-        this.accessToken = accessToken;
-      }
+    if (!this.restClass().CONFIG.isPrivateApp && !params.session.accessToken) {
+      throw new ShopifyErrors.MissingRequiredArgument(
+        'Missing access token when creating REST client',
+      );
     }
 
-    public async request<T = unknown>(
-      params: RequestParams,
-    ): Promise<RestRequestReturn<T>> {
-      params.extraHeaders = {
-        [ShopifyHeader.AccessToken]: config.isPrivateApp
-          ? config.apiSecretKey
-          : (this.accessToken as string),
-        ...params.extraHeaders,
+    this.session = params.session;
+  }
+
+  protected async request<T = unknown>(
+    params: RequestParams,
+  ): Promise<RestRequestReturn<T>> {
+    params.extraHeaders = {
+      [ShopifyHeader.AccessToken]: this.restClass().CONFIG.isPrivateApp
+        ? this.restClass().CONFIG.apiSecretKey
+        : (this.session.accessToken as string),
+      ...params.extraHeaders,
+    };
+
+    const ret: RestRequestReturn<T> = await super.request<T>(params);
+
+    const link = getHeader(ret.headers, 'link');
+    if (link !== undefined) {
+      const pageInfo: PageInfo = {
+        limit: params.query?.limit
+          ? params.query?.limit.toString()
+          : RestClient.DEFAULT_LIMIT,
       };
 
-      const ret: RestRequestReturn<T> = await super.request<T>(params);
+      if (link) {
+        const links = link.split(', ');
 
-      const link = getHeader(ret.headers, 'link');
-      if (link !== undefined) {
-        const pageInfo: PageInfo = {
-          limit: params.query?.limit
-            ? params.query?.limit.toString()
-            : RestClient.DEFAULT_LIMIT,
-        };
+        for (const link of links) {
+          const parsedLink = link.match(RestClient.LINK_HEADER_REGEXP);
+          if (!parsedLink) {
+            continue;
+          }
 
-        if (link) {
-          const links = link.split(', ');
+          const linkRel = parsedLink[2];
+          const linkUrl = new URL(parsedLink[1]);
+          const linkFields = linkUrl.searchParams.get('fields');
+          const linkPageToken = linkUrl.searchParams.get('page_info');
 
-          for (const link of links) {
-            const parsedLink = link.match(RestClient.LINK_HEADER_REGEXP);
-            if (!parsedLink) {
-              continue;
-            }
+          if (!pageInfo.fields && linkFields) {
+            pageInfo.fields = linkFields.split(',');
+          }
 
-            const linkRel = parsedLink[2];
-            const linkUrl = new URL(parsedLink[1]);
-            const linkFields = linkUrl.searchParams.get('fields');
-            const linkPageToken = linkUrl.searchParams.get('page_info');
-
-            if (!pageInfo.fields && linkFields) {
-              pageInfo.fields = linkFields.split(',');
-            }
-
-            if (linkPageToken) {
-              switch (linkRel) {
-                case 'previous':
-                  pageInfo.previousPageUrl = parsedLink[1];
-                  pageInfo.prevPage = this.buildRequestParams(parsedLink[1]);
-                  break;
-                case 'next':
-                  pageInfo.nextPageUrl = parsedLink[1];
-                  pageInfo.nextPage = this.buildRequestParams(parsedLink[1]);
-                  break;
-              }
+          if (linkPageToken) {
+            switch (linkRel) {
+              case 'previous':
+                pageInfo.previousPageUrl = parsedLink[1];
+                pageInfo.prevPage = this.buildRequestParams(parsedLink[1]);
+                break;
+              case 'next':
+                pageInfo.nextPageUrl = parsedLink[1];
+                pageInfo.nextPage = this.buildRequestParams(parsedLink[1]);
+                break;
             }
           }
         }
-
-        ret.pageInfo = pageInfo;
       }
 
-      return ret;
+      ret.pageInfo = pageInfo;
     }
 
-    public getRequestPath(path: string): string {
-      const cleanPath = super.getRequestPath(path);
-      if (cleanPath.startsWith('/admin')) {
-        return `${cleanPath.replace(/\.json$/, '')}.json`;
-      } else {
-        return `/admin/api/${config.apiVersion}${cleanPath.replace(
-          /\.json$/,
-          '',
-        )}.json`;
-      }
-    }
+    return ret;
+  }
 
-    public buildRequestParams(newPageUrl: string): GetRequestParams {
-      const pattern = `^/admin/api/[^/]+/(.*).json$`;
-
-      const url = new URL(newPageUrl);
-      const path = url.pathname.replace(new RegExp(pattern), '$1');
-      return {
-        path,
-        query: Object.fromEntries(url.searchParams.entries()),
-      };
+  protected getRequestPath(path: string): string {
+    const cleanPath = super.getRequestPath(path);
+    if (cleanPath.startsWith('/admin')) {
+      return `${cleanPath.replace(/\.json$/, '')}.json`;
+    } else {
+      return `/admin/api/${
+        this.restClass().CONFIG.apiVersion
+      }${cleanPath.replace(/\.json$/, '')}.json`;
     }
-  };
+  }
+
+  private restClass() {
+    return this.constructor as typeof RestClient;
+  }
+
+  private buildRequestParams(newPageUrl: string): GetRequestParams {
+    const pattern = `^/admin/api/[^/]+/(.*).json$`;
+
+    const url = new URL(newPageUrl);
+    const path = url.pathname.replace(new RegExp(pattern), '$1');
+    return {
+      path,
+      query: Object.fromEntries(url.searchParams.entries()),
+    };
+  }
+}
+
+export function createRestClientClass(
+  params: CreateRestClientClassParams,
+): typeof RestClient {
+  const {config} = params;
+
+  class NewRestClient extends RestClient {
+    public static CONFIG = config;
+    public static SCHEME = 'https';
+  }
+
+  Reflect.defineProperty(NewRestClient, 'name', {
+    value: 'RestClient',
+  });
+
+  return NewRestClient as typeof RestClient;
 }

@@ -15,11 +15,15 @@ The simplest way to interact with the API is using an instance of `shopify.clien
 ```ts
 // Requests to /my-endpoint must be made with authenticatedFetch for embedded apps
 app.get('/my-endpoint', async (req, res) => {
-  const session = await shopify.session.getCurrent({
+  const sessionId = await shopify.session.getCurrentId({
     isOnline: true,
     rawRequest: req,
     rawResponse: res,
   });
+
+  // use sessionId to retrieve session from app's session storage
+  // getSessionFromStorage() must be provided by application
+  const session = await getSessionFromStorage(sessionId);
 
   const client = new shopify.clients.Rest({
     domain: session.shop,
@@ -103,10 +107,15 @@ interface ProductResponse {
   };
 }
 
-const session = await shopify.session.getCurrent({
+const sessionId = await shopify.session.getCurrentId({
   rawRequest: req,
   rawResponse: res,
 });
+
+// use sessionId to retrieve session from app's session storage
+// getSessionFromStorage() must be provided by application
+const session = await getSessionFromStorage(sessionId);
+
 const client = new shopify.clients.Rest({
   domain: session.shop,
   accessToken: session.accessToken,
@@ -135,10 +144,14 @@ await client.put({
 </div><div>With REST resources:
 
 ```ts
-const session = await shopify.session.getCurrent({
+const sessionId = await shopify.session.getCurrentId({
   rawRequest: req,
   rawResponse: res,
 });
+
+// use sessionId to retrieve session from app's session storage
+// getSessionFromStorage() must be provided by application
+const session = await getSessionFromStorage(sessionId);
 
 // Has type Product[], an OO representation of API products
 const products = await shopify.rest.Product.all({session, limit: 1});

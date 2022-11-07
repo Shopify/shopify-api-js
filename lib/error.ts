@@ -83,7 +83,6 @@ export class GraphqlQueryError extends ShopifyError {
 }
 
 export class InvalidOAuthError extends ShopifyError {}
-export class SessionNotFound extends ShopifyError {}
 export class CookieNotFound extends ShopifyError {}
 export class InvalidSession extends ShopifyError {}
 

@@ -1,7 +1,10 @@
 import {BillingInterval, ConfigInterface} from '../base-types';
 import {BillingError} from '../error';
 import {createBuildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
-import {createGraphqlClientClass} from '../clients/graphql/graphql_client';
+import {
+  GraphqlClient,
+  createGraphqlClientClass,
+} from '../clients/graphql/graphql_client';
 import {hashString} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
 
@@ -15,7 +18,7 @@ import {
 } from './types';
 
 interface RequestInternalParams {
-  client: InstanceType<ReturnType<typeof createGraphqlClientClass>>;
+  client: GraphqlClient;
   plan: string;
   returnUrl: string;
   isTest: boolean;
@@ -49,10 +52,7 @@ export function createRequest(config: ConfigInterface) {
     );
 
     const GraphqlClient = createGraphqlClientClass({config});
-    const client = new GraphqlClient({
-      domain: session.shop,
-      accessToken: session.accessToken,
-    });
+    const client = new GraphqlClient({session});
 
     let data: RequestResponse;
     if (billingConfig.interval === BillingInterval.OneTime) {
