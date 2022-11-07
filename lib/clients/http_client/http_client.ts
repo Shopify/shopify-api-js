@@ -269,7 +269,7 @@ export class HttpClient {
   private async doRequest<T = unknown>(
     request: NormalizedRequest,
   ): Promise<RequestReturn<T>> {
-      const log = logger(this.httpClass().CONFIG);
+    const log = logger(this.httpClass().CONFIG);
 
     const response: NormalizedResponse = await abstractFetch(request);
 
