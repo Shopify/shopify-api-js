@@ -323,6 +323,40 @@ describe('shopify.webhooks.register', () => {
       'PRODUCTS_CREATE',
     ]);
   });
+
+  it('returns multiple results per topic for multiple webhooks per topic', async () => {
+    const topic = 'PRODUCTS_CREATE';
+    const httpHandler = HTTP_HANDLER;
+    const ebHandler = EVENT_BRIDGE_HANDLER;
+    const responses = [
+      mockResponses.successResponse,
+      mockResponses.eventBridgeSuccessResponse,
+    ];
+
+    shopify.webhooks.addHandlers({[topic]: httpHandler});
+    shopify.webhooks.addHandlers({[topic]: ebHandler});
+
+    queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
+    responses.forEach((response) => {
+      queueMockResponse(JSON.stringify(response));
+    });
+    const registerReturn = await shopify.webhooks.register({session});
+
+    expect(mockTestRequests.requestList).toHaveLength(responses.length + 1);
+    assertWebhookCheckRequest({session});
+
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {callbackUrl: `"https://test_host_name/webhooks"`},
+    );
+    assertWebhookRegistrationRequest(
+      'eventBridgeWebhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {arn: '"arn:test"'},
+    );
+    assertRegisterResponse({registerReturn, topic, responses});
+  });
 });
 
 async function registerWebhook({
