@@ -48,7 +48,7 @@ describe('Storefront GraphQL client', () => {
 
   it('can return response from specific access token', async () => {
     const client = new shopify.clients.Storefront({
-      session,
+      domain: session.shop,
       storefrontAccessToken,
     });
 
@@ -74,7 +74,7 @@ describe('Storefront GraphQL client', () => {
     shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
     const client = new shopify.clients.Storefront({
-      session,
+      domain: session.shop,
       storefrontAccessToken,
     });
 

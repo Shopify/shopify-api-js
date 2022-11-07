@@ -7,7 +7,8 @@ export interface GraphqlClientParams {
   session: Session;
 }
 
-export interface StorefrontClientParams extends GraphqlClientParams {
+export interface StorefrontClientParams {
+  domain: string;
   storefrontAccessToken: string;
 }
 

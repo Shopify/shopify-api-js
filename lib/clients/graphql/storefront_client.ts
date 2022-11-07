@@ -1,16 +1,26 @@
 import {CreateGraphqlClientClassParams} from '..';
 import {ShopifyHeader} from '../../base-types';
 import {createHttpClientClass} from '../http_client/http_client';
+import {Session} from '../../session/session';
 
 import {AccessTokenHeader, GraphqlClient} from './graphql_client';
 import {StorefrontClientParams} from './types';
 
 export class StorefrontClient extends GraphqlClient {
   baseApiPath = '/api';
+  readonly domain: string;
   readonly storefrontAccessToken: string;
 
   constructor(params: StorefrontClientParams) {
-    super({session: params.session});
+    const session = new Session({
+      shop: params.domain,
+      id: '',
+      state: '',
+      isOnline: true,
+      accessToken: params.storefrontAccessToken,
+    });
+    super({session});
+    this.domain = params.domain;
     this.storefrontAccessToken = params.storefrontAccessToken;
   }
 
