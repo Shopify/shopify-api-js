@@ -112,10 +112,9 @@ In your OAuth callback action, you can use the `shopify.webhooks.register` metho
 
 The parameters this method accepts are:
 
-| Parameter     | Type     | Required? | Default Value | Notes                                 |
-| :------------ | :------- | :-------: | :-----------: | :------------------------------------ |
-| `shop`        | `string` |    Yes    |       -       | The shop to use for requests.         |
-| `accessToken` | `string` |    Yes    |       -       | The access token to use for requests. |
+| Parameter | Type      | Required? | Default Value | Notes                            |
+| :-------- | :-------- | :-------: | :-----------: | :------------------------------- |
+| `session` | `Session` |    Yes    |       -       | The session to use for requests. |
 
 This method will return a `RegisterReturn` object, which is a list of results indexed by topic. Each item in the lists has format. This object will only contain results for a handler if any of its information was updated with Shopify.
 
@@ -145,8 +144,7 @@ app.get('/auth/callback', async (req, res) => {
     });
 
     const response = await shopify.webhooks.register({
-      accessToken: callbackResponse.session.accessToken,
-      shop: callbackResponse.session.shop,
+      session: callbackResponse.session,
     });
 
     if (!response['PRODUCTS_CREATE'][0].success) {

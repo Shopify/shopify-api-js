@@ -1,4 +1,5 @@
 import {AdapterArgs} from '../../runtime';
+import {Session} from '../session/session';
 
 import type {shopifyWebhooks} from '.';
 
@@ -52,6 +53,10 @@ export enum WebhookOperation {
   Create = 'create',
   Update = 'update',
   Delete = 'delete',
+}
+
+export interface RegisterParams {
+  session: Session;
 }
 
 export interface RegisterResult {
