@@ -247,6 +247,8 @@ app.post('/webhooks', async (req, res) => {
    await addSessionToStorage(callbackResponse.session.toObject());
    ```
 
+1. See the [Implementing session storage guide](usage/session-storage.md) for the changes you'll need to make to store your sessions.
+
 ---
 
 ## Changes to authentication functions
