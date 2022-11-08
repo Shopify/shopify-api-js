@@ -10,3 +10,5 @@ export function shopifySession(config: ConfigInterface) {
     decodeSessionToken: createDecodeSessionToken(config),
   };
 }
+
+export type ShopifySession = ReturnType<typeof shopifySession>;

@@ -1,4 +1,5 @@
-import {ConfigInterface, LogSeverity} from '../base-types';
+import {LogSeverity} from '../types';
+import {ConfigInterface} from '../base-types';
 
 import {createLog} from './log';
 import {LogContext} from './types';
@@ -18,3 +19,5 @@ export function logger(config: ConfigInterface) {
       log(LogSeverity.Error, message, context),
   };
 }
+
+export type ShopifyLogger = ReturnType<typeof logger>;

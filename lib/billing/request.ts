@@ -1,4 +1,5 @@
-import {BillingInterval, ConfigInterface} from '../base-types';
+import {ConfigInterface} from '../base-types';
+import {BillingInterval} from '../types';
 import {BillingError} from '../error';
 import {createBuildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
 import {

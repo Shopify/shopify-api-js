@@ -9,7 +9,7 @@ import {
 import {createHttpClientClass} from '../http_client';
 import {DataType, HeaderParams} from '../../types';
 import * as ShopifyErrors from '../../../error';
-import {LogSeverity} from '../../../base-types';
+import {LogSeverity} from '../../../types';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};

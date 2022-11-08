@@ -1,5 +1,5 @@
 import * as ShopifyErrors from '../../../error';
-import {ShopifyHeader} from '../../../base-types';
+import {ShopifyHeader} from '../../../types';
 import {queueMockResponse, shopify} from '../../../__tests__/test-helper';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';

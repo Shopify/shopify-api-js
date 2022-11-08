@@ -20,3 +20,5 @@ export function shopifyWebhooks(config: ConfigInterface) {
     process: createProcess(config, webhookRegistry),
   };
 }
+
+export type ShopifyWebhooks = ReturnType<typeof shopifyWebhooks>;

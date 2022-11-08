@@ -1,8 +1,8 @@
 import {testConfig, queueMockResponses} from '../../__tests__/test-helper';
 import {Session} from '../../session/session';
 import {BillingError} from '../../error';
-import {LATEST_API_VERSION, Shopify, BillingInterval} from '../../base-types';
-import {shopifyApi} from '../..';
+import {LATEST_API_VERSION, BillingInterval} from '../../types';
+import {shopifyApi, Shopify} from '../..';
 
 import * as Responses from './responses';
 

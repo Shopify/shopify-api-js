@@ -1,19 +1,39 @@
 import {loadRestResources} from '../rest/load-rest-resources';
 import {ShopifyRestResources} from '../rest/types';
 
-import {ConfigParams, Shopify} from './base-types';
+import {ConfigParams, ConfigInterface} from './base-types';
 import {validateConfig} from './config';
-import {createClientClasses} from './clients';
-import {shopifyAuth} from './auth';
-import {shopifySession} from './session';
-import {shopifyUtils} from './utils';
-import {shopifyWebhooks} from './webhooks';
-import {shopifyBilling} from './billing';
-import {logger} from './logger';
+import {createClientClasses, ShopifyClients} from './clients';
+import {shopifyAuth, ShopifyAuth} from './auth';
+import {shopifySession, ShopifySession} from './session';
+import {shopifyUtils, ShopifyUtils} from './utils';
+import {shopifyWebhooks, ShopifyWebhooks} from './webhooks';
+import {shopifyBilling, ShopifyBilling} from './billing';
+import {logger, ShopifyLogger} from './logger';
 
 export * from './error';
-export * from './types';
 export * from './session/classes';
+
+export * from '../rest/types';
+export * from './types';
+export * from './base-types';
+export * from './session/types';
+export * from './auth/types';
+export * from './webhooks/types';
+
+export interface Shopify<
+  T extends ShopifyRestResources = ShopifyRestResources,
+> {
+  config: ConfigInterface;
+  clients: ShopifyClients;
+  auth: ShopifyAuth;
+  session: ShopifySession;
+  utils: ShopifyUtils;
+  webhooks: ShopifyWebhooks;
+  billing: ShopifyBilling;
+  logger: ShopifyLogger;
+  rest: T;
+}
 
 export function shopifyApi<T extends ShopifyRestResources>(
   config: ConfigParams<T>,

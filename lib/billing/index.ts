@@ -9,3 +9,5 @@ export function shopifyBilling(config: ConfigInterface) {
     request: createRequest(config),
   };
 }
+
+export type ShopifyBilling = ReturnType<typeof shopifyBilling>;

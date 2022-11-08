@@ -1,12 +1,16 @@
 import {getHeader} from '../../../runtime/http';
-import {ConfigInterface, ShopifyHeader} from '../../base-types';
+import {ShopifyHeader} from '../../types';
+import {ConfigInterface} from '../../base-types';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
 import {HttpClient} from '../http_client/http_client';
 import {Session} from '../../session/session';
-import {CreateRestClientClassParams} from '..';
 
 import {RestRequestReturn, PageInfo, RestClientParams} from './types';
+
+export interface CreateRestClientClassParams {
+  config: ConfigInterface;
+}
 
 export class RestClient extends HttpClient {
   static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;

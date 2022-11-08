@@ -177,7 +177,7 @@ export class HttpClient {
         if (error instanceof ShopifyErrors.HttpRetriableError) {
           // We're not out of tries yet, use them
           if (tries < maxTries) {
-            let waitTime = HttpClient.RETRY_WAIT_TIME;
+            let waitTime = this.httpClass().RETRY_WAIT_TIME;
             if (
               error instanceof ShopifyErrors.HttpThrottlingError &&
               error.response.retryAfter

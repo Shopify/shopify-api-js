@@ -12,7 +12,8 @@ import {
 } from '../../runtime/http';
 import {createSHA256HMAC} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
-import {ConfigInterface, ShopifyHeader} from '../base-types';
+import {ShopifyHeader} from '../types';
+import {ConfigInterface} from '../base-types';
 import {safeCompare} from '../auth/oauth/safe-compare';
 import * as ShopifyErrors from '../error';
 import {logger} from '../logger';

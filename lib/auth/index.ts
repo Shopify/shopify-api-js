@@ -18,3 +18,5 @@ export function shopifyAuth(config: ConfigInterface) {
     buildEmbeddedAppUrl: createBuildEmbeddedAppUrl(config),
   };
 }
+
+export type ShopifyAuth = ReturnType<typeof shopifyAuth>;

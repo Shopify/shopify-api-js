@@ -1,9 +1,6 @@
 import {Headers, canonicalizeHeaders} from '../../runtime/http';
-import {
-  ConfigInterface,
-  LATEST_API_VERSION,
-  LogSeverity,
-} from '../../lib/base-types';
+import {ConfigInterface} from '../../lib/base-types';
+import {LATEST_API_VERSION, LogSeverity} from '../../lib/types';
 import {AuthScopes} from '../../lib/auth/scopes';
 
 export function matchHeaders(received: Headers, expected: Headers): boolean {

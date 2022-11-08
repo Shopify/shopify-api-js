@@ -1,6 +1,7 @@
 import * as ShopifyErrors from '../error';
 import {validateConfig} from '../config';
-import {ApiVersion, ConfigParams, LogSeverity} from '../base-types';
+import {ConfigParams} from '../base-types';
+import {ApiVersion, LogSeverity} from '../types';
 
 let validParams: ConfigParams;
 

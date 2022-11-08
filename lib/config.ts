@@ -1,10 +1,6 @@
 import {ShopifyError} from './error';
-import {
-  ConfigInterface,
-  ConfigParams,
-  LATEST_API_VERSION,
-  LogSeverity,
-} from './base-types';
+import {ConfigInterface, ConfigParams} from './base-types';
+import {LATEST_API_VERSION, LogSeverity} from './types';
 import {AuthScopes} from './auth/scopes';
 
 export function validateConfig(params: ConfigParams<any>): ConfigInterface {

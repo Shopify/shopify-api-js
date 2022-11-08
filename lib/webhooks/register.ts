@@ -3,8 +3,9 @@ import {
   GraphqlClient,
 } from '../clients/graphql/graphql_client';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
-import {ConfigInterface, gdprTopics} from '../base-types';
 import {logger} from '../logger';
+import {gdprTopics} from '../types';
+import {ConfigInterface} from '../base-types';
 import {Session} from '../session/session';
 
 import {

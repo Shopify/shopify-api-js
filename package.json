@@ -33,9 +33,10 @@
   },
   "prettier": "@shopify/prettier-config",
   "scripts": {
-    "test:all": "yarn pretest:adapters && jest && yarn clean",
+    "test:all": "yarn pretest:adapters && jest && yarn posttest:adapters",
     "test": "jest --selectProjects library",
     "pretest:adapters": "yarn build && yarn rollup -c adapters/__e2etests__/rollup.test-cf-worker-app.config.js",
+    "posttest:adapters": "yarn clean",
     "test:adapters": "jest --selectProjects adapters:mock adapters:node adapters:cf-worker",
     "test:rest_resources": "jest --selectProjects rest_resources",
     "lint": "jest --selectProjects lint",

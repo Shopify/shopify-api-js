@@ -1,12 +1,5 @@
 import {AdapterArgs} from '../../runtime/http';
 import {OnlineAccessInfo} from '../auth/oauth/types';
-import {RestClient} from '../clients/rest/rest_client';
-import {GraphqlClient} from '../clients/graphql/graphql_client';
-import {ClientType} from '../base-types';
-
-import {Session} from './session';
-
-import type {shopifySession} from '.';
 
 export interface SessionParams {
   readonly id: string;
@@ -34,25 +27,3 @@ export interface JwtPayload {
 export interface GetCurrentSessionIdParams extends AdapterArgs {
   isOnline: boolean;
 }
-
-export interface WithSessionParams {
-  session: Session;
-  clientType: ClientType;
-  isOnline: boolean;
-}
-
-interface WithSessionBaseResponse {
-  session: Session;
-}
-
-export interface RestWithSession extends WithSessionBaseResponse {
-  client: RestClient;
-}
-
-export interface GraphqlWithSession extends WithSessionBaseResponse {
-  client: GraphqlClient;
-}
-
-export type WithSessionResponse = RestWithSession | GraphqlWithSession;
-
-export type ShopifySession = ReturnType<typeof shopifySession>;

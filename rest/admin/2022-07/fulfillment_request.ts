@@ -4,7 +4,7 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {ApiVersion} from '../../../lib/base-types';
+import {ApiVersion} from '../../../lib/types';
 
 interface AcceptArgs {
   [key: string]: unknown;

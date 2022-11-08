@@ -1,4 +1,5 @@
-import {ApiVersion, ConfigInterface} from '../base-types';
+import {ConfigInterface} from '../base-types';
+import {ApiVersion} from '../types';
 
 export function createVersionCompatible(config: ConfigInterface) {
   return (
