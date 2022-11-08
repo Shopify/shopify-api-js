@@ -3,6 +3,16 @@ import {AuthScopes} from '../auth/scopes';
 
 import {SessionParams} from './types';
 
+const propertiesToSave = [
+  'id',
+  'shop',
+  'state',
+  'isOnline',
+  'scope',
+  'accessToken',
+  'expires',
+  'onlineAccessInfo',
+];
 /**
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.
  */
@@ -130,13 +140,13 @@ export class Session {
   }
 
   public toPropertyArray(): [string, string | number][] {
-    const keys = Object.keys(this);
-
     return (
       Object.entries(this)
         .filter(
           ([key, value]) =>
-            keys.includes(key) && value !== undefined && value !== null,
+            propertiesToSave.includes(key) &&
+            value !== undefined &&
+            value !== null,
         )
         // Prepare values for db storage
         .map(([key, value]) => {
