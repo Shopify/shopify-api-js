@@ -2,7 +2,7 @@
 
 As of v6 of the library, there are no `SessionStorage` implementations included and the responsibility for implementing session storage is now delegated to the application.
 
-The previous implementations of `SessionStorage` are now included in the [`shopify-app-express` package](https://github.com/Shopify/shopify-app-express/tree/main/src/session-storage).  If your app is not an Express app, or you wish not to use the `shopify-app-express` package, you can copy and modify any of the session storage implementations from that package to suit the needs of your app.
+The previous implementations of `SessionStorage` are now included in the [`shopify-app-express` package](https://github.com/Shopify/shopify-app-express/tree/main/session-storage).  If your app is not an Express app, or you wish not to use the `shopify-app-express` package, you can copy and modify any of the session storage implementations from that package to suit the needs of your app.
 
 ## Basics
 
@@ -50,7 +50,7 @@ The previous implementations of `SessionStorage` are now included in the [`shopi
    // sessionCopy is an identical copy of the callbackResponse.session instance
    ```
 
-   Now that the app has a JavaScript object containing the data of a `Session`, it can convert the data into whatever means necessary to store it in the apps preferred storage mechanism.  Again, the developer is free to explore various implementations of session storage in the [`shopify-app-express` package](https://github.com/Shopify/shopify-app-express/tree/main/src/session-storage).
+   Now that the app has a JavaScript object containing the data of a `Session`, it can convert the data into whatever means necessary to store it in the apps preferred storage mechanism.  Again, the developer is free to explore various implementations of session storage in the [`shopify-app-express` package](https://github.com/Shopify/shopify-app-express/tree/main/session-storage).
 
    The `Session` class also includes an instance method called `.toPropertyArray` that returns an array of key-value pairs, e.g.,
 
