@@ -55,6 +55,7 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   } = params;
 
   Object.assign(config, mandatoryParams, {
+    hostName: params.hostName.replace(/\/$/, ''),
     scopes:
       params.scopes instanceof AuthScopes
         ? params.scopes

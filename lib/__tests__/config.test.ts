@@ -102,4 +102,13 @@ describe('Config object', () => {
       timestamps: false,
     });
   });
+
+  it('removes trailing slashes from the host', () => {
+    const configWithSlash = {...validParams};
+    configWithSlash.hostName = 'my-host-name/';
+
+    const config = validateConfig(configWithSlash);
+
+    expect(config.hostName).toEqual('my-host-name');
+  });
 });
