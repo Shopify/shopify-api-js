@@ -125,7 +125,7 @@ app.get('/auth/callback', async (req, res) => {
       req,
       res,
       req.query as unknown as AuthQuery,
-    ); // req.query must be cast to unkown and then AuthQuery in order to be accepted
+    ); // req.query must be cast to unknown and then AuthQuery in order to be accepted
     ACTIVE_SHOPIFY_SHOPS[SHOP] = session.scope;
     console.log(session.accessToken);
   } catch (error) {
