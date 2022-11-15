@@ -176,4 +176,57 @@ if (!shopify.config.scopes.equals(session.scope)) {
 
 This is useful if you have a middleware or pre-request check in your app to ensure that the session is still valid.
 
+## Auth-related utility methods
+
+### Get the application URL for embedded apps using `getEmbeddedAppUrl`
+
+If you need to redirect a request to your embedded app URL you can use `getEmbeddedAppUrl`
+
+```ts
+const redirectURL = shopify.auth.getEmbeddedAppUrl({
+  rawRequest: req,
+  rawResponse: res,
+});
+res.redirect(redirectURL);
+```
+
+Using this utility ensures that embedded app URL is properly constructed and brings the merchant to the right place. It is more reliable than using the shop param.
+
+This utility relies on the host query param being a Base 64 encoded string. All requests from Shopify should include this param in the correct format.
+
+### Safely compare two strings, string arrays, number arrays, or simple JS objects with `safeCompare`
+
+`safeCompare` takes a pair of arguments of any of the following types and returns true if they are identical, both in term of type and content.
+
+```ts
+string
+{[key: string]: string}
+string[]
+number[]
+```
+
+```ts
+const stringArray1 = ['alice', 'bob', 'charlie'];
+const stringArray2 = ['alice', 'bob', 'charlie'];
+
+const stringArrayResult = shopify.auth.safeCompare(stringArray1, stringArray2);  // true
+
+const array1 = ['one fish', 'two fish'];
+const array2 = ['red fish', 'blue fish'];
+const arrayResult = shopify.auth.safeCompare(array1, array2); // false
+
+const arg1 = 'hello';
+const arg2 = ['world'];
+
+const argResult = shopify.auth.safeCompare(arg1, arg2); // throws SafeCompareError due to argument type mismatch
+```
+
+### Generate a cryptographically random string of digits with `nonce`
+
+`nonce` generates a string of 15 characters that are cryptographically random, suitable for short-lived values in cookies to aid validation of requests/responses.
+
+```ts
+const state = shopify.auth.nonce();
+```
+
 [Back to guide index](../../README.md#features)
