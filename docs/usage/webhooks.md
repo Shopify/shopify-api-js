@@ -149,7 +149,7 @@ app.get('/auth/callback', async (req, res) => {
 
     if (!response['PRODUCTS_CREATE'][0].success) {
       console.log(
-        `Failed to register PRODUCTS_CREATE webhook: ${response['PRODUCTS_CREATE'].result}`,
+        `Failed to register PRODUCTS_CREATE webhook: ${response['PRODUCTS_CREATE'][0].result}`,
       );
     }
   } catch (error) {
