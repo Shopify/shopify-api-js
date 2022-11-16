@@ -102,7 +102,7 @@ This method takes an object with the following properties:
 
 | Parameter     | Type              |      Required?       | Default Value | Notes                                                                                          |
 | ------------- | ----------------- | :------------------: | :-----------: | ---------------------------------------------------------------------------------------------- |
-| `isOnline`    | `bool`            |         Yes          |       -       | `true` if the session is online and `false` otherwise. Must match the value from `auth.begin`. |
+| `isOnline`    | `boolean`         |         Yes          |       -       | `true` if the session is online and `false` otherwise. Must match the value from `auth.begin`. |
 | `rawRequest`  | `AdapterRequest`  |         Yes          |       -       | The HTTP Request object used by your runtime.                                                  |
 | `rawResponse` | `AdapterResponse` | _Depends on runtime_ |       -       | The HTTP Response object used by your runtime. Required for Node.js.                           |
 
@@ -115,7 +115,7 @@ It will save a new session using your configured `sessionStorage`, and return an
 
 ## Using sessions
 
-Once you set up both of the above endpoints, you can navigate to `{your ngrok address}/auth` in your browser to begin OAuth. When it completes, you will have a Shopify session that enables you to make requests to the Admin API, for instance [the REST Admin API client](./rest.md).
+Once you set up both of the above endpoints, you can navigate to `<hostname>/auth` in your browser to begin OAuth, replacing `<hostname>` with either the tunnel url (e.g. ngrok, Cloudflare, etc.), or `localhost`, or the url to the running instance on a cloud platform, depending on how you are running your application. When it completes, you will have a Shopify session that enables you to make requests to the Admin API, for instance [the REST Admin API client](./rest.md).
 
 ### Loading a session while handling a request
 
@@ -148,7 +148,10 @@ Learn more about [making authenticated requests](https://shopify.dev/apps/auth/o
 
 If your app needs to access the API while not handling a direct request, for example in a background job, you can use `shopify.session.getOfflineId` to generate an offline session id for the given shop that can then be used to load an offline access token for your script.
 
-**Note**: this method **_does not_** perform any validation on the `shop` parameter. You should **_never_** read the shop from user inputs or URLs.
+**Note 1**: this method **_does not_** perform any validation on the `shop` parameter. You should **_never_** read the shop from user inputs or URLs.
+
+**Note 2**: obtaining and storing an offline session is performed by going through the OAuth process described above, i.e., using the [start endpoint](#start-endpoint) and [callback endpoint](#callback-endpoint), with the `isOnline` parameter set to `false` for both `shopify.auth.begin()` and `shopify.auth.callback()`.
+
 
 ```ts
 const offlineSessionId = await shopify.session.getOfflineId({
