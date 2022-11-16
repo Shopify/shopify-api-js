@@ -493,8 +493,9 @@ We also felt that the `Utils` object had some functions that belong to other par
 Here are all the specific changes that we made to the `Utils` object:
 
 1. `Shopify.Utils.generateLocalHmac` was removed because it's only meant to be used internally by the library.
-1. The `storeSession` method was removed since sessions are no longer stored by the library. Apps are now fully responsible for implementating session storage and can save data to their sessions as they please ... TODO.
-   , as long as the data is properly exported to the library via the configured `SessionStorage`.
+
+1. The `storeSession` method was removed since sessions are no longer stored by the library. Apps are now fully responsible for implementating session storage and can save data to their sessions as they please.  See the [implementing session storage guide](./usage/session-storage.md) for the changes you'll need to make to store your sessions.
+
 1. `validateHmac` is now `async`.
    <div>Before
 
