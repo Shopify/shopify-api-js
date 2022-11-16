@@ -137,6 +137,7 @@ These are all the configuration values `shopifyApi` supports.
   - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
 - [Billing](docs/usage/billing.md)
 - [Adding custom runtimes](docs/usage/runtimes.md)
+- [Customizing logging configuration](docs/usage/logger.md)
 
 ## Migrating to v6
 
