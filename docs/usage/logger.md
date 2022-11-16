@@ -1,23 +1,31 @@
 # logger
 
-v6 of the library adds logging capability that can aid debugging in the development and production environments.  In each of the examples below, we're assuming the following code snippet provides the `shopify` API library instance
-
-```ts
-import {shopifyApi} from '@shopify/shopify-api';
-const shopify = shopifyApi({ apiKey: '...', ... });
-```
+v6 of the library adds logging capability that can aid debugging in the development and production environments.
 
 ## Configuration
 
-These are `logger`-related the configuration values that `shopifyApi` supports.
+These are the`logger`-related configuration values that `shopifyApi` supports.  The `logger` property in the configuration is an object:
 
-| Value                           | Type                   | Required |        Default        | Description |
-| ------------------------------- | ---------------------- | :------: | :-------------------: | ----------- |
-| logger                          | `{[key: string]: any}` |    No    |           -           | Tweaks the behaviour of the package's internal logging to make it easier to debug applications |
-| &nbsp;&nbsp;logger.level        | `LogSeverity`          |    No    |  `LogSeverity.Info`   | Minimum severity for which to trigger the log function |
-| &nbsp;&nbsp;logger.timestamps   | `boolean`              |    No    |        `false`        | Whether to add the current timestamp to every log call |
-| &nbsp;&nbsp;logger.httpRequests | `boolean`              |    No    |        `false`        | Whether to log **ALL** HTTP requests made by the package. Only works if `level` is `Debug` |
-| &nbsp;&nbsp;logger.log          | `AsyncFunction`        |    No    | `() => Promise<void>` | Async callback function used for logging, which takes in a `LogSeverity` value and a formatted `message`. Defaults to using `console` calls matching the severity parameter |
+```ts
+import {shopifyApi, LogSeverity} from '@shopify/shopify-api';
+
+const shopify = shopifyApi({
+  // other configuration settings
+  logger: {
+    level: LogSeverity,
+    timestamps: boolean,
+    httpRequests: boolean,
+    log: AsyncFunction,
+  },
+});
+```
+
+| Value                           | Type            | Required |        Default        | Description |
+| ------------------------------- | --------------- | :------: | :-------------------: | ----------- |
+| &nbsp;&nbsp;logger.level        | `LogSeverity`   |    No    |  `LogSeverity.Info`   | Minimum severity for which to trigger the log function |
+| &nbsp;&nbsp;logger.timestamps   | `boolean`       |    No    |        `false`        | Whether to add the current timestamp to every log call |
+| &nbsp;&nbsp;logger.httpRequests | `boolean`       |    No    |        `false`        | Whether to log **ALL** HTTP requests made by the package. Only works if `level` is `Debug` |
+| &nbsp;&nbsp;logger.log          | `AsyncFunction` |    No    | `() => Promise<void>` | Async callback function used for logging, which takes in a `LogSeverity` value and a formatted `message`. Defaults to using `console` calls matching the severity parameter |
 
 ## Adjusting level of log output
 
@@ -26,7 +34,7 @@ Four levels of logging are supported:
 ```ts
 export enum LogSeverity {
   Error,    // errors that prevent app from functioning properly, e.g., oauth errors
-  Warning,  // notices that highlight concerns but don't prevent app from functioning propertly, e.g., deprecation notices
+  Warning,  // notices that don't prevent app from functioning propertly, e.g., deprecation notices
   Info,     // information useful for monitoring library processing (default)
   Debug,    // information useful for debugging library processing
 }
@@ -35,7 +43,6 @@ export enum LogSeverity {
 `LogSeverity.Info` is the default logging level.  To see more information, change the `logger.level` property in the configuration to `LogSeverity.Debug`, e.g.,
 
 ```ts
-import {shopifyApi, LogSeverity} from '@shopify/shopify-api';
 const shopify = shopifyApi({
   // other config values
   logger: {
@@ -57,7 +64,6 @@ By default, a typical log message looks like this (`LogSeverity.Info` example):
 The following configuration adds timestamps to the messages logged:
 
 ```ts
-import {shopifyApi, LogSeverity} from '@shopify/shopify-api';
 const shopify = shopifyApi({
   // other config values
   logger: {
@@ -77,7 +83,6 @@ Using the same log message example above, it would now look like:
 To enable additional debug messages that indicate the sending and receiving of HTTP requests/responses by the library, set the following configuration:
 
 ```ts
-import {shopifyApi, LogSeverity} from '@shopify/shopify-api';
 const shopify = shopifyApi({
   // other config values
   logger: {
@@ -107,7 +112,9 @@ With the default configuration, the following calls are equivalent.
 | `shopify.logger.log(LogSeverity.Info, "information message")` | `console.log("[shopify-api/INFO] information message")` |
 | `shopify.logger.log(LogSeverity.Debug, "debug message")` | `console.debug("[shopify-api/DEBUG] debug message")` |
 
-Setting the `log` property of the `logger` configuration object to an `async` function that accepts two arguments - a `severity` (of type `LogSeverity`) and a `formatted` message (of type `string`) allows the developer to redirect the log messages to a file or a log capture service of their choosing.
+Setting the `log` property of the `logger` configuration object to an `async` function that accepts two arguments - a `severity` (of type `LogSeverity`) and a formatted `message` (of type `string`) - allows the developer to redirect the log messages as they see fit, e.g., to a file or a log capture service.
+
+### Example of changing the logging function
 
 The following example writes all messages to a log file `application.log`, and `LogSeverity.Error`-only messages to `error.log`.
 
