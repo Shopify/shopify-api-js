@@ -360,6 +360,7 @@ const WebhooksRegistry: RegistryInterface = {
         let hmac: string | string[] | undefined;
         let topic: string | string[] | undefined;
         let domain: string | string[] | undefined;
+        let webhookId: string | string[] | undefined;
         Object.entries(request.headers).map(([header, value]) => {
           switch (header.toLowerCase()) {
             case ShopifyHeader.Hmac.toLowerCase():
@@ -370,6 +371,9 @@ const WebhooksRegistry: RegistryInterface = {
               break;
             case ShopifyHeader.Domain.toLowerCase():
               domain = value;
+              break;
+            case ShopifyHeader.WebhookId.toLowerCase():
+              webhookId = value;
               break;
           }
         });
@@ -383,6 +387,9 @@ const WebhooksRegistry: RegistryInterface = {
         }
         if (!domain) {
           missingHeaders.push(ShopifyHeader.Domain);
+        }
+        if (!webhookId) {
+          missingHeaders.push(ShopifyHeader.WebhookId);
         }
 
         if (missingHeaders.length) {
@@ -417,6 +424,8 @@ const WebhooksRegistry: RegistryInterface = {
                 graphqlTopic,
                 domain as string,
                 reqBody,
+                webhookId as string,
+
               );
               statusCode = StatusCode.Ok;
             } catch (error) {
