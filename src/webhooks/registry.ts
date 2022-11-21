@@ -425,7 +425,6 @@ const WebhooksRegistry: RegistryInterface = {
                 domain as string,
                 reqBody,
                 webhookId as string,
-
               );
               statusCode = StatusCode.Ok;
             } catch (error) {
