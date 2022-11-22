@@ -121,9 +121,12 @@ export class MySQLSessionStorage implements SessionStorage {
 
   private async hasSessionTable(): Promise<boolean> {
     const query = `
-      SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?;
+      SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ? AND TABLE_SCHEMA = ?;
     `;
-    const [rows] = await this.query(query, [this.options.sessionTableName]);
+    const [rows] = await this.query(query, [
+      this.options.sessionTableName,
+      this.connection.config.database,
+    ]);
     return Array.isArray(rows) && rows.length === 1;
   }
 
