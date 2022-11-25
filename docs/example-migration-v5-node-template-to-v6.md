@@ -44,7 +44,7 @@ import {
   LATEST_API_VERSION,
   LogSeverity,
 } from "@shopify/shopify-api";
-let { restResources } = await import(`@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`;
+let { restResources } = await import(`@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`);
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
