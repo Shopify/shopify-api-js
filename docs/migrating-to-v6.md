@@ -287,7 +287,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 
 ## Changes to `Session` and `SessionStorage`
 
-1. The `SessionStorage` interface has been removed and any provided implementions have been removed from the library. The library only provides methods to obtain sessionId's. Responsibility for storing sessions is delegated to the application. Note: the previous implementations of session storage have been added to the `shopify-app-express` package, so that Express applications that use that package do not need to provide their own session storage.
+1. The `SessionStorage` interface has been removed and any provided implementions have been removed from the library. The library only provides methods to obtain sessionId's. Responsibility for storing sessions is delegated to the application. Note: the previous implementations of session storage have been converted into their own standalone packages.
 
 1. The `Session` constructor now takes an object which allows all properties of a session, and `Session.cloneSession` was removed since we can use a session as arguments for the clone.
    <div>Before

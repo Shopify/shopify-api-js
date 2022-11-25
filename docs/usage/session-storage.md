@@ -2,7 +2,17 @@
 
 As of v6 of the library, there are no `SessionStorage` implementations included and the responsibility for implementing session storage is now delegated to the application.
 
-The previous implementations of `SessionStorage` are now included in the [`shopify-app-express` package](https://github.com/Shopify/shopify-app-express/tree/main/session-storage).  If your app is not an Express app, or you wish not to use the `shopify-app-express` package, you can copy and modify any of the session storage implementations from that package to suit the needs of your app.
+The previous implementations of `SessionStorage` are now available in their own packages.
+
+|                    Package                        |  Session storage object  | Notes |
+| :-----------------------------------------------: | :----------------------: | ----- |
+|   `@shopify/shopify-app-session-storage-memory`   |   MemorySessionStorage   |       |
+|  `@shopify/shopify-app-session-storage-mongodb`   |  MongoDBSessionStorage   |       |
+|   `@shopify/shopify-app-session-storage-mysql`    |   MySQLSessionStorage    |       |
+| `@shopify/shopify-app-session-storage-postgresql` | PostgreSQLSessionStorage |       |
+|   `@shopify/shopify-app-session-storage-redis`    |   RedisSessionStorage    |       |
+|   `@shopify/shopify-app-session-storage-sqlite`   |   SQLiteSessionStorage   |       |
+|      `@shopify/shopify-app-session-storage`       |     SessionStorage       | Abstract class used by the classes above |
 
 ## Basics
 

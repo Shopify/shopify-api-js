@@ -34,7 +34,7 @@ pnpm install
 
 ### 4. Create a new file called `shopify.js`
 
-This will be used to to create the shopify api instance used throughout the application.  The `Shopify.Context` configuration as well as the example billing configuration that is currently in `index.js` will also be moved into this file.
+This will be used to to create the shopify api instance used throughout the application.  The v5 `Shopify.Context` configuration and the example billing configuration that is currently in `index.js` will be moved into this file.
 
 ```js
 import "@shopify/shopify-api/adapters/node";
@@ -135,53 +135,35 @@ This file needs to be updated to use the `shopify` api instance as well as the n
  }
 ```
 
-### 6. Copy the `SQLiteSessionStorage` class from the `@shopify/shopify-app-express` package
+### 6. Install the `@shopify/shopify-app-session-storage-sqlite` package
 
 The v6 API library no longer provide session storage adapters to connect to various database/data stores.  The storage of session data is now delegated to the application.
 
-The session storage adapters that were in the API library have now been moved to the `shopify-app-express` package.  As the v5 node template uses SQLite by default, let's copy the SQLite session storage adapter from that package into our application.
-
-The raw content can be copied-and-pasted from [here](https://raw.githubusercontent.com/Shopify/shopify-app-express/main/session-storage/js-copies/sqlite.js) into a file called `sqlite-session-storage.js`.  Alternatively, you can use a command like `curl` to download and create the file for you.
+The session storage adapters that were in the API library have now been moved to their own individual packages. As the v5 node template uses SQLite by default, let's install the SQLite session storage adapter into the application, using your preferred package manager.
 
 ```shell
-curl -o sqlite-session-storage.js https://raw.githubusercontent.com/Shopify/shopify-app-express/main/session-storage/js-copies/sqlite.js
-```
-
-### 7. Modify the `sqlite-session-storage.js` file
-
-Move the `DB_PATH` constant from the `index.js` file into this file, and export an instantiation of the session storage that can be imported and used throughout the application files.
-
-```diff
- import sqlite3 from 'sqlite3';
- import {Session} from '@shopify/shopify-api';
-
- const defaultSQLiteSessionStorageOptions = {
-   sessionTableName: 'shopify_sessions',
- };
-
-+const DB_PATH = `${process.cwd()}/database.sqlite`;
-
- export class SQLiteSessionStorage {
-   // remainder of class implementation
-   // ...
- }
-
-+export const sqliteSessionStorage = new SQLiteSessionStorage(DB_PATH);
-```
-
-### 8. Add the `sqlite3` package to the app project
-
-Add the `sqlite3` package using your preferred package manager.
-
-```shell
-yarn add sqlite3
+yarn add @shopify/shopify-app-session-storage-sqlite
 # or
-npm install sqlite3
+npm install @shopify/shopify-app-session-storage-sqlite
 # or
-pnpm install sqlite3
+pnpm install @shopify/shopify-app-session-storage-sqlite
 ```
 
-### 9. Update the `app_installations.js` file to use the `sqliteSessionStorage` instance
+### 7. Create a `sqlite-session-storage.js` file
+
+Create the following file to instantiate and export a SQLite session storage instance.
+
+```ts
+import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
+
+const dbPath = `${process.cwd()}/database.sqlite`;
+
+export const sqliteSessionStorage = new SQLiteSessionStorage(dbPath);
+```
+
+Note that the `DB_PATH` constant from the `index.js` file has moved into this file.
+
+### 8. Update the `app_installations.js` file to use the `sqliteSessionStorage` instance
 
 ```diff
 -import { Shopify } from "@shopify/shopify-api";
@@ -207,7 +189,7 @@ pnpm install sqlite3
  };
 ```
 
-### 10. Update the `middleware/auth.js` file to use the `shopify` instance and the `sqliteSessionStorage` instance
+### 9. Update the `middleware/auth.js` file to use the `shopify` instance and the `sqliteSessionStorage` instance
 
 Whereas the `v5` version of the API library saved the session returned by the auth callback method on behalf of the app, the `v6` library only returns the session.  The application must store the returned session in its session storage.
 
@@ -249,10 +231,7 @@ Whereas the `v5` version of the API library saved the session returned by the au
 +      });
 
 +      // save the session
-+      if (
-+        (await sqliteSessionStorage.storeSession(callbackResponse.session)) ==
-+        false
-+      ) {
++      if ((await sqliteSessionStorage.storeSession(callbackResponse.session)) == false) {
 +        console.log(`Failed to store session ${callbackResponse.session.id}`);
 +      }
 +
@@ -365,9 +344,9 @@ Whereas the `v5` version of the API library saved the session returned by the au
  }
 ```
 
-### 11. Update the `middleware/verify-request.js` file to use the `shopify` instance and the `sqliteSessionStorage` instance
+### 10. Update the `middleware/verify-request.js` file to use the `shopify` instance and the `sqliteSessionStorage` instance
 
-Whereas `v5` of the API library had a `loadCurrentSession` method to provide the current session, `v6` now provides the session id that the app then uses to retrieve the session details from the apps session storage.
+Whereas `v5` of the API library had a `loadCurrentSession` method to provide the current session, `v6` now provides the session id that the app then uses to retrieve the session details from the app's session storage.
 
 ```diff
 -import { Shopify } from "@shopify/shopify-api";
@@ -481,9 +460,7 @@ Whereas `v5` of the API library had a `loadCurrentSession` method to provide the
 
 ```diff
 -            const payload = Shopify.Utils.decodeSessionToken(bearerPresent[1]);
-+            const payload = await shopify.session.decodeSessionToken(
-+              bearerPresent[1]
-+            );
++            const payload = await shopify.session.decodeSessionToken(bearerPresent[1]);
              shop = payload.dest.replace("https://", "");
            }
          }
@@ -499,7 +476,7 @@ Whereas `v5` of the API library had a `loadCurrentSession` method to provide the
  }
 ```
 
-### 12. Update the billing helper
+### 11. Update the billing helper
 
 Because version 6 of the api library now includes support for checking and making billing requests, replace the `helpers/ensure-billing.js` file with the following code.
 
@@ -528,9 +505,9 @@ export default async function ensureBilling(
     });
 
     if (!hasPayment) {
-      // realistically, if there are more than one plan to choose from, you should redirect to
-      // a page that allows the merchant to choose a plan
-      // for this example, we'll just redirect to the first plan
+      // Realistically, if there are more than one plan to choose from, you should redirect to
+      // a page that allows the merchant to choose a plan.
+      // For this example, we'll just redirect to the first plan
       confirmationUrl = await shopify.billing.request({
         session: callback.session,
         plan: Object.keys(shopify.config.billing)[0],
@@ -543,7 +520,7 @@ export default async function ensureBilling(
 }
 ```
 
-### 13. Update the `helpers/product-creater.js` file to use the `shopify` instance
+### 12. Update the `helpers/product-creater.js` file to use the `shopify` instance
 
 Note that the `ADJECTIVES` and `NOUN` constants remain the same but have been collapsed/hidden below for brevity.
 
@@ -608,7 +585,7 @@ Note that the `ADJECTIVES` and `NOUN` constants remain the same but have been co
  }
 ```
 
-### 14. Update the `helpers/redirect-to-auth.js` file to use the `shopify` instance
+### 13. Update the `helpers/redirect-to-auth.js` file to use the `shopify` instance
 
 ```diff
 -import { Shopify } from "@shopify/shopify-api";
@@ -646,7 +623,7 @@ Note that the `ADJECTIVES` and `NOUN` constants remain the same but have been co
 
 ```
 
-:warning: :warning: Note that the `shopify.auth.begin` method performs the redirection on the apps behalf - the app doesn't need to call `res.redirect` after the `shopify.auth.begin` call any more.
+:warning: :warning: Note that the `shopify.auth.begin` method performs the redirection on the apps behalf - the app does not need to call `res.redirect` after the `shopify.auth.begin` call any more.
 
 ```diff
  async function serverSideRedirect(req, res, app) {
@@ -669,7 +646,7 @@ Note that the `ADJECTIVES` and `NOUN` constants remain the same but have been co
  }
 ```
 
-### 15. Update the `index.js` file
+### 14. Update the `index.js` file
 
 Pulling it all together!
 
