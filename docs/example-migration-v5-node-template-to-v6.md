@@ -176,7 +176,11 @@ Note that the `DB_PATH` constant from the `index.js` file has moved into this fi
 
      if (shopSessions.length > 0) {
        for (const session of shopSessions) {
-@@ -14,9 +16,13 @@ export const AppInstallations = {
+         if (session.accessToken) return true;
+       }
+     }
+
+     return false;
    },
 
    delete: async function (shopDomain) {
