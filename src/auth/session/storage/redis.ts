@@ -92,12 +92,17 @@ export class RedisSessionStorage implements SessionStorage {
       if (!rawResult) continue;
 
       try {
-
-      const session = sessionFromEntries(JSON.parse(rawResult));
-      if (session?.shop === cleanShop) results.push(session);
-      } 
-      // do nothing if the rawResult is not a parse-able session
-      catch {}
+        const session = sessionFromEntries(JSON.parse(rawResult));
+        if (session?.shop === cleanShop) results.push(session);
+      } catch (err: unknown) {
+        // do nothing if the rawResult is not a parse-able session
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/JSON_bad_parse
+        if (err instanceof Error && err.name === 'SyntaxError' && err.stack?.includes('JSON.parse')) {
+          continue;
+        }
+        // unknown error, re-throw
+        throw err;
+      }
     }
 
     return results;
