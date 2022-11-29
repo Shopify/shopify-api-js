@@ -3,10 +3,10 @@
 This package provides support for a set of JavaScript runtimes, but it won't cover all possible use cases.
 It's designed in a way that can support any runtime, as long as an adapter provides the implementations for runtime-specific functionality.
 
-**Note**: this is an advanced feature, so using TypeScript and an IDE with intellisense is strongly recommended to help guide you through the implementation.
+> **Note**: this is an advanced feature, so using TypeScript and an IDE with intellisense is strongly recommended to help guide you through the implementation.
 
 See the [available adapters](../../adapters/) for some implementation examples.
-In general, an adapter needs to teach the library to convert the runtime's own request / response objects into the `NormalizedRequest` and `NormalizedResponse` objects used by the library, and to define some reasonable defaults for the runtime, like a session storage strategy.
+In general, an adapter needs to teach the library to convert the runtime's own request / response objects into the `NormalizedRequest` and `NormalizedResponse` objects used by the library, and to define some reasonable defaults for the runtime, like an implementation of [the `fetch` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
 To create an adapter, you'll need to import the runtime functions to provide implementations.
 These are the functions you'll need to create:
@@ -15,7 +15,6 @@ These are the functions you'll need to create:
 - `setAbstractConvertRequestFunc`
 - `setAbstractConvertResponseFunc`
 - `setAbstractConvertHeadersFunc`
-- `setAbstractCreateDefaultStorage`
 - `setAbstractRuntimeString`
 - `setCrypto`
 
