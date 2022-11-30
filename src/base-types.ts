@@ -36,5 +36,5 @@ export enum ShopifyHeader {
   Hmac = 'X-Shopify-Hmac-Sha256',
   Topic = 'X-Shopify-Topic',
   Domain = 'X-Shopify-Shop-Domain',
-  WebhookId = 'X-Shopify-Webhook-Id'
+  WebhookId = 'X-Shopify-Webhook-Id',
 }

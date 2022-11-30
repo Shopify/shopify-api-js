@@ -46,8 +46,9 @@ async function genericWebhookHandler(
   topic: string,
   shopDomain: string,
   body: string,
+  webhookId: string,
 ): Promise<void> {
-  if (!topic || !shopDomain || !body) {
+  if (!topic || !shopDomain || !body || !webhookId) {
     throw new Error('Missing webhook parameters');
   }
 }
