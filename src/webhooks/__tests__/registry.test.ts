@@ -46,7 +46,7 @@ async function genericWebhookHandler(
   topic: string,
   shopDomain: string,
   body: string,
-  webhookId: string,
+  webhookId?: string,
 ): Promise<void> {
   if (!topic || !shopDomain || !body || !webhookId) {
     throw new Error('Missing webhook parameters');
@@ -703,11 +703,13 @@ function headers({
   hmac = 'fake',
   topic = 'products',
   domain = 'shop1.myshopify.io',
+  webhookId = 'b54557e4-bdd9-4b37-8a5f-bf7d70bcd043',
   lowercase = false,
 }: {
   hmac?: string;
   topic?: string;
   domain?: string;
+  webhookId?: string;
   lowercase?: boolean;
 } = {}) {
   return {
@@ -716,6 +718,9 @@ function headers({
       topic,
     [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]:
       domain,
+    [lowercase
+      ? ShopifyHeader.WebhookId.toLowerCase()
+      : ShopifyHeader.WebhookId]: webhookId,
   };
 }
 
