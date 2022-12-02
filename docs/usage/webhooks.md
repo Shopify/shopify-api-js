@@ -26,6 +26,7 @@ const handleWebhookRequest = async (
   topic: string,
   shop: string,
   webhookRequestBody: string,
+  webhookId: string,
 ) => {
   // handler triggered when a webhook is sent by the Shopify platform to your application
 };
@@ -72,6 +73,7 @@ When a shop triggers an event you subscribed to, the `process` method [below](#w
 | `topic`              | `string` | The webhook topic.                               |
 | `shop`               | `string` | The shop for which the webhook was triggered.    |
 | `webhookRequestBody` | `string` | The payload of the POST request made by Shopify. |
+| `webhookId`          | `string` | The id of the webhook registration in Shopify.   |
 
 ## Get webhook registry information
 

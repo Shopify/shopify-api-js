@@ -39,17 +39,18 @@ export function createProcess(
     };
 
     const webhookCheck = checkWebhookRequest(rawBody, request.headers);
-    const {webhookOk, hmac, topic, domain} = webhookCheck;
+    const {webhookOk, hmac, topic, domain, webhookId} = webhookCheck;
     let {errorMessage} = webhookCheck;
+    const loggingContext = {topic, domain, webhookId};
 
     const log = logger(config);
-    log.info('Processing webhook request', {topic, domain});
+    log.info('Processing webhook request', loggingContext);
 
     if (webhookOk) {
-      log.debug('Webhook request is well formed', {topic, domain});
+      log.debug('Webhook request is well formed', loggingContext);
 
       if (await validateOkWebhook(config.apiSecretKey, rawBody, hmac)) {
-        log.debug('Webhook request is valid', {topic, domain});
+        log.debug('Webhook request is valid', loggingContext);
 
         const graphqlTopic = topicForStorage(topic);
         const handlers = webhookRegistry[graphqlTopic] || [];
@@ -64,10 +65,10 @@ export function createProcess(
           }
           found = true;
 
-          log.debug('Found HTTP handler, triggering it', {topic, domain});
+          log.debug('Found HTTP handler, triggering it', loggingContext);
 
           try {
-            await handler.callback(graphqlTopic, domain, rawBody);
+            await handler.callback(graphqlTopic, domain, rawBody, webhookId);
             response.statusCode = StatusCode.Ok;
           } catch (error) {
             response.statusCode = StatusCode.InternalServerError;
@@ -76,19 +77,19 @@ export function createProcess(
         }
 
         if (!found) {
-          log.debug('No HTTP handlers found', {topic, domain});
+          log.debug('No HTTP handlers found', loggingContext);
 
           response.statusCode = StatusCode.NotFound;
           errorMessage = `No HTTP webhooks registered for topic ${topic}`;
         }
       } else {
-        log.debug('Webhook validation failed', {topic, domain});
+        log.debug('Webhook validation failed', loggingContext);
 
         response.statusCode = StatusCode.Unauthorized;
         errorMessage = `Could not validate request for topic ${topic}`;
       }
     } else {
-      log.debug('Webhook request is malformed', {topic, domain});
+      log.debug('Webhook request is malformed', loggingContext);
 
       response.statusCode = StatusCode.BadRequest;
     }
@@ -123,6 +124,7 @@ function checkWebhookRequest(
   hmac: string;
   topic: string;
   domain: string;
+  webhookId: string;
 } {
   const retVal = {
     webhookOk: true,
@@ -130,12 +132,14 @@ function checkWebhookRequest(
     hmac: '',
     topic: '',
     domain: '',
+    webhookId: '',
   };
 
   if (rawBody.length) {
     const hmac = getHeader(headers, ShopifyHeader.Hmac);
     const topic = getHeader(headers, ShopifyHeader.Topic);
     const domain = getHeader(headers, ShopifyHeader.Domain);
+    const webhookId = getHeader(headers, ShopifyHeader.WebhookId);
 
     const missingHeaders: ShopifyHeader[] = [];
     if (!hmac) {
@@ -147,6 +151,9 @@ function checkWebhookRequest(
     if (!domain) {
       missingHeaders.push(ShopifyHeader.Domain);
     }
+    if (!webhookId) {
+      missingHeaders.push(ShopifyHeader.WebhookId);
+    }
 
     if (missingHeaders.length) {
       retVal.webhookOk = false;
@@ -157,6 +164,7 @@ function checkWebhookRequest(
       retVal.hmac = hmac as string;
       retVal.topic = topic as string;
       retVal.domain = domain as string;
+      retVal.webhookId = webhookId as string;
     }
   } else {
     retVal.webhookOk = false;
