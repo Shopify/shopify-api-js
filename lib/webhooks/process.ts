@@ -41,15 +41,16 @@ export function createProcess(
     const webhookCheck = checkWebhookRequest(rawBody, request.headers);
     const {webhookOk, hmac, topic, domain, webhookId} = webhookCheck;
     let {errorMessage} = webhookCheck;
+    const loggingContext = {topic, domain, webhookId};
 
     const log = logger(config);
-    log.info('Processing webhook request', {topic, domain, webhookId});
+    log.info('Processing webhook request', loggingContext);
 
     if (webhookOk) {
-      log.debug('Webhook request is well formed', {topic, domain, webhookId});
+      log.debug('Webhook request is well formed', loggingContext);
 
       if (await validateOkWebhook(config.apiSecretKey, rawBody, hmac)) {
-        log.debug('Webhook request is valid', {topic, domain, webhookId});
+        log.debug('Webhook request is valid', loggingContext);
 
         const graphqlTopic = topicForStorage(topic);
         const handlers = webhookRegistry[graphqlTopic] || [];
@@ -64,11 +65,7 @@ export function createProcess(
           }
           found = true;
 
-          log.debug('Found HTTP handler, triggering it', {
-            topic,
-            domain,
-            webhookId,
-          });
+          log.debug('Found HTTP handler, triggering it', loggingContext);
 
           try {
             await handler.callback(graphqlTopic, domain, rawBody, webhookId);
@@ -80,19 +77,19 @@ export function createProcess(
         }
 
         if (!found) {
-          log.debug('No HTTP handlers found', {topic, domain, webhookId});
+          log.debug('No HTTP handlers found', loggingContext);
 
           response.statusCode = StatusCode.NotFound;
           errorMessage = `No HTTP webhooks registered for topic ${topic}`;
         }
       } else {
-        log.debug('Webhook validation failed', {topic, domain, webhookId});
+        log.debug('Webhook validation failed', loggingContext);
 
         response.statusCode = StatusCode.Unauthorized;
         errorMessage = `Could not validate request for topic ${topic}`;
       }
     } else {
-      log.debug('Webhook request is malformed', {topic, domain, webhookId});
+      log.debug('Webhook request is malformed', loggingContext);
 
       response.statusCode = StatusCode.BadRequest;
     }

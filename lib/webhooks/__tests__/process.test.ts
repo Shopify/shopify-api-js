@@ -33,9 +33,10 @@ describe('shopify.webhooks.process', () => {
     topic: string,
     shopDomain: string,
     body: string,
+    webhookId: string,
   ): Promise<void> {
     await new Promise((resolve, reject) => {
-      if (!topic || !shopDomain || !body) {
+      if (!topic || !shopDomain || !body || !webhookId) {
         reject(new Error('Missing webhook parameters'));
       }
 
