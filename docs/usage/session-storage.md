@@ -2,7 +2,7 @@
 
 As of v6 of the library, there are no `SessionStorage` implementations included and the responsibility for implementing session storage is now delegated to the application.
 
-The previous implementations of `SessionStorage` are now available in their own packages.
+The previous implementations of `SessionStorage` are now available in their own packages, the source of which is available in the respective directory in the [`Shopify/shopify-app-js` repo](https://github.com/Shopify/shopify-app-js/tree/main/packages).
 
 |                    Package                        |  Session storage object  | Notes |
 | :-----------------------------------------------: | :----------------------: | ----- |
@@ -60,7 +60,7 @@ The previous implementations of `SessionStorage` are now available in their own 
    // sessionCopy is an identical copy of the callbackResponse.session instance
    ```
 
-   Now that the app has a JavaScript object containing the data of a `Session`, it can convert the data into whatever means necessary to store it in the apps preferred storage mechanism.  Again, the developer is free to explore various implementations of session storage in the [`shopify-app-express` package](https://github.com/Shopify/shopify-app-express/tree/main/session-storage).
+   Now that the app has a JavaScript object containing the data of a `Session`, it can convert the data into whatever means necessary to store it in the apps preferred storage mechanism.  Various implementations of session storage can be found in the [`shopify-app-js` repo](https://github.com/Shopify/shopify-app-js/tree/main/packages).
 
    The `Session` class also includes an instance method called `.toPropertyArray` that returns an array of key-value pairs, e.g.,
 
