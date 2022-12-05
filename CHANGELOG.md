@@ -9,7 +9,15 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [6.0.0-rc10] - 2022-12-02
 
-- ⚠️ [Breaking] Latest release candidate for `6.0.0` release, which is a complete breaking change across all surfaces of the library
+- ⚠️ [Breaking] Latest release candidate for `6.0.0` release, which is a complete breaking change across all surfaces of the library. See the [migration guide](./docs/migrating-to-v6.md) for instructions on how to update your app.
+
+## [5.3.0] - 2022-12-05
+
+- [Minor] Pass webhook id to handlers [#606](https://github.com/Shopify/shopify-api-node/pull/606)
+
+## [5.2.0] - 2022-10-04
+
+- Added support for the `2022-10` API version [#535](https://github.com/Shopify/shopify-api-node/pull/535)
 
 ## [5.1.0] - 2022-09-19
 
