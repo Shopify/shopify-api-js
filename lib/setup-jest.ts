@@ -1,6 +1,10 @@
+import semver from 'semver';
+
 import '../adapters/mock';
 import {mockTestRequests} from '../adapters/mock/mock_test_requests';
 import {canonicalizeHeaders} from '../runtime/http';
+
+import {SHOPIFY_API_LIBRARY_VERSION} from './version';
 
 beforeEach(() => {
   mockTestRequests.reset();
@@ -121,6 +125,13 @@ expect.extend({
     return {
       message: () => `expected to have seen the right HTTP requests`,
       pass: true,
+    };
+  },
+  toBeWithinDeprecationSchedule(version: string) {
+    return {
+      message: () =>
+        `Found deprecation limited to version ${version}, please update or remove it.`,
+      pass: semver.lt(SHOPIFY_API_LIBRARY_VERSION, version),
     };
   },
 });
