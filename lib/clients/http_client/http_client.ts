@@ -336,7 +336,7 @@ export class HttpClient {
   }
 }
 
-export function createHttpClientClass(
+export function httpClientClass(
   config: ConfigInterface,
   scheme = 'https',
 ): typeof HttpClient {

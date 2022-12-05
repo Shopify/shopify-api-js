@@ -3,14 +3,11 @@ import {v4 as uuidv4} from 'uuid';
 import ProcessedQuery from '../../utils/processed-query';
 import {ConfigInterface} from '../../base-types';
 import * as ShopifyErrors from '../../error';
-import {createValidateHmac} from '../../utils/hmac-validator';
-import {createSanitizeShop} from '../../utils/shop-validator';
+import {validateHmac} from '../../utils/hmac-validator';
+import {sanitizeShop} from '../../utils/shop-validator';
 import {Session} from '../../session/session';
-import {
-  createGetJwtSessionId,
-  createGetOfflineId,
-} from '../../session/session-utils';
-import {createHttpClientClass} from '../../clients/http_client/http_client';
+import {getJwtSessionId, getOfflineId} from '../../session/session-utils';
+import {httpClientClass} from '../../clients/http_client/http_client';
 import {DataType, RequestReturn} from '../../clients/http_client/types';
 import {
   abstractConvertRequest,
@@ -41,7 +38,7 @@ export interface CallbackResponse<T = AdapterHeaders> {
   session: Session;
 }
 
-export function createBegin(config: ConfigInterface) {
+export function begin(config: ConfigInterface) {
   return async ({
     shop,
     callbackPath,
@@ -56,7 +53,7 @@ export function createBegin(config: ConfigInterface) {
     const log = logger(config);
     log.info('Beginning OAuth', {shop, isOnline, callbackPath});
 
-    const cleanShop = createSanitizeShop(config)(shop, true)!;
+    const cleanShop = sanitizeShop(config)(shop, true)!;
     const request = await abstractConvertRequest(adapterArgs);
 
     const cookies = new Cookies(request, {} as NormalizedResponse, {
@@ -99,7 +96,7 @@ export function createBegin(config: ConfigInterface) {
   };
 }
 
-export function createCallback(config: ConfigInterface) {
+export function callback(config: ConfigInterface) {
   return async function callback<T = AdapterHeaders>({
     isOnline,
     ...adapterArgs
@@ -162,9 +159,9 @@ export function createCallback(config: ConfigInterface) {
       type: DataType.JSON,
       data: body,
     };
-    const cleanShop = createSanitizeShop(config)(query.get('shop')!, true)!;
+    const cleanShop = sanitizeShop(config)(query.get('shop')!, true)!;
 
-    const HttpClient = createHttpClientClass(config);
+    const HttpClient = httpClientClass(config);
     const client = new HttpClient({domain: cleanShop});
     const postResponse = await client.post(postParams);
 
@@ -206,7 +203,7 @@ async function validQuery({
   stateFromCookie: string;
 }): Promise<boolean> {
   return (
-    (await createValidateHmac(config)(query)) &&
+    (await validateHmac(config)(query)) &&
     safeCompare(query.state!, stateFromCookie)
   );
 }
@@ -253,7 +250,7 @@ function createSession({
     );
 
     if (config.isEmbeddedApp) {
-      sessionId = createGetJwtSessionId(config)(
+      sessionId = getJwtSessionId(config)(
         shop,
         `${(rest as OnlineAccessInfo).associated_user.id}`,
       );
@@ -274,7 +271,7 @@ function createSession({
   } else {
     const responseBody = postResponse.body as AccessTokenResponse;
     return new Session({
-      id: createGetOfflineId(config)(shop),
+      id: getOfflineId(config)(shop),
       shop,
       state: stateFromCookie,
       isOnline,

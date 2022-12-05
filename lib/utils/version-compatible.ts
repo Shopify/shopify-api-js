@@ -1,7 +1,7 @@
 import {ConfigInterface} from '../base-types';
 import {ApiVersion} from '../types';
 
-export function createVersionCompatible(config: ConfigInterface) {
+export function versionCompatible(config: ConfigInterface) {
   return (
     referenceVersion: ApiVersion,
     currentVersion: ApiVersion = config.apiVersion,

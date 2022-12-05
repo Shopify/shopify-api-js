@@ -3,7 +3,7 @@ import {createServer, IncomingMessage, ServerResponse} from 'http';
 import '../../node';
 import {Headers} from '../../../runtime/http';
 import {DataType} from '../../../lib/clients/http_client/types';
-import {createHttpClientClass} from '../../../lib/clients/http_client/http_client';
+import {httpClientClass} from '../../../lib/clients/http_client/http_client';
 import {config, matchHeaders} from '../utils';
 import {TestResponse, TestConfig, TestRequest} from '../test_config_types';
 
@@ -12,7 +12,7 @@ const RED = '\x1b[31m';
 const GREEN = '\x1b[32m';
 const RESET = '\x1b[39m';
 
-const HttpClient = createHttpClientClass(config, 'http');
+const HttpClient = httpClientClass(config, 'http');
 
 /* eslint-disable no-process-env */
 const apiServerPort: number = parseInt(

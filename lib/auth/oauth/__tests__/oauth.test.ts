@@ -1,7 +1,7 @@
 import querystring from 'querystring';
 
 import * as ShopifyErrors from '../../../error';
-import {createGenerateLocalHmac} from '../../../utils/hmac-validator';
+import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../session/types';
 import {nonce} from '../nonce';
 import {
@@ -14,7 +14,7 @@ import {
   shopify,
   signJWT,
 } from '../../../__tests__/test-helper';
-import {createGetOfflineId} from '../../../session/session-utils';
+import {getOfflineId} from '../../../session/session-utils';
 
 const VALID_NONCE = 'noncenoncenonce';
 jest.mock('../nonce', () => ({nonce: jest.fn(() => VALID_NONCE)}));
@@ -226,7 +226,7 @@ describe('callback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = await createGenerateLocalHmac(shopify.config)(
+    const expectedHmac = await generateLocalHmac(shopify.config)(
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
@@ -255,7 +255,7 @@ describe('callback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = await createGenerateLocalHmac(shopify.config)(
+    const expectedHmac = await generateLocalHmac(shopify.config)(
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
@@ -298,7 +298,7 @@ describe('callback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = await createGenerateLocalHmac(shopify.config)(
+    const expectedHmac = await generateLocalHmac(shopify.config)(
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
@@ -374,7 +374,7 @@ describe('callback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = await createGenerateLocalHmac(shopify.config)(
+    const expectedHmac = await generateLocalHmac(shopify.config)(
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
@@ -458,7 +458,7 @@ describe('callback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = await createGenerateLocalHmac(shopify.config)(
+    const expectedHmac = await generateLocalHmac(shopify.config)(
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
@@ -520,7 +520,7 @@ describe('callback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = await createGenerateLocalHmac(shopify.config)(
+    const expectedHmac = await generateLocalHmac(shopify.config)(
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
@@ -538,7 +538,7 @@ describe('callback', () => {
     );
 
     expect(callbackResponse.session.id).toEqual(
-      createGetOfflineId(shopify.config)(shop),
+      getOfflineId(shopify.config)(shop),
     );
     expect(callbackResponse.session.expires?.getTime()).toBeUndefined();
 
@@ -567,7 +567,7 @@ describe('callback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = await createGenerateLocalHmac(shopify.config)(
+    const expectedHmac = await generateLocalHmac(shopify.config)(
       testCallbackQuery,
     );
     testCallbackQuery.hmac = expectedHmac;
@@ -587,7 +587,7 @@ describe('callback', () => {
 
     expect(callbackResponse.session.id).toEqual(cookieId);
     expect(callbackResponse.session.id).toEqual(
-      createGetOfflineId(shopify.config)(shop),
+      getOfflineId(shopify.config)(shop),
     );
     expect(callbackResponse.session.expires?.getTime()).toBeUndefined();
     expect(

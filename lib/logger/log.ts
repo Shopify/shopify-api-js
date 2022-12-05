@@ -9,7 +9,7 @@ export type LoggerFunction = (
   context?: {[key: string]: any},
 ) => Promise<void>;
 
-export function createLog(config: ConfigInterface): LoggerFunction {
+export function log(config: ConfigInterface): LoggerFunction {
   return async function (
     severity: LogSeverity,
     message: string,

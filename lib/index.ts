@@ -3,7 +3,7 @@ import {ShopifyRestResources} from '../rest/types';
 
 import {ConfigParams, ConfigInterface} from './base-types';
 import {validateConfig} from './config';
-import {createClientClasses, ShopifyClients} from './clients';
+import {clientClasses, ShopifyClients} from './clients';
 import {shopifyAuth, ShopifyAuth} from './auth';
 import {shopifySession, ShopifySession} from './session';
 import {shopifyUtils, ShopifyUtils} from './utils';
@@ -43,7 +43,7 @@ export function shopifyApi<T extends ShopifyRestResources>(
 
   const shopify: Shopify<T> = {
     config: validatedConfig,
-    clients: createClientClasses(validatedConfig),
+    clients: clientClasses(validatedConfig),
     auth: shopifyAuth(validatedConfig),
     session: shopifySession(validatedConfig),
     utils: shopifyUtils(validatedConfig),

@@ -1,22 +1,22 @@
 import {LogSeverity} from '../types';
 import {ConfigInterface} from '../base-types';
 
-import {createLog} from './log';
+import {log} from './log';
 import {LogContext} from './types';
 
 export function logger(config: ConfigInterface) {
-  const log = createLog(config);
+  const logFunction = log(config);
 
   return {
-    log,
+    log: logFunction,
     debug: async (message: string, context: LogContext = {}) =>
-      log(LogSeverity.Debug, message, context),
+      logFunction(LogSeverity.Debug, message, context),
     info: async (message: string, context: LogContext = {}) =>
-      log(LogSeverity.Info, message, context),
+      logFunction(LogSeverity.Info, message, context),
     warning: async (message: string, context: LogContext = {}) =>
-      log(LogSeverity.Warning, message, context),
+      logFunction(LogSeverity.Warning, message, context),
     error: async (message: string, context: LogContext = {}) =>
-      log(LogSeverity.Error, message, context),
+      logFunction(LogSeverity.Error, message, context),
   };
 }
 

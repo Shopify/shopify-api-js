@@ -21,7 +21,7 @@ import {logger} from '../logger';
 import {WebhookRegistry, WebhookProcessParams, DeliveryMethod} from './types';
 import {topicForStorage} from './registry';
 
-export function createProcess(
+export function process(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
 ) {

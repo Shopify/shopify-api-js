@@ -8,7 +8,7 @@ import {Session} from '../../session/session';
 
 import {RestRequestReturn, PageInfo, RestClientParams} from './types';
 
-export interface CreateRestClientClassParams {
+export interface RestClientClassParams {
   config: ConfigInterface;
 }
 
@@ -118,8 +118,8 @@ export class RestClient extends HttpClient {
   }
 }
 
-export function createRestClientClass(
-  params: CreateRestClientClassParams,
+export function restClientClass(
+  params: RestClientClassParams,
 ): typeof RestClient {
   const {config} = params;
 

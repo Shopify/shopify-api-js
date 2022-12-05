@@ -9,7 +9,7 @@ import {
   WebhookRegistry,
 } from './types';
 
-export function createRegistry(): WebhookRegistry {
+export function registry(): WebhookRegistry {
   return {};
 }
 
@@ -17,7 +17,7 @@ export function topicForStorage(topic: string): string {
   return topic.toUpperCase().replace(/\//g, '_');
 }
 
-export function createAddHandlers(
+export function addHandlers(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
 ) {
@@ -36,13 +36,13 @@ export function createAddHandlers(
   };
 }
 
-export function createGetTopicsAdded(webhookRegistry: WebhookRegistry) {
+export function getTopicsAdded(webhookRegistry: WebhookRegistry) {
   return function getTopicsAdded(): string[] {
     return Object.keys(webhookRegistry);
   };
 }
 
-export function createGetHandlers(webhookRegistry: WebhookRegistry) {
+export function getHandlers(webhookRegistry: WebhookRegistry) {
   return function getHandlers(topic: string): WebhookHandler[] {
     return webhookRegistry[topicForStorage(topic)] || [];
   };

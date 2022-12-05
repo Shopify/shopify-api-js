@@ -1,12 +1,12 @@
 import {ConfigInterface} from '../base-types';
 
-import {createCheck} from './check';
-import {createRequest} from './request';
+import {check} from './check';
+import {request} from './request';
 
 export function shopifyBilling(config: ConfigInterface) {
   return {
-    check: createCheck(config),
-    request: createRequest(config),
+    check: check(config),
+    request: request(config),
   };
 }
 
