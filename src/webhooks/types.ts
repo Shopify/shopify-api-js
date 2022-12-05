@@ -8,6 +8,7 @@ type WebhookHandlerFunction = (
   topic: string,
   shop_domain: string,
   body: string,
+  webhookId?: string | undefined,
 ) => Promise<void>;
 
 export interface RegisterOptions {
