@@ -1,15 +1,15 @@
 import {ConfigInterface} from '../base-types';
 
-import {createSanitizeShop, createSanitizeHost} from './shop-validator';
-import {createValidateHmac} from './hmac-validator';
-import {createVersionCompatible} from './version-compatible';
+import {sanitizeShop, sanitizeHost} from './shop-validator';
+import {validateHmac} from './hmac-validator';
+import {versionCompatible} from './version-compatible';
 
 export function shopifyUtils(config: ConfigInterface) {
   return {
-    sanitizeShop: createSanitizeShop(config),
-    sanitizeHost: createSanitizeHost(config),
-    validateHmac: createValidateHmac(config),
-    versionCompatible: createVersionCompatible(config),
+    sanitizeShop: sanitizeShop(config),
+    sanitizeHost: sanitizeHost(config),
+    validateHmac: validateHmac(config),
+    versionCompatible: versionCompatible(config),
   };
 }
 

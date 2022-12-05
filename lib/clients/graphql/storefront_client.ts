@@ -1,11 +1,11 @@
 import {ShopifyHeader} from '../../types';
-import {createHttpClientClass} from '../http_client/http_client';
+import {httpClientClass} from '../http_client/http_client';
 import {Session} from '../../session/session';
 
 import {
   AccessTokenHeader,
   GraphqlClient,
-  CreateGraphqlClientClassParams,
+  GraphqlClientClassParams,
 } from './graphql_client';
 import {StorefrontClientParams} from './types';
 
@@ -42,13 +42,11 @@ export class StorefrontClient extends GraphqlClient {
   }
 }
 
-export function createStorefrontClientClass(
-  params: CreateGraphqlClientClassParams,
-) {
+export function storefrontClientClass(params: GraphqlClientClassParams) {
   const {config} = params;
   let {HttpClient} = params;
   if (!HttpClient) {
-    HttpClient = createHttpClientClass(config);
+    HttpClient = httpClientClass(config);
   }
   class NewStorefrontClient extends StorefrontClient {
     public static CONFIG = config;

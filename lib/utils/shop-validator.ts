@@ -1,7 +1,7 @@
 import {ConfigInterface} from '../base-types';
 import {InvalidHostError, InvalidShopError} from '../error';
 
-export function createSanitizeShop(config: ConfigInterface) {
+export function sanitizeShop(config: ConfigInterface) {
   return (shop: string, throwOnInvalid = false): string | null => {
     const domainsRegex = ['myshopify\\.com', 'myshopify\\.io'];
     if (config.customShopDomains) {
@@ -25,7 +25,7 @@ export function createSanitizeShop(config: ConfigInterface) {
   };
 }
 
-export function createSanitizeHost(_config: ConfigInterface) {
+export function sanitizeHost(_config: ConfigInterface) {
   return (host: string, throwOnInvalid = false): string | null => {
     const base64regex = /^[0-9a-zA-Z+/]+={0,2}$/;
 

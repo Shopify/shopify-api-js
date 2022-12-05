@@ -1,23 +1,18 @@
 import {ConfigInterface} from '../base-types';
 
-import {
-  createAddHandlers,
-  createGetTopicsAdded,
-  createGetHandlers,
-  createRegistry,
-} from './registry';
-import {createRegister} from './register';
-import {createProcess} from './process';
+import {addHandlers, getTopicsAdded, getHandlers, registry} from './registry';
+import {register} from './register';
+import {process} from './process';
 
 export function shopifyWebhooks(config: ConfigInterface) {
-  const webhookRegistry = createRegistry();
+  const webhookRegistry = registry();
 
   return {
-    addHandlers: createAddHandlers(config, webhookRegistry),
-    getTopicsAdded: createGetTopicsAdded(webhookRegistry),
-    getHandlers: createGetHandlers(webhookRegistry),
-    register: createRegister(config, webhookRegistry),
-    process: createProcess(config, webhookRegistry),
+    addHandlers: addHandlers(config, webhookRegistry),
+    getTopicsAdded: getTopicsAdded(webhookRegistry),
+    getHandlers: getHandlers(webhookRegistry),
+    register: register(config, webhookRegistry),
+    process: process(config, webhookRegistry),
   };
 }
 

@@ -5,26 +5,26 @@ import {
   Cookies,
   NormalizedResponse,
 } from '../../runtime/http';
-import {createSanitizeShop} from '../utils/shop-validator';
+import {sanitizeShop} from '../utils/shop-validator';
 import {logger} from '../logger';
 import * as ShopifyErrors from '../error';
 
-import {createDecodeSessionToken} from './decode-session-token';
+import {decodeSessionToken} from './decode-session-token';
 import type {GetCurrentSessionIdParams} from './types';
 
-export function createGetJwtSessionId(config: ConfigInterface) {
+export function getJwtSessionId(config: ConfigInterface) {
   return (shop: string, userId: string): string => {
-    return `${createSanitizeShop(config)(shop, true)}_${userId}`;
+    return `${sanitizeShop(config)(shop, true)}_${userId}`;
   };
 }
 
-export function createGetOfflineId(config: ConfigInterface) {
+export function getOfflineId(config: ConfigInterface) {
   return (shop: string): string => {
-    return `offline_${createSanitizeShop(config)(shop, true)}`;
+    return `offline_${sanitizeShop(config)(shop, true)}`;
   };
 }
 
-export function createGetCurrentSessionId(config: ConfigInterface) {
+export function getCurrentSessionId(config: ConfigInterface) {
   return async function getCurrentSessionId({
     isOnline,
     ...adapterArgs
@@ -51,15 +51,15 @@ export function createGetCurrentSessionId(config: ConfigInterface) {
           );
         }
 
-        const jwtPayload = await createDecodeSessionToken(config)(matches[1]);
+        const jwtPayload = await decodeSessionToken(config)(matches[1]);
         const shop = jwtPayload.dest.replace(/^https:\/\//, '');
 
         log.debug('Found valid JWT payload', {shop, isOnline});
 
         if (isOnline) {
-          return createGetJwtSessionId(config)(shop, jwtPayload.sub);
+          return getJwtSessionId(config)(shop, jwtPayload.sub);
         } else {
-          return createGetOfflineId(config)(shop);
+          return getOfflineId(config)(shop);
         }
       } else {
         log.error(
