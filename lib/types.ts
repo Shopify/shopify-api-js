@@ -38,6 +38,7 @@ export enum BillingInterval {
   OneTime = 'ONE_TIME',
   Every30Days = 'EVERY_30_DAYS',
   Annual = 'ANNUAL',
+  Usage = 'USAGE',
 }
 
 export type RecurringBillingIntervals = Exclude<

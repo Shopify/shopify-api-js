@@ -16,6 +16,7 @@ import {
   SinglePaymentResponse,
   BillingConfigSubscriptionPlan,
   BillingConfigOneTimePlan,
+  BillingConfigUsagePlan,
 } from './types';
 
 interface RequestInternalParams {
@@ -31,6 +32,10 @@ interface RequestSubscriptionInternalParams extends RequestInternalParams {
 
 interface RequestOneTimePaymentInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigOneTimePlan;
+}
+
+interface RequestUsageSubscriptionInternalParams extends RequestInternalParams {
+  billingConfig: BillingConfigUsagePlan;
 }
 
 export function createRequest(config: ConfigInterface) {
@@ -65,6 +70,15 @@ export function createRequest(config: ConfigInterface) {
         isTest,
       });
       data = mutationResponse.data.appPurchaseOneTimeCreate;
+    } else if (billingConfig.interval === BillingInterval.Usage) {
+      const mutationResponse = await requestUsagePayment({
+        billingConfig: billingConfig as BillingConfigUsagePlan,
+        plan,
+        client,
+        returnUrl,
+        isTest,
+      });
+      data = mutationResponse.data.appSubscriptionCreate;
     } else {
       const mutationResponse = await requestRecurringPayment({
         billingConfig: billingConfig as BillingConfigSubscriptionPlan,
@@ -123,6 +137,47 @@ async function requestRecurringPayment({
   if (mutationResponse.body.errors?.length) {
     throw new BillingError({
       message: 'Error while billing the store',
+      errorData: mutationResponse.body.errors,
+    });
+  }
+
+  return mutationResponse.body;
+}
+
+async function requestUsagePayment({
+  billingConfig,
+  plan,
+  client,
+  returnUrl,
+  isTest,
+}: RequestUsageSubscriptionInternalParams): Promise<RecurringPaymentResponse> {
+  const mutationResponse = await client.query<RecurringPaymentResponse>({
+    data: {
+      query: RECURRING_PURCHASE_MUTATION,
+      variables: {
+        name: plan,
+        returnUrl,
+        test: isTest,
+        lineItems: [
+          {
+            plan: {
+              appUsagePricingDetails: {
+                terms: billingConfig.usageTerms,
+                cappedAmount: {
+                  amount: billingConfig.amount,
+                  currencyCode: billingConfig.currencyCode,
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  if (mutationResponse.body.errors?.length) {
+    throw new BillingError({
+      message: `Error while billing the store:: ${mutationResponse.body.errors}`,
       errorData: mutationResponse.body.errors,
     });
   }
