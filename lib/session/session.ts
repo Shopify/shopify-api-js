@@ -18,7 +18,7 @@ const propertiesToSave = [
  */
 export class Session {
   public static fromPropertyArray(
-    entries: [string, string | number][],
+    entries: [string, string | number | boolean][],
   ): Session {
     const obj = Object.fromEntries(
       entries
@@ -139,7 +139,7 @@ export class Session {
     return JSON.stringify(copyA) === JSON.stringify(copyB);
   }
 
-  public toPropertyArray(): [string, string | number][] {
+  public toPropertyArray(): [string, string | number | boolean][] {
     return (
       Object.entries(this)
         .filter(
