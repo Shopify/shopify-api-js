@@ -7,7 +7,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-- [Minor] Pass webhook id to handlers
+## [5.3.0] - 2022-12-05
+
+- [Minor] Pass webhook id to handlers [#606](https://github.com/Shopify/shopify-api-node/pull/606)
 
 ## [5.2.0] - 2022-10-04
 
