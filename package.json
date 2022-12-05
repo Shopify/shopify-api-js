@@ -2,6 +2,7 @@
   "name": "@shopify/shopify-api",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   "version": "7.3.1",
 =======
   "version": "5.1.0",
@@ -9,6 +10,9 @@
 =======
   "version": "5.2.0",
 >>>>>>> cc30e139 (v5.2.0)
+=======
+  "version": "5.3.0",
+>>>>>>> 2689059e (v5.3.0)
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

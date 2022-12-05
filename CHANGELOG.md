@@ -188,7 +188,9 @@
 
 - Added support for the `2022-10` API version [#535](https://github.com/Shopify/shopify-api-js/pull/535)
 
-- [Minor] Pass webhook id to handlers
+## [5.3.0] - 2022-12-05
+
+- [Minor] Pass webhook id to handlers [#606](https://github.com/Shopify/shopify-api-node/pull/606)
 
 ## [5.2.0] - 2022-10-04
 
