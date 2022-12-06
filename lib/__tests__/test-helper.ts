@@ -14,6 +14,7 @@ import {
 } from '../../runtime/http';
 import {Session} from '../session/session';
 import {RequestReturn} from '../clients/http_client/types';
+import {SHOPIFY_API_LIBRARY_VERSION} from '../version';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -21,6 +22,7 @@ declare global {
     interface Matchers<R> {
       toBeWithinSecondsOf(compareDate: number, seconds: number): R;
       toMatchMadeHttpRequest(): R;
+      toBeWithinDeprecationSchedule(): R;
     }
   }
 }
@@ -54,6 +56,14 @@ export function getNewTestConfig(): ConfigParams {
 beforeEach(() => {
   testConfig = getNewTestConfig();
   shopify = shopifyApi(testConfig);
+});
+
+test('passes test deprecation checks', () => {
+  expect('9999.0.0').toBeWithinDeprecationSchedule();
+  expect(() => expect('1.0.0').toBeWithinDeprecationSchedule()).toThrow();
+  expect(() =>
+    expect(SHOPIFY_API_LIBRARY_VERSION).toBeWithinDeprecationSchedule(),
+  ).toThrow();
 });
 
 export {shopify, testConfig};
