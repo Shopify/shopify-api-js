@@ -7,7 +7,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-## [6.0.0-rc10] - 2022-12-02
+## [6.0.0-rc11] - 2022-12-06
 
 - ⚠️ [Breaking] Latest release candidate for `6.0.0` release, which is a complete breaking change across all surfaces of the library. See the [migration guide](./docs/migrating-to-v6.md) for instructions on how to update your app.
 
