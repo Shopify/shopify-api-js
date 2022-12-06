@@ -1,6 +1,6 @@
 {
   "name": "@shopify/shopify-api",
-  "version": "6.0.0-rc11",
+  "version": "6.0.0",
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -53,12 +53,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shopify/shopify-api-node.git"
+    "url": "git+https://github.com/Shopify/shopify-api-js.git"
   },
   "bugs": {
-    "url": "https://github.com/Shopify/shopify-api-node/issues"
+    "url": "https://github.com/Shopify/shopify-api-js/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify-api-node",
+  "homepage": "https://github.com/Shopify/shopify-api-js",
   "author": "Shopify Inc.",
   "license": "MIT",
   "keywords": [

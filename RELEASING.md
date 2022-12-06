@@ -74,4 +74,4 @@ For significant API changes that could result in significant refactoring on the 
    git push origin shopify_api_next --follow-tags
    ```
 
-1. Login to `shipit`, search for the _next_ environment for `shopify-api-node`, and press _Deploy_ on the appropriate commit (the commit description will be the version number).
+1. Login to `shipit`, search for the _next_ environment for `shopify-api-js`, and press _Deploy_ on the appropriate commit (the commit description will be the version number).
