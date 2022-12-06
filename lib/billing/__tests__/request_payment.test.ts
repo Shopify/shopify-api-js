@@ -30,6 +30,65 @@ interface TestConfigInterface {
   mutationName: string;
 }
 
+const TEST_CONFIGS: TestConfigInterface[] = [
+  {
+    name: 'non-recurring config',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.OneTime,
+      },
+      [Responses.PLAN_2]: {
+        amount: 10,
+        currencyCode: 'USD',
+        interval: BillingInterval.OneTime,
+      },
+    },
+    paymentResponse: Responses.PURCHASE_ONE_TIME_RESPONSE,
+    errorResponse: Responses.PURCHASE_ONE_TIME_RESPONSE_WITH_USER_ERRORS,
+    mutationName: 'appPurchaseOneTimeCreate',
+  },
+  {
+    name: 'recurring config',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Every30Days,
+      },
+      [Responses.PLAN_2]: {
+        amount: 10,
+        currencyCode: 'USD',
+        interval: BillingInterval.Annual,
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
+    mutationName: 'appSubscriptionCreate',
+  },
+  {
+    name: 'usage config',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        usageTerms: '1 dollar per click',
+        interval: BillingInterval.Usage,
+      },
+      [Responses.PLAN_2]: {
+        amount: 10,
+        currencyCode: 'USD',
+        usageTerms: '1 dollar per email',
+        interval: BillingInterval.Usage,
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
+    mutationName: 'appSubscriptionCreate',
+  },
+];
+
 describe('shopify.billing.request', () => {
   const session = new Session({
     id: '1234',
@@ -58,45 +117,6 @@ describe('shopify.billing.request', () => {
       ).rejects.toThrowError(BillingError);
     });
   });
-
-  const TEST_CONFIGS: TestConfigInterface[] = [
-    {
-      name: 'non-recurring config',
-      billingConfig: {
-        [Responses.PLAN_1]: {
-          amount: 5,
-          currencyCode: 'USD',
-          interval: BillingInterval.OneTime,
-        },
-        [Responses.PLAN_2]: {
-          amount: 10,
-          currencyCode: 'USD',
-          interval: BillingInterval.OneTime,
-        },
-      },
-      paymentResponse: Responses.PURCHASE_ONE_TIME_RESPONSE,
-      errorResponse: Responses.PURCHASE_ONE_TIME_RESPONSE_WITH_USER_ERRORS,
-      mutationName: 'appPurchaseOneTimeCreate',
-    },
-    {
-      name: 'recurring config',
-      billingConfig: {
-        [Responses.PLAN_1]: {
-          amount: 5,
-          currencyCode: 'USD',
-          interval: BillingInterval.Every30Days,
-        },
-        [Responses.PLAN_2]: {
-          amount: 10,
-          currencyCode: 'USD',
-          interval: BillingInterval.Annual,
-        },
-      },
-      paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
-      errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
-      mutationName: 'appSubscriptionCreate',
-    },
-  ];
 
   TEST_CONFIGS.forEach((config) => {
     describe(`with ${config.name}`, () => {
