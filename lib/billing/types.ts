@@ -23,6 +23,8 @@ export interface BillingConfigSubscriptionPlan extends BillingConfigPlan {
 export interface BillingConfigUsagePlan extends BillingConfigPlan {
   interval: BillingInterval.Usage;
   usageTerms: string;
+  trialDays?: number;
+  replacementBehavior?: BillingReplacementBehavior;
 }
 
 export interface BillingConfig {
