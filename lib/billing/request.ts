@@ -61,35 +61,40 @@ export function createRequest(config: ConfigInterface) {
     const client = new GraphqlClient({session});
 
     let data: RequestResponse;
-    if (billingConfig.interval === BillingInterval.OneTime) {
-      const mutationResponse = await requestSinglePayment({
-        billingConfig: billingConfig as BillingConfigOneTimePlan,
-        plan,
-        client,
-        returnUrl,
-        isTest,
-      });
-      data = mutationResponse.data.appPurchaseOneTimeCreate;
-    } else if (billingConfig.interval === BillingInterval.Usage) {
-      const mutationResponse = await requestUsagePayment({
-        billingConfig: billingConfig as BillingConfigUsagePlan,
-        plan,
-        client,
-        returnUrl,
-        isTest,
-      });
-      data = mutationResponse.data.appSubscriptionCreate;
-    } else {
-      const mutationResponse = await requestRecurringPayment({
-        billingConfig: billingConfig as BillingConfigSubscriptionPlan,
-        plan,
-        client,
-        returnUrl,
-        isTest,
-      });
-      data = mutationResponse.data.appSubscriptionCreate;
+    switch (billingConfig.interval) {
+      case BillingInterval.OneTime: {
+        const mutationOneTimeResponse = await requestSinglePayment({
+          billingConfig: billingConfig as BillingConfigOneTimePlan,
+          plan,
+          client,
+          returnUrl,
+          isTest,
+        });
+        data = mutationOneTimeResponse.data.appPurchaseOneTimeCreate;
+        break;
+      }
+      case BillingInterval.Usage: {
+        const mutationUsageResponse = await requestUsagePayment({
+          billingConfig: billingConfig as BillingConfigUsagePlan,
+          plan,
+          client,
+          returnUrl,
+          isTest,
+        });
+        data = mutationUsageResponse.data.appSubscriptionCreate;
+        break;
+      }
+      default: {
+        const mutationRecurringResponse = await requestRecurringPayment({
+          billingConfig: billingConfig as BillingConfigSubscriptionPlan,
+          plan,
+          client,
+          returnUrl,
+          isTest,
+        });
+        data = mutationRecurringResponse.data.appSubscriptionCreate;
+      }
     }
-
     if (data.userErrors?.length) {
       throw new BillingError({
         message: 'Error while billing the store',
