@@ -16,6 +16,7 @@ import {
   SinglePaymentResponse,
   BillingConfigSubscriptionPlan,
   BillingConfigOneTimePlan,
+  BillingConfigUsagePlan,
 } from './types';
 
 interface RequestInternalParams {
@@ -31,6 +32,10 @@ interface RequestSubscriptionInternalParams extends RequestInternalParams {
 
 interface RequestOneTimePaymentInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigOneTimePlan;
+}
+
+interface RequestUsageSubscriptionInternalParams extends RequestInternalParams {
+  billingConfig: BillingConfigUsagePlan;
 }
 
 export function request(config: ConfigInterface) {
@@ -56,26 +61,40 @@ export function request(config: ConfigInterface) {
     const client = new GraphqlClient({session});
 
     let data: RequestResponse;
-    if (billingConfig.interval === BillingInterval.OneTime) {
-      const mutationResponse = await requestSinglePayment({
-        billingConfig: billingConfig as BillingConfigOneTimePlan,
-        plan,
-        client,
-        returnUrl,
-        isTest,
-      });
-      data = mutationResponse.data.appPurchaseOneTimeCreate;
-    } else {
-      const mutationResponse = await requestRecurringPayment({
-        billingConfig: billingConfig as BillingConfigSubscriptionPlan,
-        plan,
-        client,
-        returnUrl,
-        isTest,
-      });
-      data = mutationResponse.data.appSubscriptionCreate;
+    switch (billingConfig.interval) {
+      case BillingInterval.OneTime: {
+        const mutationOneTimeResponse = await requestSinglePayment({
+          billingConfig: billingConfig as BillingConfigOneTimePlan,
+          plan,
+          client,
+          returnUrl,
+          isTest,
+        });
+        data = mutationOneTimeResponse.data.appPurchaseOneTimeCreate;
+        break;
+      }
+      case BillingInterval.Usage: {
+        const mutationUsageResponse = await requestUsagePayment({
+          billingConfig: billingConfig as BillingConfigUsagePlan,
+          plan,
+          client,
+          returnUrl,
+          isTest,
+        });
+        data = mutationUsageResponse.data.appSubscriptionCreate;
+        break;
+      }
+      default: {
+        const mutationRecurringResponse = await requestRecurringPayment({
+          billingConfig: billingConfig as BillingConfigSubscriptionPlan,
+          plan,
+          client,
+          returnUrl,
+          isTest,
+        });
+        data = mutationRecurringResponse.data.appSubscriptionCreate;
+      }
     }
-
     if (data.userErrors?.length) {
       throw new BillingError({
         message: 'Error while billing the store',
@@ -123,6 +142,47 @@ async function requestRecurringPayment({
   if (mutationResponse.body.errors?.length) {
     throw new BillingError({
       message: 'Error while billing the store',
+      errorData: mutationResponse.body.errors,
+    });
+  }
+
+  return mutationResponse.body;
+}
+
+async function requestUsagePayment({
+  billingConfig,
+  plan,
+  client,
+  returnUrl,
+  isTest,
+}: RequestUsageSubscriptionInternalParams): Promise<RecurringPaymentResponse> {
+  const mutationResponse = await client.query<RecurringPaymentResponse>({
+    data: {
+      query: RECURRING_PURCHASE_MUTATION,
+      variables: {
+        name: plan,
+        returnUrl,
+        test: isTest,
+        lineItems: [
+          {
+            plan: {
+              appUsagePricingDetails: {
+                terms: billingConfig.usageTerms,
+                cappedAmount: {
+                  amount: billingConfig.amount,
+                  currencyCode: billingConfig.currencyCode,
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  if (mutationResponse.body.errors?.length) {
+    throw new BillingError({
+      message: `Error while billing the store:: ${mutationResponse.body.errors}`,
       errorData: mutationResponse.body.errors,
     });
   }

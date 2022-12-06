@@ -20,8 +20,18 @@ export interface BillingConfigSubscriptionPlan extends BillingConfigPlan {
   replacementBehavior?: BillingReplacementBehavior;
 }
 
+export interface BillingConfigUsagePlan extends BillingConfigPlan {
+  interval: BillingInterval.Usage;
+  usageTerms: string;
+  trialDays?: number;
+  replacementBehavior?: BillingReplacementBehavior;
+}
+
 export interface BillingConfig {
-  [plan: string]: BillingConfigOneTimePlan | BillingConfigSubscriptionPlan;
+  [plan: string]:
+    | BillingConfigOneTimePlan
+    | BillingConfigSubscriptionPlan
+    | BillingConfigUsagePlan;
 }
 
 export interface CheckParams {
