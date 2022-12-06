@@ -25,11 +25,13 @@ export function headers({
   hmac = 'fake',
   topic = 'PRODUCTS_CREATE',
   domain = 'shop1.myshopify.io',
+  webhookId = '123456789',
   lowercase = false,
 }: {
   hmac?: string;
   topic?: string;
   domain?: string;
+  webhookId?: string;
   lowercase?: boolean;
 } = {}) {
   return {
@@ -38,6 +40,9 @@ export function headers({
       topic,
     [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]:
       domain,
+    [lowercase
+      ? ShopifyHeader.WebhookId.toLowerCase()
+      : ShopifyHeader.WebhookId]: webhookId,
   };
 }
 

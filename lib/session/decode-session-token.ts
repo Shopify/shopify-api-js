@@ -8,7 +8,7 @@ import {JwtPayload} from './types';
 
 const JWT_PERMITTED_CLOCK_TOLERANCE = 10;
 
-export function createDecodeSessionToken(config: ConfigInterface) {
+export function decodeSessionToken(config: ConfigInterface) {
   return async (token: string): Promise<JwtPayload> => {
     let payload: JwtPayload;
     try {

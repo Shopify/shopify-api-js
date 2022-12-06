@@ -1,23 +1,43 @@
+import semver from 'semver';
+
 import {LogSeverity} from '../types';
 import {ConfigInterface} from '../base-types';
+import {FeatureDeprecatedError} from '../error';
+import {SHOPIFY_API_LIBRARY_VERSION} from '../version';
 
-import {createLog} from './log';
+import {log, LoggerFunction} from './log';
 import {LogContext} from './types';
 
 export function logger(config: ConfigInterface) {
-  const log = createLog(config);
+  const logFunction = log(config);
 
   return {
-    log,
+    log: logFunction,
     debug: async (message: string, context: LogContext = {}) =>
-      log(LogSeverity.Debug, message, context),
+      logFunction(LogSeverity.Debug, message, context),
     info: async (message: string, context: LogContext = {}) =>
-      log(LogSeverity.Info, message, context),
+      logFunction(LogSeverity.Info, message, context),
     warning: async (message: string, context: LogContext = {}) =>
-      log(LogSeverity.Warning, message, context),
+      logFunction(LogSeverity.Warning, message, context),
     error: async (message: string, context: LogContext = {}) =>
-      log(LogSeverity.Error, message, context),
+      logFunction(LogSeverity.Error, message, context),
+    deprecated: deprecated(logFunction),
   };
 }
 
 export type ShopifyLogger = ReturnType<typeof logger>;
+
+function deprecated(logFunction: LoggerFunction) {
+  return async function (version: string, message: string): Promise<void> {
+    if (semver.gte(SHOPIFY_API_LIBRARY_VERSION, version)) {
+      throw new FeatureDeprecatedError(
+        `Feature was deprecated in version ${version}`,
+      );
+    }
+
+    return logFunction(
+      LogSeverity.Warning,
+      `[Deprecated | ${version}] ${message}`,
+    );
+  };
+}

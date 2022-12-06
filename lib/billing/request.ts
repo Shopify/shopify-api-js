@@ -1,10 +1,10 @@
 import {ConfigInterface} from '../base-types';
 import {BillingInterval} from '../types';
 import {BillingError} from '../error';
-import {createBuildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
+import {buildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
 import {
   GraphqlClient,
-  createGraphqlClientClass,
+  graphqlClientClass,
 } from '../clients/graphql/graphql_client';
 import {hashString} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
@@ -38,7 +38,7 @@ interface RequestUsageSubscriptionInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigUsagePlan;
 }
 
-export function createRequest(config: ConfigInterface) {
+export function request(config: ConfigInterface) {
   return async function ({
     session,
     plan,
@@ -53,11 +53,11 @@ export function createRequest(config: ConfigInterface) {
 
     const billingConfig = config.billing[plan];
 
-    const returnUrl = createBuildEmbeddedAppUrl(config)(
+    const returnUrl = buildEmbeddedAppUrl(config)(
       hashString(`${session.shop}/admin`, HashFormat.Base64),
     );
 
-    const GraphqlClient = createGraphqlClientClass({config});
+    const GraphqlClient = graphqlClientClass({config});
     const client = new GraphqlClient({session});
 
     let data: RequestResponse;

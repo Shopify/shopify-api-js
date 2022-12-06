@@ -1,5 +1,5 @@
 import {
-  createGraphqlClientClass,
+  graphqlClientClass,
   GraphqlClient,
 } from '../clients/graphql/graphql_client';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
@@ -8,11 +8,7 @@ import {gdprTopics} from '../types';
 import {ConfigInterface} from '../base-types';
 import {Session} from '../session/session';
 
-import {
-  addHostToCallbackUrl,
-  createGetHandlers,
-  handlerIdentifier,
-} from './registry';
+import {addHostToCallbackUrl, getHandlers, handlerIdentifier} from './registry';
 import {queryTemplate} from './query-template';
 import {
   WebhookRegistry,
@@ -50,7 +46,7 @@ interface RunMutationParams {
   operation: WebhookOperation;
 }
 
-export function createRegister(
+export function register(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
 ) {
@@ -89,7 +85,7 @@ export function createRegister(
         session,
         topic,
         existingHandlers: existingHandlers[topic] || [],
-        handlers: createGetHandlers(webhookRegistry)(topic),
+        handlers: getHandlers(webhookRegistry)(topic),
       });
 
       // Remove this topic from the list of existing handlers so we have a list of leftovers
@@ -102,7 +98,7 @@ export function createRegister(
         continue;
       }
 
-      const GraphqlClient = createGraphqlClientClass({config});
+      const GraphqlClient = graphqlClientClass({config});
       const client = new GraphqlClient({session});
 
       registerReturn[topic] = await runMutations({
@@ -122,7 +118,7 @@ async function getExistingHandlers(
   config: ConfigInterface,
   session: Session,
 ): Promise<WebhookRegistry> {
-  const GraphqlClient = createGraphqlClientClass({config});
+  const GraphqlClient = graphqlClientClass({config});
   const client = new GraphqlClient({session});
 
   const existingHandlers: WebhookRegistry = {};
@@ -219,7 +215,7 @@ async function registerTopic({
     handlers,
   );
 
-  const GraphqlClient = createGraphqlClientClass({config});
+  const GraphqlClient = graphqlClientClass({config});
   const client = new GraphqlClient({session});
 
   let operation = WebhookOperation.Create;

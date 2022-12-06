@@ -18,7 +18,7 @@ const propertiesToSave = [
  */
 export class Session {
   public static fromPropertyArray(
-    entries: [string, string | number][],
+    entries: [string, string | number | boolean][],
   ): Session {
     const obj = Object.fromEntries(
       entries
@@ -49,7 +49,7 @@ export class Session {
             case 'scope':
               return [key, value.toString()];
             case 'expires':
-              return [key, value ? new Date(Number(value) * 1000) : undefined];
+              return [key, value ? new Date(Number(value)) : undefined];
             case 'onlineAccessInfo':
               return [
                 key,
@@ -139,7 +139,7 @@ export class Session {
     return JSON.stringify(copyA) === JSON.stringify(copyB);
   }
 
-  public toPropertyArray(): [string, string | number][] {
+  public toPropertyArray(): [string, string | number | boolean][] {
     return (
       Object.entries(this)
         .filter(
@@ -152,10 +152,7 @@ export class Session {
         .map(([key, value]) => {
           switch (key) {
             case 'expires':
-              return [
-                key,
-                value ? Math.floor(value.getTime() / 1000) : undefined,
-              ];
+              return [key, value ? value.getTime() : undefined];
             case 'onlineAccessInfo':
               return [key, value?.associated_user?.id];
             default:

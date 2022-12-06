@@ -1,11 +1,11 @@
 import * as ShopifyErrors from '../error';
 import {ConfigInterface} from '../base-types';
 import {abstractConvertRequest} from '../../runtime/http';
-import {createSanitizeHost} from '../utils/shop-validator';
+import {sanitizeHost} from '../utils/shop-validator';
 
 import {GetEmbeddedAppUrlParams} from './types';
 
-export function createGetEmbeddedAppUrl(config: ConfigInterface) {
+export function getEmbeddedAppUrl(config: ConfigInterface) {
   return async ({...adapterArgs}: GetEmbeddedAppUrlParams): Promise<string> => {
     const request = await abstractConvertRequest(adapterArgs);
 
@@ -30,13 +30,13 @@ export function createGetEmbeddedAppUrl(config: ConfigInterface) {
       );
     }
 
-    return createBuildEmbeddedAppUrl(config)(host);
+    return buildEmbeddedAppUrl(config)(host);
   };
 }
 
-export function createBuildEmbeddedAppUrl(config: ConfigInterface) {
+export function buildEmbeddedAppUrl(config: ConfigInterface) {
   return (host: string): string => {
-    createSanitizeHost(config)(host, true);
+    sanitizeHost(config)(host, true);
 
     // eslint-disable-next-line no-warning-comments
     // TODO Remove the Buffer.from call when dropping Node 14 support

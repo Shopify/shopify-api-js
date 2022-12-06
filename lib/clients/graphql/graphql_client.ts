@@ -1,13 +1,13 @@
 import {ShopifyHeader} from '../../types';
 import {ConfigInterface} from '../../base-types';
-import {createHttpClientClass, HttpClient} from '../http_client/http_client';
+import {httpClientClass, HttpClient} from '../http_client/http_client';
 import {DataType, RequestReturn} from '../http_client/types';
 import {Session} from '../../session/session';
 import * as ShopifyErrors from '../../error';
 
 import {GraphqlParams, GraphqlClientParams} from './types';
 
-export interface CreateGraphqlClientClassParams {
+export interface GraphqlClientClassParams {
   config: ConfigInterface;
   HttpClient?: typeof HttpClient;
 }
@@ -98,13 +98,13 @@ export class GraphqlClient {
   }
 }
 
-export function createGraphqlClientClass(
-  params: CreateGraphqlClientClassParams,
+export function graphqlClientClass(
+  params: GraphqlClientClassParams,
 ): typeof GraphqlClient {
   const {config} = params;
   let {HttpClient} = params;
   if (!HttpClient) {
-    HttpClient = createHttpClientClass(params.config);
+    HttpClient = httpClientClass(params.config);
   }
 
   class NewGraphqlClient extends GraphqlClient {

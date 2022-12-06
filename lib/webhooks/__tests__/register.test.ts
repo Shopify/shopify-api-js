@@ -395,10 +395,6 @@ function assertRegisterResponse({
   });
 }
 
-function createWebhookCheckQuery() {
-  return queryTemplate(TEMPLATE_GET_HANDLERS, {END_CURSOR: 'null'});
-}
-
 function assertWebhookCheckRequest({session}: RegisterParams) {
   expect({
     method: Method.Post.toString(),
@@ -408,7 +404,7 @@ function assertWebhookCheckRequest({session}: RegisterParams) {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: session.accessToken,
     },
-    data: createWebhookCheckQuery(),
+    data: queryTemplate(TEMPLATE_GET_HANDLERS, {END_CURSOR: 'null'}),
   }).toMatchMadeHttpRequest();
 }
 

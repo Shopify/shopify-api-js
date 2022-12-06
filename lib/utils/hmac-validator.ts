@@ -16,7 +16,7 @@ function stringifyQuery(query: AuthQuery): string {
   return processedQuery.stringify(true);
 }
 
-export function createGenerateLocalHmac(config: ConfigInterface) {
+export function generateLocalHmac(config: ConfigInterface) {
   return async (params: AuthQuery): Promise<string> => {
     const {hmac, ...query} = params;
     const queryString = stringifyQuery(query);
@@ -24,7 +24,7 @@ export function createGenerateLocalHmac(config: ConfigInterface) {
   };
 }
 
-export function createValidateHmac(config: ConfigInterface) {
+export function validateHmac(config: ConfigInterface) {
   return async (query: AuthQuery): Promise<boolean> => {
     if (!query.hmac) {
       throw new ShopifyErrors.InvalidHmacError(
@@ -32,7 +32,7 @@ export function createValidateHmac(config: ConfigInterface) {
       );
     }
     const {hmac} = query;
-    const localHmac = await createGenerateLocalHmac(config)(query);
+    const localHmac = await generateLocalHmac(config)(query);
 
     return safeCompare(hmac as string, localHmac);
   };

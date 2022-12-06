@@ -6,7 +6,7 @@ import {
 import * as ShopifyErrors from '../../error';
 import {NormalizedRequest} from '../../../runtime/http';
 import {JwtPayload} from '../types';
-import {createGetOfflineId} from '../session-utils';
+import {getOfflineId} from '../session-utils';
 
 describe('loadCurrentSession', () => {
   let jwtPayload: JwtPayload;
@@ -111,9 +111,7 @@ describe('loadCurrentSession', () => {
       headers: {},
       url: 'https://my-test-app.myshopify.io/my-endpoint',
     };
-    const cookieId = createGetOfflineId(shopify.config)(
-      'test-shop.myshopify.io',
-    );
+    const cookieId = getOfflineId(shopify.config)('test-shop.myshopify.io');
     await setSignedSessionCookie({request, cookieId});
 
     await expect(
@@ -133,7 +131,7 @@ describe('loadCurrentSession', () => {
       url: 'https://my-test-app.myshopify.io/my-endpoint',
     };
 
-    const offlineSessionId = createGetOfflineId(shopify.config)(
+    const offlineSessionId = getOfflineId(shopify.config)(
       'test-shop.myshopify.io',
     );
 

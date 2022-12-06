@@ -1,6 +1,6 @@
 import {ConfigInterface} from '../base-types';
 import {
-  createGraphqlClientClass,
+  graphqlClientClass,
   GraphqlClient,
 } from '../clients/graphql/graphql_client';
 import {BillingError} from '../error';
@@ -23,7 +23,7 @@ interface CheckInstallationParams {
   installation: CurrentAppInstallation;
 }
 
-export function createCheck(config: ConfigInterface) {
+export function check(config: ConfigInterface) {
   return async function ({
     session,
     plans,
@@ -36,7 +36,7 @@ export function createCheck(config: ConfigInterface) {
       });
     }
 
-    const GraphqlClient = createGraphqlClientClass({config});
+    const GraphqlClient = graphqlClientClass({config});
     const client = new GraphqlClient({session});
 
     const plansArray = Array.isArray(plans) ? plans : [plans];

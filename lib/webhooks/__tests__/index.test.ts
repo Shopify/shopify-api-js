@@ -78,15 +78,26 @@ describe('webhooks', () => {
     });
 
     const body = JSON.stringify({});
+    const webhookId = 'any-webhook-id';
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(shopify.config.apiSecretKey, body)}))
+      .set(headers({hmac: hmac(shopify.config.apiSecretKey, body), webhookId}))
       .send(body)
       .expect(200);
 
     // Both handlers should have been called
-    expect(handler1.callback).toHaveBeenCalledWith(topic, session.shop, body);
-    expect(handler3.callback).toHaveBeenCalledWith(topic, session.shop, body);
+    expect(handler1.callback).toHaveBeenCalledWith(
+      topic,
+      session.shop,
+      body,
+      webhookId,
+    );
+    expect(handler3.callback).toHaveBeenCalledWith(
+      topic,
+      session.shop,
+      body,
+      webhookId,
+    );
   });
 
   it('fires a single creation request for multiple HTTP handlers', async () => {

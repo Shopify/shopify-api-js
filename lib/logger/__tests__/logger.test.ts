@@ -1,4 +1,6 @@
+import {FeatureDeprecatedError} from '../../error';
 import {LogSeverity} from '../../types';
+import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import {shopify} from '../../__tests__/test-helper';
 
 describe('shopify.logger', () => {
@@ -79,6 +81,24 @@ describe('shopify.logger', () => {
         LogSeverity.Error,
         expect.stringContaining('error message'),
       );
+    });
+
+    it('can log deprecations for future versions', async () => {
+      await shopify.logger.deprecated('9999.0.0', 'This is a test');
+
+      expect(shopify.config.logger.log).toHaveBeenCalledWith(
+        LogSeverity.Warning,
+        expect.stringContaining('[Deprecated | 9999.0.0]'),
+      );
+    });
+
+    it('throws an error when we move past the release version', async () => {
+      await expect(
+        shopify.logger.deprecated(
+          SHOPIFY_API_LIBRARY_VERSION,
+          'This is a test',
+        ),
+      ).rejects.toThrow(FeatureDeprecatedError);
     });
   });
 
