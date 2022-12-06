@@ -70,8 +70,7 @@ describe('isActive', () => {
 });
 
 const expiresDate = new Date(Date.now() + 86400);
-expiresDate.setMilliseconds(0);
-const expiresNumber = Math.floor(expiresDate.getTime() / 1000);
+const expiresNumber = expiresDate.getTime();
 
 const testSessions = [
   {
