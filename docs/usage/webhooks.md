@@ -140,7 +140,6 @@ shopify.webhooks.addHandlers({
 app.get('/auth/callback', async (req, res) => {
   try {
     const callbackResponse = await shopify.auth.callback({
-      isOnline: true,
       rawRequest: req,
       rawResponse: res,
     });

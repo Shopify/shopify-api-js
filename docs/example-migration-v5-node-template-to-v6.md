@@ -231,7 +231,6 @@ Whereas the `v5` version of the API library saved the session returned by the au
 +      const callbackResponse = await shopify.auth.callback({
 +        rawRequest: req,
 +        rawResponse: res,
-+        isOnline: app.get("use-online-tokens"),
 +      });
 
 +      // save the session

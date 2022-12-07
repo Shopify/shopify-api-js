@@ -197,18 +197,18 @@ app.post('/webhooks', async (req, res) => {
 
 ## Changes to package exports
 
-In v5 and earlier versions, certain exports needed to be imported from deep paths into the package.  In v6, only some export paths are allowed and are specific to various needs of the application.  For example, for the list of GDPR webhook topics,
+In v5 and earlier versions, certain exports needed to be imported from deep paths into the package. In v6, only some export paths are allowed and are specific to various needs of the application. For example, for the list of GDPR webhook topics,
 
 <div>Before
 
 ```ts
-import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
+import {gdprTopics} from '@shopify/shopify-api/dist/webhooks/registry.js';
 ```
 
 </div><div>:warning: After
 
 ```ts
-import { gdprTopics } from "@shopify/shopify-api";
+import {gdprTopics} from '@shopify/shopify-api';
 ```
 
 See the [Changes to use of REST resources](#changes-to-use-of-rest-resources) section on how to access REST resources in v6.
@@ -218,6 +218,8 @@ See the [Changes to use of REST resources](#changes-to-use-of-rest-resources) se
 ## Changes to authentication functions
 
 The OAuth methods still behave the same way, but we've updated their signatures to make it easier to work with them. See the [updated OAuth instructions](./usage/oauth.md) for a complete example.
+
+See [Access modes](https://shopify.dev/apps/auth/oauth/access-modes) for more details regarding how to use the `isOnline` parameter.
 
 1. `Shopify.Auth.beginAuth()` is now `shopify.auth.begin()`, it takes in an object, and it now also triggers a redirect response to the correct endpoint.
    <div>Before
@@ -249,9 +251,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 
    </div>
 
-1. `Shopify.Auth.validateAuthCallback()` is now `shopify.auth.callback()`, it now takes an object with an `isOnline` value, but the `query` argument is no longer necessary - it will be read from the request. This method will set the appropriate response headers.
-
-   See [Access modes](https://shopify.dev/apps/auth/oauth/access-modes) for more details regarding how to use the `isOnline` parameter.
+1. `Shopify.Auth.validateAuthCallback()` is now `shopify.auth.callback()`, it now takes an object with the request and response, but the `query` argument is no longer necessary - it will be read from the request. This method will set the appropriate response headers.
 
    <div>Before
 
@@ -269,7 +269,6 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 
    ```ts
    const callbackResponse = shopify.auth.callback({
-     isOnline: true,
      rawRequest: req,
      rawResponse: res,
    });
@@ -357,7 +356,6 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 
    ```ts
    const callbackResponse = shopify.auth.callback({
-     isOnline: true,
      rawRequest: req,
      rawResponse: res,
    });
@@ -366,7 +364,7 @@ The OAuth methods still behave the same way, but we've updated their signatures 
    await addSessionToStorage(callbackResponse.session.toObject());
    ```
 
-1. See the [Implementing session storage guide](./usage/session-storage.md) for the changes you'll need to make to load and store your sessions.  In general, you'll need to [store sessions](./usage/session-storage.md#save-a-session-to-storage) that are returned from `shopify.auth.callback()` and you'll need to [load sessions](./usage/session-storage.md#load-a-session-from-storage) anywhere your code previously used `loadCurrentSession`.
+1. See the [Implementing session storage guide](./usage/session-storage.md) for the changes you'll need to make to load and store your sessions. In general, you'll need to [store sessions](./usage/session-storage.md#save-a-session-to-storage) that are returned from `shopify.auth.callback()` and you'll need to [load sessions](./usage/session-storage.md#load-a-session-from-storage) anywhere your code previously used `loadCurrentSession`.
 
 ---
 
@@ -546,7 +544,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
 1. `Shopify.Utils.generateLocalHmac` was removed because it's only meant to be used internally by the library.
 
-1. The `storeSession` method was removed since sessions are no longer stored by the library. Apps are now fully responsible for implementating session storage and can save data to their sessions as they please.  See the [implementing session storage guide](./usage/session-storage.md) for the changes you'll need to make to store your sessions.
+1. The `storeSession` method was removed since sessions are no longer stored by the library. Apps are now fully responsible for implementating session storage and can save data to their sessions as they please. See the [implementing session storage guide](./usage/session-storage.md) for the changes you'll need to make to store your sessions.
 
 1. `validateHmac` is now `async`.
    <div>Before
@@ -769,26 +767,26 @@ Below are instructions on how webhooks work now:
 
    <div>Before
 
-   ```ts
-   Shopify.Webhooks.Registry.addHandler('PRODUCTS_CREATE', {
-     path: '/webhooks',
-     webhookHandler: handleWebhookRequest,
-   });
-   ```
+  ```ts
+  Shopify.Webhooks.Registry.addHandler('PRODUCTS_CREATE', {
+    path: '/webhooks',
+    webhookHandler: handleWebhookRequest,
+  });
+  ```
 
    </div><div>:warning: After
 
-   ```ts
-   await shopify.webhooks.addHandlers({
-     PRODUCTS_CREATE: {
-       deliveryMethod: DeliveryMethod.Http,
-       callbackUrl: '/webhooks',
-       callback: handleWebhookRequest,
-     },
-     TOPIC_1: [handler, handler2],
-     TOPIC_2: handler3,
-   });
-   ```
+  ```ts
+  await shopify.webhooks.addHandlers({
+    PRODUCTS_CREATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: '/webhooks',
+      callback: handleWebhookRequest,
+    },
+    TOPIC_1: [handler, handler2],
+    TOPIC_2: handler3,
+  });
+  ```
 
    </div>
 
@@ -1021,7 +1019,9 @@ app.get('/api/products/count', async (req, res) => {
 ```ts
 import {shopifyApi, ApiVersion} from '@shopify/shopify-api';
 const apiVersion = ApiVersion.October22;
-let {restResources} = await import(`@shopify/shopify-api/rest/admin/${apiVersion}`);
+let {restResources} = await import(
+  `@shopify/shopify-api/rest/admin/${apiVersion}`
+);
 
 const shopify = shopifyApi({
   // ...

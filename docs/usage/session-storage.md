@@ -4,30 +4,30 @@ As of v6 of the library, there are no `SessionStorage` implementations included 
 
 The previous implementations of `SessionStorage` are now available in their own packages, the source of which is available in the respective directory in the [`Shopify/shopify-app-js` repo](https://github.com/Shopify/shopify-app-js/tree/main/packages).
 
-|                    Package                        |  Session storage object  | Notes |
-| :-----------------------------------------------: | :----------------------: | ----- |
-|   `@shopify/shopify-app-session-storage-memory`   |   MemorySessionStorage   |       |
-|  `@shopify/shopify-app-session-storage-mongodb`   |  MongoDBSessionStorage   |       |
-|   `@shopify/shopify-app-session-storage-mysql`    |   MySQLSessionStorage    |       |
-| `@shopify/shopify-app-session-storage-postgresql` | PostgreSQLSessionStorage |       |
-|   `@shopify/shopify-app-session-storage-redis`    |   RedisSessionStorage    |       |
-|   `@shopify/shopify-app-session-storage-sqlite`   |   SQLiteSessionStorage   |       |
-|      `@shopify/shopify-app-session-storage`       |     SessionStorage       | Abstract class used by the classes above |
+|                      Package                      |  Session storage object  | Notes                                    |
+| :-----------------------------------------------: | :----------------------: | ---------------------------------------- |
+|   `@shopify/shopify-app-session-storage-memory`   |   MemorySessionStorage   |                                          |
+|  `@shopify/shopify-app-session-storage-mongodb`   |  MongoDBSessionStorage   |                                          |
+|   `@shopify/shopify-app-session-storage-mysql`    |   MySQLSessionStorage    |                                          |
+| `@shopify/shopify-app-session-storage-postgresql` | PostgreSQLSessionStorage |                                          |
+|   `@shopify/shopify-app-session-storage-redis`    |   RedisSessionStorage    |                                          |
+|   `@shopify/shopify-app-session-storage-sqlite`   |   SQLiteSessionStorage   |                                          |
+|      `@shopify/shopify-app-session-storage`       |      SessionStorage      | Abstract class used by the classes above |
 
 ## Basics
 
 ### What data is in a `Session` object?
 
-|    Property      |      Type        | Mandatory? |
+|     Property     |       Type       | Mandatory? |
 | :--------------: | :--------------: | :--------: |
-|       id         |     string       |    yes     |
-|      shop        |     string       |    yes     |
-|     state        |     string       |    yes     |
-|    isOnline      |     boolean      |    yes     |
-|     scope        |     string       |    no      |
-|    expires       |      Date        |    no      |
-|   accessToken    |     string       |    no      |
-| onlineAccessInfo | OnlineAccessInfo |    no      |
+|        id        |      string      |    yes     |
+|       shop       |      string      |    yes     |
+|      state       |      string      |    yes     |
+|     isOnline     |     boolean      |    yes     |
+|      scope       |      string      |     no     |
+|     expires      |       Date       |     no     |
+|   accessToken    |      string      |     no     |
+| onlineAccessInfo | OnlineAccessInfo |     no     |
 
 > **Note** 1. These data are the same as the `SessionParams` object that's passed into the `Session` class constructor.
 
@@ -39,7 +39,6 @@ Once OAuth completes using `shopify.auth.callback`, the `callback` response incl
 
 ```ts
 const callbackResponse = shopify.auth.callback({
-  isOnline: true,
   rawRequest: req,
   rawResponse: res,
 });
@@ -48,11 +47,10 @@ const callbackResponse = shopify.auth.callback({
 await addSessionToStorage(callbackResponse.session.toObject());
 ```
 
-The `Session` class includes a `.toObject` method that returns the data-only properties of the `Session` as a JavaScript object.  This return value is identical to the parameters used to create a `Session` instance.  In other words,
+The `Session` class includes a `.toObject` method that returns the data-only properties of the `Session` as a JavaScript object. This return value is identical to the parameters used to create a `Session` instance. In other words,
 
 ```ts
 const callbackResponse = shopify.auth.callback({
-  isOnline: true,
   rawRequest: req,
   rawResponse: res,
 });
@@ -61,13 +59,12 @@ const sessionCopy = new Session(callbackResponse.session.toObject());
 // sessionCopy is an identical copy of the callbackResponse.session instance
 ```
 
-Now that the app has a JavaScript object containing the data of a `Session`, it can convert the data into whatever means necessary to store it in the apps preferred storage mechanism.  Various implementations of session storage can be found in the [`shopify-app-js` repo](https://github.com/Shopify/shopify-app-js/tree/main/packages).
+Now that the app has a JavaScript object containing the data of a `Session`, it can convert the data into whatever means necessary to store it in the apps preferred storage mechanism. Various implementations of session storage can be found in the [`shopify-app-js` repo](https://github.com/Shopify/shopify-app-js/tree/main/packages).
 
 The `Session` class also includes an instance method called `.toPropertyArray` that returns an array of key-value pairs, e.g.,
 
 ```ts
 const {session, headers} = shopify.auth.callback({
-  isOnline: true,
   rawRequest: req,
   rawResponse: res,
 });
@@ -122,7 +119,7 @@ const sessionProperties = session.toPropertyArray();
 
 ### Load a session from storage
 
-When the app requires a `Session` for any Shopify API library call, it must load the required session from the apps storage mechanism.  The library provides `shopify.session.getCurrentId()` that returns the session id from the network request, that can then be used to find the appropriate `Session` in storage.
+When the app requires a `Session` for any Shopify API library call, it must load the required session from the apps storage mechanism. The library provides `shopify.session.getCurrentId()` that returns the session id from the network request, that can then be used to find the appropriate `Session` in storage.
 
 ```ts
 const sessionId = await shopify.session.getCurrentId({
@@ -140,7 +137,7 @@ const restClient = await shopify.clients.Rest({session});
 // do something with restClient...
 ```
 
-Once the `Session` is found, the app must ensure that it converts it from the stored format into the `SessionParams` object, so that a `Session` instance can be instantiated for passing to the library calls.  In the example above, `getSessionFromStorage` will have returned a `Session` object created using `new Session(params)`, where `params` are the values retrieved from storage converted into a `SessionParams` object.
+Once the `Session` is found, the app must ensure that it converts it from the stored format into the `SessionParams` object, so that a `Session` instance can be instantiated for passing to the library calls. In the example above, `getSessionFromStorage` will have returned a `Session` object created using `new Session(params)`, where `params` are the values retrieved from storage converted into a `SessionParams` object.
 
 If the `.toPropertyArray` method was used to obtain the session data, the `Session` class has a `.fromPropertyArray` static method that can be used to convert the array data back into a session.
 

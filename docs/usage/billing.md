@@ -42,32 +42,33 @@ const shopify = shopifyApi({
 This setting is a collection of billing plans. Each billing plan allows the following properties:
 
 ### One Time Billing Plans
-| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                                                            |
-| --------------------- | ---------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `amount`              | `number`                     |    Yes    |       -       | The amount to charge                                                                                                                                                                             |
-| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                                                       |
-| `interval`            | `ONE_TIME`            |    Yes    |       -       | `BillingInterval.OneTime` value                                                                                                                                                     
+
+| Parameter      | Type       | Required? | Default Value | Notes                                                      |
+| -------------- | ---------- | :-------: | :-----------: | ---------------------------------------------------------- |
+| `amount`       | `number`   |    Yes    |       -       | The amount to charge                                       |
+| `currencyCode` | `string`   |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted |
+| `interval`     | `ONE_TIME` |    Yes    |       -       | `BillingInterval.OneTime` value                            |
 
 ### Recurring Billing Plans
-| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                                                            |
-| --------------------- | ---------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `amount`              | `number`                     |    Yes    |       -       | The amount to charge                                                                                                                                                                             |
-| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                                                       |
-| `interval`            | `EVERY_30_DAYS`, `ANNUAL`            |    Yes    |       -       | `BillingInterval.Every30Days`, `BillingInterval.Annual` value                                                                                                                                                                          |
-| `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                              |
+
+| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                        |
+| --------------------- | ---------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `amount`              | `number`                     |    Yes    |       -       | The amount to charge                                                                                                                                         |
+| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                   |
+| `interval`            | `EVERY_30_DAYS`, `ANNUAL`    |    Yes    |       -       | `BillingInterval.Every30Days`, `BillingInterval.Annual` value                                                                                                |
+| `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                                |
 | `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/api/admin-graphql/2022-07/mutations/appSubscriptionCreate) for more information. |
 
 ### Usage Billing Plans
 
-| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                                                            |
-| --------------------- | ---------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `amount`              | `number`                     |    Yes    |       -       | The maximum amount the merchant will be charged                                                                                                                                                                            |
-| `currencyCode` | `string`      |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                                                       |
-| `interval`            | `USAGE`            |    Yes    |       -       | `BillingInterval.Usage`                                                                                                                                                                          |
-| `usageTerms`              | `string`                     |    Yes    |       -       | These terms stipulate the pricing model for the charges that an app creates.  |
- `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                              |
- | `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/api/admin-graphql/2022-07/mutations/appSubscriptionCreate) for more information. |
-
+| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                        |
+| --------------------- | ---------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `amount`              | `number`                     |    Yes    |       -       | The maximum amount the merchant will be charged                                                                                                              |
+| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                   |
+| `interval`            | `USAGE`                      |    Yes    |       -       | `BillingInterval.Usage`                                                                                                                                      |
+| `usageTerms`          | `string`                     |    Yes    |       -       | These terms stipulate the pricing model for the charges that an app creates.                                                                                 |
+| `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                                |
+| `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/api/admin-graphql/2022-07/mutations/appSubscriptionCreate) for more information. |
 
 ## Checking for payment
 
@@ -127,7 +128,6 @@ Here are some typical examples of how apps might do that:
 ```ts
 app.get('/auth/callback', async () => {
   const callback = await shopify.auth.callback({
-    isOnline: false,
     rawRequest: req,
     rawResponse: res,
   });
