@@ -84,7 +84,7 @@ export function process(
           log.debug('No HTTP handlers found', loggingContext);
 
           response.statusCode = StatusCode.NotFound;
-          errorMessage = `No HTTP webhooks registered for topic ${topic}`;
+          errorMessage = `No HTTP webhooks registered for topic ${graphqlTopic}`;
         }
       } else {
         log.debug('Webhook validation failed', loggingContext);

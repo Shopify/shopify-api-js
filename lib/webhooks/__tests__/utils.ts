@@ -25,7 +25,7 @@ export function headers({
   apiVersion = '2023-01',
   domain = 'shop1.myshopify.io',
   hmac = 'fake',
-  topic = 'PRODUCTS_CREATE',
+  topic = 'products/create',
   webhookId = '123456789',
   lowercase = false,
 }: {
