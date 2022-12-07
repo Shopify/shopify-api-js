@@ -19,8 +19,7 @@ app.get('/my-endpoint', async () => {
   const session = await getSessionFromStorage(sessionId);
 
   const client = new shopify.clients.Graphql({
-    domain: session.shop,
-    accessToken: session.accessToken,
+    session
   });
 });
 ```
