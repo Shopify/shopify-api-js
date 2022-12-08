@@ -12,7 +12,7 @@ export type WebhookHandlerFunction = (
   shop_domain: string,
   body: string,
   webhookId: string,
-  apiVersion: string,
+  apiVersion?: string,
 ) => Promise<void>;
 
 interface BaseWebhookHandler {
