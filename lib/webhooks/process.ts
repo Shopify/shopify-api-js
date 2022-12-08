@@ -57,10 +57,7 @@ export function process(
 
         let found = false;
         for (const handler of handlers) {
-          if (
-            handler.deliveryMethod !== DeliveryMethod.Http ||
-            handler.callbackUrl !== request.url
-          ) {
+          if (handler.deliveryMethod !== DeliveryMethod.Http) {
             continue;
           }
           found = true;

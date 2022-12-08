@@ -120,52 +120,6 @@ describe('webhooks', () => {
     await shopify.webhooks.register({session});
   });
 
-  it('allows multiple HTTP handlers on different addresses for the same topic, only one gets triggered by process', async () => {
-    const topic = 'PRODUCTS_CREATE';
-    const handler1: HttpWebhookHandler = {
-      ...HTTP_HANDLER,
-      callbackUrl: '/webhooks1',
-      callback: jest.fn(),
-    };
-    const handler2: HttpWebhookHandler = {
-      ...HTTP_HANDLER,
-      callbackUrl: '/webhooks2',
-      callback: jest.fn(),
-    };
-
-    await shopify.webhooks.addHandlers({[topic]: [handler1, handler2]});
-
-    queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
-    queueMockResponse(JSON.stringify(mockResponses.successResponse));
-    queueMockResponse(JSON.stringify(mockResponses.successResponse));
-    await shopify.webhooks.register({session});
-
-    const app = getTestExpressApp();
-    app.post('/webhooks1', async (req, res) => {
-      await shopify.webhooks.process({
-        rawBody: (req as any).rawBody,
-        rawRequest: req,
-        rawResponse: res,
-      });
-      res.status(StatusCode.Ok).end();
-    });
-
-    const rawBody = JSON.stringify({});
-    await request(app)
-      .post('/webhooks1')
-      .set(
-        headers({
-          topic: 'PRODUCTS_CREATE',
-          hmac: hmac(shopify.config.apiSecretKey, rawBody),
-        }),
-      )
-      .send(rawBody)
-      .expect(200);
-
-    expect(handler1.callback).toHaveBeenCalled();
-    expect(handler2.callback).not.toHaveBeenCalled();
-  });
-
   it('fails to register multiple EventBridge handlers for the same topic', async () => {
     const handler1 = EVENT_BRIDGE_HANDLER;
     const handler2 = EVENT_BRIDGE_HANDLER;
