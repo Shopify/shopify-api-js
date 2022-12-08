@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [6.0.1] - 2022-12-08
+
 - [Patch] Auto-detect session type in auth callback, deprecate `isOnline` argument [#628](https://github.com/Shopify/shopify-api-js/pull/628)
 - [Patch] Removed callback URL path check from webhook processing [#629](https://github.com/Shopify/shopify-api-js/pull/629)
 - [Patch] Pass api version to webhook handlers [#630](https://github.com/Shopify/shopify-api-js/pull/630)
