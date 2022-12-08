@@ -103,7 +103,7 @@ This method takes an object with the following properties:
 | `rawRequest`  | `AdapterRequest`  |         Yes          |       -       | The HTTP Request object used by your runtime.                        |
 | `rawResponse` | `AdapterResponse` | _Depends on runtime_ |       -       | The HTTP Response object used by your runtime. Required for Node.js. |
 
-It will save a new session using your configured `sessionStorage`, and return an object containing:
+It will return an object containing:
 
 | Property  | Type             | Notes                                                                                                                                                                              |
 | --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
