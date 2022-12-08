@@ -22,24 +22,29 @@ export function getTestExpressApp() {
 }
 
 export function headers({
+  apiVersion = '2023-01',
+  domain = 'shop1.myshopify.io',
   hmac = 'fake',
   topic = 'PRODUCTS_CREATE',
-  domain = 'shop1.myshopify.io',
   webhookId = '123456789',
   lowercase = false,
 }: {
+  apiVersion?: string;
+  domain?: string;
   hmac?: string;
   topic?: string;
-  domain?: string;
   webhookId?: string;
   lowercase?: boolean;
 } = {}) {
   return {
+    [lowercase
+      ? ShopifyHeader.ApiVersion.toLowerCase()
+      : ShopifyHeader.ApiVersion]: apiVersion,
+    [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]:
+      domain,
     [lowercase ? ShopifyHeader.Hmac.toLowerCase() : ShopifyHeader.Hmac]: hmac,
     [lowercase ? ShopifyHeader.Topic.toLowerCase() : ShopifyHeader.Topic]:
       topic,
-    [lowercase ? ShopifyHeader.Domain.toLowerCase() : ShopifyHeader.Domain]:
-      domain,
     [lowercase
       ? ShopifyHeader.WebhookId.toLowerCase()
       : ShopifyHeader.WebhookId]: webhookId,

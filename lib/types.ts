@@ -17,10 +17,11 @@ export const LATEST_API_VERSION = ApiVersion.October22;
 
 export enum ShopifyHeader {
   AccessToken = 'X-Shopify-Access-Token',
-  StorefrontAccessToken = 'X-Shopify-Storefront-Access-Token',
-  Hmac = 'X-Shopify-Hmac-Sha256',
-  Topic = 'X-Shopify-Topic',
+  ApiVersion = 'X-Shopify-API-Version',
   Domain = 'X-Shopify-Shop-Domain',
+  Hmac = 'X-Shopify-Hmac-Sha256',
+  StorefrontAccessToken = 'X-Shopify-Storefront-Access-Token',
+  Topic = 'X-Shopify-Topic',
   WebhookId = 'X-Shopify-Webhook-Id',
 }
 

@@ -39,9 +39,10 @@ export function process(
     };
 
     const webhookCheck = checkWebhookRequest(rawBody, request.headers);
-    const {webhookOk, hmac, topic, domain, webhookId} = webhookCheck;
+    const {webhookOk, apiVersion, domain, hmac, topic, webhookId} =
+      webhookCheck;
     let {errorMessage} = webhookCheck;
-    const loggingContext = {topic, domain, webhookId};
+    const loggingContext = {apiVersion, domain, topic, webhookId};
 
     const log = logger(config);
     log.info('Processing webhook request', loggingContext);
@@ -65,7 +66,13 @@ export function process(
           log.debug('Found HTTP handler, triggering it', loggingContext);
 
           try {
-            await handler.callback(graphqlTopic, domain, rawBody, webhookId);
+            await handler.callback(
+              graphqlTopic,
+              domain,
+              rawBody,
+              webhookId,
+              apiVersion,
+            );
             response.statusCode = StatusCode.Ok;
           } catch (error) {
             response.statusCode = StatusCode.InternalServerError;
@@ -112,56 +119,73 @@ const statusTextLookup: {[key: string]: string} = {
   [StatusCode.InternalServerError]: 'Internal Server Error',
 };
 
+const headerProperties: {property: string; headerName: ShopifyHeader}[] = [
+  {
+    property: 'apiVersion',
+    headerName: ShopifyHeader.ApiVersion,
+  },
+  {
+    property: 'domain',
+    headerName: ShopifyHeader.Domain,
+  },
+  {
+    property: 'hmac',
+    headerName: ShopifyHeader.Hmac,
+  },
+  {
+    property: 'topic',
+    headerName: ShopifyHeader.Topic,
+  },
+  {
+    property: 'webhookId',
+    headerName: ShopifyHeader.WebhookId,
+  },
+];
+
 function checkWebhookRequest(
   rawBody: string,
   headers: Headers,
 ): {
   webhookOk: boolean;
   errorMessage: string;
+  apiVersion: string;
+  domain: string;
   hmac: string;
   topic: string;
-  domain: string;
   webhookId: string;
 } {
-  const retVal = {
+  let retVal = {
     webhookOk: true,
     errorMessage: '',
+    apiVersion: '',
+    domain: '',
     hmac: '',
     topic: '',
-    domain: '',
     webhookId: '',
   };
 
   if (rawBody.length) {
-    const hmac = getHeader(headers, ShopifyHeader.Hmac);
-    const topic = getHeader(headers, ShopifyHeader.Topic);
-    const domain = getHeader(headers, ShopifyHeader.Domain);
-    const webhookId = getHeader(headers, ShopifyHeader.WebhookId);
-
     const missingHeaders: ShopifyHeader[] = [];
-    if (!hmac) {
-      missingHeaders.push(ShopifyHeader.Hmac);
-    }
-    if (!topic) {
-      missingHeaders.push(ShopifyHeader.Topic);
-    }
-    if (!domain) {
-      missingHeaders.push(ShopifyHeader.Domain);
-    }
-    if (!webhookId) {
-      missingHeaders.push(ShopifyHeader.WebhookId);
-    }
+    const headerValues: {[property: string]: string} = {};
+    headerProperties.forEach(({property, headerName}) => {
+      const headerValue = getHeader(headers, headerName);
+      if (headerValue) {
+        headerValues[property] = headerValue;
+      } else {
+        missingHeaders.push(headerName);
+      }
+    });
 
     if (missingHeaders.length) {
       retVal.webhookOk = false;
-      retVal.errorMessage = `Missing one or more of the required HTTP headers to process webhowebhookOks: [${missingHeaders.join(
+      retVal.errorMessage = `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
         ', ',
       )}]`;
     } else {
-      retVal.hmac = hmac as string;
-      retVal.topic = topic as string;
-      retVal.domain = domain as string;
-      retVal.webhookId = webhookId as string;
+      retVal = {
+        ...retVal,
+        ...headerValues,
+      };
     }
   } else {
     retVal.webhookOk = false;

@@ -27,6 +27,7 @@ const handleWebhookRequest = async (
   shop: string,
   webhookRequestBody: string,
   webhookId: string,
+  apiVersion: string,
 ) => {
   // handler triggered when a webhook is sent by the Shopify platform to your application
 };
@@ -68,12 +69,13 @@ This method accepts an object indexed by topic. Each topic can map to an object 
 
 When a shop triggers an event you subscribed to, the `process` method [below](#webhook-processing) will call your `Http` callbacks with the following arguments:
 
-| Parameter            | Type     | Notes                                            |
-| -------------------- | -------- | ------------------------------------------------ |
-| `topic`              | `string` | The webhook topic.                               |
-| `shop`               | `string` | The shop for which the webhook was triggered.    |
-| `webhookRequestBody` | `string` | The payload of the POST request made by Shopify. |
-| `webhookId`          | `string` | The id of the webhook registration in Shopify.   |
+| Parameter             | Type     | Notes                                            |
+| --------------------- | -------- | ------------------------------------------------ |
+| `topic`               | `string` | The webhook topic.                               |
+| `shop`                | `string` | The shop for which the webhook was triggered.    |
+| `webhookRequestBody`  | `string` | The payload of the POST request made by Shopify. |
+| `webhookId`           | `string` | The id of the webhook registration in Shopify.   |
+| `apiVersion`          | `string` | The apiVersion of the webhook.                   |
 
 ## Get webhook registry information
 
