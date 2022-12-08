@@ -132,32 +132,24 @@ describe('shopify.webhooks.process', () => {
     const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
     await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
 
-    let response = await request(app)
-      .post('/webhooks')
-      .set(headers({hmac: ''}))
-      .send(rawBody)
-      .expect(StatusCode.BadRequest);
+    const emptyHeaders = [
+      {apiVersion: ''},
+      {domain: ''},
+      {hmac: ''},
+      {topic: ''},
+      {webhookId: ''},
+    ];
 
-    expect(response.body.errorThrown).toBeTruthy();
-    expect(blockingWebhookHandlerCalled).toBeFalsy();
+    for (const header of emptyHeaders) {
+      const response = await request(app)
+        .post('/webhooks')
+        .set(headers(header))
+        .send(rawBody)
+        .expect(StatusCode.BadRequest);
 
-    response = await request(app)
-      .post('/webhooks')
-      .set(headers({topic: ''}))
-      .send(rawBody)
-      .expect(StatusCode.BadRequest);
-
-    expect(response.body.errorThrown).toBeTruthy();
-    expect(blockingWebhookHandlerCalled).toBeFalsy();
-
-    response = await request(app)
-      .post('/webhooks')
-      .set(headers({domain: ''}))
-      .send(rawBody)
-      .expect(StatusCode.BadRequest);
-
-    expect(response.body.errorThrown).toBeTruthy();
-    expect(blockingWebhookHandlerCalled).toBeFalsy();
+      expect(response.body.errorThrown).toBeTruthy();
+      expect(blockingWebhookHandlerCalled).toBeFalsy();
+    }
   });
 
   it('catches handler errors but still responds', async () => {

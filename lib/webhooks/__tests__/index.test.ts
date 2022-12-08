@@ -79,9 +79,16 @@ describe('webhooks', () => {
 
     const body = JSON.stringify({});
     const webhookId = 'any-webhook-id';
+    const apiVersion = shopify.config.apiVersion;
     await request(app)
       .post('/webhooks')
-      .set(headers({hmac: hmac(shopify.config.apiSecretKey, body), webhookId}))
+      .set(
+        headers({
+          hmac: hmac(shopify.config.apiSecretKey, body),
+          webhookId,
+          apiVersion,
+        }),
+      )
       .send(body)
       .expect(200);
 
@@ -91,12 +98,14 @@ describe('webhooks', () => {
       session.shop,
       body,
       webhookId,
+      shopify.config.apiVersion,
     );
     expect(handler3.callback).toHaveBeenCalledWith(
       topic,
       session.shop,
       body,
       webhookId,
+      shopify.config.apiVersion,
     );
   });
 
