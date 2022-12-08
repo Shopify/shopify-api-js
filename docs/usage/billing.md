@@ -79,16 +79,8 @@ Here's a typical example of how apps might do that:
 ```ts
 // This can happen at any point after the merchant goes through the OAuth process, as long as there is a session object
 // The session can be retrieved from storage using the session id returned from shopify.session.getCurrentId
-function billingMiddleware(req, res, next) {
-  const sessionId = shopify.session.getCurrentId({
-    isOnline: true,
-    rawRequest: req,
-    rawResponse: res,
-  });
-
-  // use sessionId to retrieve session from app's session storage
-  // getSessionFromStorage() must be provided by application
-  const session = await getSessionFromStorage(sessionId);
+async function billingMiddleware(req, res, next) {
+  const session = res.locals.shopify.session;
 
   const hasPayment = await shopify.billing.check({
     session,
@@ -99,7 +91,14 @@ function billingMiddleware(req, res, next) {
   if (hasPayment) {
     next();
   } else {
-    // Either request payment now or redirect to plan selection page
+    // Either request payment now or redirect to plan selection page, e.g.
+    const confirmationUrl = await shopify.billing.request({
+      session,
+      plan: "My billing plan",
+      isTest: true,
+    });
+
+    res.redirect(confirmationUrl);
   }
 }
 
