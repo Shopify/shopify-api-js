@@ -98,13 +98,22 @@ export function begin(config: ConfigInterface) {
 
 export function callback(config: ConfigInterface) {
   return async function callback<T = AdapterHeaders>({
-    isOnline,
+    isOnline: isOnlineParam,
     ...adapterArgs
   }: CallbackParams): Promise<CallbackResponse<T>> {
     throwIfPrivateApp(
       config.isPrivateApp,
       'Cannot perform OAuth for private apps',
     );
+
+    const log = logger(config);
+
+    if (isOnlineParam !== undefined) {
+      await log.deprecated(
+        '7.0.0',
+        'The isOnline param is no longer required for auth callback',
+      );
+    }
 
     const request = await abstractConvertRequest(adapterArgs);
 
@@ -114,8 +123,7 @@ export function callback(config: ConfigInterface) {
     ).searchParams;
     const shop = query.get('shop')!;
 
-    const log = logger(config);
-    log.info('Completing OAuth', {shop, isOnline});
+    log.info('Completing OAuth', {shop});
 
     const cookies = new Cookies(request, {} as NormalizedResponse, {
       keys: [config.apiSecretKey],
@@ -125,7 +133,7 @@ export function callback(config: ConfigInterface) {
     const stateFromCookie = await cookies.getAndVerify(STATE_COOKIE_NAME);
     cookies.deleteCookie(STATE_COOKIE_NAME);
     if (!stateFromCookie) {
-      log.error('Could not find OAuth cookie', {shop, isOnline});
+      log.error('Could not find OAuth cookie', {shop});
 
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${shop}`,
@@ -134,19 +142,12 @@ export function callback(config: ConfigInterface) {
 
     const authQuery: AuthQuery = Object.fromEntries(query.entries());
     if (!(await validQuery({config, query: authQuery, stateFromCookie}))) {
-      log.error('Invalid OAuth callback', {
-        shop,
-        isOnline,
-        stateFromCookie,
-      });
+      log.error('Invalid OAuth callback', {shop, stateFromCookie});
 
       throw new ShopifyErrors.InvalidOAuthError('Invalid OAuth callback.');
     }
 
-    log.debug('OAuth request is valid, requesting access token', {
-      shop,
-      isOnline,
-    });
+    log.debug('OAuth request is valid, requesting access token', {shop});
 
     const body = {
       client_id: config.apiKey,
@@ -165,13 +166,10 @@ export function callback(config: ConfigInterface) {
     const client = new HttpClient({domain: cleanShop});
     const postResponse = await client.post(postParams);
 
-    log.info('Received access token, creating session', {shop, isOnline});
-
     const session: Session = createSession({
       postResponse,
       shop: cleanShop,
       stateFromCookie,
-      isOnline,
       config,
     });
 
@@ -213,33 +211,17 @@ function createSession({
   postResponse,
   shop,
   stateFromCookie,
-  isOnline,
 }: {
   config: ConfigInterface;
   postResponse: RequestReturn;
   shop: string;
   stateFromCookie: string;
-  isOnline: boolean;
 }): Session {
-  if (
-    !isOnline &&
-    (postResponse.body as OnlineAccessResponse).associated_user
-  ) {
-    throw new ShopifyErrors.InvalidOAuthError(
-      'Attempted to complete offline OAuth flow, but received an online token response. This is likely because ' +
-        "you're not setting the isOnline parameter consistently between begin() and callback()",
-    );
-  }
+  const associatedUser = (postResponse.body as OnlineAccessResponse)
+    .associated_user;
+  const isOnline = Boolean(associatedUser);
 
-  if (
-    isOnline &&
-    !(postResponse.body as OnlineAccessResponse).associated_user
-  ) {
-    throw new ShopifyErrors.InvalidOAuthError(
-      'Attempted to complete online OAuth flow, but received an offline token response. This is likely because ' +
-        "you're not setting the isOnline parameter consistently between begin() and callback()",
-    );
-  }
+  logger(config).info('Creating new session', {shop, isOnline});
 
   if (isOnline) {
     let sessionId: string;

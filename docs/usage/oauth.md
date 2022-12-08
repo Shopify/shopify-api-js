@@ -67,7 +67,6 @@ Example `/auth/callback` endpoint in an Express.js app:
 app.get('/auth/callback', async (req, res) => {
   // The library will automatically set the appropriate HTTP headers
   const callback = await shopify.auth.callback({
-    isOnline: false,
     rawRequest: req,
     rawResponse: res,
   });
@@ -83,7 +82,6 @@ Example `/auth/callback` endpoint in a Cloudflare Worker:
 ```ts
 async function handleFetch(request: Request): Promise<Response> {
   const callback = await shopify.auth.callback<Headers>({
-    isOnline: false,
     rawRequest: request,
   });
 
@@ -100,11 +98,10 @@ async function handleFetch(request: Request): Promise<Response> {
 
 This method takes an object with the following properties:
 
-| Parameter     | Type              |      Required?       | Default Value | Notes                                                                                          |
-| ------------- | ----------------- | :------------------: | :-----------: | ---------------------------------------------------------------------------------------------- |
-| `isOnline`    | `boolean`         |         Yes          |       -       | `true` if the session is online and `false` otherwise. Must match the value from `auth.begin`. |
-| `rawRequest`  | `AdapterRequest`  |         Yes          |       -       | The HTTP Request object used by your runtime.                                                  |
-| `rawResponse` | `AdapterResponse` | _Depends on runtime_ |       -       | The HTTP Response object used by your runtime. Required for Node.js.                           |
+| Parameter     | Type              |      Required?       | Default Value | Notes                                                                |
+| ------------- | ----------------- | :------------------: | :-----------: | -------------------------------------------------------------------- |
+| `rawRequest`  | `AdapterRequest`  |         Yes          |       -       | The HTTP Request object used by your runtime.                        |
+| `rawResponse` | `AdapterResponse` | _Depends on runtime_ |       -       | The HTTP Response object used by your runtime. Required for Node.js. |
 
 It will save a new session using your configured `sessionStorage`, and return an object containing:
 
@@ -150,8 +147,7 @@ If your app needs to access the API while not handling a direct request, for exa
 
 **Note 1**: this method **_does not_** perform any validation on the `shop` parameter. You should **_never_** read the shop from user inputs or URLs.
 
-**Note 2**: obtaining and storing an offline session is performed by going through the OAuth process described above, i.e., using the [start endpoint](#start-endpoint) and [callback endpoint](#callback-endpoint), with the `isOnline` parameter set to `false` for both `shopify.auth.begin()` and `shopify.auth.callback()`.
-
+**Note 2**: obtaining and storing an offline session is performed by going through the OAuth process described above, i.e., using the [start endpoint](#start-endpoint) with the `isOnline` parameter set to `false` when calling `shopify.auth.begin()`.
 
 ```ts
 const offlineSessionId = await shopify.session.getOfflineId({
@@ -212,7 +208,7 @@ number[]
 const stringArray1 = ['alice', 'bob', 'charlie'];
 const stringArray2 = ['alice', 'bob', 'charlie'];
 
-const stringArrayResult = shopify.auth.safeCompare(stringArray1, stringArray2);  // true
+const stringArrayResult = shopify.auth.safeCompare(stringArray1, stringArray2); // true
 
 const array1 = ['one fish', 'two fish'];
 const array2 = ['red fish', 'blue fish'];
