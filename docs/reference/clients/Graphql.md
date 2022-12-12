@@ -102,7 +102,7 @@ const response = await client.query<MyResponseBodyType>({
 console.log(response.body.data);
 ```
 
-> **Note 2**: If there are any errors in the response, `query` will throw a `GraphqlQueryError` which includes details from the API response:
+> **Note**: If there are any errors in the response, `query` will throw a `GraphqlQueryError` which includes details from the API response:
 
 ```ts
 import {GraphqlQueryError} from '@shopify/shopify-api';
