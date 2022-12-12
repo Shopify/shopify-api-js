@@ -122,6 +122,8 @@ The maximum number of times to retry the request.
 
 ### Return
 
+`Promise<RequestResponse>`
+
 Returns an object containing:
 
 #### Headers

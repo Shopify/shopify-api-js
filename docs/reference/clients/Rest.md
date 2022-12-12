@@ -100,6 +100,8 @@ The maximum number of times to retry the request.
 
 ### Return
 
+`Promise<RequestResponse>`
+
 Returns an object containing:
 
 #### Headers
@@ -133,6 +135,8 @@ Takes the same parameters as the [`get`](#get) method.
 
 ### Return
 
+`Promise<RequestResponse>`
+
 Returns the same object as the [`get`](#get) method.
 
 ## Post
@@ -163,6 +167,8 @@ The request payload.
 
 ### Return
 
+`Promise<RequestResponse>`
+
 Returns the same object as the [`get`](#get) method.
 
 ## Put
@@ -186,5 +192,7 @@ console.log(putResponse.headers, putResponse.body);
 Takes the same parameters as the [`post`](#post) method.
 
 ### Return
+
+`Promise<RequestResponse>`
 
 Returns the same object as the [`get`](#get) method.
