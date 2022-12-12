@@ -4,14 +4,16 @@ This section of the documentation provides thorough details on the parameters an
 
 ## [shopifyApi](./shopifyApi.md)
 
-### shopify.[clients](./clients/README.md)
-
 ### shopify.[auth](./auth/README.md)
 
-### shopify.[session](./session/README.md)
+### shopify.[clients](./clients/README.md)
 
-### shopify.[utils](./utils/README.md)
+### shopify.[session](./session/README.md)
 
 ### shopify.[webhooks](./webhooks/README.md)
 
 ### shopify.[billing](./billing/README.md)
+
+### shopify.[logger](./logger/README.md)
+
+### shopify.[utils](./utils/README.md)

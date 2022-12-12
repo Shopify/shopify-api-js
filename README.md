@@ -96,31 +96,6 @@ To do that, apps will need to:
    1. Create a [REST](docs/usage/rest.md) or [GraphQL](docs/usage/graphql.md) API client.
    1. Use the client to query the appropriate [Admin API](https://shopify.dev/api/admin).
 
-### Configurations
-
-These are all the configuration values `shopifyApi` supports.
-
-| Value                           | Type                     | Required |        Default        | Description                                                                                                                                                                  |
-| ------------------------------- | ------------------------ | :------: | :-------------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| apiKey                          | `string`                 |   Yes    |           -           | API key from Partners Dashboard                                                                                                                                              |
-| apiSecretKey                    | `string`                 |   Yes    |           -           | API secret from Partners Dashboard                                                                                                                                           |
-| scopes                          | `string[] \| AuthScopes` |   Yes    |           -           | [App scopes](https://shopify.dev/api/usage/access-scopes)                                                                                                                    |
-| hostName                        | `string`                 |   Yes    |           -           | App host name in the format `my-host-name.com`. Do **not** include the scheme or leading or trailing slashes                                                                 |
-| hostScheme                      | `"https" \| "http"`      |    No    |       `"https"`       | The scheme for your app's public URL                                                                                                                                         |
-| apiVersion                      | `ApiVersion`             |    No    | `LATEST_API_VERSION`  | API version your app will be querying. E.g. `ApiVersion.January20`                                                                                                           |
-| isEmbeddedApp                   | `boolean`                |    No    |        `true`         | Whether your app will run within the Shopify Admin                                                                                                                           |
-| isPrivateApp                    | `boolean`                |    No    |        `false`        | Whether you are building a private app for a store                                                                                                                           |
-| userAgentPrefix                 | `string`                 |    No    |      `undefined`      | Any prefix you wish to include in the `User-Agent` for requests made by the library                                                                                          |
-| privateAppStorefrontAccessToken | `string`                 |    No    |      `undefined`      | Fixed Storefront API access token for private apps                                                                                                                           |
-| customShopDomains               | `(RegExp \| string)[]`   |    No    |      `undefined`      | Use this if you need to allow values other than `myshopify.com`                                                                                                              |
-| billing                         | `BillingConfig`          |    No    |      `undefined`      | Billing configurations. [See documentation](docs/usage/billing.md) for full description                                                                                      |
-| restResources                   | `ShopifyRestResources`   |    No    |           -           | Mounts the given REST resources onto the object. Must use the same version as `apiVersion`. Learn more about [using REST resources](docs/usage/rest.md#using-rest-resources) |
-| logger                          | `{[key: string]: any}`   |    No    |           -           | Tweaks the behaviour of the package's internal logging to make it easier to debug applications                                                                               |
-| &nbsp;&nbsp;logger.log          | `AsyncFunction`          |    No    | `() => Promise<void>` | Async callback function used for logging, which takes in a `LogSeverity` value and a formatted `message`. Defaults to using `console` calls matching the severity parameter  |
-| &nbsp;&nbsp;logger.level        | `LogSeverity`            |    No    |  `LogSeverity.Info`   | Minimum severity for which to trigger the log function                                                                                                                       |
-| &nbsp;&nbsp;logger.httpRequests | `boolean`                |    No    |        `false`        | Whether to log **ALL** HTTP requests made by the package. Only works if `level` is `Debug`                                                                                   |
-| &nbsp;&nbsp;logger.timestamps   | `boolean`                |    No    |        `false`        | Whether to add the current timestamp to every log call                                                                                                                       |
-
 ## Features
 
 - [OAuth](docs/usage/oauth.md)

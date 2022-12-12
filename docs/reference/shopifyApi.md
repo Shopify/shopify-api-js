@@ -20,9 +20,6 @@ const shopify = shopifyApi({
   isEmbeddedApp: true,
   sessionStorage: new MemorySessionStorage(),
   isPrivateApp: false,
-  logFunction: (severity, message) => {
-    myAppsLogFunction(severity, message);
-  },
   userAgentPrefix: 'Custom prefix',
   privateAppStorefrontAccessToken: 'PrivateAccessToken',
   customShopDomains: ['*.my-custom-domain.io'],
@@ -31,6 +28,11 @@ const shopify = shopifyApi({
       amount: 5.0,
       currencyCode: 'USD',
       interval: BillingInterval.OneTime,
+    },
+  },
+  logger: {
+    log: (severity, message) => {
+      myAppsLogFunction(severity, message);
     },
   },
   restResources,
@@ -63,23 +65,17 @@ API secret key for the app. You can find it in the Partners Dashboard.
 
 App host name in the format `my-host-name.com`. Do **not** include the scheme or leading or trailing slashes.
 
-### apiVersion
-
-`ApiVersion` | Defaults to `LATEST_API_VERSION`
-
-API version your app will be querying. E.g. `ApiVersion.January20`.
-
-### sessionStorage
-
-`SessionStorage` | :exclamation: **required** | Default _depends on runtime_
-
-The storage strategy for your user sessions. Learn more about the [available strategies](../usage/customsessions.md).
-
 ### hostScheme
 
 `"https" | "http"` | Defaults to `"https"`
 
 The scheme for your app's public URL. `http` is only allowed if your app is running on `localhost`.
+
+### apiVersion
+
+`ApiVersion` | Defaults to `LATEST_API_VERSION`
+
+API version your app will be querying. E.g. `ApiVersion.January20`.
 
 ### isEmbeddedApp
 
@@ -92,12 +88,6 @@ Whether your app will run within the Shopify Admin. Learn more about embedded ap
 `boolean` | Defaults to `false`
 
 Whether you are building a private app for a store.
-
-### logFunction
-
-`string` | Defaults to `undefined`
-
-Function used by the library to log information using the app's infrastructure.
 
 ### userAgentPrefix
 
@@ -129,6 +119,36 @@ Billing configurations. [See documentation](../usage/billing.md) for full descri
 
 Mounts the given REST resources onto the object. Must use the same version as `apiVersion`. Learn more about [using REST resources](../usage/rest.md#using-rest-resources).
 
+### logger
+
+`LoggerConfig`
+
+Tweaks the behaviour of the package's internal logging to make it easier to debug applications.
+
+#### log
+
+`() => Promise<void>`
+
+Async callback function used for logging, which takes in a `LogSeverity` value and a formatted `message`. Defaults to using `console` calls matching the severity parameter.
+
+#### level
+
+`LogSeverity` | Defaults to `LogSeverity.Info`
+
+Minimum severity for which to trigger the log function.
+
+#### httpRequests
+
+`boolean` | Defaults to `false`
+
+Whether to log **ALL** HTTP requests made by the package. Logs the requests at the `Debug` level.
+
+#### timestamps
+
+`boolean` | Defaults to `false`
+
+Whether to add the current timestamp to every log call.
+
 ## Return
 
 This function returns an object containing the following properties:
@@ -156,6 +176,10 @@ Object containing functions to handle Shopify webhooks.
 ### [billing](./billing/README.md)
 
 Object containing functions to enable apps to bill merchants.
+
+### [logger](./logger/README.md)
+
+Object containing functions to log messages using the `logger.log` function.
 
 ### [utils](./utils/README.md)
 
