@@ -17,17 +17,33 @@ const CUSTOM_DOMAIN_REGEX = /my-other-custom-domain\.com/;
 const VALID_SHOP_WITH_CUSTOM_DOMAIN_REGEX = `my-shop.my-other-custom-domain.com`;
 const INVALID_SHOP_WITH_CUSTOM_DOMAIN_REGEX = `my-shop.my-other-custom-domain.com.nope`;
 
-const VALID_HOST_1 = Buffer.from('my-host.myshopify.com/admin').toString(
-  'base64',
-);
-const VALID_HOST_2 = Buffer.from('my-other-host.myshopify.com/admin').toString(
-  'base64',
-);
-
-const INVALID_HOST_1 = 'plain-string-is-not-base64';
-const INVALID_HOST_2 = `${Buffer.from(
+const VALID_HOSTS = [
+  'my-host.myshopify.com/admin',
   'my-other-host.myshopify.com/admin',
-).toString('base64')}-nope`;
+  'my-other-other-host.myshopify.io/admin',
+  'admin.shopify.com/store/my-shop',
+].map((testhost) => {
+  return {testhost, base64host: Buffer.from(testhost).toString('base64')};
+});
+
+const INVALID_HOSTS = [
+  {
+    testhost: 'plain-string-is-not-base64',
+    base64host: 'plain-string-is-not-base64',
+  },
+  {
+    testhost: "valid host but ending with '-nope'",
+    base64host: `${Buffer.from('my-other-host.myshopify.com/admin').toString(
+      'base64',
+    )}-nope`,
+  },
+  {
+    testhost: 'my-fake-host.notshopify.com/admin',
+    base64host: Buffer.from('my-fake-host.notshopify.com/admin').toString(
+      'base64',
+    ),
+  },
+];
 
 describe('sanitizeShop', () => {
   test('returns the shop for valid URLs', () => {
@@ -79,17 +95,15 @@ describe('sanitizeShop', () => {
 });
 
 describe('sanitizeHost', () => {
-  test('returns the shop for valid URLs', () => {
-    expect(shopify.utils.sanitizeHost(VALID_HOST_1)).toEqual(VALID_HOST_1);
-    expect(shopify.utils.sanitizeHost(VALID_HOST_2)).toEqual(VALID_HOST_2);
-    expect(shopify.utils.sanitizeHost(`${VALID_HOST_2}==`)).toEqual(
-      `${VALID_HOST_2}==`,
-    );
+  VALID_HOSTS.forEach(({testhost, base64host}) => {
+    test(`returns the host for ${testhost}`, () => {
+      expect(shopify.utils.sanitizeHost(base64host)).toEqual(base64host);
+    });
   });
 
-  test('returns null for invalid URLs', () => {
-    expect(shopify.utils.sanitizeHost(INVALID_HOST_1)).toBe(null);
-    expect(shopify.utils.sanitizeHost(INVALID_HOST_2)).toBe(null);
-    expect(shopify.utils.sanitizeHost(`==${INVALID_HOST_2}`)).toBe(null);
+  INVALID_HOSTS.forEach(({testhost, base64host}) => {
+    test(`returns null for ${testhost}`, () => {
+      expect(shopify.utils.sanitizeHost(base64host)).toBe(null);
+    });
   });
 });
