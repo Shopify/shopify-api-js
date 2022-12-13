@@ -1,9 +1,10 @@
 import {ConfigInterface} from '../base-types';
 import {InvalidHostError, InvalidShopError} from '../error';
+import {decodeHost} from '../auth/decode-host';
 
 export function sanitizeShop(config: ConfigInterface) {
   return (shop: string, throwOnInvalid = false): string | null => {
-    const domainsRegex = ['myshopify\\.com', 'myshopify\\.io'];
+    const domainsRegex = ['myshopify\\.com', 'shopify\\.com', 'myshopify\\.io'];
     if (config.customShopDomains) {
       domainsRegex.push(
         ...config.customShopDomains.map((regex) =>
@@ -25,11 +26,17 @@ export function sanitizeShop(config: ConfigInterface) {
   };
 }
 
-export function sanitizeHost(_config: ConfigInterface) {
+export function sanitizeHost(config: ConfigInterface) {
   return (host: string, throwOnInvalid = false): string | null => {
     const base64regex = /^[0-9a-zA-Z+/]+={0,2}$/;
 
-    const sanitizedHost = base64regex.test(host) ? host : null;
+    let sanitizedHost = base64regex.test(host) ? host : null;
+    if (sanitizedHost) {
+      const url = new URL(`https://${decodeHost(sanitizedHost)}`);
+      if (!sanitizeShop(config)(url.hostname, false)) {
+        sanitizedHost = null;
+      }
+    }
     if (!sanitizedHost && throwOnInvalid) {
       throw new InvalidHostError('Received invalid host argument');
     }

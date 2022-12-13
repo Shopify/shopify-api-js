@@ -3,6 +3,7 @@ import {ConfigInterface} from '../base-types';
 import {abstractConvertRequest} from '../../runtime/http';
 import {sanitizeHost} from '../utils/shop-validator';
 
+import {decodeHost} from './decode-host';
 import {GetEmbeddedAppUrlParams} from './types';
 
 export function getEmbeddedAppUrl(config: ConfigInterface) {
@@ -37,13 +38,7 @@ export function getEmbeddedAppUrl(config: ConfigInterface) {
 export function buildEmbeddedAppUrl(config: ConfigInterface) {
   return (host: string): string => {
     sanitizeHost(config)(host, true);
-
-    // eslint-disable-next-line no-warning-comments
-    // TODO Remove the Buffer.from call when dropping Node 14 support
-    const decodedHost =
-      typeof atob === 'undefined'
-        ? Buffer.from(host, 'base64').toString()
-        : atob(host);
+    const decodedHost = decodeHost(host);
 
     return `https://${decodedHost}/apps/${config.apiKey}`;
   };
