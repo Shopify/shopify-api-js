@@ -14,6 +14,4 @@ This section of the documentation provides thorough details on the parameters an
 
 ### shopify.[billing](./billing/README.md)
 
-### shopify.[logger](./logger/README.md)
-
 ### shopify.[utils](./utils/README.md)

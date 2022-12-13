@@ -177,10 +177,6 @@ Object containing functions to handle Shopify webhooks.
 
 Object containing functions to enable apps to bill merchants.
 
-### [logger](./logger/README.md)
-
-Object containing functions to log messages using the `logger.log` function.
-
 ### [utils](./utils/README.md)
 
 Object containing general functions to help build apps.
