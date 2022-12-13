@@ -95,7 +95,7 @@ To do that, apps will need to:
 1. Create an Admin API access token by going through [the OAuth flow](docs/usage/oauth.md).
 1. Set up its own endpoints to:
    1. [Fetch the current session](docs/usage/oauth.md#using-sessions) created in the OAuth process.
-   1. Create a [REST](docs/usage/rest.md) or [GraphQL](docs/usage/graphql.md) API client.
+   1. Create a [REST](docs/reference/clients/Rest.md) or [GraphQL](docs/reference/clients/Graphql.md) API client.
    1. Use the client to query the appropriate [Admin API](https://shopify.dev/api/admin).
 
 ## Tutorials

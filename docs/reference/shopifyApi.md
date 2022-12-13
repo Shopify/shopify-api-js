@@ -117,7 +117,7 @@ Billing configurations. [See documentation](../usage/billing.md) for full descri
 
 `ShopifyRestResources`
 
-Mounts the given REST resources onto the object. Must use the same version as `apiVersion`. Learn more about [using REST resources](../usage/rest.md#using-rest-resources).
+Mounts the given REST resources onto the object. Must use the same version as `apiVersion`. Learn more about [using REST resources](../usage/rest-resources.md).
 
 ### logger
 

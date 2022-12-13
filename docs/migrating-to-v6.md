@@ -1047,4 +1047,4 @@ app.get('/api/products/count', async (req, res) => {
 });
 ```
 
-See [using REST resources](usage/rest.md#using-rest-resources) for more details.
+See [using REST resources](usage/rest-resources.md) for more details.

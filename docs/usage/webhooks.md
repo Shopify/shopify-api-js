@@ -78,3 +78,19 @@ app.post('/webhooks', express.text({type: '*/*'}), async (req, res) => {
   }
 });
 ```
+
+## Note regarding use of body parsers
+
+Unlike `v5` and earlier versions of this library, `shopify.webhooks.process()` now expects to receive the body content (in string format) as a parameter and no longer reads in the request body directly.
+
+This allows for the use of body-parsers in your code.
+
+To use Express as an example, if you wish to use the `express.json()` middleware in your app, the webhook processing can now occur after calling `app.use(express.json())`. For any path that's a webhooks path, `express.text({type: '*/*'})` should be used so that `req.body` is a string that `shopify.webhooks.process()` expects:
+
+```typescript
+await shopify.webhooks.process({
+  rawBody: req.body,
+  rawRequest: req,
+  rawResponse: res,
+});
+```
