@@ -1,4 +1,4 @@
-# Implementing session storage
+# Storing sessions
 
 As of v6 of the library, there are no `SessionStorage` implementations included and the responsibility for implementing session storage is now delegated to the application.
 

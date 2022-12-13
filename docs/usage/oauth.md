@@ -5,14 +5,12 @@ The first thing your app will need to do is to get a token to access the Admin A
 
 To perform OAuth, you will need to create two endpoints in your app:
 
-1. [Start the process](#start-endpoint) by directing the merchant to Shopify to ask for permission to install the app.
-1. [Return the merchant to your app](#callback-endpoint) once they approve the app installation, to set up a session with an API access token.
+1. Start the process by calling [shopify.auth.begin](../reference/auth/begin.md) to redirect the merchant to Shopify, to ask for permission to install the app.
+1. Return the merchant to your app once they approve the app installation, by calling [shopify.auth.callback](../reference/auth/callback.md) to set up a session with an API access token.
 
-Once you complete the OAuth process, you'll be able to [use the session it creates](#using-sessions) to create API clients.
+Once you complete the OAuth process, you'll be able to call [shopify.session.getCurrentId](../reference/session/getCurrentId.md) to fetch your session, and create API clients.
 
-**Note**: private apps are unable to perform OAuth, because they don't require an access token to interact with API.
-
-### Loading a session for a background job
+> **Note**: private apps are unable to perform OAuth, because they don't require an access token to interact with API.
 
 ## Detecting scope changes
 

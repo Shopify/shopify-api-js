@@ -85,7 +85,9 @@ const app = express();
 ### Next steps
 
 Once you configure your app, you can use this package to access the Shopify APIs.
-See the specific documentation in the [Features section](#features) for instructions on how to get API access tokens and use them to query the APIs.
+See the [reference documentation](./docs/reference/README.md) for details on all the methods provided by this package.
+
+See the specific documentation in the [Tutorials section](#tutorials) for high-level instructions on how to get API access tokens and use them to query the APIs.
 
 As a general rule, apps will want to interact with the Admin API to fetch / submit data to Shopify.
 To do that, apps will need to:
@@ -96,21 +98,13 @@ To do that, apps will need to:
    1. Create a [REST](docs/usage/rest.md) or [GraphQL](docs/usage/graphql.md) API client.
    1. Use the client to query the appropriate [Admin API](https://shopify.dev/api/admin).
 
-## Features
+## Tutorials
 
-- [OAuth](docs/usage/oauth.md)
-  - [Start endpoint](docs/usage/oauth.md#start-endpoint)
-  - [Callback endpoint](docs/usage/oauth.md#callback-endpoint)
-  - [Using sessions](docs/usage/oauth.md#using-sessions)
-  - [Detecting scope changes](docs/usage/oauth.md#detecting-scope-changes)
-- [REST Admin API client](docs/usage/rest.md)
-  - [Using REST resources](docs/usage/rest.md#using-rest-resources)
-- [GraphQL Admin API client](docs/usage/graphql.md)
-- [GraphqL Storefront API client](docs/usage/storefront.md)
-- [Webhooks](docs/usage/webhooks.md)
-  - [Register a Webhook](docs/usage/webhooks.md#register-a-webhook)
-  - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
-- [Billing](docs/usage/billing.md)
+- [Performing OAuth](docs/usage/oauth.md)
+- [Storing sessions](docs/usage/session-storage.md)
+- [Setting up webhooks](docs/usage/webhooks.md)
+- [Using REST resources](docs/usage/rest-resources.md)
+- [Configuring Billing](docs/usage/billing.md)
 - [Adding custom runtimes](docs/usage/runtimes.md)
 - [Customizing logging configuration](docs/usage/logger.md)
 

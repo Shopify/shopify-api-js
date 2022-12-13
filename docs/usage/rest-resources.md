@@ -1,19 +1,11 @@
-# REST Admin API client
+# Using REST resources
 
-Once OAuth is complete, we can use this library to interact with the Admin REST API.
-It can do that in two different ways:
-
-1. [Using the client class](#using-the-client-class)
-1. [Using REST resources](#using-rest-resources)
-
-For detailed information on individual endpoints, please visit our [REST API reference](https://shopify.dev/api/admin-rest).
-
-## Using REST resources
+To call the Admin REST API, you can use the [REST client](../reference/clients/Rest.md) to send manually crafted requests to Shopify.
 
 The Admin API has a lot of endpoints, and the differences between them can be subtle.
 To make it easier to interact with the API, this library provides resource classes, which map these endpoints to OO code and can make API queries feel more natural.
 
-**Note**: we provide auto-generated resources for all **_stable_** API versions, so your app must include the appropriate set (see [mounting REST resources](#mounting-rest-resources) below), matching your `apiVersion` configuration. The library will throw an error if the versions don't match.
+> **Note**: we provide auto-generated resources for all **_stable_** API versions, so your app must include the appropriate set (see [mounting REST resources](#mounting-rest-resources) below), matching your `apiVersion` configuration. The library will throw an error if the versions don't match.
 
 Below is an example of how REST resources can make it easier to fetch the first product and update it:
 
@@ -92,7 +84,7 @@ The resource classes provide representations of all endpoints for the API resour
 
 Please visit our [REST API reference documentation](https://shopify.dev/api/admin-rest) for detailed instructions on how to call each of the endpoints.
 
-### Mounting REST resources
+## Mounting REST resources
 
 The library doesn't include all available resources automatically to make loading it more efficient, since there are hundreds of resource classes.
 To use REST resources, you can import the desired version and mount it onto your `shopify` object when creating it:
