@@ -1,3 +1,4 @@
+import {InvalidSession} from '../error';
 import {OnlineAccessInfo} from '../auth/oauth/types';
 import {AuthScopes} from '../auth/scopes';
 
@@ -20,6 +21,12 @@ export class Session {
   public static fromPropertyArray(
     entries: [string, string | number | boolean][],
   ): Session {
+    if (!Array.isArray(entries)) {
+      throw new InvalidSession(
+        'The parameter is not an array: a Session cannot be created from this object.',
+      );
+    }
+
     const obj = Object.fromEntries(
       entries
         .filter(([_key, value]) => value !== null && value !== undefined)
