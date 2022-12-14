@@ -7,12 +7,20 @@ import {shopify} from '../../__tests__/test-helper';
 import {HTTP_HANDLER} from './handlers';
 import {getTestExpressApp, headers, hmac} from './utils';
 
+interface TestResponseInterface {
+  errorThrown: boolean;
+  error?: Error;
+  message?: string;
+}
+
 describe('shopify.webhooks.process', () => {
   const rawBody = '{"foo": "bar"}';
 
   const app = getTestExpressApp();
   app.post('/webhooks', async (req, res) => {
-    let errorThrown = false;
+    const data: TestResponseInterface = {
+      errorThrown: false,
+    };
     let statusCode = StatusCode.Ok;
     try {
       await shopify.webhooks.process({
@@ -21,11 +29,13 @@ describe('shopify.webhooks.process', () => {
         rawResponse: res,
       });
     } catch (error) {
-      errorThrown = true;
+      data.errorThrown = true;
+      data.error = error;
+      data.message = error.message;
       expect(error).toBeInstanceOf(InvalidWebhookError);
       statusCode = error.response.statusCode;
     }
-    res.status(statusCode).json({errorThrown});
+    res.status(statusCode).json({data});
   });
 
   let blockingWebhookHandlerCalled: boolean;
@@ -64,7 +74,7 @@ describe('shopify.webhooks.process', () => {
       .send(rawBody)
       .expect(StatusCode.Ok);
 
-    expect(response.body.errorThrown).toBeFalsy();
+    expect(response.body.data.errorThrown).toBeFalsy();
     expect(blockingWebhookHandlerCalled).toBeTruthy();
   });
 
@@ -83,7 +93,7 @@ describe('shopify.webhooks.process', () => {
       .send(rawBody)
       .expect(StatusCode.Ok);
 
-    expect(response.body.errorThrown).toBeFalsy();
+    expect(response.body.data.errorThrown).toBeFalsy();
     expect(blockingWebhookHandlerCalled).toBeTruthy();
   });
 
@@ -97,7 +107,8 @@ describe('shopify.webhooks.process', () => {
       .send(rawBody)
       .expect(StatusCode.NotFound);
 
-    expect(response.body.errorThrown).toBeTruthy();
+    expect(response.body.data.errorThrown).toBeTruthy();
+    expect(response.body.data.message).toContain('PRODUCTS_CREATE');
     expect(blockingWebhookHandlerCalled).toBeFalsy();
   });
 
@@ -111,7 +122,7 @@ describe('shopify.webhooks.process', () => {
       .send(rawBody)
       .expect(StatusCode.Unauthorized);
 
-    expect(response.body.errorThrown).toBeTruthy();
+    expect(response.body.data.errorThrown).toBeTruthy();
     expect(blockingWebhookHandlerCalled).toBeFalsy();
   });
 
@@ -124,7 +135,7 @@ describe('shopify.webhooks.process', () => {
       .set(headers())
       .expect(StatusCode.BadRequest);
 
-    expect(response.body.errorThrown).toBeTruthy();
+    expect(response.body.data.errorThrown).toBeTruthy();
     expect(blockingWebhookHandlerCalled).toBeFalsy();
   });
 
@@ -147,7 +158,7 @@ describe('shopify.webhooks.process', () => {
         .send(rawBody)
         .expect(StatusCode.BadRequest);
 
-      expect(response.body.errorThrown).toBeTruthy();
+      expect(response.body.data.errorThrown).toBeTruthy();
       expect(blockingWebhookHandlerCalled).toBeFalsy();
     }
   });
@@ -169,6 +180,6 @@ describe('shopify.webhooks.process', () => {
       .send(rawBody)
       .expect(StatusCode.InternalServerError);
 
-    expect(response.body.errorThrown).toBeTruthy();
+    expect(response.body.data.errorThrown).toBeTruthy();
   });
 });
