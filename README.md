@@ -87,7 +87,7 @@ const app = express();
 Once you configure your app, you can use this package to access the Shopify APIs.
 See the [reference documentation](./docs/reference/README.md) for details on all the methods provided by this package.
 
-See the specific documentation in the [Guides section](#tutorials) for high-level instructions on how to get API access tokens and use them to query the APIs.
+See the specific documentation in the [Guides section](#guides) for high-level instructions on how to get API access tokens and use them to query the APIs.
 
 As a general rule, apps will want to interact with the Admin API to fetch / submit data to Shopify.
 To do that, apps will need to:
