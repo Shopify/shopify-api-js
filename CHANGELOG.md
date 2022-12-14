@@ -7,6 +7,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- [Patch] Raise an `InvalidSession` if `Session.fromPropertyArray` receive an object that is not an array
 - [Patch] Validate content of host parameter using sanitizeShop regex [#634](https://github.com/Shopify/shopify-api-js/pull/634)
 - [Patch] Use the GraphQL format of webhook topics in the error message [#626](https://github.com/Shopify/shopify-api-js/pull/626)
 
