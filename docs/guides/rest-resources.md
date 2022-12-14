@@ -103,4 +103,4 @@ const shopify = shopifyApi({
 This will automatically load all REST resources onto `shopify.rest`, as per the example above.
 From this point, you can start using the resources to interact with the API.
 
-[Back to guide index](../../README.md#features)
+[Back to guide index](../../README.md#guides)

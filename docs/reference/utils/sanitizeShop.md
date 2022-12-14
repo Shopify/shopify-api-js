@@ -29,3 +29,5 @@ If `true`, throws an error when the shop is invalid.
 `boolean`
 
 Whether the shop is valid.
+
+[Back to shopify.utils](./README.md)

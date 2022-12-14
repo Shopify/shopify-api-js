@@ -40,3 +40,5 @@ The values to compare.
 `boolean`
 
 Whether the parameters match.
+
+[Back to shopify.auth](./README.md)

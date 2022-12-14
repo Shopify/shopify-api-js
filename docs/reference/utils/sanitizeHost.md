@@ -27,3 +27,5 @@ If `true`, throws an error when the host is invalid.
 `boolean`
 
 Whether the host is valid.
+
+[Back to shopify.utils](./README.md)

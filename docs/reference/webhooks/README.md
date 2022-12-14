@@ -21,3 +21,5 @@ Register the configured handlers with Shopify.
 ## shopify.webhooks.[process](./process.md)
 
 Validate and process a webhook request from Shopify.
+
+[Back to shopifyApi](../shopifyApi.md)

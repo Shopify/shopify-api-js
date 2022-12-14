@@ -38,3 +38,5 @@ The HTTP Response object used by your runtime.
 `Promise<string>`
 
 The appropriate Shopify address to redirect to.
+
+[Back to shopify.auth](./README.md)

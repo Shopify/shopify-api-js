@@ -13,3 +13,5 @@ Builds the session id for the given shop, for background tasks that don't involv
 ## shopify.session.[decodeSessionToken](./decodeSessionToken.md)
 
 Extracts and validates the session token JWT from App Bridge requests.
+
+[Back to shopifyApi](../shopifyApi.md)

@@ -44,3 +44,5 @@ The raw request body with the query to be forwarded to Shopify.
 ## Return
 
 This method returns the request response from the Graphql client's [`query`](./Graphql.md#query) method.
+
+[Back to shopify.clients](./README.md)

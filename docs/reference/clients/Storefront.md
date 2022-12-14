@@ -137,3 +137,5 @@ The HTTP headers in the response from Shopify.
 `any`
 
 The HTTP body in the response from Shopify.
+
+[Back to shopify.clients](./README.md)

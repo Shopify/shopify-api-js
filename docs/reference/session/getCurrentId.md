@@ -55,3 +55,5 @@ The HTTP Response object used by your runtime. Required for Node.js.
 `Promise<string | undefined>`
 
 The session id for the request, or `undefined` if none was found.
+
+[Back to shopify.session](./README.md)

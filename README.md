@@ -87,26 +87,26 @@ const app = express();
 Once you configure your app, you can use this package to access the Shopify APIs.
 See the [reference documentation](./docs/reference/README.md) for details on all the methods provided by this package.
 
-See the specific documentation in the [Tutorials section](#tutorials) for high-level instructions on how to get API access tokens and use them to query the APIs.
+See the specific documentation in the [Guides section](#tutorials) for high-level instructions on how to get API access tokens and use them to query the APIs.
 
 As a general rule, apps will want to interact with the Admin API to fetch / submit data to Shopify.
 To do that, apps will need to:
 
-1. Create an Admin API access token by going through [the OAuth flow](docs/usage/oauth.md).
+1. Create an Admin API access token by going through [the OAuth flow](docs/guides/oauth.md).
 1. Set up its own endpoints to:
-   1. [Fetch the current session](docs/usage/oauth.md#using-sessions) created in the OAuth process.
+   1. [Fetch the current session](docs/guides/oauth.md#using-sessions) created in the OAuth process.
    1. Create a [REST](docs/reference/clients/Rest.md) or [GraphQL](docs/reference/clients/Graphql.md) API client.
    1. Use the client to query the appropriate [Admin API](https://shopify.dev/api/admin).
 
-## Tutorials
+## Guides
 
-- [Performing OAuth](docs/usage/oauth.md)
-- [Storing sessions](docs/usage/session-storage.md)
-- [Setting up webhooks](docs/usage/webhooks.md)
-- [Using REST resources](docs/usage/rest-resources.md)
-- [Configuring Billing](docs/usage/billing.md)
-- [Adding custom runtimes](docs/usage/runtimes.md)
-- [Customizing logging configuration](docs/usage/logger.md)
+- [Performing OAuth](docs/guides/oauth.md)
+- [Storing sessions](docs/guides/session-storage.md)
+- [Setting up webhooks](docs/guides/webhooks.md)
+- [Using REST resources](docs/guides/rest-resources.md)
+- [Configuring Billing](docs/guides/billing.md)
+- [Adding custom runtimes](docs/guides/runtimes.md)
+- [Customizing logging configuration](docs/guides/logger.md)
 
 ## Migrating to v6
 

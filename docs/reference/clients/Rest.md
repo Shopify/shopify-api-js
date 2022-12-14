@@ -71,7 +71,7 @@ console.log(response.body.products);
 
 The requested API endpoint path. This can be one of two formats:
 
-- The path starting after the `/admin/api/{version}/` prefix, such as `'products'`, which executes `/admin/api/{version}/products.json`
+- The path starting after the `/admin/api/{version}/` prefix, such as `'products'`, which executes `/admin/api/{version}/products.json`, where `{version}` is obtained from the library configuration (see [`shopifyApi`](../shopifyApi.md).
 - The full path, such as `/admin/oauth/access_scopes.json`
 
 #### query
@@ -196,3 +196,5 @@ Takes the same parameters as the [`post`](#post) method.
 `Promise<RequestResponse>`
 
 Returns the same object as the [`get`](#get) method.
+
+[Back to shopify.clients](./README.md)

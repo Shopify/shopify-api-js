@@ -142,4 +142,4 @@ const shopify = shopifyApi({
 });
 ```
 
-[Back to guide index](../../README.md#features)
+[Back to guide index](../../README.md#guides)

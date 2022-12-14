@@ -28,4 +28,4 @@ if (!shopify.config.scopes.equals(session.scope)) {
 
 This is useful if you have a middleware or pre-request check in your app to ensure that the session is still valid.
 
-[Back to guide index](../../README.md#features)
+[Back to guide index](../../README.md#guides)

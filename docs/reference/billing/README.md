@@ -13,3 +13,5 @@ Checks if the current shop has paid for any of the given plans.
 ## shopify.billing.[request](./request.md)
 
 Requests a new payment for the given payment plan.
+
+[Back to shopifyApi](../shopifyApi.md)

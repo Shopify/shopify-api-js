@@ -13,3 +13,5 @@ const state = shopify.auth.nonce();
 `string`
 
 A random string of characters.
+
+[Back to shopify.auth](./README.md)

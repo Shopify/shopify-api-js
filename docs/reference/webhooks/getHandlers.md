@@ -22,3 +22,5 @@ The topic to search for.
 `WebhookHandler[]`
 
 The list of webhook handlers configured for that topic.
+
+[Back to shopify.webhooks](./README.md)

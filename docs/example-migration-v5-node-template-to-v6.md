@@ -34,25 +34,27 @@ pnpm install
 
 ### 4. Create a new file called `shopify.js`
 
-This will be used to to create the shopify api instance used throughout the application.  The v5 `Shopify.Context` configuration and the example billing configuration that is currently in `index.js` will be moved into this file.
+This will be used to to create the shopify api instance used throughout the application. The v5 `Shopify.Context` configuration and the example billing configuration that is currently in `index.js` will be moved into this file.
 
 ```js
-import "@shopify/shopify-api/adapters/node";
+import '@shopify/shopify-api/adapters/node';
 import {
   shopifyApi,
   BillingInterval,
   LATEST_API_VERSION,
   LogSeverity,
-} from "@shopify/shopify-api";
-let { restResources } = await import(`@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`);
+} from '@shopify/shopify-api';
+let {restResources} = await import(
+  `@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`
+);
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
 const billingConfig = {
-  "My Shopify One-Time Charge": {
+  'My Shopify One-Time Charge': {
     // This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
     amount: 5.0,
-    currencyCode: "USD",
+    currencyCode: 'USD',
     interval: BillingInterval.OneTime,
   },
 };
@@ -60,9 +62,9 @@ const billingConfig = {
 const apiConfig = {
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
-  scopes: process.env.SCOPES.split(","),
-  hostName: process.env.HOST.replace(/https?:\/\//, ""),
-  hostScheme: process.env.HOST.split("://")[0],
+  scopes: process.env.SCOPES.split(','),
+  hostName: process.env.HOST.replace(/https?:\/\//, ''),
+  hostScheme: process.env.HOST.split('://')[0],
   apiVersion: LATEST_API_VERSION,
   isEmbeddedApp: true,
   ...(process.env.SHOP_CUSTOM_DOMAIN && {
@@ -78,9 +80,9 @@ export default shopify;
 
 ### 5. Update the `gdpr.js` file
 
-This file needs to be updated to use the `shopify` api instance as well as the new parameter structure for the `addHandlers` method.  The comments have been removed from the code below for brevity.
+This file needs to be updated to use the `shopify` api instance as well as the new parameter structure for the `addHandlers` method. The comments have been removed from the code below for brevity.
 
-:warning: :warning: Note that the new `addHandlers` method is asynchronous and requires an `await` before its call.  As a result, the encapsulating `setupGDPRWebHooks` method requires the `async` keyword.
+:warning: :warning: Note that the new `addHandlers` method is asynchronous and requires an `await` before its call. As a result, the encapsulating `setupGDPRWebHooks` method requires the `async` keyword.
 
 ```diff
 -import { Shopify } from "@shopify/shopify-api";
@@ -137,7 +139,7 @@ This file needs to be updated to use the `shopify` api instance as well as the n
 
 ### 6. Install the `@shopify/shopify-app-session-storage-sqlite` package
 
-The v6 API library no longer provide session storage adapters to connect to various database/data stores.  The storage of session data is now delegated to the application.
+The v6 API library no longer provide session storage adapters to connect to various database/data stores. The storage of session data is now delegated to the application.
 
 The session storage adapters that were in the API library have now been moved to their own individual packages. As the v5 node template uses SQLite by default, let's install the SQLite session storage adapter into the application, using your preferred package manager.
 
@@ -154,7 +156,7 @@ pnpm install @shopify/shopify-app-session-storage-sqlite
 Create the following file to instantiate and export a SQLite session storage instance.
 
 ```ts
-import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
+import {SQLiteSessionStorage} from '@shopify/shopify-app-session-storage-sqlite';
 
 const dbPath = `${process.cwd()}/database.sqlite`;
 
@@ -195,7 +197,7 @@ Note that the `DB_PATH` constant from the `index.js` file has moved into this fi
 
 ### 9. Update the `middleware/auth.js` file to use the `shopify` instance and the `sqliteSessionStorage` instance
 
-Whereas the `v5` version of the API library saved the session returned by the auth callback method on behalf of the app, the `v6` library only returns the session.  The application must store the returned session in its session storage.
+Whereas the `v5` version of the API library saved the session returned by the auth callback method on behalf of the app, the `v6` library only returns the session. The application must store the returned session in its session storage.
 
 ```diff
 -import { Shopify } from "@shopify/shopify-api";
@@ -484,18 +486,18 @@ Whereas `v5` of the API library had a `loadCurrentSession` method to provide the
 Because version 6 of the api library now includes support for checking and making billing requests, replace the `helpers/ensure-billing.js` file with the following code.
 
 ```ts
-import shopify from "../shopify.js";
+import shopify from '../shopify.js';
 
 /**
-* You may want to charge merchants for using your app. This helper provides that function by checking if the current
-* merchant has an active one-time payment or subscription named `chargeName`. If no payment is found,
-* this helper requests it and returns a confirmation URL so that the merchant can approve the purchase.
-*
-* Learn more about billing in our documentation: https://shopify.dev/apps/billing
-*/
+ * You may want to charge merchants for using your app. This helper provides that function by checking if the current
+ * merchant has an active one-time payment or subscription named `chargeName`. If no payment is found,
+ * this helper requests it and returns a confirmation URL so that the merchant can approve the purchase.
+ *
+ * Learn more about billing in our documentation: https://shopify.dev/apps/billing
+ */
 export default async function ensureBilling(
   session,
-  isProdOverride = process.env.NODE_ENV === "production"
+  isProdOverride = process.env.NODE_ENV === 'production',
 ) {
   let hasPayment = true;
   let confirmationUrl = null;
@@ -763,7 +765,7 @@ Pulling it all together!
 ```diff
 -  // Do not call app.use(express.json()) before processing webhooks with
 -  // Shopify.Webhooks.Registry.process().
--  // See https://github.com/Shopify/shopify-api-node/blob/main/docs/usage/webhooks.md#note-regarding-use-of-body-parsers
+-  // See https://github.com/Shopify/shopify-api-node/blob/main/docs/guides/webhooks.md#note-regarding-use-of-body-parsers
 -  // for more details.
 -  app.post("/api/webhooks", async (req, res) => {
 +  app.post("/api/webhooks", express.text({ type: "*/*" }), async (req, res) => {

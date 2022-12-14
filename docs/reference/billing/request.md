@@ -80,3 +80,5 @@ The URL to confirm the charge with the merchant - we don't redirect right away t
 
 The app **must** redirect the merchant to this URL so that they can confirm the charge before Shopify applies it.
 The merchant will be sent back to your app's main page after the process is complete.
+
+[Back to shopify.billing](./README.md)

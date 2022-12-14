@@ -27,3 +27,5 @@ The token to parse.
 `Promise<JwtPayload>`
 
 The parsed JWT payload.
+
+[Back to shopify.session](./README.md)

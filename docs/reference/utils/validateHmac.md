@@ -21,3 +21,5 @@ The request query arguments.
 `boolean`
 
 Whether the `hmac` value in the query is valid.
+
+[Back to shopify.utils](./README.md)

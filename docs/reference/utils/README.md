@@ -17,3 +17,5 @@ Validates the HMAC signature in requests from Shopify.
 ## shopify.utils.[versionCompatible](./versionCompatible.md)
 
 Checks whether the given API version is compatible with the current library version.
+
+[Back to shopifyApi](../shopifyApi.md)

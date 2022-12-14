@@ -147,9 +147,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - Add a 5 second `clockTolerance` to fix `jwt not active` error [#227](https://github.com/Shopify/shopify-api-js/pull/227)
 - ⚠️ [Breaking] Change default for OAuth.beginAuth to online sessions [#203](https://github.com/Shopify/shopify-api-js/pull/203)
-  - see [oauth.md](https://github.com/Shopify/shopify-api-js/blob/main/docs/usage/oauth.md) for updated docs
+  - see [oauth.md](./docs/guides/oauth.md) for updated docs
 - ⚠️ [Breaking] Return and delete session in `validateAuthCallback` [#217](https://github.com/Shopify/shopify-api-js/pull/217)
-  - see [oauth.md](https://github.com/Shopify/shopify-api-js/blob/main/docs/usage/oauth.md) for updated usage
+  - see [oauth.md](./docs/guides/oauth.md) for updated usage
 - ⚠️ [Breaking] Extract `addHandler` and `getHandler` methods for webhooks out of `register` [#205](https://github.com/Shopify/shopify-api-js/pull/205)
 - ⚠️ [Breaking] Sessions no longer default to `false` for `isOnline` [#169](https://github.com/Shopify/shopify-api-js/pull/169)
 - Required `Session` arguments must be passed to the constructor [#169](https://github.com/Shopify/shopify-api-js/pull/169)

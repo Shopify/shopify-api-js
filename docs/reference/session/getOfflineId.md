@@ -34,3 +34,5 @@ The shop domain for the task.
 `string`
 
 The session id for the given shop.
+
+[Back to shopify.session](./README.md)

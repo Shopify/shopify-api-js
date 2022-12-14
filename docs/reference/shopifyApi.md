@@ -111,13 +111,15 @@ Use this if you need to allow values other than `myshopify.com`.
 
 `BillingConfig` | Defaults to `undefined`
 
-Billing configurations. [See documentation](../usage/billing.md) for full description.
+Billing configurations. [See documentation](../guides/billing.md) for full description.
 
 ### restResources
 
 `ShopifyRestResources`
 
-Mounts the given REST resources onto the object. Must use the same version as `apiVersion`. Learn more about [using REST resources](../usage/rest-resources.md).
+Mounts the given REST resources onto the object. Learn more about [using REST resources](../guides/rest-resources.md).
+
+> **Note**: _Must_ use the same version as `apiVersion`.
 
 ### logger
 

@@ -60,3 +60,5 @@ Whether the registration was successful.
 The body from the Shopify request to register the webhook.
 
 > **Note**: This object will only contain results for a handler if any of its information was updated with Shopify.
+
+[Back to shopify.webhooks](./README.md)

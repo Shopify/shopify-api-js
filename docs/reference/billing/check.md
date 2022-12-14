@@ -62,3 +62,5 @@ Whether to look for test purchases only.
 `Promise<boolean>`
 
 `true` if there is a payment for any of the given plans, and `false` otherwise.
+
+[Back to shopify.billing](./README.md)

@@ -25,3 +25,5 @@ Builds a URL to redirect the user back to the right Shopify surface based on the
 ## shopify.auth.[buildEmbeddedAppUrl](./buildEmbeddedAppUrl.md)
 
 Constructs the appropriate Shopify URL to redirect to.
+
+[Back to shopifyApi](../shopifyApi.md)

@@ -17,3 +17,5 @@ Class that can interact with the [Shopify Storefront API](https://shopify.dev/ap
 ## shopify.clients.[graphqlProxy](./graphqlProxy.md)
 
 Creates a proxy that forwards requests to the GraphQL API and returns the response from Shopify.
+
+[Back to shopifyApi](../shopifyApi.md)

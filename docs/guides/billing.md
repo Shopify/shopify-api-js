@@ -70,4 +70,4 @@ If you're gating access to the entire app, you should check for billing:
 
 **Note**: the merchant may refuse payment when prompted or cancel subscriptions later on, but the app will already be installed at that point. We recommend using [billing webhooks](https://shopify.dev/apps/billing#webhooks-for-billing) to revoke access for merchants when they cancel / decline payment.
 
-[Back to guide index](../../README.md#features)
+[Back to guide index](../../README.md#guides)

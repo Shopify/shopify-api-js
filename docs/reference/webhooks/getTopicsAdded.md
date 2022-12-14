@@ -14,3 +14,5 @@ const topics = shopify.webhooks.getTopicsAdded();
 `string[]`
 
 The added topics.
+
+[Back to shopify.webhooks](./README.md)

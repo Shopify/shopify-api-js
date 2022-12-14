@@ -52,4 +52,4 @@ const myRuntimeHeaderFunc: AbstractConvertHeadersFunc = async (
 setAbstractConvertHeadersFunc(myRuntimeHeaderFunc);
 ```
 
-[Back to guide index](../../README.md#features)
+[Back to guide index](../../README.md#guides)

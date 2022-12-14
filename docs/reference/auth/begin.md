@@ -1,6 +1,6 @@
 # shopify.auth.begin
 
-Begins the OAuth process by redirecting the merchant to Shopify to the Shopify Authentication screen, where they will be asked to approve the required app scopes.
+Begins the OAuth process by redirecting the merchant to the Shopify Authentication screen, where they will be asked to approve the required app scopes.
 
 ## Examples
 
@@ -80,3 +80,5 @@ This method triggers a response to the given request automatically.
 `Promise<Response>`
 
 The response to be returned from the request handler.
+
+[Back to shopify.auth](./README.md)

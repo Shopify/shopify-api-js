@@ -1,7 +1,9 @@
 # shopify.auth.callback
 
-Receive Shopify's callback after the user approves the app installation.
-Once the merchant approves the app's request for scopes, Shopify will redirect them back to your app, using the `callbackPath` parameter from `shopify.auth.begin`. Your app can then call `shopify.auth.callback` to complete the OAuth process, which will create a new Shopify `Session` and return the appropriate HTTP headers your app should respond with.
+Process Shopify's callback request after the user approves the app installation.
+Once the merchant approves the app's request for scopes, Shopify will redirect them back to your app, using the `callbackPath` parameter from `shopify.auth.begin`.
+
+Your app must then call `shopify.auth.callback` to complete the OAuth process, which will create a new Shopify `Session` and return the appropriate HTTP headers your app with which your app must respond.
 
 ## Example
 
@@ -71,3 +73,5 @@ The new Shopify session, containing the API access token.
 The HTTP headers to include in the response.
 In TypeScript, you can pass in a type to get a typed object back - see the Cloudflare example above.
 Returns `undefined` for Node.js.
+
+[Back to shopify.auth](./README.md)

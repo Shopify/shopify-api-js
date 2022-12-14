@@ -1,6 +1,6 @@
 # shopify.auth.buildEmbeddedAppUrl
 
-Constructs the actual URL to redirect to for [getEmbeddedAppUrl](./getEmbeddedAppUrl.md) based on the given `host`.
+Constructs the redirection URL for [getEmbeddedAppUrl](./getEmbeddedAppUrl.md) based on the given `host`.
 
 This utility relies on the host query param being a Base 64 encoded string. All requests from Shopify should include this param in the correct format.
 
@@ -27,3 +27,5 @@ The `host` parameter from the Shopify request.
 `string`
 
 The appropriate Shopify address to redirect to.
+
+[Back to shopify.auth](./README.md)
