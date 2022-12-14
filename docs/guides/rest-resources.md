@@ -30,10 +30,7 @@ const sessionId = await shopify.session.getCurrentId({
 // getSessionFromStorage() must be provided by application
 const session = await getSessionFromStorage(sessionId);
 
-const client = new shopify.clients.Rest({
-  domain: session.shop,
-  accessToken: session.accessToken,
-});
+const client = new shopify.clients.Rest({session});
 
 // The following line sends a HTTP GET request to this constructed URL:
 // https://${session.shop}/admin/api/${shopify.config.api_version}/products.json?limit=1
@@ -91,11 +88,11 @@ To use REST resources, you can import the desired version and mount it onto your
 
 ```ts
 import {shopifyApi} from '@shopify/shopify-api';
-import {restResources} from '@shopify/shopify-api/rest/admin/2022-07';
+import {restResources} from '@shopify/shopify-api/rest/admin/2022-10';
 
 const shopify = shopifyApi({
   ...,
-  apiVersion: ApiVersion.July22,
+  apiVersion: ApiVersion.October22,
   restResources,
 });
 ```
