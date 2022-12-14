@@ -217,7 +217,7 @@ See the [Changes to use of REST resources](#changes-to-use-of-rest-resources) se
 
 ## Changes to authentication functions
 
-The OAuth methods still behave the same way, but we've updated their signatures to make it easier to work with them. See the [updated OAuth instructions](./usage/oauth.md) for a complete example.
+The OAuth methods still behave the same way, but we've updated their signatures to make it easier to work with them. See the [updated OAuth instructions](./guides/oauth.md) for a complete example.
 
 See [Access modes](https://shopify.dev/apps/auth/oauth/access-modes) for more details regarding how to use the `isOnline` parameter.
 
@@ -288,7 +288,7 @@ See [Access modes](https://shopify.dev/apps/auth/oauth/access-modes) for more de
 
 1. The `SessionStorage` interface has been removed and any provided implementions have been removed from the library. The library only provides methods to obtain sessionId's. Responsibility for storing sessions is delegated to the application.
 
-   > **Note** The previous implementations of session storage have been converted into their own standalone packages in the [`Shopify/shopify-app-js` repo](https://github.com/Shopify/shopify-app-js/tree/main/packages) (see the list in the [Implementing session storage guide](./usage/session-storage.md)).
+   > **Note** The previous implementations of session storage have been converted into their own standalone packages in the [`Shopify/shopify-app-js` repo](https://github.com/Shopify/shopify-app-js/tree/main/packages) (see the list in the [Implementing session storage guide](./guides/session-storage.md)).
 
 1. The `Session` constructor now takes an object which allows all properties of a session, and `Session.cloneSession` was removed since we can use a session as arguments for the clone.
    <div>Before
@@ -364,7 +364,7 @@ See [Access modes](https://shopify.dev/apps/auth/oauth/access-modes) for more de
    await addSessionToStorage(callbackResponse.session.toObject());
    ```
 
-1. See the [Implementing session storage guide](./usage/session-storage.md) for the changes you'll need to make to load and store your sessions. In general, you'll need to [store sessions](./usage/session-storage.md#save-a-session-to-storage) that are returned from `shopify.auth.callback()` and you'll need to [load sessions](./usage/session-storage.md#load-a-session-from-storage) anywhere your code previously used `loadCurrentSession`.
+1. See the [Implementing session storage guide](./guides/session-storage.md) for the changes you'll need to make to load and store your sessions. In general, you'll need to [store sessions](./guides/session-storage.md#save-a-session-to-storage) that are returned from `shopify.auth.callback()` and you'll need to [load sessions](./guides/session-storage.md#load-a-session-from-storage) anywhere your code previously used `loadCurrentSession`.
 
 ---
 
@@ -544,7 +544,7 @@ Here are all the specific changes that we made to the `Utils` object:
 
 1. `Shopify.Utils.generateLocalHmac` was removed because it's only meant to be used internally by the library.
 
-1. The `storeSession` method was removed since sessions are no longer stored by the library. Apps are now fully responsible for implementating session storage and can save data to their sessions as they please. See the [implementing session storage guide](./usage/session-storage.md) for the changes you'll need to make to store your sessions.
+1. The `storeSession` method was removed since sessions are no longer stored by the library. Apps are now fully responsible for implementating session storage and can save data to their sessions as they please. See the [implementing session storage guide](./guides/session-storage.md) for the changes you'll need to make to store your sessions.
 
 1. `validateHmac` is now `async`.
    <div>Before
@@ -756,7 +756,7 @@ And the following methods are no longer supported:
 - `getHandler`
 - `isWebhookPath`
 
-For more details on the updated webhook functions, see the [documentation](./usage/webhooks.md).
+For more details on the updated webhook functions, see the [documentation](./guides/webhooks.md).
 
 Below are instructions on how webhooks work now:
 
@@ -1047,4 +1047,4 @@ app.get('/api/products/count', async (req, res) => {
 });
 ```
 
-See [using REST resources](usage/rest.md#using-rest-resources) for more details.
+See [using REST resources](./guides/rest-resources.md) for more details.

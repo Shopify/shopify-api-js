@@ -63,7 +63,7 @@ Next, configure the library - you'll need some values in advance:
 - Your app's API secret from Partners dashboard
 - The [scopes](https://shopify.dev/api/usage/access-scopes) you need for your app
 
-Call `shopifyApi` to create your library object before setting up your app itself:
+Call `shopifyApi` ([see reference](./docs/reference/shopifyApi.md)) to create your library object before setting up your app itself:
 
 ```ts
 import '@shopify/shopify-api/adapters/node';
@@ -85,59 +85,28 @@ const app = express();
 ### Next steps
 
 Once you configure your app, you can use this package to access the Shopify APIs.
-See the specific documentation in the [Features section](#features) for instructions on how to get API access tokens and use them to query the APIs.
+See the [reference documentation](./docs/reference/README.md) for details on all the methods provided by this package.
+
+See the specific documentation in the [Guides section](#guides) for high-level instructions on how to get API access tokens and use them to query the APIs.
 
 As a general rule, apps will want to interact with the Admin API to fetch / submit data to Shopify.
 To do that, apps will need to:
 
-1. Create an Admin API access token by going through [the OAuth flow](docs/usage/oauth.md).
+1. Create an Admin API access token by going through [the OAuth flow](docs/guides/oauth.md).
 1. Set up its own endpoints to:
-   1. [Fetch the current session](docs/usage/oauth.md#using-sessions) created in the OAuth process.
-   1. Create a [REST](docs/usage/rest.md) or [GraphQL](docs/usage/graphql.md) API client.
+   1. [Fetch the current session](docs/guides/oauth.md#using-sessions) created in the OAuth process.
+   1. Create a [REST](docs/reference/clients/Rest.md) or [GraphQL](docs/reference/clients/Graphql.md) API client.
    1. Use the client to query the appropriate [Admin API](https://shopify.dev/api/admin).
 
-### Configurations
+## Guides
 
-These are all the configuration values `shopifyApi` supports.
-
-| Value                           | Type                     | Required |        Default        | Description                                                                                                                                                                  |
-| ------------------------------- | ------------------------ | :------: | :-------------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| apiKey                          | `string`                 |   Yes    |           -           | API key from Partners Dashboard                                                                                                                                              |
-| apiSecretKey                    | `string`                 |   Yes    |           -           | API secret from Partners Dashboard                                                                                                                                           |
-| scopes                          | `string[] \| AuthScopes` |   Yes    |           -           | [App scopes](https://shopify.dev/api/usage/access-scopes)                                                                                                                    |
-| hostName                        | `string`                 |   Yes    |           -           | App host name in the format `my-host-name.com`. Do **not** include the scheme or leading or trailing slashes                                                                 |
-| hostScheme                      | `"https" \| "http"`      |    No    |       `"https"`       | The scheme for your app's public URL                                                                                                                                         |
-| apiVersion                      | `ApiVersion`             |    No    | `LATEST_API_VERSION`  | API version your app will be querying. E.g. `ApiVersion.January20`                                                                                                           |
-| isEmbeddedApp                   | `boolean`                |    No    |        `true`         | Whether your app will run within the Shopify Admin                                                                                                                           |
-| isPrivateApp                    | `boolean`                |    No    |        `false`        | Whether you are building a private app for a store                                                                                                                           |
-| userAgentPrefix                 | `string`                 |    No    |      `undefined`      | Any prefix you wish to include in the `User-Agent` for requests made by the library                                                                                          |
-| privateAppStorefrontAccessToken | `string`                 |    No    |      `undefined`      | Fixed Storefront API access token for private apps                                                                                                                           |
-| customShopDomains               | `(RegExp \| string)[]`   |    No    |      `undefined`      | Use this if you need to allow values other than `myshopify.com`                                                                                                              |
-| billing                         | `BillingConfig`          |    No    |      `undefined`      | Billing configurations. [See documentation](docs/usage/billing.md) for full description                                                                                      |
-| restResources                   | `ShopifyRestResources`   |    No    |           -           | Mounts the given REST resources onto the object. Must use the same version as `apiVersion`. Learn more about [using REST resources](docs/usage/rest.md#using-rest-resources) |
-| logger                          | `{[key: string]: any}`   |    No    |           -           | Tweaks the behaviour of the package's internal logging to make it easier to debug applications                                                                               |
-| &nbsp;&nbsp;logger.log          | `AsyncFunction`          |    No    | `() => Promise<void>` | Async callback function used for logging, which takes in a `LogSeverity` value and a formatted `message`. Defaults to using `console` calls matching the severity parameter  |
-| &nbsp;&nbsp;logger.level        | `LogSeverity`            |    No    |  `LogSeverity.Info`   | Minimum severity for which to trigger the log function                                                                                                                       |
-| &nbsp;&nbsp;logger.httpRequests | `boolean`                |    No    |        `false`        | Whether to log **ALL** HTTP requests made by the package. Only works if `level` is `Debug`                                                                                   |
-| &nbsp;&nbsp;logger.timestamps   | `boolean`                |    No    |        `false`        | Whether to add the current timestamp to every log call                                                                                                                       |
-
-## Features
-
-- [OAuth](docs/usage/oauth.md)
-  - [Start endpoint](docs/usage/oauth.md#start-endpoint)
-  - [Callback endpoint](docs/usage/oauth.md#callback-endpoint)
-  - [Using sessions](docs/usage/oauth.md#using-sessions)
-  - [Detecting scope changes](docs/usage/oauth.md#detecting-scope-changes)
-- [REST Admin API client](docs/usage/rest.md)
-  - [Using REST resources](docs/usage/rest.md#using-rest-resources)
-- [GraphQL Admin API client](docs/usage/graphql.md)
-- [GraphqL Storefront API client](docs/usage/storefront.md)
-- [Webhooks](docs/usage/webhooks.md)
-  - [Register a Webhook](docs/usage/webhooks.md#register-a-webhook)
-  - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
-- [Billing](docs/usage/billing.md)
-- [Adding custom runtimes](docs/usage/runtimes.md)
-- [Customizing logging configuration](docs/usage/logger.md)
+- [Performing OAuth](docs/guides/oauth.md)
+- [Storing sessions](docs/guides/session-storage.md)
+- [Setting up webhooks](docs/guides/webhooks.md)
+- [Using REST resources](docs/guides/rest-resources.md)
+- [Configuring Billing](docs/guides/billing.md)
+- [Adding custom runtimes](docs/guides/runtimes.md)
+- [Customizing logging configuration](docs/guides/logger.md)
 
 ## Migrating to v6
 
