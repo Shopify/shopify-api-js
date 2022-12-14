@@ -1,4 +1,4 @@
-# Implementing session storage
+# Storing sessions
 
 As of v6 of the library, there are no `SessionStorage` implementations included and the responsibility for implementing session storage is now delegated to the application.
 
@@ -182,3 +182,5 @@ const session = Session.fromPropertyArray(sessionProperties);
 > In v6, the `.fromPropertyArray` method now returns the `expires` property in _milliseconds_ and leaves it to the app to convert it (if needed) from seconds.
 >
 > The existing SQL-based implementations in the [`shopify-app-js` mono repo](https://github.com/Shopify/shopify-app-js/tree/main/packages), i.e., MySQL, PostgreSQL and SQLite, convert it from seconds from storage. The remaining implementations do not change the retrieved `expires` property.
+
+[Back to guide index](../../README.md#guides)
