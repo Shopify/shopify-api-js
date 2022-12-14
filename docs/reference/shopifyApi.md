@@ -75,7 +75,7 @@ The scheme for your app's public URL. `http` is only allowed if your app is runn
 
 `ApiVersion` | Defaults to `LATEST_API_VERSION`
 
-API version your app will be querying. E.g. `ApiVersion.January20`.
+API version your app will be querying. E.g. `ApiVersion.October22`.
 
 ### isEmbeddedApp
 
@@ -143,13 +143,15 @@ Minimum severity for which to trigger the log function.
 
 `boolean` | Defaults to `false`
 
-Whether to log **ALL** HTTP requests made by the package. Logs the requests at the `Debug` level.
+Whether to log **ALL** HTTP requests made by the package.
+
+> **Note**: Only takes effect if `level` is set to `LogSeverity.Debug`.
 
 #### timestamps
 
 `boolean` | Defaults to `false`
 
-Whether to add the current timestamp to every log call.
+Whether to add the current timestamp to every logged message.
 
 ## Return
 
@@ -173,7 +175,7 @@ Object containing functions to manage Shopify sessions.
 
 ### [webhooks](./webhooks/README.md)
 
-Object containing functions to handle Shopify webhooks.
+Object containing functions to configure and handle Shopify webhooks.
 
 ### [billing](./billing/README.md)
 

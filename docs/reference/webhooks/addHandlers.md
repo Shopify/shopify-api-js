@@ -1,6 +1,6 @@
 # shopify.webhooks.addHandlers
 
-Adds webhook handlers to the internal registry, allowing you to register them with Shopify and process HTTP webhook requests from Shopify.
+Adds webhook handlers to the library registry, allowing you to register them with Shopify and process HTTP webhook requests from Shopify.
 
 See the documentation for [the full list](https://shopify.dev/api/admin-graphql/latest/enums/WebhookSubscriptionTopic) of accepted topics.
 

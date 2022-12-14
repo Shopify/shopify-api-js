@@ -1,6 +1,6 @@
 # shopify.utils.sanitizeHost
 
-This method makes user inputs safer by ensuring that they're proper `host` query arguments from Shopify requests.
+This method makes user inputs safer by ensuring that the `host` query arguments from Shopify requests is valid.
 
 ## Example
 

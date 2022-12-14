@@ -21,7 +21,7 @@ async function billingMiddleware(req, res, next) {
   if (hasPayment) {
     next();
   } else {
-    // Either request payment now or redirect to plan selection page, e.g.
+    // Either request payment now (if single plan) or redirect to plan selection page (if multiple plans available), e.g.
     const confirmationUrl = await shopify.billing.request({
       session,
       plan: 'My billing plan',

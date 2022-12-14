@@ -15,7 +15,7 @@ If you are building a private app, you can set a default Storefront Access Token
 ### Example
 
 Below is a (simplified) example of how you may create a token and construct a client.
-See the [REST](https://shopify.dev/api/admin-rest/2022-07/resources/storefrontaccesstoken) or [GraphQL](https://shopify.dev/api/admin-graphql/2022-07/mutations/storefrontAccessTokenCreate) Admin API references for more information.
+See the [REST](https://shopify.dev/api/admin-rest/latest/resources/storefrontaccesstoken) or [GraphQL](https://shopify.dev/api/admin-graphql/latest/mutations/storefrontAccessTokenCreate) Admin API references for more information.
 
 Once you've created your access token, you can query the Storefront API based on the `unauthenticated_*` scopes your app requests.
 See the [API reference documentation](https://shopify.dev/api/storefront) for detailed instructions on each component.

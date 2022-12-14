@@ -2,7 +2,7 @@
 
 Builds a session id that can be used to load an offline session, if there was a [`auth.begin`](../auth/begin.md) call to create one.
 
-**Important**: This method **_does not_** perform any validation on the `shop` parameter because it is meant for background tasks.
+**Warning**: This method **_does not_** perform any validation on the `shop` parameter because it is meant for background tasks.
 You should **_never_** read the shop from user inputs or URLs.
 
 ## Example

@@ -1,6 +1,6 @@
 # shopify.utils.sanitizeShop
 
-This method makes user inputs safer by ensuring that they're properly formatted as Shopify shop domains.
+This method makes user inputs safer by ensuring that a given shop value is a properly formatted Shopify shop domain.
 
 > **Note**: if you're using custom shop domains for testing, you can use the `customShopDomains` setting to add allowed domains.
 

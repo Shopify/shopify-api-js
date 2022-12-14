@@ -13,7 +13,7 @@ app.get('/auth/callback', async () => {
     rawResponse: res,
   });
 
-  // Check if we require payment
+  // Check if we require payment, using shopify.billing.check()
 
   const confirmationUrl = await shopify.billing.request({
     session: callback.session,
@@ -36,7 +36,7 @@ app.post('/api/select-plan', async (req, res) => {
   });
 
   // use sessionId to retrieve session from app's session storage
-  // getSessionFromStorage() must be provided by application
+  // In this example, getSessionFromStorage() must be provided by app
   const session = await getSessionFromStorage(sessionId);
 
   const confirmationUrl = await shopify.billing.request({

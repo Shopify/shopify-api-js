@@ -2,6 +2,7 @@
 
 This method forwards a request from the app's client side to the Shopify Admin GraphQL API, and returns the response headers and body from Shopify.
 
+> **Note**: `graphqlProxy` only accepts online session tokens; using an offline token will fail to proxy the data.
 ## Example
 
 ```ts

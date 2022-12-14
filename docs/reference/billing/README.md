@@ -4,7 +4,7 @@ This object contains functions used to create and check billing charges with Sho
 
 Learn more about [how billing on Shopify works](https://shopify.dev/apps/billing).
 
-> **Note**: this package uses the GraphQL Admin API to look for / request payment, which means an app must go through OAuth before it can charge merchants.
+> **Note**: this package uses the GraphQL Admin API to look for and/or request payments, which means an app must go through OAuth before it can charge merchants.
 
 ## shopify.billing.[check](./check.md)
 

@@ -1,6 +1,6 @@
 # shopify.session.getCurrentId
 
-Extracts the current Shopify session id from the request.
+Extracts the Shopify session id from the given request.
 
 For embedded apps, `shopify.session.getCurrentId` will only be able to find a session id if you use `authenticatedFetch` from the `@shopify/app-bridge-utils` client-side package.
 This function behaves like a [normal `fetch` call](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), but ensures the appropriate headers are set.

@@ -48,7 +48,7 @@ Receives an object containing:
 
 ### rawBody
 
-`string` | :exclamation: require
+`string` | :exclamation: required
 
 The raw body of the request received by the app.
 
