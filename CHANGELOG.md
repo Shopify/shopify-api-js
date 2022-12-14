@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- [Patch] Raise an `InvalidSession` if `Session.fromPropertyArray` receive an object that is not an array
+
 ## [6.0.1] - 2022-12-08
 
 - [Patch] Auto-detect session type in auth callback, deprecate `isOnline` argument [#628](https://github.com/Shopify/shopify-api-js/pull/628)
