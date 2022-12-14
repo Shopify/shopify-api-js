@@ -132,7 +132,7 @@ const sessionId = await shopify.session.getCurrentId({
 // getSessionFromStorage() must be provided by application
 const session = await getSessionFromStorage(sessionId);
 
-const restClient = await shopify.clients.Rest({session});
+const restClient = new shopify.clients.Rest({session});
 
 // do something with restClient...
 ```
