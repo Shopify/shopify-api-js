@@ -1,6 +1,7 @@
 import {loadRestResources} from '../rest/load-rest-resources';
 import {ShopifyRestResources} from '../rest/types';
 
+import {DeprecatedV5Types} from './deprecated-v5-types';
 import {ConfigParams, ConfigInterface} from './base-types';
 import {validateConfig} from './config';
 import {clientClasses, ShopifyClients} from './clients';
@@ -20,6 +21,10 @@ export * from './base-types';
 export * from './session/types';
 export * from './auth/types';
 export * from './webhooks/types';
+
+// Temporarily export the deprecated v5 types as a Shopify object (as opposed to the type above) to help folks find
+// the migration guide.
+export const Shopify: DeprecatedV5Types = {};
 
 export interface Shopify<
   T extends ShopifyRestResources = ShopifyRestResources,
