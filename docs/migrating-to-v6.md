@@ -425,7 +425,7 @@ The constructor for each API client that this package provides now takes an obje
 
    ```ts
    const storefrontClient = new shopify.clients.Storefront({
-     session,
+     domain: session.shop,
      storefrontAccessToken,
    });
    ```
