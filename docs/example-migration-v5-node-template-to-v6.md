@@ -514,7 +514,7 @@ export default async function ensureBilling(
       // a page that allows the merchant to choose a plan.
       // For this example, we'll just redirect to the first plan
       confirmationUrl = await shopify.billing.request({
-        session: callback.session,
+        session,
         plan: Object.keys(shopify.config.billing)[0],
         isTest: !isProdOverride,
       });
