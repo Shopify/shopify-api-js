@@ -66,7 +66,7 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"fulfillment_service": {"id": 1061774488, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": false, "include_pending_stock": false, "provider_id": null, "location_id": 1072404543, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774488"}}));
+    queueMockResponse(JSON.stringify({"fulfillment_service": {"id": 1061774523, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": false, "include_pending_stock": false, "provider_id": null, "location_id": 1072404578, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774523"}}));
 
     const fulfillment_service = new shopify.rest.FulfillmentService({session: session});
     fulfillment_service.name = "Jupiter Fulfillment";

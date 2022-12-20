@@ -33,6 +33,10 @@ interface AllArgs {
 interface CountArgs {
   [key: string]: unknown;
   session: Session;
+  created_at_min?: unknown;
+  created_at_max?: unknown;
+  updated_at_min?: unknown;
+  updated_at_max?: unknown;
 }
 interface OrdersArgs {
   [key: string]: unknown;
@@ -137,6 +141,10 @@ export class Customer extends Base {
   public static async count(
     {
       session,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
@@ -145,7 +153,7 @@ export class Customer extends Base {
       operation: "count",
       session: session,
       urlIds: {},
-      params: {...otherArgs},
+      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
       body: {},
       entity: null,
     });
