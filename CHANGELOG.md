@@ -11,6 +11,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 - [Patch] Validate content of host parameter using sanitizeShop regex [#634](https://github.com/Shopify/shopify-api-js/pull/634)
 - [Patch] Use the GraphQL format of webhook topics in the error message [#626](https://github.com/Shopify/shopify-api-js/pull/626)
 - [Patch] Export deprecation notices for v5 main interface [#639](https://github.com/Shopify/shopify-api-js/pull/639)
+- [Patch] Fixed an issue when parsing the response body in the AssignedFulfillmentOrder REST resource [#644](https://github.com/Shopify/shopify-api-js/pull/644)
 
 ## [6.0.1] - 2022-12-08
 

@@ -17,8 +17,8 @@ interface AllArgs {
 export class AssignedFulfillmentOrder extends Base {
   public static API_VERSION = ApiVersion.January22;
 
-  protected static NAME = 'assigned_fulfillment_order';
-  protected static PLURAL_NAME = 'assigned_fulfillment_orders';
+  protected static NAME = 'fulfillment_order';
+  protected static PLURAL_NAME = 'fulfillment_orders';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
