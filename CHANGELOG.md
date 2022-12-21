@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- [Patch] Export missing client types from package [#648](https://github.com/Shopify/shopify-api-js/pull/648)
+
 ## [6.0.2] - 2022-12-08
 
 - [Patch] Raise an `InvalidSession` if `Session.fromPropertyArray` receive an object that is not an array

@@ -18,8 +18,9 @@ export * from './session/classes';
 export * from '../rest/types';
 export * from './types';
 export * from './base-types';
-export * from './session/types';
 export * from './auth/types';
+export * from './clients/types';
+export * from './session/types';
 export * from './webhooks/types';
 
 // Temporarily export the deprecated v5 types as a Shopify object (as opposed to the type above) to help folks find
