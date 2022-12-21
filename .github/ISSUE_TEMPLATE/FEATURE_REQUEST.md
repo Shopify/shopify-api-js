@@ -7,8 +7,3 @@ labels: 'Type: Feature Request :raised_hands:'
 ## Overview
 
 <!-- Write a short description of the request here ↓ -->
-
-## Type
-
-- [ ] New feature
-- [ ] Changes to existing features
