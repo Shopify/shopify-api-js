@@ -8,6 +8,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## Unreleased
 
 - [Patch] Export missing client types from package [#648](https://github.com/Shopify/shopify-api-js/pull/648)
+- [Patch] Add new tracking SDK headers to Storefront API client [#649](https://github.com/Shopify/shopify-api-js/pull/649)
 
 ## [6.0.2] - 2022-12-08
 

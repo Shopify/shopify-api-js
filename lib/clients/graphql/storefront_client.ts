@@ -1,12 +1,10 @@
+import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import {ShopifyHeader} from '../../types';
 import {httpClientClass} from '../http_client/http_client';
 import {Session} from '../../session/session';
+import {HeaderParams} from '../http_client/types';
 
-import {
-  AccessTokenHeader,
-  GraphqlClient,
-  GraphqlClientClassParams,
-} from './graphql_client';
+import {GraphqlClient, GraphqlClientClassParams} from './graphql_client';
 import {StorefrontClientParams} from './types';
 
 export class StorefrontClient extends GraphqlClient {
@@ -27,13 +25,15 @@ export class StorefrontClient extends GraphqlClient {
     this.storefrontAccessToken = params.storefrontAccessToken;
   }
 
-  protected getAccessTokenHeader(): AccessTokenHeader {
+  protected getApiHeaders(): HeaderParams {
     return {
-      header: ShopifyHeader.StorefrontAccessToken,
-      value: (this.storefrontClass().CONFIG.isPrivateApp
+      [ShopifyHeader.StorefrontAccessToken]: this.storefrontClass().CONFIG
+        .isPrivateApp
         ? this.storefrontClass().CONFIG.privateAppStorefrontAccessToken ||
           this.storefrontAccessToken
-        : this.storefrontAccessToken) as string,
+        : this.storefrontAccessToken,
+      [ShopifyHeader.StorefrontSDKVariant]: '@shopify/shopify-api',
+      [ShopifyHeader.StorefrontSDKVersion]: SHOPIFY_API_LIBRARY_VERSION,
     };
   }
 
