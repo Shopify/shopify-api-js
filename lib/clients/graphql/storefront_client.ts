@@ -1,5 +1,5 @@
-import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
-import {ShopifyHeader} from '../../types';
+import {createStorefrontAPIClient} from '@shopify/storefront-api-js-client';
+
 import {httpClientClass} from '../http_client/http_client';
 import {Session} from '../../session/session';
 import {HeaderParams} from '../http_client/types';
@@ -12,6 +12,8 @@ export class StorefrontClient extends GraphqlClient {
   readonly domain: string;
   readonly storefrontAccessToken: string;
 
+  private apiClient: ReturnType<typeof createStorefrontAPIClient>;
+
   constructor(params: StorefrontClientParams) {
     const session = new Session({
       shop: params.domain,
@@ -23,23 +25,20 @@ export class StorefrontClient extends GraphqlClient {
     super({session});
     this.domain = params.domain;
     this.storefrontAccessToken = params.storefrontAccessToken;
+
+    this.apiClient = createStorefrontAPIClient({
+      storeUrl: params.domain,
+      storefrontAPIAccessToken: params.storefrontAccessToken,
+    });
   }
 
   protected getApiHeaders(): HeaderParams {
-    return {
-      [ShopifyHeader.StorefrontAccessToken]: this.storefrontClass().CONFIG
-        .isPrivateApp
-        ? this.storefrontClass().CONFIG.privateAppStorefrontAccessToken ||
-          this.storefrontAccessToken
-        : this.storefrontAccessToken,
-      [ShopifyHeader.StorefrontSDKVariant]: '@shopify/shopify-api',
-      [ShopifyHeader.StorefrontSDKVersion]: SHOPIFY_API_LIBRARY_VERSION,
-    };
+    return this.apiClient.getHeaders() as any;
   }
 
-  private storefrontClass() {
-    return this.constructor as typeof StorefrontClient;
-  }
+  // private storefrontClass() {
+  //   return this.constructor as typeof StorefrontClient;
+  // }
 }
 
 export function storefrontClientClass(params: GraphqlClientClassParams) {
