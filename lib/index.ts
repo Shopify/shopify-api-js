@@ -1,5 +1,6 @@
 import {loadRestResources} from '../rest/load-rest-resources';
 import {ShopifyRestResources} from '../rest/types';
+import {abstractRuntimeString} from '../runtime/platform';
 
 import {DeprecatedV5Types} from './deprecated-v5-types';
 import {ConfigParams, ConfigInterface} from './base-types';
@@ -11,6 +12,7 @@ import {shopifyUtils, ShopifyUtils} from './utils';
 import {shopifyWebhooks, ShopifyWebhooks} from './webhooks';
 import {shopifyBilling, ShopifyBilling} from './billing';
 import {logger, ShopifyLogger} from './logger';
+import {SHOPIFY_API_LIBRARY_VERSION} from './version';
 
 export * from './error';
 export * from './session/classes';
@@ -66,6 +68,12 @@ export function shopifyApi<T extends ShopifyRestResources>(
       RestClient: shopify.clients.Rest,
     }) as T;
   }
+
+  shopify.logger
+    .info(
+      `version ${SHOPIFY_API_LIBRARY_VERSION}, environment ${abstractRuntimeString()}`,
+    )
+    .catch((err) => console.log(err));
 
   return shopify;
 }

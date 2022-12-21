@@ -681,7 +681,8 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    expect(shopify.config.logger.log).toHaveBeenCalledTimes(1);
+    // first call to .log is .debug with package and runtime info during initialization
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
     expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
       LogSeverity.Warning,
       expect.stringContaining('API Deprecation Notice'),
@@ -702,7 +703,7 @@ describe('HTTP client', () => {
       data: postBody,
     });
 
-    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(3);
     expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
       LogSeverity.Warning,
       expect.stringContaining(
@@ -762,8 +763,8 @@ describe('HTTP client', () => {
     await client.get({path: '/url/path'});
     // this one should skip it
     await client.get({path: '/url/path'});
-    // one warn so far
-    expect(shopify.config.logger.log).toHaveBeenCalledTimes(1);
+    // first call to .log is .debug with package and runtime info during initialization
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
     expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
       LogSeverity.Warning,
       expect.anything(),
@@ -776,7 +777,7 @@ describe('HTTP client', () => {
     // should warn a second time since 5 mins have passed
     await client.get({path: '/url/path'});
 
-    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(3);
     expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
       LogSeverity.Warning,
       expect.anything(),
