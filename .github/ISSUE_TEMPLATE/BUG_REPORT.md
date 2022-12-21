@@ -21,6 +21,10 @@ Learn more: https://github.com/Shopify/shopify-api-js/blob/main/docs/reference/s
 
 -->
 
+- `@shopify/shopify-api` version:
+- Node version:
+- Operating system:
+
 ```
 // Paste any relevant logs here
 ```
