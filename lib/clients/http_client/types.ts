@@ -6,11 +6,13 @@ export interface HeaderParams {
   [key: string]: string | number | string[];
 }
 
+/* eslint-disable @shopify/typescript/prefer-pascal-case-enums */
 export enum DataType {
-  JSON = 'application/json', // eslint-disable-line @shopify/typescript/prefer-pascal-case-enums
-  GraphQL = 'application/graphql', // eslint-disable-line @shopify/typescript/prefer-pascal-case-enums
-  URLEncoded = 'application/x-www-form-urlencoded', // eslint-disable-line @shopify/typescript/prefer-pascal-case-enums
+  JSON = 'application/json',
+  GraphQL = 'application/graphql',
+  URLEncoded = 'application/x-www-form-urlencoded',
 }
+/* eslint-enable @shopify/typescript/prefer-pascal-case-enums */
 
 export type QueryParams =
   | string

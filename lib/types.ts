@@ -15,15 +15,19 @@ export enum ApiVersion {
 
 export const LATEST_API_VERSION = ApiVersion.October22;
 
+/* eslint-disable @shopify/typescript/prefer-pascal-case-enums */
 export enum ShopifyHeader {
   AccessToken = 'X-Shopify-Access-Token',
   ApiVersion = 'X-Shopify-API-Version',
   Domain = 'X-Shopify-Shop-Domain',
   Hmac = 'X-Shopify-Hmac-Sha256',
-  StorefrontAccessToken = 'X-Shopify-Storefront-Access-Token',
   Topic = 'X-Shopify-Topic',
   WebhookId = 'X-Shopify-Webhook-Id',
+  StorefrontAccessToken = 'X-Shopify-Storefront-Access-Token',
+  StorefrontSDKVariant = 'X-SDK-Variant',
+  StorefrontSDKVersion = 'X-SDK-Version',
 }
+/* eslint-enable @shopify/typescript/prefer-pascal-case-enums */
 
 export enum ClientType {
   Rest = 'rest',

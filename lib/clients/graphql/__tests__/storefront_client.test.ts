@@ -2,6 +2,7 @@ import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
 import {ShopifyHeader} from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
+import {SHOPIFY_API_LIBRARY_VERSION} from '../../../version';
 
 const domain = 'test-shop.myshopify.io';
 const QUERY = `
@@ -58,14 +59,14 @@ describe('Storefront GraphQL client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const headers: {[key: string]: unknown} = {};
-    headers[ShopifyHeader.StorefrontAccessToken] = storefrontAccessToken;
     expect({
       method: 'POST',
       domain,
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
-      headers,
+      headers: {
+        [ShopifyHeader.StorefrontAccessToken]: storefrontAccessToken,
+      },
     }).toMatchMadeHttpRequest();
   });
 
@@ -84,14 +85,39 @@ describe('Storefront GraphQL client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const headers: {[key: string]: unknown} = {};
-    headers[ShopifyHeader.StorefrontAccessToken] = 'private_token';
     expect({
       method: 'POST',
       domain,
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
-      headers,
+      headers: {
+        [ShopifyHeader.StorefrontAccessToken]: 'private_token',
+      },
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('sets specific SF API headers', async () => {
+    const client = new shopify.clients.Storefront({
+      domain: session.shop,
+      storefrontAccessToken,
+    });
+
+    queueMockResponse(JSON.stringify(successResponse));
+
+    await expect(client.query({data: QUERY})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
+
+    expect({
+      method: 'POST',
+      domain,
+      path: `/api/${shopify.config.apiVersion}/graphql.json`,
+      data: QUERY,
+      headers: {
+        [ShopifyHeader.StorefrontAccessToken]: storefrontAccessToken,
+        [ShopifyHeader.StorefrontSDKVariant]: '@shopify/shopify-api',
+        [ShopifyHeader.StorefrontSDKVersion]: SHOPIFY_API_LIBRARY_VERSION,
+      },
     }).toMatchMadeHttpRequest();
   });
 });
