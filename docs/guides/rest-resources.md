@@ -78,7 +78,8 @@ await product.save({
 The resource classes provide representations of all endpoints for the API resource they cover. A few examples:
 
 1. `GET /products/{product_id}.json` maps to `Product.find()`
-1. `POST /products.json` maps to `Product.save()` (as an instance method)
+1. `POST /products.json` maps to `product.save()` (as an instance method)
+1. `GET /products.json` maps to `Product.all()`
 1. `GET /products/count.json` maps to `Product.count()`
 
 Please visit our [REST API reference documentation](https://shopify.dev/api/admin-rest) for detailed instructions on how to call each of the endpoints.
