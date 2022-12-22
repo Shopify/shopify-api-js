@@ -1,6 +1,7 @@
 import {Method, StatusCode} from '@shopify/network';
 
 import * as ShopifyErrors from '../../error';
+import {LIBRARY_NAME} from '../../types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import ProcessedQuery from '../../utils/processed-query';
 import {ConfigInterface} from '../../base-types';
@@ -90,7 +91,7 @@ export class HttpClient {
       );
     }
 
-    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | ${abstractRuntimeString()}`;
+    let userAgent = `${LIBRARY_NAME} v${SHOPIFY_API_LIBRARY_VERSION} | ${abstractRuntimeString()}`;
 
     if (this.httpClass().CONFIG.userAgentPrefix) {
       userAgent = `${this.httpClass().CONFIG.userAgentPrefix} | ${userAgent}`;

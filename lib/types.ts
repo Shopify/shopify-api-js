@@ -13,6 +13,7 @@ export enum ApiVersion {
   Unstable = 'unstable',
 }
 
+export const LIBRARY_NAME = 'Shopify API Library';
 export const LATEST_API_VERSION = ApiVersion.October22;
 
 /* eslint-disable @shopify/typescript/prefer-pascal-case-enums */

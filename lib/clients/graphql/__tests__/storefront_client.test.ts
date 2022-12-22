@@ -1,5 +1,5 @@
 import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
-import {ShopifyHeader} from '../../../types';
+import {LIBRARY_NAME, ShopifyHeader} from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../../version';
@@ -115,7 +115,7 @@ describe('Storefront GraphQL client', () => {
       data: QUERY,
       headers: {
         [ShopifyHeader.StorefrontAccessToken]: storefrontAccessToken,
-        [ShopifyHeader.StorefrontSDKVariant]: '@shopify/shopify-api',
+        [ShopifyHeader.StorefrontSDKVariant]: LIBRARY_NAME,
         [ShopifyHeader.StorefrontSDKVersion]: SHOPIFY_API_LIBRARY_VERSION,
       },
     }).toMatchMadeHttpRequest();
