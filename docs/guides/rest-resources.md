@@ -33,10 +33,9 @@ const session = await getSessionFromStorage(sessionId);
 const client = new shopify.clients.Rest({session});
 
 // The following line sends a HTTP GET request to this constructed URL:
-// https://${session.shop}/admin/api/${shopify.config.api_version}/products.json?limit=1
+// https://${session.shop}/admin/api/${shopify.config.api_version}/products/7504536535062.json
 const response = await client.get<ProductResponse>({
-  path: 'products',
-  query: {limit: 1},
+  path: 'products/7504536535062'
 });
 
 // Apps needs to dig into the response body to find the object
