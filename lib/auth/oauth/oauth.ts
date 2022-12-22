@@ -11,6 +11,7 @@ import {httpClientClass} from '../../clients/http_client/http_client';
 import {DataType, RequestReturn} from '../../clients/http_client/types';
 import {
   abstractConvertRequest,
+  abstractConvertIncomingResponse,
   abstractConvertResponse,
   abstractConvertHeaders,
   AdapterResponse,
@@ -55,8 +56,9 @@ export function begin(config: ConfigInterface) {
 
     const cleanShop = sanitizeShop(config)(shop, true)!;
     const request = await abstractConvertRequest(adapterArgs);
+    const response = await abstractConvertIncomingResponse(adapterArgs);
 
-    const cookies = new Cookies(request, {} as NormalizedResponse, {
+    const cookies = new Cookies(request, response, {
       keys: [config.apiSecretKey],
       secure: true,
     });
@@ -81,13 +83,12 @@ export function begin(config: ConfigInterface) {
     processedQuery.putAll(query);
 
     const redirectUrl = `https://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`;
-    const response: NormalizedResponse = {
-      statusCode: 302,
-      statusText: 'Found',
-      headers: {
-        ...cookies.response.headers!,
-        Location: redirectUrl,
-      },
+    response.statusCode = 302;
+    response.statusText = 'Found';
+    response.headers = {
+      ...response.headers,
+      ...cookies.response.headers!,
+      Location: redirectUrl,
     };
 
     log.debug(`OAuth started, redirecting to ${redirectUrl}`, {shop, isOnline});

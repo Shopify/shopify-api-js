@@ -18,6 +18,10 @@ These are the functions you'll need to create:
 - `setAbstractRuntimeString`
 - `setCrypto`
 
+For runtimes that pass in a response object, such as Node.js, you'll also need to create:
+
+- `setAbstractConvertIncomingResponseFunc`
+
 Below is a _very_ simplified example with some functions:
 
 ```ts

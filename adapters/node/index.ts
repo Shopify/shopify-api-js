@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import {
   setAbstractFetchFunc,
   setAbstractConvertRequestFunc,
+  setAbstractConvertIncomingResponseFunc,
   setAbstractConvertResponseFunc,
   setAbstractConvertHeadersFunc,
   setAbstractRuntimeString,
@@ -12,6 +13,7 @@ import {
 import {
   nodeFetch,
   nodeConvertRequest,
+  nodeConvertIncomingResponse,
   nodeConvertAndSendResponse,
   nodeConvertAndSetHeaders,
   nodeRuntimeString,
@@ -19,6 +21,7 @@ import {
 
 setAbstractFetchFunc(nodeFetch);
 setAbstractConvertRequestFunc(nodeConvertRequest);
+setAbstractConvertIncomingResponseFunc(nodeConvertIncomingResponse);
 setAbstractConvertResponseFunc(nodeConvertAndSendResponse);
 setAbstractConvertHeadersFunc(nodeConvertAndSetHeaders);
 setAbstractRuntimeString(nodeRuntimeString);
