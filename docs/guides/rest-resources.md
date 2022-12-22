@@ -64,19 +64,22 @@ const sessionId = await shopify.session.getCurrentId({
 // getSessionFromStorage() must be provided by application
 const session = await getSessionFromStorage(sessionId);
 
-// Has type Product[], an OO representation of API products
-const products = await shopify.rest.Product.all({session, limit: 1});
-
-products[0].title = 'A new title';
-await products[0].save();
+// get a single product via its product id
+const product = await shopify.rest.Product.find({session, id: '7504536535062'});
+  
+product.title = 'A new title';
+  
+await product.save({
+  update: true
+});
 ```
 
 </div>
 
 The resource classes provide representations of all endpoints for the API resource they cover. A few examples:
 
-1. `GET /products.json` maps to `Product.all()`
-1. `POST /products.json` maps to `product.save()` (as an instance method)
+1. `GET /products/{product_id}.json` maps to `Product.find()`
+1. `POST /products.json` maps to `Product.save()` (as an instance method)
 1. `GET /products/count.json` maps to `Product.count()`
 
 Please visit our [REST API reference documentation](https://shopify.dev/api/admin-rest) for detailed instructions on how to call each of the endpoints.
