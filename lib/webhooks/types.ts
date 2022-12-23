@@ -115,3 +115,41 @@ export interface AddHandlersParams {
 export interface WebhookProcessParams extends AdapterArgs {
   rawBody: string;
 }
+
+export interface WebhookValidateParams extends AdapterArgs {
+  rawBody: string;
+}
+
+export enum WebhookValidationErrorReason {
+  MissingHeaders = 'missing_headers',
+  MissingBody = 'missing_body',
+  InvalidHmac = 'invalid_hmac',
+}
+
+export interface WebhookFields {
+  webhookId: string;
+  apiVersion: string;
+  domain: string;
+  hmac: string;
+  topic: string;
+}
+
+export interface WebhookValidationInvalid {
+  valid: false;
+  reason: WebhookValidationErrorReason;
+}
+
+export interface WebhookValidationMissingHeaders
+  extends WebhookValidationInvalid {
+  reason: WebhookValidationErrorReason.MissingHeaders;
+  missingHeaders: string[];
+}
+
+export interface WebhookValidationValid extends WebhookFields {
+  valid: true;
+}
+
+export type WebhookValidation =
+  | WebhookValidationValid
+  | WebhookValidationInvalid
+  | WebhookValidationMissingHeaders;

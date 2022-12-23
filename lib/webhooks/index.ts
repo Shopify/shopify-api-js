@@ -3,6 +3,7 @@ import {ConfigInterface} from '../base-types';
 import {addHandlers, getTopicsAdded, getHandlers, registry} from './registry';
 import {register} from './register';
 import {process} from './process';
+import {validate} from './validate';
 
 export function shopifyWebhooks(config: ConfigInterface) {
   const webhookRegistry = registry();
@@ -13,6 +14,7 @@ export function shopifyWebhooks(config: ConfigInterface) {
     getHandlers: getHandlers(webhookRegistry),
     register: register(config, webhookRegistry),
     process: process(config, webhookRegistry),
+    validate: validate(config),
   };
 }
 

@@ -216,7 +216,7 @@ describe('shopify.webhooks.process', () => {
       .send(rawBody)
       .expect(StatusCode.Unauthorized);
 
-    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Warning,
       expect.stringContaining('apiSecretKey should be set to'),
     );

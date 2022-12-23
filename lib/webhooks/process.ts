@@ -1,25 +1,43 @@
 import {StatusCode} from '@shopify/network';
 
 import {
-  abstractConvertRequest,
   abstractConvertResponse,
   AdapterResponse,
-  getHeader,
-  Headers,
   isOK,
-  NormalizedRequest,
   NormalizedResponse,
 } from '../../runtime/http';
-import {createSHA256HMAC} from '../../runtime/crypto';
-import {HashFormat} from '../../runtime/crypto/types';
-import {ShopifyHeader} from '../types';
 import {ConfigInterface} from '../base-types';
-import {safeCompare} from '../auth/oauth/safe-compare';
 import * as ShopifyErrors from '../error';
 import {logger} from '../logger';
 
-import {WebhookRegistry, WebhookProcessParams, DeliveryMethod} from './types';
-import {topicForStorage} from './registry';
+import {
+  WebhookRegistry,
+  WebhookProcessParams,
+  DeliveryMethod,
+  WebhookValidationErrorReason,
+  WebhookValidationMissingHeaders,
+  WebhookValidationValid,
+  WebhookValidationInvalid,
+} from './types';
+import {validate} from './validate';
+
+interface HandlerCallResult {
+  statusCode: StatusCode;
+  errorMessage?: string;
+}
+
+interface ErrorCallResult {
+  statusCode: StatusCode;
+  errorMessage: string;
+}
+
+const STATUS_TEXT_LOOKUP: {[key: string]: string} = {
+  [StatusCode.Ok]: 'OK',
+  [StatusCode.BadRequest]: 'Bad Request',
+  [StatusCode.Unauthorized]: 'Unauthorized',
+  [StatusCode.NotFound]: 'Not Found',
+  [StatusCode.InternalServerError]: 'Internal Server Error',
+};
 
 export function process(
   config: ConfigInterface,
@@ -29,81 +47,37 @@ export function process(
     rawBody,
     ...adapterArgs
   }: WebhookProcessParams): Promise<AdapterResponse> {
-    const request: NormalizedRequest = await abstractConvertRequest(
-      adapterArgs,
-    );
     const response: NormalizedResponse = {
       statusCode: StatusCode.Ok,
-      statusText: statusTextLookup[StatusCode.Ok],
+      statusText: STATUS_TEXT_LOOKUP[StatusCode.Ok],
       headers: {},
     };
 
-    const webhookCheck = checkWebhookRequest(rawBody, request.headers);
-    const {webhookOk, apiVersion, domain, hmac, topic, webhookId} =
-      webhookCheck;
-    let {errorMessage} = webhookCheck;
-    const loggingContext = {apiVersion, domain, topic, webhookId};
+    await logger(config).info('Receiving webhook request');
 
-    const log = logger(config);
-    log.info('Processing webhook request', loggingContext);
+    const webhookCheck = await validate(config)({rawBody, ...adapterArgs});
 
-    if (webhookOk) {
-      log.debug('Webhook request is well formed', loggingContext);
+    let errorMessage = 'Unknown error while handling webhook';
+    if (webhookCheck.valid) {
+      const handlerResult = await callWebhookHandlers(
+        config,
+        webhookRegistry,
+        webhookCheck,
+        rawBody,
+      );
 
-      if (await validateOkWebhook(config.apiSecretKey, rawBody, hmac)) {
-        log.debug('Webhook request is valid', loggingContext);
-
-        const graphqlTopic = topicForStorage(topic);
-        const handlers = webhookRegistry[graphqlTopic] || [];
-
-        let found = false;
-        for (const handler of handlers) {
-          if (handler.deliveryMethod !== DeliveryMethod.Http) {
-            continue;
-          }
-          found = true;
-
-          log.debug('Found HTTP handler, triggering it', loggingContext);
-
-          try {
-            await handler.callback(
-              graphqlTopic,
-              domain,
-              rawBody,
-              webhookId,
-              apiVersion,
-            );
-            response.statusCode = StatusCode.Ok;
-          } catch (error) {
-            response.statusCode = StatusCode.InternalServerError;
-            errorMessage = error.message;
-          }
-        }
-
-        if (!found) {
-          log.debug('No HTTP handlers found', loggingContext);
-
-          response.statusCode = StatusCode.NotFound;
-          errorMessage = `No HTTP webhooks registered for topic ${graphqlTopic}`;
-        }
-      } else {
-        log.debug('Webhook validation failed', loggingContext);
-        if (config.isCustomStoreApp) {
-          log.deprecated(
-            '8.0.0',
-            "apiSecretKey should be set to the custom store app's API secret key, so that webhook validation succeeds. adminApiAccessToken should be set to the custom store app's Admin API access token",
-          );
-        }
-        response.statusCode = StatusCode.Unauthorized;
-        errorMessage = `Could not validate request for topic ${topic}`;
+      response.statusCode = handlerResult.statusCode;
+      if (!isOK(response)) {
+        errorMessage = handlerResult.errorMessage || errorMessage;
       }
     } else {
-      log.debug('Webhook request is malformed', loggingContext);
+      const errorResult = await handleInvalidWebhook(config, webhookCheck);
 
-      response.statusCode = StatusCode.BadRequest;
+      response.statusCode = errorResult.statusCode;
+      response.statusText = STATUS_TEXT_LOOKUP[response.statusCode];
+      errorMessage = errorResult.errorMessage;
     }
 
-    response.statusText = statusTextLookup[response.statusCode];
     const returnResponse = await abstractConvertResponse(response, adapterArgs);
     if (!isOK(response)) {
       throw new ShopifyErrors.InvalidWebhookError({
@@ -116,100 +90,86 @@ export function process(
   };
 }
 
-const statusTextLookup: {[key: string]: string} = {
-  [StatusCode.Ok]: 'OK',
-  [StatusCode.BadRequest]: 'Bad Request',
-  [StatusCode.Unauthorized]: 'Unauthorized',
-  [StatusCode.NotFound]: 'Not Found',
-  [StatusCode.InternalServerError]: 'Internal Server Error',
-};
-
-const headerProperties: {property: string; headerName: ShopifyHeader}[] = [
-  {
-    property: 'apiVersion',
-    headerName: ShopifyHeader.ApiVersion,
-  },
-  {
-    property: 'domain',
-    headerName: ShopifyHeader.Domain,
-  },
-  {
-    property: 'hmac',
-    headerName: ShopifyHeader.Hmac,
-  },
-  {
-    property: 'topic',
-    headerName: ShopifyHeader.Topic,
-  },
-  {
-    property: 'webhookId',
-    headerName: ShopifyHeader.WebhookId,
-  },
-];
-
-function checkWebhookRequest(
+async function callWebhookHandlers(
+  config: ConfigInterface,
+  webhookRegistry: WebhookRegistry,
+  webhookCheck: WebhookValidationValid,
   rawBody: string,
-  headers: Headers,
-): {
-  webhookOk: boolean;
-  errorMessage: string;
-  apiVersion: string;
-  domain: string;
-  hmac: string;
-  topic: string;
-  webhookId: string;
-} {
-  let retVal = {
-    webhookOk: true,
-    errorMessage: '',
-    apiVersion: '',
-    domain: '',
-    hmac: '',
-    topic: '',
-    webhookId: '',
-  };
+): Promise<HandlerCallResult> {
+  const log = logger(config);
+  const {hmac: _hmac, valid: _valid, ...loggingContext} = webhookCheck;
 
-  if (rawBody.length) {
-    const missingHeaders: ShopifyHeader[] = [];
-    const headerValues: {[property: string]: string} = {};
-    headerProperties.forEach(({property, headerName}) => {
-      const headerValue = getHeader(headers, headerName);
-      if (headerValue) {
-        headerValues[property] = headerValue;
-      } else {
-        missingHeaders.push(headerName);
-      }
-    });
-
-    if (missingHeaders.length) {
-      retVal.webhookOk = false;
-      retVal.errorMessage = `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
-        ', ',
-      )}]`;
-    } else {
-      retVal = {
-        ...retVal,
-        ...headerValues,
-      };
-    }
-  } else {
-    retVal.webhookOk = false;
-    retVal.errorMessage = 'No body was received when processing webhook';
-  }
-
-  return retVal;
-}
-
-async function validateOkWebhook(
-  secret: string,
-  rawBody: string,
-  hmac: string,
-): Promise<boolean> {
-  const generatedHash = await createSHA256HMAC(
-    secret,
-    rawBody,
-    HashFormat.Base64,
+  await log.debug(
+    'Webhook request is valid, looking for HTTP handlers to call',
+    loggingContext,
   );
 
-  return safeCompare(generatedHash, hmac);
+  const handlers = webhookRegistry[webhookCheck.topic] || [];
+
+  const response: HandlerCallResult = {statusCode: StatusCode.Ok};
+
+  let found = false;
+  for (const handler of handlers) {
+    if (handler.deliveryMethod !== DeliveryMethod.Http) {
+      continue;
+    }
+    found = true;
+
+    await log.debug('Found HTTP handler, triggering it', loggingContext);
+
+    try {
+      await handler.callback(
+        webhookCheck.topic,
+        webhookCheck.domain,
+        rawBody,
+        webhookCheck.webhookId,
+        webhookCheck.apiVersion,
+      );
+    } catch (error) {
+      response.statusCode = StatusCode.InternalServerError;
+      response.errorMessage = error.message;
+    }
+  }
+
+  if (!found) {
+    await log.debug('No HTTP handlers found', loggingContext);
+
+    response.statusCode = StatusCode.NotFound;
+    response.errorMessage = `No HTTP webhooks registered for topic ${webhookCheck.topic}`;
+  }
+
+  return response;
+}
+
+async function handleInvalidWebhook(
+  config: ConfigInterface,
+  webhookCheck: WebhookValidationInvalid,
+): Promise<ErrorCallResult> {
+  const response: ErrorCallResult = {
+    statusCode: StatusCode.InternalServerError,
+    errorMessage: 'Unknown error while handling webhook',
+  };
+
+  switch (webhookCheck.reason) {
+    case WebhookValidationErrorReason.MissingHeaders:
+      response.statusCode = StatusCode.BadRequest;
+      response.errorMessage = `Missing one or more of the required HTTP headers to process webhooks: [${(
+        webhookCheck as WebhookValidationMissingHeaders
+      ).missingHeaders.join(', ')}]`;
+      break;
+    case WebhookValidationErrorReason.MissingBody:
+      response.statusCode = StatusCode.BadRequest;
+      response.errorMessage = 'No body was received when processing webhook';
+      break;
+    case WebhookValidationErrorReason.InvalidHmac:
+      response.statusCode = StatusCode.Unauthorized;
+      response.errorMessage = `Could not validate request HMAC`;
+      break;
+  }
+
+  await logger(config).debug(
+    `Webhook request is invalid, returning ${response.statusCode}: ${response.errorMessage}`,
+  );
+
+  return response;
 }
