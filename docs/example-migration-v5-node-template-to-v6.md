@@ -34,7 +34,15 @@ pnpm install
 
 ### 4. Create a new file called `shopify.js`
 
-This will be used to to create the shopify api instance used throughout the application. The v5 `Shopify.Context` configuration and the example billing configuration that is currently in `index.js` will be moved into this file.
+This will be used to to create the shopify api instance used throughout the application.
+
+In version 6, we improved this package so that it can run on any JS runtime, like Node.js or Cloudflare workers. Because of that, the very first thing the app needs to do is to import the Node.js adapter to set up the right defaults:
+
+```js
+import '@shopify/shopify-api/adapters/node';
+```
+
+Below is an example of a `shopify.js` file, where the v5 `Shopify.Context` configuration and the example billing configuration that is currently in `index.js` will be moved:
 
 ```js
 import '@shopify/shopify-api/adapters/node';
