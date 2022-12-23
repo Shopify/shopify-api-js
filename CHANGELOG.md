@@ -7,6 +7,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- [Patch] Don't ignore previous headers when beginning OAuth [#652](https://github.com/Shopify/shopify-api-js/pull/652)
 - [Patch] Export missing client types from package [#648](https://github.com/Shopify/shopify-api-js/pull/648)
 - [Patch] Add an info-level log of API library version and runtime environment string during initialization, to aid in troubleshooting [650](https://github.com/Shopify/shopify-api-js/pull/650)
 

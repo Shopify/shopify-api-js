@@ -1,6 +1,7 @@
 import type {
   AbstractFetchFunc,
   AbstractConvertRequestFunc,
+  AbstractConvertIncomingResponseFunc,
   AbstractConvertResponseFunc,
   NormalizedResponse,
   AbstractConvertHeadersFunc,
@@ -39,6 +40,16 @@ export function setAbstractConvertRequestFunc(
   func: AbstractConvertRequestFunc,
 ) {
   abstractConvertRequest = func;
+}
+
+// By default we just return an empty NormalizedResponse because not all adapters will need to convert an incoming response
+// eslint-disable-next-line import/no-mutable-exports
+export let abstractConvertIncomingResponse: AbstractConvertIncomingResponseFunc =
+  () => Promise.resolve({} as NormalizedResponse);
+export function setAbstractConvertIncomingResponseFunc(
+  func: AbstractConvertIncomingResponseFunc,
+) {
+  abstractConvertIncomingResponse = func;
 }
 
 // eslint-disable-next-line import/no-mutable-exports
