@@ -82,6 +82,7 @@ export class GraphqlClient {
       throw new ShopifyErrors.GraphqlQueryError({
         message: 'GraphQL query returned errors',
         response: result.body as unknown as {[key: string]: unknown},
+        headers: result.headers,
       });
     }
     return result;

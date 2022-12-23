@@ -195,6 +195,11 @@ describe('GraphQL client', () => {
       }`,
     };
 
+    const expectedHeaders = {
+      'Content-Type': 'application/graphql',
+      'X-Shopify-Access-Token': 'any_access_token',
+    };
+
     const errorResponse = {
       data: null,
       errors: [
@@ -220,6 +225,7 @@ describe('GraphQL client', () => {
           },
         },
       },
+      headers: expectedHeaders,
     };
 
     queueMockResponse(JSON.stringify(errorResponse));
@@ -228,6 +234,7 @@ describe('GraphQL client', () => {
       new ShopifyErrors.GraphqlQueryError({
         message: 'GraphQL query returned errors',
         response: errorResponse,
+        headers: expectedHeaders,
       }),
     );
 
