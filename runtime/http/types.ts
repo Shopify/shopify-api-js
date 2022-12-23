@@ -32,6 +32,10 @@ export type AbstractConvertRequestFunc = (
   adapterArgs: AdapterArgs,
 ) => Promise<NormalizedRequest>;
 
+export type AbstractConvertIncomingResponseFunc = (
+  adapterArgs: AdapterArgs,
+) => Promise<NormalizedResponse>;
+
 export type AbstractConvertResponseFunc = (
   response: NormalizedResponse,
   adapterArgs: AdapterArgs,

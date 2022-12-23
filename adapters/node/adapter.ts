@@ -29,6 +29,18 @@ export async function nodeConvertRequest(
   };
 }
 
+export async function nodeConvertIncomingResponse(
+  adapterArgs: NodeAdapterArgs,
+): Promise<NormalizedResponse> {
+  return {
+    statusCode: adapterArgs.rawResponse.statusCode,
+    statusText: adapterArgs.rawResponse.statusMessage,
+    headers: canonicalizeHeaders(
+      adapterArgs.rawResponse.getHeaders() as any as Headers,
+    ),
+  } as NormalizedResponse;
+}
+
 export async function nodeConvertAndSendResponse(
   response: NormalizedResponse,
   adapterArgs: NodeAdapterArgs,
