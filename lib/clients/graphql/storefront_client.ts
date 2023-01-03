@@ -26,13 +26,15 @@ export class StorefrontClient extends GraphqlClient {
   }
 
   protected getApiHeaders(): HeaderParams {
+    const sdkVariant = LIBRARY_NAME.toLowerCase().split(' ').join('-');
+
     return {
       [ShopifyHeader.StorefrontAccessToken]: this.storefrontClass().CONFIG
         .isPrivateApp
         ? this.storefrontClass().CONFIG.privateAppStorefrontAccessToken ||
           this.storefrontAccessToken
         : this.storefrontAccessToken,
-      [ShopifyHeader.StorefrontSDKVariant]: LIBRARY_NAME,
+      [ShopifyHeader.StorefrontSDKVariant]: sdkVariant,
       [ShopifyHeader.StorefrontSDKVersion]: SHOPIFY_API_LIBRARY_VERSION,
     };
   }
