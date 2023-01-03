@@ -179,6 +179,7 @@ export function callback(config: ConfigInterface) {
         expires: session.expires,
         sameSite: 'lax',
         secure: true,
+        path: '/',
       });
     }
 
