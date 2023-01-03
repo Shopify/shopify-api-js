@@ -1,7 +1,7 @@
 import {ShopifyHeader} from '../../types';
 import {ConfigInterface} from '../../base-types';
 import {httpClientClass, HttpClient} from '../http_client/http_client';
-import {DataType, RequestReturn} from '../http_client/types';
+import {DataType, HeaderParams, RequestReturn} from '../http_client/types';
 import {Session} from '../../session/session';
 import * as ShopifyErrors from '../../error';
 
@@ -10,11 +10,6 @@ import {GraphqlParams, GraphqlClientParams} from './types';
 export interface GraphqlClientClassParams {
   config: ConfigInterface;
   HttpClient?: typeof HttpClient;
-}
-
-export interface AccessTokenHeader {
-  header: string;
-  value: string;
 }
 
 export class GraphqlClient {
@@ -51,11 +46,8 @@ export class GraphqlClient {
       throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
     }
 
-    const accessTokenHeader = this.getAccessTokenHeader();
-    params.extraHeaders = {
-      [accessTokenHeader.header]: accessTokenHeader.value,
-      ...params.extraHeaders,
-    };
+    const apiHeaders = this.getApiHeaders();
+    params.extraHeaders = {...apiHeaders, ...params.extraHeaders};
 
     const path = `${this.baseApiPath}/${
       this.graphqlClass().CONFIG.apiVersion
@@ -84,10 +76,9 @@ export class GraphqlClient {
     return result;
   }
 
-  protected getAccessTokenHeader(): AccessTokenHeader {
+  protected getApiHeaders(): HeaderParams {
     return {
-      header: ShopifyHeader.AccessToken,
-      value: this.graphqlClass().CONFIG.isPrivateApp
+      [ShopifyHeader.AccessToken]: this.graphqlClass().CONFIG.isPrivateApp
         ? this.graphqlClass().CONFIG.apiSecretKey
         : (this.session.accessToken as string),
     };
