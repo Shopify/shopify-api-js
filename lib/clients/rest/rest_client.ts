@@ -1,5 +1,5 @@
 import {getHeader} from '../../../runtime/http';
-import {ShopifyHeader} from '../../types';
+import {ApiVersion, LogSeverity, ShopifyHeader} from '../../types';
 import {ConfigInterface} from '../../base-types';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
@@ -19,6 +19,7 @@ export class RestClient extends HttpClient {
   public static CONFIG: ConfigInterface;
 
   readonly session: Session;
+  readonly apiVersion?: ApiVersion;
 
   public constructor(params: RestClientParams) {
     super({domain: params.session.shop});
@@ -29,7 +30,15 @@ export class RestClient extends HttpClient {
       );
     }
 
+    if (params.apiVersion) {
+      this.restClass().CONFIG.logger.log(
+        LogSeverity.Debug,
+        `REST client overriding API version to ${params.apiVersion}`,
+      );
+    }
+
     this.session = params.session;
+    this.apiVersion = params.apiVersion;
   }
 
   protected async request<T = unknown>(
@@ -97,7 +106,7 @@ export class RestClient extends HttpClient {
       return `${cleanPath.replace(/\.json$/, '')}.json`;
     } else {
       return `/admin/api/${
-        this.restClass().CONFIG.apiVersion
+        this.apiVersion || this.restClass().CONFIG.apiVersion
       }${cleanPath.replace(/\.json$/, '')}.json`;
     }
   }

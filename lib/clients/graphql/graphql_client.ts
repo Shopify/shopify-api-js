@@ -1,4 +1,4 @@
-import {ShopifyHeader} from '../../types';
+import {ApiVersion, LogSeverity, ShopifyHeader} from '../../types';
 import {ConfigInterface} from '../../base-types';
 import {httpClientClass, HttpClient} from '../http_client/http_client';
 import {DataType, HeaderParams, RequestReturn} from '../http_client/types';
@@ -19,6 +19,7 @@ export class GraphqlClient {
   baseApiPath = '/admin/api';
   readonly session: Session;
   readonly client: HttpClient;
+  readonly apiVersion?: ApiVersion;
 
   constructor(params: GraphqlClientParams) {
     if (
@@ -30,7 +31,15 @@ export class GraphqlClient {
       );
     }
 
+    if (params.apiVersion) {
+      this.graphqlClass().CONFIG.logger.log(
+        LogSeverity.Debug,
+        `GraphQL client overriding API version to ${params.apiVersion}`,
+      );
+    }
+
     this.session = params.session;
+    this.apiVersion = params.apiVersion;
     this.client = new (this.graphqlClass().HTTP_CLIENT)({
       domain: this.session.shop,
     });
@@ -50,7 +59,7 @@ export class GraphqlClient {
     params.extraHeaders = {...apiHeaders, ...params.extraHeaders};
 
     const path = `${this.baseApiPath}/${
-      this.graphqlClass().CONFIG.apiVersion
+      this.apiVersion || this.graphqlClass().CONFIG.apiVersion
     }/graphql.json`;
 
     let dataType: DataType.GraphQL | DataType.JSON;

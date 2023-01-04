@@ -1,27 +1,28 @@
-import {Session} from '../../../../session/session';
-import {HttpResponseError} from '../../../../error';
 import {
   testConfig,
   queueMockResponse,
   queueMockResponses,
 } from '../../../../__tests__/test-helper';
+import {Session} from '../../../../session/session';
+import {HttpResponseError} from '../../../../error';
+import {ApiVersion, LATEST_API_VERSION} from '../../../../types';
 import {shopifyApi, Shopify} from '../../../../index';
 
 import {restResources} from './test-resources';
 
-let prefix: string;
-let shopify: Shopify<typeof restResources>;
+describe('Base REST resource', () => {
+  let prefix: string;
+  let shopify: Shopify<typeof restResources>;
 
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    restResources,
+  beforeEach(() => {
+    shopify = shopifyApi({
+      ...testConfig,
+      restResources,
+    });
+
+    prefix = `/admin/api/${shopify.config.apiVersion}`;
   });
 
-  prefix = `/admin/api/${shopify.config.apiVersion}`;
-});
-
-describe('Base REST resource', () => {
   const domain = 'test-shop.myshopify.io';
   const headers = {'X-Shopify-Access-Token': 'access-token'};
   const session = new Session({
@@ -490,5 +491,85 @@ describe('Base REST resource', () => {
       'unsaveable_attribute',
     );
     expect(hash).toHaveProperty('attribute', 'attribute');
+  });
+});
+
+describe('REST resources with a different API version', () => {
+  const domain = 'test-shop.myshopify.io';
+  const headers = {'X-Shopify-Access-Token': 'access-token'};
+  const session = new Session({
+    id: '1234',
+    shop: domain,
+    state: '1234',
+    isOnline: true,
+  });
+  session.accessToken = 'access-token';
+
+  it('can load class an run requests', async () => {
+    const shopify = shopifyApi({
+      ...testConfig,
+      apiVersion: '2020-01' as any as ApiVersion,
+      restResources,
+    });
+
+    // The shopify object is set to an older version, but the resources use the latest
+    expect(shopify.rest.FakeResource.API_VERSION).toBe(LATEST_API_VERSION);
+    expect(shopify.config.apiVersion).not.toBe(LATEST_API_VERSION);
+
+    queueMockResponses(
+      [JSON.stringify({fake_resource: {attribute: 'attribute'}})],
+      [JSON.stringify({fake_resource: {id: 1, attribute: 'attribute'}})],
+      [JSON.stringify({fake_resource: {id: 1, attribute: 'attribute'}})],
+      [JSON.stringify({})],
+    );
+
+    // POST
+    const fakeResource = new shopify.rest.FakeResource({session});
+    fakeResource.attribute = 'attribute';
+    await fakeResource.save();
+    expect(fakeResource!.attribute).toEqual('attribute');
+    expect({
+      method: 'POST',
+      domain,
+      path: `/admin/api/${LATEST_API_VERSION}/fake_resources.json`,
+      headers,
+      data: {fake_resource: {attribute: 'attribute'}},
+    }).toMatchMadeHttpRequest();
+
+    // GET
+    const fakeResource2 = (await shopify.rest.FakeResource.find({
+      id: 1,
+      session,
+    }))!;
+    expect(fakeResource).not.toEqual(fakeResource2);
+    expect(fakeResource2.id).toEqual(1);
+    expect(fakeResource2.attribute).toEqual('attribute');
+    expect({
+      method: 'GET',
+      domain,
+      path: `/admin/api/${LATEST_API_VERSION}/fake_resources/1.json`,
+      headers,
+    }).toMatchMadeHttpRequest();
+
+    // PUT
+    fakeResource2.attribute = 'attribute2';
+    await fakeResource2.save();
+    expect(fakeResource!.attribute).toEqual('attribute');
+    expect({
+      method: 'PUT',
+      domain,
+      path: `/admin/api/${LATEST_API_VERSION}/fake_resources/1.json`,
+      headers,
+      data: {fake_resource: {attribute: 'attribute2'}},
+    }).toMatchMadeHttpRequest();
+
+    // DELETE
+    await fakeResource2.delete();
+    expect({
+      method: 'DELETE',
+      domain,
+      path: `/admin/api/${LATEST_API_VERSION}/fake_resources/1.json`,
+      headers,
+    }).toMatchMadeHttpRequest();
   });
 });

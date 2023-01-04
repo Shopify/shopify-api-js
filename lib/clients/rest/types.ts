@@ -1,3 +1,4 @@
+import {ApiVersion} from '../../types';
 import {Session} from '../../session/session';
 import {RequestReturn, GetRequestParams} from '../http_client/types';
 
@@ -16,4 +17,5 @@ export type RestRequestReturn<T = unknown> = RequestReturn<T> & {
 
 export interface RestClientParams {
   session: Session;
+  apiVersion?: ApiVersion;
 }

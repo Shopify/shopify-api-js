@@ -1,5 +1,5 @@
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
-import {LIBRARY_NAME, ShopifyHeader} from '../../types';
+import {LIBRARY_NAME, LogSeverity, ShopifyHeader} from '../../types';
 import {httpClientClass} from '../http_client/http_client';
 import {Session} from '../../session/session';
 import {HeaderParams} from '../http_client/types';
@@ -20,7 +20,16 @@ export class StorefrontClient extends GraphqlClient {
       isOnline: true,
       accessToken: params.storefrontAccessToken,
     });
-    super({session});
+
+    super({session, apiVersion: params.apiVersion});
+
+    if (params.apiVersion) {
+      this.storefrontClass().CONFIG.logger.log(
+        LogSeverity.Debug,
+        `Storefront client overriding API version to ${params.apiVersion}`,
+      );
+    }
+
     this.domain = params.domain;
     this.storefrontAccessToken = params.storefrontAccessToken;
   }

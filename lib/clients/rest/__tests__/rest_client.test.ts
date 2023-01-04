@@ -6,7 +6,7 @@ import {
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestRequestReturn, PageInfo} from '../types';
 import * as ShopifyErrors from '../../../error';
-import {ShopifyHeader} from '../../../types';
+import {ApiVersion, LogSeverity, ShopifyHeader} from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 
@@ -406,6 +406,30 @@ describe('REST client', () => {
       domain,
       path: '/admin/some-path.json',
     }).toMatchMadeHttpRequest();
+  });
+
+  it('allows overriding the API version', async () => {
+    expect(shopify.config.apiVersion).not.toBe('2020-01');
+    const client = new shopify.clients.Rest({
+      session,
+      apiVersion: '2020-01' as any as ApiVersion,
+    });
+
+    queueMockResponse(JSON.stringify(successResponse));
+
+    await expect(client.get({path: 'products'})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
+    expect({
+      method: 'GET',
+      domain,
+      path: `/admin/api/2020-01/products.json`,
+    }).toMatchMadeHttpRequest();
+
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Debug,
+      'REST client overriding API version to 2020-01',
+    );
   });
 });
 

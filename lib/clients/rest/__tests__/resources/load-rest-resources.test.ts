@@ -1,6 +1,6 @@
 import {testConfig} from '../../../../__tests__/test-helper';
 import {LogSeverity, ApiVersion, LATEST_API_VERSION} from '../../../../types';
-import {shopifyApi} from '../../../../';
+import {shopifyApi} from '../../../..';
 
 import {restResources} from './test-resources';
 

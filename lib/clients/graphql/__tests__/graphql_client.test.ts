@@ -1,5 +1,5 @@
 import * as ShopifyErrors from '../../../error';
-import {ShopifyHeader} from '../../../types';
+import {ApiVersion, LogSeverity, ShopifyHeader} from '../../../types';
 import {queueMockResponse, shopify} from '../../../__tests__/test-helper';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
@@ -237,6 +237,31 @@ describe('GraphQL client', () => {
       },
       data: JSON.stringify(query),
     }).toMatchMadeHttpRequest();
+  });
+
+  it('allows overriding the API version', async () => {
+    expect(shopify.config.apiVersion).not.toBe('2020-01');
+    const client = new shopify.clients.Graphql({
+      session,
+      apiVersion: '2020-01' as any as ApiVersion,
+    });
+
+    queueMockResponse(JSON.stringify(successResponse));
+
+    const response = await client.query({data: QUERY});
+
+    expect(response).toEqual(buildExpectedResponse(successResponse));
+    expect({
+      method: 'POST',
+      domain,
+      path: `/admin/api/2020-01/graphql.json`,
+      data: QUERY,
+    }).toMatchMadeHttpRequest();
+
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Debug,
+      'GraphQL client overriding API version to 2020-01',
+    );
   });
 });
 

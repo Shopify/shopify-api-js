@@ -1,5 +1,5 @@
 import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
-import {ShopifyHeader} from '../../../types';
+import {ApiVersion, LogSeverity, ShopifyHeader} from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../../version';
@@ -119,6 +119,35 @@ describe('Storefront GraphQL client', () => {
         [ShopifyHeader.StorefrontSDKVersion]: SHOPIFY_API_LIBRARY_VERSION,
       },
     }).toMatchMadeHttpRequest();
+  });
+
+  it('allows overriding the API version', async () => {
+    const client = new shopify.clients.Storefront({
+      domain: session.shop,
+      storefrontAccessToken,
+      apiVersion: '2020-01' as any as ApiVersion,
+    });
+
+    queueMockResponse(JSON.stringify(successResponse));
+
+    await expect(client.query({data: QUERY})).resolves.toEqual(
+      buildExpectedResponse(successResponse),
+    );
+
+    expect({
+      method: 'POST',
+      domain,
+      path: `/api/2020-01/graphql.json`,
+      data: QUERY,
+      headers: {
+        [ShopifyHeader.StorefrontAccessToken]: storefrontAccessToken,
+      },
+    }).toMatchMadeHttpRequest();
+
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Debug,
+      'Storefront client overriding API version to 2020-01',
+    );
   });
 });
 
