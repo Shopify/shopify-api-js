@@ -31,7 +31,7 @@ describe('UsageCharge resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618208, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2022-10-03T12:53:15-04:00", "billing_on": null, "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
+    queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618209, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2023-01-03T12:42:12-05:00", "billing_on": null, "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
 
     const usage_charge = new shopify.rest.UsageCharge({session: session});
     usage_charge.recurring_application_charge_id = 455696195;
@@ -50,7 +50,7 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"usage_charges": [{"id": 1034618206, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-10-03T12:53:13-04:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
+    queueMockResponse(JSON.stringify({"usage_charges": [{"id": 1034618206, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2023-01-03T12:42:08-05:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
 
     await shopify.rest.UsageCharge.all({
       session: session,
@@ -68,18 +68,18 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618210, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-10-03T12:53:16-04:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
+    queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618207, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2023-01-03T12:42:10-05:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
 
     await shopify.rest.UsageCharge.find({
       session: session,
       recurring_application_charge_id: 455696195,
-      id: 1034618210,
+      id: 1034618207,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-07/recurring_application_charges/455696195/usage_charges/1034618210.json',
+      path: '/admin/api/2022-07/recurring_application_charges/455696195/usage_charges/1034618207.json',
       query: '',
       headers,
       data: undefined

@@ -31,7 +31,7 @@ describe('Collect resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"collect": {"id": 1071559580, "collection_id": 841564295, "product_id": 921728736, "created_at": "2022-10-03T13:19:30-04:00", "updated_at": "2022-10-03T13:19:30-04:00", "position": 2, "sort_value": "0000000002"}}));
+    queueMockResponse(JSON.stringify({"collect": {"id": 1071559576, "collection_id": 841564295, "product_id": 921728736, "created_at": "2023-01-03T12:45:21-05:00", "updated_at": "2023-01-03T12:45:21-05:00", "position": 2, "sort_value": "0000000002"}}));
 
     const collect = new shopify.rest.Collect({session: session});
     collect.product_id = 921728736;
@@ -49,17 +49,16 @@ describe('Collect resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({}));
+    queueMockResponse(JSON.stringify({"collects": [{"id": 358268117, "collection_id": 482865238, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 773559378, "collection_id": 395646240, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 800915878, "collection_id": 482865238, "product_id": 921728736, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}]}));
 
-    await shopify.rest.Collect.delete({
+    await shopify.rest.Collect.all({
       session: session,
-      id: 455204334,
     });
 
     expect({
-      method: 'DELETE',
+      method: 'GET',
       domain,
-      path: '/admin/api/2022-04/collects/455204334.json',
+      path: '/admin/api/2022-04/collects.json',
       query: '',
       headers,
       data: undefined
@@ -67,18 +66,18 @@ describe('Collect resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"collect": {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}}));
+    queueMockResponse(JSON.stringify({"collects": [{"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 1071559574, "collection_id": 841564295, "product_id": 921728736, "created_at": "2023-01-03T12:45:12-05:00", "updated_at": "2023-01-03T12:45:12-05:00", "position": 2, "sort_value": "0000000002"}]}));
 
-    await shopify.rest.Collect.find({
+    await shopify.rest.Collect.all({
       session: session,
-      id: 455204334,
+      collection_id: "841564295",
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-04/collects/455204334.json',
-      query: '',
+      path: '/admin/api/2022-04/collects.json',
+      query: 'collection_id=841564295',
       headers,
       data: undefined
     }).toMatchMadeHttpRequest();
@@ -103,16 +102,17 @@ describe('Collect resource', () => {
   });
 
   it('test_5', async () => {
-    queueMockResponse(JSON.stringify({"collects": [{"id": 358268117, "collection_id": 482865238, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 773559378, "collection_id": 395646240, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 800915878, "collection_id": 482865238, "product_id": 921728736, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}]}));
+    queueMockResponse(JSON.stringify({}));
 
-    await shopify.rest.Collect.all({
+    await shopify.rest.Collect.delete({
       session: session,
+      id: 455204334,
     });
 
     expect({
-      method: 'GET',
+      method: 'DELETE',
       domain,
-      path: '/admin/api/2022-04/collects.json',
+      path: '/admin/api/2022-04/collects/455204334.json',
       query: '',
       headers,
       data: undefined
@@ -120,24 +120,41 @@ describe('Collect resource', () => {
   });
 
   it('test_6', async () => {
-    queueMockResponse(JSON.stringify({"collects": [{"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 1071559581, "collection_id": 841564295, "product_id": 921728736, "created_at": "2022-10-03T13:19:33-04:00", "updated_at": "2022-10-03T13:19:33-04:00", "position": 2, "sort_value": "0000000002"}]}));
+    queueMockResponse(JSON.stringify({"collect": {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}}));
 
-    await shopify.rest.Collect.all({
+    await shopify.rest.Collect.find({
       session: session,
-      collection_id: "841564295",
+      id: 455204334,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-04/collects.json',
-      query: 'collection_id=841564295',
+      path: '/admin/api/2022-04/collects/455204334.json',
+      query: '',
       headers,
       data: undefined
     }).toMatchMadeHttpRequest();
   });
 
   it('test_7', async () => {
+    queueMockResponse(JSON.stringify({"count": 2}));
+
+    await shopify.rest.Collect.count({
+      session: session,
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-04/collects/count.json',
+      query: '',
+      headers,
+      data: undefined
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_8', async () => {
     queueMockResponse(JSON.stringify({"count": 1}));
 
     await shopify.rest.Collect.count({
@@ -155,7 +172,7 @@ describe('Collect resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('test_8', async () => {
+  it('test_9', async () => {
     queueMockResponse(JSON.stringify({"count": 2}));
 
     await shopify.rest.Collect.count({
@@ -168,23 +185,6 @@ describe('Collect resource', () => {
       domain,
       path: '/admin/api/2022-04/collects/count.json',
       query: 'product_id=632910392',
-      headers,
-      data: undefined
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_9', async () => {
-    queueMockResponse(JSON.stringify({"count": 2}));
-
-    await shopify.rest.Collect.count({
-      session: session,
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-04/collects/count.json',
-      query: '',
       headers,
       data: undefined
     }).toMatchMadeHttpRequest();

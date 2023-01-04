@@ -49,12 +49,12 @@ describe('Asset resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"asset": {"key": "layout/alternate.liquid", "public_url": null, "created_at": "2022-10-03T13:22:25-04:00", "updated_at": "2022-10-03T13:22:25-04:00", "content_type": "application/x-liquid", "size": 3049, "checksum": "1879a06996941b2ff1ff485a1fe60a97", "theme_id": 828155753}}));
+    queueMockResponse(JSON.stringify({"asset": {"key": "templates/index.liquid", "public_url": null, "created_at": "2010-07-12T15:31:50-04:00", "updated_at": "2023-01-03T12:39:59-05:00", "content_type": "application/x-liquid", "size": 110, "checksum": "cd71db2e14df976c8aa44b44c8dae77b", "theme_id": 828155753}}));
 
     const asset = new shopify.rest.Asset({session: session});
     asset.theme_id = 828155753;
-    asset.key = "layout/alternate.liquid";
-    asset.source_key = "layout/theme.liquid";
+    asset.key = "templates/index.liquid";
+    asset.value = "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>";
     await asset.save({});
 
     expect({
@@ -63,12 +63,12 @@ describe('Asset resource', () => {
       path: '/admin/api/2022-07/themes/828155753/assets.json',
       query: '',
       headers,
-      data: { "asset": {"key": "layout/alternate.liquid", "source_key": "layout/theme.liquid"} }
+      data: { "asset": {"key": "templates/index.liquid", "value": "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"asset": {"key": "assets/empty.gif", "public_url": "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/empty.gif?v=1664817747", "created_at": "2022-10-03T13:22:27-04:00", "updated_at": "2022-10-03T13:22:27-04:00", "content_type": "image/gif", "size": 43, "checksum": "45cf913e5d9d3c9b2058033056d3dd23", "theme_id": 828155753}}));
+    queueMockResponse(JSON.stringify({"asset": {"key": "assets/empty.gif", "public_url": "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/empty.gif?v=1672767606", "created_at": "2023-01-03T12:40:06-05:00", "updated_at": "2023-01-03T12:40:06-05:00", "content_type": "image/gif", "size": 43, "checksum": "45cf913e5d9d3c9b2058033056d3dd23", "theme_id": 828155753}}));
 
     const asset = new shopify.rest.Asset({session: session});
     asset.theme_id = 828155753;
@@ -87,26 +87,7 @@ describe('Asset resource', () => {
   });
 
   it('test_4', async () => {
-    queueMockResponse(JSON.stringify({"asset": {"key": "templates/index.liquid", "public_url": null, "created_at": "2010-07-12T15:31:50-04:00", "updated_at": "2022-10-03T13:22:28-04:00", "content_type": "application/x-liquid", "size": 110, "checksum": "cd71db2e14df976c8aa44b44c8dae77b", "theme_id": 828155753}}));
-
-    const asset = new shopify.rest.Asset({session: session});
-    asset.theme_id = 828155753;
-    asset.key = "templates/index.liquid";
-    asset.value = "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>";
-    await asset.save({});
-
-    expect({
-      method: 'PUT',
-      domain,
-      path: '/admin/api/2022-07/themes/828155753/assets.json',
-      query: '',
-      headers,
-      data: { "asset": {"key": "templates/index.liquid", "value": "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>"} }
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_5', async () => {
-    queueMockResponse(JSON.stringify({"asset": {"key": "assets/bg-body.gif", "public_url": "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/bg-body.gif?v=1664817751", "created_at": "2010-07-12T15:31:50-04:00", "updated_at": "2022-10-03T13:22:31-04:00", "content_type": "image/gif", "size": 43, "checksum": "45cf913e5d9d3c9b2058033056d3dd23", "theme_id": 828155753}}));
+    queueMockResponse(JSON.stringify({"asset": {"key": "assets/bg-body.gif", "public_url": "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/bg-body.gif?v=1672767597", "created_at": "2010-07-12T15:31:50-04:00", "updated_at": "2023-01-03T12:39:57-05:00", "content_type": "image/gif", "size": 43, "checksum": "45cf913e5d9d3c9b2058033056d3dd23", "theme_id": 828155753}}));
 
     const asset = new shopify.rest.Asset({session: session});
     asset.theme_id = 828155753;
@@ -121,6 +102,25 @@ describe('Asset resource', () => {
       query: '',
       headers,
       data: { "asset": {"key": "assets/bg-body.gif", "src": "http://example.com/new_bg.gif"} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_5', async () => {
+    queueMockResponse(JSON.stringify({"asset": {"key": "layout/alternate.liquid", "public_url": null, "created_at": "2023-01-03T12:40:04-05:00", "updated_at": "2023-01-03T12:40:04-05:00", "content_type": "application/x-liquid", "size": 3049, "checksum": "1879a06996941b2ff1ff485a1fe60a97", "theme_id": 828155753}}));
+
+    const asset = new shopify.rest.Asset({session: session});
+    asset.theme_id = 828155753;
+    asset.key = "layout/alternate.liquid";
+    asset.source_key = "layout/theme.liquid";
+    await asset.save({});
+
+    expect({
+      method: 'PUT',
+      domain,
+      path: '/admin/api/2022-07/themes/828155753/assets.json',
+      query: '',
+      headers,
+      data: { "asset": {"key": "layout/alternate.liquid", "source_key": "layout/theme.liquid"} }
     }).toMatchMadeHttpRequest();
   });
 

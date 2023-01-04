@@ -31,14 +31,14 @@ describe('ResourceFeedback resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"resource_feedback": {"created_at": "2022-10-03T12:45:53-04:00", "updated_at": "2022-10-03T12:45:53-04:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-10-03T12:45:51-04:00", "state": "requires_action"}}));
+    queueMockResponse(JSON.stringify({"resource_feedback": {"created_at": "2023-01-03T12:53:47-05:00", "updated_at": "2023-01-03T12:53:47-05:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2023-01-03T12:53:46-05:00", "state": "requires_action"}}));
 
     const resource_feedback = new shopify.rest.ResourceFeedback({session: session});
     resource_feedback.state = "requires_action";
     resource_feedback.messages = [
       "is not connected. Connect your account to use this sales channel."
     ];
-    resource_feedback.feedback_generated_at = "2022-10-03T16:45:51.594730Z";
+    resource_feedback.feedback_generated_at = "2023-01-03T17:53:46.212756Z";
     await resource_feedback.save({});
 
     expect({
@@ -47,16 +47,16 @@ describe('ResourceFeedback resource', () => {
       path: '/admin/api/2022-07/resource_feedback.json',
       query: '',
       headers,
-      data: { "resource_feedback": {"state": "requires_action", "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-10-03T16:45:51.594730Z"} }
+      data: { "resource_feedback": {"state": "requires_action", "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2023-01-03T17:53:46.212756Z"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"resource_feedback": {"created_at": "2022-10-03T12:45:55-04:00", "updated_at": "2022-10-03T12:45:55-04:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": [], "feedback_generated_at": "2022-10-03T12:45:53-04:00", "state": "success"}}));
+    queueMockResponse(JSON.stringify({"resource_feedback": {"created_at": "2023-01-03T12:53:50-05:00", "updated_at": "2023-01-03T12:53:50-05:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": [], "feedback_generated_at": "2023-01-03T12:53:49-05:00", "state": "success"}}));
 
     const resource_feedback = new shopify.rest.ResourceFeedback({session: session});
     resource_feedback.state = "success";
-    resource_feedback.feedback_generated_at = "2022-10-03T16:45:53.872041Z";
+    resource_feedback.feedback_generated_at = "2023-01-03T17:53:49.185362Z";
     await resource_feedback.save({});
 
     expect({
@@ -65,12 +65,12 @@ describe('ResourceFeedback resource', () => {
       path: '/admin/api/2022-07/resource_feedback.json',
       query: '',
       headers,
-      data: { "resource_feedback": {"state": "success", "feedback_generated_at": "2022-10-03T16:45:53.872041Z"} }
+      data: { "resource_feedback": {"state": "success", "feedback_generated_at": "2023-01-03T17:53:49.185362Z"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"resource_feedback": [{"created_at": "2022-10-03T12:45:57-04:00", "updated_at": "2022-10-03T12:45:57-04:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-10-03T11:45:57-04:00", "state": "requires_action"}]}));
+    queueMockResponse(JSON.stringify({"resource_feedback": [{"created_at": "2023-01-03T12:53:44-05:00", "updated_at": "2023-01-03T12:53:44-05:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2023-01-03T11:53:44-05:00", "state": "requires_action"}]}));
 
     await shopify.rest.ResourceFeedback.all({
       session: session,
