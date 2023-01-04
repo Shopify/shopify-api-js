@@ -6,7 +6,12 @@ import {
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestRequestReturn, PageInfo} from '../types';
 import * as ShopifyErrors from '../../../error';
-import {ApiVersion, LogSeverity, ShopifyHeader} from '../../../types';
+import {
+  ApiVersion,
+  LATEST_API_VERSION,
+  LogSeverity,
+  ShopifyHeader,
+} from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 
@@ -428,7 +433,9 @@ describe('REST client', () => {
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
-      'REST client overriding API version to 2020-01',
+      expect.stringContaining(
+        `REST client overriding default API version ${LATEST_API_VERSION} with 2020-01`,
+      ),
     );
   });
 });

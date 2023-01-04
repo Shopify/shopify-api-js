@@ -1,10 +1,11 @@
 import {getHeader} from '../../../runtime/http';
-import {ApiVersion, LogSeverity, ShopifyHeader} from '../../types';
+import {ApiVersion, ShopifyHeader} from '../../types';
 import {ConfigInterface} from '../../base-types';
 import {RequestParams, GetRequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
 import {HttpClient} from '../http_client/http_client';
 import {Session} from '../../session/session';
+import {logger} from '../../logger';
 
 import {RestRequestReturn, PageInfo, RestClientParams} from './types';
 
@@ -16,7 +17,7 @@ export class RestClient extends HttpClient {
   static LINK_HEADER_REGEXP = /<([^<]+)>; rel="([^"]+)"/;
   static DEFAULT_LIMIT = '50';
 
-  public static CONFIG: ConfigInterface;
+  public static config: ConfigInterface;
 
   readonly session: Session;
   readonly apiVersion?: ApiVersion;
@@ -24,17 +25,21 @@ export class RestClient extends HttpClient {
   public constructor(params: RestClientParams) {
     super({domain: params.session.shop});
 
-    if (!this.restClass().CONFIG.isPrivateApp && !params.session.accessToken) {
+    const config = this.restClass().config;
+
+    if (!config.isPrivateApp && !params.session.accessToken) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating REST client',
       );
     }
 
     if (params.apiVersion) {
-      this.restClass().CONFIG.logger.log(
-        LogSeverity.Debug,
-        `REST client overriding API version to ${params.apiVersion}`,
-      );
+      const message =
+        params.apiVersion === config.apiVersion
+          ? `REST client has a redundant API version override to the default ${params.apiVersion}`
+          : `REST client overriding default API version ${config.apiVersion} with ${params.apiVersion}`;
+
+      logger(config).debug(message);
     }
 
     this.session = params.session;
@@ -45,8 +50,8 @@ export class RestClient extends HttpClient {
     params: RequestParams,
   ): Promise<RestRequestReturn<T>> {
     params.extraHeaders = {
-      [ShopifyHeader.AccessToken]: this.restClass().CONFIG.isPrivateApp
-        ? this.restClass().CONFIG.apiSecretKey
+      [ShopifyHeader.AccessToken]: this.restClass().config.isPrivateApp
+        ? this.restClass().config.apiSecretKey
         : (this.session.accessToken as string),
       ...params.extraHeaders,
     };
@@ -106,7 +111,7 @@ export class RestClient extends HttpClient {
       return `${cleanPath.replace(/\.json$/, '')}.json`;
     } else {
       return `/admin/api/${
-        this.apiVersion || this.restClass().CONFIG.apiVersion
+        this.apiVersion || this.restClass().config.apiVersion
       }${cleanPath.replace(/\.json$/, '')}.json`;
     }
   }
@@ -133,8 +138,8 @@ export function restClientClass(
   const {config} = params;
 
   class NewRestClient extends RestClient {
-    public static CONFIG = config;
-    public static SCHEME = 'https';
+    public static config = config;
+    public static scheme = 'https';
   }
 
   Reflect.defineProperty(NewRestClient, 'name', {

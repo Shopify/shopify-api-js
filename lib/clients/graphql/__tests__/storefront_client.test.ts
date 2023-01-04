@@ -1,5 +1,10 @@
 import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
-import {ApiVersion, LogSeverity, ShopifyHeader} from '../../../types';
+import {
+  ApiVersion,
+  LATEST_API_VERSION,
+  LogSeverity,
+  ShopifyHeader,
+} from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../../version';
@@ -146,7 +151,9 @@ describe('Storefront GraphQL client', () => {
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
-      'Storefront client overriding API version to 2020-01',
+      expect.stringContaining(
+        `Storefront client overriding default API version ${LATEST_API_VERSION} with 2020-01`,
+      ),
     );
   });
 });

@@ -39,14 +39,14 @@ interface HttpClientParams {
 }
 
 export class HttpClient {
-  public static CONFIG: ConfigInterface;
-  public static SCHEME: string;
+  public static config: ConfigInterface;
+  public static scheme: string;
 
   // 1 second
   static readonly RETRY_WAIT_TIME = 1000;
   // 5 minutes
   static readonly DEPRECATION_ALERT_DELAY = 300000;
-  LOGGED_DEPRECATIONS: {[key: string]: number} = {};
+  loggedDeprecations: {[key: string]: number} = {};
   readonly domain: string;
 
   public constructor(params: HttpClientParams) {
@@ -93,8 +93,8 @@ export class HttpClient {
 
     let userAgent = `${LIBRARY_NAME} v${SHOPIFY_API_LIBRARY_VERSION} | ${abstractRuntimeString()}`;
 
-    if (this.httpClass().CONFIG.userAgentPrefix) {
-      userAgent = `${this.httpClass().CONFIG.userAgentPrefix} | ${userAgent}`;
+    if (this.httpClass().config.userAgentPrefix) {
+      userAgent = `${this.httpClass().config.userAgentPrefix} | ${userAgent}`;
     }
 
     if (params.extraHeaders) {
@@ -139,7 +139,7 @@ export class HttpClient {
       }
     }
 
-    const url = `${this.httpClass().SCHEME}://${
+    const url = `${this.httpClass().scheme}://${
       this.domain
     }${this.getRequestPath(params.path)}${ProcessedQuery.stringify(
       params.query,
@@ -151,7 +151,7 @@ export class HttpClient {
       body,
     };
 
-    if (this.httpClass().CONFIG.logger.httpRequests) {
+    if (this.httpClass().config.logger.httpRequests) {
       const message = [
         'Making HTTP request',
         `${request.method} ${request.url}`,
@@ -162,7 +162,7 @@ export class HttpClient {
         message.push(`Body: ${JSON.stringify(body).replace(/\n/g, '\\n  ')}`);
       }
 
-      logger(this.httpClass().CONFIG).debug(message.join('  -  '));
+      logger(this.httpClass().config).debug(message.join('  -  '));
     }
 
     async function sleep(waitTime: number): Promise<void> {
@@ -270,11 +270,11 @@ export class HttpClient {
   private async doRequest<T = unknown>(
     request: NormalizedRequest,
   ): Promise<RequestReturn<T>> {
-    const log = logger(this.httpClass().CONFIG);
+    const log = logger(this.httpClass().config);
 
     const response: NormalizedResponse = await abstractFetch(request);
 
-    if (this.httpClass().CONFIG.logger.httpRequests) {
+    if (this.httpClass().config.logger.httpRequests) {
       log.debug(
         `Completed HTTP request, received ${response.statusCode} ${response.statusText}`,
       );
@@ -310,17 +310,17 @@ export class HttpClient {
       }
 
       const depHash = await createSHA256HMAC(
-        this.httpClass().CONFIG.apiSecretKey,
+        this.httpClass().config.apiSecretKey,
         JSON.stringify(deprecation),
         HashFormat.Hex,
       );
 
       if (
-        !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
-        Date.now() - this.LOGGED_DEPRECATIONS[depHash] >=
+        !Object.keys(this.loggedDeprecations).includes(depHash) ||
+        Date.now() - this.loggedDeprecations[depHash] >=
           HttpClient.DEPRECATION_ALERT_DELAY
       ) {
-        this.LOGGED_DEPRECATIONS[depHash] = Date.now();
+        this.loggedDeprecations[depHash] = Date.now();
 
         const stack = new Error().stack;
         const message = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
@@ -342,8 +342,8 @@ export function httpClientClass(
   scheme = 'https',
 ): typeof HttpClient {
   class NewHttpClient extends HttpClient {
-    public static CONFIG = config;
-    public static SCHEME = scheme;
+    public static config = config;
+    public static scheme = scheme;
   }
 
   Reflect.defineProperty(NewHttpClient, 'name', {
