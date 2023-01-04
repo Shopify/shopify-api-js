@@ -21,7 +21,10 @@ app.get('/my-endpoint', async () => {
   // getSessionFromStorage() must be provided by application
   const session = await getSessionFromStorage(sessionId);
 
-  const client = new shopify.clients.Graphql({session});
+  const client = new shopify.clients.Graphql({
+    session,
+    apiVersion: ApiVersion.January23,
+  });
 });
 ```
 
@@ -34,6 +37,13 @@ Receives an object containing:
 `Session` | :exclamation: required
 
 The Shopify Session containing an access token to the API.
+
+#### apiVersion
+
+`ApiVersion`
+
+This will override the default API version.
+Any requests made by this client will reach this version instead.
 
 ## Query
 
