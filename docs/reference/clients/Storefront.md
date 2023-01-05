@@ -50,6 +50,7 @@ app.get('/my-endpoint', async (req, res) => {
   const storefrontClient = new shopify.clients.Storefront({
     domain: session.shop,
     storefrontAccessToken,
+    apiVersion: ApiVersion.January23,
   });
 });
 ```
@@ -69,6 +70,13 @@ The shop domain for the request.
 `string` | :exclamation: required
 
 The access token created using one of the Admin APIs.
+
+#### apiVersion
+
+`ApiVersion`
+
+This will override the default API version.
+Any requests made by this client will reach this version instead.
 
 ## Query
 

@@ -3,6 +3,7 @@ import {LIBRARY_NAME, ShopifyHeader} from '../../types';
 import {httpClientClass} from '../http_client/http_client';
 import {Session} from '../../session/session';
 import {HeaderParams} from '../http_client/types';
+import {logger} from '../../logger';
 
 import {GraphqlClient, GraphqlClientClassParams} from './graphql_client';
 import {StorefrontClientParams} from './types';
@@ -20,7 +21,20 @@ export class StorefrontClient extends GraphqlClient {
       isOnline: true,
       accessToken: params.storefrontAccessToken,
     });
-    super({session});
+
+    super({session, apiVersion: params.apiVersion});
+
+    const config = this.storefrontClass().config;
+
+    if (params.apiVersion) {
+      const message =
+        params.apiVersion === config.apiVersion
+          ? `Storefront client has a redundant API version override to the default ${params.apiVersion}`
+          : `Storefront client overriding default API version ${config.apiVersion} with ${params.apiVersion}`;
+
+      logger(config).debug(message);
+    }
+
     this.domain = params.domain;
     this.storefrontAccessToken = params.storefrontAccessToken;
   }
@@ -29,9 +43,9 @@ export class StorefrontClient extends GraphqlClient {
     const sdkVariant = LIBRARY_NAME.toLowerCase().split(' ').join('-');
 
     return {
-      [ShopifyHeader.StorefrontAccessToken]: this.storefrontClass().CONFIG
+      [ShopifyHeader.StorefrontAccessToken]: this.storefrontClass().config
         .isPrivateApp
-        ? this.storefrontClass().CONFIG.privateAppStorefrontAccessToken ||
+        ? this.storefrontClass().config.privateAppStorefrontAccessToken ||
           this.storefrontAccessToken
         : this.storefrontAccessToken,
       [ShopifyHeader.StorefrontSDKVariant]: sdkVariant,
@@ -51,8 +65,8 @@ export function storefrontClientClass(params: GraphqlClientClassParams) {
     HttpClient = httpClientClass(config);
   }
   class NewStorefrontClient extends StorefrontClient {
-    public static CONFIG = config;
-    public static HTTP_CLIENT = HttpClient!;
+    public static config = config;
+    public static HttpClient = HttpClient!;
   }
 
   Reflect.defineProperty(NewStorefrontClient, 'name', {

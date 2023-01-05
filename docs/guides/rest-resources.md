@@ -5,7 +5,8 @@ To call the Admin REST API, you can use the [REST client](../reference/clients/R
 The Admin API has a lot of endpoints, and the differences between them can be subtle.
 To make it easier to interact with the API, this library provides resource classes, which map these endpoints to OO code and can make API queries feel more natural.
 
-> **Note**: we provide auto-generated resources for all **_stable_** API versions, so your app must include the appropriate set (see [mounting REST resources](#mounting-rest-resources) below), matching your `apiVersion` configuration. The library will throw an error if the versions don't match.
+> **Note**: we provide auto-generated resources for all **_stable_** API versions.
+> If your app is using `unstable` or a Release Candidate, you can still import REST resources (see [mounting REST resources](#mounting-rest-resources) below) for other versions, but we'll log a warning to remind you to update when you're ready.
 
 Below is an example of how REST resources can make it easier to fetch the first product and update it:
 
@@ -35,7 +36,7 @@ const client = new shopify.clients.Rest({session});
 // The following line sends a HTTP GET request to this constructed URL:
 // https://${session.shop}/admin/api/${shopify.config.api_version}/products/7504536535062.json
 const response = await client.get<ProductResponse>({
-  path: 'products/7504536535062'
+  path: 'products/7504536535062',
 });
 
 // Apps needs to dig into the response body to find the object
@@ -65,11 +66,11 @@ const session = await getSessionFromStorage(sessionId);
 
 // get a single product via its product id
 const product = await shopify.rest.Product.find({session, id: '7504536535062'});
-  
+
 product.title = 'A new title';
-  
+
 await product.save({
-  update: true
+  update: true,
 });
 ```
 

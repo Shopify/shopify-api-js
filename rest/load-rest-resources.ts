@@ -1,24 +1,25 @@
-import {ApiVersion} from '../lib/types';
-import {RestResourceError} from '../lib/error';
+import {LogSeverity} from '../lib/types';
+import {ConfigInterface} from '../lib/base-types';
 import {RestClient} from '../lib/clients/rest/rest_client';
 
 import {ShopifyRestResources} from './types';
 
 export interface LoadRestResourcesParams {
   resources: ShopifyRestResources;
-  apiVersion: ApiVersion;
+  config: ConfigInterface;
   RestClient: typeof RestClient;
 }
 
 export function loadRestResources({
   resources,
-  apiVersion,
+  config,
   RestClient,
 }: LoadRestResourcesParams): ShopifyRestResources {
   const firstResource = Object.keys(resources)[0];
-  if (apiVersion !== resources[firstResource].API_VERSION) {
-    throw new RestResourceError(
-      `Current API version '${apiVersion}' does not match ` +
+  if (config.apiVersion !== resources[firstResource].API_VERSION) {
+    config.logger.log(
+      LogSeverity.Warning,
+      `Current API version '${config.apiVersion}' does not match ` +
         `resource API version '${resources[firstResource].API_VERSION}'`,
     );
   }

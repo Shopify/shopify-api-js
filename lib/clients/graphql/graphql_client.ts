@@ -1,8 +1,9 @@
-import {ShopifyHeader} from '../../types';
+import {ApiVersion, ShopifyHeader} from '../../types';
 import {ConfigInterface} from '../../base-types';
 import {httpClientClass, HttpClient} from '../http_client/http_client';
 import {DataType, HeaderParams, RequestReturn} from '../http_client/types';
 import {Session} from '../../session/session';
+import {logger} from '../../logger';
 import * as ShopifyErrors from '../../error';
 
 import {GraphqlParams, GraphqlClientParams} from './types';
@@ -13,25 +14,35 @@ export interface GraphqlClientClassParams {
 }
 
 export class GraphqlClient {
-  public static CONFIG: ConfigInterface;
-  public static HTTP_CLIENT: typeof HttpClient;
+  public static config: ConfigInterface;
+  public static HttpClient: typeof HttpClient;
 
   baseApiPath = '/admin/api';
   readonly session: Session;
   readonly client: HttpClient;
+  readonly apiVersion?: ApiVersion;
 
   constructor(params: GraphqlClientParams) {
-    if (
-      !this.graphqlClass().CONFIG.isPrivateApp &&
-      !params.session.accessToken
-    ) {
+    const config = this.graphqlClass().config;
+
+    if (!config.isPrivateApp && !params.session.accessToken) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating GraphQL client',
       );
     }
 
+    if (params.apiVersion) {
+      const message =
+        params.apiVersion === config.apiVersion
+          ? `GraphQL client has a redundant API version override to the default ${params.apiVersion}`
+          : `GraphQL client overriding default API version ${config.apiVersion} with ${params.apiVersion}`;
+
+      logger(config).debug(message);
+    }
+
     this.session = params.session;
-    this.client = new (this.graphqlClass().HTTP_CLIENT)({
+    this.apiVersion = params.apiVersion;
+    this.client = new (this.graphqlClass().HttpClient)({
       domain: this.session.shop,
     });
   }
@@ -50,7 +61,7 @@ export class GraphqlClient {
     params.extraHeaders = {...apiHeaders, ...params.extraHeaders};
 
     const path = `${this.baseApiPath}/${
-      this.graphqlClass().CONFIG.apiVersion
+      this.apiVersion || this.graphqlClass().config.apiVersion
     }/graphql.json`;
 
     let dataType: DataType.GraphQL | DataType.JSON;
@@ -78,8 +89,8 @@ export class GraphqlClient {
 
   protected getApiHeaders(): HeaderParams {
     return {
-      [ShopifyHeader.AccessToken]: this.graphqlClass().CONFIG.isPrivateApp
-        ? this.graphqlClass().CONFIG.apiSecretKey
+      [ShopifyHeader.AccessToken]: this.graphqlClass().config.isPrivateApp
+        ? this.graphqlClass().config.apiSecretKey
         : (this.session.accessToken as string),
     };
   }
@@ -99,8 +110,8 @@ export function graphqlClientClass(
   }
 
   class NewGraphqlClient extends GraphqlClient {
-    public static CONFIG = config;
-    public static HTTP_CLIENT = HttpClient!;
+    public static config = config;
+    public static HttpClient = HttpClient!;
   }
 
   Reflect.defineProperty(NewGraphqlClient, 'name', {

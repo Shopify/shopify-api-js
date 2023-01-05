@@ -3,6 +3,7 @@ import {Session} from '../lib/session/session';
 import {RestRequestReturn} from '../lib/clients/rest/types';
 import {DataType, GetRequestParams} from '../lib/clients/http_client/types';
 import {RestClient} from '../lib/clients/rest/rest_client';
+import {ApiVersion} from '../lib/types';
 
 import {IdSet, Body, ResourcePath, ParamSet} from './types';
 
@@ -80,7 +81,10 @@ export class Base {
     body,
     entity,
   }: RequestArgs): Promise<RestRequestReturn<T>> {
-    const client = new this.CLIENT({session});
+    const client = new this.CLIENT({
+      session,
+      apiVersion: this.API_VERSION as ApiVersion,
+    });
 
     const path = this.getPath({http_method, operation, urlIds, entity});
 

@@ -64,7 +64,7 @@ export function shopifyApi<T extends ShopifyRestResources>(
   if (restResources) {
     shopify.rest = loadRestResources({
       resources: restResources,
-      apiVersion: config.apiVersion,
+      config: validatedConfig,
       RestClient: shopify.clients.Rest,
     }) as T;
   }
