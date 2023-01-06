@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## [6.1.0] - 2023-01-05
+
 - [Minor] Allow api version overrides [#660](https://github.com/Shopify/shopify-api-js/pull/660)
 - [Minor] Add support for 2023-01 API version [#659](https://github.com/Shopify/shopify-api-js/pull/659)
 - [Patch] Force `/` path on session cookie [#658](https://github.com/Shopify/shopify-api-js/pull/658)
