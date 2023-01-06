@@ -101,3 +101,29 @@ test('hmac with timestamp older than 10 seconds throws InvalidHmacError', async 
     ShopifyErrors.InvalidHmacError,
   );
 });
+
+test('hmac with timestamp more than 10 seconds in the future throws InvalidHmacError', async () => {
+  shopify.config.apiSecretKey = 'my super secret key';
+  const submittedTimestamp = String(Date.now() + 11000);
+  const queryString = `code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=${submittedTimestamp}`;
+  const queryObjectWithoutHmac = {
+    code: 'some code goes here',
+    shop: 'the shop URL',
+    state: 'some nonce passed from auth',
+    timestamp: submittedTimestamp,
+  };
+
+  const localHmac = crypto
+    .createHmac('sha256', shopify.config.apiSecretKey)
+    .update(queryString)
+    .digest('hex');
+
+  const testQuery: AuthQuery = Object.assign(queryObjectWithoutHmac, {
+    hmac: localHmac,
+  });
+
+  const validateHmac = shopify.utils.validateHmac;
+  await expect(validateHmac(testQuery)).rejects.toBeInstanceOf(
+    ShopifyErrors.InvalidHmacError,
+  );
+});

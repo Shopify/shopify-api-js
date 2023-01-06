@@ -45,7 +45,7 @@ export function validateHmac(config: ConfigInterface) {
 
 function validateHmacTimestamp(query: AuthQuery) {
   if (
-    Date.now() - Number(query.timestamp) >
+    Math.abs(Date.now() - Number(query.timestamp)) >
     HMAC_TIMESTAMP_PERMITTED_CLOCK_TOLERANCE_MS
   ) {
     throw new ShopifyErrors.InvalidHmacError(
