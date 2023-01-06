@@ -1,6 +1,6 @@
-import {LogSeverity} from '../lib/types';
 import {ConfigInterface} from '../lib/base-types';
 import {RestClient} from '../lib/clients/rest/rest_client';
+import {logger} from '../lib/logger';
 
 import {ShopifyRestResources} from './types';
 
@@ -17,10 +17,8 @@ export function loadRestResources({
 }: LoadRestResourcesParams): ShopifyRestResources {
   const firstResource = Object.keys(resources)[0];
   if (config.apiVersion !== resources[firstResource].API_VERSION) {
-    config.logger.log(
-      LogSeverity.Warning,
-      `Current API version '${config.apiVersion}' does not match ` +
-        `resource API version '${resources[firstResource].API_VERSION}'`,
+    logger(config).warning(
+      `Loading REST resources for API version ${resources[firstResource].API_VERSION}, which doesn't match the default ${config.apiVersion}`,
     );
   }
 

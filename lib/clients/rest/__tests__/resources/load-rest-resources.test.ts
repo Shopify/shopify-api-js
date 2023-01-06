@@ -24,7 +24,9 @@ describe('Load REST resources', () => {
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Warning,
-      `Current API version '2020-01' does not match resource API version '${LATEST_API_VERSION}'`,
+      expect.stringContaining(
+        `Loading REST resources for API version ${LATEST_API_VERSION}, which doesn't match the default 2020-01`,
+      ),
     );
 
     expect(shopify.rest).toHaveProperty('FakeResource');
