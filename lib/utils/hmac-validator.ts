@@ -7,6 +7,8 @@ import {safeCompare} from '../auth/oauth/safe-compare';
 
 import ProcessedQuery from './processed-query';
 
+const HMAC_TIMESTAMP_PERMITTED_CLOCK_TOLERANCE_MS = 10000;
+
 function stringifyQuery(query: AuthQuery): string {
   const processedQuery = new ProcessedQuery();
   Object.keys(query)
@@ -31,9 +33,23 @@ export function validateHmac(config: ConfigInterface) {
         'Query does not contain an HMAC value.',
       );
     }
+
+    validateHmacTimestamp(query);
+
     const {hmac} = query;
     const localHmac = await generateLocalHmac(config)(query);
 
     return safeCompare(hmac as string, localHmac);
   };
+}
+
+function validateHmacTimestamp(query: AuthQuery) {
+  if (
+    Date.now() - Number(query.timestamp) >
+    HMAC_TIMESTAMP_PERMITTED_CLOCK_TOLERANCE_MS
+  ) {
+    throw new ShopifyErrors.InvalidHmacError(
+      'HMAC timestamp is outside of the tolerance range',
+    );
+  }
 }
