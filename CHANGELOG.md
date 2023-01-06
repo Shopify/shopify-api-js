@@ -7,7 +7,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-- [Patch] Fix logger call on different API versions [#664](https://github.com/Shopify/shopify-api-js/pull/664)
+- [Patch] Improve logger call on different API versions [#664](https://github.com/Shopify/shopify-api-js/pull/664)
 
 ## [6.1.0] - 2023-01-05
 

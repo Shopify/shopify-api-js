@@ -18,8 +18,7 @@ export function loadRestResources({
   const firstResource = Object.keys(resources)[0];
   if (config.apiVersion !== resources[firstResource].API_VERSION) {
     logger(config).warning(
-      `Current API version '${config.apiVersion}' does not match ` +
-        `resource API version '${resources[firstResource].API_VERSION}'`,
+      `Loading REST resources for API version ${resources[firstResource].API_VERSION}, which doesn't match the default ${config.apiVersion}`,
     );
   }
 
