@@ -7,7 +7,7 @@ import {safeCompare} from '../auth/oauth/safe-compare';
 
 import ProcessedQuery from './processed-query';
 
-const HMAC_TIMESTAMP_PERMITTED_CLOCK_TOLERANCE_SEC = 10;
+const HMAC_TIMESTAMP_PERMITTED_CLOCK_TOLERANCE_SEC = 90;
 
 function stringifyQuery(query: AuthQuery): string {
   const processedQuery = new ProcessedQuery();

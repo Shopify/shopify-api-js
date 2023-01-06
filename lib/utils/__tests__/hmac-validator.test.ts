@@ -7,7 +7,7 @@ import {getCurrentTimeInSec} from '../hmac-validator';
 
 test('correctly validates query objects and timestamp', async () => {
   shopify.config.apiSecretKey = 'my super secret key';
-  const submittedTimestamp = String(getCurrentTimeInSec() - 5);
+  const submittedTimestamp = String(getCurrentTimeInSec() - 60);
   const queryString = `code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=${submittedTimestamp}`;
   const queryObjectWithoutHmac = {
     code: 'some code goes here',
@@ -79,7 +79,7 @@ test('queries with extra keys are included in hmac querystring', async () => {
 
 test('hmac with timestamp older than 10 seconds throws InvalidHmacError', async () => {
   shopify.config.apiSecretKey = 'my super secret key';
-  const submittedTimestamp = String(getCurrentTimeInSec() - 11);
+  const submittedTimestamp = String(getCurrentTimeInSec() - 91);
   const queryString = `code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=${submittedTimestamp}`;
   const queryObjectWithoutHmac = {
     code: 'some code goes here',
@@ -105,7 +105,7 @@ test('hmac with timestamp older than 10 seconds throws InvalidHmacError', async 
 
 test('hmac with timestamp more than 10 seconds in the future throws InvalidHmacError', async () => {
   shopify.config.apiSecretKey = 'my super secret key';
-  const submittedTimestamp = String(getCurrentTimeInSec() + 11);
+  const submittedTimestamp = String(getCurrentTimeInSec() + 91);
   const queryString = `code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=${submittedTimestamp}`;
   const queryObjectWithoutHmac = {
     code: 'some code goes here',
