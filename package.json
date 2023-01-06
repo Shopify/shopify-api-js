@@ -83,7 +83,7 @@
     "node-fetch": "^2.6.1",
     "semver": "^7.3.8",
     "tslib": "^2.0.3",
-    "uuid": "^8.3.1"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.16.0",
@@ -97,7 +97,7 @@
     "@types/jest": "^26.0.15",
     "@types/node": "^14.18.12",
     "@types/semver": "^7.3.12",
-    "@types/uuid": "^8.3.0",
+    "@types/uuid": "^9.0.0",
     "eslint": "^7.30.0",
     "eslint-plugin-prettier": "^4.0.0",
     "express": "^4.17.13",
