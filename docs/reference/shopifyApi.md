@@ -18,7 +18,6 @@ const shopify = shopifyApi({
   hostScheme: 'http',
   apiVersion: ApiVersion.July22,
   isEmbeddedApp: true,
-  sessionStorage: new MemorySessionStorage(),
   isPrivateApp: false,
   userAgentPrefix: 'Custom prefix',
   privateAppStorefrontAccessToken: 'PrivateAccessToken',
