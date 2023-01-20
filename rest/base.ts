@@ -4,6 +4,8 @@ import {RestRequestReturn} from '../lib/clients/rest/types';
 import {DataType, GetRequestParams} from '../lib/clients/http_client/types';
 import {RestClient} from '../lib/clients/rest/rest_client';
 import {ApiVersion} from '../lib/types';
+import {logger} from '../lib/logger';
+import {ConfigInterface} from '../lib/base-types';
 
 import {IdSet, Body, ResourcePath, ParamSet} from './types';
 
@@ -14,8 +16,22 @@ interface BaseFindArgs {
 }
 
 interface BaseConstructorArgs {
-  session: Session;
+  session?: Session;
   fromData?: Body | null;
+  suppressDeprecationWarnings?: boolean;
+}
+
+interface SaveArgs {
+  session?: Session;
+  update?: boolean;
+}
+
+interface SaveAndUpdateArgs {
+  session?: Session;
+}
+
+interface DeleteArgs {
+  session?: Session;
 }
 
 interface RequestArgs extends BaseFindArgs {
@@ -32,6 +48,11 @@ interface GetPathArgs {
   entity?: Base | null;
 }
 
+interface SetClassPropertiesArgs {
+  CLIENT: typeof RestClient;
+  CONFIG: ConfigInterface;
+}
+
 export class Base {
   // For instance attributes
   [key: string]: any;
@@ -40,6 +61,7 @@ export class Base {
   public static PREV_PAGE_INFO: GetRequestParams | undefined;
 
   public static CLIENT: typeof RestClient;
+  public static CONFIG: ConfigInterface;
 
   public static API_VERSION: string;
   protected static NAME = '';
@@ -52,6 +74,11 @@ export class Base {
   protected static HAS_MANY: {[attribute: string]: typeof Base} = {};
 
   protected static PATHS: ResourcePath[] = [];
+
+  public static setClassProperties({CLIENT, CONFIG}: SetClassPropertiesArgs) {
+    this.CLIENT = CLIENT;
+    this.CONFIG = CONFIG;
+  }
 
   protected static async baseFind<T extends Base = Base>({
     session,
@@ -224,24 +251,50 @@ export class Base {
 
   public session: Session;
 
-  constructor({session, fromData}: BaseConstructorArgs) {
-    this.session = session;
+  constructor({
+    session,
+    fromData,
+    suppressDeprecationWarnings = false,
+  }: BaseConstructorArgs = {}) {
+    if (session && !suppressDeprecationWarnings) {
+      logger(this.resource().CONFIG).deprecated(
+        '7.0.0',
+        'The session param is no longer required for resource instantiation',
+      );
+      this.session = session;
+    }
 
     if (fromData) {
       this.setData(fromData);
     }
   }
 
-  public async save({update = false} = {}): Promise<void> {
+  public async save({
+    session = undefined,
+    update = false,
+  }: SaveArgs = {}): Promise<void> {
     const {PRIMARY_KEY, NAME} = this.resource();
     const method = this[PRIMARY_KEY] ? 'put' : 'post';
 
     const data = this.serialize(true);
 
+    if (!session) {
+      logger(this.resource().CONFIG).deprecated(
+        '7.0.0',
+        'The session param will no longer be optional for resource saving',
+      );
+    }
+    if (!session && !this.session) {
+      throw new RestResourceError(
+        'No session provided for resource saving. Please provide a session when calling save (preferred)' +
+          ' or when instantiating the resource (please avoid, will soon be deprecated).',
+      );
+    }
+
     const response = await this.resource().request({
       http_method: method,
       operation: method,
-      session: this.session,
+      session: session ? session : this.session,
       urlIds: {},
       body: {[this.resource().getJsonBodyName()]: data},
       entity: this,
@@ -254,15 +307,30 @@ export class Base {
     }
   }
 
-  public async saveAndUpdate(): Promise<void> {
-    await this.save({update: true});
+  public async saveAndUpdate({
+    session = undefined,
+  }: SaveAndUpdateArgs = {}): Promise<void> {
+    await this.save({session, update: true});
   }
 
-  public async delete(): Promise<void> {
+  public async delete({session}: DeleteArgs = {}): Promise<void> {
+    if (!session) {
+      logger(this.resource().CONFIG).deprecated(
+        '7.0.0',
+        'The session param will no longer be optional for resource deletion',
+      );
+    }
+    if (!session && !this.session) {
+      throw new RestResourceError(
+        'No session provided for resource deletion. Please provide a session when calling delete (preferred)' +
+          ' or when instantiating the resource (will soon be deprecated).',
+      );
+    }
+
     await this.resource().request({
       http_method: 'delete',
       operation: 'delete',
-      session: this.session,
+      session: session ? session : this.session,
       urlIds: {},
       entity: this,
     });
@@ -307,7 +375,11 @@ export class Base {
         this[attribute] = [];
         val.forEach((entry: Body) => {
           this[attribute].push(
-            new HasManyResource({session: this.session, fromData: entry}),
+            new HasManyResource({
+              session: this.session,
+              fromData: entry,
+              suppressDeprecationWarnings: true,
+            }),
           );
         });
       } else if (attribute in HAS_ONE) {
@@ -315,6 +387,7 @@ export class Base {
         this[attribute] = new HasOneResource({
           session: this.session,
           fromData: val,
+          suppressDeprecationWarnings: true,
         });
       } else {
         this[attribute] = val;
