@@ -6,7 +6,7 @@
     "declarationMap": true,
     "pretty": true,
     "moduleResolution": "node",
-    "target": "es5",
+    "target": "es2015",
     "downlevelIteration": true,
     "esModuleInterop": true,
     "sourceMap": true,

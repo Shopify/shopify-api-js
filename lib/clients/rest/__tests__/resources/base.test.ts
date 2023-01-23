@@ -5,7 +5,7 @@ import {
 } from '../../../../__tests__/test-helper';
 import {Session} from '../../../../session/session';
 import {HttpResponseError} from '../../../../error';
-import {ApiVersion, LATEST_API_VERSION, LogSeverity} from '../../../../types';
+import {ApiVersion, LATEST_API_VERSION} from '../../../../types';
 import {shopifyApi, Shopify} from '../../../../index';
 
 import {restResources} from './test-resources';
@@ -46,10 +46,6 @@ describe('Base REST resource', () => {
       path: `${prefix}/fake_resources/1.json`,
       headers,
     }).toMatchMadeHttpRequest();
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('[Deprecated | 7.0.0]'),
-    );
   });
 
   it('finds resource with param', async () => {
@@ -69,10 +65,6 @@ describe('Base REST resource', () => {
       path: `${prefix}/fake_resources/1.json?param=value`,
       headers,
     }).toMatchMadeHttpRequest();
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('[Deprecated | 7.0.0]'),
-    );
   });
 
   it('finds resource and children by id', async () => {
@@ -87,10 +79,6 @@ describe('Base REST resource', () => {
     queueMockResponse(JSON.stringify(body));
 
     const got = await shopify.rest.FakeResource.find({id: 1, session});
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('[Deprecated | 7.0.0]'),
-    );
 
     expect([got!.id, got!.attribute]).toEqual([1, 'attribute1']);
 
@@ -172,10 +160,6 @@ describe('Base REST resource', () => {
     queueMockResponse(JSON.stringify(responseBody));
 
     const resource = new shopify.rest.FakeResource({session});
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('[Deprecated | 7.0.0]'),
-    );
 
     resource.attribute = 'attribute';
     await resource.save();
@@ -188,10 +172,6 @@ describe('Base REST resource', () => {
       headers,
       data: JSON.stringify(expectedRequestBody),
     }).toMatchMadeHttpRequest();
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('[Deprecated | 7.0.0]'),
-    );
   });
 
   it('saves and updates', async () => {
@@ -500,6 +480,14 @@ describe('Base REST resource', () => {
     expect(hash).toHaveProperty('attribute', 'attribute');
   });
 
+  it('excludes session attribute when default serialize called', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+    const hash = resource.serialize();
+
+    expect(hash).not.toHaveProperty('session');
+    expect(hash).not.toHaveProperty('#session');
+  });
+
   it('excludes unsaveable attributes when serialize called for saving', async () => {
     const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
@@ -512,6 +500,21 @@ describe('Base REST resource', () => {
       'unsaveable_attribute',
     );
     expect(hash).toHaveProperty('attribute', 'attribute');
+  });
+
+  it('excludes session attribute when serialize called for saving', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+    const hash = resource.serialize(true);
+
+    expect(hash).not.toHaveProperty('session');
+    expect(hash).not.toHaveProperty('#session');
+  });
+
+  it('does not leak the session object', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+
+    expect(resource).not.toHaveProperty('session');
+    expect(resource).not.toHaveProperty('#session');
   });
 });
 
@@ -546,10 +549,6 @@ describe('REST resources with a different API version', () => {
 
     // POST
     const fakeResource = new shopify.rest.FakeResource({session});
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('[Deprecated | 7.0.0]'),
-    );
     fakeResource.attribute = 'attribute';
     await fakeResource.save();
     expect(fakeResource!.attribute).toEqual('attribute');
@@ -579,10 +578,6 @@ describe('REST resources with a different API version', () => {
     // PUT
     fakeResource2.attribute = 'attribute2';
     await fakeResource2.save();
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('[Deprecated | 7.0.0]'),
-    );
     expect(fakeResource!.attribute).toEqual('attribute');
     expect({
       method: 'PUT',
@@ -600,9 +595,5 @@ describe('REST resources with a different API version', () => {
       path: `/admin/api/${LATEST_API_VERSION}/fake_resources/1.json`,
       headers,
     }).toMatchMadeHttpRequest();
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('[Deprecated | 7.0.0]'),
-    );
   });
 });
