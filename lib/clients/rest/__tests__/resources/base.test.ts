@@ -160,7 +160,6 @@ describe('Base REST resource', () => {
     queueMockResponse(JSON.stringify(responseBody));
 
     const resource = new shopify.rest.FakeResource({session});
-
     resource.attribute = 'attribute';
     await resource.save();
 
@@ -513,7 +512,7 @@ describe('Base REST resource', () => {
   it('does not leak the session object', async () => {
     const resource = new shopify.rest.FakeResource({session});
 
-    expect(Object.keys(resource)).not.toContain('session');
+    expect(Object.keys(resource)).not.toContain(['session', '#session']);
   });
 });
 

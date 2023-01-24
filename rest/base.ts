@@ -17,7 +17,6 @@ interface BaseFindArgs {
 interface BaseConstructorArgs {
   session: Session;
   fromData?: Body | null;
-  suppressDeprecationWarnings?: boolean;
 }
 
 interface SaveArgs {
@@ -327,10 +326,7 @@ export class Base {
         this[attribute] = [];
         val.forEach((entry: Body) => {
           this[attribute].push(
-            new HasManyResource({
-              session: this.session,
-              fromData: entry,
-            }),
+            new HasManyResource({session: this.session, fromData: entry}),
           );
         });
       } else if (attribute in HAS_ONE) {

@@ -6,6 +6,7 @@
     "declarationMap": true,
     "pretty": true,
     "moduleResolution": "node",
+    "module": "commonjs",
     "target": "es2015",
     "downlevelIteration": true,
     "esModuleInterop": true,
