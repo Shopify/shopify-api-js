@@ -513,8 +513,7 @@ describe('Base REST resource', () => {
   it('does not leak the session object', async () => {
     const resource = new shopify.rest.FakeResource({session});
 
-    expect(resource).not.toHaveProperty('session');
-    expect(resource).not.toHaveProperty('#session');
+    expect(Object.keys(resource)).not.toContain('session');
   });
 });
 

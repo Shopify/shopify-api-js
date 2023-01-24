@@ -241,6 +241,10 @@ export class Base {
 
   #session: Session;
 
+  get session(): Session {
+    return this.#session;
+  }
+
   constructor({session, fromData}: BaseConstructorArgs) {
     this.#session = session;
 
@@ -258,7 +262,7 @@ export class Base {
     const response = await this.resource().request({
       http_method: method,
       operation: method,
-      session: this.#session,
+      session: this.session,
       urlIds: {},
       body: {[this.resource().getJsonBodyName()]: data},
       entity: this,
@@ -279,7 +283,7 @@ export class Base {
     await this.resource().request({
       http_method: 'delete',
       operation: 'delete',
-      session: this.#session,
+      session: this.session,
       urlIds: {},
       entity: this,
     });
@@ -324,7 +328,7 @@ export class Base {
         val.forEach((entry: Body) => {
           this[attribute].push(
             new HasManyResource({
-              session: this.#session,
+              session: this.session,
               fromData: entry,
             }),
           );
@@ -332,7 +336,7 @@ export class Base {
       } else if (attribute in HAS_ONE) {
         const HasOneResource: typeof Base = HAS_ONE[attribute];
         this[attribute] = new HasOneResource({
-          session: this.#session,
+          session: this.session,
           fromData: val,
         });
       } else {
@@ -349,7 +353,7 @@ export class Base {
     return attribute.serialize
       ? attribute.serialize(saving)
       : this.resource()
-          .createInstance(this.#session, attribute)
+          .createInstance(this.session, attribute)
           .serialize(saving);
   }
 }
