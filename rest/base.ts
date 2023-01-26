@@ -313,6 +313,10 @@ export class Base {
     }, {});
   }
 
+  public toJSON(): Body {
+    return this.serialize();
+  }
+
   public request<T = unknown>(args: RequestArgs) {
     return this.resource().request<T>(args);
   }

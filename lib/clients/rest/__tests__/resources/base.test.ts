@@ -513,6 +513,7 @@ describe('Base REST resource', () => {
     const resource = new shopify.rest.FakeResource({session});
 
     expect(Object.keys(resource)).not.toContain(['session', '#session']);
+    expect(JSON.stringify(resource)).not.toMatch(/"[#]?session"/);
   });
 });
 
