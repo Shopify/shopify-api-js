@@ -479,6 +479,14 @@ describe('Base REST resource', () => {
     expect(hash).toHaveProperty('attribute', 'attribute');
   });
 
+  it('excludes session attribute when default serialize called', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+    const hash = resource.serialize();
+
+    expect(hash).not.toHaveProperty('session');
+    expect(hash).not.toHaveProperty('#session');
+  });
+
   it('excludes unsaveable attributes when serialize called for saving', async () => {
     const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
@@ -491,6 +499,21 @@ describe('Base REST resource', () => {
       'unsaveable_attribute',
     );
     expect(hash).toHaveProperty('attribute', 'attribute');
+  });
+
+  it('excludes session attribute when serialize called for saving', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+    const hash = resource.serialize(true);
+
+    expect(hash).not.toHaveProperty('session');
+    expect(hash).not.toHaveProperty('#session');
+  });
+
+  it('does not leak the session object', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+
+    expect(Object.keys(resource)).not.toContain(['session', '#session']);
+    expect(JSON.stringify(resource)).not.toMatch(/"[#]?session"/);
   });
 });
 

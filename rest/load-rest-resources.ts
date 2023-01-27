@@ -2,6 +2,7 @@ import {ConfigInterface} from '../lib/base-types';
 import {RestClient} from '../lib/clients/rest/rest_client';
 import {logger} from '../lib/logger';
 
+import {Base} from './base';
 import {ShopifyRestResources} from './types';
 
 export interface LoadRestResourcesParams {
@@ -24,9 +25,26 @@ export function loadRestResources({
 
   return Object.fromEntries(
     Object.entries(resources).map(([name, resource]) => {
-      class NewResource extends resource {
-        public static CLIENT = RestClient;
-      }
+      class NewResource extends resource {}
+
+      NewResource.setClassProperties({
+        CLIENT: RestClient,
+        CONFIG: config,
+      });
+
+      Object.entries(NewResource.HAS_ONE).map(([_attribute, klass]) => {
+        (klass as typeof Base).setClassProperties({
+          CLIENT: RestClient,
+          CONFIG: config,
+        });
+      });
+
+      Object.entries(NewResource.HAS_MANY).map(([_attribute, klass]) => {
+        (klass as typeof Base).setClassProperties({
+          CLIENT: RestClient,
+          CONFIG: config,
+        });
+      });
 
       Reflect.defineProperty(NewResource, 'name', {
         value: name,
