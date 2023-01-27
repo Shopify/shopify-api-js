@@ -7,8 +7,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-- [Minor] Validate HMAC timestgamp during OAuth [#671](https://github.com/Shopify/shopify-api-js/pull/671)
+- [Minor] Validate HMAC timestamp during OAuth [#671](https://github.com/Shopify/shopify-api-js/pull/671)
 - [Patch] Improve logger call on different API versions [#664](https://github.com/Shopify/shopify-api-js/pull/664)
+- [Patch] Prevent leakage of session object with REST resources [#690](https://github.com/Shopify/shopify-api-js/pull/690)
 
 ## [6.1.0] - 2023-01-05
 
