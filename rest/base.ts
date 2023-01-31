@@ -1,7 +1,7 @@
 import {RestResourceError} from '../lib/error';
 import {Session} from '../lib/session/session';
-import {RestRequestReturn} from '../lib/clients/rest/types';
-import {DataType, GetRequestParams} from '../lib/clients/http_client/types';
+import {PageInfoParams, RestRequestReturn} from '../lib/clients/rest/types';
+import {DataType} from '../lib/clients/http_client/types';
 import {RestClient} from '../lib/clients/rest/rest_client';
 import {ApiVersion} from '../lib/types';
 import {ConfigInterface} from '../lib/base-types';
@@ -46,8 +46,8 @@ export class Base {
   // For instance attributes
   [key: string]: any;
 
-  public static NEXT_PAGE_INFO: GetRequestParams | undefined;
-  public static PREV_PAGE_INFO: GetRequestParams | undefined;
+  public static NEXT_PAGE_INFO: PageInfoParams | undefined;
+  public static PREV_PAGE_INFO: PageInfoParams | undefined;
 
   public static CLIENT: typeof RestClient;
   public static CONFIG: ConfigInterface;
@@ -82,8 +82,8 @@ export class Base {
       params,
     });
 
-    this.NEXT_PAGE_INFO = response.pageInfo?.nextPage ?? undefined;
-    this.PREV_PAGE_INFO = response.pageInfo?.prevPage ?? undefined;
+    this.NEXT_PAGE_INFO = response.pageInfo?.nextPage;
+    this.PREV_PAGE_INFO = response.pageInfo?.prevPage;
 
     return this.createInstancesFromResponse<T>(session, response.body as Body);
   }
