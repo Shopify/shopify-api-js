@@ -55,7 +55,7 @@ describe('Base REST resource', () => {
     const got = await shopify.rest.FakeResource.find({
       id: 1,
       session,
-      params: {param: 'value'},
+      param: 'value',
     });
 
     expect([got!.id, got!.attribute]).toEqual([1, 'attribute']);
@@ -415,15 +415,15 @@ describe('Base REST resource', () => {
     expect(shopify.rest.FakeResource.PREV_PAGE_INFO).toBeUndefined();
 
     await shopify.rest.FakeResource.all({
+      ...shopify.rest.FakeResource.NEXT_PAGE_INFO?.query,
       session,
-      params: shopify.rest.FakeResource.NEXT_PAGE_INFO?.query,
     });
     expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).toBeUndefined();
     expect(shopify.rest.FakeResource.PREV_PAGE_INFO).not.toBeUndefined();
 
     await shopify.rest.FakeResource.all({
+      ...shopify.rest.FakeResource.PREV_PAGE_INFO?.query,
       session,
-      params: shopify.rest.FakeResource.PREV_PAGE_INFO?.query,
     });
     expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).toBeUndefined();
     expect(shopify.rest.FakeResource.PREV_PAGE_INFO).toBeUndefined();

@@ -1,17 +1,17 @@
 import {Base} from '../../../../../rest/base';
-import {ParamSet, ResourcePath} from '../../../../../rest/types';
+import {ResourcePath} from '../../../../../rest/types';
 import {Session} from '../../../../session/session';
 import {LATEST_API_VERSION} from '../../../../types';
 
 interface FakeResourceFindArgs {
-  params?: ParamSet;
+  param?: string | null;
   session: Session;
   id: number;
   other_resource_id?: number | null;
 }
 
 interface FakeResourceAllArgs {
-  params?: ParamSet;
+  param?: string | null;
   session: Session;
 }
 
@@ -89,27 +89,28 @@ export class FakeResource extends Base {
 
   public static async find({
     session,
-    params,
     id,
     other_resource_id = null,
+    param = null,
     ...otherArgs
   }: FakeResourceFindArgs): Promise<FakeResource | null> {
     const result = await this.baseFind<FakeResource>({
       session,
       urlIds: {id, other_resource_id},
-      params: {...params, ...otherArgs},
+      params: {param, ...otherArgs},
     });
     return result ? result[0] : null;
   }
 
   public static async all({
     session,
-    params,
+    param = null,
+    ...otherArgs
   }: FakeResourceAllArgs): Promise<FakeResource[]> {
     return this.baseFind<FakeResource>({
       session,
-      params,
       urlIds: {},
+      params: {param, ...otherArgs},
     });
   }
 
