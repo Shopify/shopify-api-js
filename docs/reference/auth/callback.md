@@ -3,7 +3,7 @@
 Process Shopify's callback request after the user approves the app installation.
 Once the merchant approves the app's request for scopes, Shopify will redirect them back to your app, using the `callbackPath` parameter from `shopify.auth.begin`.
 
-Your app must then call `shopify.auth.callback` to complete the OAuth process, which will create a new Shopify `Session` and return the appropriate HTTP headers your app with which your app must respond.
+Your app must then call `shopify.auth.callback` to complete the OAuth process, which will create a new Shopify `Session` and return the appropriate HTTP headers to your app with which your app must respond.
 
 ## Example
 
