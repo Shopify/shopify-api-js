@@ -25,7 +25,7 @@ export class GraphqlClient {
   constructor(params: GraphqlClientParams) {
     const config = this.graphqlClass().config;
 
-    if (!config.isPrivateApp && !params.session.accessToken) {
+    if (!config.isCustomStoreApp && !params.session.accessToken) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating GraphQL client',
       );
@@ -89,7 +89,7 @@ export class GraphqlClient {
 
   protected getApiHeaders(): HeaderParams {
     return {
-      [ShopifyHeader.AccessToken]: this.graphqlClass().config.isPrivateApp
+      [ShopifyHeader.AccessToken]: this.graphqlClass().config.isCustomStoreApp
         ? this.graphqlClass().config.apiSecretKey
         : (this.session.accessToken as string),
     };

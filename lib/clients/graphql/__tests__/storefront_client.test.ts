@@ -76,7 +76,7 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('can return response from config private app setting', async () => {
-    shopify.config.isPrivateApp = true;
+    shopify.config.isCustomStoreApp = true;
     shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
     const client = new shopify.clients.Storefront({

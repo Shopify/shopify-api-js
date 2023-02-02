@@ -14,7 +14,7 @@ describe('Config object', () => {
       hostName: 'host_name',
       apiVersion: ApiVersion.Unstable,
       isEmbeddedApp: true,
-      isPrivateApp: false,
+      isCustomStoreApp: false,
       logger: {
         log: jest.fn(),
         level: LogSeverity.Debug,

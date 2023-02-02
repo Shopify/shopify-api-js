@@ -12,7 +12,7 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
     hostScheme: 'https',
     apiVersion: LATEST_API_VERSION,
     isEmbeddedApp: true,
-    isPrivateApp: false,
+    isCustomStoreApp: false,
     logger: {
       log: defaultLogFunction,
       level: LogSeverity.Info,
@@ -45,7 +45,7 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
 
   const {
     hostScheme,
-    isPrivateApp,
+    isCustomStoreApp,
     userAgentPrefix,
     logger,
     privateAppStorefrontAccessToken,
@@ -61,8 +61,8 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
         ? params.scopes
         : new AuthScopes(params.scopes),
     hostScheme: hostScheme ?? config.hostScheme,
-    isPrivateApp:
-      isPrivateApp === undefined ? config.isPrivateApp : isPrivateApp,
+    isCustomStoreApp:
+      isCustomStoreApp === undefined ? config.isCustomStoreApp : isCustomStoreApp,
     userAgentPrefix: userAgentPrefix ?? config.userAgentPrefix,
     logger: {...config.logger, ...(logger || {})},
     privateAppStorefrontAccessToken:

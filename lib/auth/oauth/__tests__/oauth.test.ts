@@ -142,7 +142,7 @@ describe('beginAuth', () => {
   });
 
   test('fails to start if the app is private', () => {
-    shopify.config.isPrivateApp = true;
+    shopify.config.isCustomStoreApp = true;
 
     expect(
       shopify.auth.begin({
@@ -167,7 +167,7 @@ describe('callback', () => {
   });
 
   test('fails to run if the app is private', () => {
-    shopify.config.isPrivateApp = true;
+    shopify.config.isCustomStoreApp = true;
 
     expect(
       shopify.auth.callback({

@@ -31,7 +31,7 @@ export const config: ConfigInterface = {
   hostScheme: 'https',
   apiVersion: LATEST_API_VERSION,
   isEmbeddedApp: true,
-  isPrivateApp: false,
+  isCustomStoreApp: false,
   logger: {
     log: () => Promise.resolve(),
     level: LogSeverity.Debug,

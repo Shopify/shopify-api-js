@@ -47,7 +47,7 @@ export function begin(config: ConfigInterface) {
     ...adapterArgs
   }: BeginParams): Promise<AdapterResponse> => {
     throwIfPrivateApp(
-      config.isPrivateApp,
+      config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
     );
 
@@ -103,7 +103,7 @@ export function callback(config: ConfigInterface) {
     ...adapterArgs
   }: CallbackParams): Promise<CallbackResponse<T>> {
     throwIfPrivateApp(
-      config.isPrivateApp,
+      config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
     );
 
@@ -265,8 +265,8 @@ function createSession({
   }
 }
 
-function throwIfPrivateApp(isPrivateApp: boolean, message: string): void {
-  if (isPrivateApp) {
+function throwIfPrivateApp(isCustomStoreApp: boolean, message: string): void {
+  if (isCustomStoreApp) {
     throw new ShopifyErrors.PrivateAppError(message);
   }
 }

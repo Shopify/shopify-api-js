@@ -41,7 +41,7 @@ export function getNewTestConfig(): ConfigParams {
     hostScheme: 'https',
     apiVersion: LATEST_API_VERSION,
     isEmbeddedApp: false,
-    isPrivateApp: false,
+    isCustomStoreApp: false,
     customShopDomains: undefined,
     billing: undefined,
     logger: {

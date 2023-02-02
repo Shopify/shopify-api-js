@@ -32,7 +32,7 @@ export class RestClient extends HttpClient {
 
     const config = this.restClass().config;
 
-    if (!config.isPrivateApp && !params.session.accessToken) {
+    if (!config.isCustomStoreApp && !params.session.accessToken) {
       throw new ShopifyErrors.MissingRequiredArgument(
         'Missing access token when creating REST client',
       );
@@ -55,7 +55,7 @@ export class RestClient extends HttpClient {
     params: RequestParams,
   ): Promise<RestRequestReturn<T>> {
     params.extraHeaders = {
-      [ShopifyHeader.AccessToken]: this.restClass().config.isPrivateApp
+      [ShopifyHeader.AccessToken]: this.restClass().config.isCustomStoreApp
         ? this.restClass().config.apiSecretKey
         : (this.session.accessToken as string),
       ...params.extraHeaders,
