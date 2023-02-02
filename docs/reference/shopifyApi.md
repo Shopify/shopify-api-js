@@ -19,7 +19,7 @@ const shopify = shopifyApi({
   apiVersion: ApiVersion.July22,
   isEmbeddedApp: true,
   sessionStorage: new MemorySessionStorage(),
-  isPrivateApp: false,
+  isCustomStoreApp: false,
   userAgentPrefix: 'Custom prefix',
   privateAppStorefrontAccessToken: 'PrivateAccessToken',
   customShopDomains: ['*.my-custom-domain.io'],
@@ -83,7 +83,7 @@ API version your app will be querying. E.g. `ApiVersion.October22`.
 
 Whether your app will run within the Shopify Admin. Learn more about embedded apps with [`App Bridge`](https://shopify.dev/apps/tools/app-bridge/getting-started/app-setup).
 
-### isPrivateApp
+### isCustomStoreApp
 
 `boolean` | Defaults to `false`
 

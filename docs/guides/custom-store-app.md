@@ -12,7 +12,7 @@ A custom app is an app that you or a developer builds exclusively for your Shopi
 
 A store-specific custom app does not use the OAuth process to authenticate - it uses the secrets established during the app creation and install process to access the API.  As a result, there are no sessions to be retrieved from incoming requests and stored in a database, etc.
 
-When initializing `shopifyApi` in a custom app, set the `isPrivateApp` configuration property to `true`, and set the `apiSecretKey` to the **Admin API access token** obtained during the installation process (step 2 in the [prerequisites](#prerequisites)).
+When initializing `shopifyApi` in a custom app, set the `isCustomStoreApp` configuration property to `true`, and set the `apiSecretKey` to the **Admin API access token** obtained during the installation process (step 2 in the [prerequisites](#prerequisites)).
 
 The `scopes` configuration property must be set to something for initialization to work.  However, the value is ignored as the scopes of the app are set during the create and install process (step 2 in the [prerequisites](#prerequisites)) and are linked to the Admin API access token.
 
@@ -27,9 +27,9 @@ import { restResources } from "@shopify/shopify-api/rest/admin/2023-01";
 
 const shopify = shopifyApi({
   apiKey: "App_API_key",
-  apiSecretKey: "Admin_API_Access_Token", // Note: this is the API Access Token, NOT the API Secret Key
+  apiSecretKey: "Admin_API_Access_Token", // Note: this is the API access token, NOT the API Secret Key
   apiVersion: LATEST_API_VERSION,
-  isPrivateApp: true,                     // this MUST be set to true (default is false)
+  isCustomStoreApp: true,                     // this MUST be set to true (default is false)
   scopes: ["read_products"],              // this must have a value but it will be ignored by the library
   isEmbeddedApp: false,
   hostName: "my-shop.myshopify.com",
@@ -38,7 +38,7 @@ const shopify = shopifyApi({
 });
 ```
 
-> **Note** The `apiSecretKey` is **NOT** set to the API secret key but to the **Admin API Access Token**.
+> **Note** The `apiSecretKey` is **NOT** set to the API secret key but to the **Admin API access token**.
 
 ### Making requests
 
@@ -46,13 +46,10 @@ API requests, either using `shopify.clients.Rest` or `shopify.clients.Graphql`, 
 
 To create the session object, the `id`, `state` and `isOnline` properties must be populated but will be ignored.  Only the `shop` parameter is required when making the API requests from a store specifc custom app and the value must match the stop on which the custom app is installed.
 
+The library provides a utility method to create such a session, `shopify.session.customAppSession`.
+
 ```js
-const session = new Session({
-  id: 'not-a-real-session-id',            // must have a string value, will be ignored
-  shop: "my-shop.myshopify.com",  // MUST match shop on which custom app is installed
-  state: "state",                         // must have a string value, will be ignored
-  isOnline: false,                        // must have a boolean value, will be ignored
-});
+const session = shopify.session.customAppSession("my-shop.myshopify.com");
 
 // Use REST resources to make calls.
 const { count: productCount } = await shopify.rest.Product.count({ session });
