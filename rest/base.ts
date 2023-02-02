@@ -1,9 +1,10 @@
 import {RestResourceError} from '../lib/error';
 import {Session} from '../lib/session/session';
-import {RestRequestReturn} from '../lib/clients/rest/types';
-import {DataType, GetRequestParams} from '../lib/clients/http_client/types';
+import {PageInfoParams, RestRequestReturn} from '../lib/clients/rest/types';
+import {DataType} from '../lib/clients/http_client/types';
 import {RestClient} from '../lib/clients/rest/rest_client';
 import {ApiVersion} from '../lib/types';
+import {ConfigInterface} from '../lib/base-types';
 
 import {IdSet, Body, ResourcePath, ParamSet} from './types';
 
@@ -16,6 +17,10 @@ interface BaseFindArgs {
 interface BaseConstructorArgs {
   session: Session;
   fromData?: Body | null;
+}
+
+interface SaveArgs {
+  update?: boolean;
 }
 
 interface RequestArgs extends BaseFindArgs {
@@ -32,14 +37,20 @@ interface GetPathArgs {
   entity?: Base | null;
 }
 
+interface SetClassPropertiesArgs {
+  CLIENT: typeof RestClient;
+  CONFIG: ConfigInterface;
+}
+
 export class Base {
   // For instance attributes
   [key: string]: any;
 
-  public static NEXT_PAGE_INFO: GetRequestParams | undefined;
-  public static PREV_PAGE_INFO: GetRequestParams | undefined;
+  public static NEXT_PAGE_INFO: PageInfoParams | undefined;
+  public static PREV_PAGE_INFO: PageInfoParams | undefined;
 
   public static CLIENT: typeof RestClient;
+  public static CONFIG: ConfigInterface;
 
   public static API_VERSION: string;
   protected static NAME = '';
@@ -52,6 +63,11 @@ export class Base {
   protected static HAS_MANY: {[attribute: string]: typeof Base} = {};
 
   protected static PATHS: ResourcePath[] = [];
+
+  public static setClassProperties({CLIENT, CONFIG}: SetClassPropertiesArgs) {
+    this.CLIENT = CLIENT;
+    this.CONFIG = CONFIG;
+  }
 
   protected static async baseFind<T extends Base = Base>({
     session,
@@ -66,8 +82,8 @@ export class Base {
       params,
     });
 
-    this.NEXT_PAGE_INFO = response.pageInfo?.nextPage ?? undefined;
-    this.PREV_PAGE_INFO = response.pageInfo?.prevPage ?? undefined;
+    this.NEXT_PAGE_INFO = response.pageInfo?.nextPage;
+    this.PREV_PAGE_INFO = response.pageInfo?.prevPage;
 
     return this.createInstancesFromResponse<T>(session, response.body as Body);
   }
@@ -222,17 +238,21 @@ export class Base {
     return instance;
   }
 
-  public session: Session;
+  #session: Session;
+
+  get session(): Session {
+    return this.#session;
+  }
 
   constructor({session, fromData}: BaseConstructorArgs) {
-    this.session = session;
+    this.#session = session;
 
     if (fromData) {
       this.setData(fromData);
     }
   }
 
-  public async save({update = false} = {}): Promise<void> {
+  public async save({update = false}: SaveArgs = {}): Promise<void> {
     const {PRIMARY_KEY, NAME} = this.resource();
     const method = this[PRIMARY_KEY] ? 'put' : 'post';
 
@@ -273,9 +293,8 @@ export class Base {
 
     return Object.entries(this).reduce((acc: Body, [attribute, value]) => {
       if (
-        saving &&
-        (['session'].includes(attribute) ||
-          READ_ONLY_ATTRIBUTES.includes(attribute))
+        ['#session'].includes(attribute) ||
+        (saving && READ_ONLY_ATTRIBUTES.includes(attribute))
       ) {
         return acc;
       }
@@ -292,6 +311,10 @@ export class Base {
 
       return acc;
     }, {});
+  }
+
+  public toJSON(): Body {
+    return this.serialize();
   }
 
   public request<T = unknown>(args: RequestArgs) {

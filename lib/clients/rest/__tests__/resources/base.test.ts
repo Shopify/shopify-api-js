@@ -55,7 +55,7 @@ describe('Base REST resource', () => {
     const got = await shopify.rest.FakeResource.find({
       id: 1,
       session,
-      params: {param: 'value'},
+      param: 'value',
     });
 
     expect([got!.id, got!.attribute]).toEqual([1, 'attribute']);
@@ -415,15 +415,15 @@ describe('Base REST resource', () => {
     expect(shopify.rest.FakeResource.PREV_PAGE_INFO).toBeUndefined();
 
     await shopify.rest.FakeResource.all({
+      ...shopify.rest.FakeResource.NEXT_PAGE_INFO?.query,
       session,
-      params: shopify.rest.FakeResource.NEXT_PAGE_INFO?.query,
     });
     expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).toBeUndefined();
     expect(shopify.rest.FakeResource.PREV_PAGE_INFO).not.toBeUndefined();
 
     await shopify.rest.FakeResource.all({
+      ...shopify.rest.FakeResource.PREV_PAGE_INFO?.query,
       session,
-      params: shopify.rest.FakeResource.PREV_PAGE_INFO?.query,
     });
     expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).toBeUndefined();
     expect(shopify.rest.FakeResource.PREV_PAGE_INFO).toBeUndefined();
@@ -479,6 +479,14 @@ describe('Base REST resource', () => {
     expect(hash).toHaveProperty('attribute', 'attribute');
   });
 
+  it('excludes session attribute when default serialize called', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+    const hash = resource.serialize();
+
+    expect(hash).not.toHaveProperty('session');
+    expect(hash).not.toHaveProperty('#session');
+  });
+
   it('excludes unsaveable attributes when serialize called for saving', async () => {
     const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
@@ -491,6 +499,21 @@ describe('Base REST resource', () => {
       'unsaveable_attribute',
     );
     expect(hash).toHaveProperty('attribute', 'attribute');
+  });
+
+  it('excludes session attribute when serialize called for saving', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+    const hash = resource.serialize(true);
+
+    expect(hash).not.toHaveProperty('session');
+    expect(hash).not.toHaveProperty('#session');
+  });
+
+  it('does not leak the session object', async () => {
+    const resource = new shopify.rest.FakeResource({session});
+
+    expect(Object.keys(resource)).not.toContain(['session', '#session']);
+    expect(JSON.stringify(resource)).not.toMatch(/"[#]?session"/);
   });
 });
 

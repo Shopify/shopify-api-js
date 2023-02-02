@@ -1,13 +1,18 @@
 import {getHeader} from '../../../runtime/http';
 import {ApiVersion, ShopifyHeader} from '../../types';
 import {ConfigInterface} from '../../base-types';
-import {RequestParams, GetRequestParams} from '../http_client/types';
+import {RequestParams} from '../http_client/types';
 import * as ShopifyErrors from '../../error';
 import {HttpClient} from '../http_client/http_client';
 import {Session} from '../../session/session';
 import {logger} from '../../logger';
 
-import {RestRequestReturn, PageInfo, RestClientParams} from './types';
+import {
+  RestRequestReturn,
+  PageInfo,
+  RestClientParams,
+  PageInfoParams,
+} from './types';
 
 export interface RestClientClassParams {
   config: ConfigInterface;
@@ -120,7 +125,7 @@ export class RestClient extends HttpClient {
     return this.constructor as typeof RestClient;
   }
 
-  private buildRequestParams(newPageUrl: string): GetRequestParams {
+  private buildRequestParams(newPageUrl: string): PageInfoParams {
     const pattern = `^/admin/api/[^/]+/(.*).json$`;
 
     const url = new URL(newPageUrl);

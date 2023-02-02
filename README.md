@@ -107,6 +107,7 @@ To do that, apps will need to:
 - [Configuring Billing](docs/guides/billing.md)
 - [Adding custom runtimes](docs/guides/runtimes.md)
 - [Customizing logging configuration](docs/guides/logger.md)
+- [Setting up a custom store app](docs/guides/custom-store-app.md)
 
 ## Migrating to v6
 
