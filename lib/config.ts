@@ -81,12 +81,10 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   });
 
   if ('isPrivateApp' in params) {
-    (async () => {
-      await createLogger(config).deprecated(
-        '7.0.0',
-        'The `isPrivateApp` config option has been deprecated. Please use `isCustomStoreApp` instead.',
-      );
-    })();
+    createLogger(config).deprecated(
+      '7.0.0',
+      'The `isPrivateApp` config option has been deprecated. Please use `isCustomStoreApp` instead.',
+    );
 
     // only set isCustomStoreApp to value of isPrivateApp, if isCustomStoreApp hasn't been set explicitly
     if (!('isCustomStoreApp' in params)) {

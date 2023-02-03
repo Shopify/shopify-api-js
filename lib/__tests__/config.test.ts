@@ -121,53 +121,51 @@ describe('Config object', () => {
     expect(config.hostName).toEqual('my-host-name');
   });
 
-  describe('isPrivateApp (TO BE DEPRECATED IN 7.0.0) is ...', () => {
-    [true, false].forEach((isPrivateApp) => {
-      describe(`... ${isPrivateApp}`, () => {
-        it(`logs deprecation`, () => {
-          const {isCustomStoreApp, ...params} = validParams;
-          Object.assign(params, {isPrivateApp});
+  [true, false].forEach((isPrivateApp) => {
+    describe(`isPrivateApp (TO BE DEPRECATED IN 7.0.0) is ${isPrivateApp}`, () => {
+      it(`logs deprecation`, () => {
+        const {isCustomStoreApp, ...params} = validParams;
+        Object.assign(params, {isPrivateApp});
 
-          const config = validateConfig(params);
+        const config = validateConfig(params);
 
-          expect(config.logger.log).toHaveBeenCalledWith(
-            LogSeverity.Warning,
-            expect.stringContaining('[Deprecated | 7.0.0]'),
+        expect(config.logger.log).toHaveBeenCalledWith(
+          LogSeverity.Warning,
+          expect.stringContaining('[Deprecated | 7.0.0]'),
+        );
+      });
+
+      it(`sets isCustomStoreApp to value of isPrivateApp if isCustomStoreApp not explicitly set`, () => {
+        const {isCustomStoreApp, ...params} = validParams;
+        Object.assign(params, {isPrivateApp});
+
+        const config = validateConfig(params);
+
+        expect(config.isCustomStoreApp).toBe(isPrivateApp);
+        expect('isPrivateApp' in config).toBe(false);
+      });
+
+      it(`ignores value of isPrivateApp if isCustomStoreApp explicitly set`, () => {
+        validParams.isCustomStoreApp = !isPrivateApp;
+        const params = {...validParams};
+        Object.assign(params, {isPrivateApp});
+
+        const config = validateConfig(params);
+
+        expect(config.isCustomStoreApp).toBe(!isPrivateApp);
+        expect('isPrivateApp' in config).toBe(false);
+      });
+
+      if (isPrivateApp) {
+        it("ignores an empty 'scopes' when isPrivateApp is true", () => {
+          const {isCustomStoreApp, scopes, ...params} = validParams;
+          Object.assign(params, {isPrivateApp: true});
+
+          expect(() => validateConfig(validParams)).not.toThrow(
+            ShopifyErrors.ShopifyError,
           );
         });
-
-        it(`sets isCustomStoreApp to value of isPrivateApp if isCustomStoreApp not explicitly set`, () => {
-          const {isCustomStoreApp, ...params} = validParams;
-          Object.assign(params, {isPrivateApp});
-
-          const config = validateConfig(params);
-
-          expect(config.isCustomStoreApp).toBe(isPrivateApp);
-          expect('isPrivateApp' in config).toBe(false);
-        });
-
-        it(`ignores value of isPrivateApp if isCustomStoreApp explicitly set`, () => {
-          validParams.isCustomStoreApp = !isPrivateApp;
-          const params = {...validParams};
-          Object.assign(params, {isPrivateApp});
-
-          const config = validateConfig(params);
-
-          expect(config.isCustomStoreApp).toBe(!isPrivateApp);
-          expect('isPrivateApp' in config).toBe(false);
-        });
-
-        if (isPrivateApp) {
-          it("ignores an empty 'scopes' when isPrivateApp is true", () => {
-            const {isCustomStoreApp, scopes, ...params} = validParams;
-            Object.assign(params, {isPrivateApp: true});
-
-            expect(() => validateConfig(validParams)).not.toThrow(
-              ShopifyErrors.ShopifyError,
-            );
-          });
-        }
-      });
+      }
     });
   });
 });

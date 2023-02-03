@@ -14,8 +14,6 @@ A store-specific custom app does not use the OAuth process to authenticate - it 
 
 When initializing `shopifyApi` in a custom app, set the `isCustomStoreApp` configuration property to `true`, and set the `apiSecretKey` to the **Admin API access token** obtained during the installation process (step 2 in the [prerequisites](#prerequisites)).
 
-The `scopes` configuration property must be set to something for initialization to work.  However, the value is ignored as the scopes of the app are set during the create and install process (step 2 in the [prerequisites](#prerequisites)) and are linked to the Admin API access token.
-
 ## Example
 
 ### Initialization
@@ -30,7 +28,7 @@ const shopify = shopifyApi({
   apiSecretKey: "Admin_API_Access_Token", // Note: this is the API access token, NOT the API Secret Key
   apiVersion: LATEST_API_VERSION,
   isCustomStoreApp: true,                     // this MUST be set to true (default is false)
-  scopes: ["read_products"],              // this must have a value but it will be ignored by the library
+  scopes: [],
   isEmbeddedApp: false,
   hostName: "my-shop.myshopify.com",
   // Mount REST resources.
