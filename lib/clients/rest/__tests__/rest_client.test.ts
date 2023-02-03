@@ -347,7 +347,7 @@ describe('REST client', () => {
   });
 
   it('adapts to private app requests', async () => {
-    shopify.config.isPrivateApp = true;
+    shopify.config.isCustomStoreApp = true;
 
     const client = new shopify.clients.Rest({session});
 
@@ -367,7 +367,7 @@ describe('REST client', () => {
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
 
-    shopify.config.isPrivateApp = false;
+    shopify.config.isCustomStoreApp = false;
   });
 
   it('fails to instantiate without access token', () => {

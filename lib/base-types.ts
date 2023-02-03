@@ -14,7 +14,7 @@ export interface ConfigParams<T extends ShopifyRestResources = any> {
   hostScheme?: 'http' | 'https';
   apiVersion: ApiVersion;
   isEmbeddedApp: boolean;
-  isPrivateApp?: boolean;
+  isCustomStoreApp?: boolean;
   userAgentPrefix?: string;
   privateAppStorefrontAccessToken?: string;
   customShopDomains?: (RegExp | string)[];
@@ -31,7 +31,7 @@ export interface ConfigParams<T extends ShopifyRestResources = any> {
 export interface ConfigInterface extends Omit<ConfigParams, 'restResources'> {
   hostScheme: 'http' | 'https';
   scopes: AuthScopes;
-  isPrivateApp: boolean;
+  isCustomStoreApp: boolean;
   logger: {
     log: LogFunction;
     level: LogSeverity;

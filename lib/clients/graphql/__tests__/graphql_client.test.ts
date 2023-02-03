@@ -91,7 +91,7 @@ describe('GraphQL client', () => {
   });
 
   it('adapts to private app requests', async () => {
-    shopify.config.isPrivateApp = true;
+    shopify.config.isCustomStoreApp = true;
 
     const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
@@ -111,7 +111,7 @@ describe('GraphQL client', () => {
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
 
-    shopify.config.isPrivateApp = false;
+    shopify.config.isCustomStoreApp = false;
   });
 
   it('fails to instantiate without access token', () => {

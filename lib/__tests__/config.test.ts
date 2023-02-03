@@ -14,7 +14,7 @@ describe('Config object', () => {
       hostName: 'host_name',
       apiVersion: ApiVersion.Unstable,
       isEmbeddedApp: true,
-      isPrivateApp: false,
+      isCustomStoreApp: false,
       logger: {
         log: jest.fn(),
         level: LogSeverity.Debug,
@@ -86,6 +86,15 @@ describe('Config object', () => {
     expect(() => validateConfig(empty)).toThrow(ShopifyErrors.ShopifyError);
   });
 
+  it("ignores an empty 'scopes' when isCustomStoreApp is true", () => {
+    validParams.isCustomStoreApp = true;
+    delete (validParams as any).scopes;
+
+    expect(() => validateConfig(validParams)).not.toThrow(
+      ShopifyErrors.ShopifyError,
+    );
+  });
+
   it('can partially override logger settings', () => {
     const configWithLogger = {...validParams};
     configWithLogger.logger = {
@@ -110,5 +119,53 @@ describe('Config object', () => {
     const config = validateConfig(configWithSlash);
 
     expect(config.hostName).toEqual('my-host-name');
+  });
+
+  [true, false].forEach((isPrivateApp) => {
+    describe(`isPrivateApp (TO BE DEPRECATED IN 7.0.0) is ${isPrivateApp}`, () => {
+      it(`logs deprecation`, () => {
+        const {isCustomStoreApp, ...params} = validParams;
+        Object.assign(params, {isPrivateApp});
+
+        const config = validateConfig(params);
+
+        expect(config.logger.log).toHaveBeenCalledWith(
+          LogSeverity.Warning,
+          expect.stringContaining('[Deprecated | 7.0.0]'),
+        );
+      });
+
+      it(`sets isCustomStoreApp to value of isPrivateApp if isCustomStoreApp not explicitly set`, () => {
+        const {isCustomStoreApp, ...params} = validParams;
+        Object.assign(params, {isPrivateApp});
+
+        const config = validateConfig(params);
+
+        expect(config.isCustomStoreApp).toBe(isPrivateApp);
+        expect('isPrivateApp' in config).toBe(false);
+      });
+
+      it(`ignores value of isPrivateApp if isCustomStoreApp explicitly set`, () => {
+        validParams.isCustomStoreApp = !isPrivateApp;
+        const params = {...validParams};
+        Object.assign(params, {isPrivateApp});
+
+        const config = validateConfig(params);
+
+        expect(config.isCustomStoreApp).toBe(!isPrivateApp);
+        expect('isPrivateApp' in config).toBe(false);
+      });
+
+      if (isPrivateApp) {
+        it("ignores an empty 'scopes' when isPrivateApp is true", () => {
+          const {isCustomStoreApp, scopes, ...params} = validParams;
+          Object.assign(params, {isPrivateApp: true});
+
+          expect(() => validateConfig(validParams)).not.toThrow(
+            ShopifyErrors.ShopifyError,
+          );
+        });
+      }
+    });
   });
 });

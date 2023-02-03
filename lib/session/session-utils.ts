@@ -11,6 +11,7 @@ import * as ShopifyErrors from '../error';
 
 import {decodeSessionToken} from './decode-session-token';
 import type {GetCurrentSessionIdParams} from './types';
+import {Session} from './session';
 
 export function getJwtSessionId(config: ConfigInterface) {
   return (shop: string, userId: string): string => {
@@ -79,5 +80,16 @@ export function getCurrentSessionId(config: ConfigInterface) {
     }
 
     return undefined;
+  };
+}
+
+export function customAppSession(config: ConfigInterface) {
+  return (shop: string): Session => {
+    return new Session({
+      id: '',
+      shop: `${sanitizeShop(config)(shop, true)}`,
+      state: '',
+      isOnline: false,
+    });
   };
 }

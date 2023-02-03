@@ -44,7 +44,7 @@ export class StorefrontClient extends GraphqlClient {
 
     return {
       [ShopifyHeader.StorefrontAccessToken]: this.storefrontClass().config
-        .isPrivateApp
+        .isCustomStoreApp
         ? this.storefrontClass().config.privateAppStorefrontAccessToken ||
           this.storefrontAccessToken
         : this.storefrontAccessToken,
