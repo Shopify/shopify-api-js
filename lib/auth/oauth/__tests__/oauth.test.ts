@@ -1,7 +1,10 @@
 import querystring from 'querystring';
 
 import * as ShopifyErrors from '../../../error';
-import {generateLocalHmac} from '../../../utils/hmac-validator';
+import {
+  generateLocalHmac,
+  getCurrentTimeInSec,
+} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../session/types';
 import {nonce} from '../nonce';
 import {
@@ -197,7 +200,7 @@ describe('callback', () => {
     const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
+      timestamp: getCurrentTimeInSec().toString(),
       code: 'some random auth code',
     };
     testCallbackQuery.hmac = 'definitely the wrong hmac';
@@ -223,7 +226,7 @@ describe('callback', () => {
     const testCallbackQuery: QueryMock = {
       shop,
       state: 'incorrect state',
-      timestamp: Number(new Date()).toString(),
+      timestamp: getCurrentTimeInSec().toString(),
       code: 'some random auth code',
     };
     const expectedHmac = await generateLocalHmac(shopify.config)(
@@ -252,7 +255,7 @@ describe('callback', () => {
     const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
+      timestamp: getCurrentTimeInSec().toString(),
       code: 'some random auth code',
     };
     const expectedHmac = await generateLocalHmac(shopify.config)(
@@ -295,7 +298,7 @@ describe('callback', () => {
     const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
+      timestamp: getCurrentTimeInSec().toString(),
       code: 'some random auth code',
     };
     const expectedHmac = await generateLocalHmac(shopify.config)(
@@ -371,7 +374,7 @@ describe('callback', () => {
     const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
+      timestamp: getCurrentTimeInSec().toString(),
       code: 'some random auth code',
     };
     const expectedHmac = await generateLocalHmac(shopify.config)(
@@ -455,7 +458,7 @@ describe('callback', () => {
     const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
+      timestamp: getCurrentTimeInSec().toString(),
       code: 'some random auth code',
     };
     const expectedHmac = await generateLocalHmac(shopify.config)(
@@ -517,7 +520,7 @@ describe('callback', () => {
     const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
+      timestamp: getCurrentTimeInSec().toString(),
       code: 'some random auth code',
     };
     const expectedHmac = await generateLocalHmac(shopify.config)(
@@ -564,7 +567,7 @@ describe('callback', () => {
     const testCallbackQuery: QueryMock = {
       shop,
       state: VALID_NONCE,
-      timestamp: Number(new Date()).toString(),
+      timestamp: getCurrentTimeInSec().toString(),
       code: 'some random auth code',
     };
     const expectedHmac = await generateLocalHmac(shopify.config)(

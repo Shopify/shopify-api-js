@@ -104,4 +104,30 @@ const shopify = shopifyApi({
 This will automatically load all REST resources onto `shopify.rest`, as per the example above.
 From this point, you can start using the resources to interact with the API.
 
+## Paginated requests
+
+Shopify's REST API supports [cursor-based pagination](https://shopify.dev/api/usage/pagination-rest), to limit the amount of data sent to an app on a single request.
+
+Each request will return the information required for an app to request the previous / next set of items.
+
+For REST resources, the class will contain the information necessary to make those requests in the `NEXT_PAGE_INFO` and `PREV_PAGE_INFO` properties.
+These values will always reflect the last request made with that class.
+
+Here is an example for fetching more than one set of products from the API:
+
+```ts
+do {
+  const pageProducts = await shopify.rest.Product.all({
+    ...shopify.rest.Product.NEXT_PAGE_INFO?.query,
+    session,
+    status: 'active',
+  });
+
+  // ... use pageProducts
+} while (shopify.rest.Product.NEXT_PAGE_INFO);
+```
+
+> **Note**: these properties are not thread-safe because they're stored statically in the class.
+> If you are using this feature to send requests in parallel, you can store the `query` property in a thread-safe way, since it's a plain JavaScript object.
+
 [Back to guide index](../../README.md#guides)
