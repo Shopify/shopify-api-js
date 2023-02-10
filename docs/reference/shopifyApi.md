@@ -7,7 +7,6 @@ Use this function when you [set up your app](../../README.md#getting-started).
 
 ```ts
 import {shopifyApi, ApiVersion, BillingInterval} from '@shopify/shopify-api';
-import {MemorySessionStorage} from '@shopify/shopify-api/session-storage/memory';
 import {restResources} from '@shopify/shopify-api/rest/admin/2022-07';
 
 const shopify = shopifyApi({
@@ -18,7 +17,6 @@ const shopify = shopifyApi({
   hostScheme: 'http',
   apiVersion: ApiVersion.July22,
   isEmbeddedApp: true,
-  sessionStorage: new MemorySessionStorage(),
   isCustomStoreApp: false,
   userAgentPrefix: 'Custom prefix',
   privateAppStorefrontAccessToken: 'PrivateAccessToken',
