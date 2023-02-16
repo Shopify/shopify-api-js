@@ -5,18 +5,18 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 [![npm version](https://badge.fury.io/js/%40shopify%2Fshopify-api.svg)](https://badge.fury.io/js/%40shopify%2Fshopify-api)
 
-This library provides support for the backends of TypeScript/JavaScript [Shopify](https://www.shopify.com) apps to access the [Shopify Admin API](https://shopify.dev/docs/admin-api), by making it easier to perform the following actions:
+This library provides support for the backends of TypeScript/JavaScript [Shopify](https://www.shopify.com) apps to access the [Shopify Admin API](https://shopify.dev/docs/api/admin), by making it easier to perform the following actions:
 
-- Creating [online](https://shopify.dev/apps/auth#online-access) or [offline](https://shopify.dev/apps/auth#offline-access) access tokens for the Admin API via OAuth
-- Making requests to the [REST API](https://shopify.dev/docs/admin-api/rest/reference)
-- Making requests to the [GraphQL API](https://shopify.dev/docs/admin-api/graphql/reference)
+- Creating [online](https://shopify.dev/docs/apps/auth#online-access) or [offline](https://shopify.dev/docs/apps/auth#offline-access) access tokens for the Admin API via OAuth
+- Making requests to the [REST API](https://shopify.dev/docs/api/admin/rest/reference)
+- Making requests to the [GraphQL API](https://shopify.dev/docs/api/admin/graphql/reference)
 - Register/process webhooks
 
-Once your app has access to the Admin API, you can also access the [Shopify Storefront API](https://shopify.dev/docs/storefront-api) to run GraphQL queries using the `unauthenticated_*` access scopes.
+Once your app has access to the Admin API, you can also access the [Shopify Storefront API](https://shopify.dev/docs/api/storefront) to run GraphQL queries using the `unauthenticated_*` access scopes.
 
 This library can be used in any application that runs on one of the supported runtimes. It doesn't rely on any specific framework, so you can include it alongside your preferred stack and only use the features that you need to build your app.
 
-**Note**: this package will enable your app's backend to work with Shopify APIs, but you'll need to use [Shopify App Bridge](https://shopify.dev/apps/tools/app-bridge) in your frontend if you're planning on embedding your app into the Shopify Admin.
+**Note**: this package will enable your app's backend to work with Shopify APIs, but you'll need to use [Shopify App Bridge](https://shopify.dev/docs/apps/tools/app-bridge) in your frontend if you're planning on embedding your app into the Shopify Admin.
 
 ## Requirements
 
@@ -61,7 +61,7 @@ Next, configure the library - you'll need some values in advance:
 
 - Your app's API key from [Partners dashboard](https://www.shopify.com/partners)
 - Your app's API secret from Partners dashboard
-- The [scopes](https://shopify.dev/api/usage/access-scopes) you need for your app
+- The [scopes](https://shopify.dev/docs/api/usage/access-scopes) you need for your app
 
 Call `shopifyApi` ([see reference](./docs/reference/shopifyApi.md)) to create your library object before setting up your app itself:
 

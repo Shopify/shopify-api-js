@@ -83,7 +83,7 @@ The resource classes provide representations of all endpoints for the API resour
 1. `GET /products.json` maps to `Product.all()`
 1. `GET /products/count.json` maps to `Product.count()`
 
-Please visit our [REST API reference documentation](https://shopify.dev/api/admin-rest) for detailed instructions on how to call each of the endpoints.
+Please visit our [REST API reference documentation](https://shopify.dev/docs/api/admin-rest) for detailed instructions on how to call each of the endpoints.
 
 ## Mounting REST resources
 
@@ -106,7 +106,7 @@ From this point, you can start using the resources to interact with the API.
 
 ## Paginated requests
 
-Shopify's REST API supports [cursor-based pagination](https://shopify.dev/api/usage/pagination-rest), to limit the amount of data sent to an app on a single request.
+Shopify's REST API supports [cursor-based pagination](https://shopify.dev/docs/api/usage/pagination-rest), to limit the amount of data sent to an app on a single request.
 
 Each request will return the information required for an app to request the previous / next set of items.
 

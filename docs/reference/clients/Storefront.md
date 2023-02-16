@@ -2,11 +2,11 @@
 
 Instances of this class can make requests to the Shopify Storefront API.
 
-> **Note**: ⚠️ This API limits request rates based on the IP address that calls it, which will be your server's address for all requests made by the library. The API uses a leaky bucket algorithm, with a default bucket size of 60 seconds of request processing time (minimum 0.5s per request), with a leak rate of 1/s. Learn more about [rate limits](https://shopify.dev/api/usage/rate-limits).
+> **Note**: ⚠️ This API limits request rates based on the IP address that calls it, which will be your server's address for all requests made by the library. The API uses a leaky bucket algorithm, with a default bucket size of 60 seconds of request processing time (minimum 0.5s per request), with a leak rate of 1/s. Learn more about [rate limits](https://shopify.dev/docs/api/usage/rate-limits).
 
 ## Requirements
 
-You can create Storefront API access tokens for both **private apps** and **sales channels**, but you **must use offline access tokens** for sales channels. Please read [our documentation](https://shopify.dev/docs/storefront-api/getting-started) to learn more about Storefront Access Tokens.
+You can create Storefront API access tokens for both **private apps** and **sales channels**, but you **must use offline access tokens** for sales channels. Please read [our documentation](https://shopify.dev/docs/custom-storefronts/building-with-the-storefront-api/products-collections/getting-started) to learn more about Storefront Access Tokens.
 
 If you are building a private app, you can set a default Storefront Access Token for all `Storefront` client instances by setting the `config.privateAppStorefrontAccessToken` property when calling [`shopifyApi`](../shopifyApi.md).
 
@@ -15,10 +15,10 @@ If you are building a private app, you can set a default Storefront Access Token
 ### Example
 
 Below is a (simplified) example of how you may create a token and construct a client.
-See the [REST](https://shopify.dev/api/admin-rest/latest/resources/storefrontaccesstoken) or [GraphQL](https://shopify.dev/api/admin-graphql/latest/mutations/storefrontAccessTokenCreate) Admin API references for more information.
+See the [REST](https://shopify.dev/docs/api/admin-rest/latest/resources/storefrontaccesstoken) or [GraphQL](https://shopify.dev/docs/api/admin-graphql/latest/mutations/storefrontAccessTokenCreate) Admin API references for more information.
 
 Once you've created your access token, you can query the Storefront API based on the `unauthenticated_*` scopes your app requests.
-See the [API reference documentation](https://shopify.dev/api/storefront) for detailed instructions on each component.
+See the [API reference documentation](https://shopify.dev/docs/api/storefront) for detailed instructions on each component.
 
 ```ts
 app.get('/my-endpoint', async (req, res) => {
