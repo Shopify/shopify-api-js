@@ -57,7 +57,7 @@ API secret key for the app. You can find it in the Partners Dashboard.
 
 `string[] | AuthScopes` | :exclamation: **required**
 
-[Shopify scopes](https://shopify.dev/api/usage/access-scopes) required for your app.
+[Shopify scopes](https://shopify.dev/docs/api/usage/access-scopes) required for your app.
 
 ### hostName
 
@@ -81,7 +81,7 @@ API version your app will be querying. E.g. `ApiVersion.October22`.
 
 `boolean` | Defaults to `true`
 
-Whether your app will run within the Shopify Admin. Learn more about embedded apps with [`App Bridge`](https://shopify.dev/apps/tools/app-bridge/getting-started/app-setup).
+Whether your app will run within the Shopify Admin. Learn more about embedded apps with [`App Bridge`](https://shopify.dev/docs/apps/tools/app-bridge/getting-started/app-setup).
 
 ### isCustomStoreApp
 
@@ -157,15 +157,15 @@ Whether to add the current timestamp to every logged message.
 
 This function returns an object containing the following properties:
 
-| Property                            | Description                                                                                                                                        |
-| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| config                              | The options used to set up the object, containing the parameters of this function.                                                                 |
-| [auth](./auth/README.md)            | Object containing functions to authenticate with Shopify APIs.                                                                                     |
-| [clients](./clients/README.md)      | Object containing clients to access Shopify APIs.                                                                                                  |
-| [session](./session/README.md)      | Object containing functions to manage Shopify sessions.                                                                                            |
-| [webhooks](./webhooks/README.md)    | Object containing functions to configure and handle Shopify webhooks.                                                                              |
-| [billing](./billing/README.md)      | Object containing functions to enable apps to bill merchants.                                                                                      |
-| [utils](./utils/README.md)          | Object containing general functions to help build apps.                                                                                            |
-| [rest](../guides/rest-resources.md) | Object containing OO representations of the Admin REST API. See the [API reference documentation](https://shopify.dev/api/admin-rest) for details. |
+| Property                            | Description                                                                                                                                             |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| config                              | The options used to set up the object, containing the parameters of this function.                                                                      |
+| [auth](./auth/README.md)            | Object containing functions to authenticate with Shopify APIs.                                                                                          |
+| [clients](./clients/README.md)      | Object containing clients to access Shopify APIs.                                                                                                       |
+| [session](./session/README.md)      | Object containing functions to manage Shopify sessions.                                                                                                 |
+| [webhooks](./webhooks/README.md)    | Object containing functions to configure and handle Shopify webhooks.                                                                                   |
+| [billing](./billing/README.md)      | Object containing functions to enable apps to bill merchants.                                                                                           |
+| [utils](./utils/README.md)          | Object containing general functions to help build apps.                                                                                                 |
+| [rest](../guides/rest-resources.md) | Object containing OO representations of the Admin REST API. See the [API reference documentation](https://shopify.dev/docs/api/admin-rest) for details. |
 
 [Back to reference index](./README.md)

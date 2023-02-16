@@ -2,7 +2,7 @@
 
 Adds webhook handlers to the library registry, allowing you to register them with Shopify and process HTTP webhook requests from Shopify.
 
-See the documentation for [the full list](https://shopify.dev/api/admin-graphql/latest/enums/WebhookSubscriptionTopic) of accepted topics.
+See the documentation for [the full list](https://shopify.dev/docs/api/admin-graphql/latest/enums/WebhookSubscriptionTopic) of accepted topics.
 
 > **Note**: you can only register multiple handlers with the same address when the delivery method is HTTP - the library will automatically chain the requests together when handling events.
 > The library will fail when trying to add duplicate paths for other delivery methods.

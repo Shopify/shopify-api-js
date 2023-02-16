@@ -1,6 +1,6 @@
 # Setting up webhooks
 
-If your app needs to keep track of specific events happening on a shop, you can use [Shopify webhooks](https://shopify.dev/apps/webhooks) to subscribe to those events.
+If your app needs to keep track of specific events happening on a shop, you can use [Shopify webhooks](https://shopify.dev/docs/apps/webhooks) to subscribe to those events.
 
 To do that, you'll need to perform the following steps:
 

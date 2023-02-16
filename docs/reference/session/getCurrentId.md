@@ -5,7 +5,7 @@ Extracts the Shopify session id from the given request.
 For embedded apps, `shopify.session.getCurrentId` will only be able to find a session id if you use `authenticatedFetch` from the `@shopify/app-bridge-utils` client-side package.
 This function behaves like a [normal `fetch` call](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), but ensures the appropriate headers are set.
 
-Learn more about [making authenticated requests](https://shopify.dev/apps/auth/oauth/session-tokens/getting-started#step-2-authenticate-your-requests) using App Bridge.
+Learn more about [making authenticated requests](https://shopify.dev/docs/apps/auth/oauth/session-tokens/getting-started#step-2-authenticate-your-requests) using App Bridge.
 
 ## Example
 
@@ -26,7 +26,7 @@ app.get('/fetch-some-data', async (req, res) => {
 });
 ```
 
-> **Note**: this method will rely on cookies for non-embedded apps, and the `Authorization` HTTP header for embedded apps using [App Bridge session tokens](https://shopify.dev/apps/auth/oauth/session-tokens), making all apps safe to use in modern browsers that block 3rd party cookies.
+> **Note**: this method will rely on cookies for non-embedded apps, and the `Authorization` HTTP header for embedded apps using [App Bridge session tokens](https://shopify.dev/docs/apps/auth/oauth/session-tokens), making all apps safe to use in modern browsers that block 3rd party cookies.
 
 ## Parameters
 

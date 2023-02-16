@@ -26,6 +26,6 @@ The token to parse.
 
 `Promise<JwtPayload>`
 
-The parsed JWT payload, matching the payload contained in [session tokens](https://shopify.dev/apps/auth/oauth/session-tokens#payload).
+The parsed JWT payload, matching the payload contained in [session tokens](https://shopify.dev/docs/apps/auth/oauth/session-tokens#payload).
 
 [Back to shopify.session](./README.md)
