@@ -1,4 +1,4 @@
-name: Release from main branch
+name: Create release PR and/or publish release to NPM
 
 on:
   push:
@@ -9,7 +9,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
-    name: Release new version(s) of packages
+    name: Update PR for publishing new release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -28,6 +28,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
+          title: Packages for release
           publish: yarn release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

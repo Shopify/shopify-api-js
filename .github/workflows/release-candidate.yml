@@ -1,15 +1,15 @@
-name: Release from next branch
+name: Create release candidate PR and/or publish release candidate to NPM
 
 on:
   push:
     branches:
-      - next
+      - release-candidate
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
-    name: Release release candidate(s) of packages
+    name: Update PR for publishing release candidate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -24,11 +24,11 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
 
-      - name: Create release Pull Request or publish to NPM
+      - name: Create release candidate PR or publish to NPM
         id: changesets
         uses: changesets/action@v1
         with:
-          title: Version Packages for Release Candidates
+          title: Packages for release-candidate
           publish: yarn release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
