@@ -44,9 +44,7 @@
     "clean": "yarn tsc --build --clean",
     "prebuild": "yarn tsc --build --clean",
     "build": "tsc",
-    "prepublishOnly": "yarn run build",
-    "preversion": "yarn run test",
-    "postversion": "git push origin main --follow-tags && echo \"Log in to shipit to deploy version $npm_package_version\""
+    "release": "yarn build && changeset publish"
   },
   "publishConfig": {
     "access": "public"
@@ -86,6 +84,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.0",
     "@cloudflare/workers-types": "^3.16.0",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^22.0.2",
