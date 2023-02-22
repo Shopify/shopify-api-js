@@ -9,7 +9,7 @@ jobs:
         version: [14, 16, 18]
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.version }}
       # TODO Remove the --ignore-engines flag when we drop support for Node 14
