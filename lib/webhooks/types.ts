@@ -45,7 +45,7 @@ export type WebhookHandler =
   | PubSubWebhookHandler;
 
 export interface WebhookRegistry {
-  // See https://shopify.dev/docs/admin-api/graphql/reference/events/webhooksubscriptiontopic for available topics
+  // See https://shopify.dev/docs/api/admin-graphql/latest/enums/webhooksubscriptiontopic for available topics
   [topic: string]: WebhookHandler[];
 }
 

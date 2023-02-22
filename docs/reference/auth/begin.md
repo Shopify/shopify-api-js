@@ -53,7 +53,7 @@ The path to the callback endpoint, with a leading `/`. This URL must be allowed 
 
 `bool` | :exclamation: required
 
-`true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/apps/auth/oauth/access-modes).
+`true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes).
 
 ### rawRequest
 

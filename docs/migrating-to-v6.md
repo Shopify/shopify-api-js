@@ -219,7 +219,7 @@ See the [Changes to use of REST resources](#changes-to-use-of-rest-resources) se
 
 The OAuth methods still behave the same way, but we've updated their signatures to make it easier to work with them. See the [updated OAuth instructions](./guides/oauth.md) for a complete example.
 
-See [Access modes](https://shopify.dev/apps/auth/oauth/access-modes) for more details regarding how to use the `isOnline` parameter.
+See [Access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes) for more details regarding how to use the `isOnline` parameter.
 
 1. `Shopify.Auth.beginAuth()` is now `shopify.auth.begin()`, it takes in an object, and it now also triggers a redirect response to the correct endpoint.
    <div>Before

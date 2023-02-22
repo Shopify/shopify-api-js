@@ -501,7 +501,7 @@ import shopify from '../shopify.js';
  * merchant has an active one-time payment or subscription named `chargeName`. If no payment is found,
  * this helper requests it and returns a confirmation URL so that the merchant can approve the purchase.
  *
- * Learn more about billing in our documentation: https://shopify.dev/apps/billing
+ * Learn more about billing in our documentation: https://shopify.dev/docs/apps/billing
  */
 export default async function ensureBilling(
   session,
@@ -746,7 +746,7 @@ Pulling it all together!
  // the code when you store customer data.
  //
  // More details can be found on shopify.dev:
- // https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks
+ // https://shopify.dev/docs/apps/webhooks/configuration/mandatory-webhooks
  setupGDPRWebHooks("/api/webhooks");
 
  // export for test use only

@@ -2,7 +2,7 @@
 
 Instances of this class can make requests to the Shopify Admin GraphQL API.
 
-> **Note**: You can use the [Shopify Admin API GraphiQL explorer](https://shopify.dev/apps/tools/graphiql-admin-api) to help build your queries.
+> **Note**: You can use the [Shopify Admin API GraphiQL explorer](https://shopify.dev/docs/apps/tools/graphiql-admin-api) to help build your queries.
 
 ## Constructor
 
