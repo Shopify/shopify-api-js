@@ -42,7 +42,7 @@ const shopify = shopifyApi({
 
 API requests, either using `shopify.clients.Rest` or `shopify.clients.Graphql`, or using the REST resources, require a `session` parameter.  Since there are no sessions in a store-specific custom app, a `session` parameter needs to be created.
 
-To create the session object, the `id`, `state` and `isOnline` properties must be populated but will be ignored.  Only the `shop` parameter is required when making the API requests from a store specifc custom app and the value must match the stop on which the custom app is installed.
+To create the session object, the `id`, `state` and `isOnline` properties must be populated but will be ignored.  Only the `shop` parameter is required when making the API requests from a store-specific custom app and the value must match the shop on which the custom app is installed.
 
 The library provides a utility method to create such a session, `shopify.session.customAppSession`.
 
