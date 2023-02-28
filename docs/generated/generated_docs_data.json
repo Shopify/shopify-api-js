@@ -1,0 +1,1171 @@
+[
+  {
+    "name": "shopifyApi",
+    "description": "Creates an instance of the Shopify API library.",
+    "featureFlag": "",
+    "requires": "",
+    "type": "",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "featureFlag": "",
+      "image": "",
+      "codeblock": {
+        "tabs": [
+          {
+            "title": "JS",
+            "code": "import {shopifyApi, ApiVersion, BillingInterval} from '@shopify/shopify-api';\nimport {restResources} from '@shopify/shopify-api/rest/admin/2022-07';\n\nconst shopify = shopifyApi({\n  apiKey: 'APIKeyFromPartnersDashboard',\n  apiSecretKey: 'APISecretFromPartnersDashboard',\n  scopes: ['read_products'],\n  hostName: 'localhost:4321',\n  hostScheme: 'http',\n  apiVersion: ApiVersion.July22,\n  isEmbeddedApp: true,\n  isCustomStoreApp: false,\n  userAgentPrefix: 'Custom prefix',\n  privateAppStorefrontAccessToken: 'PrivateAccessToken',\n  customShopDomains: ['*.my-custom-domain.io'],\n  billing: {\n    'My plan': {\n      amount: 5.0,\n      currencyCode: 'USD',\n      interval: BillingInterval.OneTime,\n    },\n  },\n  logger: {\n    log: (severity, message) => {\n      myAppsLogFunction(severity, message);\n    },\n  },\n  restResources,\n});\n",
+            "language": "js"
+          }
+        ],
+        "title": "Create the Shopify API library"
+      }
+    },
+    "definitions": [
+      {
+        "title": "shopifyApi",
+        "description": "",
+        "type": "Shopify",
+        "typeDefinitions": {
+          "Shopify": {
+            "filePath": "/index.ts",
+            "name": "Shopify",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "config",
+                "value": "ConfigInterface",
+                "description": ""
+              },
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "clients",
+                "value": "{ Rest: typeof RestClient; Graphql: typeof GraphqlClient; Storefront: typeof StorefrontClient; graphqlProxy: ({ session, rawBody, }: GraphqlProxyParams) => Promise<RequestReturn<unknown>>; }",
+                "description": ""
+              },
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "auth",
+                "value": "{ begin: ({ shop, callbackPath, isOnline, ...adapterArgs }: BeginParams) => Promise<any>; callback: <T = any>({ isOnline: isOnlineParam, ...adapterArgs }: CallbackParams) => Promise<CallbackResponse<T>>; nonce: () => string; safeCompare: (strA: string | string[] | number[] | { [key: string]: string; }, strB: string | string[] | number[] | { [key: string]: string; }) => boolean; getEmbeddedAppUrl: ({ ...adapterArgs }: GetEmbeddedAppUrlParams) => Promise<string>; buildEmbeddedAppUrl: (host: string) => string; }",
+                "description": ""
+              },
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "session",
+                "value": "{ customAppSession: (shop: string) => Session; getCurrentId: ({ isOnline, ...adapterArgs }: GetCurrentSessionIdParams) => Promise<string>; getOfflineId: (shop: string) => string; decodeSessionToken: (token: string) => Promise<JwtPayload>; }",
+                "description": ""
+              },
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "utils",
+                "value": "{ sanitizeShop: (shop: string, throwOnInvalid?: boolean) => string; sanitizeHost: (host: string, throwOnInvalid?: boolean) => string; validateHmac: (query: AuthQuery) => Promise<boolean>; versionCompatible: (referenceVersion: ApiVersion, currentVersion?: ApiVersion) => boolean; }",
+                "description": ""
+              },
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "webhooks",
+                "value": "{ addHandlers: (handlersToAdd: AddHandlersParams) => Promise<void>; getTopicsAdded: () => string[]; getHandlers: (topic: string) => WebhookHandler[]; register: ({ session, }: RegisterParams) => Promise<RegisterReturn>; process: ({ rawBody, ...adapterArgs }: WebhookProcessParams) => Promise<any>; }",
+                "description": ""
+              },
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "billing",
+                "value": "{ check: ({ session, plans, isTest, }: CheckParams) => Promise<boolean>; request: ({ session, plan, isTest, }: RequestParams) => Promise<string>; }",
+                "description": ""
+              },
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "logger",
+                "value": "{ log: LoggerFunction; debug: (message: string, context?: LogContext) => Promise<void>; info: (message: string, context?: LogContext) => Promise<void>; warning: (message: string, context?: LogContext) => Promise<void>; error: (message: string, context?: LogContext) => Promise<void>; deprecated: (version: string, message: string) => Promise<void>; }",
+                "description": ""
+              },
+              {
+                "filePath": "/index.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rest",
+                "value": "T",
+                "description": ""
+              }
+            ],
+            "value": "export interface Shopify<\n  T extends ShopifyRestResources = ShopifyRestResources,\n> {\n  config: ConfigInterface;\n  clients: ShopifyClients;\n  auth: ShopifyAuth;\n  session: ShopifySession;\n  utils: ShopifyUtils;\n  webhooks: ShopifyWebhooks;\n  billing: ShopifyBilling;\n  logger: ShopifyLogger;\n  rest: T;\n}"
+          },
+          "ConfigInterface": {
+            "filePath": "/base-types.ts",
+            "name": "ConfigInterface",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "hostScheme",
+                "value": "\"http\" | \"https\"",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "scopes",
+                "value": "AuthScopes",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isCustomStoreApp",
+                "value": "boolean",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "logger",
+                "value": "{ log: LogFunction; level: LogSeverity; httpRequests: boolean; timestamps: boolean; }",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "apiKey",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "apiSecretKey",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "scopes",
+                "value": "string[] | AuthScopes",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "hostName",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "hostScheme",
+                "value": "\"http\" | \"https\"",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "apiVersion",
+                "value": "ApiVersion",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isEmbeddedApp",
+                "value": "boolean",
+                "description": ""
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isCustomStoreApp",
+                "value": "boolean",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "userAgentPrefix",
+                "value": "string",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "privateAppStorefrontAccessToken",
+                "value": "string",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "customShopDomains",
+                "value": "(string | RegExp)[]",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "billing",
+                "value": "BillingConfig",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "logger",
+                "value": "{ log?: LogFunction; level?: LogSeverity; httpRequests?: boolean; timestamps?: boolean; }",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface ConfigInterface extends Omit<ConfigParams, 'restResources'> {\n  hostScheme: 'http' | 'https';\n  scopes: AuthScopes;\n  isCustomStoreApp: boolean;\n  logger: {\n    log: LogFunction;\n    level: LogSeverity;\n    httpRequests: boolean;\n    timestamps: boolean;\n  };\n}"
+          },
+          "LogFunction": {
+            "filePath": "/base-types.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "LogFunction",
+            "value": "(severity: LogSeverity, msg: string) => Promise<void>",
+            "description": ""
+          },
+          "LogSeverity": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "LogSeverity",
+            "value": "export enum LogSeverity {\n  Error,\n  Warning,\n  Info,\n  Debug,\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "Error",
+                "value": 0
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Warning",
+                "value": 1
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Info",
+                "value": 2
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Debug",
+                "value": 3
+              }
+            ]
+          },
+          "ApiVersion": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "ApiVersion",
+            "value": "export enum ApiVersion {\n  January22 = '2022-01',\n  April22 = '2022-04',\n  July22 = '2022-07',\n  October22 = '2022-10',\n  January23 = '2023-01',\n  Unstable = 'unstable',\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "January22",
+                "value": "2022-01"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "April22",
+                "value": "2022-04"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "July22",
+                "value": "2022-07"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "October22",
+                "value": "2022-10"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "January23",
+                "value": "2023-01"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Unstable",
+                "value": "unstable"
+              }
+            ]
+          },
+          "BillingConfig": {
+            "filePath": "/billing/types.ts",
+            "name": "BillingConfig",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "name": "[plan: string]",
+                "value": "| BillingConfigOneTimePlan\n    | BillingConfigSubscriptionPlan\n    | BillingConfigUsagePlan"
+              }
+            ],
+            "value": "export interface BillingConfig {\n  [plan: string]:\n    | BillingConfigOneTimePlan\n    | BillingConfigSubscriptionPlan\n    | BillingConfigUsagePlan;\n}"
+          },
+          "BillingConfigOneTimePlan": {
+            "filePath": "/billing/types.ts",
+            "name": "BillingConfigOneTimePlan",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "interval",
+                "value": "BillingInterval.OneTime",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "amount",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "currencyCode",
+                "value": "string",
+                "description": ""
+              }
+            ],
+            "value": "export interface BillingConfigOneTimePlan extends BillingConfigPlan {\n  interval: BillingInterval.OneTime;\n}"
+          },
+          "BillingInterval": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "BillingInterval",
+            "value": "export enum BillingInterval {\n  OneTime = 'ONE_TIME',\n  Every30Days = 'EVERY_30_DAYS',\n  Annual = 'ANNUAL',\n  Usage = 'USAGE',\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "OneTime",
+                "value": "ONE_TIME"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Every30Days",
+                "value": "EVERY_30_DAYS"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Annual",
+                "value": "ANNUAL"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Usage",
+                "value": "USAGE"
+              }
+            ]
+          },
+          "BillingConfigSubscriptionPlan": {
+            "filePath": "/billing/types.ts",
+            "name": "BillingConfigSubscriptionPlan",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "interval",
+                "value": "RecurringBillingIntervals",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "trialDays",
+                "value": "number",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "replacementBehavior",
+                "value": "BillingReplacementBehavior",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "amount",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "currencyCode",
+                "value": "string",
+                "description": ""
+              }
+            ],
+            "value": "export interface BillingConfigSubscriptionPlan extends BillingConfigPlan {\n  interval: RecurringBillingIntervals;\n  trialDays?: number;\n  replacementBehavior?: BillingReplacementBehavior;\n}"
+          },
+          "RecurringBillingIntervals": {
+            "filePath": "/types.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "RecurringBillingIntervals",
+            "value": "Exclude<\n  BillingInterval,\n  BillingInterval.OneTime\n>",
+            "description": ""
+          },
+          "BillingReplacementBehavior": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "BillingReplacementBehavior",
+            "value": "export enum BillingReplacementBehavior {\n  ApplyImmediately = 'APPLY_IMMEDIATELY',\n  ApplyOnNextBillingCycle = 'APPLY_ON_NEXT_BILLING_CYCLE',\n  Standard = 'STANDARD',\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "ApplyImmediately",
+                "value": "APPLY_IMMEDIATELY"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "ApplyOnNextBillingCycle",
+                "value": "APPLY_ON_NEXT_BILLING_CYCLE"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Standard",
+                "value": "STANDARD"
+              }
+            ]
+          },
+          "BillingConfigUsagePlan": {
+            "filePath": "/billing/types.ts",
+            "name": "BillingConfigUsagePlan",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "interval",
+                "value": "BillingInterval.Usage",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "usageTerms",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "trialDays",
+                "value": "number",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "replacementBehavior",
+                "value": "BillingReplacementBehavior",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "amount",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "currencyCode",
+                "value": "string",
+                "description": ""
+              }
+            ],
+            "value": "export interface BillingConfigUsagePlan extends BillingConfigPlan {\n  interval: BillingInterval.Usage;\n  usageTerms: string;\n  trialDays?: number;\n  replacementBehavior?: BillingReplacementBehavior;\n}"
+          },
+          "Body": {
+            "filePath": "Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/rest/types.ts",
+            "name": "Body",
+            "description": "",
+            "members": [
+              {
+                "filePath": "Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/rest/types.ts",
+                "name": "[key: string]",
+                "value": "any"
+              }
+            ],
+            "value": "export interface Body {\n  [key: string]: any;\n}"
+          },
+          "GraphqlProxyParams": {
+            "filePath": "/clients/graphql/types.ts",
+            "name": "GraphqlProxyParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/clients/graphql/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "session",
+                "value": "Session",
+                "description": ""
+              },
+              {
+                "filePath": "/clients/graphql/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawBody",
+                "value": "string",
+                "description": ""
+              }
+            ],
+            "value": "export interface GraphqlProxyParams {\n  session: Session;\n  rawBody: string;\n}"
+          },
+          "RequestReturn": {
+            "filePath": "/clients/http_client/types.ts",
+            "name": "RequestReturn",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/clients/http_client/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "body",
+                "value": "T",
+                "description": ""
+              },
+              {
+                "filePath": "/clients/http_client/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "headers",
+                "value": "Headers",
+                "description": ""
+              }
+            ],
+            "value": "export interface RequestReturn<T = unknown> {\n  body: T;\n  headers: Headers;\n}"
+          },
+          "Headers": {
+            "filePath": "Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
+            "name": "Headers",
+            "description": "",
+            "members": [
+              {
+                "filePath": "Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
+                "name": "[key: string]",
+                "value": "string | string[]"
+              }
+            ],
+            "value": "export interface Headers {\n  [key: string]: string | string[];\n}"
+          },
+          "BeginParams": {
+            "filePath": "/auth/oauth/types.ts",
+            "name": "BeginParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "shop",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "callbackPath",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isOnline",
+                "value": "boolean",
+                "description": ""
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": ""
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface BeginParams extends AdapterArgs {\n  shop: string;\n  callbackPath: string;\n  isOnline: boolean;\n}"
+          },
+          "CallbackParams": {
+            "filePath": "/auth/oauth/types.ts",
+            "name": "CallbackParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isOnline",
+                "value": "boolean",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": ""
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface CallbackParams extends AdapterArgs {\n  isOnline?: boolean;\n}"
+          },
+          "CallbackResponse": {
+            "filePath": "/auth/oauth/oauth.ts",
+            "name": "CallbackResponse",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/oauth/oauth.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "headers",
+                "value": "T",
+                "description": ""
+              },
+              {
+                "filePath": "/auth/oauth/oauth.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "session",
+                "value": "Session",
+                "description": ""
+              }
+            ],
+            "value": "export interface CallbackResponse<T = AdapterHeaders> {\n  headers: T;\n  session: Session;\n}"
+          },
+          "GetEmbeddedAppUrlParams": {
+            "filePath": "/auth/types.ts",
+            "name": "GetEmbeddedAppUrlParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": ""
+              },
+              {
+                "filePath": "/auth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface GetEmbeddedAppUrlParams extends AdapterArgs {}"
+          },
+          "GetCurrentSessionIdParams": {
+            "filePath": "/session/types.ts",
+            "name": "GetCurrentSessionIdParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isOnline",
+                "value": "boolean",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface GetCurrentSessionIdParams extends AdapterArgs {\n  isOnline: boolean;\n}"
+          },
+          "JwtPayload": {
+            "filePath": "/session/types.ts",
+            "name": "JwtPayload",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "iss",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "dest",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "aud",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "sub",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "exp",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "nbf",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "iat",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "jti",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "sid",
+                "value": "string",
+                "description": ""
+              }
+            ],
+            "value": "export interface JwtPayload {\n  iss: string;\n  dest: string;\n  aud: string;\n  sub: string;\n  exp: number;\n  nbf: number;\n  iat: number;\n  jti: string;\n  sid: string;\n}"
+          },
+          "AuthQuery": {
+            "filePath": "/auth/oauth/types.ts",
+            "name": "AuthQuery",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "name": "[key: string]",
+                "value": "string | undefined"
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "hmac",
+                "value": "string",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface AuthQuery {\n  [key: string]: string | undefined;\n  hmac?: string;\n}"
+          },
+          "AddHandlersParams": {
+            "filePath": "/webhooks/types.ts",
+            "name": "AddHandlersParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "name": "[topic: string]",
+                "value": "WebhookHandler | WebhookHandler[]"
+              }
+            ],
+            "value": "export interface AddHandlersParams {\n  [topic: string]: WebhookHandler | WebhookHandler[];\n}"
+          },
+          "WebhookHandler": {
+            "filePath": "/webhooks/types.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "WebhookHandler",
+            "value": "HttpWebhookHandler | EventBridgeWebhookHandler | PubSubWebhookHandler",
+            "description": ""
+          },
+          "HttpWebhookHandler": {
+            "filePath": "/webhooks/types.ts",
+            "name": "HttpWebhookHandler",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "deliveryMethod",
+                "value": "DeliveryMethod.Http",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "privateMetafieldNamespaces",
+                "value": "string[]",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "callbackUrl",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "callback",
+                "value": "WebhookHandlerFunction",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "id",
+                "value": "string",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "includeFields",
+                "value": "string[]",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "metafieldNamespaces",
+                "value": "string[]",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface HttpWebhookHandler extends BaseWebhookHandler {\n  deliveryMethod: DeliveryMethod.Http;\n  privateMetafieldNamespaces?: string[];\n  callbackUrl: string;\n  callback: WebhookHandlerFunction;\n}"
+          },
+          "DeliveryMethod": {
+            "filePath": "/webhooks/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "DeliveryMethod",
+            "value": "export enum DeliveryMethod {\n  Http = 'http',\n  EventBridge = 'eventbridge',\n  PubSub = 'pubsub',\n}",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "name": "Http",
+                "value": "http"
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "name": "EventBridge",
+                "value": "eventbridge"
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "name": "PubSub",
+                "value": "pubsub"
+              }
+            ]
+          },
+          "WebhookHandlerFunction": {
+            "filePath": "/webhooks/types.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "WebhookHandlerFunction",
+            "value": "(\n  topic: string,\n  shop_domain: string,\n  body: string,\n  webhookId: string,\n  apiVersion?: string,\n) => Promise<void>",
+            "description": ""
+          },
+          "EventBridgeWebhookHandler": {
+            "filePath": "/webhooks/types.ts",
+            "name": "EventBridgeWebhookHandler",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "deliveryMethod",
+                "value": "DeliveryMethod.EventBridge",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "arn",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "id",
+                "value": "string",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "includeFields",
+                "value": "string[]",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "metafieldNamespaces",
+                "value": "string[]",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface EventBridgeWebhookHandler extends BaseWebhookHandler {\n  deliveryMethod: DeliveryMethod.EventBridge;\n  arn: string;\n}"
+          },
+          "PubSubWebhookHandler": {
+            "filePath": "/webhooks/types.ts",
+            "name": "PubSubWebhookHandler",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "deliveryMethod",
+                "value": "DeliveryMethod.PubSub",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "pubSubProject",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "pubSubTopic",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "id",
+                "value": "string",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "includeFields",
+                "value": "string[]",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "metafieldNamespaces",
+                "value": "string[]",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface PubSubWebhookHandler extends BaseWebhookHandler {\n  deliveryMethod: DeliveryMethod.PubSub;\n  pubSubProject: string;\n  pubSubTopic: string;\n}"
+          },
+          "RegisterParams": {
+            "filePath": "/webhooks/types.ts",
+            "name": "RegisterParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "session",
+                "value": "Session",
+                "description": ""
+              }
+            ],
+            "value": "export interface RegisterParams {\n  session: Session;\n}"
+          },
+          "RegisterReturn": {
+            "filePath": "/webhooks/types.ts",
+            "name": "RegisterReturn",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "name": "[topic: string]",
+                "value": "RegisterResult[]"
+              }
+            ],
+            "value": "export interface RegisterReturn {\n  [topic: string]: RegisterResult[];\n}"
+          },
+          "RegisterResult": {
+            "filePath": "/webhooks/types.ts",
+            "name": "RegisterResult",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "success",
+                "value": "boolean",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "deliveryMethod",
+                "value": "DeliveryMethod",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "result",
+                "value": "unknown",
+                "description": ""
+              }
+            ],
+            "value": "export interface RegisterResult {\n  success: boolean;\n  deliveryMethod: DeliveryMethod;\n  result: unknown;\n}"
+          },
+          "WebhookProcessParams": {
+            "filePath": "/webhooks/types.ts",
+            "name": "WebhookProcessParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawBody",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": ""
+              },
+              {
+                "filePath": "/webhooks/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface WebhookProcessParams extends AdapterArgs {\n  rawBody: string;\n}"
+          },
+          "CheckParams": {
+            "filePath": "/billing/types.ts",
+            "name": "CheckParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "session",
+                "value": "Session",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "plans",
+                "value": "string | string[]",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isTest",
+                "value": "boolean",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface CheckParams {\n  session: Session;\n  plans: string[] | string;\n  isTest?: boolean;\n}"
+          },
+          "LoggerFunction": {
+            "filePath": "/logger/log.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "LoggerFunction",
+            "value": "(\n  severity: LogSeverity,\n  message: string,\n  context?: {[key: string]: any},\n) => Promise<void>",
+            "description": ""
+          },
+          "LogContext": {
+            "filePath": "/logger/types.ts",
+            "name": "LogContext",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/logger/types.ts",
+                "name": "[key: string]",
+                "value": "any"
+              }
+            ],
+            "value": "export interface LogContext {\n  [key: string]: any;\n}"
+          }
+        }
+      }
+    ],
+    "category": "shopify-api-js",
+    "subCategory": "shopifyApi",
+    "thumbnail": "",
+    "related": []
+  }
+]

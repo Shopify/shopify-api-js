@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "rootDir": "/",
+    },
+    "include": [
+        "/Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/lib/**/*.doc.ts", "/Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/adapters/**/*.doc.ts", "/Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/runtime/**/*.doc.ts"
+    ],
+    "exclude": []
+}
