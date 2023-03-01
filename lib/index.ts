@@ -32,17 +32,32 @@ export const Shopify: DeprecatedV5Types = {};
 export interface Shopify<
   T extends ShopifyRestResources = ShopifyRestResources,
 > {
+  /** The options used to set up the object, containing the validated parameters of the `shopifyApi` function. */
   config: ConfigInterface;
+  /** Object containing clients to access Shopify APIs. */
   clients: ShopifyClients;
+  /** Object containing functions to authenticate with Shopify APIs. */
   auth: ShopifyAuth;
+  /** Object containing functions to manage Shopify sessions. */
   session: ShopifySession;
+  /** Object containing general functions to help build apps. */
   utils: ShopifyUtils;
+  /** Object containing functions to configure and handle Shopify webhooks. */
   webhooks: ShopifyWebhooks;
+  /** Object containing functions to enable apps to bill merchants. */
   billing: ShopifyBilling;
+  /** Object containing functions to log messages. */
   logger: ShopifyLogger;
+  /** Object containing object-oriented representations of the Admin REST API. See the [API reference documentation](https://shopify.dev/docs/api/admin-rest) for details. */
   rest: T;
 }
 
+/**
+ * Provides an instance of the Shopify API library.
+ *
+ * @param config - Configuration object
+ * @returns object containing validated config, client classes, and library methods
+ */
 export function shopifyApi<T extends ShopifyRestResources>(
   config: ConfigParams<T>,
 ): Shopify<T> {

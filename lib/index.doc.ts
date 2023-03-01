@@ -7,9 +7,8 @@ const data: ReferenceEntityTemplateSchema = {
   // The title of the page.
   name: 'shopifyApi',
   // Optional. A description of the reference entity. Can include Markdown.
-  description: 'Creates an instance of the Shopify API library.',
-  // Optional. If used will cause the page to only be visible when the feature flag is enabled.
-  featureFlag: '',
+  description:
+    'Creates a new library object that provides all features needed for an app to interact with Shopify APIs.\n\nUse this function when you set up your app.',
   // Optional. A short sentence of what is needed to use this entity, such as a version dependency.
   requires: '',
   // Optional. What category the entity is: component, hook, utility, etc.
@@ -30,7 +29,7 @@ const data: ReferenceEntityTemplateSchema = {
           // Optional. The title of the tab.
           title: 'JS',
           // The relative file path to the code file. Content will be automatically extracted from that file.
-          code: './examples/shopifyApi.example.js',
+          code: './examples/shopifyApi.example.ts',
           // Optional. The name of the language of the code.
           language: 'js',
         },
@@ -43,15 +42,23 @@ const data: ReferenceEntityTemplateSchema = {
   definitions: [
     {
       // Title of the list of definitions.
-      title: 'shopifyApi',
+      title: 'config',
       // Description of the definitions. Can use Markdown.
-      description: '',
+      description: 'Parameter passed into `shopifyApi`.',
+      // Name of the TypeScript type this entity uses.
+      type: 'ConfigParams',
+    },
+    {
+      // Title of the list of definitions.
+      title: 'Shopify',
+      // Description of the definitions. Can use Markdown.
+      description: 'Object returned by `shopifyApi`.',
       // Name of the TypeScript type this entity uses.
       type: 'Shopify',
     },
   ],
   // This determines where in the sidebar the entity will appear.
-  category: 'shopify-api-js',
+  category: 'shopify',
   // Optional. Further determines where in the sidebar category an entity will appear.
   subCategory: 'shopifyApi',
   // Optional. A thumbnail image to display in the category page.

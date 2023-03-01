@@ -1,3 +1,59 @@
 [
-  {}
+  {
+    "title": "@shopify/shopify-api",
+    "description": "The `@shopify/shopify-api` package provides a simple interface for making requests to the Shopify Admin API.",
+    "image": "",
+    "darkImage": "",
+    "mobileImage": "",
+    "mobileDarkImage": "",
+    "id": "shopify-api-js",
+    "sections": [
+      {
+        "type": "Generic",
+        "anchorLink": "installation",
+        "title": "Installing the package",
+        "sectionContent": "Use your package manager of choice to install the package.",
+        "codeblock": {
+          "title": "Installing",
+          "tabs": [
+            {
+              "title": "npm",
+              "code": "npm install @shopify/shopify-api --save\n",
+              "language": "bash"
+            },
+            {
+              "title": "yarn",
+              "code": "yarn add @shopify/shopify-api\n",
+              "language": "bash"
+            },
+            {
+              "title": "pnpm",
+              "code": "pnpm install @shopify/shopify-api --save\n",
+              "language": "bash"
+            }
+          ]
+        },
+        "initialLanguage": "bash"
+      },
+      {
+        "type": "Generic",
+        "anchorLink": "shopify-api",
+        "title": "shopifyApi",
+        "sectionContent": "The starting point for using the Shopify Admin API library for JavaScript is `shopifyApi`.",
+        "sectionCard": [
+          {
+            "name": "shopifyApi reference",
+            "url": "/docs/api/shopify-api-js/shopify/shopifyapi",
+            "type": "blocks"
+          }
+        ]
+      },
+      {
+        "type": "Resource",
+        "anchorLink": "resources",
+        "title": "Resources",
+        "resources": []
+      }
+    ]
+  }
 ]

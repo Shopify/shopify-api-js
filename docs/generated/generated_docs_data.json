@@ -1,8 +1,7 @@
 [
   {
     "name": "shopifyApi",
-    "description": "Creates an instance of the Shopify API library.",
-    "featureFlag": "",
+    "description": "Creates a new library object that provides all features needed for an app to interact with Shopify APIs.\n\nUse this function when you set up your app.",
     "requires": "",
     "type": "",
     "isVisualComponent": false,
@@ -22,8 +21,399 @@
     },
     "definitions": [
       {
-        "title": "shopifyApi",
-        "description": "",
+        "title": "config",
+        "description": "Parameter passed into `shopifyApi`.",
+        "type": "ConfigParams",
+        "typeDefinitions": {
+          "ConfigParams": {
+            "filePath": "/base-types.ts",
+            "name": "ConfigParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "apiKey",
+                "value": "string",
+                "description": "API key for the app. You can find it in the Partners Dashboard."
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "apiSecretKey",
+                "value": "string",
+                "description": "API secret key for the app. You can find it in the Partners Dashboard."
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "scopes",
+                "value": "string[] | AuthScopes",
+                "description": "[Shopify scopes](https://shopify.dev/docs/api/usage/access-scopes) required for your app."
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "hostName",
+                "value": "string",
+                "description": "App host name in the format `my-host-name.com`. Do not include the scheme or leading or trailing slashes."
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "hostScheme",
+                "value": "\"http\" | \"https\"",
+                "description": "The scheme for your app's public URL. Defaults to `\"https\"`. `\"http\"` is only allowed if your app is running on `localhost`.",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "apiVersion",
+                "value": "ApiVersion",
+                "description": "API version your app will be querying, e.g., `ApiVersion.October22`. Defaults to `LATEST_API_VERSION`"
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isEmbeddedApp",
+                "value": "boolean",
+                "description": "Whether your app will run within the Shopify Admin. Defaults to `true`. Learn more about embedded apps with [App Bridge](https://shopify.dev/docs/apps/tools/app-bridge/getting-started/app-setup)"
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isCustomStoreApp",
+                "value": "boolean",
+                "description": "Whether you are building a custom app for a store. Defaults to `false`.",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "userAgentPrefix",
+                "value": "string",
+                "description": "Any prefix you wish to include in the User-Agent for requests made by the library. Defaults to `undefined`",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "privateAppStorefrontAccessToken",
+                "value": "string",
+                "description": "Fixed Storefront API access token for custom store apps. Defaults to `undefined`",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "customShopDomains",
+                "value": "(string | RegExp)[]",
+                "description": "Use this if you need to allow values other than myshopify.com. Defaults to `undefined`",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "billing",
+                "value": "BillingConfig",
+                "description": "Billing configurations. Defaults to `undefined`. See [documentation](https://github.com/Shopify/shopify-api-js/blob/main/docs/guides/billing.md) for full description.",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "restResources",
+                "value": "T",
+                "description": "Mounts the given REST resources onto the object. Note: Must use the same version as `apiVersion`. Learn more about [using REST resources](https://github.com/Shopify/shopify-api-js/blob/main/docs/guides/rest-resources.md)",
+                "isOptional": true
+              },
+              {
+                "filePath": "/base-types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "logger",
+                "value": "{ log?: LogFunction; level?: LogSeverity; httpRequests?: boolean; timestamps?: boolean; }",
+                "description": "Tweaks the behaviour of the package's internal logging to make it easier to debug applications.",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface ConfigParams<T extends ShopifyRestResources = any> {\n  /** API key for the app. You can find it in the Partners Dashboard. */\n  apiKey: string;\n  /** API secret key for the app. You can find it in the Partners Dashboard. */\n  apiSecretKey: string;\n  /** [Shopify scopes](https://shopify.dev/docs/api/usage/access-scopes) required for your app. */\n  scopes: string[] | AuthScopes;\n  /** App host name in the format `my-host-name.com`. Do not include the scheme or leading or trailing slashes. */\n  hostName: string;\n  /** The scheme for your app's public URL. Defaults to `\"https\"`. `\"http\"` is only allowed if your app is running on `localhost`. */\n  hostScheme?: 'http' | 'https';\n  /** API version your app will be querying, e.g., `ApiVersion.October22`. Defaults to `LATEST_API_VERSION` */\n  apiVersion: ApiVersion;\n  /** Whether your app will run within the Shopify Admin. Defaults to `true`. Learn more about embedded apps with [App Bridge](https://shopify.dev/docs/apps/tools/app-bridge/getting-started/app-setup) */\n  isEmbeddedApp: boolean;\n  /** Whether you are building a custom app for a store. Defaults to `false`. */\n  isCustomStoreApp?: boolean;\n  /** Any prefix you wish to include in the User-Agent for requests made by the library. Defaults to `undefined` */\n  userAgentPrefix?: string;\n  /** Fixed Storefront API access token for custom store apps. Defaults to `undefined` */\n  privateAppStorefrontAccessToken?: string;\n  /** Use this if you need to allow values other than myshopify.com. Defaults to `undefined` */\n  customShopDomains?: (RegExp | string)[];\n  /** Billing configurations. Defaults to `undefined`. See [documentation](https://github.com/Shopify/shopify-api-js/blob/main/docs/guides/billing.md) for full description. */\n  billing?: BillingConfig;\n  /** Mounts the given REST resources onto the object. Note: Must use the same version as `apiVersion`. Learn more about [using REST resources](https://github.com/Shopify/shopify-api-js/blob/main/docs/guides/rest-resources.md) */\n  restResources?: T;\n  /** Tweaks the behaviour of the package's internal logging to make it easier to debug applications. */\n  logger?: {\n    /** Async callback function used for logging, which takes in a `LogSeverity` value and a formatted message. Defaults to using console calls matching the severity parameter. */\n    log?: LogFunction;\n    /** Minimum severity for which to trigger the log function. Defaults to `LogSeverity.Info`. */\n    level?: LogSeverity;\n    /** Whether or not to log ALL HTTP requests made by the package. Defaults to `false`. Note: Only takes effect if `level` is set to `LogSeverity.Debug`. */\n    httpRequests?: boolean;\n    /** Whether or not to add the current timestamp to every logged message. Defaults to `false`. */\n    timestamps?: boolean;\n  };\n}"
+          },
+          "ApiVersion": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "ApiVersion",
+            "value": "export enum ApiVersion {\n  January22 = '2022-01',\n  April22 = '2022-04',\n  July22 = '2022-07',\n  October22 = '2022-10',\n  January23 = '2023-01',\n  Unstable = 'unstable',\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "January22",
+                "value": "2022-01"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "April22",
+                "value": "2022-04"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "July22",
+                "value": "2022-07"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "October22",
+                "value": "2022-10"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "January23",
+                "value": "2023-01"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Unstable",
+                "value": "unstable"
+              }
+            ]
+          },
+          "BillingConfig": {
+            "filePath": "/billing/types.ts",
+            "name": "BillingConfig",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "name": "[plan: string]",
+                "value": "| BillingConfigOneTimePlan\n    | BillingConfigSubscriptionPlan\n    | BillingConfigUsagePlan"
+              }
+            ],
+            "value": "export interface BillingConfig {\n  [plan: string]:\n    | BillingConfigOneTimePlan\n    | BillingConfigSubscriptionPlan\n    | BillingConfigUsagePlan;\n}"
+          },
+          "BillingConfigOneTimePlan": {
+            "filePath": "/billing/types.ts",
+            "name": "BillingConfigOneTimePlan",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "interval",
+                "value": "BillingInterval.OneTime",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "amount",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "currencyCode",
+                "value": "string",
+                "description": ""
+              }
+            ],
+            "value": "export interface BillingConfigOneTimePlan extends BillingConfigPlan {\n  interval: BillingInterval.OneTime;\n}"
+          },
+          "BillingInterval": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "BillingInterval",
+            "value": "export enum BillingInterval {\n  OneTime = 'ONE_TIME',\n  Every30Days = 'EVERY_30_DAYS',\n  Annual = 'ANNUAL',\n  Usage = 'USAGE',\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "OneTime",
+                "value": "ONE_TIME"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Every30Days",
+                "value": "EVERY_30_DAYS"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Annual",
+                "value": "ANNUAL"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Usage",
+                "value": "USAGE"
+              }
+            ]
+          },
+          "BillingConfigSubscriptionPlan": {
+            "filePath": "/billing/types.ts",
+            "name": "BillingConfigSubscriptionPlan",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "interval",
+                "value": "RecurringBillingIntervals",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "trialDays",
+                "value": "number",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "replacementBehavior",
+                "value": "BillingReplacementBehavior",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "amount",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "currencyCode",
+                "value": "string",
+                "description": ""
+              }
+            ],
+            "value": "export interface BillingConfigSubscriptionPlan extends BillingConfigPlan {\n  interval: RecurringBillingIntervals;\n  trialDays?: number;\n  replacementBehavior?: BillingReplacementBehavior;\n}"
+          },
+          "RecurringBillingIntervals": {
+            "filePath": "/types.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "RecurringBillingIntervals",
+            "value": "Exclude<\n  BillingInterval,\n  BillingInterval.OneTime\n>",
+            "description": ""
+          },
+          "BillingReplacementBehavior": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "BillingReplacementBehavior",
+            "value": "export enum BillingReplacementBehavior {\n  ApplyImmediately = 'APPLY_IMMEDIATELY',\n  ApplyOnNextBillingCycle = 'APPLY_ON_NEXT_BILLING_CYCLE',\n  Standard = 'STANDARD',\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "ApplyImmediately",
+                "value": "APPLY_IMMEDIATELY"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "ApplyOnNextBillingCycle",
+                "value": "APPLY_ON_NEXT_BILLING_CYCLE"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Standard",
+                "value": "STANDARD"
+              }
+            ]
+          },
+          "BillingConfigUsagePlan": {
+            "filePath": "/billing/types.ts",
+            "name": "BillingConfigUsagePlan",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "interval",
+                "value": "BillingInterval.Usage",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "usageTerms",
+                "value": "string",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "trialDays",
+                "value": "number",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "replacementBehavior",
+                "value": "BillingReplacementBehavior",
+                "description": "",
+                "isOptional": true
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "amount",
+                "value": "number",
+                "description": ""
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "currencyCode",
+                "value": "string",
+                "description": ""
+              }
+            ],
+            "value": "export interface BillingConfigUsagePlan extends BillingConfigPlan {\n  interval: BillingInterval.Usage;\n  usageTerms: string;\n  trialDays?: number;\n  replacementBehavior?: BillingReplacementBehavior;\n}"
+          },
+          "LogFunction": {
+            "filePath": "/base-types.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "LogFunction",
+            "value": "(severity: LogSeverity, msg: string) => Promise<void>",
+            "description": ""
+          },
+          "LogSeverity": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "LogSeverity",
+            "value": "export enum LogSeverity {\n  Error,\n  Warning,\n  Info,\n  Debug,\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "Error",
+                "value": 0
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Warning",
+                "value": 1
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Info",
+                "value": 2
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Debug",
+                "value": 3
+              }
+            ]
+          }
+        }
+      },
+      {
+        "title": "Shopify",
+        "description": "Object returned by `shopifyApi`.",
         "type": "Shopify",
         "typeDefinitions": {
           "Shopify": {
@@ -36,66 +426,66 @@
                 "syntaxKind": "PropertySignature",
                 "name": "config",
                 "value": "ConfigInterface",
-                "description": ""
+                "description": "The options used to set up the object, containing the validated parameters of the `shopifyApi` function."
               },
               {
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "clients",
                 "value": "{ Rest: typeof RestClient; Graphql: typeof GraphqlClient; Storefront: typeof StorefrontClient; graphqlProxy: ({ session, rawBody, }: GraphqlProxyParams) => Promise<RequestReturn<unknown>>; }",
-                "description": ""
+                "description": "Object containing clients to access Shopify APIs."
               },
               {
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "auth",
                 "value": "{ begin: ({ shop, callbackPath, isOnline, ...adapterArgs }: BeginParams) => Promise<any>; callback: <T = any>({ isOnline: isOnlineParam, ...adapterArgs }: CallbackParams) => Promise<CallbackResponse<T>>; nonce: () => string; safeCompare: (strA: string | string[] | number[] | { [key: string]: string; }, strB: string | string[] | number[] | { [key: string]: string; }) => boolean; getEmbeddedAppUrl: ({ ...adapterArgs }: GetEmbeddedAppUrlParams) => Promise<string>; buildEmbeddedAppUrl: (host: string) => string; }",
-                "description": ""
+                "description": "Object containing functions to authenticate with Shopify APIs."
               },
               {
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "session",
                 "value": "{ customAppSession: (shop: string) => Session; getCurrentId: ({ isOnline, ...adapterArgs }: GetCurrentSessionIdParams) => Promise<string>; getOfflineId: (shop: string) => string; decodeSessionToken: (token: string) => Promise<JwtPayload>; }",
-                "description": ""
+                "description": "Object containing functions to manage Shopify sessions."
               },
               {
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "utils",
                 "value": "{ sanitizeShop: (shop: string, throwOnInvalid?: boolean) => string; sanitizeHost: (host: string, throwOnInvalid?: boolean) => string; validateHmac: (query: AuthQuery) => Promise<boolean>; versionCompatible: (referenceVersion: ApiVersion, currentVersion?: ApiVersion) => boolean; }",
-                "description": ""
+                "description": "Object containing general functions to help build apps."
               },
               {
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "webhooks",
                 "value": "{ addHandlers: (handlersToAdd: AddHandlersParams) => Promise<void>; getTopicsAdded: () => string[]; getHandlers: (topic: string) => WebhookHandler[]; register: ({ session, }: RegisterParams) => Promise<RegisterReturn>; process: ({ rawBody, ...adapterArgs }: WebhookProcessParams) => Promise<any>; }",
-                "description": ""
+                "description": "Object containing functions to configure and handle Shopify webhooks."
               },
               {
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "billing",
                 "value": "{ check: ({ session, plans, isTest, }: CheckParams) => Promise<boolean>; request: ({ session, plan, isTest, }: RequestParams) => Promise<string>; }",
-                "description": ""
+                "description": "Object containing functions to enable apps to bill merchants."
               },
               {
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "logger",
                 "value": "{ log: LoggerFunction; debug: (message: string, context?: LogContext) => Promise<void>; info: (message: string, context?: LogContext) => Promise<void>; warning: (message: string, context?: LogContext) => Promise<void>; error: (message: string, context?: LogContext) => Promise<void>; deprecated: (version: string, message: string) => Promise<void>; }",
-                "description": ""
+                "description": "Object containing functions to log messages."
               },
               {
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "rest",
                 "value": "T",
-                "description": ""
+                "description": "Object containing object-oriented representations of the Admin REST API. See the [API reference documentation](https://shopify.dev/docs/api/admin-rest) for details."
               }
             ],
-            "value": "export interface Shopify<\n  T extends ShopifyRestResources = ShopifyRestResources,\n> {\n  config: ConfigInterface;\n  clients: ShopifyClients;\n  auth: ShopifyAuth;\n  session: ShopifySession;\n  utils: ShopifyUtils;\n  webhooks: ShopifyWebhooks;\n  billing: ShopifyBilling;\n  logger: ShopifyLogger;\n  rest: T;\n}"
+            "value": "export interface Shopify<\n  T extends ShopifyRestResources = ShopifyRestResources,\n> {\n  /** The options used to set up the object, containing the validated parameters of the `shopifyApi` function. */\n  config: ConfigInterface;\n  /** Object containing clients to access Shopify APIs. */\n  clients: ShopifyClients;\n  /** Object containing functions to authenticate with Shopify APIs. */\n  auth: ShopifyAuth;\n  /** Object containing functions to manage Shopify sessions. */\n  session: ShopifySession;\n  /** Object containing general functions to help build apps. */\n  utils: ShopifyUtils;\n  /** Object containing functions to configure and handle Shopify webhooks. */\n  webhooks: ShopifyWebhooks;\n  /** Object containing functions to enable apps to bill merchants. */\n  billing: ShopifyBilling;\n  /** Object containing functions to log messages. */\n  logger: ShopifyLogger;\n  /** Object containing object-oriented representations of the Admin REST API. See the [API reference documentation](https://shopify.dev/docs/api/admin-rest) for details. */\n  rest: T;\n}"
           },
           "ConfigInterface": {
             "filePath": "/base-types.ts",
@@ -107,63 +497,63 @@
                 "syntaxKind": "PropertySignature",
                 "name": "hostScheme",
                 "value": "\"http\" | \"https\"",
-                "description": ""
+                "description": "The scheme for your app's public URL. Defaults to `\"https\"`. `\"http\"` is only allowed if your app is running on `localhost`."
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "scopes",
                 "value": "AuthScopes",
-                "description": ""
+                "description": "[Shopify scopes](https://shopify.dev/docs/api/usage/access-scopes) required for your app."
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "isCustomStoreApp",
                 "value": "boolean",
-                "description": ""
+                "description": "Whether you are building a custom app for a store. Defaults to `false`."
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "logger",
                 "value": "{ log: LogFunction; level: LogSeverity; httpRequests: boolean; timestamps: boolean; }",
-                "description": ""
+                "description": "Tweaks the behaviour of the package's internal logging to make it easier to debug applications."
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "apiKey",
                 "value": "string",
-                "description": ""
+                "description": "API key for the app. You can find it in the Partners Dashboard."
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "apiSecretKey",
                 "value": "string",
-                "description": ""
+                "description": "API secret key for the app. You can find it in the Partners Dashboard."
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "scopes",
                 "value": "string[] | AuthScopes",
-                "description": ""
+                "description": "[Shopify scopes](https://shopify.dev/docs/api/usage/access-scopes) required for your app."
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "hostName",
                 "value": "string",
-                "description": ""
+                "description": "App host name in the format `my-host-name.com`. Do not include the scheme or leading or trailing slashes."
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "hostScheme",
                 "value": "\"http\" | \"https\"",
-                "description": "",
+                "description": "The scheme for your app's public URL. Defaults to `\"https\"`. `\"http\"` is only allowed if your app is running on `localhost`.",
                 "isOptional": true
               },
               {
@@ -171,21 +561,21 @@
                 "syntaxKind": "PropertySignature",
                 "name": "apiVersion",
                 "value": "ApiVersion",
-                "description": ""
+                "description": "API version your app will be querying, e.g., `ApiVersion.October22`. Defaults to `LATEST_API_VERSION`"
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "isEmbeddedApp",
                 "value": "boolean",
-                "description": ""
+                "description": "Whether your app will run within the Shopify Admin. Defaults to `true`. Learn more about embedded apps with [App Bridge](https://shopify.dev/docs/apps/tools/app-bridge/getting-started/app-setup)"
               },
               {
                 "filePath": "/base-types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "isCustomStoreApp",
                 "value": "boolean",
-                "description": "",
+                "description": "Whether you are building a custom app for a store. Defaults to `false`.",
                 "isOptional": true
               },
               {
@@ -193,7 +583,7 @@
                 "syntaxKind": "PropertySignature",
                 "name": "userAgentPrefix",
                 "value": "string",
-                "description": "",
+                "description": "Any prefix you wish to include in the User-Agent for requests made by the library. Defaults to `undefined`",
                 "isOptional": true
               },
               {
@@ -201,7 +591,7 @@
                 "syntaxKind": "PropertySignature",
                 "name": "privateAppStorefrontAccessToken",
                 "value": "string",
-                "description": "",
+                "description": "Fixed Storefront API access token for custom store apps. Defaults to `undefined`",
                 "isOptional": true
               },
               {
@@ -209,7 +599,7 @@
                 "syntaxKind": "PropertySignature",
                 "name": "customShopDomains",
                 "value": "(string | RegExp)[]",
-                "description": "",
+                "description": "Use this if you need to allow values other than myshopify.com. Defaults to `undefined`",
                 "isOptional": true
               },
               {
@@ -217,7 +607,7 @@
                 "syntaxKind": "PropertySignature",
                 "name": "billing",
                 "value": "BillingConfig",
-                "description": "",
+                "description": "Billing configurations. Defaults to `undefined`. See [documentation](https://github.com/Shopify/shopify-api-js/blob/main/docs/guides/billing.md) for full description.",
                 "isOptional": true
               },
               {
@@ -225,7 +615,7 @@
                 "syntaxKind": "PropertySignature",
                 "name": "logger",
                 "value": "{ log?: LogFunction; level?: LogSeverity; httpRequests?: boolean; timestamps?: boolean; }",
-                "description": "",
+                "description": "Tweaks the behaviour of the package's internal logging to make it easier to debug applications.",
                 "isOptional": true
               }
             ],
@@ -502,12 +892,12 @@
             "value": "export interface BillingConfigUsagePlan extends BillingConfigPlan {\n  interval: BillingInterval.Usage;\n  usageTerms: string;\n  trialDays?: number;\n  replacementBehavior?: BillingReplacementBehavior;\n}"
           },
           "Body": {
-            "filePath": "Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/rest/types.ts",
+            "filePath": "home/spin/src/github.com/Shopify/shopify-api-js/rest/types.ts",
             "name": "Body",
             "description": "",
             "members": [
               {
-                "filePath": "Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/rest/types.ts",
+                "filePath": "home/spin/src/github.com/Shopify/shopify-api-js/rest/types.ts",
                 "name": "[key: string]",
                 "value": "any"
               }
@@ -559,12 +949,12 @@
             "value": "export interface RequestReturn<T = unknown> {\n  body: T;\n  headers: Headers;\n}"
           },
           "Headers": {
-            "filePath": "Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
+            "filePath": "home/spin/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
             "name": "Headers",
             "description": "",
             "members": [
               {
-                "filePath": "Users/kevinosullivan/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
+                "filePath": "home/spin/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
                 "name": "[key: string]",
                 "value": "string | string[]"
               }
@@ -1163,7 +1553,7 @@
         }
       }
     ],
-    "category": "shopify-api-js",
+    "category": "shopify",
     "subCategory": "shopifyApi",
     "thumbnail": "",
     "related": []
