@@ -5,62 +5,48 @@ import {ReferenceEntityTemplateSchema} from '@shopify/generate-docs';
 
 const data: ReferenceEntityTemplateSchema = {
   // The title of the page.
-  name: 'shopifyApi',
+  name: 'getEmbeddedAppUrl',
   // Optional. A description of the reference entity. Can include Markdown.
   description:
-    'Creates a new library object that provides all features needed for an app to interact with Shopify APIs.\n\nUse this function when you set up your app.',
-  // Optional. A short sentence of what is needed to use this entity, such as a version dependency.
-  requires: '',
+    'If you need to redirect a request to your embedded app URL you can use `getEmbeddedAppUrl`.\n\nUsing this method ensures that the embedded app URL is properly constructed and brings the merchant to the right place. It is more reliable than using the shop param.\n\nThis method relies on the host query param being a Base 64 encoded string. All requests from Shopify should include this param in the correct format.',
   // Optional. What category the entity is: component, hook, utility, etc.
-  type: 'Entry point',
+  type: 'async',
   // Boolean that determines if the entity is a visual component.
   isVisualComponent: false,
   // Optional. The example that appears in the right hand column at the top of the page. Represents the primary use case.
   defaultExample: {
-    // Optional. If used will cause the card to only be visible when the feature flag is enabled.
-    featureFlag: '',
-    // Optional. An image preview of the example.
-    image: '',
     // The data for the codeblock.
     codeblock: {
       // Tabs that appear at the top of the codeblock.
       tabs: [
         {
-          // Optional. The title of the tab.
-          title: 'JS',
           // The relative file path to the code file. Content will be automatically extracted from that file.
-          code: './examples/shopifyApi.example.ts',
+          code: './examples/get-embedded-app-url.example.ts',
           // Optional. The name of the language of the code.
           language: 'js',
         },
       ],
       // The title of the codeblock.
-      title: 'Create the Shopify API library',
+      title: 'getEmbeddedAppUrl',
     },
   },
   // Optional. Displays generated TypeScript information, such as prop tables.
   definitions: [
     {
       // Title of the list of definitions.
-      title: 'config',
+      title: 'getEmbeddedAppUrl Parameters',
       // Description of the definitions. Can use Markdown.
-      description: 'Parameter passed into `shopifyApi`.',
+      description: 'Parameters for the `getEmbeddedAppUrl` function.',
       // Name of the TypeScript type this entity uses.
-      type: 'ConfigParams',
-    },
-    {
-      // Title of the list of definitions.
-      title: 'Shopify',
-      // Description of the definitions. Can use Markdown.
-      description: 'Object returned by `shopifyApi`.',
-      // Name of the TypeScript type this entity uses.
-      type: 'Shopify',
+      type: 'GetEmbeddedAppUrlParams',
     },
   ],
   // This determines where in the sidebar the entity will appear.
-  category: 'Entry point',
-  // Optional. A thumbnail image to display in the category page.
+  category: 'auth',
+  // Optional. Further determines where in the sidebar category an entity will appear.
   thumbnail: '',
+  // Optional. A section for examples. Examples may be grouped or ungrouped.
+  // A section that displays related entities in a grid of cards.
   related: [],
 };
 

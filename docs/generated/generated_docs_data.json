@@ -3,7 +3,7 @@
     "name": "shopifyApi",
     "description": "Creates a new library object that provides all features needed for an app to interact with Shopify APIs.\n\nUse this function when you set up your app.",
     "requires": "",
-    "type": "",
+    "type": "Entry point",
     "isVisualComponent": false,
     "defaultExample": {
       "featureFlag": "",
@@ -296,7 +296,7 @@
             "filePath": "/types.ts",
             "syntaxKind": "TypeAliasDeclaration",
             "name": "RecurringBillingIntervals",
-            "value": "Exclude<\n  BillingInterval,\n  BillingInterval.OneTime\n>",
+            "value": "RecurringBillingIntervals",
             "description": ""
           },
           "BillingReplacementBehavior": {
@@ -439,7 +439,7 @@
                 "filePath": "/index.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "auth",
-                "value": "{ begin: ({ shop, callbackPath, isOnline, ...adapterArgs }: BeginParams) => Promise<any>; callback: <T = any>({ isOnline: isOnlineParam, ...adapterArgs }: CallbackParams) => Promise<CallbackResponse<T>>; nonce: () => string; safeCompare: (strA: string | string[] | number[] | { [key: string]: string; }, strB: string | string[] | number[] | { [key: string]: string; }) => boolean; getEmbeddedAppUrl: ({ ...adapterArgs }: GetEmbeddedAppUrlParams) => Promise<string>; buildEmbeddedAppUrl: (host: string) => string; }",
+                "value": "{ begin: ({ shop, callbackPath, isOnline, ...adapterArgs }: BeginParams) => Promise<any>; callback: <T = any>({ isOnline: isOnlineParam, ...adapterArgs }: CallbackParams) => Promise<CallbackResponse<T>>; nonce: () => string; safeCompare: (item1: SafeCompareParam, item2: SafeCompareParam) => boolean; getEmbeddedAppUrl: ({ ...adapterArgs }: GetEmbeddedAppUrlParams) => Promise<string>; buildEmbeddedAppUrl: (host: string) => string; }",
                 "description": "Object containing functions to authenticate with Shopify APIs."
               },
               {
@@ -813,7 +813,7 @@
             "filePath": "/types.ts",
             "syntaxKind": "TypeAliasDeclaration",
             "name": "RecurringBillingIntervals",
-            "value": "Exclude<\n  BillingInterval,\n  BillingInterval.OneTime\n>",
+            "value": "RecurringBillingIntervals",
             "description": ""
           },
           "BillingReplacementBehavior": {
@@ -971,39 +971,39 @@
                 "syntaxKind": "PropertySignature",
                 "name": "shop",
                 "value": "string",
-                "description": ""
+                "description": "A Shopify domain name in the form `{exampleshop}.myshopify.com`."
               },
               {
                 "filePath": "/auth/oauth/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "callbackPath",
                 "value": "string",
-                "description": ""
+                "description": "The path to the callback endpoint, with a leading `/`. This URL must be allowed in the Partners dashboard, or using the CLI to run your app."
               },
               {
                 "filePath": "/auth/oauth/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "isOnline",
                 "value": "boolean",
-                "description": ""
+                "description": "`true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes)."
               },
               {
                 "filePath": "/auth/oauth/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "rawRequest",
                 "value": "any",
-                "description": ""
+                "description": "The HTTP Request object used by your runtime."
               },
               {
                 "filePath": "/auth/oauth/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "rawResponse",
                 "value": "any",
-                "description": "",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
                 "isOptional": true
               }
             ],
-            "value": "export interface BeginParams extends AdapterArgs {\n  shop: string;\n  callbackPath: string;\n  isOnline: boolean;\n}"
+            "value": "export interface BeginParams extends AdapterArgs {\n  /** A Shopify domain name in the form `{exampleshop}.myshopify.com`. */\n  shop: string;\n  /** The path to the callback endpoint, with a leading `/`. This URL must be allowed in the Partners dashboard, or using the CLI to run your app. */\n  callbackPath: string;\n  /** `true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes). */\n  isOnline: boolean;\n}"
           },
           "CallbackParams": {
             "filePath": "/auth/oauth/types.ts",
@@ -1015,7 +1015,7 @@
                 "syntaxKind": "PropertySignature",
                 "name": "isOnline",
                 "value": "boolean",
-                "description": "",
+                "description": "Deprecated as of `v6.0.1`. Session type is automatically detected from response.",
                 "isOptional": true
               },
               {
@@ -1023,18 +1023,18 @@
                 "syntaxKind": "PropertySignature",
                 "name": "rawRequest",
                 "value": "any",
-                "description": ""
+                "description": "The HTTP Request object used by your runtime."
               },
               {
                 "filePath": "/auth/oauth/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "rawResponse",
                 "value": "any",
-                "description": "",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
                 "isOptional": true
               }
             ],
-            "value": "export interface CallbackParams extends AdapterArgs {\n  isOnline?: boolean;\n}"
+            "value": "export interface CallbackParams extends AdapterArgs {\n  /** Deprecated as of `v6.0.1`. Session type is automatically detected from response. */\n  isOnline?: boolean;\n}"
           },
           "CallbackResponse": {
             "filePath": "/auth/oauth/oauth.ts",
@@ -1058,6 +1058,13 @@
             ],
             "value": "export interface CallbackResponse<T = AdapterHeaders> {\n  headers: T;\n  session: Session;\n}"
           },
+          "SafeCompareParam": {
+            "filePath": "/auth/oauth/safe-compare.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "SafeCompareParam",
+            "value": "string | {[key: string]: string} | string[] | number[]",
+            "description": ""
+          },
           "GetEmbeddedAppUrlParams": {
             "filePath": "/auth/types.ts",
             "name": "GetEmbeddedAppUrlParams",
@@ -1068,14 +1075,14 @@
                 "syntaxKind": "PropertySignature",
                 "name": "rawRequest",
                 "value": "any",
-                "description": ""
+                "description": "The HTTP Request object used by your runtime."
               },
               {
                 "filePath": "/auth/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "rawResponse",
                 "value": "any",
-                "description": "",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
                 "isOptional": true
               }
             ],
@@ -1091,25 +1098,25 @@
                 "syntaxKind": "PropertySignature",
                 "name": "isOnline",
                 "value": "boolean",
-                "description": ""
+                "description": "Whether to look for an offline or online session, depending on how the [`auth.begin`](/docs/api/shopify-api-js/auth/begin) method was called."
               },
               {
                 "filePath": "/session/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "rawRequest",
                 "value": "any",
-                "description": ""
+                "description": "The HTTP Request object used by your runtime."
               },
               {
                 "filePath": "/session/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "rawResponse",
                 "value": "any",
-                "description": "",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
                 "isOptional": true
               }
             ],
-            "value": "export interface GetCurrentSessionIdParams extends AdapterArgs {\n  isOnline: boolean;\n}"
+            "value": "export interface GetCurrentSessionIdParams extends AdapterArgs {\n  /** Whether to look for an offline or online session, depending on how the [`auth.begin`](/docs/api/shopify-api-js/auth/begin) method was called. */\n  isOnline: boolean;\n}"
           },
           "JwtPayload": {
             "filePath": "/session/types.ts",
@@ -1487,14 +1494,14 @@
                 "syntaxKind": "PropertySignature",
                 "name": "rawRequest",
                 "value": "any",
-                "description": ""
+                "description": "The HTTP Request object used by your runtime."
               },
               {
                 "filePath": "/webhooks/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "rawResponse",
                 "value": "any",
-                "description": "",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
                 "isOptional": true
               }
             ],
@@ -1510,25 +1517,25 @@
                 "syntaxKind": "PropertySignature",
                 "name": "session",
                 "value": "Session",
-                "description": ""
+                "description": "The Session for the current request."
               },
               {
                 "filePath": "/billing/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "plans",
                 "value": "string | string[]",
-                "description": ""
+                "description": "Name of plans to search."
               },
               {
                 "filePath": "/billing/types.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "isTest",
                 "value": "boolean",
-                "description": "",
+                "description": "Whether to look for test purchases only. Defaults to `true`.",
                 "isOptional": true
               }
             ],
-            "value": "export interface CheckParams {\n  session: Session;\n  plans: string[] | string;\n  isTest?: boolean;\n}"
+            "value": "export interface CheckParams {\n  /** The Session for the current request. */\n  session: Session;\n  /** Name of plans to search. */\n  plans: string[] | string;\n  /** Whether to look for test purchases only. Defaults to `true`. */\n  isTest?: boolean;\n}"
           },
           "LoggerFunction": {
             "filePath": "/logger/log.ts",
@@ -1553,8 +1560,925 @@
         }
       }
     ],
-    "category": "shopify",
-    "subCategory": "shopifyApi",
+    "category": "Entry point",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "buildEmbeddedAppURL",
+    "description": "Constructs the redirection URL for [getEmbeddedAppUrl](/docs/api/shopify-api-js/auth/getembeddedappurl) based on the given `host`.\n\nThis utility relies on the host query param being a Base 64 encoded string. All requests from Shopify should include this param in the correct format.",
+    "type": "",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "app.get('/redirect/endpoint', (req, res) => {\n  const redirectURL = shopify.auth.buildEmbeddedAppUrl(req.query.host);\n\n  res.redirect(redirectURL);\n});\n",
+            "language": "js"
+          }
+        ],
+        "title": "buildEmbeddedAppURL"
+      }
+    },
+    "category": "auth",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "getEmbeddedAppUrl",
+    "description": "If you need to redirect a request to your embedded app URL you can use `getEmbeddedAppUrl`.\n\nUsing this method ensures that the embedded app URL is properly constructed and brings the merchant to the right place. It is more reliable than using the shop param.\n\nThis method relies on the host query param being a Base 64 encoded string. All requests from Shopify should include this param in the correct format.",
+    "type": "async",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "app.get('/redirect/endpoint', async (req, res) => {\n  const redirectURL = await shopify.auth.getEmbeddedAppUrl({\n    rawRequest: req,\n    rawResponse: res,\n  });\n\n  res.redirect(redirectURL);\n});\n",
+            "language": "js"
+          }
+        ],
+        "title": "getEmbeddedAppUrl"
+      }
+    },
+    "definitions": [
+      {
+        "title": "getEmbeddedAppUrl Parameters",
+        "description": "Parameters for the `getEmbeddedAppUrl` function.",
+        "type": "GetEmbeddedAppUrlParams",
+        "typeDefinitions": {
+          "GetEmbeddedAppUrlParams": {
+            "filePath": "/auth/types.ts",
+            "name": "GetEmbeddedAppUrlParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": "The HTTP Request object used by your runtime."
+              },
+              {
+                "filePath": "/auth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface GetEmbeddedAppUrlParams extends AdapterArgs {}"
+          }
+        }
+      }
+    ],
+    "category": "auth",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "check",
+    "description": "Checks if a payment exists for any of the given plans, by querying the Shopify Admin API.\n\n > Note: \nDepending on the number of requests your app handles, you might want to cache a merchant's payment status, but you should periodically call this method to ensure you're blocking unpaid access.",
+    "type": "async",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "// This can happen at any point after the merchant goes through the OAuth process, as long as there is a session object\n// The session can be retrieved from storage using the session id returned from shopify.session.getCurrentId\nasync function billingMiddleware(req, res, next) {\n  const sessionId = shopify.session.getCurrentId({\n    isOnline: true,\n    rawRequest: req,\n    rawResponse: res,\n  });\n\n  // use sessionId to retrieve session from app's session storage\n  // In this example, getSessionFromStorage() must be provided by app\n  const session = await getSessionFromStorage(sessionId);\n\n  const hasPayment = await shopify.billing.check({\n    session,\n    plans: ['My billing plan'],\n    isTest: true,\n  });\n\n  if (hasPayment) {\n    next();\n  } else {\n    // Either request payment now (if single plan) or redirect to plan selection page (if multiple plans available), e.g.\n    const confirmationUrl = await shopify.billing.request({\n      session,\n      plan: 'My billing plan',\n      isTest: true,\n    });\n\n    res.redirect(confirmationUrl);\n  }\n}\n\napp.use('/requires-payment/*', billingMiddleware);\n",
+            "language": "js"
+          }
+        ],
+        "title": "check"
+      }
+    },
+    "definitions": [
+      {
+        "title": "check Parameters",
+        "description": "Parameters for the `check` function.",
+        "type": "CheckParams",
+        "typeDefinitions": {
+          "CheckParams": {
+            "filePath": "/billing/types.ts",
+            "name": "CheckParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "session",
+                "value": "Session",
+                "description": "The Session for the current request."
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "plans",
+                "value": "string | string[]",
+                "description": "Name of plans to search."
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isTest",
+                "value": "boolean",
+                "description": "Whether to look for test purchases only. Defaults to `true`.",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface CheckParams {\n  /** The Session for the current request. */\n  session: Session;\n  /** Name of plans to search. */\n  plans: string[] | string;\n  /** Whether to look for test purchases only. Defaults to `true`. */\n  isTest?: boolean;\n}"
+          }
+        }
+      },
+      {
+        "title": "check Return",
+        "description": "`true` if there is a payment for any of the given plans, and `false` otherwise.",
+        "type": "CheckResponse",
+        "typeDefinitions": {
+          "CheckResponse": {
+            "filePath": "/billing/check.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "CheckResponse",
+            "value": "boolean",
+            "description": "true if there is a payment for any of the given plans, and false otherwise."
+          }
+        }
+      }
+    ],
+    "category": "billing",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "request",
+    "description": "Creates a new charge for the merchant, for the given plan.",
+    "type": "async",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "title": "Single-plan setup - charge after OAuth completes",
+            "code": "app.get('/auth/callback', async () => {\n  const callback = await shopify.auth.callback({\n    rawRequest: req,\n    rawResponse: res,\n  });\n\n  // Check if we require payment, using shopify.billing.check()\n\n  const confirmationUrl = await shopify.billing.request({\n    session: callback.session,\n    plan: 'My billing plan',\n    isTest: true,\n  });\n\n  res.redirect(confirmationUrl);\n});\n",
+            "language": "js"
+          },
+          {
+            "title": "Multi-plan setup - charge based on user selection",
+            "code": "app.post('/api/select-plan', async (req, res) => {\n  const sessionId = shopify.session.getCurrentId({\n    isOnline: true,\n    rawRequest: req,\n    rawResponse: res,\n  });\n\n  // use sessionId to retrieve session from app's session storage\n  // In this example, getSessionFromStorage() must be provided by app\n  const session = await getSessionFromStorage(sessionId);\n\n  const confirmationUrl = await shopify.billing.request({\n    session,\n    // Receive the selected plan from the frontend\n    plan: req.body.selectedPlan,\n    isTest: true,\n  });\n\n  res.redirect(confirmationUrl);\n});\n",
+            "language": "js"
+          }
+        ],
+        "title": "request"
+      }
+    },
+    "definitions": [
+      {
+        "title": "request Parameters",
+        "description": "Parameters for the `request` function.",
+        "type": "RequestParams",
+        "typeDefinitions": {
+          "RequestParams": {
+            "filePath": "/billing/types.ts",
+            "name": "RequestParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "session",
+                "value": "Session",
+                "description": "The Session for the current request."
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "plan",
+                "value": "string",
+                "description": "Name of plan to create a charge for."
+              },
+              {
+                "filePath": "/billing/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isTest",
+                "value": "boolean",
+                "description": "If `true`, Shopify will not actually charge for this purchase. Defaults to `true`.",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface RequestParams {\n  /** The Session for the current request. */\n  session: Session;\n  /** Name of plan to create a charge for. */\n  plan: string;\n  /** If `true`, Shopify will not actually charge for this purchase. Defaults to `true`. */\n  isTest?: boolean;\n}"
+          }
+        }
+      },
+      {
+        "title": "request Return",
+        "description": "The URL to confirm the charge with the merchant - we don't redirect right away to make it possible for apps to run their own code after it creates the payment request.\n\nThe app must redirect the merchant to this URL so that they can confirm the charge before Shopify applies it. The merchant will be sent back to your app's main page after the process is complete.",
+        "type": "BillingRequestResponse",
+        "typeDefinitions": {
+          "BillingRequestResponse": {
+            "filePath": "/billing/request.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "BillingRequestResponse",
+            "value": "string",
+            "description": "The URL to confirm the charge with the merchant - the library will not redirect right away to make it possible for apps to run their own code after it creates the payment request.\nThe app must redirect the merchant to this URL so that they can confirm the charge before Shopify applies it. The merchant will be sent back to the app's main page after the process is complete."
+          }
+        }
+      }
+    ],
+    "category": "billing",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "getCurrentId",
+    "description": "Extracts the Shopify session id from the given request.\n\nFor embedded apps, `getCurrentId` will only be able to find a session id if you use `authenticatedFetch` from the `@shopify/app-bridge-utils` client-side package.\n\nThis function behaves like a [normal `fetch` call](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), but ensures the appropriate headers are set.\n\nLearn more about [making authenticated requests](https://shopify.dev/docs/apps/auth/oauth/session-tokens/getting-started#step-2-authenticate-your-requests) using App Bridge.\n\n> Note:\nThis method will rely on cookies for non-embedded apps, and the `Authorization` HTTP header for embedded apps using [App Bridge session tokens](https://shopify.dev/docs/apps/auth/oauth/session-tokens), making all apps safe to use in modern browsers that block 3rd party cookies.",
+    "type": "async",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "app.get('/fetch-some-data', async (req, res) => {\n  const sessionId = await shopify.session.getCurrentId({\n    isOnline: true,\n    rawRequest: req,\n    rawResponse: res,\n  });\n\n  // use sessionId to retrieve session from app's session storage\n  // getSessionFromStorage() must be provided by application\n  const session = await getSessionFromStorage(sessionId);\n\n  // Build a client and make requests with session.accessToken\n  // See the REST, GraphQL, or Storefront API documentation for more information\n});\n",
+            "language": "js"
+          }
+        ],
+        "title": "getCurrentId"
+      }
+    },
+    "definitions": [
+      {
+        "title": "Parameters",
+        "description": "",
+        "type": "GetCurrentSessionIdParams",
+        "typeDefinitions": {
+          "GetCurrentSessionIdParams": {
+            "filePath": "/session/types.ts",
+            "name": "GetCurrentSessionIdParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isOnline",
+                "value": "boolean",
+                "description": "Whether to look for an offline or online session, depending on how the [`auth.begin`](/docs/api/shopify-api-js/auth/begin) method was called."
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": "The HTTP Request object used by your runtime."
+              },
+              {
+                "filePath": "/session/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface GetCurrentSessionIdParams extends AdapterArgs {\n  /** Whether to look for an offline or online session, depending on how the [`auth.begin`](/docs/api/shopify-api-js/auth/begin) method was called. */\n  isOnline: boolean;\n}"
+          }
+        }
+      },
+      {
+        "title": "Returns",
+        "description": "The session id for the request, or `undefined` if none was found.",
+        "type": "GetCurrentIdReturns",
+        "typeDefinitions": {
+          "GetCurrentIdReturns": {
+            "filePath": "/session/session-utils.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "GetCurrentIdReturns",
+            "value": "string | undefined",
+            "description": ""
+          }
+        }
+      }
+    ],
+    "category": "session",
+    "related": []
+  },
+  {
+    "name": "getOfflineId",
+    "description": "Builds a session id that can be used to load an offline session, if there was a [`auth.begin`](/docs/api/shopify-api-js/auth/begin) call to create one.\n\n> Caution:\nThis method **_does not_** perform any validation on the `shop` parameter because it is meant for background tasks. You should **_never_** read the shop from user inputs or URLs.",
+    "type": "async",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "app.get('/fetch-some-data', async (req, res) => {\n  const sessionId = await shopify.session.getCurrentId({\n    isOnline: true,\n    rawRequest: req,\n    rawResponse: res,\n  });\n\n  // use sessionId to retrieve session from app's session storage\n  // getSessionFromStorage() must be provided by application\n  const session = await getSessionFromStorage(sessionId);\n\n  // Build a client and make requests with session.accessToken\n  // See the REST, GraphQL, or Storefront API documentation for more information\n});\n",
+            "language": "js"
+          }
+        ],
+        "title": "getOfflineId"
+      }
+    },
+    "definitions": [
+      {
+        "title": "Props",
+        "description": "",
+        "type": "GetOfflineIdFunction",
+        "typeDefinitions": {
+          "GetOfflineIdFunction": {
+            "filePath": "/session/session-utils.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "GetOfflineIdFunction",
+            "value": "(params: GetOfflineIdParams) => GetOfflineIdReturns",
+            "description": ""
+          },
+          "GetOfflineIdParams": {
+            "filePath": "/session/session-utils.ts",
+            "name": "GetOfflineIdParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/session/session-utils.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "shop",
+                "value": "string",
+                "description": "The shop domain to use to build the session id."
+              }
+            ],
+            "value": "interface GetOfflineIdParams {\n  /** The shop domain to use to build the session id. */\n  shop: string;\n}"
+          },
+          "GetOfflineIdReturns": {
+            "filePath": "/session/session-utils.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "GetOfflineIdReturns",
+            "value": "string",
+            "description": ""
+          }
+        }
+      }
+    ],
+    "category": "session",
+    "related": []
+  },
+  {
+    "name": "validateHmac",
+    "description": "Shopify requests include an `hmac` query argument. This method validates those requests to ensure that the `hmac` value was signed by Shopify and not spoofed.",
+    "type": "async",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "const isValid = await shopify.utils.validateHmac(req.query);\n",
+            "language": "js"
+          }
+        ],
+        "title": "validateHmac"
+      }
+    },
+    "definitions": [
+      {
+        "title": "validateHmac Parameters",
+        "description": "Parameters for the `validateHmac` function.",
+        "type": "AuthQuery",
+        "typeDefinitions": {
+          "AuthQuery": {
+            "filePath": "/auth/oauth/types.ts",
+            "name": "AuthQuery",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "name": "[key: string]",
+                "value": "string | undefined"
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "hmac",
+                "value": "string",
+                "description": "",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface AuthQuery {\n  [key: string]: string | undefined;\n  hmac?: string;\n}"
+          }
+        }
+      },
+      {
+        "title": "validateHmac Return",
+        "description": "`true` if the `hmac` value in the query is valid, and `false` otherwise.",
+        "type": "ValidateHmacResponse",
+        "typeDefinitions": {
+          "ValidateHmacResponse": {
+            "filePath": "/utils/hmac-validator.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "ValidateHmacResponse",
+            "value": "boolean",
+            "description": ""
+          }
+        }
+      }
+    ],
+    "category": "utils",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "sanitizeHost",
+    "description": "This method makes user inputs safer by ensuring that the `host` query arguments from Shopify requests is valid.",
+    "type": "",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "const host = shopify.utils.sanitizeHost(req.query.host, true);\n",
+            "language": "js"
+          }
+        ],
+        "title": "sanitizeHost"
+      }
+    },
+    "definitions": [
+      {
+        "title": "Parameters",
+        "description": "",
+        "type": "SanitizeHostParams",
+        "typeDefinitions": {
+          "SanitizeHostParams": {
+            "filePath": "/utils/shop-validator.ts",
+            "name": "SanitizeHostParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/utils/shop-validator.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "host",
+                "value": "string",
+                "description": "The incoming host value to sanitize."
+              },
+              {
+                "filePath": "/utils/shop-validator.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "throwOnInvalid",
+                "value": "boolean",
+                "description": "Whether to throw an error if the host is invalid. Defaults to `false`.",
+                "isOptional": true
+              }
+            ],
+            "value": "interface SanitizeHostParams {\n  /** The incoming host value to sanitize. */\n  host: string;\n  /** Whether to throw an error if the host is invalid. Defaults to `false`. */\n  throwOnInvalid?: boolean;\n}"
+          }
+        }
+      },
+      {
+        "title": "Returns",
+        "description": "The `host` value if it is properly formatted, otherwise `null`.",
+        "type": "SanitizeHostReturns",
+        "typeDefinitions": {
+          "SanitizeHostReturns": {
+            "filePath": "/utils/shop-validator.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "SanitizeHostReturns",
+            "value": "string | null",
+            "description": ""
+          }
+        }
+      }
+    ],
+    "category": "utils",
+    "related": []
+  },
+  {
+    "name": "sanitizeShop",
+    "description": "This method makes user inputs safer by ensuring that a given shop value is a properly formatted Shopify shop domain.\n\n > Note:\nIf you're using custom shop domains for testing, you can use the `customShopDomains` setting to add allowed domains.",
+    "type": "",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "const shop = shopify.utils.sanitizeShop(req.query.shop, true);\n",
+            "language": "js"
+          }
+        ],
+        "title": "sanitizeShop"
+      }
+    },
+    "definitions": [
+      {
+        "title": "Parameters",
+        "description": "",
+        "type": "SanitizeShopParams",
+        "typeDefinitions": {
+          "SanitizeShopParams": {
+            "filePath": "/utils/shop-validator.ts",
+            "name": "SanitizeShopParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/utils/shop-validator.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "shop",
+                "value": "string",
+                "description": "The shop to sanitize."
+              },
+              {
+                "filePath": "/utils/shop-validator.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "throwOnInvalid",
+                "value": "boolean",
+                "description": "Whether to throw an error if the shop is invalid. Defaults to `false`.",
+                "isOptional": true
+              }
+            ],
+            "value": "interface SanitizeShopParams {\n  /** The shop to sanitize. */\n  shop: string;\n  /** Whether to throw an error if the shop is invalid. Defaults to `false`. */\n  throwOnInvalid?: boolean;\n}"
+          }
+        }
+      },
+      {
+        "title": "Returns",
+        "description": "The `shop` value if it is a properly formatted Shopify shop domain, otherwise `null`.",
+        "type": "SanitizeShopReturns",
+        "typeDefinitions": {
+          "SanitizeShopReturns": {
+            "filePath": "/utils/shop-validator.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "SanitizeShopReturns",
+            "value": "string | null",
+            "description": ""
+          }
+        }
+      }
+    ],
+    "category": "utils",
+    "related": []
+  },
+  {
+    "name": "versionCompatible",
+    "description": "This method determines if the given version is compatible (equal to or newer) with the configured `apiVersion` for the `shopifyApi` object. Its main use is when you want to tweak behaviour depending on your current API version, though apps won't typically need this kind of check.",
+    "type": "",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "const shopify = shopifyApi({\n  apiVersion: ApiVersion.July22,\n});\n\nif (shopify.utils.versionCompatible(ApiVersion.January22)) {\n  // true in this example, as ApiVersion.July22 is newer than ApiVersion.January22\n}\n",
+            "language": "js"
+          }
+        ],
+        "title": "versionCompatibile"
+      }
+    },
+    "definitions": [
+      {
+        "title": "Parameters",
+        "description": "",
+        "type": "VersionCompatibileParams",
+        "typeDefinitions": {
+          "VersionCompatibileParams": {
+            "filePath": "/utils/version-compatible.ts",
+            "name": "VersionCompatibileParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/utils/version-compatible.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "referenceVersion",
+                "value": "ApiVersion",
+                "description": "The API version to check against."
+              }
+            ],
+            "value": "interface VersionCompatibileParams {\n  /** The API version to check against. */\n  referenceVersion: ApiVersion;\n}"
+          },
+          "ApiVersion": {
+            "filePath": "/types.ts",
+            "syntaxKind": "EnumDeclaration",
+            "name": "ApiVersion",
+            "value": "export enum ApiVersion {\n  January22 = '2022-01',\n  April22 = '2022-04',\n  July22 = '2022-07',\n  October22 = '2022-10',\n  January23 = '2023-01',\n  Unstable = 'unstable',\n}",
+            "members": [
+              {
+                "filePath": "/types.ts",
+                "name": "January22",
+                "value": "2022-01"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "April22",
+                "value": "2022-04"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "July22",
+                "value": "2022-07"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "October22",
+                "value": "2022-10"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "January23",
+                "value": "2023-01"
+              },
+              {
+                "filePath": "/types.ts",
+                "name": "Unstable",
+                "value": "unstable"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "title": "Returns",
+        "description": "`true` if the given version is compatible with the configured `apiVersion`.",
+        "type": "VersionCompatibleReturns",
+        "typeDefinitions": {
+          "VersionCompatibleReturns": {
+            "filePath": "/utils/version-compatible.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "VersionCompatibleReturns",
+            "value": "boolean",
+            "description": ""
+          }
+        }
+      }
+    ],
+    "category": "utils",
+    "related": []
+  },
+  {
+    "name": "begin",
+    "description": "Begins the OAuth process by redirecting the merchant to the Shopify Authentication screen, where they will be asked to approve the required app scopes.",
+    "type": "async",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "title": "Node.js",
+            "code": "app.get('/auth', async (req, res) => {\n  // The library will automatically redirect the user\n  await shopify.auth.begin({\n    shop: shopify.utils.sanitizeShop(req.query.shop, true),\n    callbackPath: '/auth/callback',\n    isOnline: false,\n    rawRequest: req,\n    rawResponse: res,\n  });\n});\n",
+            "language": "js"
+          },
+          {
+            "title": "Cloudflare Workers",
+            "code": "async function handleFetch(request: Request): Promise<Response> {\n  const {searchParams} = new URL(request.url);\n\n  // The library will return a Response object\n  return shopify.auth.begin({\n    shop: shopify.utils.sanitizeShop(searchParams.get('shop'), true),\n    callbackPath: '/auth/callback',\n    isOnline: false,\n    rawRequest: request,\n  });\n}\n",
+            "language": "js"
+          }
+        ],
+        "title": "begin an OAuth process"
+      }
+    },
+    "definitions": [
+      {
+        "title": "begin Parameters",
+        "description": "Parameters for the `begin` function.",
+        "type": "BeginParams",
+        "typeDefinitions": {
+          "BeginParams": {
+            "filePath": "/auth/oauth/types.ts",
+            "name": "BeginParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "shop",
+                "value": "string",
+                "description": "A Shopify domain name in the form `{exampleshop}.myshopify.com`."
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "callbackPath",
+                "value": "string",
+                "description": "The path to the callback endpoint, with a leading `/`. This URL must be allowed in the Partners dashboard, or using the CLI to run your app."
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isOnline",
+                "value": "boolean",
+                "description": "`true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes)."
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": "The HTTP Request object used by your runtime."
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface BeginParams extends AdapterArgs {\n  /** A Shopify domain name in the form `{exampleshop}.myshopify.com`. */\n  shop: string;\n  /** The path to the callback endpoint, with a leading `/`. This URL must be allowed in the Partners dashboard, or using the CLI to run your app. */\n  callbackPath: string;\n  /** `true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes). */\n  isOnline: boolean;\n}"
+          }
+        }
+      }
+    ],
+    "category": "auth",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "callback",
+    "description": "Process Shopify's callback request after the user approves the app installation. Once the merchant approves the app's request for scopes, Shopify will redirect them back to your app, using the `callbackPath` parameter from `auth.begin`.\n\nYour app must then call `auth.callback` to complete the OAuth process, which will create a new Shopify `Session` and return the appropriate HTTP headers your app with which your app must respond.",
+    "type": "async",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "title": "Node.js",
+            "code": "app.get('/auth/callback', async (req, res) => {\n  // The library will automatically set the appropriate HTTP headers\n  const callback = await shopify.auth.callback({\n    rawRequest: req,\n    rawResponse: res,\n  });\n\n  // You can now use callback.session to make API requests\n\n  res.redirect('/my-apps-entry-page');\n});\n",
+            "language": "js"
+          },
+          {
+            "title": "Cloudflare Workers",
+            "code": "async function handleFetch(request: Request): Promise<Response> {\n  const callback = await shopify.auth.callback<Headers>({\n    rawRequest: request,\n  });\n\n  // You can now use callback.session to make API requests\n\n  // The callback returns some HTTP headers, but you can redirect to any route here\n  return new Response('', {\n    status: 302,\n    // Headers are of type [string, string][]\n    headers: [...callback.headers, ['Location', '/my-apps-entry-page']],\n  });\n}\n",
+            "language": "js"
+          }
+        ],
+        "title": "complete the OAuth process"
+      }
+    },
+    "definitions": [
+      {
+        "title": "callback Parameters",
+        "description": "Parameters for the `callback` function.",
+        "type": "CallbackParams",
+        "typeDefinitions": {
+          "CallbackParams": {
+            "filePath": "/auth/oauth/types.ts",
+            "name": "CallbackParams",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "isOnline",
+                "value": "boolean",
+                "description": "Deprecated as of `v6.0.1`. Session type is automatically detected from response.",
+                "isOptional": true
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawRequest",
+                "value": "any",
+                "description": "The HTTP Request object used by your runtime."
+              },
+              {
+                "filePath": "/auth/oauth/types.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "rawResponse",
+                "value": "any",
+                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
+                "isOptional": true
+              }
+            ],
+            "value": "export interface CallbackParams extends AdapterArgs {\n  /** Deprecated as of `v6.0.1`. Session type is automatically detected from response. */\n  isOnline?: boolean;\n}"
+          }
+        }
+      },
+      {
+        "title": "callback Return",
+        "description": "Return type of the `callback` function.",
+        "type": "CallbackResponse",
+        "typeDefinitions": {
+          "CallbackResponse": {
+            "filePath": "/auth/oauth/oauth.ts",
+            "name": "CallbackResponse",
+            "description": "",
+            "members": [
+              {
+                "filePath": "/auth/oauth/oauth.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "headers",
+                "value": "T",
+                "description": ""
+              },
+              {
+                "filePath": "/auth/oauth/oauth.ts",
+                "syntaxKind": "PropertySignature",
+                "name": "session",
+                "value": "Session",
+                "description": ""
+              }
+            ],
+            "value": "export interface CallbackResponse<T = AdapterHeaders> {\n  headers: T;\n  session: Session;\n}"
+          }
+        }
+      }
+    ],
+    "category": "auth",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "nonce",
+    "description": "Generates a string of 15 characters that are cryptographically random, suitable for short-lived values in cookies to aid validation of requests/responses.",
+    "type": "",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "const state = shopify.auth.nonce();\n",
+            "language": "js"
+          }
+        ],
+        "title": "nonce"
+      }
+    },
+    "definitions": [
+      {
+        "title": "Props",
+        "description": "",
+        "type": "NonceGeneratedType",
+        "typeDefinitions": {
+          "NonceGeneratedType": {
+            "filePath": "/auth/oauth/nonce.ts",
+            "name": "NonceGeneratedType",
+            "params": [],
+            "returns": {
+              "filePath": "/auth/oauth/nonce.ts",
+              "description": "A 15 character random string",
+              "name": "string",
+              "value": "string"
+            },
+            "value": "export function nonce(): string {\n  const length = 15;\n\n  // eslint-disable-next-line no-warning-comments\n  // TODO Remove the randomBytes call when dropping Node 14 support\n  const bytes = crypto.getRandomValues\n    ? crypto.getRandomValues(new Uint8Array(length))\n    : (crypto as any).randomBytes(length);\n\n  const nonce = bytes\n    .map((byte: number) => {\n      return byte % 10;\n    })\n    .join('');\n\n  return nonce;\n}"
+          }
+        }
+      }
+    ],
+    "category": "auth",
+    "thumbnail": "",
+    "related": []
+  },
+  {
+    "name": "safeCompare",
+    "description": "Takes a pair of arguments (see below for acceptable types) and returns true if they are identical, both in term of type and content.\n\nThrows a `SafeCompareError` if the types don't match.",
+    "type": "",
+    "isVisualComponent": false,
+    "defaultExample": {
+      "codeblock": {
+        "tabs": [
+          {
+            "code": "const stringArray1 = ['alice', 'bob', 'charlie'];\nconst stringArray2 = ['alice', 'bob', 'charlie'];\n\nconst stringArrayResult = shopify.auth.safeCompare(stringArray1, stringArray2); // true\n\nconst array1 = ['one fish', 'two fish'];\nconst array2 = ['red fish', 'blue fish'];\nconst arrayResult = shopify.auth.safeCompare(array1, array2); // false\n\nconst arg1 = 'hello';\nconst arg2 = ['world'];\n\nconst argResult = shopify.auth.safeCompare(arg1, arg2); // throws SafeCompareError due to argument type mismatch\n",
+            "language": "js"
+          }
+        ],
+        "title": "safeCompare"
+      }
+    },
+    "definitions": [
+      {
+        "title": "Props",
+        "description": "",
+        "type": "SafeCompareGeneratedType",
+        "typeDefinitions": {
+          "SafeCompareGeneratedType": {
+            "filePath": "/auth/oauth/safe-compare.ts",
+            "name": "SafeCompareGeneratedType",
+            "params": [
+              {
+                "name": "item1",
+                "description": "first value to compare",
+                "value": "SafeCompareParam",
+                "filePath": "/auth/oauth/safe-compare.ts"
+              },
+              {
+                "name": "item2",
+                "description": "second value to compare",
+                "value": "SafeCompareParam",
+                "filePath": "/auth/oauth/safe-compare.ts"
+              }
+            ],
+            "returns": {
+              "filePath": "/auth/oauth/safe-compare.ts",
+              "description": "whether the two input values are equal",
+              "name": "boolean",
+              "value": "boolean"
+            },
+            "value": "export function safeCompare(\n  item1: SafeCompareParam,\n  item2: SafeCompareParam,\n): boolean {\n  if (typeof item1 === typeof item2) {\n    const enc = new TextEncoder();\n    const buffA = enc.encode(JSON.stringify(item1));\n    const buffB = enc.encode(JSON.stringify(item2));\n\n    if (buffA.length === buffB.length) {\n      return timingSafeEqual(buffA, buffB);\n    }\n  } else {\n    throw new ShopifyErrors.SafeCompareError(\n      `Mismatched data types provided: ${typeof item1} and ${typeof item2}`,\n    );\n  }\n  return false;\n}"
+          },
+          "SafeCompareParam": {
+            "filePath": "/auth/oauth/safe-compare.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "SafeCompareParam",
+            "value": "string | {[key: string]: string} | string[] | number[]",
+            "description": ""
+          }
+        }
+      }
+    ],
+    "category": "auth",
     "thumbnail": "",
     "related": []
   }

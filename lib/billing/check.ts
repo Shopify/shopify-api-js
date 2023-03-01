@@ -23,12 +23,15 @@ interface CheckInstallationParams {
   installation: CurrentAppInstallation;
 }
 
+/** true if there is a payment for any of the given plans, and false otherwise. */
+type CheckResponse = boolean;
+
 export function check(config: ConfigInterface) {
   return async function ({
     session,
     plans,
     isTest = true,
-  }: CheckParams): Promise<boolean> {
+  }: CheckParams): Promise<CheckResponse> {
     if (!config.billing) {
       throw new BillingError({
         message: 'Attempted to look for purchases without billing configs',

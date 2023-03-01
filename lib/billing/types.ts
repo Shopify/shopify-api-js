@@ -35,14 +35,20 @@ export interface BillingConfig {
 }
 
 export interface CheckParams {
+  /** The Session for the current request. */
   session: Session;
+  /** Name of plans to search. */
   plans: string[] | string;
+  /** Whether to look for test purchases only. Defaults to `true`. */
   isTest?: boolean;
 }
 
 export interface RequestParams {
+  /** The Session for the current request. */
   session: Session;
+  /** Name of plan to create a charge for. */
   plan: string;
+  /** If `true`, Shopify will not actually charge for this purchase. Defaults to `true`. */
   isTest?: boolean;
 }
 

@@ -38,12 +38,18 @@ interface RequestUsageSubscriptionInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigUsagePlan;
 }
 
+/**
+ * The URL to confirm the charge with the merchant - the library will not redirect right away to make it possible for apps to run their own code after it creates the payment request.
+ * The app must redirect the merchant to this URL so that they can confirm the charge before Shopify applies it. The merchant will be sent back to the app's main page after the process is complete.
+ */
+type BillingRequestResponse = string;
+
 export function request(config: ConfigInterface) {
   return async function ({
     session,
     plan,
     isTest = true,
-  }: RequestParams): Promise<string> {
+  }: RequestParams): Promise<BillingRequestResponse> {
     if (!config.billing || !config.billing[plan]) {
       throw new BillingError({
         message: `Could not find plan ${plan} in billing settings`,

@@ -1,5 +1,9 @@
 import {crypto} from '../../../runtime/crypto';
 
+/**
+ * Generates a cryptographically random string
+ * @returns A 15 character random string
+ */
 export function nonce(): string {
   const length = 15;
 

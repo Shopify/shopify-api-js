@@ -1,6 +1,16 @@
 import {ConfigInterface} from '../base-types';
 import {ApiVersion} from '../types';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+interface VersionCompatibileParams {
+  /** The API version to check against. */
+  referenceVersion: ApiVersion;
+}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+type VersionCompatibleReturns = boolean;
+
 export function versionCompatible(config: ConfigInterface) {
   return (
     referenceVersion: ApiVersion,

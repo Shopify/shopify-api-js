@@ -19,11 +19,30 @@ export function getJwtSessionId(config: ConfigInterface) {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+interface GetOfflineIdParams {
+  /** The shop domain to use to build the session id. */
+  shop: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+type GetOfflineIdReturns = string;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+type GetOfflineIdFunction = (params: GetOfflineIdParams) => GetOfflineIdReturns;
+
 export function getOfflineId(config: ConfigInterface) {
   return (shop: string): string => {
     return `offline_${sanitizeShop(config)(shop, true)}`;
   };
 }
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+type GetCurrentIdReturns = string | undefined;
 
 export function getCurrentSessionId(config: ConfigInterface) {
   return async function getCurrentSessionId({

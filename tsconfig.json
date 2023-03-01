@@ -44,6 +44,6 @@
     "runtime/**/*.ts",
   ],
   "exclude": [
-    "**/*.test.ts", "**/test/*", "**/__tests__/*",
+    "**/*.test.ts", "**/test/*", "**/__tests__/*", "**/*.doc.ts", "**/*.example.ts"
   ],
 }

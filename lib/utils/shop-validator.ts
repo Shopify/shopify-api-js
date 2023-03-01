@@ -2,6 +2,18 @@ import {ConfigInterface} from '../base-types';
 import {InvalidHostError, InvalidShopError} from '../error';
 import {decodeHost} from '../auth/decode-host';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+interface SanitizeShopParams {
+  /** The shop to sanitize. */
+  shop: string;
+  /** Whether to throw an error if the shop is invalid. Defaults to `false`. */
+  throwOnInvalid?: boolean;
+}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+type SanitizeShopReturns = string | null;
+
 export function sanitizeShop(config: ConfigInterface) {
   return (shop: string, throwOnInvalid = false): string | null => {
     const domainsRegex = ['myshopify\\.com', 'shopify\\.com', 'myshopify\\.io'];
@@ -25,6 +37,18 @@ export function sanitizeShop(config: ConfigInterface) {
     return sanitizedShop;
   };
 }
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+interface SanitizeHostParams {
+  /** The incoming host value to sanitize. */
+  host: string;
+  /** Whether to throw an error if the host is invalid. Defaults to `false`. */
+  throwOnInvalid?: boolean;
+}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+type SanitizeHostReturns = string | null;
 
 export function sanitizeHost(config: ConfigInterface) {
   return (host: string, throwOnInvalid = false): string | null => {

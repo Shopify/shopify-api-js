@@ -20,7 +20,9 @@ export type AdapterRequest = any;
 export type AdapterResponse = any;
 export type AdapterHeaders = any;
 export interface AdapterArgs {
+  /** The HTTP Request object used by your runtime. */
   rawRequest: AdapterRequest;
+  /** The HTTP Response object used by your runtime. Required for Node.js. */
   rawResponse?: AdapterResponse;
 }
 

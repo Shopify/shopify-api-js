@@ -25,5 +25,6 @@ export interface JwtPayload {
 }
 
 export interface GetCurrentSessionIdParams extends AdapterArgs {
+  /** Whether to look for an offline or online session, depending on how the [`auth.begin`](/docs/api/shopify-api-js/auth/begin) method was called. */
   isOnline: boolean;
 }

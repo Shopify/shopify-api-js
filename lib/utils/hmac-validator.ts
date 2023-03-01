@@ -26,8 +26,15 @@ export function generateLocalHmac(config: ConfigInterface) {
   };
 }
 
+type ValidateHmacResponse = boolean;
+
+/**
+ * Validates the `hmac` value in the query.
+ * @param {AuthQuery} query The request query arguments.
+ * @returns {boolean} Whether the `hmac` value in the query is valid.
+ */
 export function validateHmac(config: ConfigInterface) {
-  return async (query: AuthQuery): Promise<boolean> => {
+  return async (query: AuthQuery): Promise<ValidateHmacResponse> => {
     if (!query.hmac) {
       throw new ShopifyErrors.InvalidHmacError(
         'Query does not contain an HMAC value.',
