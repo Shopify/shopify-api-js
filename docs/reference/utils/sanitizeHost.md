@@ -24,8 +24,8 @@ If `true`, throws an error when the host is invalid.
 
 ## Return
 
-`boolean`
+`string | null`
 
-Whether the host is valid.
+The `host` value if it is properly formatted, otherwise `null`.
 
 [Back to shopify.utils](./README.md)
