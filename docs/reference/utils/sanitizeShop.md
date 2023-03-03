@@ -26,8 +26,8 @@ If `true`, throws an error when the shop is invalid.
 
 ## Return
 
-`boolean`
+`string | null`
 
-Whether the shop is valid.
+The `shop` value if it is a properly formatted Shopify shop domain, otherwise `null`.
 
 [Back to shopify.utils](./README.md)
