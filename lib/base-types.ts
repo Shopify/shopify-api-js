@@ -15,6 +15,7 @@ export interface ConfigParams<T extends ShopifyRestResources = any> {
   apiVersion: ApiVersion;
   isEmbeddedApp: boolean;
   isCustomStoreApp?: boolean;
+  defaultRetries?: number;
   userAgentPrefix?: string;
   privateAppStorefrontAccessToken?: string;
   customShopDomains?: (RegExp | string)[];

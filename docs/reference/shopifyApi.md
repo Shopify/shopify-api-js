@@ -18,6 +18,7 @@ const shopify = shopifyApi({
   apiVersion: ApiVersion.July22,
   isEmbeddedApp: true,
   isCustomStoreApp: false,
+  defaultRetries: 1,
   userAgentPrefix: 'Custom prefix',
   privateAppStorefrontAccessToken: 'PrivateAccessToken',
   customShopDomains: ['*.my-custom-domain.io'],
@@ -86,6 +87,12 @@ Whether your app will run within the Shopify Admin. Learn more about embedded ap
 `boolean` | Defaults to `false`
 
 Whether you are building a private app for a store.
+
+### defaultRetries
+
+`number` | Defaults to `1`
+
+Set default retry attempts for Rest & GraphQL client.
 
 ### userAgentPrefix
 

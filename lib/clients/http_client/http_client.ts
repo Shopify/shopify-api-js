@@ -84,7 +84,8 @@ export class HttpClient {
   protected async request<T = unknown>(
     params: RequestParams,
   ): Promise<RequestReturn<T>> {
-    const maxTries = params.tries ? params.tries : 1;
+    const config = this.httpClass().config;
+    const maxTries = params.tries ? params.tries : (config.defaultRetries ?? 1);
     if (maxTries <= 0) {
       throw new ShopifyErrors.HttpRequestError(
         `Number of tries must be >= 0, got ${maxTries}`,
@@ -93,7 +94,7 @@ export class HttpClient {
 
     let userAgent = `${LIBRARY_NAME} v${SHOPIFY_API_LIBRARY_VERSION} | ${abstractRuntimeString()}`;
 
-    if (this.httpClass().config.userAgentPrefix) {
+    if (config.userAgentPrefix) {
       userAgent = `${this.httpClass().config.userAgentPrefix} | ${userAgent}`;
     }
 
