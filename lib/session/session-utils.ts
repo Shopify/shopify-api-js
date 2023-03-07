@@ -30,12 +30,22 @@ interface GetOfflineIdParams {
 // @ts-ignore - only required for doc generation
 type GetOfflineIdReturns = string;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - only required for doc generation
-type GetOfflineIdFunction = (params: GetOfflineIdParams) => GetOfflineIdReturns;
+/**
+ * Builds a session id for offline sessions.
+ * @param {string} shop The shop domain to use to build the session id.
+ * @returns The session id.
+ */
+type GetOfflineIdFunction = (shop: string) => string;
 
-export function getOfflineId(config: ConfigInterface) {
-  return (shop: string): string => {
+export function getOfflineIdCreator(
+  config: ConfigInterface,
+): GetOfflineIdFunction {
+  /**
+   * Builds a session id for offline sessions.
+   * @param {string} shop The shop domain to use to build the session id.
+   * @returns The session id.
+   */
+  return function getOfflineId(shop: string): string {
     return `offline_${sanitizeShop(config)(shop, true)}`;
   };
 }

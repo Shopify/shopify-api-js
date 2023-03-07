@@ -28,6 +28,10 @@ export function generateLocalHmac(config: ConfigInterface) {
 
 type ValidateHmacResponse = boolean;
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+type ValidateHmacFunction = (query: AuthQuery) => Promise<ValidateHmacResponse>;
+
 /**
  * Validates the `hmac` value in the query.
  * @param {AuthQuery} query The request query arguments.

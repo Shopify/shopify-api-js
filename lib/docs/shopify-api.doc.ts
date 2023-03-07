@@ -29,7 +29,7 @@ const data: ReferenceEntityTemplateSchema = {
           // Optional. The title of the tab.
           title: 'JS',
           // The relative file path to the code file. Content will be automatically extracted from that file.
-          code: './examples/shopifyApi.example.ts',
+          code: './examples/shopify-api.example.ts',
           // Optional. The name of the language of the code.
           language: 'js',
         },
