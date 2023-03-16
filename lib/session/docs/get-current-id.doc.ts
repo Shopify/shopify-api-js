@@ -19,15 +19,9 @@ const data: ReferenceEntityTemplateSchema = {
   },
   definitions: [
     {
-      title: 'Parameters',
+      title: 'Props',
       description: '',
-      type: 'GetCurrentSessionIdParams',
-    },
-    {
-      title: 'Returns',
-      description:
-        'The session id for the request, or `undefined` if none was found.',
-      type: 'GetCurrentIdReturns',
+      type: 'GetCurrentIdGeneratedType',
     },
   ],
   category: 'session',

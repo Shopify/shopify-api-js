@@ -19,40 +19,30 @@ export function getJwtSessionId(config: ConfigInterface) {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - only required for doc generation
-interface GetOfflineIdParams {
-  /** The shop domain to use to build the session id. */
-  shop: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - only required for doc generation
-type GetOfflineIdReturns = string;
-
 /**
  * Builds a session id for offline sessions.
  * @param {string} shop The shop domain to use to build the session id.
  * @returns The session id.
  */
-type GetOfflineIdFunction = (shop: string) => string;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+declare function getOfflineId(shop: string): string;
 
-export function getOfflineIdCreator(
-  config: ConfigInterface,
-): GetOfflineIdFunction {
-  /**
-   * Builds a session id for offline sessions.
-   * @param {string} shop The shop domain to use to build the session id.
-   * @returns The session id.
-   */
+export function getOfflineIdCreator(config: ConfigInterface) {
   return function getOfflineId(shop: string): string {
     return `offline_${sanitizeShop(config)(shop, true)}`;
   };
 }
 
+/**
+ * Get the current session id from the received request
+ * @returns The current session id, or undefined if no session id was found.
+ */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - only required for doc generation
-type GetCurrentIdReturns = string | undefined;
+declare function getCurrentId(
+  params: GetCurrentSessionIdParams,
+): Promise<string | undefined>;
 
 export function getCurrentSessionId(config: ConfigInterface) {
   return async function getCurrentSessionId({

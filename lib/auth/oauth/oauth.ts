@@ -35,17 +35,29 @@ import {nonce} from './nonce';
 import {safeCompare} from './safe-compare';
 
 export interface CallbackResponse<T = AdapterHeaders> {
+  /** Any HTTP headers required for the next request/response */
   headers: T;
+  /** A Session object to be stored by the calling application */
   session: Session;
 }
 
-export function begin(config: ConfigInterface) {
-  return async ({
+/**
+ * Begins the OAuth process by redirecting the merchant to the Shopify Authorization screen, where they will be asked to approve the required app scopes if the app is not yet installed.
+ * @returns A HTTP response suitable for the underlying JavaScript environment.
+ *
+ *          ***Note:*** In a Node environment, the response will have been returned automatically; in a V8 worker environment, the response must be returned by the calling method.
+ */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+declare function begin(params: BeginParams): Promise<AdapterResponse>;
+
+export function beginCreator(config: ConfigInterface) {
+  return async function begin({
     shop,
     callbackPath,
     isOnline,
     ...adapterArgs
-  }: BeginParams): Promise<AdapterResponse> => {
+  }: BeginParams): Promise<AdapterResponse> {
     throwIfCustomStoreApp(
       config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
@@ -97,7 +109,16 @@ export function begin(config: ConfigInterface) {
   };
 }
 
-export function callback(config: ConfigInterface) {
+/**
+ * Completes the OAuth process by returning a session object and any appropriate headers.
+ */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - only required for doc generation
+declare function callback<T = AdapterHeaders>(
+  params: CallbackParams,
+): Promise<CallbackResponse<T>>;
+
+export function callbackCreator(config: ConfigInterface) {
   return async function callback<T = AdapterHeaders>({
     isOnline: isOnlineParam,
     ...adapterArgs

@@ -7,5 +7,4 @@ COMPILE_DOCS="yarn tsc --project docs/tsconfig.docs.json --types react --moduleR
 COMPILE_STATIC_PAGES="yarn tsc docs/staticPages/*.doc.ts --types react --moduleResolution node  --target esNext  --module CommonJS && generate-docs --isLandingPage --input ./docs/staticPages --output ./docs/temp && rm -rf docs/staticPages/*.doc.js"
 fi
 
-eval $COMPILE_DOCS
-eval $COMPILE_STATIC_PAGES
+eval $COMPILE_DOCS && eval $COMPILE_STATIC_PAGES

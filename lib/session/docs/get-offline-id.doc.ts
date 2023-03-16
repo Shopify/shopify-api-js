@@ -21,19 +21,8 @@ const data: ReferenceEntityTemplateSchema = {
     {
       title: 'Props',
       description: '',
-      type: 'GetOfflineIdFunction',
+      type: 'GetOfflineIdGeneratedType',
     },
-    // {
-    //   title: 'Parameters',
-    //   description: '',
-    //   type: 'GetOfflineIdParams',
-    // },
-    // {
-    //   title: 'Returns',
-    //   description:
-    //     'The `shop` value if it is a properly formatted Shopify shop domain, otherwise `null`.',
-    //   type: 'GetOfflineIdReturns',
-    // },
   ],
   category: 'session',
   related: [],

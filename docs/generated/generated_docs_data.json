@@ -109,10 +109,29 @@
     },
     "definitions": [
       {
-        "title": "begin Parameters",
-        "description": "Parameters for the `begin` function.",
-        "type": "BeginParams",
+        "title": "Props",
+        "description": "",
+        "type": "BeginGeneratedType",
         "typeDefinitions": {
+          "BeginGeneratedType": {
+            "filePath": "/auth/oauth/oauth.ts",
+            "name": "BeginGeneratedType",
+            "params": [
+              {
+                "name": "params",
+                "description": "",
+                "value": "BeginParams",
+                "filePath": "/auth/oauth/oauth.ts"
+              }
+            ],
+            "returns": {
+              "filePath": "/auth/oauth/oauth.ts",
+              "description": "A HTTP response suitable for the underlying JavaScript environment.\n\n***Note:*** In a Node environment, the response will have been returned automatically; in a V8 worker environment, the response must be returned by the calling method.",
+              "name": "Promise<AdapterResponse>",
+              "value": "Promise<AdapterResponse>"
+            },
+            "value": "declare function begin(params: BeginParams): Promise<AdapterResponse>;"
+          },
           "BeginParams": {
             "filePath": "/auth/oauth/types.ts",
             "name": "BeginParams",
@@ -202,10 +221,29 @@
     },
     "definitions": [
       {
-        "title": "callback Parameters",
-        "description": "Parameters for the `callback` function.",
-        "type": "CallbackParams",
+        "title": "Props",
+        "description": "",
+        "type": "CallbackGeneratedType",
         "typeDefinitions": {
+          "CallbackGeneratedType": {
+            "filePath": "/auth/oauth/oauth.ts",
+            "name": "CallbackGeneratedType",
+            "params": [
+              {
+                "name": "params",
+                "description": "",
+                "value": "CallbackParams",
+                "filePath": "/auth/oauth/oauth.ts"
+              }
+            ],
+            "returns": {
+              "filePath": "/auth/oauth/oauth.ts",
+              "description": "",
+              "name": "Promise<CallbackResponse<T>>",
+              "value": "Promise<CallbackResponse<T>>"
+            },
+            "value": "declare function callback<T = AdapterHeaders>(\n  params: CallbackParams,\n): Promise<CallbackResponse<T>>;"
+          },
           "CallbackParams": {
             "filePath": "/auth/oauth/types.ts",
             "name": "CallbackParams",
@@ -250,14 +288,7 @@
             "name": "AdapterResponse",
             "value": "any",
             "description": ""
-          }
-        }
-      },
-      {
-        "title": "callback Return",
-        "description": "Return type of the `callback` function.",
-        "type": "CallbackResponse",
-        "typeDefinitions": {
+          },
           "CallbackResponse": {
             "filePath": "/auth/oauth/oauth.ts",
             "name": "CallbackResponse",
@@ -268,17 +299,17 @@
                 "syntaxKind": "PropertySignature",
                 "name": "headers",
                 "value": "T",
-                "description": ""
+                "description": "Any HTTP headers required for the next request/response"
               },
               {
                 "filePath": "/auth/oauth/oauth.ts",
                 "syntaxKind": "PropertySignature",
                 "name": "session",
                 "value": "Session",
-                "description": ""
+                "description": "A Session object to be stored by the calling application"
               }
             ],
-            "value": "export interface CallbackResponse<T = AdapterHeaders> {\n  headers: T;\n  session: Session;\n}"
+            "value": "export interface CallbackResponse<T = AdapterHeaders> {\n  /** Any HTTP headers required for the next request/response */\n  headers: T;\n  /** A Session object to be stored by the calling application */\n  session: Session;\n}"
           }
         }
       }
@@ -1551,14 +1582,14 @@
                 "filePath": "/auth/index.ts",
                 "syntaxKind": "PropertyAssignment",
                 "name": "begin",
-                "value": "({ shop, callbackPath, isOnline, ...adapterArgs }: BeginParams) => Promise<any>",
+                "value": "any",
                 "description": ""
               },
               {
                 "filePath": "/auth/index.ts",
                 "syntaxKind": "PropertyAssignment",
                 "name": "callback",
-                "value": "<T = any>({ isOnline: isOnlineParam, ...adapterArgs }: CallbackParams) => Promise<CallbackResponse<T>>",
+                "value": "any",
                 "description": ""
               },
               {
@@ -1591,117 +1622,6 @@
               }
             ]
           },
-          "BeginParams": {
-            "filePath": "/auth/oauth/types.ts",
-            "name": "BeginParams",
-            "description": "",
-            "members": [
-              {
-                "filePath": "/auth/oauth/types.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "shop",
-                "value": "string",
-                "description": "A Shopify domain name in the form `{exampleshop}.myshopify.com`."
-              },
-              {
-                "filePath": "/auth/oauth/types.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "callbackPath",
-                "value": "string",
-                "description": "The path to the callback endpoint, with a leading `/`. This URL must be allowed in the Partners dashboard, or using the CLI to run your app."
-              },
-              {
-                "filePath": "/auth/oauth/types.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "isOnline",
-                "value": "boolean",
-                "description": "`true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes)."
-              },
-              {
-                "filePath": "/auth/oauth/types.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "rawRequest",
-                "value": "AdapterRequest",
-                "description": "The HTTP Request object used by your runtime."
-              },
-              {
-                "filePath": "/auth/oauth/types.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "rawResponse",
-                "value": "AdapterResponse",
-                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
-                "isOptional": true
-              }
-            ],
-            "value": "export interface BeginParams extends AdapterArgs {\n  /** A Shopify domain name in the form `{exampleshop}.myshopify.com`. */\n  shop: string;\n  /** The path to the callback endpoint, with a leading `/`. This URL must be allowed in the Partners dashboard, or using the CLI to run your app. */\n  callbackPath: string;\n  /** `true` if the session is online and `false` otherwise. Learn more about [OAuth access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes). */\n  isOnline: boolean;\n}"
-          },
-          "AdapterRequest": {
-            "filePath": "home/spin/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
-            "syntaxKind": "TypeAliasDeclaration",
-            "name": "AdapterRequest",
-            "value": "any",
-            "description": ""
-          },
-          "AdapterResponse": {
-            "filePath": "home/spin/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
-            "syntaxKind": "TypeAliasDeclaration",
-            "name": "AdapterResponse",
-            "value": "any",
-            "description": ""
-          },
-          "CallbackParams": {
-            "filePath": "/auth/oauth/types.ts",
-            "name": "CallbackParams",
-            "description": "",
-            "members": [
-              {
-                "filePath": "/auth/oauth/types.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "isOnline",
-                "value": "boolean",
-                "description": "Deprecated as of `v6.0.1`. Session type is automatically detected from response.",
-                "isOptional": true
-              },
-              {
-                "filePath": "/auth/oauth/types.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "rawRequest",
-                "value": "AdapterRequest",
-                "description": "The HTTP Request object used by your runtime."
-              },
-              {
-                "filePath": "/auth/oauth/types.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "rawResponse",
-                "value": "AdapterResponse",
-                "description": "The HTTP Response object used by your runtime. Required for Node.js.",
-                "isOptional": true
-              }
-            ],
-            "value": "export interface CallbackParams extends AdapterArgs {\n  /** Deprecated as of `v6.0.1`. Session type is automatically detected from response. */\n  isOnline?: boolean;\n}"
-          },
-          "CallbackResponse": {
-            "filePath": "/auth/oauth/oauth.ts",
-            "name": "CallbackResponse",
-            "description": "",
-            "members": [
-              {
-                "filePath": "/auth/oauth/oauth.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "headers",
-                "value": "T",
-                "description": ""
-              },
-              {
-                "filePath": "/auth/oauth/oauth.ts",
-                "syntaxKind": "PropertySignature",
-                "name": "session",
-                "value": "Session",
-                "description": ""
-              }
-            ],
-            "value": "export interface CallbackResponse<T = AdapterHeaders> {\n  headers: T;\n  session: Session;\n}"
-          },
           "SafeCompareParam": {
             "filePath": "/auth/oauth/safe-compare.ts",
             "syntaxKind": "TypeAliasDeclaration",
@@ -1732,6 +1652,20 @@
             ],
             "value": "export interface GetEmbeddedAppUrlParams extends AdapterArgs {}"
           },
+          "AdapterRequest": {
+            "filePath": "home/spin/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "AdapterRequest",
+            "value": "any",
+            "description": ""
+          },
+          "AdapterResponse": {
+            "filePath": "home/spin/src/github.com/Shopify/shopify-api-js/runtime/http/types.ts",
+            "syntaxKind": "TypeAliasDeclaration",
+            "name": "AdapterResponse",
+            "value": "any",
+            "description": ""
+          },
           "ShopifySession": {
             "filePath": "/session/index.ts",
             "syntaxKind": "TypeAliasDeclaration",
@@ -1757,7 +1691,7 @@
                 "filePath": "/session/index.ts",
                 "syntaxKind": "PropertyAssignment",
                 "name": "getOfflineId",
-                "value": "any",
+                "value": "(shop: string) => string",
                 "description": ""
               },
               {
@@ -2418,10 +2352,29 @@
     },
     "definitions": [
       {
-        "title": "Parameters",
+        "title": "Props",
         "description": "",
-        "type": "GetCurrentSessionIdParams",
+        "type": "GetCurrentIdGeneratedType",
         "typeDefinitions": {
+          "GetCurrentIdGeneratedType": {
+            "filePath": "/session/session-utils.ts",
+            "name": "GetCurrentIdGeneratedType",
+            "params": [
+              {
+                "name": "params",
+                "description": "",
+                "value": "GetCurrentSessionIdParams",
+                "filePath": "/session/session-utils.ts"
+              }
+            ],
+            "returns": {
+              "filePath": "/session/session-utils.ts",
+              "description": "The current session id, or undefined if no session id was found.",
+              "name": "Promise<string | undefined>",
+              "value": "Promise<string | undefined>"
+            },
+            "value": "declare function getCurrentId(\n  params: GetCurrentSessionIdParams,\n): Promise<string | undefined>;"
+          },
           "GetCurrentSessionIdParams": {
             "filePath": "/session/types.ts",
             "name": "GetCurrentSessionIdParams",
@@ -2467,20 +2420,6 @@
             "description": ""
           }
         }
-      },
-      {
-        "title": "Returns",
-        "description": "The session id for the request, or `undefined` if none was found.",
-        "type": "GetCurrentIdReturns",
-        "typeDefinitions": {
-          "GetCurrentIdReturns": {
-            "filePath": "/session/session-utils.ts",
-            "syntaxKind": "TypeAliasDeclaration",
-            "name": "GetCurrentIdReturns",
-            "value": "string | undefined",
-            "description": ""
-          }
-        }
       }
     ],
     "category": "session",
@@ -2506,14 +2445,26 @@
       {
         "title": "Props",
         "description": "",
-        "type": "GetOfflineIdFunction",
+        "type": "GetOfflineIdGeneratedType",
         "typeDefinitions": {
-          "GetOfflineIdFunction": {
+          "GetOfflineIdGeneratedType": {
             "filePath": "/session/session-utils.ts",
-            "syntaxKind": "TypeAliasDeclaration",
-            "name": "GetOfflineIdFunction",
-            "value": "(shop: string) => string",
-            "description": "Builds a session id for offline sessions."
+            "name": "GetOfflineIdGeneratedType",
+            "params": [
+              {
+                "name": "shop",
+                "description": "The shop domain to use to build the session id.",
+                "value": "string",
+                "filePath": "/session/session-utils.ts"
+              }
+            ],
+            "returns": {
+              "filePath": "/session/session-utils.ts",
+              "description": "The session id.",
+              "name": "string",
+              "value": "string"
+            },
+            "value": "declare function getOfflineId(shop: string): string;"
           }
         }
       }
