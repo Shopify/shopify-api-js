@@ -1484,17 +1484,17 @@
     magic-string "^0.25.7"
     resolve "^1.17.0"
 
-"@rollup/plugin-node-resolve@^14.1.0":
-  version "14.1.0"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-node-resolve/-/plugin-node-resolve-14.1.0.tgz#f2fa475405cd7fed6420bf438fe393f988a9bc96"
-  integrity sha512-5G2niJroNCz/1zqwXtk0t9+twOSDlG00k1Wfd7bkbbXmwg8H8dvgHdIWAun53Ps/rckfvOC7scDBjuGFg5OaWw==
+"@rollup/plugin-node-resolve@^15.0.1":
+  version "15.0.1"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-node-resolve/-/plugin-node-resolve-15.0.1.tgz#72be449b8e06f6367168d5b3cd5e2802e0248971"
+  integrity sha512-ReY88T7JhJjeRVbfCyNj+NXAG3IIsVMsX9b5/9jC98dRP8/yxlZdz7mHZbHk5zHr24wZZICS5AcXsFZAXYUQEg==
   dependencies:
-    "@rollup/pluginutils" "^3.1.0"
-    "@types/resolve" "1.17.1"
+    "@rollup/pluginutils" "^5.0.1"
+    "@types/resolve" "1.20.2"
     deepmerge "^4.2.2"
-    is-builtin-module "^3.1.0"
+    is-builtin-module "^3.2.0"
     is-module "^1.0.0"
-    resolve "^1.19.0"
+    resolve "^1.22.1"
 
 "@rollup/pluginutils@^3.1.0":
   version "3.1.0"
@@ -1512,6 +1512,15 @@
   dependencies:
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
+
+"@rollup/pluginutils@^5.0.1":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-5.0.2.tgz#012b8f53c71e4f6f9cb317e311df1404f56e7a33"
+  integrity sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==
+  dependencies:
+    "@types/estree" "^1.0.0"
+    estree-walker "^2.0.2"
+    picomatch "^2.3.1"
 
 "@shopify/eslint-plugin@^42.0.1":
   version "42.0.3"
@@ -1743,7 +1752,7 @@
   resolved "https://registry.npmjs.org/@types/cookiejar/-/cookiejar-2.1.2.tgz"
   integrity sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==
 
-"@types/estree@*":
+"@types/estree@*", "@types/estree@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.0.tgz#5fb2e536c1ae9bf35366eed879e827fa59ca41c2"
   integrity sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==
@@ -1881,12 +1890,10 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
 
-"@types/resolve@1.17.1":
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.17.1.tgz#3afd6ad8967c77e4376c598a82ddd58f46ec45d6"
-  integrity sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==
-  dependencies:
-    "@types/node" "*"
+"@types/resolve@1.20.2":
+  version "1.20.2"
+  resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.20.2.tgz#97d26e00cd4a0423b4af620abecf3e6f442b7975"
+  integrity sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==
 
 "@types/semver@^6.0.0":
   version "6.2.3"
@@ -3372,7 +3379,7 @@ estree-walker@^1.0.1:
   resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-1.0.1.tgz#31bc5d612c96b704106b477e6dd5d8aa138cb700"
   integrity sha512-1fMXF3YP4pZZVozF8j/ZLfvnR8NSIljt56UhbZ5PeeDmmGHpgpdwQt7ITlGvYaQukCvuBRMLEiKiYC+oeIg4cg==
 
-estree-walker@^2.0.1:
+estree-walker@^2.0.1, estree-walker@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/estree-walker/-/estree-walker-2.0.2.tgz#52f010178c2a4c117a7757cfe942adb7d2da4cac"
   integrity sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==
@@ -4039,10 +4046,10 @@ is-boolean-object@^1.1.0:
     call-bind "^1.0.2"
     has-tostringtag "^1.0.0"
 
-is-builtin-module@^3.1.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/is-builtin-module/-/is-builtin-module-3.2.0.tgz#bb0310dfe881f144ca83f30100ceb10cf58835e0"
-  integrity sha512-phDA4oSGt7vl1n5tJvTWooWWAsXLY+2xCnxNqvKhGEzujg+A43wPlPOyDg3C8XQHN+6k/JTQWJ/j0dQh/qr+Hw==
+is-builtin-module@^3.2.0:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/is-builtin-module/-/is-builtin-module-3.2.1.tgz#f03271717d8654cfcaf07ab0463faa3571581169"
+  integrity sha512-BSLE3HnV2syZ0FK0iMA/yUGplUeMmNz4AW5fnTunbCIqZi4vG3WjJT9FHMy5D69xmAYBHXQhJdALdpwVxV501A==
   dependencies:
     builtin-modules "^3.3.0"
 
@@ -5739,7 +5746,7 @@ resolve.exports@^1.1.0:
   resolved "https://registry.npmjs.org/resolve.exports/-/resolve.exports-1.1.0.tgz"
   integrity sha512-J1l+Zxxp4XK3LUDZ9m60LRJF/mAe4z6a4xyabPHk7pvK5t35dACV32iIjJDFeWZFfZlO29w6SZ67knR0tHzJtQ==
 
-resolve@^1.10.0, resolve@^1.10.1, resolve@^1.17.0, resolve@^1.19.0, resolve@^1.20.0, resolve@^1.22.1:
+resolve@^1.10.0, resolve@^1.10.1, resolve@^1.17.0, resolve@^1.20.0, resolve@^1.22.1:
   version "1.22.1"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.22.1.tgz#27cb2ebb53f91abb49470a928bba7558066ac177"
   integrity sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==
