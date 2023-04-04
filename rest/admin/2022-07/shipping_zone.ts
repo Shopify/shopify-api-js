@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -17,16 +17,16 @@ interface AllArgs {
 }
 
 export class ShippingZone extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'shipping_zone';
-  protected static PLURAL_NAME = 'shipping_zones';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {
+  protected static resourceName = 'shipping_zone';
+  protected static pluralName = 'shipping_zones';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {
     "countries": Country,
     "provinces": Province
   };
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shipping_zones.json"}
   ];
 
@@ -36,7 +36,7 @@ export class ShippingZone extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<ShippingZone[]> {
+  ): Promise<FindAllResponse<ShippingZone>> {
     const response = await this.baseFind<ShippingZone>({
       session: session,
       urlIds: {},

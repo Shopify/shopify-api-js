@@ -31,7 +31,7 @@ describe('ApplicationCredit resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636125, "amount": "5.00", "description": "application credit for refund", "test": null}}));
+    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636125, "amount": "5.00", "description": "application credit for refund", "test": null, "currency": "USD"}}));
 
     const application_credit = new shopify.rest.ApplicationCredit({session: session});
     application_credit.description = "application credit for refund";
@@ -49,7 +49,7 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636129, "amount": "5.00", "description": "application credit for refund", "test": true}}));
+    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636126, "amount": "5.00", "description": "application credit for refund", "test": true, "currency": "USD"}}));
 
     const application_credit = new shopify.rest.ApplicationCredit({session: session});
     application_credit.description = "application credit for refund";
@@ -68,7 +68,7 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"application_credits": [{"id": 140583599, "amount": "5.00", "description": "credit for application refund", "test": null}]}));
+    queueMockResponse(JSON.stringify({"application_credits": [{"id": 140583599, "amount": "5.00", "description": "credit for application refund", "test": null, "currency": "USD"}]}));
 
     await shopify.rest.ApplicationCredit.all({
       session: session,
@@ -85,7 +85,7 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_4', async () => {
-    queueMockResponse(JSON.stringify({"application_credit": {"id": 140583599, "amount": "5.00", "description": "credit for application refund", "test": null}}));
+    queueMockResponse(JSON.stringify({"application_credit": {"id": 140583599, "amount": "5.00", "description": "credit for application refund", "test": null, "currency": "USD"}}));
 
     await shopify.rest.ApplicationCredit.find({
       session: session,

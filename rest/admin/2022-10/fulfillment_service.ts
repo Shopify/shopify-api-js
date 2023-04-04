@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -22,13 +22,13 @@ interface AllArgs {
 }
 
 export class FulfillmentService extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'fulfillment_service';
-  protected static PLURAL_NAME = 'fulfillment_services';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'fulfillment_service';
+  protected static pluralName = 'fulfillment_services';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "fulfillment_services/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "fulfillment_services.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_services/<id>.json"},
@@ -47,7 +47,7 @@ export class FulfillmentService extends Base {
       urlIds: {"id": id},
       params: {},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -73,7 +73,7 @@ export class FulfillmentService extends Base {
       scope = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FulfillmentService[]> {
+  ): Promise<FindAllResponse<FulfillmentService>> {
     const response = await this.baseFind<FulfillmentService>({
       session: session,
       urlIds: {},

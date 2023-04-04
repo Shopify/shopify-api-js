@@ -22,15 +22,15 @@ interface ProductsArgs {
 }
 
 export class Collection extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'collection';
-  protected static PLURAL_NAME = 'collections';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
+  protected static resourceName = 'collection';
+  protected static pluralName = 'collections';
+  protected static hasOne: {[key: string]: typeof Base} = {
     "image": Image
   };
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collections/<id>.json"},
     {"http_method": "get", "operation": "products", "ids": ["id"], "path": "collections/<id>/products.json"}
   ];
@@ -47,7 +47,7 @@ export class Collection extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async products(

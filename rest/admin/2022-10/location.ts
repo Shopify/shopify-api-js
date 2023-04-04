@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -26,13 +26,13 @@ interface InventoryLevelsArgs {
 }
 
 export class Location extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'location';
-  protected static PLURAL_NAME = 'locations';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'location';
+  protected static pluralName = 'locations';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "count", "ids": [], "path": "locations/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "locations.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "locations/<id>.json"},
@@ -50,7 +50,7 @@ export class Location extends Base {
       urlIds: {"id": id},
       params: {},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async all(
@@ -58,7 +58,7 @@ export class Location extends Base {
       session,
       ...otherArgs
     }: AllArgs
-  ): Promise<Location[]> {
+  ): Promise<FindAllResponse<Location>> {
     const response = await this.baseFind<Location>({
       session: session,
       urlIds: {},

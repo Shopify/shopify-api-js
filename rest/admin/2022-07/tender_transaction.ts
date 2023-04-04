@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -19,13 +19,13 @@ interface AllArgs {
 }
 
 export class TenderTransaction extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'tender_transaction';
-  protected static PLURAL_NAME = 'tender_transactions';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'tender_transaction';
+  protected static pluralName = 'tender_transactions';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "tender_transactions.json"}
   ];
 
@@ -40,7 +40,7 @@ export class TenderTransaction extends Base {
       order = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<TenderTransaction[]> {
+  ): Promise<FindAllResponse<TenderTransaction>> {
     const response = await this.baseFind<TenderTransaction>({
       session: session,
       urlIds: {},

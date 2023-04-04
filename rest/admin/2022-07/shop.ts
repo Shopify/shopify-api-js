@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -14,13 +14,13 @@ interface AllArgs {
 }
 
 export class Shop extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'shop';
-  protected static PLURAL_NAME = 'shops';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'shop';
+  protected static pluralName = 'shops';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
   ];
 
@@ -30,7 +30,7 @@ export class Shop extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Shop[]> {
+  ): Promise<FindAllResponse<Shop>> {
     const response = await this.baseFind<Shop>({
       session: session,
       urlIds: {},

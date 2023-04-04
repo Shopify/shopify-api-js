@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -23,13 +23,13 @@ interface AllArgs {
 }
 
 export class Payout extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'payout';
-  protected static PLURAL_NAME = 'payouts';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'payout';
+  protected static pluralName = 'payouts';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/payouts.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/payouts/<id>.json"}
   ];
@@ -45,7 +45,7 @@ export class Payout extends Base {
       urlIds: {"id": id},
       params: {},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async all(
@@ -59,7 +59,7 @@ export class Payout extends Base {
       status = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Payout[]> {
+  ): Promise<FindAllResponse<Payout>> {
     const response = await this.baseFind<Payout>({
       session: session,
       urlIds: {},
