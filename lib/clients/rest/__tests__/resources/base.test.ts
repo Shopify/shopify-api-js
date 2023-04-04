@@ -5,6 +5,7 @@ import {
 } from '../../../../__tests__/test-helper';
 import {Session} from '../../../../session/session';
 import {HttpResponseError} from '../../../../error';
+import {PageInfo} from '../../../types';
 import {ApiVersion, LATEST_API_VERSION} from '../../../../types';
 import {shopifyApi, Shopify} from '../../../../index';
 
@@ -37,9 +38,9 @@ describe('Base REST resource', () => {
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
     queueMockResponse(JSON.stringify(body));
 
-    const got = await shopify.rest.FakeResource.find({id: 1, session});
+    const got = (await shopify.rest.FakeResource.find({id: 1, session}))!;
 
-    expect([got!.id, got!.attribute]).toEqual([1, 'attribute']);
+    expect([got.id, got.attribute]).toEqual([1, 'attribute']);
     expect({
       method: 'GET',
       domain,
@@ -52,13 +53,13 @@ describe('Base REST resource', () => {
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
     queueMockResponse(JSON.stringify(body));
 
-    const got = await shopify.rest.FakeResource.find({
+    const got = (await shopify.rest.FakeResource.find({
       id: 1,
       session,
       param: 'value',
-    });
+    }))!;
 
-    expect([got!.id, got!.attribute]).toEqual([1, 'attribute']);
+    expect([got.id, got.attribute]).toEqual([1, 'attribute']);
     expect({
       method: 'GET',
       domain,
@@ -78,22 +79,20 @@ describe('Base REST resource', () => {
     };
     queueMockResponse(JSON.stringify(body));
 
-    const got = await shopify.rest.FakeResource.find({id: 1, session});
+    const got = (await shopify.rest.FakeResource.find({id: 1, session}))!;
 
-    expect([got!.id, got!.attribute]).toEqual([1, 'attribute1']);
+    expect([got.id, got.attribute]).toEqual([1, 'attribute1']);
 
-    expect(got!.has_one_attribute!.constructor.name).toEqual('FakeResource');
+    expect(got.has_one_attribute!.constructor.name).toEqual('FakeResource');
     expect([
-      got!.has_one_attribute!.id,
-      got!.has_one_attribute!.attribute,
+      got.has_one_attribute!.id,
+      got.has_one_attribute!.attribute,
     ]).toEqual([2, 'attribute2']);
 
-    expect(got!.has_many_attribute![0].constructor.name).toEqual(
-      'FakeResource',
-    );
+    expect(got.has_many_attribute![0].constructor.name).toEqual('FakeResource');
     expect([
-      got!.has_many_attribute![0].id,
-      got!.has_many_attribute![0].attribute,
+      got.has_many_attribute![0].id,
+      got.has_many_attribute![0].attribute,
     ]).toEqual([3, 'attribute3']);
 
     expect({
@@ -142,10 +141,10 @@ describe('Base REST resource', () => {
     };
     queueMockResponse(JSON.stringify(body));
 
-    const got = await shopify.rest.FakeResource.all({session});
+    const got = (await shopify.rest.FakeResource.all({session})).data;
 
-    expect([got![0].id, got![0].attribute]).toEqual([1, 'attribute1']);
-    expect([got![1].id, got![1].attribute]).toEqual([2, 'attribute2']);
+    expect([got[0].id, got[0].attribute]).toEqual([1, 'attribute1']);
+    expect([got[1].id, got[1].attribute]).toEqual([2, 'attribute2']);
     expect({
       method: 'GET',
       domain,
@@ -260,11 +259,11 @@ describe('Base REST resource', () => {
     };
     queueMockResponse(JSON.stringify(responseBody));
 
-    const got = await shopify.rest.FakeResource.find({id: 1, session});
+    const got = (await shopify.rest.FakeResource.find({id: 1, session}))!;
 
-    expect(got!.attribute).toEqual('attribute');
-    expect(got!['unknown?']).toEqual('some-value');
-    expect(got!.serialize()['unknown?']).toEqual('some-value');
+    expect(got.attribute).toEqual('attribute');
+    expect(got['unknown?']).toEqual('some-value');
+    expect(got.serialize()['unknown?']).toEqual('some-value');
   });
 
   it('saves with unknown attribute', async () => {
@@ -410,23 +409,23 @@ describe('Base REST resource', () => {
       [JSON.stringify(body), {}],
     );
 
-    await shopify.rest.FakeResource.all({session});
-    expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).not.toBeUndefined();
-    expect(shopify.rest.FakeResource.PREV_PAGE_INFO).toBeUndefined();
+    const response1 = await shopify.rest.FakeResource.all({session});
+    expect(response1.pageInfo?.nextPage).not.toBeUndefined();
+    expect(response1.pageInfo?.prevPage).toBeUndefined();
 
-    await shopify.rest.FakeResource.all({
-      ...shopify.rest.FakeResource.NEXT_PAGE_INFO?.query,
+    const response2 = await shopify.rest.FakeResource.all({
+      ...response1.pageInfo?.nextPage?.query,
       session,
     });
-    expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).toBeUndefined();
-    expect(shopify.rest.FakeResource.PREV_PAGE_INFO).not.toBeUndefined();
+    expect(response2.pageInfo?.nextPage).toBeUndefined();
+    expect(response2.pageInfo?.prevPage).not.toBeUndefined();
 
-    await shopify.rest.FakeResource.all({
-      ...shopify.rest.FakeResource.PREV_PAGE_INFO?.query,
+    const response3 = await shopify.rest.FakeResource.all({
+      ...response2.pageInfo?.prevPage?.query,
       session,
     });
-    expect(shopify.rest.FakeResource.NEXT_PAGE_INFO).toBeUndefined();
-    expect(shopify.rest.FakeResource.PREV_PAGE_INFO).toBeUndefined();
+    expect(response3.pageInfo?.nextPage).toBeUndefined();
+    expect(response3.pageInfo?.prevPage).toBeUndefined();
 
     expect({
       method: 'GET',
@@ -448,18 +447,53 @@ describe('Base REST resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('allows pagination within a loop', async () => {
+    const nextUrl = `https://${domain}/admin/api/${shopify.config.apiVersion}/fake_resources.json?page_info=nextToken`;
+
+    const responseBodies = [
+      JSON.stringify({fake_resources: [{id: 1}]}),
+      JSON.stringify({fake_resources: [{id: 2}]}),
+      JSON.stringify({fake_resources: [{id: 3}]}),
+    ];
+
+    queueMockResponses(
+      [responseBodies[0], {headers: {link: `<${nextUrl}>; rel="next"`}}],
+      [responseBodies[1], {headers: {link: `<${nextUrl}>; rel="next"`}}],
+      [responseBodies[2], {}],
+    );
+
+    let pageInfo: PageInfo | undefined;
+    let i = 0;
+    do {
+      const response = await shopify.rest.FakeResource.all({
+        ...pageInfo?.nextPage?.query,
+        session,
+      });
+
+      if (i < 2) {
+        expect(response.headers.Link).toBeDefined();
+      } else {
+        expect(response.headers.Link).toBeUndefined();
+      }
+      expect(response.data[0].id).toEqual(i + 1);
+
+      pageInfo = response.pageInfo;
+      i++;
+    } while (pageInfo?.nextPage);
+  });
+
   it('allows custom prefixes', async () => {
     const body = {
       fake_resource_with_custom_prefix: {id: 1, attribute: 'attribute'},
     };
     queueMockResponse(JSON.stringify(body));
 
-    const got = await shopify.rest.FakeResourceWithCustomPrefix.find({
+    const got = (await shopify.rest.FakeResourceWithCustomPrefix.find({
       id: 1,
       session,
-    });
+    }))!;
 
-    expect([got!.id, got!.attribute]).toEqual([1, 'attribute']);
+    expect([got.id, got.attribute]).toEqual([1, 'attribute']);
     expect({
       method: 'GET',
       domain,
@@ -536,7 +570,7 @@ describe('REST resources with a different API version', () => {
     });
 
     // The shopify object is set to an older version, but the resources use the latest
-    expect(shopify.rest.FakeResource.API_VERSION).toBe(LATEST_API_VERSION);
+    expect(shopify.rest.FakeResource.apiVersion).toBe(LATEST_API_VERSION);
     expect(shopify.config.apiVersion).not.toBe(LATEST_API_VERSION);
 
     queueMockResponses(

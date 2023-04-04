@@ -12,7 +12,7 @@ describe('Load REST resources', () => {
     });
 
     expect(shopify.rest).toHaveProperty('FakeResource');
-    expect(shopify.rest.FakeResource.CLIENT).toBeDefined();
+    expect(shopify.rest.FakeResource.Client).toBeDefined();
   });
 
   it('warns if the API versions mismatch', async () => {
@@ -30,6 +30,6 @@ describe('Load REST resources', () => {
     );
 
     expect(shopify.rest).toHaveProperty('FakeResource');
-    expect(shopify.rest.FakeResource.CLIENT).toBeDefined();
+    expect(shopify.rest.FakeResource.Client).toBeDefined();
   });
 });
