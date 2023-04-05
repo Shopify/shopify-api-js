@@ -169,23 +169,17 @@ describe('callback', () => {
   test('fails to run if the app is private', () => {
     shopify.config.isCustomStoreApp = true;
 
-    expect(
-      shopify.auth.callback({
-        isOnline: true,
-        rawRequest: request,
-      }),
-    ).rejects.toThrow(ShopifyErrors.PrivateAppError);
+    expect(shopify.auth.callback({rawRequest: request})).rejects.toThrow(
+      ShopifyErrors.PrivateAppError,
+    );
   });
 
   test("throws an error when receiving a callback for a shop that doesn't have a state cookie", async () => {
     request.url += '?shop=I+do+not+exist';
 
-    await expect(
-      shopify.auth.callback({
-        isOnline: true,
-        rawRequest: request,
-      }),
-    ).rejects.toThrow(ShopifyErrors.CookieNotFound);
+    await expect(shopify.auth.callback({rawRequest: request})).rejects.toThrow(
+      ShopifyErrors.CookieNotFound,
+    );
   });
 
   test('throws error when callback includes invalid hmac', async () => {
@@ -206,12 +200,9 @@ describe('callback', () => {
     testCallbackQuery.hmac = 'definitely the wrong hmac';
     request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
-    await expect(
-      shopify.auth.callback({
-        isOnline: true,
-        rawRequest: request,
-      }),
-    ).rejects.toThrow(ShopifyErrors.InvalidOAuthError);
+    await expect(shopify.auth.callback({rawRequest: request})).rejects.toThrow(
+      ShopifyErrors.InvalidOAuthError,
+    );
   });
 
   test('throws error when callback includes invalid state', async () => {
@@ -235,12 +226,9 @@ describe('callback', () => {
     testCallbackQuery.hmac = expectedHmac;
     request.url += `?${new URLSearchParams(testCallbackQuery).toString()}`;
 
-    await expect(
-      shopify.auth.callback({
-        isOnline: true,
-        rawRequest: request,
-      }),
-    ).rejects.toThrow(ShopifyErrors.InvalidOAuthError);
+    await expect(shopify.auth.callback({rawRequest: request})).rejects.toThrow(
+      ShopifyErrors.InvalidOAuthError,
+    );
   });
 
   test('requests access token for valid callbacks with offline access and creates session', async () => {
@@ -271,10 +259,7 @@ describe('callback', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const callbackResponse = await shopify.auth.callback({
-      isOnline: false,
-      rawRequest: request,
-    });
+    const callbackResponse = await shopify.auth.callback({rawRequest: request});
 
     const expectedId = `offline_${shop}`;
     const responseCookies = Cookies.parseCookies(
@@ -326,10 +311,7 @@ describe('callback', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const callbackResponse = await shopify.auth.callback({
-      isOnline: true,
-      rawRequest: request,
-    });
+    const callbackResponse = await shopify.auth.callback({rawRequest: request});
 
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
@@ -385,10 +367,7 @@ describe('callback', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const callbackResponse = await shopify.auth.callback({
-      isOnline: true,
-      rawRequest: request,
-    });
+    const callbackResponse = await shopify.auth.callback({rawRequest: request});
 
     const jwtPayload: JwtPayload = {
       iss: `https://${shop}/admin`,
@@ -469,10 +448,7 @@ describe('callback', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const callbackResponse = await shopify.auth.callback({
-      isOnline: true,
-      rawRequest: request,
-    });
+    const callbackResponse = await shopify.auth.callback({rawRequest: request});
 
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
@@ -531,10 +507,7 @@ describe('callback', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const callbackResponse = await shopify.auth.callback({
-      isOnline: false,
-      rawRequest: request,
-    });
+    const callbackResponse = await shopify.auth.callback({rawRequest: request});
 
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
@@ -578,10 +551,7 @@ describe('callback', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const callbackResponse = await shopify.auth.callback({
-      isOnline: false,
-      rawRequest: request,
-    });
+    const callbackResponse = await shopify.auth.callback({rawRequest: request});
 
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],

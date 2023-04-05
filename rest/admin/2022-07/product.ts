@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -57,16 +57,16 @@ interface CountArgs {
 }
 
 export class Product extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'product';
-  protected static PLURAL_NAME = 'products';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {
+  protected static resourceName = 'product';
+  protected static pluralName = 'products';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {
     "images": Image,
     "variants": Variant
   };
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "products/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "products/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "products.json"},
@@ -87,7 +87,7 @@ export class Product extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -130,7 +130,7 @@ export class Product extends Base {
       presentment_currencies = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Product[]> {
+  ): Promise<FindAllResponse<Product>> {
     const response = await this.baseFind<Product>({
       session: session,
       urlIds: {},

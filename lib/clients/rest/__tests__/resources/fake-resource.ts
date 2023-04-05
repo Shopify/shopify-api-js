@@ -1,4 +1,4 @@
-import {Base} from '../../../../../rest/base';
+import {Base, FindAllResponse} from '../../../../../rest/base';
 import {ResourcePath} from '../../../../../rest/types';
 import {Session} from '../../../../session/session';
 import {LATEST_API_VERSION} from '../../../../types';
@@ -22,21 +22,21 @@ interface FakeResourceCustomArgs {
 }
 
 export class FakeResource extends Base {
-  public static API_VERSION = LATEST_API_VERSION;
-  protected static NAME = 'fake_resource';
-  protected static PLURAL_NAME = 'fake_resources';
+  public static apiVersion = LATEST_API_VERSION;
+  protected static resourceName = 'fake_resource';
+  protected static pluralName = 'fake_resources';
 
-  protected static READ_ONLY_ATTRIBUTES: string[] = ['unsaveable_attribute'];
+  protected static readOnlyAttributes: string[] = ['unsaveable_attribute'];
 
-  protected static HAS_ONE = {
+  protected static hasOne = {
     has_one_attribute: this,
   };
 
-  protected static HAS_MANY = {
+  protected static hasMany = {
     has_many_attribute: this,
   };
 
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {
       http_method: 'get',
       operation: 'get',
@@ -99,14 +99,14 @@ export class FakeResource extends Base {
       urlIds: {id, other_resource_id},
       params: {param, ...otherArgs},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async all({
     session,
     param = null,
     ...otherArgs
-  }: FakeResourceAllArgs): Promise<FakeResource[]> {
+  }: FakeResourceAllArgs): Promise<FindAllResponse<FakeResource>> {
     return this.baseFind<FakeResource>({
       session,
       urlIds: {},

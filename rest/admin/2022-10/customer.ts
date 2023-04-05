@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -62,15 +62,15 @@ interface SendInviteArgs {
 }
 
 export class Customer extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'customer';
-  protected static PLURAL_NAME = 'customers';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
+  protected static resourceName = 'customer';
+  protected static pluralName = 'customers';
+  protected static hasOne: {[key: string]: typeof Base} = {
     "metafield": Metafield
   };
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customers/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
@@ -95,7 +95,7 @@ export class Customer extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -128,7 +128,7 @@ export class Customer extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Customer[]> {
+  ): Promise<FindAllResponse<Customer>> {
     const response = await this.baseFind<Customer>({
       session: session,
       urlIds: {},

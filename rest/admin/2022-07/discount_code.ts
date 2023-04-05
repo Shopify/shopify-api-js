@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -47,13 +47,13 @@ interface BatchArgs {
 }
 
 export class DiscountCode extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'discount_code';
-  protected static PLURAL_NAME = 'discount_codes';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'discount_code';
+  protected static pluralName = 'discount_codes';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "discount_codes/count.json"},
     {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"},
@@ -78,7 +78,7 @@ export class DiscountCode extends Base {
       urlIds: {"id": id, "price_rule_id": price_rule_id},
       params: {},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -106,7 +106,7 @@ export class DiscountCode extends Base {
       batch_id = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<DiscountCode[]> {
+  ): Promise<FindAllResponse<DiscountCode>> {
     const response = await this.baseFind<DiscountCode>({
       session: session,
       urlIds: {"price_rule_id": price_rule_id, "batch_id": batch_id},

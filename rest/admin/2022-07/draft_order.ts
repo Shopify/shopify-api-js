@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -49,15 +49,15 @@ interface CompleteArgs {
 }
 
 export class DraftOrder extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'draft_order';
-  protected static PLURAL_NAME = 'draft_orders';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
+  protected static resourceName = 'draft_order';
+  protected static pluralName = 'draft_orders';
+  protected static hasOne: {[key: string]: typeof Base} = {
     "customer": Customer
   };
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
@@ -80,7 +80,7 @@ export class DraftOrder extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -112,7 +112,7 @@ export class DraftOrder extends Base {
       status = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<DraftOrder[]> {
+  ): Promise<FindAllResponse<DraftOrder>> {
     const response = await this.baseFind<DraftOrder>({
       session: session,
       urlIds: {},

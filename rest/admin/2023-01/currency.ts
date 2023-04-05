@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -13,13 +13,13 @@ interface AllArgs {
 }
 
 export class Currency extends Base {
-  public static API_VERSION = ApiVersion.January23;
+  public static apiVersion = ApiVersion.January23;
 
-  protected static NAME = 'currency';
-  protected static PLURAL_NAME = 'currencies';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'currency';
+  protected static pluralName = 'currencies';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "currencies.json"}
   ];
 
@@ -28,7 +28,7 @@ export class Currency extends Base {
       session,
       ...otherArgs
     }: AllArgs
-  ): Promise<Currency[]> {
+  ): Promise<FindAllResponse<Currency>> {
     const response = await this.baseFind<Currency>({
       session: session,
       urlIds: {},

@@ -2,10 +2,12 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+
+import {Currency} from './currency';
 
 interface FindArgs {
   session: Session;
@@ -28,13 +30,15 @@ interface CustomizeArgs {
 }
 
 export class RecurringApplicationCharge extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'recurring_application_charge';
-  protected static PLURAL_NAME = 'recurring_application_charges';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'recurring_application_charge';
+  protected static pluralName = 'recurring_application_charges';
+  protected static hasOne: {[key: string]: typeof Base} = {
+    "currency": Currency
+  };
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "recurring_application_charges.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
@@ -54,7 +58,7 @@ export class RecurringApplicationCharge extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -81,7 +85,7 @@ export class RecurringApplicationCharge extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<RecurringApplicationCharge[]> {
+  ): Promise<FindAllResponse<RecurringApplicationCharge>> {
     const response = await this.baseFind<RecurringApplicationCharge>({
       session: session,
       urlIds: {},
@@ -116,6 +120,7 @@ export class RecurringApplicationCharge extends Base {
   public capped_amount: string | number | null;
   public confirmation_url: string | null;
   public created_at: string | null;
+  public currency: Currency | null | {[key: string]: any};
   public id: number | null;
   public name: string | null;
   public price: string | number | null;
