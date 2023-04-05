@@ -45,6 +45,8 @@ const nextPageInfo = response.pageInfo?.nextPage;
 const responseHeaders = response.headers;
 ```
 
+Please see [the REST resources guide](../docs/guides/rest-resources.md#paginated-requests) for more information.
+
 ---
 
 ## Synchronous logger calls
