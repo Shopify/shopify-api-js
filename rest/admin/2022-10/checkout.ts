@@ -26,25 +26,25 @@ interface CompleteArgs {
 }
 
 export class Checkout extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'checkout';
-  protected static PLURAL_NAME = 'checkouts';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
+  protected static resourceName = 'checkout';
+  protected static pluralName = 'checkouts';
+  protected static hasOne: {[key: string]: typeof Base} = {
     "discount_code": DiscountCode,
     "order": Order
   };
-  protected static HAS_MANY: {[key: string]: typeof Base} = {
+  protected static hasMany: {[key: string]: typeof Base} = {
     "gift_cards": GiftCard
   };
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
     {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"},
     {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
     {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
   ];
-  protected static PRIMARY_KEY: string = "token";
+  protected static primaryKey: string = "token";
 
   public static async find(
     {
@@ -57,7 +57,7 @@ export class Checkout extends Base {
       urlIds: {"token": token},
       params: {},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async shipping_rates(

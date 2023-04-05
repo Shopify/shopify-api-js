@@ -24,18 +24,18 @@ interface CheckoutsArgs {
 }
 
 export class AbandonedCheckout extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'abandoned_checkout';
-  protected static PLURAL_NAME = 'abandoned_checkouts';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
+  protected static resourceName = 'abandoned_checkout';
+  protected static pluralName = 'abandoned_checkouts';
+  protected static hasOne: {[key: string]: typeof Base} = {
     "currency": Currency,
     "customer": Customer
   };
-  protected static HAS_MANY: {[key: string]: typeof Base} = {
+  protected static hasMany: {[key: string]: typeof Base} = {
     "discount_codes": DiscountCode
   };
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];

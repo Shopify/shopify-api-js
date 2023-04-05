@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -70,19 +70,19 @@ interface OpenArgs {
 }
 
 export class Order extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'order';
-  protected static PLURAL_NAME = 'orders';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {
+  protected static resourceName = 'order';
+  protected static pluralName = 'orders';
+  protected static hasOne: {[key: string]: typeof Base} = {
     "customer": Customer
   };
-  protected static HAS_MANY: {[key: string]: typeof Base} = {
+  protected static hasMany: {[key: string]: typeof Base} = {
     "discount_codes": DiscountCode,
     "fulfillments": Fulfillment,
     "refunds": Refund
   };
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "orders/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "orders/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "orders.json"},
@@ -106,7 +106,7 @@ export class Order extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -145,7 +145,7 @@ export class Order extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Order[]> {
+  ): Promise<FindAllResponse<Order>> {
     const response = await this.baseFind<Order>({
       session: session,
       urlIds: {},

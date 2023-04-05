@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -13,13 +13,13 @@ interface AllArgs {
 }
 
 export class ResourceFeedback extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'resource_feedback';
-  protected static PLURAL_NAME = 'resource_feedbacks';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'resource_feedback';
+  protected static pluralName = 'resource_feedbacks';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"}
   ];
@@ -29,7 +29,7 @@ export class ResourceFeedback extends Base {
       session,
       ...otherArgs
     }: AllArgs
-  ): Promise<ResourceFeedback[]> {
+  ): Promise<FindAllResponse<ResourceFeedback>> {
     const response = await this.baseFind<ResourceFeedback>({
       session: session,
       urlIds: {},

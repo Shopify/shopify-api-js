@@ -1,10 +1,11 @@
 import {RestResourceError} from '../lib/error';
 import {Session} from '../lib/session/session';
-import {PageInfoParams, RestRequestReturn} from '../lib/clients/rest/types';
+import {PageInfo, RestRequestReturn} from '../lib/clients/rest/types';
 import {DataType} from '../lib/clients/http_client/types';
 import {RestClient} from '../lib/clients/rest/rest_client';
 import {ApiVersion} from '../lib/types';
 import {ConfigInterface} from '../lib/base-types';
+import {Headers} from '../runtime/http';
 
 import {IdSet, Body, ResourcePath, ParamSet} from './types';
 
@@ -38,42 +39,45 @@ interface GetPathArgs {
 }
 
 interface SetClassPropertiesArgs {
-  CLIENT: typeof RestClient;
-  CONFIG: ConfigInterface;
+  Client: typeof RestClient;
+  config: ConfigInterface;
+}
+
+export interface FindAllResponse<T = Base> {
+  data: T[];
+  headers: Headers;
+  pageInfo?: PageInfo;
 }
 
 export class Base {
   // For instance attributes
   [key: string]: any;
 
-  public static NEXT_PAGE_INFO: PageInfoParams | undefined;
-  public static PREV_PAGE_INFO: PageInfoParams | undefined;
+  public static Client: typeof RestClient;
+  public static config: ConfigInterface;
 
-  public static CLIENT: typeof RestClient;
-  public static CONFIG: ConfigInterface;
+  public static apiVersion: string;
+  protected static resourceName = '';
+  protected static pluralName = '';
+  protected static primaryKey = 'id';
+  protected static customPrefix: string | null = null;
+  protected static readOnlyAttributes: string[] = [];
 
-  public static API_VERSION: string;
-  protected static NAME = '';
-  protected static PLURAL_NAME = '';
-  protected static PRIMARY_KEY = 'id';
-  protected static CUSTOM_PREFIX: string | null = null;
-  protected static READ_ONLY_ATTRIBUTES: string[] = [];
+  protected static hasOne: {[attribute: string]: typeof Base} = {};
+  protected static hasMany: {[attribute: string]: typeof Base} = {};
 
-  protected static HAS_ONE: {[attribute: string]: typeof Base} = {};
-  protected static HAS_MANY: {[attribute: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [];
 
-  protected static PATHS: ResourcePath[] = [];
-
-  public static setClassProperties({CLIENT, CONFIG}: SetClassPropertiesArgs) {
-    this.CLIENT = CLIENT;
-    this.CONFIG = CONFIG;
+  public static setClassProperties({Client, config}: SetClassPropertiesArgs) {
+    this.Client = Client;
+    this.config = config;
   }
 
   protected static async baseFind<T extends Base = Base>({
     session,
     urlIds,
     params,
-  }: BaseFindArgs): Promise<T[]> {
+  }: BaseFindArgs): Promise<FindAllResponse<T>> {
     const response = await this.request<T>({
       http_method: 'get',
       operation: 'get',
@@ -82,10 +86,11 @@ export class Base {
       params,
     });
 
-    this.NEXT_PAGE_INFO = response.pageInfo?.nextPage;
-    this.PREV_PAGE_INFO = response.pageInfo?.prevPage;
-
-    return this.createInstancesFromResponse<T>(session, response.body as Body);
+    return {
+      data: this.createInstancesFromResponse<T>(session, response.body as Body),
+      headers: response.headers,
+      pageInfo: response.pageInfo,
+    };
   }
 
   protected static async request<T = unknown>({
@@ -97,9 +102,9 @@ export class Base {
     body,
     entity,
   }: RequestArgs): Promise<RestRequestReturn<T>> {
-    const client = new this.CLIENT({
+    const client = new this.Client({
       session,
-      apiVersion: this.API_VERSION as ApiVersion,
+      apiVersion: this.apiVersion as ApiVersion,
     });
 
     const path = this.getPath({http_method, operation, urlIds, entity});
@@ -150,7 +155,7 @@ export class Base {
     let match: string | null = null;
     let specificity = -1;
 
-    this.PATHS.forEach((path: ResourcePath) => {
+    this.paths.forEach((path: ResourcePath) => {
       if (
         http_method !== path.http_method ||
         operation !== path.operation ||
@@ -196,8 +201,8 @@ export class Base {
       throw new RestResourceError('Could not find a path for request');
     }
 
-    if (this.CUSTOM_PREFIX) {
-      return `${this.CUSTOM_PREFIX}/${match}`;
+    if (this.customPrefix) {
+      return `${this.customPrefix}/${match}`;
     } else {
       return match;
     }
@@ -207,16 +212,16 @@ export class Base {
     session: Session,
     data: Body,
   ): T[] {
-    if (data[this.PLURAL_NAME] || Array.isArray(data[this.NAME])) {
-      return (data[this.PLURAL_NAME] || data[this.NAME]).reduce(
+    if (data[this.pluralName] || Array.isArray(data[this.resourceName])) {
+      return (data[this.pluralName] || data[this.resourceName]).reduce(
         (acc: T[], entry: Body) =>
           acc.concat(this.createInstance<T>(session, entry)),
         [],
       );
     }
 
-    if (data[this.NAME]) {
-      return [this.createInstance<T>(session, data[this.NAME])];
+    if (data[this.resourceName]) {
+      return [this.createInstance<T>(session, data[this.resourceName])];
     }
 
     return [];
@@ -253,8 +258,8 @@ export class Base {
   }
 
   public async save({update = false}: SaveArgs = {}): Promise<void> {
-    const {PRIMARY_KEY, NAME} = this.resource();
-    const method = this[PRIMARY_KEY] ? 'put' : 'post';
+    const {primaryKey, resourceName} = this.resource();
+    const method = this[primaryKey] ? 'put' : 'post';
 
     const data = this.serialize(true);
 
@@ -267,7 +272,7 @@ export class Base {
       entity: this,
     });
 
-    const body: Body | undefined = (response.body as Body)[NAME];
+    const body: Body | undefined = (response.body as Body)[resourceName];
 
     if (update && body) {
       this.setData(body);
@@ -289,21 +294,21 @@ export class Base {
   }
 
   public serialize(saving = false): Body {
-    const {HAS_MANY, HAS_ONE, READ_ONLY_ATTRIBUTES} = this.resource();
+    const {hasMany, hasOne, readOnlyAttributes} = this.resource();
 
     return Object.entries(this).reduce((acc: Body, [attribute, value]) => {
       if (
         ['#session'].includes(attribute) ||
-        (saving && READ_ONLY_ATTRIBUTES.includes(attribute))
+        (saving && readOnlyAttributes.includes(attribute))
       ) {
         return acc;
       }
 
-      if (attribute in HAS_MANY && value) {
+      if (attribute in hasMany && value) {
         acc[attribute] = value.reduce((attrAcc: Body, entry: Base) => {
           return attrAcc.concat(this.serializeSubAttribute(entry, saving));
         }, []);
-      } else if (attribute in HAS_ONE && value) {
+      } else if (attribute in hasOne && value) {
         acc[attribute] = this.serializeSubAttribute(value, saving);
       } else {
         acc[attribute] = value;
@@ -322,19 +327,19 @@ export class Base {
   }
 
   protected setData(data: Body): void {
-    const {HAS_MANY, HAS_ONE} = this.resource();
+    const {hasMany, hasOne} = this.resource();
 
     Object.entries(data).forEach(([attribute, val]) => {
-      if (attribute in HAS_MANY) {
-        const HasManyResource: typeof Base = HAS_MANY[attribute];
+      if (attribute in hasMany) {
+        const HasManyResource: typeof Base = hasMany[attribute];
         this[attribute] = [];
         val.forEach((entry: Body) => {
           this[attribute].push(
             new HasManyResource({session: this.session, fromData: entry}),
           );
         });
-      } else if (attribute in HAS_ONE) {
-        const HasOneResource: typeof Base = HAS_ONE[attribute];
+      } else if (attribute in hasOne) {
+        const HasOneResource: typeof Base = hasOne[attribute];
         this[attribute] = new HasOneResource({
           session: this.session,
           fromData: val,

@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -29,13 +29,13 @@ interface CountArgs {
 }
 
 export class Collect extends Base {
-  public static API_VERSION = ApiVersion.January23;
+  public static apiVersion = ApiVersion.January23;
 
-  protected static NAME = 'collect';
-  protected static PLURAL_NAME = 'collects';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'collect';
+  protected static pluralName = 'collects';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "collects/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "collects/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "collects.json"},
@@ -55,7 +55,7 @@ export class Collect extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -83,7 +83,7 @@ export class Collect extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Collect[]> {
+  ): Promise<FindAllResponse<Collect>> {
     const response = await this.baseFind<Collect>({
       session: session,
       urlIds: {},

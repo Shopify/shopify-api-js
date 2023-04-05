@@ -31,17 +31,17 @@ describe('LocationsForMove resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"locations_for_move": [{"location": {"id": 1072404544, "name": "Alpha Location"}, "message": "Current location.", "movable": false}, {"location": {"id": 1072404545, "name": "Bravo Location"}, "message": "No items are stocked at this location.", "movable": false}]}));
+    queueMockResponse(JSON.stringify({"locations_for_move": [{"location": {"id": 1072404542, "name": "Alpha Location"}, "message": "Current location.", "movable": false}, {"location": {"id": 1072404543, "name": "Bravo Location"}, "message": "No items are stocked at this location.", "movable": false}]}));
 
     await shopify.rest.LocationsForMove.all({
       session: session,
-      fulfillment_order_id: 1046000829,
+      fulfillment_order_id: 1046000823,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-10/fulfillment_orders/1046000829/locations_for_move.json',
+      path: '/admin/api/2022-10/fulfillment_orders/1046000823/locations_for_move.json',
       query: '',
       headers,
       data: undefined
