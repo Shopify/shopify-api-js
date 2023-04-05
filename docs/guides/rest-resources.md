@@ -109,25 +109,24 @@ From this point, you can start using the resources to interact with the API.
 Shopify's REST API supports [cursor-based pagination](https://shopify.dev/docs/api/usage/pagination-rest), to limit the amount of data sent to an app on a single request.
 
 Each request will return the information required for an app to request the previous / next set of items.
-
-For REST resources, the class will contain the information necessary to make those requests in the `NEXT_PAGE_INFO` and `PREV_PAGE_INFO` properties.
-These values will always reflect the last request made with that class.
+For REST resources, calls to the `all` method will return the information necessary to make those requests in the `pageInfo` property.
 
 Here is an example for fetching more than one set of products from the API:
 
 ```ts
+let pageInfo;
 do {
-  const pageProducts = await shopify.rest.Product.all({
-    ...shopify.rest.Product.NEXT_PAGE_INFO?.query,
+  const response = await shopify.rest.Product.all({
+    ...pageInfo?.nextPage?.query,
     session,
-    status: 'active',
+    limit: 10,
   });
 
+  const pageProducts = response.data;
   // ... use pageProducts
-} while (shopify.rest.Product.NEXT_PAGE_INFO);
-```
 
-> **Note**: these properties are not thread-safe because they're stored statically in the class.
-> If you are using this feature to send requests in parallel, you can store the `query` property in a thread-safe way, since it's a plain JavaScript object.
+  pageInfo = response.pageInfo;
+} while (pageInfo?.nextPage);
+```
 
 [Back to guide index](../../README.md#guides)

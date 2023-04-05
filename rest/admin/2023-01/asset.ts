@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -21,19 +21,19 @@ interface AllArgs {
 }
 
 export class Asset extends Base {
-  public static API_VERSION = ApiVersion.January23;
+  public static apiVersion = ApiVersion.January23;
 
-  protected static NAME = 'asset';
-  protected static PLURAL_NAME = 'assets';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'asset';
+  protected static pluralName = 'assets';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
     {"http_method": "get", "operation": "get", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
     {"http_method": "get", "operation": "get", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
     {"http_method": "put", "operation": "put", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"}
   ];
-  protected static PRIMARY_KEY: string = "key";
+  protected static primaryKey: string = "key";
 
   public static async delete(
     {
@@ -61,7 +61,7 @@ export class Asset extends Base {
       asset = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Asset[]> {
+  ): Promise<FindAllResponse<Asset>> {
     const response = await this.baseFind<Asset>({
       session: session,
       urlIds: {"theme_id": theme_id},

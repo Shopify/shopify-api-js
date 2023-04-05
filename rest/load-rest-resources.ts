@@ -17,9 +17,9 @@ export function loadRestResources({
   RestClient,
 }: LoadRestResourcesParams): ShopifyRestResources {
   const firstResource = Object.keys(resources)[0];
-  if (config.apiVersion !== resources[firstResource].API_VERSION) {
+  if (config.apiVersion !== resources[firstResource].apiVersion) {
     logger(config).warning(
-      `Loading REST resources for API version ${resources[firstResource].API_VERSION}, which doesn't match the default ${config.apiVersion}`,
+      `Loading REST resources for API version ${resources[firstResource].apiVersion}, which doesn't match the default ${config.apiVersion}`,
     );
   }
 
@@ -28,21 +28,21 @@ export function loadRestResources({
       class NewResource extends resource {}
 
       NewResource.setClassProperties({
-        CLIENT: RestClient,
-        CONFIG: config,
+        Client: RestClient,
+        config,
       });
 
-      Object.entries(NewResource.HAS_ONE).map(([_attribute, klass]) => {
+      Object.entries(NewResource.hasOne).map(([_attribute, klass]) => {
         (klass as typeof Base).setClassProperties({
-          CLIENT: RestClient,
-          CONFIG: config,
+          Client: RestClient,
+          config,
         });
       });
 
-      Object.entries(NewResource.HAS_MANY).map(([_attribute, klass]) => {
+      Object.entries(NewResource.hasMany).map(([_attribute, klass]) => {
         (klass as typeof Base).setClassProperties({
-          CLIENT: RestClient,
-          CONFIG: config,
+          Client: RestClient,
+          config,
         });
       });
 

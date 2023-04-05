@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -38,16 +38,16 @@ interface ProductIdsArgs {
 }
 
 export class ProductListing extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'product_listing';
-  protected static PLURAL_NAME = 'product_listings';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {
+  protected static resourceName = 'product_listing';
+  protected static pluralName = 'product_listings';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {
     "images": Image,
     "variants": Variant
   };
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "product_listings/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "product_listings.json"},
@@ -55,7 +55,7 @@ export class ProductListing extends Base {
     {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
     {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
   ];
-  protected static PRIMARY_KEY: string = "product_id";
+  protected static primaryKey: string = "product_id";
 
   public static async find(
     {
@@ -68,7 +68,7 @@ export class ProductListing extends Base {
       urlIds: {"product_id": product_id},
       params: {},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -98,7 +98,7 @@ export class ProductListing extends Base {
       handle = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<ProductListing[]> {
+  ): Promise<FindAllResponse<ProductListing>> {
     const response = await this.baseFind<ProductListing>({
       session: session,
       urlIds: {},

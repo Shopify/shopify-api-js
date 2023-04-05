@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -34,13 +34,13 @@ interface SetArgs {
 }
 
 export class CustomerAddress extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'customer_address';
-  protected static PLURAL_NAME = 'customer_addresses';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'customer_address';
+  protected static pluralName = 'customer_addresses';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
     {"http_method": "get", "operation": "get", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
@@ -67,7 +67,7 @@ export class CustomerAddress extends Base {
       urlIds: {"id": id, "customer_id": customer_id},
       params: {},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -94,7 +94,7 @@ export class CustomerAddress extends Base {
       customer_id = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<CustomerAddress[]> {
+  ): Promise<FindAllResponse<CustomerAddress>> {
     const response = await this.baseFind<CustomerAddress>({
       session: session,
       urlIds: {"customer_id": customer_id},

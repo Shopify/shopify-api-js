@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -63,15 +63,15 @@ interface TagsArgs {
 }
 
 export class Article extends Base {
-  public static API_VERSION = ApiVersion.January23;
+  public static apiVersion = ApiVersion.January23;
 
-  protected static NAME = 'article';
-  protected static PLURAL_NAME = 'articles';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {
+  protected static resourceName = 'article';
+  protected static pluralName = 'articles';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {
     "metafields": Metafield
   };
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
     {"http_method": "get", "operation": "authors", "ids": [], "path": "articles/authors.json"},
     {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
@@ -96,7 +96,7 @@ export class Article extends Base {
       urlIds: {"id": id, "blog_id": blog_id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -136,7 +136,7 @@ export class Article extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Article[]> {
+  ): Promise<FindAllResponse<Article>> {
     const response = await this.baseFind<Article>({
       session: session,
       urlIds: {"blog_id": blog_id},

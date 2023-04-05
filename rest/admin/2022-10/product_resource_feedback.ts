@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -14,13 +14,13 @@ interface AllArgs {
 }
 
 export class ProductResourceFeedback extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'product_resource_feedback';
-  protected static PLURAL_NAME = 'product_resource_feedbacks';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'product_resource_feedback';
+  protected static pluralName = 'product_resource_feedbacks';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"}
   ];
@@ -36,7 +36,7 @@ export class ProductResourceFeedback extends Base {
       product_id = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<ProductResourceFeedback[]> {
+  ): Promise<FindAllResponse<ProductResourceFeedback>> {
     const response = await this.baseFind<ProductResourceFeedback>({
       session: session,
       urlIds: {"product_id": product_id},

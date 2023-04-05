@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -45,13 +45,13 @@ interface CountArgs {
 }
 
 export class CustomCollection extends Base {
-  public static API_VERSION = ApiVersion.January23;
+  public static apiVersion = ApiVersion.January23;
 
-  protected static NAME = 'custom_collection';
-  protected static PLURAL_NAME = 'custom_collections';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'custom_collection';
+  protected static pluralName = 'custom_collections';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "custom_collections/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "custom_collections/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "custom_collections.json"},
@@ -72,7 +72,7 @@ export class CustomCollection extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -109,7 +109,7 @@ export class CustomCollection extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<CustomCollection[]> {
+  ): Promise<FindAllResponse<CustomCollection>> {
     const response = await this.baseFind<CustomCollection>({
       session: session,
       urlIds: {},

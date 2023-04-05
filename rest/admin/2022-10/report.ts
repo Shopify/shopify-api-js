@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -28,13 +28,13 @@ interface AllArgs {
 }
 
 export class Report extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'report';
-  protected static PLURAL_NAME = 'reports';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'report';
+  protected static pluralName = 'reports';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "reports/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "reports.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "reports/<id>.json"},
@@ -54,7 +54,7 @@ export class Report extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async delete(
@@ -85,7 +85,7 @@ export class Report extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Report[]> {
+  ): Promise<FindAllResponse<Report>> {
     const response = await this.baseFind<Report>({
       session: session,
       urlIds: {},

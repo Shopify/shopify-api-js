@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -15,13 +15,13 @@ interface AllArgs {
 }
 
 export class AssignedFulfillmentOrder extends Base {
-  public static API_VERSION = ApiVersion.January23;
+  public static apiVersion = ApiVersion.January23;
 
-  protected static NAME = 'fulfillment_order';
-  protected static PLURAL_NAME = 'fulfillment_orders';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'fulfillment_order';
+  protected static pluralName = 'fulfillment_orders';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "assigned_fulfillment_orders.json"}
   ];
 
@@ -32,7 +32,7 @@ export class AssignedFulfillmentOrder extends Base {
       location_ids = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<AssignedFulfillmentOrder[]> {
+  ): Promise<FindAllResponse<AssignedFulfillmentOrder>> {
     const response = await this.baseFind<AssignedFulfillmentOrder>({
       session: session,
       urlIds: {},
