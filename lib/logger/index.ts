@@ -28,7 +28,7 @@ export function logger(config: ConfigInterface) {
 export type ShopifyLogger = ReturnType<typeof logger>;
 
 function deprecated(logFunction: LoggerFunction) {
-  return async function (version: string, message: string): Promise<void> {
+  return function (version: string, message: string): void {
     if (semver.gte(SHOPIFY_API_LIBRARY_VERSION, version)) {
       throw new FeatureDeprecatedError(
         `Feature was deprecated in version ${version}`,

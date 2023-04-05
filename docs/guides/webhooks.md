@@ -27,7 +27,7 @@ const handleWebhookRequest = async (
   // Fetch the session from storage and process the webhook event
 };
 
-await shopify.webhooks.addHandlers({
+shopify.webhooks.addHandlers({
   PRODUCTS_CREATE: [
     {
       deliveryMethod: DeliveryMethod.Http,

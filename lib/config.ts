@@ -105,10 +105,7 @@ function notEmpty<T>(value: T): value is NonNullable<T> {
     : true;
 }
 
-async function defaultLogFunction(
-  severity: LogSeverity,
-  message: string,
-): Promise<void> {
+function defaultLogFunction(severity: LogSeverity, message: string): void {
   switch (severity) {
     case LogSeverity.Debug:
       console.debug(message);

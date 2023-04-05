@@ -4,7 +4,7 @@ import {AuthScopes} from './auth/scopes';
 import {BillingConfig} from './billing/types';
 import {ApiVersion, LogSeverity} from './types';
 
-export type LogFunction = (severity: LogSeverity, msg: string) => Promise<void>;
+export type LogFunction = (severity: LogSeverity, msg: string) => void;
 
 export interface ConfigParams<T extends ShopifyRestResources = any> {
   apiKey: string;

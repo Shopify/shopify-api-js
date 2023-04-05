@@ -27,7 +27,7 @@ This object supports the following values:
 | level        | `LogSeverity`   |    No    |  `LogSeverity.Info`   | Minimum severity for which to trigger the log function                                                                                                                      |
 | timestamps   | `boolean`       |    No    |        `false`        | Whether to add the current timestamp to every log call                                                                                                                      |
 | httpRequests | `boolean`       |    No    |        `false`        | Whether to log **ALL** HTTP requests made by the package. Only works if `level` is `Debug`                                                                                  |
-| log          | `AsyncFunction` |    No    | `() => Promise<void>` | Async callback function used for logging, which takes in a `LogSeverity` value and a formatted `message`. Defaults to using `console` calls matching the severity parameter |
+| log          | `Function`      |    No    | `() => void`          | Callback function used for logging, which takes in a `LogSeverity` value and a formatted `message`. Defaults to using `console` calls matching the severity parameter |
 
 ## Adjusting level of log output
 
@@ -127,7 +127,7 @@ import {writeFileSync} from 'fs';
 const errorLogFile = './error.log';
 const appLogFile = './application.log';
 
-const myLoggingFunction = async (severity, message) => {
+const myLoggingFunction = (severity, message) => {
   writeFileSync(appLogFile, `${message}\n`, {flag: 'a'});
   if (severity == LogSeverity.Error) {
     writeFileSync(errorLogFile, `${message}\n`, {flag: 'a'});
