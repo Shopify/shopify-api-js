@@ -2,7 +2,6 @@ import {ShopifyError} from './error';
 import {ConfigInterface, ConfigParams} from './base-types';
 import {LATEST_API_VERSION, LogSeverity} from './types';
 import {AuthScopes} from './auth/scopes';
-import {logger as createLogger} from './logger';
 
 export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   const config: ConfigInterface = {
@@ -28,11 +27,7 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
     'apiSecretKey',
     'hostName',
   ];
-  if (
-    (!('isCustomStoreApp' in params) || !params.isCustomStoreApp) &&
-    // DEPRECATION: isPrivateApp to be removed in 7.0.0
-    (!('isPrivateApp' in params) || !(params as any).isPrivateApp)
-  ) {
+  if (!('isCustomStoreApp' in params) || !params.isCustomStoreApp) {
     mandatory.push('scopes');
   }
   const missing: (keyof ConfigParams)[] = [];
@@ -79,19 +74,6 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
     customShopDomains: customShopDomains ?? config.customShopDomains,
     billing: billing ?? config.billing,
   });
-
-  if ('isPrivateApp' in params) {
-    createLogger(config).deprecated(
-      '7.0.0',
-      'The `isPrivateApp` config option has been deprecated. Please use `isCustomStoreApp` instead.',
-    );
-
-    // only set isCustomStoreApp to value of isPrivateApp, if isCustomStoreApp hasn't been set explicitly
-    if (!('isCustomStoreApp' in params)) {
-      config.isCustomStoreApp = (params as any).isPrivateApp;
-    }
-    delete (config as any).isPrivateApp;
-  }
 
   return config;
 }
