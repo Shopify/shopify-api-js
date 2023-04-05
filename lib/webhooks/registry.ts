@@ -21,16 +21,16 @@ export function addHandlers(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
 ) {
-  return async function addHandlers(handlersToAdd: AddHandlersParams) {
+  return function addHandlers(handlersToAdd: AddHandlersParams) {
     for (const [topic, handlers] of Object.entries(handlersToAdd)) {
       const topicKey = topicForStorage(topic);
 
       if (Array.isArray(handlers)) {
         for (const handler of handlers) {
-          await mergeOrAddHandler(config, webhookRegistry, topicKey, handler);
+          mergeOrAddHandler(config, webhookRegistry, topicKey, handler);
         }
       } else {
-        await mergeOrAddHandler(config, webhookRegistry, topicKey, handlers);
+        mergeOrAddHandler(config, webhookRegistry, topicKey, handlers);
       }
     }
   };
@@ -79,7 +79,7 @@ export function addHostToCallbackUrl(
   }
 }
 
-async function mergeOrAddHandler(
+function mergeOrAddHandler(
   config: ConfigInterface,
   webhookRegistry: WebhookRegistry,
   topic: string,
@@ -111,7 +111,7 @@ async function mergeOrAddHandler(
     }
 
     if (handler.deliveryMethod === DeliveryMethod.Http) {
-      await logger(config).info(
+      logger(config).info(
         `Detected multiple handlers for '${topic}', webhooks.process will call them sequentially`,
       );
       break;

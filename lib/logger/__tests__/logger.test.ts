@@ -1,3 +1,6 @@
+import path from 'path';
+import * as fs from 'fs';
+
 import {FeatureDeprecatedError} from '../../error';
 import {LogSeverity} from '../../types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
@@ -10,7 +13,7 @@ describe('shopify.logger', () => {
 
   describe('direct calls', () => {
     it('can log debug logs', async () => {
-      await shopify.logger.log(LogSeverity.Debug, 'debug message');
+      shopify.logger.log(LogSeverity.Debug, 'debug message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Debug,
@@ -19,7 +22,7 @@ describe('shopify.logger', () => {
     });
 
     it('can log info logs', async () => {
-      await shopify.logger.log(LogSeverity.Info, 'info message');
+      shopify.logger.log(LogSeverity.Info, 'info message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Info,
@@ -28,7 +31,7 @@ describe('shopify.logger', () => {
     });
 
     it('can log warning logs', async () => {
-      await shopify.logger.log(LogSeverity.Warning, 'warning message');
+      shopify.logger.log(LogSeverity.Warning, 'warning message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Warning,
@@ -37,7 +40,7 @@ describe('shopify.logger', () => {
     });
 
     it('can log error logs', async () => {
-      await shopify.logger.log(LogSeverity.Error, 'error message');
+      shopify.logger.log(LogSeverity.Error, 'error message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Error,
@@ -48,7 +51,7 @@ describe('shopify.logger', () => {
 
   describe('proxy calls', () => {
     it('can log debug logs', async () => {
-      await shopify.logger.debug('debug message');
+      shopify.logger.debug('debug message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Debug,
@@ -57,7 +60,7 @@ describe('shopify.logger', () => {
     });
 
     it('can log info logs', async () => {
-      await shopify.logger.info('info message');
+      shopify.logger.info('info message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Info,
@@ -66,7 +69,7 @@ describe('shopify.logger', () => {
     });
 
     it('can log warning logs', async () => {
-      await shopify.logger.warning('warning message');
+      shopify.logger.warning('warning message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Warning,
@@ -75,7 +78,7 @@ describe('shopify.logger', () => {
     });
 
     it('can log error logs', async () => {
-      await shopify.logger.error('error message');
+      shopify.logger.error('error message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Error,
@@ -84,7 +87,7 @@ describe('shopify.logger', () => {
     });
 
     it('can log deprecations for future versions', async () => {
-      await shopify.logger.deprecated('9999.0.0', 'This is a test');
+      shopify.logger.deprecated('9999.0.0', 'This is a test');
 
       expect(shopify.config.logger.log).toHaveBeenCalledWith(
         LogSeverity.Warning,
@@ -93,12 +96,12 @@ describe('shopify.logger', () => {
     });
 
     it('throws an error when we move past the release version', async () => {
-      await expect(
-        shopify.logger.deprecated(
+      expect(() => {
+        return shopify.logger.deprecated(
           SHOPIFY_API_LIBRARY_VERSION,
           'This is a test',
-        ),
-      ).rejects.toThrow(FeatureDeprecatedError);
+        );
+      }).toThrow(FeatureDeprecatedError);
     });
   });
 
@@ -110,7 +113,7 @@ describe('shopify.logger', () => {
   ].forEach((config) => {
     describe(`with context - config: ${JSON.stringify(config)}`, () => {
       it('includes base prefix without any context', async () => {
-        await shopify.logger.log(config.severity, 'test message');
+        shopify.logger.log(config.severity, 'test message');
 
         expect(shopify.config.logger.log).toHaveBeenCalledWith(
           config.severity,
@@ -119,7 +122,7 @@ describe('shopify.logger', () => {
       });
 
       it('includes context in output string', async () => {
-        await shopify.logger.log(config.severity, 'test message', {
+        shopify.logger.log(config.severity, 'test message', {
           key1: 'value1',
           key2: 2,
           key3: null,
@@ -163,10 +166,10 @@ describe('shopify.logger', () => {
     )}`, async () => {
       shopify.config.logger.level = config.logLevel;
 
-      await shopify.logger.log(LogSeverity.Debug, 'debug message');
-      await shopify.logger.log(LogSeverity.Info, 'info message');
-      await shopify.logger.log(LogSeverity.Warning, 'warning message');
-      await shopify.logger.log(LogSeverity.Error, 'error message');
+      shopify.logger.log(LogSeverity.Debug, 'debug message');
+      shopify.logger.log(LogSeverity.Info, 'info message');
+      shopify.logger.log(LogSeverity.Warning, 'warning message');
+      shopify.logger.log(LogSeverity.Error, 'error message');
 
       expect(shopify.config.logger.log).toHaveBeenCalledTimes(
         config.expectedLevels.length,
@@ -183,7 +186,7 @@ describe('shopify.logger', () => {
   it('does not log times when setting is off', async () => {
     shopify.config.logger.timestamps = false;
 
-    await shopify.logger.log(LogSeverity.Debug, 'debug message');
+    shopify.logger.log(LogSeverity.Debug, 'debug message');
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
@@ -196,7 +199,7 @@ describe('shopify.logger', () => {
     jest.setSystemTime(Date.UTC(2022, 0, 1, 0));
     shopify.config.logger.timestamps = true;
 
-    await shopify.logger.log(LogSeverity.Debug, 'debug message');
+    shopify.logger.log(LogSeverity.Debug, 'debug message');
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
@@ -205,7 +208,7 @@ describe('shopify.logger', () => {
   });
 
   it('properly uses context.package', async () => {
-    await shopify.logger.log(LogSeverity.Debug, 'debug message', {
+    shopify.logger.log(LogSeverity.Debug, 'debug message', {
       package: 'MyPackage',
     });
 
@@ -213,5 +216,35 @@ describe('shopify.logger', () => {
       LogSeverity.Debug,
       '[MyPackage/DEBUG] debug message',
     );
+  });
+
+  it('can use a custom async logger', async () => {
+    const testLogFilePath = path.join(__dirname, 'test.log');
+
+    const log = (severity: LogSeverity, message: string) => {
+      fs.promises
+        .writeFile(testLogFilePath, `${severity}: ${message}`)
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
+    shopify.config.logger = {
+      ...shopify.config.logger,
+      log,
+    };
+
+    shopify.logger.log(LogSeverity.Debug, 'debug message');
+
+    fs.appendFileSync(testLogFilePath, '');
+    const logContent = await fs.promises.readFile(testLogFilePath, 'utf8');
+
+    expect(logContent).toEqual(
+      `${LogSeverity.Debug}: [shopify-api/DEBUG] debug message`,
+    );
+
+    fs.promises.rm(testLogFilePath).catch((_error) => {
+      // ignore
+    });
   });
 });

@@ -31,7 +31,7 @@ describe('webhooks', () => {
     const handler2: HttpWebhookHandler = {...HTTP_HANDLER};
     const handler3: HttpWebhookHandler = {...HTTP_HANDLER, callback: jest.fn()};
 
-    await shopify.webhooks.addHandlers({[topic]: handler1});
+    shopify.webhooks.addHandlers({[topic]: handler1});
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckEmptyResponse));
     queueMockResponse(JSON.stringify(mockResponses.successResponse));
@@ -40,7 +40,7 @@ describe('webhooks', () => {
     expect(shopify.webhooks.getTopicsAdded()).toContain('PRODUCTS_CREATE');
 
     // Add a second handler
-    await shopify.webhooks.addHandlers({PRODUCTS_UPDATE: handler2});
+    shopify.webhooks.addHandlers({PRODUCTS_UPDATE: handler2});
 
     queueMockResponse(JSON.stringify(mockResponses.webhookCheckResponse));
     queueMockResponse(JSON.stringify(mockResponses.successResponse));
@@ -50,7 +50,7 @@ describe('webhooks', () => {
     expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
 
     // Update the first handler and make sure we still have the two of them
-    await shopify.webhooks.addHandlers({[topic]: handler3});
+    shopify.webhooks.addHandlers({[topic]: handler3});
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Info,
       expect.stringContaining(
@@ -114,7 +114,7 @@ describe('webhooks', () => {
     const handler1 = HTTP_HANDLER;
     const handler2 = HTTP_HANDLER;
 
-    await shopify.webhooks.addHandlers({[topic]: [handler1, handler2]});
+    shopify.webhooks.addHandlers({[topic]: [handler1, handler2]});
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Info,
       expect.stringContaining(
@@ -133,22 +133,22 @@ describe('webhooks', () => {
     const handler1 = EVENT_BRIDGE_HANDLER;
     const handler2 = EVENT_BRIDGE_HANDLER;
 
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
 
-    await expect(
-      shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2}),
-    ).rejects.toThrowError(InvalidDeliveryMethodError);
+    expect(() => {
+      return shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
+    }).toThrowError(InvalidDeliveryMethodError);
   });
 
   it('fails to register multiple PubSub handlers for the same topic', async () => {
     const handler1 = PUB_SUB_HANDLER;
     const handler2 = PUB_SUB_HANDLER;
 
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
 
-    await expect(
-      shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2}),
-    ).rejects.toThrowError(InvalidDeliveryMethodError);
+    expect(() => {
+      return shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
+    }).toThrowError(InvalidDeliveryMethodError);
   });
 });
 
@@ -174,7 +174,7 @@ describe('dual webhook registry instances', () => {
   });
 
   it('adds different handlers for different topics to each registry', async () => {
-    await shopify.webhooks.addHandlers({PRODUCTS: handler1});
+    shopify.webhooks.addHandlers({PRODUCTS: handler1});
     shopify2.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
 
     expect(shopify.webhooks.getTopicsAdded()).toStrictEqual(['PRODUCTS']);
@@ -190,7 +190,7 @@ describe('dual webhook registry instances', () => {
   });
 
   it('adds different handlers for same topic to each registry', async () => {
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
     shopify2.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
 
     expect(shopify.webhooks.getTopicsAdded()).toStrictEqual([
@@ -243,7 +243,7 @@ describe('dual webhook registry instances', () => {
   });
 
   it('can fire handlers from different instances', async () => {
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
     shopify2.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
 
     let response = await request(app)

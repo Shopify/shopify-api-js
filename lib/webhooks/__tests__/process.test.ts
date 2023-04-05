@@ -66,7 +66,7 @@ describe('shopify.webhooks.process', () => {
 
   it('handles the request when topic is already registered', async () => {
     const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
 
     const response = await request(app)
       .post('/webhooks')
@@ -80,7 +80,7 @@ describe('shopify.webhooks.process', () => {
 
   it('handles lower case headers', async () => {
     const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
 
     const response = await request(app)
       .post('/webhooks')
@@ -99,7 +99,7 @@ describe('shopify.webhooks.process', () => {
 
   it('handles the request and returns Not Found when topic is not registered', async () => {
     const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
-    await shopify.webhooks.addHandlers({NONSENSE_TOPIC: handler});
+    shopify.webhooks.addHandlers({NONSENSE_TOPIC: handler});
 
     const response = await request(app)
       .post('/webhooks')
@@ -114,7 +114,7 @@ describe('shopify.webhooks.process', () => {
 
   it('handles the request and returns Unauthorized when hmac does not match', async () => {
     const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
 
     const response = await request(app)
       .post('/webhooks')
@@ -128,7 +128,7 @@ describe('shopify.webhooks.process', () => {
 
   it('fails if the given body is empty', async () => {
     const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
 
     const response = await request(app)
       .post('/webhooks')
@@ -141,7 +141,7 @@ describe('shopify.webhooks.process', () => {
 
   it('fails if the any of the required headers are missing', async () => {
     const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
 
     const emptyHeaders = [
       {apiVersion: ''},
@@ -172,7 +172,7 @@ describe('shopify.webhooks.process', () => {
         throw new Error(errorMessage);
       },
     };
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
 
     const response = await request(app)
       .post('/webhooks')

@@ -28,10 +28,10 @@ describe('shopify.webhooks.addHandlers', () => {
       callback: jest.fn().mockImplementation(genericWebhookHandler),
     };
 
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler1});
     expect(shopify.webhooks.getTopicsAdded()).toHaveLength(1);
 
-    await shopify.webhooks.addHandlers({PRODUCTS: handler2});
+    shopify.webhooks.addHandlers({PRODUCTS: handler2});
     expect(shopify.webhooks.getTopicsAdded()).toHaveLength(2);
     expect(shopify.webhooks.getTopicsAdded()).toEqual([
       'PRODUCTS_CREATE',
@@ -43,7 +43,7 @@ describe('shopify.webhooks.addHandlers', () => {
     handler1 = {...HTTP_HANDLER, callback: jest.fn()};
     handler2 = {...HTTP_HANDLER, callback: jest.fn()};
 
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: [handler1, handler2]});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: [handler1, handler2]});
 
     expect(shopify.webhooks.getTopicsAdded()).toHaveLength(1);
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
@@ -58,27 +58,23 @@ describe('shopify.webhooks.addHandlers', () => {
   });
 
   it('fails if eventbridge handlers point to the same location', async () => {
-    await expect(
-      shopify.webhooks.addHandlers({
+    expect(() => {
+      return shopify.webhooks.addHandlers({
         PRODUCTS_CREATE: [EVENT_BRIDGE_HANDLER, EVENT_BRIDGE_HANDLER],
-      }),
-    ).rejects.toThrow(
-      'Can only add multiple handlers when deliveryMethod is Http.',
-    );
+      });
+    }).toThrow('Can only add multiple handlers when deliveryMethod is Http.');
   });
 
   it('fails if pubsub handlers point to the same location', async () => {
-    await expect(
-      shopify.webhooks.addHandlers({
+    expect(() => {
+      return shopify.webhooks.addHandlers({
         PRODUCTS_CREATE: [PUB_SUB_HANDLER, PUB_SUB_HANDLER],
-      }),
-    ).rejects.toThrow(
-      'Can only add multiple handlers when deliveryMethod is Http.',
-    );
+      });
+    }).toThrow('Can only add multiple handlers when deliveryMethod is Http.');
   });
 
   it('adds handler with lowercase/slash format to the webhook registry', async () => {
-    await shopify.webhooks.addHandlers({
+    shopify.webhooks.addHandlers({
       'products/create': handler1,
       'products/delete': handler2,
     });
@@ -98,14 +94,14 @@ describe('shopify.webhooks.getHandlers', () => {
   it('gets a handler', async () => {
     const handler = HTTP_HANDLER;
 
-    await shopify.webhooks.addHandlers({PRODUCTS: handler});
+    shopify.webhooks.addHandlers({PRODUCTS: handler});
     expect(shopify.webhooks.getHandlers('PRODUCTS')).toStrictEqual([handler]);
   });
 
   it('gets a handler using lowercase and slash format', async () => {
     const handler = HTTP_HANDLER;
 
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
     expect(shopify.webhooks.getHandlers('products/create')).toStrictEqual([
       handler,
     ]);
@@ -114,7 +110,7 @@ describe('shopify.webhooks.getHandlers', () => {
   it('gets a handler registered using lowercase and slash format using uppercase format', async () => {
     const handler = HTTP_HANDLER;
 
-    await shopify.webhooks.addHandlers({'products/create': handler});
+    shopify.webhooks.addHandlers({'products/create': handler});
 
     expect(shopify.webhooks.getHandlers('PRODUCTS_CREATE')).toStrictEqual([
       handler,
@@ -131,8 +127,8 @@ describe('shopify.webhooks.getTopicsAdded', () => {
     const handler1 = {...HTTP_HANDLER};
     const handler2 = {...HTTP_HANDLER};
 
-    await shopify.webhooks.addHandlers({PRODUCTS: handler1});
-    await shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
+    shopify.webhooks.addHandlers({PRODUCTS: handler1});
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler2});
     expect(shopify.webhooks.getTopicsAdded()).toStrictEqual([
       'PRODUCTS',
       'PRODUCTS_CREATE',
