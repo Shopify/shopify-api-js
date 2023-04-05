@@ -7,14 +7,14 @@ export type LoggerFunction = (
   severity: LogSeverity,
   message: string,
   context?: {[key: string]: any},
-) => Promise<void>;
+) => void;
 
 export function log(config: ConfigInterface): LoggerFunction {
-  return async function (
+  return function (
     severity: LogSeverity,
     message: string,
     context: LogContext = {},
-  ): Promise<void> {
+  ): void {
     if (severity > config.logger.level) {
       return;
     }
@@ -55,9 +55,6 @@ export function log(config: ConfigInterface): LoggerFunction {
       suffix = ` | {${contextParts.join(', ')}}`;
     }
 
-    await config.logger.log(
-      severity,
-      `[${prefix.join('] [')}] ${message}${suffix}`,
-    );
+    config.logger.log(severity, `[${prefix.join('] [')}] ${message}${suffix}`);
   };
 }
