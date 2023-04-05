@@ -14,9 +14,7 @@ export interface BeginParams extends AdapterArgs {
   isOnline: boolean;
 }
 
-export interface CallbackParams extends AdapterArgs {
-  isOnline?: boolean;
-}
+export interface CallbackParams extends AdapterArgs {}
 
 export interface AccessTokenResponse {
   access_token: string;

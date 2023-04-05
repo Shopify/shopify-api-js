@@ -99,7 +99,6 @@ export function begin(config: ConfigInterface) {
 
 export function callback(config: ConfigInterface) {
   return async function callback<T = AdapterHeaders>({
-    isOnline: isOnlineParam,
     ...adapterArgs
   }: CallbackParams): Promise<CallbackResponse<T>> {
     throwIfCustomStoreApp(
@@ -108,13 +107,6 @@ export function callback(config: ConfigInterface) {
     );
 
     const log = logger(config);
-
-    if (isOnlineParam !== undefined) {
-      await log.deprecated(
-        '7.0.0',
-        'The isOnline param is no longer required for auth callback',
-      );
-    }
 
     const request = await abstractConvertRequest(adapterArgs);
 
