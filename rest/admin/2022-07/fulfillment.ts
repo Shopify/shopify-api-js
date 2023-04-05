@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -47,13 +47,13 @@ interface UpdateTrackingArgs {
 }
 
 export class Fulfillment extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'fulfillment';
-  protected static PLURAL_NAME = 'fulfillments';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'fulfillment';
+  protected static pluralName = 'fulfillments';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments/count.json"},
     {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
@@ -76,7 +76,7 @@ export class Fulfillment extends Base {
       urlIds: {"id": id, "order_id": order_id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async all(
@@ -93,7 +93,7 @@ export class Fulfillment extends Base {
       updated_at_min = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<Fulfillment[]> {
+  ): Promise<FindAllResponse<Fulfillment>> {
     const response = await this.baseFind<Fulfillment>({
       session: session,
       urlIds: {"fulfillment_order_id": fulfillment_order_id, "order_id": order_id},

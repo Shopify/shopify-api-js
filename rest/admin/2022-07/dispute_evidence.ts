@@ -15,19 +15,19 @@ interface FindArgs {
 }
 
 export class DisputeEvidence extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'dispute_evidence';
-  protected static PLURAL_NAME = 'dispute_evidences';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {
+  protected static resourceName = 'dispute_evidence';
+  protected static pluralName = 'dispute_evidences';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {
     "fulfillments": Fulfillment
   };
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_evidences.json"},
     {"http_method": "put", "operation": "put", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_evidences.json"}
   ];
-  protected static PRIMARY_KEY: string = "dispute_id";
+  protected static primaryKey: string = "dispute_id";
 
   public static async find(
     {
@@ -40,7 +40,7 @@ export class DisputeEvidence extends Base {
       urlIds: {"dispute_id": dispute_id},
       params: {},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public access_activity_log: string | null;

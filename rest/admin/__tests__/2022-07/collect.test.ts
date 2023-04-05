@@ -31,7 +31,7 @@ describe('Collect resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"collect": {"id": 1071559576, "collection_id": 841564295, "product_id": 921728736, "created_at": "2023-01-03T12:45:21-05:00", "updated_at": "2023-01-03T12:45:21-05:00", "position": 2, "sort_value": "0000000002"}}));
+    queueMockResponse(JSON.stringify({"collect": {"id": 1071559579, "collection_id": 841564295, "product_id": 921728736, "created_at": "2023-02-02T09:37:22-05:00", "updated_at": "2023-02-02T09:37:22-05:00", "position": 2, "sort_value": "0000000002"}}));
 
     const collect = new shopify.rest.Collect({session: session});
     collect.product_id = 921728736;
@@ -66,7 +66,7 @@ describe('Collect resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"collects": [{"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 1071559574, "collection_id": 841564295, "product_id": 921728736, "created_at": "2023-01-03T12:45:12-05:00", "updated_at": "2023-01-03T12:45:12-05:00", "position": 2, "sort_value": "0000000002"}]}));
+    queueMockResponse(JSON.stringify({"collects": [{"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 1071559580, "collection_id": 841564295, "product_id": 921728736, "created_at": "2023-02-02T09:37:24-05:00", "updated_at": "2023-02-02T09:37:24-05:00", "position": 2, "sort_value": "0000000002"}]}));
 
     await shopify.rest.Collect.all({
       session: session,

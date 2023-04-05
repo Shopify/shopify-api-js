@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -13,13 +13,13 @@ interface AllArgs {
 }
 
 export class Policy extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static apiVersion = ApiVersion.October22;
 
-  protected static NAME = 'policy';
-  protected static PLURAL_NAME = 'policies';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'policy';
+  protected static pluralName = 'policies';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "policies.json"}
   ];
 
@@ -28,7 +28,7 @@ export class Policy extends Base {
       session,
       ...otherArgs
     }: AllArgs
-  ): Promise<Policy[]> {
+  ): Promise<FindAllResponse<Policy>> {
     const response = await this.baseFind<Policy>({
       session: session,
       urlIds: {},

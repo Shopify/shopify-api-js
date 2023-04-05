@@ -9,15 +9,15 @@ interface FakeResourceWithCustomPrefixFindArgs {
 }
 
 export class FakeResourceWithCustomPrefix extends Base {
-  public static API_VERSION = LATEST_API_VERSION;
-  protected static NAME = 'fake_resource_with_custom_prefix';
-  protected static PLURAL_NAME = 'fake_resource_with_custom_prefixes';
-  protected static CUSTOM_PREFIX = '/admin/custom_prefix';
+  public static apiVersion = LATEST_API_VERSION;
+  protected static resourceName = 'fake_resource_with_custom_prefix';
+  protected static pluralName = 'fake_resource_with_custom_prefixes';
+  protected static customPrefix = '/admin/custom_prefix';
 
-  protected static HAS_ONE = {};
-  protected static HAS_MANY = {};
+  protected static hasOne = {};
+  protected static hasMany = {};
 
-  protected static PATHS: ResourcePath[] = [
+  protected static paths: ResourcePath[] = [
     {
       http_method: 'get',
       operation: 'get',
@@ -34,7 +34,7 @@ export class FakeResourceWithCustomPrefix extends Base {
       session,
       urlIds: {id},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   id?: number | string | null;

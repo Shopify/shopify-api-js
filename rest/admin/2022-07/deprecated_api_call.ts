@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
@@ -13,13 +13,13 @@ interface AllArgs {
 }
 
 export class DeprecatedApiCall extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'deprecated_api_call';
-  protected static PLURAL_NAME = 'deprecated_api_calls';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'deprecated_api_call';
+  protected static pluralName = 'deprecated_api_calls';
+  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "deprecated_api_calls.json"}
   ];
 
@@ -28,7 +28,7 @@ export class DeprecatedApiCall extends Base {
       session,
       ...otherArgs
     }: AllArgs
-  ): Promise<DeprecatedApiCall[]> {
+  ): Promise<FindAllResponse<DeprecatedApiCall>> {
     const response = await this.baseFind<DeprecatedApiCall>({
       session: session,
       urlIds: {},

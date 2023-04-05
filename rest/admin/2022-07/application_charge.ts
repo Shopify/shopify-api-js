@@ -2,10 +2,12 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
+import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+
+import {Currency} from './currency';
 
 interface FindArgs {
   session: Session;
@@ -20,13 +22,15 @@ interface AllArgs {
 }
 
 export class ApplicationCharge extends Base {
-  public static API_VERSION = ApiVersion.July22;
+  public static apiVersion = ApiVersion.July22;
 
-  protected static NAME = 'application_charge';
-  protected static PLURAL_NAME = 'application_charges';
-  protected static HAS_ONE: {[key: string]: typeof Base} = {};
-  protected static HAS_MANY: {[key: string]: typeof Base} = {};
-  protected static PATHS: ResourcePath[] = [
+  protected static resourceName = 'application_charge';
+  protected static pluralName = 'application_charges';
+  protected static hasOne: {[key: string]: typeof Base} = {
+    "currency": Currency
+  };
+  protected static hasMany: {[key: string]: typeof Base} = {};
+  protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "application_charges.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_charges/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_charges.json"}
@@ -44,7 +48,7 @@ export class ApplicationCharge extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] : null;
+    return result.data ? result.data[0] : null;
   }
 
   public static async all(
@@ -54,7 +58,7 @@ export class ApplicationCharge extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<ApplicationCharge[]> {
+  ): Promise<FindAllResponse<ApplicationCharge>> {
     const response = await this.baseFind<ApplicationCharge>({
       session: session,
       urlIds: {},
@@ -66,6 +70,7 @@ export class ApplicationCharge extends Base {
 
   public confirmation_url: string | null;
   public created_at: string | null;
+  public currency: Currency | null | {[key: string]: any};
   public id: number | null;
   public name: string | null;
   public price: string | number | null;
