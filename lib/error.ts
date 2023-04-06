@@ -69,16 +69,20 @@ export class HttpThrottlingError extends HttpRetriableError {
 export class RestResourceError extends ShopifyError {}
 export class GraphqlQueryError extends ShopifyError {
   readonly response: {[key: string]: unknown};
+  headers?: {[key: string]: unknown};
 
   public constructor({
     message,
     response,
+    headers,
   }: {
     message: string;
     response: {[key: string]: unknown};
+    headers?: {[key: string]: unknown};
   }) {
     super(message);
     this.response = response;
+    this.headers = headers;
   }
 }
 
