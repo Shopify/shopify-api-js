@@ -6,6 +6,7 @@ export const STATE_COOKIE_NAME = 'shopify_app_state';
 export interface AuthQuery {
   [key: string]: string | undefined;
   hmac?: string;
+  signature?: string;
 }
 
 export interface BeginParams extends AdapterArgs {
