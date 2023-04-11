@@ -20,7 +20,8 @@ function stringifyQuery(query: AuthQuery): string {
 
 export function generateLocalHmac(config: ConfigInterface) {
   return async (params: AuthQuery): Promise<string> => {
-    const {hmac, ...query} = params;
+    // assumes that 'signature' (from Shopify) will only ever be a hmac value
+    const {hmac, signature, ...query} = params;
     const queryString = stringifyQuery(query);
     return createSHA256HMAC(config.apiSecretKey, queryString, HashFormat.Hex);
   };
@@ -28,7 +29,7 @@ export function generateLocalHmac(config: ConfigInterface) {
 
 export function validateHmac(config: ConfigInterface) {
   return async (query: AuthQuery): Promise<boolean> => {
-    if (!query.hmac) {
+    if (!query.hmac && !query.signature) {
       throw new ShopifyErrors.InvalidHmacError(
         'Query does not contain an HMAC value.',
       );
@@ -36,7 +37,7 @@ export function validateHmac(config: ConfigInterface) {
 
     validateHmacTimestamp(query);
 
-    const {hmac} = query;
+    const hmac = query.signature || query.hmac;
     const localHmac = await generateLocalHmac(config)(query);
 
     return safeCompare(hmac as string, localHmac);
