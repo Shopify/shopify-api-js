@@ -1,6 +1,6 @@
 # shopify.utils.validateHmac
 
-Shopify requests include an `hmac` query argument. This method validates those requests to ensure that the `hmac` value was signed by Shopify and not spoofed.
+Shopify requests include an `hmac` query argument (or, in the case of app proxy requests, a `signature` query argument). This method validates those requests to ensure that the `hmac` value was signed by Shopify and not spoofed.
 
 ## Example
 
@@ -20,6 +20,6 @@ The request query arguments.
 
 `boolean`
 
-Whether the `hmac` value in the query is valid.
+Whether the `hmac`/`signature` value in the query is valid.
 
 [Back to shopify.utils](./README.md)
