@@ -221,6 +221,8 @@ The OAuth methods still behave the same way, but we've updated their signatures 
 
 See [Access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes) for more details regarding how to use the `isOnline` parameter.
 
+> **Note**: if you created your app before August 23, 2022, make sure you [update your embedded app OAuth flow](https://shopify.dev/docs/apps/auth/oauth/update/node-php) to follow our best practices.
+
 1. `Shopify.Auth.beginAuth()` is now `shopify.auth.begin()`, it takes in an object, and it now also triggers a redirect response to the correct endpoint.
    <div>Before
 
