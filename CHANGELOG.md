@@ -1,5 +1,77 @@
 # Changelog
 
+## 7.0.0
+
+### Major Changes
+
+- 5a68e4a5: ⚠️ [Breaking] Return pagination info as part of .all() requests in REST resources, and remove the `[PREV|NEXT]_PAGE_INFO` static, thread unsafe attributes.
+  Instead of returning a plain array of objects, it will now return an object containing that array, as well as the response headers and pagination info.
+
+  This enables apps to use locally-scoped pagination info, which makes it possible to use pagination in a thread-safe way.
+
+  You'll need to make 2 changes to use this version:
+
+  1. Where you accessed resources from the response, you'll now access the `data` property.
+  1. Where you accessed pagination data from the static variables, you'll now retrieve it from the response.
+
+  ```ts
+  const response = await shopify.rest.Product.all({
+    /* ... */
+  });
+
+  // BEFORE
+  const products: Product[] = response;
+  const nextPageInfo = shopify.rest.Product.NEXT_PAGE_INFO;
+
+  // AFTER
+  const products: Product[] = response.data;
+  const nextPageInfo = response.pageInfo?.nextPage;
+  const responseHeaders = response.headers;
+  ```
+
+- fc2692f0: ⚠️ [Breaking] Removing deprecated code:
+
+  - The `isPrivateApp` param from `shopifyApi()` was removed in favour of `isCustomStoreApp`.
+  - The `isOnline` param from `shopify.auth.callback()` was removed, because it's now handled automatically.
+
+- 8acc71da: Adding support for 2023-04 API version.
+
+  ⚠️ [Breaking] Removing support for 2022-04 and 2022-07 API versions.
+
+- 2096f9e4: The logger is now synchronous. This removes unnecessary `await`'s from functions that use the logger but functionally don't need to `await` anything else. `webhooks.addHandlers` is the main impacted public method (it was `async` only because of the logging mechanism).
+
+  Apps that use the default logging methods (which send to `console`) will not be impacted by this change. Apps that implement their own loggers _may_ be impacted; async logging functions can still be used but they need to be handled as promises.
+
+  ```ts
+  // BEFORE
+  const myLogFunction = async (severity, message) => {
+    try {
+      await MyService.log(severity, message);
+      // After external call
+    } catch {
+      // Handle error
+    }
+  };
+
+  // AFTER
+  const myLogFunction = (severity, message) => {
+    MyService.log(severity, message)
+      .then(() => {
+        // After external call
+      })
+      .catch(() => {
+        // Handle error
+      });
+  };
+  ```
+
+### Patch Changes
+
+- f06912d3: Bump jose from 4.11.2 to 4.13.1. See jose [changelog](https://github.com/panva/jose/blob/main/CHANGELOG.md) for details.
+- 89847cac: Bump @shopify/network from 1.5.1 to 3.2.1. See [network changelog](https://github.com/Shopify/quilt/blob/main/packages/network/CHANGELOG.md) for details.
+- 896ef0d8: Add response headers to `GraphqlQueryError`. Fixes #553
+- 97449f9e: validateHmac will now check for a `hmac` or a `signature` query argument. Fixes #776
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
