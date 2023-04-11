@@ -21,9 +21,16 @@ test('correctly validates query objects and timestamp', async () => {
     .update(queryString)
     .digest('hex');
 
-  const testQuery: AuthQuery = Object.assign(queryObjectWithoutHmac, {
+  const testQueryWithHmac: AuthQuery = Object.assign(queryObjectWithoutHmac, {
     hmac: localHmac,
   });
+
+  const testQueryWithSignature: AuthQuery = Object.assign(
+    queryObjectWithoutHmac,
+    {
+      signature: localHmac,
+    },
+  );
 
   const badQuery: AuthQuery = {
     code: 'some code goes here',
@@ -34,7 +41,8 @@ test('correctly validates query objects and timestamp', async () => {
   };
 
   const validateHmac = shopify.utils.validateHmac;
-  await expect(validateHmac(testQuery)).resolves.toBe(true);
+  await expect(validateHmac(testQueryWithHmac)).resolves.toBe(true);
+  await expect(validateHmac(testQueryWithSignature)).resolves.toBe(true);
   await expect(validateHmac(badQuery)).resolves.toBe(false);
 });
 
@@ -71,10 +79,19 @@ test('queries with extra keys are included in hmac querystring', async () => {
   const queryObjectWithHmac: AuthQuery = Object.assign(queryObjectWithoutHmac, {
     hmac: localHmac,
   });
+  const queryObjectWithSignature: AuthQuery = Object.assign(
+    queryObjectWithoutHmac,
+    {
+      signature: localHmac,
+    },
+  );
 
   await expect(shopify.utils.validateHmac(queryObjectWithHmac)).resolves.toBe(
     true,
   );
+  await expect(
+    shopify.utils.validateHmac(queryObjectWithSignature),
+  ).resolves.toBe(true);
 });
 
 test('hmac with timestamp older than 10 seconds throws InvalidHmacError', async () => {
@@ -93,12 +110,22 @@ test('hmac with timestamp older than 10 seconds throws InvalidHmacError', async 
     .update(queryString)
     .digest('hex');
 
-  const testQuery: AuthQuery = Object.assign(queryObjectWithoutHmac, {
+  const testQueryWithHmac: AuthQuery = Object.assign(queryObjectWithoutHmac, {
     hmac: localHmac,
   });
 
+  const testQueryWithSignature: AuthQuery = Object.assign(
+    queryObjectWithoutHmac,
+    {
+      signature: localHmac,
+    },
+  );
+
   const validateHmac = shopify.utils.validateHmac;
-  await expect(validateHmac(testQuery)).rejects.toBeInstanceOf(
+  await expect(validateHmac(testQueryWithHmac)).rejects.toBeInstanceOf(
+    ShopifyErrors.InvalidHmacError,
+  );
+  await expect(validateHmac(testQueryWithSignature)).rejects.toBeInstanceOf(
     ShopifyErrors.InvalidHmacError,
   );
 });
@@ -119,12 +146,22 @@ test('hmac with timestamp more than 10 seconds in the future throws InvalidHmacE
     .update(queryString)
     .digest('hex');
 
-  const testQuery: AuthQuery = Object.assign(queryObjectWithoutHmac, {
+  const testQueryWithHmac: AuthQuery = Object.assign(queryObjectWithoutHmac, {
     hmac: localHmac,
   });
 
+  const testQueryWithSignature: AuthQuery = Object.assign(
+    queryObjectWithoutHmac,
+    {
+      signature: localHmac,
+    },
+  );
+
   const validateHmac = shopify.utils.validateHmac;
-  await expect(validateHmac(testQuery)).rejects.toBeInstanceOf(
+  await expect(validateHmac(testQueryWithHmac)).rejects.toBeInstanceOf(
+    ShopifyErrors.InvalidHmacError,
+  );
+  await expect(validateHmac(testQueryWithSignature)).rejects.toBeInstanceOf(
     ShopifyErrors.InvalidHmacError,
   );
 });
