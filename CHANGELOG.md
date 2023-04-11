@@ -72,13 +72,6 @@
 - 896ef0d8: Add response headers to `GraphqlQueryError`. Fixes #553
 - 97449f9e: validateHmac will now check for a `hmac` or a `signature` query argument. Fixes #776
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-
-## Unreleased
-
 ## [6.2.0] - 2023-02-15
 
 - [Minor] Validate HMAC timestamp during OAuth [#671](https://github.com/Shopify/shopify-api-js/pull/671)
