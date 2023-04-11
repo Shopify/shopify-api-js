@@ -74,7 +74,7 @@
     "node-fetch": "^2.6.7"
   },
   "dependencies": {
-    "@shopify/network": "^1.5.1",
+    "@shopify/network": "^3.2.1",
     "@types/node-fetch": "^2.5.7",
     "@types/supertest": "^2.0.10",
     "jose": "^4.9.1",
