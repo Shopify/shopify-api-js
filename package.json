@@ -115,6 +115,7 @@
     "**/*.js",
     "**/*.js.map",
     "!bundle/*",
-    "!node_modules"
+    "!node_modules",
+    "!adapters/__e2etests__/*"
   ]
 }
