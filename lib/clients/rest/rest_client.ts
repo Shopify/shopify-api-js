@@ -56,7 +56,7 @@ export class RestClient extends HttpClient {
   ): Promise<RestRequestReturn<T>> {
     params.extraHeaders = {
       [ShopifyHeader.AccessToken]: this.restClass().config.isCustomStoreApp
-        ? this.restClass().config.apiSecretKey
+        ? (this.restClass().config.adminApiAccessToken as string)
         : (this.session.accessToken as string),
       ...params.extraHeaders,
     };

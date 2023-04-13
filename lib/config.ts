@@ -30,6 +30,14 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   if (!('isCustomStoreApp' in params) || !params.isCustomStoreApp) {
     mandatory.push('scopes');
   }
+  if ('isCustomStoreApp' in params && params.isCustomStoreApp) {
+    if (
+      !('adminApiAccessToken' in params) ||
+      params.adminApiAccessToken?.length === 0
+    ) {
+      mandatory.push('adminApiAccessToken');
+    }
+  }
   const missing: (keyof ConfigParams)[] = [];
   mandatory.forEach((key) => {
     if (!notEmpty(params[key])) {
@@ -48,6 +56,7 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   const {
     hostScheme,
     isCustomStoreApp,
+    adminApiAccessToken,
     userAgentPrefix,
     logger,
     privateAppStorefrontAccessToken,
@@ -63,10 +72,8 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
         ? params.scopes
         : new AuthScopes(params.scopes),
     hostScheme: hostScheme ?? config.hostScheme,
-    isCustomStoreApp:
-      isCustomStoreApp === undefined
-        ? config.isCustomStoreApp
-        : isCustomStoreApp,
+    isCustomStoreApp: isCustomStoreApp ?? config.isCustomStoreApp,
+    adminApiAccessToken: adminApiAccessToken ?? config.adminApiAccessToken,
     userAgentPrefix: userAgentPrefix ?? config.userAgentPrefix,
     logger: {...config.logger, ...(logger || {})},
     privateAppStorefrontAccessToken:

@@ -91,7 +91,7 @@ export class GraphqlClient {
   protected getApiHeaders(): HeaderParams {
     return {
       [ShopifyHeader.AccessToken]: this.graphqlClass().config.isCustomStoreApp
-        ? this.graphqlClass().config.apiSecretKey
+        ? (this.graphqlClass().config.adminApiAccessToken as string)
         : (this.session.accessToken as string),
     };
   }

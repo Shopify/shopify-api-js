@@ -88,11 +88,29 @@ describe('Config object', () => {
 
   it("ignores an empty 'scopes' when isCustomStoreApp is true", () => {
     validParams.isCustomStoreApp = true;
+    validParams.adminApiAccessToken = 'token';
     delete (validParams as any).scopes;
 
     expect(() => validateConfig(validParams)).not.toThrow(
       ShopifyErrors.ShopifyError,
     );
+  });
+
+  it('requires adminApiAccessToken when isCustomStoreApp is true', () => {
+    const invalid: ConfigParams = {...validParams};
+    invalid.isCustomStoreApp = true;
+
+    try {
+      validateConfig(invalid);
+      fail(
+        'Initializing with isCustomStoreApp=true without adminApiAccessToken did not throw an exception',
+      );
+    } catch (error) {
+      expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+      expect(error.message).toContain(
+        'Missing values for: adminApiAccessToken',
+      );
+    }
   });
 
   it('can partially override logger settings', () => {
