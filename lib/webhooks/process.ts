@@ -88,7 +88,12 @@ export function process(
         }
       } else {
         log.debug('Webhook validation failed', loggingContext);
-
+        if (config.isCustomStoreApp) {
+          log.deprecated(
+            '8.0.0',
+            "apiSecretKey should be set to the custom store app's API secret key, so that webhook validation succeeds. adminApiAccessToken should be set to the custom store app's Admin API access token",
+          );
+        }
         response.statusCode = StatusCode.Unauthorized;
         errorMessage = `Could not validate request for topic ${topic}`;
       }
