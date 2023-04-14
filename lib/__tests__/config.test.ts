@@ -3,6 +3,8 @@ import {validateConfig} from '../config';
 import {ConfigParams} from '../base-types';
 import {ApiVersion, LogSeverity} from '../types';
 
+import {testIfLibraryVersionIsAtLeast} from './test-helper';
+
 let validParams: ConfigParams;
 
 describe('Config object', () => {
@@ -97,23 +99,26 @@ describe('Config object', () => {
     validParams.isCustomStoreApp = false;
   });
 
-  // ENABLE THIS TEST PRIOR TO NEXT MAJOR RELEASE
-  // it('requires adminApiAccessToken when isCustomStoreApp is true', () => {
-  //   const invalid: ConfigParams = {...validParams};
-  //   invalid.isCustomStoreApp = true;
+  testIfLibraryVersionIsAtLeast(
+    '8.0.0',
+    'requires adminApiAccessToken when isCustomStoreApp is true',
+    () => {
+      const invalid: ConfigParams = {...validParams};
+      invalid.isCustomStoreApp = true;
 
-  //   try {
-  //     validateConfig(invalid);
-  //     fail(
-  //       'Initializing with isCustomStoreApp=true without adminApiAccessToken did not throw an exception',
-  //     );
-  //   } catch (error) {
-  //     expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
-  //     expect(error.message).toContain(
-  //       'Missing values for: adminApiAccessToken',
-  //     );
-  //   }
-  // });
+      try {
+        validateConfig(invalid);
+        fail(
+          'Initializing with isCustomStoreApp=true without adminApiAccessToken did not throw an exception',
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+        expect(error.message).toContain(
+          'Missing values for: adminApiAccessToken',
+        );
+      }
+    },
+  );
 
   it(`logs deprecation if adminApiAccessToken not set`, () => {
     validParams.isCustomStoreApp = true;
@@ -129,7 +134,7 @@ describe('Config object', () => {
     validParams.isCustomStoreApp = false;
   });
 
-  it(`logs deprecation if adminApiAccessToken same value as apiSecretKey`, () => {
+  it(`logs warning if adminApiAccessToken same value as apiSecretKey`, () => {
     validParams.isCustomStoreApp = true;
     validParams.adminApiAccessToken = validParams.apiSecretKey;
 
