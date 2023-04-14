@@ -18,8 +18,9 @@ import {
   AdapterHeaders,
   Cookies,
   NormalizedResponse,
+  AdapterRequest,
 } from '../../../runtime/http';
-import {logger} from '../../logger';
+import {logger, ShopifyLogger} from '../../logger';
 
 import {
   SESSION_COOKIE_NAME,
@@ -39,6 +40,25 @@ export interface CallbackResponse<T = AdapterHeaders> {
   session: Session;
 }
 
+interface BotCheckArgs {
+  request: AdapterRequest;
+  shop: string;
+  log: ShopifyLogger;
+}
+
+const respondToPossibleBotRequest = (args: BotCheckArgs) => {
+  const {request, shop, log} = args;
+  if (request.headers['User-Agent']?.includes('GoogleOther') || !shop) {
+    log.debug('Possible bot request to auth callback: ', {
+      userAgent: request.headers['User-Agent'],
+      shop,
+    });
+    throw new ShopifyErrors.HttpRequestError(
+      'Possible Bot request or missing required params',
+    );
+  }
+};
+
 export function begin(config: ConfigInterface) {
   return async ({
     shop,
@@ -55,15 +75,7 @@ export function begin(config: ConfigInterface) {
     log.info('Beginning OAuth', {shop, isOnline, callbackPath});
 
     const request = await abstractConvertRequest(adapterArgs);
-    if (request.headers['User-Agent']?.includes('GoogleOther') || !shop) {
-      log.debug('Possible bot request to auth: ', {
-        userAgent: request.headers['User-Agent'],
-        shop,
-      });
-      throw new ShopifyErrors.HttpRequestError(
-        'Possible Bot request or missing shop params',
-      );
-    }
+    respondToPossibleBotRequest({request, shop, log});
 
     const response = await abstractConvertIncomingResponse(adapterArgs);
 
@@ -126,15 +138,7 @@ export function callback(config: ConfigInterface) {
     ).searchParams;
     const shop = query.get('shop')!;
 
-    if (request.headers['User-Agent']?.includes('GoogleOther') || !shop) {
-      log.debug('Possible bot request to auth callback: ', {
-        userAgent: request.headers['User-Agent'],
-        shop,
-      });
-      throw new ShopifyErrors.HttpRequestError(
-        'Possible Bot request or missing required params',
-      );
-    }
+    respondToPossibleBotRequest({request, shop, log});
 
     log.info('Completing OAuth', {shop});
 
