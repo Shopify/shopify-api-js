@@ -54,8 +54,17 @@ export function begin(config: ConfigInterface) {
     const log = logger(config);
     log.info('Beginning OAuth', {shop, isOnline, callbackPath});
 
-    const cleanShop = sanitizeShop(config)(shop, true)!;
     const request = await abstractConvertRequest(adapterArgs);
+    if (request.headers['User-Agent']?.includes('GoogleOther') || !shop) {
+      log.debug('Possible bot request to auth: ', {
+        userAgent: request.headers['User-Agent'],
+        shop,
+      });
+      throw new ShopifyErrors.HttpRequestError(
+        'Possible Bot request or missing shop params',
+      );
+    }
+
     const response = await abstractConvertIncomingResponse(adapterArgs);
 
     const cookies = new Cookies(request, response, {
@@ -82,6 +91,7 @@ export function begin(config: ConfigInterface) {
     const processedQuery = new ProcessedQuery();
     processedQuery.putAll(query);
 
+    const cleanShop = sanitizeShop(config)(shop, true)!;
     const redirectUrl = `https://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`;
     response.statusCode = 302;
     response.statusText = 'Found';
@@ -115,6 +125,16 @@ export function callback(config: ConfigInterface) {
       `${config.hostScheme}://${config.hostName}`,
     ).searchParams;
     const shop = query.get('shop')!;
+
+    if (request.headers['User-Agent']?.includes('GoogleOther') || !shop) {
+      log.debug('Possible bot request to auth callback: ', {
+        userAgent: request.headers['User-Agent'],
+        shop,
+      });
+      throw new ShopifyErrors.HttpRequestError(
+        'Possible Bot request or missing required params',
+      );
+    }
 
     log.info('Completing OAuth', {shop});
 
