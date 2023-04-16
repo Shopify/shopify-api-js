@@ -57,6 +57,7 @@ export enum WebhookOperation {
 
 export interface RegisterParams {
   session: Session;
+  allowMultipleHandlers?: boolean;
 }
 
 export interface RegisterResult {

@@ -28,6 +28,7 @@ interface RegisterTopicParams {
   topic: string;
   existingHandlers: WebhookHandler[];
   handlers: WebhookHandler[];
+  allowMultipleHandlers: boolean;
 }
 
 interface RunMutationsParams {
@@ -52,6 +53,7 @@ export function register(
 ) {
   return async function register({
     session,
+    allowMultipleHandlers = false,
   }: RegisterParams): Promise<RegisterReturn> {
     const log = logger(config);
     log.info('Registering webhooks', {shop: session.shop});
@@ -86,10 +88,15 @@ export function register(
         topic,
         existingHandlers: existingHandlers[topic] || [],
         handlers: getHandlers(webhookRegistry)(topic),
+        allowMultipleHandlers,
       });
 
       // Remove this topic from the list of existing handlers so we have a list of leftovers
       delete existingHandlers[topic];
+    }
+
+    if (allowMultipleHandlers) {
+      return registerReturn;
     }
 
     // Delete any leftover handlers
@@ -206,6 +213,7 @@ async function registerTopic({
   topic,
   existingHandlers,
   handlers,
+  allowMultipleHandlers,
 }: RegisterTopicParams): Promise<RegisterResult[]> {
   let registerResults: RegisterResult[] = [];
 
@@ -213,6 +221,7 @@ async function registerTopic({
     config,
     existingHandlers,
     handlers,
+    allowMultipleHandlers,
   );
 
   const GraphqlClient = graphqlClientClass({config});
@@ -244,6 +253,7 @@ function categorizeHandlers(
   config: ConfigInterface,
   existingHandlers: WebhookHandler[],
   handlers: WebhookHandler[],
+  allowMultipleHandlers: boolean,
 ) {
   const handlersByKey = handlers.reduce((acc: HandlersByKey, value) => {
     acc[handlerIdentifier(config, value)] = value;
@@ -277,7 +287,9 @@ function categorizeHandlers(
         toUpdate[existingKey] = handler;
         toUpdate[existingKey].id = existingHandler.id;
       }
-    } else {
+    } else if (!allowMultipleHandlers) {
+      toDelete[existingKey] = existingHandler;
+    } else if (handler === existingHandler) {
       toDelete[existingKey] = existingHandler;
     }
   }
