@@ -3,6 +3,7 @@ import {ConfigInterface, ConfigParams} from './base-types';
 import {LATEST_API_VERSION, LogSeverity} from './types';
 import {AuthScopes} from './auth/scopes';
 import {logger as createLogger} from './logger';
+import {enableCodeAfterVersion} from './utils/versioned-codeblocks';
 
 export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   const config: ConfigInterface = {
@@ -31,15 +32,16 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   if (!('isCustomStoreApp' in params) || !params.isCustomStoreApp) {
     mandatory.push('scopes');
   }
-  // ENABLE THIS CHECK AS PART OF THE NEXT MAJOR RELEASE
-  // if ('isCustomStoreApp' in params && params.isCustomStoreApp) {
-  //   if (
-  //     !('adminApiAccessToken' in params) ||
-  //     params.adminApiAccessToken?.length === 0
-  //   ) {
-  //     mandatory.push('adminApiAccessToken');
-  //   }
-  // }
+  enableCodeAfterVersion('8.0.0', () => {
+    if ('isCustomStoreApp' in params && params.isCustomStoreApp) {
+      if (
+        !('adminApiAccessToken' in params) ||
+        params.adminApiAccessToken?.length === 0
+      ) {
+        mandatory.push('adminApiAccessToken');
+      }
+    }
+  });
   const missing: (keyof ConfigParams)[] = [];
   mandatory.forEach((key) => {
     if (!notEmpty(params[key])) {
