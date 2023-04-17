@@ -3,6 +3,8 @@ import {validateConfig} from '../config';
 import {ConfigParams} from '../base-types';
 import {ApiVersion, LogSeverity} from '../types';
 
+import {testIfLibraryVersionIsAtLeast} from './test-helper';
+
 let validParams: ConfigParams;
 
 describe('Config object', () => {
@@ -88,11 +90,61 @@ describe('Config object', () => {
 
   it("ignores an empty 'scopes' when isCustomStoreApp is true", () => {
     validParams.isCustomStoreApp = true;
+    validParams.adminApiAccessToken = 'token';
     delete (validParams as any).scopes;
 
     expect(() => validateConfig(validParams)).not.toThrow(
       ShopifyErrors.ShopifyError,
     );
+    validParams.isCustomStoreApp = false;
+  });
+
+  testIfLibraryVersionIsAtLeast(
+    '8.0.0',
+    'requires adminApiAccessToken when isCustomStoreApp is true',
+    () => {
+      const invalid: ConfigParams = {...validParams};
+      invalid.isCustomStoreApp = true;
+
+      try {
+        validateConfig(invalid);
+        fail(
+          'Initializing with isCustomStoreApp=true without adminApiAccessToken did not throw an exception',
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(ShopifyErrors.ShopifyError);
+        expect(error.message).toContain(
+          'Missing values for: adminApiAccessToken',
+        );
+      }
+    },
+  );
+
+  it(`logs deprecation if adminApiAccessToken not set`, () => {
+    validParams.isCustomStoreApp = true;
+
+    const config = validateConfig(validParams);
+
+    expect(config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining(
+        '[Deprecated | 8.0.0] adminApiAccessToken should be',
+      ),
+    );
+    validParams.isCustomStoreApp = false;
+  });
+
+  it(`logs warning if adminApiAccessToken same value as apiSecretKey`, () => {
+    validParams.isCustomStoreApp = true;
+    validParams.adminApiAccessToken = validParams.apiSecretKey;
+
+    const config = validateConfig(validParams);
+
+    expect(config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining('adminApiAccessToken is set'),
+    );
+    validParams.isCustomStoreApp = false;
   });
 
   it('can partially override logger settings', () => {
