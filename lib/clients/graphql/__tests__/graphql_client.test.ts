@@ -92,6 +92,7 @@ describe('GraphQL client', () => {
 
   it('adapts to private app requests', async () => {
     shopify.config.isCustomStoreApp = true;
+    shopify.config.adminApiAccessToken = 'dangit-another-access-token';
 
     const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
@@ -101,7 +102,8 @@ describe('GraphQL client', () => {
     );
 
     const customHeaders: {[key: string]: string} = {};
-    customHeaders[ShopifyHeader.AccessToken] = shopify.config.apiSecretKey;
+    customHeaders[ShopifyHeader.AccessToken] =
+      shopify.config.adminApiAccessToken;
 
     expect({
       method: 'POST',

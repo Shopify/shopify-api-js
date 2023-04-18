@@ -2,6 +2,8 @@ import {ShopifyError} from './error';
 import {ConfigInterface, ConfigParams} from './base-types';
 import {LATEST_API_VERSION, LogSeverity} from './types';
 import {AuthScopes} from './auth/scopes';
+import {logger as createLogger} from './logger';
+import {enableCodeAfterVersion} from './utils/versioned-codeblocks';
 
 export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   const config: ConfigInterface = {
@@ -30,6 +32,16 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   if (!('isCustomStoreApp' in params) || !params.isCustomStoreApp) {
     mandatory.push('scopes');
   }
+  enableCodeAfterVersion('8.0.0', () => {
+    if ('isCustomStoreApp' in params && params.isCustomStoreApp) {
+      if (
+        !('adminApiAccessToken' in params) ||
+        params.adminApiAccessToken?.length === 0
+      ) {
+        mandatory.push('adminApiAccessToken');
+      }
+    }
+  });
   const missing: (keyof ConfigParams)[] = [];
   mandatory.forEach((key) => {
     if (!notEmpty(params[key])) {
@@ -48,6 +60,7 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   const {
     hostScheme,
     isCustomStoreApp,
+    adminApiAccessToken,
     userAgentPrefix,
     logger,
     privateAppStorefrontAccessToken,
@@ -63,10 +76,8 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
         ? params.scopes
         : new AuthScopes(params.scopes),
     hostScheme: hostScheme ?? config.hostScheme,
-    isCustomStoreApp:
-      isCustomStoreApp === undefined
-        ? config.isCustomStoreApp
-        : isCustomStoreApp,
+    isCustomStoreApp: isCustomStoreApp ?? config.isCustomStoreApp,
+    adminApiAccessToken: adminApiAccessToken ?? config.adminApiAccessToken,
     userAgentPrefix: userAgentPrefix ?? config.userAgentPrefix,
     logger: {...config.logger, ...(logger || {})},
     privateAppStorefrontAccessToken:
@@ -74,6 +85,22 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
     customShopDomains: customShopDomains ?? config.customShopDomains,
     billing: billing ?? config.billing,
   });
+
+  if ('isCustomStoreApp' in params && params.isCustomStoreApp) {
+    if (
+      !('adminApiAccessToken' in params) ||
+      params.adminApiAccessToken?.length === 0
+    ) {
+      createLogger(config).deprecated(
+        '8.0.0',
+        "adminApiAccessToken should be set to the Admin API access token for custom store apps; apiSecretKey should be set to the custom store app's API secret key.",
+      );
+    } else if (params.adminApiAccessToken === params.apiSecretKey) {
+      createLogger(config).warning(
+        "adminApiAccessToken is set to the same value as apiSecretKey. adminApiAccessToken should be set to the Admin API access token for custom store apps; apiSecretKey should be set to the custom store app's API secret key.",
+      );
+    }
+  }
 
   return config;
 }
