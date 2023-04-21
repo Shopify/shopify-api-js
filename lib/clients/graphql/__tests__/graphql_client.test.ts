@@ -234,7 +234,8 @@ describe('GraphQL client', () => {
 
     await expect(() => client.query({data: query})).rejects.toThrow(
       new ShopifyErrors.GraphqlQueryError({
-        message: 'GraphQL query returned errors',
+        // Expect to throw the original error message
+        message: 'you must provide one of first or last',
         response: errorResponse,
         headers: expectedHeaders,
       }),

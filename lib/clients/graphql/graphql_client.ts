@@ -78,13 +78,19 @@ export class GraphqlClient {
       ...params,
     });
 
-    if ((result.body as unknown as {[key: string]: unknown}).errors) {
+    // Get errors array
+    const errors = (result.body as unknown as {[key: string]: unknown})
+      .errors as any[];
+
+    // Throw error if response contains errors
+    if (errors?.length > 0) {
       throw new ShopifyErrors.GraphqlQueryError({
-        message: 'GraphQL query returned errors',
+        message: errors[0]?.message ?? 'GraphQL query returned errors',
         response: result.body as unknown as {[key: string]: unknown},
         headers: result.headers,
       });
     }
+
     return result;
   }
 
