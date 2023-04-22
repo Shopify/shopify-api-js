@@ -1,5 +1,5 @@
 import type {Config} from 'jest';
-import semver from 'semver';
+import {compare as semver} from 'compare-versions';
 
 const projects = [
   './lib/__tests__/jest_projects/library.jest.config.ts',
@@ -11,7 +11,7 @@ const projects = [
 
 // eslint-disable-next-line no-warning-comments
 // TODO Make all projects permanent after support for version 14 is dropped
-if (semver.gte(process.version, '15.0.0')) {
+if (semver(process.version, '15.0.0', '>=')) {
   projects.push(
     './lib/__tests__/jest_projects/adapters.cf-worker.jest.config.ts',
   );

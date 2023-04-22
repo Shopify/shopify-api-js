@@ -1,4 +1,4 @@
-import semver from 'semver';
+import {compare as semver} from 'compare-versions';
 
 import {LogSeverity} from '../types';
 import {ConfigInterface} from '../base-types';
@@ -29,7 +29,7 @@ export type ShopifyLogger = ReturnType<typeof logger>;
 
 function deprecated(logFunction: LoggerFunction) {
   return function (version: string, message: string): void {
-    if (semver.gte(SHOPIFY_API_LIBRARY_VERSION, version)) {
+    if (semver(SHOPIFY_API_LIBRARY_VERSION, version, '>=')) {
       throw new FeatureDeprecatedError(
         `Feature was deprecated in version ${version}`,
       );
