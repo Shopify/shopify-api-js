@@ -24,12 +24,9 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
   };
 
   // Make sure that the essential params actually have content in them
-  const mandatory: (keyof ConfigParams)[] = [
-    'apiKey',
-    'apiSecretKey',
-    'hostName',
-  ];
+  const mandatory: (keyof ConfigParams)[] = ['apiSecretKey', 'hostName'];
   if (!('isCustomStoreApp' in params) || !params.isCustomStoreApp) {
+    mandatory.push('apiKey');
     mandatory.push('scopes');
   }
   enableCodeAfterVersion('8.0.0', () => {
