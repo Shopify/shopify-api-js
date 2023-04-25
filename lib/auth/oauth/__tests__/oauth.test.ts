@@ -328,10 +328,6 @@ describe('callback', () => {
 
     const callbackResponse = await shopify.auth.callback({rawRequest: request});
 
-    if (callbackResponse === undefined) {
-      fail('Callback response is undefined');
-    }
-
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
     );
@@ -420,10 +416,6 @@ describe('callback', () => {
     });
     expect(currentSessionId).toEqual(jwtSessionId);
 
-    if (callbackResponse === undefined) {
-      fail('Callback response is undefined');
-    }
-
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
     );
@@ -472,10 +464,6 @@ describe('callback', () => {
     queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({rawRequest: request});
-
-    if (callbackResponse === undefined) {
-      fail('Callback response is undefined');
-    }
 
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
@@ -536,10 +524,6 @@ describe('callback', () => {
 
     const callbackResponse = await shopify.auth.callback({rawRequest: request});
 
-    if (callbackResponse === undefined) {
-      fail('Callback response is undefined');
-    }
-
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
     );
@@ -599,10 +583,6 @@ describe('callback', () => {
     queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({rawRequest: request});
-
-    if (callbackResponse === undefined) {
-      fail('Callback response is undefined');
-    }
 
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],

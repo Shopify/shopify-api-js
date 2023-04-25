@@ -120,7 +120,7 @@ export function begin(config: ConfigInterface) {
 export function callback(config: ConfigInterface) {
   return async function callback<T = AdapterHeaders>({
     ...adapterArgs
-  }: CallbackParams): Promise<CallbackResponse<T> | undefined> {
+  }: CallbackParams): Promise<CallbackResponse<T>> {
     throwIfCustomStoreApp(
       config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
