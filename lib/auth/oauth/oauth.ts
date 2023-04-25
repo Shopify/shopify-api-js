@@ -1,4 +1,5 @@
 import {v4 as uuidv4} from 'uuid';
+import isbot from 'isbot';
 
 import ProcessedQuery from '../../utils/processed-query';
 import {ConfigInterface} from '../../base-types';
@@ -48,7 +49,7 @@ interface BotCheckArgs {
 
 const respondToPossibleBotRequest = (args: BotCheckArgs) => {
   const {request, shop, log} = args;
-  if (request.headers['User-Agent']?.includes('GoogleOther') || !shop) {
+  if (isbot(request.headers['User-Agent'])) {
     log.debug('Possible bot request to auth callback: ', {
       userAgent: request.headers['User-Agent'],
       shop,
