@@ -139,7 +139,7 @@ export function callback(config: ConfigInterface) {
     const response = {} as NormalizedResponse;
     if (isbot(request.headers['User-Agent'])) {
       logForBot({request, log, func: 'callback'});
-      throw new ShopifyErrors.InvalidOAuthError(
+      throw new ShopifyErrors.BotActivityDetected(
         'Invalid OAuth callback initiated by bot',
       );
     }

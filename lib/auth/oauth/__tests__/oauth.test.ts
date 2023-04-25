@@ -565,7 +565,7 @@ describe('callback', () => {
       shopify.auth.callback({
         rawRequest: botRequest,
       }),
-    ).rejects.toThrow(ShopifyErrors.InvalidOAuthError);
+    ).rejects.toThrow(ShopifyErrors.BotActivityDetected);
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
