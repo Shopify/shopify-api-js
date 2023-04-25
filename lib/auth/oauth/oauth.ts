@@ -41,21 +41,11 @@ export interface CallbackResponse<T = AdapterHeaders> {
   session: Session;
 }
 
-interface BotCheckArgs {
-  request: AdapterRequest;
-  response: NormalizedResponse;
-  shop: string;
-  log: ShopifyLogger;
-}
-
-const respondToPossibleBotRequest = (args: BotCheckArgs) => {
-  const {request, shop, log} = args;
-  if (isbot(request.headers['User-Agent'])) {
-    log.debug('Possible bot request to auth callback: ', {
-      userAgent: request.headers['User-Agent'],
-      shop,
-    });
-  }
+const logForBot = (log: ShopifyLogger) => {
+  log.debug('Possible bot request to auth callback: ', {
+    userAgent: request.headers['User-Agent'],
+    shop,
+  });
 };
 
 export function begin(config: ConfigInterface) {
@@ -64,7 +54,7 @@ export function begin(config: ConfigInterface) {
     callbackPath,
     isOnline,
     ...adapterArgs
-  }: BeginParams): Promise<AdapterResponse> => {
+  }: BeginParams): Promise<AdapterResponse | undefined> => {
     throwIfCustomStoreApp(
       config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
@@ -76,7 +66,11 @@ export function begin(config: ConfigInterface) {
     const request = await abstractConvertRequest(adapterArgs);
     const response = await abstractConvertIncomingResponse(adapterArgs);
 
-    respondToPossibleBotRequest({request, response, shop, log});
+    if (isbot(request.headers['User-Agent'])) {
+      logForBot(log);
+      response.statusCode = 418;
+      return abstractConvertResponse(response, adapterArgs);
+    }
 
     const cookies = new Cookies(request, response, {
       keys: [config.apiSecretKey],
