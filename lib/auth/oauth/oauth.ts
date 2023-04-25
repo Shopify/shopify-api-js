@@ -41,8 +41,14 @@ export interface CallbackResponse<T = AdapterHeaders> {
   session: Session;
 }
 
-const logForBot = (request: NormalizedRequest, log: ShopifyLogger) => {
-  log.debug('Possible bot request to auth callback: ', {
+interface BotLog {
+  request: NormalizedRequest;
+  log: ShopifyLogger;
+  func: string;
+}
+
+const logForBot = ({request, log, func}: BotLog) => {
+  log.debug(`Possible bot request to auth ${func}: `, {
     userAgent: request.headers['User-Agent'],
   });
 };
@@ -66,7 +72,7 @@ export function begin(config: ConfigInterface) {
     const response = await abstractConvertIncomingResponse(adapterArgs);
 
     if (isbot(request.headers['User-Agent'])) {
-      logForBot(request, log);
+      logForBot({request, log, func: 'begin'});
       response.statusCode = 418;
       return abstractConvertResponse(response, adapterArgs);
     }
@@ -132,7 +138,7 @@ export function callback(config: ConfigInterface) {
 
     const response = {} as NormalizedResponse;
     if (isbot(request.headers['User-Agent'])) {
-      logForBot(request, log);
+      logForBot({request, log, func: 'callback'});
       return undefined;
     }
 
