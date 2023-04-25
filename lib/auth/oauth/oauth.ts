@@ -19,7 +19,7 @@ import {
   AdapterHeaders,
   Cookies,
   NormalizedResponse,
-  AdapterRequest,
+  NormalizedRequest,
 } from '../../../runtime/http';
 import {logger, ShopifyLogger} from '../../logger';
 
@@ -41,10 +41,9 @@ export interface CallbackResponse<T = AdapterHeaders> {
   session: Session;
 }
 
-const logForBot = (log: ShopifyLogger) => {
+const logForBot = (request: NormalizedRequest, log: ShopifyLogger) => {
   log.debug('Possible bot request to auth callback: ', {
     userAgent: request.headers['User-Agent'],
-    shop,
   });
 };
 
@@ -54,7 +53,7 @@ export function begin(config: ConfigInterface) {
     callbackPath,
     isOnline,
     ...adapterArgs
-  }: BeginParams): Promise<AdapterResponse | undefined> => {
+  }: BeginParams): Promise<AdapterResponse> => {
     throwIfCustomStoreApp(
       config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
@@ -67,7 +66,7 @@ export function begin(config: ConfigInterface) {
     const response = await abstractConvertIncomingResponse(adapterArgs);
 
     if (isbot(request.headers['User-Agent'])) {
-      logForBot(log);
+      logForBot(request, log);
       response.statusCode = 418;
       return abstractConvertResponse(response, adapterArgs);
     }
@@ -115,7 +114,7 @@ export function begin(config: ConfigInterface) {
 export function callback(config: ConfigInterface) {
   return async function callback<T = AdapterHeaders>({
     ...adapterArgs
-  }: CallbackParams): Promise<CallbackResponse<T>> {
+  }: CallbackParams): Promise<CallbackResponse<T> | undefined> {
     throwIfCustomStoreApp(
       config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
@@ -132,7 +131,10 @@ export function callback(config: ConfigInterface) {
     const shop = query.get('shop')!;
 
     const response = {} as NormalizedResponse;
-    respondToPossibleBotRequest({request, response, shop, log});
+    if (isbot(request.headers['User-Agent'])) {
+      logForBot(request, log);
+      return undefined;
+    }
 
     log.info('Completing OAuth', {shop});
 
