@@ -565,7 +565,7 @@ describe('callback', () => {
       rawRequest: botRequest,
     });
 
-    expect(callbackResponse).toBeUndefined();
+    expect(callbackResponse).toEqual({headers: {}, session: {}});
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {

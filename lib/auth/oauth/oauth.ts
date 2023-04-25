@@ -120,7 +120,7 @@ export function begin(config: ConfigInterface) {
 export function callback(config: ConfigInterface) {
   return async function callback<T = AdapterHeaders>({
     ...adapterArgs
-  }: CallbackParams): Promise<CallbackResponse<T> | undefined> {
+  }: CallbackParams): Promise<CallbackResponse<T>> {
     throwIfCustomStoreApp(
       config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
@@ -139,7 +139,10 @@ export function callback(config: ConfigInterface) {
     const response = {} as NormalizedResponse;
     if (isbot(request.headers['User-Agent'])) {
       logForBot({request, log, func: 'callback'});
-      return undefined;
+      return {
+        headers: (await abstractConvertHeaders({}, adapterArgs)) as T,
+        session: {} as Session,
+      };
     }
 
     log.info('Completing OAuth', {shop});
