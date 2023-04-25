@@ -76,6 +76,7 @@
   "dependencies": {
     "@shopify/network": "^3.2.1",
     "compare-versions": "^5.0.3",
+    "isbot": "^3.6.10",
     "jose": "^4.9.1",
     "node-fetch": "^2.6.1",
     "tslib": "^2.0.3",
