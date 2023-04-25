@@ -1,5 +1,5 @@
 import * as jose from 'jose';
-import {compare as semver} from 'compare-versions';
+import {compare} from 'compare-versions';
 
 import {shopifyApi, Shopify} from '..';
 import {LATEST_API_VERSION, LogSeverity} from '../types';
@@ -165,7 +165,7 @@ export function testIfLibraryVersionIsAtLeast(
   testFn: jest.ProvidesCallback,
 ) {
   describe(`when library version is at least ${version}`, () => {
-    if (semver(SHOPIFY_API_LIBRARY_VERSION, version, '>=')) {
+    if (compare(SHOPIFY_API_LIBRARY_VERSION, version, '>=')) {
       test(testName, testFn);
     } else {
       test.skip(`- '${testName}' requires library version ${version} or higher`, () => {});
