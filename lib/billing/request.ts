@@ -163,6 +163,8 @@ async function requestUsagePayment({
         name: plan,
         returnUrl,
         test: isTest,
+        trialDays: billingConfig.trialDays,
+        replacementBehavior: billingConfig.replacementBehavior,
         lineItems: [
           {
             plan: {
