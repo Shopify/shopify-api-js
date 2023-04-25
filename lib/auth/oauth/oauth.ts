@@ -73,7 +73,7 @@ export function begin(config: ConfigInterface) {
 
     if (isbot(request.headers['User-Agent'])) {
       logForBot({request, log, func: 'begin'});
-      response.statusCode = 418;
+      response.statusCode = 410;
       return abstractConvertResponse(response, adapterArgs);
     }
 
