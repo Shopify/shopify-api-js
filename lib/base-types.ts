@@ -7,9 +7,9 @@ import {ApiVersion, LogSeverity} from './types';
 export type LogFunction = (severity: LogSeverity, msg: string) => void;
 
 export interface ConfigParams<T extends ShopifyRestResources = any> {
-  apiKey: string;
+  apiKey?: string;
   apiSecretKey: string;
-  scopes: string[] | AuthScopes;
+  scopes?: string[] | AuthScopes;
   hostName: string;
   hostScheme?: 'http' | 'https';
   apiVersion: ApiVersion;
@@ -30,6 +30,7 @@ export interface ConfigParams<T extends ShopifyRestResources = any> {
 }
 
 export interface ConfigInterface extends Omit<ConfigParams, 'restResources'> {
+  apiKey: string;
   hostScheme: 'http' | 'https';
   scopes: AuthScopes;
   isCustomStoreApp: boolean;
