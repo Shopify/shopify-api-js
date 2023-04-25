@@ -88,10 +88,21 @@ describe('Config object', () => {
     expect(() => validateConfig(empty)).toThrow(ShopifyErrors.ShopifyError);
   });
 
-  it("ignores an empty 'scopes' when isCustomStoreApp is true", () => {
+  it("ignores a missing 'scopes' when isCustomStoreApp is true", () => {
     validParams.isCustomStoreApp = true;
     validParams.adminApiAccessToken = 'token';
     delete (validParams as any).scopes;
+
+    expect(() => validateConfig(validParams)).not.toThrow(
+      ShopifyErrors.ShopifyError,
+    );
+    validParams.isCustomStoreApp = false;
+  });
+
+  it("ignores a missing 'apiKey' when isCustomStoreApp is true", () => {
+    validParams.isCustomStoreApp = true;
+    validParams.adminApiAccessToken = 'token';
+    delete (validParams as any).apiKey;
 
     expect(() => validateConfig(validParams)).not.toThrow(
       ShopifyErrors.ShopifyError,
