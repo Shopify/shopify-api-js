@@ -552,7 +552,7 @@ describe('callback', () => {
     expect(responseCookies.shopify_app_session).toBeUndefined();
   });
 
-  test('callback returns undefined when the request is done by a bot', async () => {
+  test('callback throws an error when the request is done by a bot', async () => {
     const botRequest = {
       method: 'GET',
       url: 'https://my-test-app.myshopify.io/totally-real-request',
@@ -561,11 +561,11 @@ describe('callback', () => {
       },
     } as NormalizedRequest;
 
-    const callbackResponse = await shopify.auth.callback({
-      rawRequest: botRequest,
-    });
-
-    expect(callbackResponse).toEqual({headers: {}, session: {}});
+    await expect(
+      shopify.auth.callback({
+        rawRequest: botRequest,
+      }),
+    ).rejects.toThrow(ShopifyErrors.InvalidOAuthError);
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
