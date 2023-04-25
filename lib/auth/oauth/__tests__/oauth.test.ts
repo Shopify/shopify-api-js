@@ -141,7 +141,7 @@ describe('beginAuth', () => {
     );
   });
 
-  test('response with a 418 when the request is a bot', async () => {
+  test('response with a 410 when the request is a bot', async () => {
     request.headers['User-Agent'] = 'Googlebot';
 
     const response: NormalizedResponse = await shopify.auth.begin({
@@ -151,7 +151,7 @@ describe('beginAuth', () => {
       rawRequest: request,
     });
 
-    expect(response.statusCode).toBe(418);
+    expect(response.statusCode).toBe(410);
   });
 
   test('fails to start if the app is private', () => {
