@@ -141,6 +141,19 @@ describe('beginAuth', () => {
     );
   });
 
+  test('response with a 418 when the request is a bot', async () => {
+    request.headers['User-Agent'] = 'Googlebot';
+
+    const response: NormalizedResponse = await shopify.auth.begin({
+      shop,
+      isOnline: true,
+      callbackPath: '/some-callback',
+      rawRequest: request,
+    });
+
+    expect(response.statusCode).toBe(418);
+  });
+
   test('fails to start if the app is private', () => {
     shopify.config.isCustomStoreApp = true;
 
@@ -537,6 +550,22 @@ describe('callback', () => {
     expect(callbackResponse.session.expires?.getTime()).toBeUndefined();
 
     expect(responseCookies.shopify_app_session).toBeUndefined();
+  });
+
+  test('callback returns undefined when the request is done by a bot', async () => {
+    const botRequest = {
+      method: 'GET',
+      url: 'https://my-test-app.myshopify.io/totally-real-request',
+      headers: {
+        'User-Agent': 'Googlebot',
+      },
+    } as NormalizedRequest;
+
+    const callbackResponse = await shopify.auth.callback({
+      rawRequest: botRequest,
+    });
+
+    expect(callbackResponse).toBeUndefined();
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
