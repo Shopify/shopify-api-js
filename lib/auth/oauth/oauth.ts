@@ -43,6 +43,7 @@ export interface CallbackResponse<T = AdapterHeaders> {
 
 interface BotCheckArgs {
   request: AdapterRequest;
+  response: NormalizedResponse;
   shop: string;
   log: ShopifyLogger;
 }
@@ -54,9 +55,6 @@ const respondToPossibleBotRequest = (args: BotCheckArgs) => {
       userAgent: request.headers['User-Agent'],
       shop,
     });
-    throw new ShopifyErrors.HttpRequestError(
-      'Possible Bot request or missing required params',
-    );
   }
 };
 
@@ -76,9 +74,9 @@ export function begin(config: ConfigInterface) {
     log.info('Beginning OAuth', {shop, isOnline, callbackPath});
 
     const request = await abstractConvertRequest(adapterArgs);
-    respondToPossibleBotRequest({request, shop, log});
-
     const response = await abstractConvertIncomingResponse(adapterArgs);
+
+    respondToPossibleBotRequest({request, response, shop, log});
 
     const cookies = new Cookies(request, response, {
       keys: [config.apiSecretKey],
@@ -139,11 +137,12 @@ export function callback(config: ConfigInterface) {
     ).searchParams;
     const shop = query.get('shop')!;
 
-    respondToPossibleBotRequest({request, shop, log});
+    const response = {} as NormalizedResponse;
+    respondToPossibleBotRequest({request, response, shop, log});
 
     log.info('Completing OAuth', {shop});
 
-    const cookies = new Cookies(request, {} as NormalizedResponse, {
+    const cookies = new Cookies(request, response, {
       keys: [config.apiSecretKey],
       secure: true,
     });
