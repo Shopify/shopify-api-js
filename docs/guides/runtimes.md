@@ -16,7 +16,6 @@ These are the functions you'll need to create:
 - `setAbstractConvertResponseFunc`
 - `setAbstractConvertHeadersFunc`
 - `setAbstractRuntimeString`
-- `setCrypto`
 
 For runtimes that pass in a response object, such as Node.js, you'll also need to create:
 
