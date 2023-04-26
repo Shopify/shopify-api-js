@@ -131,6 +131,14 @@ async function requestRecurringPayment({
                   amount: billingConfig.amount,
                   currencyCode: billingConfig.currencyCode,
                 },
+                discount: {
+                  durationLimitInIntervals:
+                    billingConfig.discount?.durationLimitInIntervals,
+                  value: {
+                    amount: billingConfig.discount?.value?.amount,
+                    percentage: billingConfig.discount?.value?.percentage,
+                  },
+                },
               },
             },
           },

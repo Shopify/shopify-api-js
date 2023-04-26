@@ -18,6 +18,13 @@ export interface BillingConfigSubscriptionPlan extends BillingConfigPlan {
   interval: RecurringBillingIntervals;
   trialDays?: number;
   replacementBehavior?: BillingReplacementBehavior;
+  discount?: {
+    durationLimitInIntervals?: number;
+    value: {
+      amount?: number;
+      percentage?: number;
+    };
+  };
 }
 
 export interface BillingConfigUsagePlan extends BillingConfigPlan {

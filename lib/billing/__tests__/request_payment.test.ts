@@ -230,6 +230,11 @@ describe('shopify.billing.request', () => {
           currencyCode: 'USD',
           interval: BillingInterval.Every30Days,
           replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+          discount: {
+            value: {
+              amount: 1,
+            },
+          },
           trialDays: 10,
         },
       },

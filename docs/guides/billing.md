@@ -5,7 +5,7 @@ The Admin API provides endpoints that enable apps to trigger purchases in the Sh
 
 See the [billing reference](../reference/billing/README.md) for details on how to call those endpoints, using this configuration.
 
-To trigger the billing behaviour, you'll need to set the `billing` value when calling `shopifyApi()`. For example:
+To trigger the billing behaviour, you'll need to set the `billing` value when calling `shopifyApi()`. For example the following configuration will allow you to charge merchants $30 every 30 days. The first three charges will be discounted by $10, so merchants would be charged $20.
 
 ```ts
 import {
@@ -19,9 +19,15 @@ const shopify = shopifyApi({
   billing: {
     'My billing plan': {
       interval: BillingInterval.Every30Days,
-      amount: 1,
+      amount: 30,
       currencyCode: 'USD',
       replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+      discount: {
+        durationLimitInIntervals: 3,
+        value: {
+          amount: 10,
+        },
+      }
     },
   },
 });
@@ -35,7 +41,7 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 | -------------- | ---------- | :-------: | :-----------: | ---------------------------------------------------------- |
 | `interval`     | `ONE_TIME` |    Yes    |       -       | `BillingInterval.OneTime` value                            |
 | `amount`       | `number`   |    Yes    |       -       | The amount to charge                                       |
-| `currencyCode` | `string`   |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted |
+| `currencyCode` | `string`   |    Yes    |       -       | The currency to charge, USD or merchant's shop currency |
 
 ### Recurring Billing Plans
 
@@ -46,6 +52,9 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 | `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                   |
 | `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                                |
 | `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/docs/api/admin-graphql/latest/mutations/appSubscriptionCreate) for more information. |
+| `discount.durationLimitInIntervals` | `number` | No | - | The number of billing intervals to apply the discount for. See the [reference](https://shopify.dev/docs/apps/billing/purchase-adjustments/subscription-discounts) for more information |
+| `discount.value.amount` | `number` | No | - | The amount of the discount in the currency that the merchant is being billed in. |
+| `discount.value.percentage` | `number` | No | - | The percentage value of the discount. |
 
 ### Usage Billing Plans
 
