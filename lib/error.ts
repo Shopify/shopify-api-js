@@ -87,6 +87,7 @@ export class GraphqlQueryError extends ShopifyError {
 }
 
 export class InvalidOAuthError extends ShopifyError {}
+export class BotActivityDetected extends ShopifyError {}
 export class CookieNotFound extends ShopifyError {}
 export class InvalidSession extends ShopifyError {}
 

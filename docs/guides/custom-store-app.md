@@ -28,12 +28,10 @@ import { shopifyApi, ApiVersion, Session } from "@shopify/shopify-api";
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-04";
 
 const shopify = shopifyApi({
-  apiKey: "App_API_key",
   apiSecretKey: "App_API_secret_key",            // Note: this is the API Secret Key, NOT the API access token
   apiVersion: ApiVersion.April23,
   isCustomStoreApp: true,                        // this MUST be set to true (default is false)
   adminApiAccessToken: "Admin_API_Access_Token", // Note: this is the API access token, NOT the API Secret Key
-  scopes: [],
   isEmbeddedApp: false,
   hostName: "my-shop.myshopify.com",
   // Mount REST resources.
