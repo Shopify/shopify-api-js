@@ -2,4 +2,4 @@
 '@shopify/shopify-api': patch
 ---
 
-add scopes validation for Set object and convert it to array
+Add scopes validation for AuthScopes object and convert it to array. Fixes [#1208](https://github.com/Shopify/shopify-app-template-node/issues/1208), [1221](https://github.com/Shopify/shopify-app-template-node/issues/1221)
