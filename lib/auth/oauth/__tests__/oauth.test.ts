@@ -141,6 +141,19 @@ describe('beginAuth', () => {
     );
   });
 
+  test('response with a 410 when the request is a bot', async () => {
+    request.headers['User-Agent'] = 'Googlebot';
+
+    const response: NormalizedResponse = await shopify.auth.begin({
+      shop,
+      isOnline: true,
+      callbackPath: '/some-callback',
+      rawRequest: request,
+    });
+
+    expect(response.statusCode).toBe(410);
+  });
+
   test('fails to start if the app is private', () => {
     shopify.config.isCustomStoreApp = true;
 
@@ -260,7 +273,9 @@ describe('callback', () => {
     queueMockResponse(JSON.stringify(successResponse));
 
     const callbackResponse = await shopify.auth.callback({rawRequest: request});
-
+    if (!callbackResponse) {
+      fail('Callback response is undefined');
+    }
     const expectedId = `offline_${shop}`;
     const responseCookies = Cookies.parseCookies(
       callbackResponse.headers['Set-Cookie'],
@@ -519,6 +534,22 @@ describe('callback', () => {
     expect(callbackResponse.session.expires?.getTime()).toBeUndefined();
 
     expect(responseCookies.shopify_app_session).toBeUndefined();
+  });
+
+  test('callback throws an error when the request is done by a bot', async () => {
+    const botRequest = {
+      method: 'GET',
+      url: 'https://my-test-app.myshopify.io/totally-real-request',
+      headers: {
+        'User-Agent': 'Googlebot',
+      },
+    } as NormalizedRequest;
+
+    await expect(
+      shopify.auth.callback({
+        rawRequest: botRequest,
+      }),
+    ).rejects.toThrow(ShopifyErrors.BotActivityDetected);
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
