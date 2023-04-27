@@ -22,19 +22,19 @@ interface BaseWebhookHandler {
 }
 
 export interface HttpWebhookHandler extends BaseWebhookHandler {
-  deliveryMethod: DeliveryMethod.Http;
+  deliveryMethod: DeliveryMethod;
   privateMetafieldNamespaces?: string[];
   callbackUrl: string;
   callback: WebhookHandlerFunction;
 }
 
 export interface EventBridgeWebhookHandler extends BaseWebhookHandler {
-  deliveryMethod: DeliveryMethod.EventBridge;
+  deliveryMethod: DeliveryMethod;
   arn: string;
 }
 
 export interface PubSubWebhookHandler extends BaseWebhookHandler {
-  deliveryMethod: DeliveryMethod.PubSub;
+  deliveryMethod: DeliveryMethod;
   pubSubProject: string;
   pubSubTopic: string;
 }
