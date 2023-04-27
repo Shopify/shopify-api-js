@@ -230,12 +230,87 @@ describe('shopify.billing.request', () => {
           currencyCode: 'USD',
           interval: BillingInterval.Every30Days,
           replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+          trialDays: 10,
+        },
+      },
+    });
+
+    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+    const response = await shopify.billing.request({
+      session,
+      plan: Responses.PLAN_1,
+    });
+
+    expect(response).toBe(Responses.CONFIRMATION_URL);
+    expect({
+      ...GRAPHQL_BASE_REQUEST,
+      data: {
+        query: expect.stringContaining('appSubscriptionCreate'),
+        variables: expect.objectContaining({
+          trialDays: 10,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        }),
+      },
+    }).toMatchMadeHttpRequest();
+  });
+
+  test('can request subscription with discount amount fields', async () => {
+    shopify = shopifyApi({
+      ...testConfig,
+      billing: {
+        [Responses.PLAN_1]: {
+          amount: 5,
+          currencyCode: 'USD',
+          interval: BillingInterval.Every30Days,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+          trialDays: 10,
           discount: {
+            durationLimitInIntervals: 5,
             value: {
-              amount: 1,
+              amount: 2,
             },
           },
+        },
+      },
+    });
+
+    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+    const response = await shopify.billing.request({
+      session,
+      plan: Responses.PLAN_1,
+    });
+
+    expect(response).toBe(Responses.CONFIRMATION_URL);
+    expect({
+      ...GRAPHQL_BASE_REQUEST,
+      data: {
+        query: expect.stringContaining('appSubscriptionCreate'),
+        variables: expect.objectContaining({
           trialDays: 10,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        }),
+      },
+    }).toMatchMadeHttpRequest();
+  });
+
+  test('can request subscription with discount percentage fields', async () => {
+    shopify = shopifyApi({
+      ...testConfig,
+      billing: {
+        [Responses.PLAN_1]: {
+          amount: 5,
+          currencyCode: 'USD',
+          interval: BillingInterval.Every30Days,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+          trialDays: 10,
+          discount: {
+            durationLimitInIntervals: 5,
+            value: {
+              percentage: 0.2,
+            },
+          },
         },
       },
     });
