@@ -1,11 +1,8 @@
-import crypto from 'crypto';
-
 import {
   setAbstractFetchFunc,
   setAbstractConvertRequestFunc,
   setAbstractConvertResponseFunc,
   setAbstractConvertHeadersFunc,
-  setCrypto,
   setAbstractRuntimeString,
 } from '../../runtime';
 
@@ -22,4 +19,3 @@ setAbstractConvertRequestFunc(mockConvertRequest);
 setAbstractConvertResponseFunc(mockConvertResponse);
 setAbstractConvertHeadersFunc(mockConvertHeaders);
 setAbstractRuntimeString(mockRuntimeString);
-setCrypto(crypto as any);
