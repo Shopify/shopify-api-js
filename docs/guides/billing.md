@@ -5,7 +5,7 @@ The Admin API provides endpoints that enable apps to trigger purchases in the Sh
 
 See the [billing reference](../reference/billing/README.md) for details on how to call those endpoints, using this configuration.
 
-To trigger the billing behaviour, you'll need to set the `billing` value when calling `shopifyApi()`. For example the following configuration will allow you to charge merchants $30 every 30 days. The first three charges will be discounted by $10, so merchants would be charged $20.
+To trigger the billing behaviour, you'll need to set the `billing` value when calling `shopifyApi()`. For example, the following configuration will allow you to charge merchants $30 every 30 days. The first three charges will be discounted by $10, so merchants would be charged $20.
 
 ```ts
 import {
