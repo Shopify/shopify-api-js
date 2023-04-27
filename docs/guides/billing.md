@@ -52,7 +52,7 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 | `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, USD or merchant's shop currency<sup>1</sup>                                                                                                   |
 | `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                                |
 | `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/docs/api/admin-graphql/latest/mutations/appSubscriptionCreate) for more information. |
-| `discount.durationLimitInIntervals` | `number` | No | - | The number of billing intervals to apply the discount for. See the [reference](https://shopify.dev/docs/apps/billing/purchase-adjustments/subscription-discounts) for more information |
+| `discount.durationLimitInIntervals` | `number` | No | - | The number of billing intervals to apply the discount for. See [the reference](https://shopify.dev/docs/apps/billing/purchase-adjustments/subscription-discounts) for more information |
 | `discount.value.amount` | `number` | No | - | The amount of the discount in the currency that the merchant is being billed in. |
 | `discount.value.percentage` | `number` | No | - | The percentage value of the discount. |
 
