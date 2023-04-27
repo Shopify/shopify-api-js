@@ -74,3 +74,10 @@ export interface BillingRequestParams {
   isTest?: boolean;
   returnUrl?: string;
 }
+
+export interface BillingCancelParams {
+  session: Session;
+  subscriptionId: number;
+  prorate?: boolean;
+  isTest?: boolean;
+}

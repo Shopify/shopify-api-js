@@ -105,3 +105,23 @@ export interface SinglePaymentResponse {
   };
   errors?: string[];
 }
+
+// Ideally this is imported from core GQL types TODO:
+interface AppSubscription {
+  createdAt: string;
+  currentPeriodEnd: string;
+  id: string;
+  lineItems?: [any];
+  name: string;
+  returnUrl: string;
+  status: string;
+  test: boolean;
+  trialDays: number;
+}
+
+export interface CancelResponse {
+  data: {
+    appSubscription: AppSubscription;
+  };
+  errors?: string[];
+}

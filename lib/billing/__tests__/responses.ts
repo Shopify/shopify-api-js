@@ -90,17 +90,21 @@ export const EXISTING_INACTIVE_ONE_TIME_PAYMENT = JSON.stringify({
   },
 });
 
-export const EXISTING_SUBSCRIPTION = JSON.stringify({
+export const EXISTING_SUBSCRIPTION_OBJECT = {
   data: {
     currentAppInstallation: {
       oneTimePurchases: {
         edges: [],
         pageInfo: {hasNextPage: false, endCursor: null},
       },
-      activeSubscriptions: [{name: PLAN_1, test: true}],
+      activeSubscriptions: [{id: 123, name: PLAN_1, test: true}],
     },
   },
-});
+};
+
+export const EXISTING_SUBSCRIPTION = JSON.stringify(
+  EXISTING_SUBSCRIPTION_OBJECT,
+);
 
 export const PURCHASE_ONE_TIME_RESPONSE = JSON.stringify({
   data: {
@@ -134,6 +138,19 @@ export const PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS = JSON.stringify({
     appSubscriptionCreate: {
       confirmationUrl: CONFIRMATION_URL,
       userErrors: ['Oops, something went wrong'],
+    },
+  },
+});
+
+export const CANCEL_RESPONSE = JSON.stringify({
+  data: {
+    appSubscriptionCancel: {
+      appSubscription: {
+        id: 123,
+        name: PLAN_1,
+        test: true,
+      },
+      userErrors: [],
     },
   },
 });
