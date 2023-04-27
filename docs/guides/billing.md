@@ -41,7 +41,7 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 | -------------- | ---------- | :-------: | :-----------: | ---------------------------------------------------------- |
 | `interval`     | `ONE_TIME` |    Yes    |       -       | `BillingInterval.OneTime` value                            |
 | `amount`       | `number`   |    Yes    |       -       | The amount to charge                                       |
-| `currencyCode` | `string`   |    Yes    |       -       | The currency to charge, USD or merchant's shop currency |
+| `currencyCode` | `string`   |    Yes    |       -       | The currency to charge, USD or merchant's shop currency<sup>1</sup> |
 
 ### Recurring Billing Plans
 
@@ -49,7 +49,7 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 | --------------------- | ---------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `interval`            | `EVERY_30_DAYS`, `ANNUAL`    |    Yes    |       -       | `BillingInterval.Every30Days`, `BillingInterval.Annual` value                                                                                                |
 | `amount`              | `number`                     |    Yes    |       -       | The amount to charge                                                                                                                                         |
-| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                   |
+| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, USD or merchant's shop currency<sup>1</sup>                                                                                                   |
 | `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                                |
 | `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/docs/api/admin-graphql/latest/mutations/appSubscriptionCreate) for more information. |
 | `discount.durationLimitInIntervals` | `number` | No | - | The number of billing intervals to apply the discount for. See the [reference](https://shopify.dev/docs/apps/billing/purchase-adjustments/subscription-discounts) for more information |
@@ -62,11 +62,12 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 | --------------------- | ---------------------------- | :-------: | :-----------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `interval`            | `USAGE`                      |    Yes    |       -       | `BillingInterval.Usage`                                                                                                                                      |
 | `amount`              | `number`                     |    Yes    |       -       | The maximum amount the merchant will be charged                                                                                                              |
-| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, currently only `"USD"` is accepted                                                                                                   |
+| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, USD or merchant's shop currency<sup>1</sup>                                                                                                   |
 | `usageTerms`          | `string`                     |    Yes    |       -       | These terms stipulate the pricing model for the charges that an app creates.                                                                                 |
 | `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                                |
 | `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/docs/api/admin-graphql/latest/mutations/appSubscriptionCreate) for more information. |
 
+1. Prior to `ApiVersion.April23` the currency code must be `USD`.
 ## When should the app check for payment?
 
 As mentioned above, billing requires a session to access the API, which means that the app must actually be installed before it can request payment.
