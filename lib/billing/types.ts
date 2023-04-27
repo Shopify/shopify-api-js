@@ -56,14 +56,34 @@ export interface BillingCheckParams {
   session: Session;
   plans: string[] | string;
   isTest?: boolean;
+  returnObject?: boolean;
 }
+
+export interface BillingCheckResponseObject {
+  hasActivePayment: boolean;
+  oneTimePurchases: OneTimePurchase[];
+  appSubscriptions: AppSubscription[];
+}
+
+export type BillingCheckResponse<Params extends BillingCheckParams> =
+  Params['returnObject'] extends true ? BillingCheckResponseObject : boolean;
 
 export interface BillingRequestParams {
   session: Session;
   plan: string;
   isTest?: boolean;
   returnUrl?: string;
+  returnObject?: boolean;
 }
+
+export interface BillingRequestResponseObject {
+  confirmationUrl: string;
+  oneTimePurchase?: OneTimePurchase;
+  appSubscription?: AppSubscription;
+}
+
+export type BillingRequestResponse<Params extends BillingRequestParams> =
+  Params['returnObject'] extends true ? BillingRequestResponseObject : string;
 
 export interface BillingCancelParams {
   session: Session;
@@ -86,7 +106,8 @@ export interface ActiveSubscriptions {
   activeSubscriptions: AppSubscription[];
 }
 
-interface OneTimePurchase {
+export interface OneTimePurchase {
+  id: string;
   name: string;
   test: boolean;
   status: string;
@@ -120,17 +141,29 @@ export interface RequestResponse {
 
 export interface RecurringPaymentResponse {
   data: {
-    appSubscriptionCreate: RequestResponse;
+    appSubscriptionCreate: {
+      userErrors: string[];
+      confirmationUrl: string;
+      appSubscription: AppSubscription;
+    };
   };
   errors?: string[];
 }
 
 export interface SinglePaymentResponse {
   data: {
-    appPurchaseOneTimeCreate: RequestResponse;
+    appPurchaseOneTimeCreate: {
+      userErrors: string[];
+      confirmationUrl: string;
+      oneTimePurchase: OneTimePurchase;
+    };
   };
   errors?: string[];
 }
+
+export type RequestResponseData =
+  | RecurringPaymentResponse['data']['appSubscriptionCreate']
+  | SinglePaymentResponse['data']['appPurchaseOneTimeCreate'];
 
 export interface SubscriptionResponse {
   data: {

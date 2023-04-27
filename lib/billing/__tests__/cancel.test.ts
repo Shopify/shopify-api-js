@@ -106,4 +106,42 @@ describe('shopify.billing.cancel', () => {
       }),
     ).rejects.toThrowError(BillingError);
   });
+
+  test('throws a BillingError when an error occurs', async () => {
+    queueMockResponses([Responses.CANCEL_RESPONSE_WITH_USER_ERRORS]);
+
+    const {
+      data: {
+        currentAppInstallation: {activeSubscriptions},
+      },
+    } = Responses.EXISTING_SUBSCRIPTION_OBJECT;
+
+    const subscriptionId = activeSubscriptions[0].id;
+
+    expect(() =>
+      shopify.billing.cancel({
+        session,
+        subscriptionId,
+      }),
+    ).rejects.toThrowError(BillingError);
+  });
+
+  test('throws a BillingError when a user error occurs', async () => {
+    queueMockResponses([Responses.CANCEL_RESPONSE_WITH_ERRORS]);
+
+    const {
+      data: {
+        currentAppInstallation: {activeSubscriptions},
+      },
+    } = Responses.EXISTING_SUBSCRIPTION_OBJECT;
+
+    const subscriptionId = activeSubscriptions[0].id;
+
+    expect(() =>
+      shopify.billing.cancel({
+        session,
+        subscriptionId,
+      }),
+    ).rejects.toThrowError(BillingError);
+  });
 });

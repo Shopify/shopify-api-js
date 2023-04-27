@@ -26,6 +26,7 @@ interface TestConfigInterface {
   name: string;
   billingConfig: BillingConfig;
   paymentResponse: string;
+  responseObject: any;
   errorResponse: string;
   mutationName: string;
 }
@@ -46,6 +47,8 @@ const TEST_CONFIGS: TestConfigInterface[] = [
       },
     },
     paymentResponse: Responses.PURCHASE_ONE_TIME_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_ONE_TIME_RESPONSE).data
+      .appPurchaseOneTimeCreate,
     errorResponse: Responses.PURCHASE_ONE_TIME_RESPONSE_WITH_USER_ERRORS,
     mutationName: 'appPurchaseOneTimeCreate',
   },
@@ -64,6 +67,8 @@ const TEST_CONFIGS: TestConfigInterface[] = [
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
     errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
     mutationName: 'appSubscriptionCreate',
   },
@@ -84,7 +89,92 @@ const TEST_CONFIGS: TestConfigInterface[] = [
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
     errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
+    mutationName: 'appSubscriptionCreate',
+  },
+];
+
+const SUBSCRIPTION_TEST_CONFIGS: TestConfigInterface[] = [
+  {
+    name: 'can request subscription with extra fields',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Every30Days,
+        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        trialDays: 10,
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
+    errorResponse: '',
+    mutationName: 'appSubscriptionCreate',
+  },
+  {
+    name: 'can request subscription with discount amount fields',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Every30Days,
+        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        trialDays: 10,
+        discount: {
+          durationLimitInIntervals: 5,
+          value: {
+            amount: 2,
+          },
+        },
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
+    errorResponse: '',
+    mutationName: 'appSubscriptionCreate',
+  },
+  {
+    name: 'can request subscription with discount percentage fields',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Every30Days,
+        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        trialDays: 10,
+        discount: {
+          durationLimitInIntervals: 5,
+          value: {
+            percentage: 0.2,
+          },
+        },
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
+    errorResponse: '',
+    mutationName: 'appSubscriptionCreate',
+  },
+  {
+    name: 'can request usage subscription with extra fields',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Usage,
+        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        trialDays: 10,
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
+    errorResponse: '',
     mutationName: 'appSubscriptionCreate',
   },
 ];
@@ -118,280 +208,203 @@ describe('shopify.billing.request', () => {
     });
   });
 
-  TEST_CONFIGS.forEach((config) => {
-    describe(`with ${config.name}`, () => {
-      beforeEach(() => {
-        shopify = shopifyApi({
-          ...testConfig,
-          billing: config.billingConfig,
-        });
-      });
-
-      [true, false].forEach((isTest) =>
-        test(`can request payment (isTest: ${isTest})`, async () => {
-          queueMockResponses([config.paymentResponse]);
-
-          const response = await shopify.billing.request({
-            session,
-            plan: Responses.PLAN_1,
-            isTest,
+  [true, false].forEach((returnObject) => {
+    describe(`returning ${
+      returnObject ? 'response object' : 'confirmationUrl'
+    }`, () => {
+      TEST_CONFIGS.forEach((config) => {
+        describe(`with ${config.name}`, () => {
+          beforeEach(() => {
+            shopify = shopifyApi({
+              ...testConfig,
+              billing: config.billingConfig,
+            });
           });
 
-          expect(response).toBe(Responses.CONFIRMATION_URL);
-          expect({
-            ...GRAPHQL_BASE_REQUEST,
-            data: {
-              query: expect.stringContaining(config.mutationName),
-              variables: expect.objectContaining({
-                test: isTest,
-                returnUrl: 'https://test_host_name',
-              }),
-            },
-          }).toMatchMadeHttpRequest();
-        }),
-      );
+          [true, false].forEach((isTest) =>
+            test(`can request payment (isTest: ${isTest})`, async () => {
+              queueMockResponses([config.paymentResponse]);
 
-      test(`can request payment with returnUrl param`, async () => {
-        queueMockResponses([config.paymentResponse]);
+              const response = await shopify.billing.request({
+                session,
+                plan: Responses.PLAN_1,
+                isTest,
+                returnObject,
+              });
 
-        const response = await shopify.billing.request({
-          session,
-          plan: Responses.PLAN_1,
-          isTest: true,
-          returnUrl: 'https://example.com',
-        });
+              if (returnObject) {
+                expect(response).toStrictEqual(config.responseObject);
+              } else {
+                expect(response).toBe(Responses.CONFIRMATION_URL);
+              }
+              expect({
+                ...GRAPHQL_BASE_REQUEST,
+                data: {
+                  query: expect.stringContaining(config.mutationName),
+                  variables: expect.objectContaining({
+                    test: isTest,
+                    returnUrl: 'https://test_host_name',
+                  }),
+                },
+              }).toMatchMadeHttpRequest();
+            }),
+          );
 
-        expect(response).toBe(Responses.CONFIRMATION_URL);
-        expect({
-          ...GRAPHQL_BASE_REQUEST,
-          data: {
-            query: expect.stringContaining(config.mutationName),
-            variables: expect.objectContaining({
-              test: true,
+          test(`can request payment with returnUrl param`, async () => {
+            queueMockResponses([config.paymentResponse]);
+
+            const response = await shopify.billing.request({
+              session,
+              plan: Responses.PLAN_1,
+              isTest: true,
               returnUrl: 'https://example.com',
-            }),
-          },
-        }).toMatchMadeHttpRequest();
-      });
+              returnObject,
+            });
 
-      test('defaults to test purchases', async () => {
-        queueMockResponses([config.paymentResponse]);
+            if (returnObject) {
+              expect(response).toStrictEqual(config.responseObject);
+            } else {
+              expect(response).toBe(Responses.CONFIRMATION_URL);
+            }
+            expect({
+              ...GRAPHQL_BASE_REQUEST,
+              data: {
+                query: expect.stringContaining(config.mutationName),
+                variables: expect.objectContaining({
+                  test: true,
+                  returnUrl: 'https://example.com',
+                }),
+              },
+            }).toMatchMadeHttpRequest();
+          });
 
-        const response = await shopify.billing.request({
-          session,
-          plan: Responses.PLAN_1,
+          test('defaults to test purchases', async () => {
+            queueMockResponses([config.paymentResponse]);
+
+            const response = await shopify.billing.request({
+              session,
+              plan: Responses.PLAN_1,
+              returnObject,
+            });
+
+            if (returnObject) {
+              expect(response).toStrictEqual(config.responseObject);
+            } else {
+              expect(response).toBe(Responses.CONFIRMATION_URL);
+            }
+            expect({
+              ...GRAPHQL_BASE_REQUEST,
+              data: {
+                query: expect.stringContaining(config.mutationName),
+                variables: expect.objectContaining({test: true}),
+              },
+            }).toMatchMadeHttpRequest();
+          });
+
+          test('can request multiple plans', async () => {
+            queueMockResponses(
+              [config.paymentResponse],
+              [config.paymentResponse],
+            );
+
+            const response1 = await shopify.billing.request({
+              session,
+              plan: Responses.PLAN_1,
+              returnObject,
+            });
+
+            if (returnObject) {
+              expect(response1).toStrictEqual(config.responseObject);
+            } else {
+              expect(response1).toBe(Responses.CONFIRMATION_URL);
+            }
+            expect({
+              ...GRAPHQL_BASE_REQUEST,
+              data: {
+                query: expect.stringContaining(config.mutationName),
+                variables: expect.objectContaining({
+                  name: Responses.PLAN_1,
+                }),
+              },
+            }).toMatchMadeHttpRequest();
+
+            const response2 = await shopify.billing.request({
+              session,
+              plan: Responses.PLAN_2,
+              returnObject,
+            });
+
+            if (returnObject) {
+              expect(response2).toStrictEqual(config.responseObject);
+            } else {
+              expect(response2).toBe(Responses.CONFIRMATION_URL);
+            }
+            expect({
+              ...GRAPHQL_BASE_REQUEST,
+              data: {
+                query: expect.stringContaining(config.mutationName),
+                variables: expect.objectContaining({
+                  name: Responses.PLAN_2,
+                }),
+              },
+            }).toMatchMadeHttpRequest();
+          });
+
+          test('throws on userErrors', async () => {
+            queueMockResponses([config.errorResponse]);
+
+            await expect(() =>
+              shopify.billing.request({
+                session,
+                plan: Responses.PLAN_1,
+                isTest: true,
+                returnObject,
+              }),
+            ).rejects.toThrow(BillingError);
+
+            expect({
+              ...GRAPHQL_BASE_REQUEST,
+              data: expect.stringContaining(config.mutationName),
+            }).toMatchMadeHttpRequest();
+          });
         });
-
-        expect(response).toBe(Responses.CONFIRMATION_URL);
-        expect({
-          ...GRAPHQL_BASE_REQUEST,
-          data: {
-            query: expect.stringContaining(config.mutationName),
-            variables: expect.objectContaining({test: true}),
-          },
-        }).toMatchMadeHttpRequest();
       });
 
-      test('can request multiple plans', async () => {
-        queueMockResponses([config.paymentResponse], [config.paymentResponse]);
+      SUBSCRIPTION_TEST_CONFIGS.forEach((config) => {
+        describe(`subscription tests`, () => {
+          test(`${config.name}`, async () => {
+            shopify = shopifyApi({
+              ...testConfig,
+              billing: config.billingConfig,
+            });
 
-        const response1 = await shopify.billing.request({
-          session,
-          plan: Responses.PLAN_1,
+            queueMockResponses([config.paymentResponse]);
+
+            const response = await shopify.billing.request({
+              session,
+              plan: Responses.PLAN_1,
+              returnObject,
+            });
+
+            if (returnObject) {
+              expect(response).toStrictEqual(config.responseObject);
+            } else {
+              expect(response).toBe(Responses.CONFIRMATION_URL);
+            }
+            expect({
+              ...GRAPHQL_BASE_REQUEST,
+              data: {
+                query: expect.stringContaining(config.mutationName),
+                variables: expect.objectContaining({
+                  trialDays: 10,
+                  replacementBehavior:
+                    BillingReplacementBehavior.ApplyImmediately,
+                }),
+              },
+            }).toMatchMadeHttpRequest();
+          });
         });
-
-        expect(response1).toBe(Responses.CONFIRMATION_URL);
-        expect({
-          ...GRAPHQL_BASE_REQUEST,
-          data: {
-            query: expect.stringContaining(config.mutationName),
-            variables: expect.objectContaining({
-              name: Responses.PLAN_1,
-            }),
-          },
-        }).toMatchMadeHttpRequest();
-
-        const response2 = await shopify.billing.request({
-          session,
-          plan: Responses.PLAN_2,
-        });
-
-        expect(response2).toBe(Responses.CONFIRMATION_URL);
-        expect({
-          ...GRAPHQL_BASE_REQUEST,
-          data: {
-            query: expect.stringContaining(config.mutationName),
-            variables: expect.objectContaining({
-              name: Responses.PLAN_2,
-            }),
-          },
-        }).toMatchMadeHttpRequest();
-      });
-
-      test('throws on userErrors', async () => {
-        queueMockResponses([config.errorResponse]);
-
-        await expect(() =>
-          shopify.billing.request({
-            session,
-            plan: Responses.PLAN_1,
-            isTest: true,
-          }),
-        ).rejects.toThrow(BillingError);
-
-        expect({
-          ...GRAPHQL_BASE_REQUEST,
-          data: expect.stringContaining(config.mutationName),
-        }).toMatchMadeHttpRequest();
       });
     });
-  });
-
-  test('can request subscription with extra fields', async () => {
-    shopify = shopifyApi({
-      ...testConfig,
-      billing: {
-        [Responses.PLAN_1]: {
-          amount: 5,
-          currencyCode: 'USD',
-          interval: BillingInterval.Every30Days,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-          trialDays: 10,
-        },
-      },
-    });
-
-    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
-
-    const response = await shopify.billing.request({
-      session,
-      plan: Responses.PLAN_1,
-    });
-
-    expect(response).toBe(Responses.CONFIRMATION_URL);
-    expect({
-      ...GRAPHQL_BASE_REQUEST,
-      data: {
-        query: expect.stringContaining('appSubscriptionCreate'),
-        variables: expect.objectContaining({
-          trialDays: 10,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        }),
-      },
-    }).toMatchMadeHttpRequest();
-  });
-
-  test('can request subscription with discount amount fields', async () => {
-    shopify = shopifyApi({
-      ...testConfig,
-      billing: {
-        [Responses.PLAN_1]: {
-          amount: 5,
-          currencyCode: 'USD',
-          interval: BillingInterval.Every30Days,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-          trialDays: 10,
-          discount: {
-            durationLimitInIntervals: 5,
-            value: {
-              amount: 2,
-            },
-          },
-        },
-      },
-    });
-
-    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
-
-    const response = await shopify.billing.request({
-      session,
-      plan: Responses.PLAN_1,
-    });
-
-    expect(response).toBe(Responses.CONFIRMATION_URL);
-    expect({
-      ...GRAPHQL_BASE_REQUEST,
-      data: {
-        query: expect.stringContaining('appSubscriptionCreate'),
-        variables: expect.objectContaining({
-          trialDays: 10,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        }),
-      },
-    }).toMatchMadeHttpRequest();
-  });
-
-  test('can request subscription with discount percentage fields', async () => {
-    shopify = shopifyApi({
-      ...testConfig,
-      billing: {
-        [Responses.PLAN_1]: {
-          amount: 5,
-          currencyCode: 'USD',
-          interval: BillingInterval.Every30Days,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-          trialDays: 10,
-          discount: {
-            durationLimitInIntervals: 5,
-            value: {
-              percentage: 0.2,
-            },
-          },
-        },
-      },
-    });
-
-    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
-
-    const response = await shopify.billing.request({
-      session,
-      plan: Responses.PLAN_1,
-    });
-
-    expect(response).toBe(Responses.CONFIRMATION_URL);
-    expect({
-      ...GRAPHQL_BASE_REQUEST,
-      data: {
-        query: expect.stringContaining('appSubscriptionCreate'),
-        variables: expect.objectContaining({
-          trialDays: 10,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        }),
-      },
-    }).toMatchMadeHttpRequest();
-  });
-
-  test('can request usage subscription with extra fields', async () => {
-    shopify = shopifyApi({
-      ...testConfig,
-      billing: {
-        [Responses.PLAN_1]: {
-          amount: 5,
-          currencyCode: 'USD',
-          interval: BillingInterval.Usage,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-          trialDays: 10,
-        },
-      },
-    });
-
-    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
-
-    const response = await shopify.billing.request({
-      session,
-      plan: Responses.PLAN_1,
-    });
-
-    expect(response).toBe(Responses.CONFIRMATION_URL);
-    expect({
-      ...GRAPHQL_BASE_REQUEST,
-      data: {
-        query: expect.stringContaining('appSubscriptionCreate'),
-        variables: expect.objectContaining({
-          trialDays: 10,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        }),
-      },
-    }).toMatchMadeHttpRequest();
   });
 });
