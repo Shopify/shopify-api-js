@@ -3,7 +3,6 @@ import {
   setAbstractConvertRequestFunc,
   setAbstractConvertResponseFunc,
   setAbstractConvertHeadersFunc,
-  setCrypto,
   setAbstractRuntimeString,
 } from '../../runtime';
 
@@ -20,4 +19,3 @@ setAbstractConvertRequestFunc(workerConvertRequest);
 setAbstractConvertResponseFunc(workerConvertResponse);
 setAbstractConvertHeadersFunc(workerConvertHeaders);
 setAbstractRuntimeString(workerRuntimeString);
-setCrypto(crypto as any);
