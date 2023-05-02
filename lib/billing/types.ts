@@ -51,12 +51,13 @@ export interface BillingConfig {
     | BillingConfigUsagePlan;
 }
 
-interface ActiveSubscription {
+export interface ActiveSubscription {
+  id: string;
   name: string;
   test: boolean;
 }
 
-interface ActiveSubscriptions {
+export interface ActiveSubscriptions {
   activeSubscriptions: ActiveSubscription[];
 }
 
@@ -106,22 +107,15 @@ export interface SinglePaymentResponse {
   errors?: string[];
 }
 
-// Ideally this is imported from core GQL types TODO:
-interface AppSubscription {
-  createdAt: string;
-  currentPeriodEnd: string;
-  id: string;
-  lineItems?: [any];
-  name: string;
-  returnUrl: string;
-  status: string;
-  test: boolean;
-  trialDays: number;
+export interface SubscriptionResponse {
+  data: {
+    currentAppInstallation: ActiveSubscriptions;
+  };
 }
 
 export interface CancelResponse {
   data: {
-    appSubscription: AppSubscription;
+    currentAppInstallation: ActiveSubscriptions;
   };
   errors?: string[];
 }

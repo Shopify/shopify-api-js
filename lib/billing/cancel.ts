@@ -6,8 +6,8 @@ import {BillingCancelParams} from '../types';
 import {CancelResponse} from './types';
 
 const CANCEL_MUTATION = `
-  mutation appSubscriptionCancel($id: ID!, $returnUrl: String!) {
-    appSubscriptionCancel(id: $id) {
+  mutation appSubscriptionCancel($id: ID!, $prorate: Boolean) {
+    appSubscriptionCancel(id: $id, prorate: $prorate) {
       appSubscription {
         id
         name

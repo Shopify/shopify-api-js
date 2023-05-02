@@ -97,7 +97,7 @@ export const EXISTING_SUBSCRIPTION_OBJECT = {
         edges: [],
         pageInfo: {hasNextPage: false, endCursor: null},
       },
-      activeSubscriptions: [{id: 123, name: PLAN_1, test: true}],
+      activeSubscriptions: [{id: 'gid://123', name: PLAN_1, test: true}],
     },
   },
 };
@@ -146,11 +146,19 @@ export const CANCEL_RESPONSE = JSON.stringify({
   data: {
     appSubscriptionCancel: {
       appSubscription: {
-        id: 123,
+        id: 'gid://123',
         name: PLAN_1,
         test: true,
       },
       userErrors: [],
+    },
+  },
+});
+
+export const SUBSCRIPTIONS_RESPONSE = JSON.stringify({
+  data: {
+    currentAppInstallation: {
+      activeSubscriptions: [{id: 'gid://123', name: PLAN_1, test: true}],
     },
   },
 });
