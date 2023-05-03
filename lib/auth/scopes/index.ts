@@ -4,14 +4,16 @@ class AuthScopes {
   private compressedScopes: Set<string>;
   private expandedScopes: Set<string>;
 
-  constructor(scopes: string | string[] | undefined) {
+  constructor(scopes: string | string[] | AuthScopes | undefined) {
     let scopesArray: string[] = [];
     if (typeof scopes === 'string') {
       scopesArray = scopes.split(
         new RegExp(`${AuthScopes.SCOPE_DELIMITER}\\s*`),
       );
-    } else if (scopes) {
+    } else if (Array.isArray(scopes)) {
       scopesArray = scopes;
+    } else if (scopes) {
+      scopesArray = Array.from(scopes.expandedScopes);
     }
 
     scopesArray = scopesArray

@@ -1,4 +1,5 @@
 import {v4 as uuidv4} from 'uuid';
+import isbot from 'isbot';
 
 import ProcessedQuery from '../../utils/processed-query';
 import {ConfigInterface} from '../../base-types';
@@ -18,8 +19,9 @@ import {
   AdapterHeaders,
   Cookies,
   NormalizedResponse,
+  NormalizedRequest,
 } from '../../../runtime/http';
-import {logger} from '../../logger';
+import {logger, ShopifyLogger} from '../../logger';
 
 import {
   SESSION_COOKIE_NAME,
@@ -39,6 +41,18 @@ export interface CallbackResponse<T = AdapterHeaders> {
   session: Session;
 }
 
+interface BotLog {
+  request: NormalizedRequest;
+  log: ShopifyLogger;
+  func: string;
+}
+
+const logForBot = ({request, log, func}: BotLog) => {
+  log.debug(`Possible bot request to auth ${func}: `, {
+    userAgent: request.headers['User-Agent'],
+  });
+};
+
 export function begin(config: ConfigInterface) {
   return async ({
     shop,
@@ -54,9 +68,14 @@ export function begin(config: ConfigInterface) {
     const log = logger(config);
     log.info('Beginning OAuth', {shop, isOnline, callbackPath});
 
-    const cleanShop = sanitizeShop(config)(shop, true)!;
     const request = await abstractConvertRequest(adapterArgs);
     const response = await abstractConvertIncomingResponse(adapterArgs);
+
+    if (isbot(request.headers['User-Agent'])) {
+      logForBot({request, log, func: 'begin'});
+      response.statusCode = 410;
+      return abstractConvertResponse(response, adapterArgs);
+    }
 
     const cookies = new Cookies(request, response, {
       keys: [config.apiSecretKey],
@@ -82,6 +101,7 @@ export function begin(config: ConfigInterface) {
     const processedQuery = new ProcessedQuery();
     processedQuery.putAll(query);
 
+    const cleanShop = sanitizeShop(config)(shop, true)!;
     const redirectUrl = `https://${cleanShop}/admin/oauth/authorize${processedQuery.stringify()}`;
     response.statusCode = 302;
     response.statusText = 'Found';
@@ -116,9 +136,17 @@ export function callback(config: ConfigInterface) {
     ).searchParams;
     const shop = query.get('shop')!;
 
+    const response = {} as NormalizedResponse;
+    if (isbot(request.headers['User-Agent'])) {
+      logForBot({request, log, func: 'callback'});
+      throw new ShopifyErrors.BotActivityDetected(
+        'Invalid OAuth callback initiated by bot',
+      );
+    }
+
     log.info('Completing OAuth', {shop});
 
-    const cookies = new Cookies(request, {} as NormalizedResponse, {
+    const cookies = new Cookies(request, response, {
       keys: [config.apiSecretKey],
       secure: true,
     });

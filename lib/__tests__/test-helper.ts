@@ -1,4 +1,5 @@
 import * as jose from 'jose';
+import {compare} from 'compare-versions';
 
 import {shopifyApi, Shopify} from '..';
 import {LATEST_API_VERSION, LogSeverity} from '../types';
@@ -156,4 +157,18 @@ export async function createDummySession({
   });
 
   return session;
+}
+
+export function testIfLibraryVersionIsAtLeast(
+  version: string,
+  testName: string,
+  testFn: jest.ProvidesCallback,
+) {
+  describe(`when library version is at least ${version}`, () => {
+    if (compare(SHOPIFY_API_LIBRARY_VERSION, version, '>=')) {
+      test(testName, testFn);
+    } else {
+      test.skip(`- '${testName}' requires library version ${version} or higher`, () => {});
+    }
+  });
 }

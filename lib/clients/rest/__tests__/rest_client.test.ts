@@ -348,6 +348,7 @@ describe('REST client', () => {
 
   it('adapts to private app requests', async () => {
     shopify.config.isCustomStoreApp = true;
+    shopify.config.adminApiAccessToken = 'test-admin-api-access-token';
 
     const client = new shopify.clients.Rest({session});
 
@@ -358,7 +359,8 @@ describe('REST client', () => {
     );
 
     const customHeaders: {[key: string]: string} = {};
-    customHeaders[ShopifyHeader.AccessToken] = shopify.config.apiSecretKey;
+    customHeaders[ShopifyHeader.AccessToken] =
+      shopify.config.adminApiAccessToken;
 
     expect({
       method: 'GET',

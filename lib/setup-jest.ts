@@ -1,4 +1,4 @@
-import semver from 'semver';
+import {compare} from 'compare-versions';
 
 import '../adapters/mock';
 import {mockTestRequests} from '../adapters/mock/mock_test_requests';
@@ -131,7 +131,7 @@ expect.extend({
     return {
       message: () =>
         `Found deprecation limited to version ${version}, please update or remove it.`,
-      pass: semver.lt(SHOPIFY_API_LIBRARY_VERSION, version),
+      pass: compare(SHOPIFY_API_LIBRARY_VERSION, version, '<'),
     };
   },
 });

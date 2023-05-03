@@ -12,7 +12,11 @@ A custom app is an app that you or a developer builds exclusively for your Shopi
 
 A store-specific custom app does not use the OAuth process to authenticate - it uses the secrets established during the app creation and install process to access the API.  As a result, there are no sessions to be retrieved from incoming requests and stored in a database, etc.
 
-When initializing `shopifyApi` in a custom app, set the `isCustomStoreApp` configuration property to `true`, and set the `apiSecretKey` to the **Admin API access token** obtained during the installation process (step 2 in the [prerequisites](#prerequisites)).
+When initializing `shopifyApi` in a custom app
+
+- set the `isCustomStoreApp` configuration property to `true`
+- set the `apiSecretKey` configuration property to the **API secret key** obtained during the installation process (step 2 in the [prerequisites](#prerequisites)).
+- set the `adminApiAccessToken` configuration property to the **Admin API access token** obtained during the installation process (step 2 in the [prerequisites](#prerequisites)).
 
 ## Example
 
@@ -20,15 +24,14 @@ When initializing `shopifyApi` in a custom app, set the `isCustomStoreApp` confi
 
 ```js
 import "@shopify/shopify-api/adapters/node";
-import { shopifyApi, LATEST_API_VERSION, Session } from "@shopify/shopify-api";
-import { restResources } from "@shopify/shopify-api/rest/admin/2023-01";
+import { shopifyApi, ApiVersion, Session } from "@shopify/shopify-api";
+import { restResources } from "@shopify/shopify-api/rest/admin/2023-04";
 
 const shopify = shopifyApi({
-  apiKey: "App_API_key",
-  apiSecretKey: "Admin_API_Access_Token", // Note: this is the API access token, NOT the API Secret Key
-  apiVersion: LATEST_API_VERSION,
-  isCustomStoreApp: true,                     // this MUST be set to true (default is false)
-  scopes: [],
+  apiSecretKey: "App_API_secret_key",            // Note: this is the API Secret Key, NOT the API access token
+  apiVersion: ApiVersion.April23,
+  isCustomStoreApp: true,                        // this MUST be set to true (default is false)
+  adminApiAccessToken: "Admin_API_Access_Token", // Note: this is the API access token, NOT the API Secret Key
   isEmbeddedApp: false,
   hostName: "my-shop.myshopify.com",
   // Mount REST resources.
@@ -36,7 +39,7 @@ const shopify = shopifyApi({
 });
 ```
 
-> **Note** The `apiSecretKey` is **NOT** set to the API secret key but to the **Admin API access token**.
+> **Note** In version 7 and earlier, the `apiSecretKey` was set to Admin API access token, but this prevented webhook hmac validation from working.  To migrate from an app built with an API library version `7.0.0` or earlier, make sure to set the `apiSecretKey` to the API secret key (needed for webhook hmac validation) and set the `adminApiAccessToken` to the Admin API access token, required for client authentication.
 
 ### Making requests
 
