@@ -43,6 +43,7 @@ export function request(config: ConfigInterface) {
     session,
     plan,
     isTest = true,
+    returnUrl,
   }: RequestParams): Promise<string> {
     if (!config.billing || !config.billing[plan]) {
       throw new BillingError({
@@ -53,9 +54,16 @@ export function request(config: ConfigInterface) {
 
     const billingConfig = config.billing[plan];
 
-    const returnUrl = buildEmbeddedAppUrl(config)(
-      hashString(`${session.shop}/admin`, HashFormat.Base64),
+    const cleanShopName = session.shop.replace('.myshopify.com', '');
+    const embeddedAppUrl = buildEmbeddedAppUrl(config)(
+      hashString(`admin.shopify.com/store/${cleanShopName}`, HashFormat.Base64),
     );
+
+    const appUrl = `${config.hostScheme}://${config.hostName}`;
+
+    // if provided a return URL, use it, otherwise use the embeded app URL or hosted app URL
+    const returnedUrl =
+      returnUrl || (config.isEmbeddedApp ? embeddedAppUrl : appUrl);
 
     const GraphqlClient = graphqlClientClass({config});
     const client = new GraphqlClient({session});
@@ -67,7 +75,7 @@ export function request(config: ConfigInterface) {
           billingConfig: billingConfig as BillingConfigOneTimePlan,
           plan,
           client,
-          returnUrl,
+          returnUrl: returnedUrl,
           isTest,
         });
         data = mutationOneTimeResponse.data.appPurchaseOneTimeCreate;
@@ -78,7 +86,7 @@ export function request(config: ConfigInterface) {
           billingConfig: billingConfig as BillingConfigUsagePlan,
           plan,
           client,
-          returnUrl,
+          returnUrl: returnedUrl,
           isTest,
         });
         data = mutationUsageResponse.data.appSubscriptionCreate;
@@ -89,7 +97,7 @@ export function request(config: ConfigInterface) {
           billingConfig: billingConfig as BillingConfigSubscriptionPlan,
           plan,
           client,
-          returnUrl,
+          returnUrl: returnedUrl,
           isTest,
         });
         data = mutationRecurringResponse.data.appSubscriptionCreate;
