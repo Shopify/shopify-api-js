@@ -72,6 +72,12 @@ Which plan to create a charge for.
 
 If `true`, Shopify will not actually charge for this purchase.
 
+### returnUrl
+
+`string` | Defaults to embedded app's main page or hosted app's main page
+
+Which URL to redirect the merchant to after the charge is confirmed.
+
 ## Return
 
 `string`
