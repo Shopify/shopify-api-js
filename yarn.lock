@@ -4562,9 +4562,9 @@ jest@^29.1.2:
     jest-cli "^29.5.0"
 
 jose@^4.9.1:
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-4.13.1.tgz#449111bb5ab171db85c03f1bd2cb1647ca06db1c"
-  integrity sha512-MSJQC5vXco5Br38mzaQKiq9mwt7lwj2eXpgpRyQYNHYt2lq1PjkWa7DLXX0WVcQLE9HhMh3jPiufS7fhJf+CLQ==
+  version "4.14.1"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-4.14.1.tgz#74f12a621ea2ef850bf0dd8405e2ee4041aea934"
+  integrity sha512-SgjXLpP7jhQkUNKL6RpowoR/IF4QKE+WjLDMpNnh2vmhiFs67NftrNpvFtgbwpvRdtueFliahYYWz9E+XZZQlg==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
