@@ -1,3 +1,5 @@
+import {compare} from 'compare-versions';
+
 import {loadRestResources} from '../rest/load-rest-resources';
 import {ShopifyRestResources} from '../rest/types';
 import {abstractRuntimeString} from '../runtime/platform';
@@ -74,6 +76,14 @@ export function shopifyApi<T extends ShopifyRestResources>(
       `version ${SHOPIFY_API_LIBRARY_VERSION}, environment ${abstractRuntimeString()}`,
     )
     .catch((err) => console.log(err));
+
+  const isNode = abstractRuntimeString().startsWith('Node');
+  if (isNode && compare(process.version, '16.0.0', '<')) {
+    shopify.logger.deprecated(
+      '8.0.0',
+      `Support for ${abstractRuntimeString()} will be removed`,
+    );
+  }
 
   return shopify;
 }
