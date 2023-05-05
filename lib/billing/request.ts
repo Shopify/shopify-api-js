@@ -43,6 +43,7 @@ export function request(config: ConfigInterface) {
     session,
     plan,
     isTest = true,
+    returnUrl: returnUrlParam,
   }: RequestParams): Promise<string> {
     if (!config.billing || !config.billing[plan]) {
       throw new BillingError({
@@ -53,9 +54,16 @@ export function request(config: ConfigInterface) {
 
     const billingConfig = config.billing[plan];
 
-    const returnUrl = buildEmbeddedAppUrl(config)(
-      hashString(`${session.shop}/admin`, HashFormat.Base64),
+    const cleanShopName = session.shop.replace('.myshopify.com', '');
+    const embeddedAppUrl = buildEmbeddedAppUrl(config)(
+      hashString(`admin.shopify.com/store/${cleanShopName}`, HashFormat.Base64),
     );
+
+    const appUrl = `${config.hostScheme}://${config.hostName}`;
+
+    // if provided a return URL, use it, otherwise use the embedded app URL or hosted app URL
+    const returnUrl =
+      returnUrlParam || (config.isEmbeddedApp ? embeddedAppUrl : appUrl);
 
     const GraphqlClient = graphqlClientClass({config});
     const client = new GraphqlClient({session});

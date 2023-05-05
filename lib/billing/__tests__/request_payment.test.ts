@@ -142,11 +142,37 @@ describe('shopify.billing.request', () => {
             ...GRAPHQL_BASE_REQUEST,
             data: {
               query: expect.stringContaining(config.mutationName),
-              variables: expect.objectContaining({test: isTest}),
+              variables: expect.objectContaining({
+                test: isTest,
+                returnUrl: 'https://test_host_name',
+              }),
             },
           }).toMatchMadeHttpRequest();
         }),
       );
+
+      test(`can request payment with returnUrl param`, async () => {
+        queueMockResponses([config.paymentResponse]);
+
+        const response = await shopify.billing.request({
+          session,
+          plan: Responses.PLAN_1,
+          isTest: true,
+          returnUrl: 'https://example.com',
+        });
+
+        expect(response).toBe(Responses.CONFIRMATION_URL);
+        expect({
+          ...GRAPHQL_BASE_REQUEST,
+          data: {
+            query: expect.stringContaining(config.mutationName),
+            variables: expect.objectContaining({
+              test: true,
+              returnUrl: 'https://example.com',
+            }),
+          },
+        }).toMatchMadeHttpRequest();
+      });
 
       test('defaults to test purchases', async () => {
         queueMockResponses([config.paymentResponse]);
