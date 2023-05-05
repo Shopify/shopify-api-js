@@ -56,6 +56,8 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 | `discount.value.amount` | `number` | No | - | The amount of the discount in the currency that the merchant is being billed in. |
 | `discount.value.percentage` | `number` | No | - | The percentage value of the discount. |
 
+> **Note** `discount.value` can only include either `amount` or `percentage` but not both.
+
 ### Usage Billing Plans
 
 | Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                        |
