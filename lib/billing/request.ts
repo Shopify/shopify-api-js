@@ -43,7 +43,7 @@ export function request(config: ConfigInterface) {
     session,
     plan,
     isTest = true,
-    returnUrl,
+    returnUrl: returnUrlParam,
   }: RequestParams): Promise<string> {
     if (!config.billing || !config.billing[plan]) {
       throw new BillingError({
@@ -61,9 +61,9 @@ export function request(config: ConfigInterface) {
 
     const appUrl = `${config.hostScheme}://${config.hostName}`;
 
-    // if provided a return URL, use it, otherwise use the embeded app URL or hosted app URL
-    const returnedUrl =
-      returnUrl || (config.isEmbeddedApp ? embeddedAppUrl : appUrl);
+    // if provided a return URL, use it, otherwise use the embedded app URL or hosted app URL
+    const returnUrl =
+      returnUrlParam || (config.isEmbeddedApp ? embeddedAppUrl : appUrl);
 
     const GraphqlClient = graphqlClientClass({config});
     const client = new GraphqlClient({session});
@@ -75,7 +75,7 @@ export function request(config: ConfigInterface) {
           billingConfig: billingConfig as BillingConfigOneTimePlan,
           plan,
           client,
-          returnUrl: returnedUrl,
+          returnUrl,
           isTest,
         });
         data = mutationOneTimeResponse.data.appPurchaseOneTimeCreate;
@@ -86,7 +86,7 @@ export function request(config: ConfigInterface) {
           billingConfig: billingConfig as BillingConfigUsagePlan,
           plan,
           client,
-          returnUrl: returnedUrl,
+          returnUrl,
           isTest,
         });
         data = mutationUsageResponse.data.appSubscriptionCreate;
@@ -97,7 +97,7 @@ export function request(config: ConfigInterface) {
           billingConfig: billingConfig as BillingConfigSubscriptionPlan,
           plan,
           client,
-          returnUrl: returnedUrl,
+          returnUrl,
           isTest,
         });
         data = mutationRecurringResponse.data.appSubscriptionCreate;
