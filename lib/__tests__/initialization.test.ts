@@ -48,17 +48,13 @@ describe('shopifyApi', () => {
       testRuntimeString = version;
       shopify = shopifyApi(testConfig);
       expect(abstractRuntimeString()).toStrictEqual(version);
-      if (deprecated) {
-        expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
-          LogSeverity.Warning,
-          expect.stringContaining('[Deprecated | 8.0.0] Support for'),
-        );
-      } else {
-        expect(shopify.config.logger.log).not.toHaveBeenLastCalledWith(
-          LogSeverity.Warning,
-          expect.stringContaining('[Deprecated | 8.0.0] Support for'),
-        );
-      }
+      const localExpect = deprecated
+        ? expect(shopify.config.logger.log)
+        : expect(shopify.config.logger.log).not;
+      localExpect.toHaveBeenLastCalledWith(
+        LogSeverity.Warning,
+        expect.stringContaining('[Deprecated | 8.0.0] Support for'),
+      );
     });
   });
 });

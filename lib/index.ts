@@ -85,7 +85,7 @@ export function shopifyApi<T extends ShopifyRestResources>(
   if (isNode && compare(nodeVersion, '16.0.0', '<')) {
     shopify.logger.deprecated(
       '8.0.0',
-      `Support for ${abstractRuntimeString()} will be removed`,
+      `Support for ${abstractRuntimeString()} will be removed - please upgrade to Node v16.0.0 or higher.`,
     );
   }
 
