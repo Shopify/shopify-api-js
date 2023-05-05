@@ -18,6 +18,24 @@ export interface BillingConfigSubscriptionPlan extends BillingConfigPlan {
   interval: RecurringBillingIntervals;
   trialDays?: number;
   replacementBehavior?: BillingReplacementBehavior;
+  discount?: BillingConfigSubscriptionPlanDiscount;
+}
+
+export interface BillingConfigSubscriptionPlanDiscountAmount {
+  amount: number;
+  percentage?: never;
+}
+
+export interface BillingConfigSubscriptionPlanDiscountPercentage {
+  amount?: never;
+  percentage: number;
+}
+
+export interface BillingConfigSubscriptionPlanDiscount {
+  durationLimitInIntervals?: number;
+  value:
+    | BillingConfigSubscriptionPlanDiscountAmount
+    | BillingConfigSubscriptionPlanDiscountPercentage;
 }
 
 export interface BillingConfigUsagePlan extends BillingConfigPlan {
