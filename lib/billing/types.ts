@@ -44,6 +44,7 @@ export interface RequestParams {
   session: Session;
   plan: string;
   isTest?: boolean;
+  returnUrl?: string;
 }
 
 interface ActiveSubscription {
