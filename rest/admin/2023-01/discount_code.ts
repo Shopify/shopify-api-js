@@ -200,6 +200,7 @@ export class DiscountCode extends Base {
 
   public code: string | null;
   public created_at: string | null;
+  public errors: {[key: string]: unknown} | null;
   public id: number | null;
   public price_rule_id: number | null;
   public updated_at: string | null;
