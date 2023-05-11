@@ -100,6 +100,6 @@ export class OrderRisk extends Base {
   public message: string | null;
   public order_id: number | null;
   public recommendation: string | null;
-  public score: number | null;
+  public score: string | null;
   public source: string | null;
 }
