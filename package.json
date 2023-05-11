@@ -78,7 +78,7 @@
     "compare-versions": "^5.0.3",
     "isbot": "^3.6.10",
     "jose": "^4.9.1",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.3.1",
     "tslib": "^2.0.3",
     "uuid": "^9.0.0"
   },
