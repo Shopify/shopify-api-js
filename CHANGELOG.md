@@ -4,12 +4,12 @@
 
 ### Minor Changes
 
-- 1a64d96c: Added returnUrl as parameter to billing request function, improved returnUrl logic
+- 1a64d96c: Added `returnUrl` as optional parameter to billing `request` function, improved `returnUrl` logic. See [documentation](https://github.com/Shopify/shopify-api-js/blob/main/docs/reference/billing/request.md#returnurl) of `returnUrl` parameter for more details.
 - 89cca000: Discount functionality for App Billing. Fixes #731
 
 ### Patch Changes
 
-- 8de3c783: Removed setCrypto function to simplify runtimes
+- 8de3c783: Removed `setCrypto` function to simplify runtimes
 - 2628a7fc: Add scopes validation for AuthScopes object and convert it to array. Fixes [#1208](https://github.com/Shopify/shopify-app-template-node/issues/1208), [1221](https://github.com/Shopify/shopify-app-template-node/issues/1221)
 - d028ec0f: Replace `semver` with `compare-versions` lib to reduce dependency on nodejs builtin-libs
 - 7dcecb65: [Custom store apps only] Add new `adminApiAccessToken` parameter to `config` for when `isCustomStoreApp` is `true`. If set, it will be used for API access. `apiSecretKey` should now be set to the custom store app's API secret key, which is used to validate the HMAC of webhook events received from Shopify for a custom store app. Fixes #772, #800
@@ -25,11 +25,11 @@
 
 - 450c9e7f: Add deprecation notice for removal of Node 14 support from next major release
 - 9c095d12: Bumps [jose](https://github.com/panva/jose) from 4.13.1 to 4.14.1. See jose's [changelog](https://github.com/panva/jose/blob/main/CHANGELOG.md) for more details.
-- f04f0f64: apiKey configuration parameter is not mandatory when isCustomStoreApp is true. Fixes 782
+- f04f0f64: `apiKey` configuration parameter is no longer mandatory when `isCustomStoreApp` is `true`. Fixes 782
 - 464fd4f2: Extend support for Event topic names
 - e8966d50: Restoring REST resources for 2022-04, updates to certain resources for other API versions
 - 8de6024f: [Fix] Forward original graphql error message to client
-- f09417c4: Adds check for Google's Crawler in the authorization functions to prevent CookieNotFound error loops. Fixes #686
+- f09417c4: Adds check for Google's Crawler in the authorization functions to prevent `CookieNotFound` error loops. Fixes #686
 - cbffa2f6: Add trial days and replacement behavior to usage billing mutation. Fixes #770
 
 ## 7.0.0
