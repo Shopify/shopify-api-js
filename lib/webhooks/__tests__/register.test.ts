@@ -19,6 +19,7 @@ interface RegisterTestWebhook {
   handler: WebhookHandler;
   checkMockResponse?: MockResponse;
   responses?: MockResponse[];
+  allowMultipleHandlers?: boolean;
 }
 
 interface RegisterTestResponse {
@@ -215,6 +216,31 @@ describe('shopify.webhooks.register', () => {
     assertRegisterResponse({registerReturn, topic, responses});
   });
 
+  it('creates a new webhook registration if the path changes, and keeps the old one if allowMultipleHandlers flag is true', async () => {
+    const topic = 'PRODUCTS_CREATE';
+    const handler: WebhookHandler = {
+      ...HTTP_HANDLER,
+      callbackUrl: '/webhooks/new',
+    };
+    const responses = [mockResponses.successResponse];
+
+    const registerReturn = await registerWebhook({
+      topic,
+      handler,
+      checkMockResponse: mockResponses.webhookCheckResponse,
+      responses,
+      allowMultipleHandlers: true,
+    });
+
+    assertWebhookRegistrationRequest(
+      'webhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {callbackUrl: `"https://test_host_name/webhooks/new"`},
+    );
+
+    assertRegisterResponse({registerReturn, topic, responses});
+  });
+
   it('creates a new EventBridge webhook registration if the address changes, then deletes the old one', async () => {
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
@@ -364,6 +390,7 @@ async function registerWebhook({
   handler,
   checkMockResponse = mockResponses.webhookCheckEmptyResponse,
   responses = [],
+  allowMultipleHandlers = false,
 }: RegisterTestWebhook): Promise<RegisterReturn> {
   shopify.webhooks.addHandlers({[topic]: handler});
 
@@ -372,7 +399,10 @@ async function registerWebhook({
     queueMockResponse(JSON.stringify(response));
   });
 
-  const result = await shopify.webhooks.register({session});
+  const result = await shopify.webhooks.register({
+    session,
+    allowMultipleHandlers,
+  });
 
   expect(mockTestRequests.requestList).toHaveLength(responses.length + 1);
 

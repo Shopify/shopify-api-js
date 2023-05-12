@@ -41,6 +41,12 @@ app.get('/auth/callback', async (req, res) => {
 
 The session to use for requests.
 
+### allowMultipleHandlers
+
+`bool` | default: `false`
+
+If true it will not delete any existing webhooks that are not configured in the current session.
+
 ## Return
 
 `RegisterReturn`
