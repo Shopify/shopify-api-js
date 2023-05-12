@@ -7,6 +7,9 @@ import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
+import {Balance} from './balance';
+import {Currency} from './currency';
+
 interface FindArgs {
   session: Session;
   id: number | string;
@@ -46,7 +49,10 @@ export class GiftCard extends Base {
 
   protected static resourceName = 'gift_card';
   protected static pluralName = 'gift_cards';
-  protected static hasOne: {[key: string]: typeof Base} = {};
+  protected static hasOne: {[key: string]: typeof Base} = {
+    "balance": Balance,
+    "currency": Currency
+  };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
@@ -158,15 +164,15 @@ export class GiftCard extends Base {
   }
 
   public api_client_id: number | null;
-  public balance: number | null;
+  public balance: Balance | null | {[key: string]: any};
   public code: string | null;
   public created_at: string | null;
-  public currency: string | null;
+  public currency: Currency | null | {[key: string]: any};
   public customer_id: number | null;
   public disabled_at: string | null;
   public expires_on: string | null;
   public id: number | null;
-  public initial_value: number | null;
+  public initial_value: string | null;
   public last_characters: string | null;
   public line_item_id: number | null;
   public note: string | null;

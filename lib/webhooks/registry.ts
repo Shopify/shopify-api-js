@@ -14,7 +14,7 @@ export function registry(): WebhookRegistry {
 }
 
 export function topicForStorage(topic: string): string {
-  return topic.toUpperCase().replace(/\//g, '_');
+  return topic.toUpperCase().replace(/\/|\./g, '_');
 }
 
 export function addHandlers(

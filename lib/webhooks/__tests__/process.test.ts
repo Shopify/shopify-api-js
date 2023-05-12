@@ -79,6 +79,27 @@ describe('shopify.webhooks.process', () => {
     expect(blockingWebhookHandlerCalled).toBeTruthy();
   });
 
+  it('handles the request when a event topic is already registered', async () => {
+    const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
+    await shopify.webhooks.addHandlers({
+      DOMAIN_SUB_DOMAIN_SOMETHING_HAPPENED: handler,
+    });
+
+    const response = await request(app)
+      .post('/webhooks')
+      .set(
+        headers({
+          hmac: hmac(shopify.config.apiSecretKey, rawBody),
+          topic: 'domain.sub_domain.something_happened',
+        }),
+      )
+      .send(rawBody)
+      .expect(StatusCode.Ok);
+
+    expect(response.body.data.errorThrown).toBeFalsy();
+    expect(blockingWebhookHandlerCalled).toBeTruthy();
+  });
+
   it('handles lower case headers', async () => {
     const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
     shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});

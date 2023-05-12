@@ -302,7 +302,7 @@ export class Order extends Base {
   public source_identifier: string | null;
   public source_name: string | null;
   public source_url: string | null;
-  public subtotal_price: number | null;
+  public subtotal_price: string | null;
   public subtotal_price_set: {[key: string]: unknown} | null;
   public tags: string | null;
   public tax_lines: {[key: string]: unknown}[] | null;

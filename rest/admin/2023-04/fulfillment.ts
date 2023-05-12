@@ -180,7 +180,9 @@ export class Fulfillment extends Base {
   public shipment_status: string | null;
   public status: string | null;
   public tracking_company: string | null;
+  public tracking_number: string | null;
   public tracking_numbers: string[] | null;
+  public tracking_url: string | null;
   public tracking_urls: string[] | null;
   public updated_at: string | null;
   public variant_inventory_management: string | null;

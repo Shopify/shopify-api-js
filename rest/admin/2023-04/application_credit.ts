@@ -66,7 +66,7 @@ export class ApplicationCredit extends Base {
     return response;
   }
 
-  public amount: number | null;
+  public amount: string | null;
   public currency: Currency | null | {[key: string]: any};
   public description: string | null;
   public id: number | null;

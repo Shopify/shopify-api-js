@@ -142,11 +142,37 @@ describe('shopify.billing.request', () => {
             ...GRAPHQL_BASE_REQUEST,
             data: {
               query: expect.stringContaining(config.mutationName),
-              variables: expect.objectContaining({test: isTest}),
+              variables: expect.objectContaining({
+                test: isTest,
+                returnUrl: 'https://test_host_name',
+              }),
             },
           }).toMatchMadeHttpRequest();
         }),
       );
+
+      test(`can request payment with returnUrl param`, async () => {
+        queueMockResponses([config.paymentResponse]);
+
+        const response = await shopify.billing.request({
+          session,
+          plan: Responses.PLAN_1,
+          isTest: true,
+          returnUrl: 'https://example.com',
+        });
+
+        expect(response).toBe(Responses.CONFIRMATION_URL);
+        expect({
+          ...GRAPHQL_BASE_REQUEST,
+          data: {
+            query: expect.stringContaining(config.mutationName),
+            variables: expect.objectContaining({
+              test: true,
+              returnUrl: 'https://example.com',
+            }),
+          },
+        }).toMatchMadeHttpRequest();
+      });
 
       test('defaults to test purchases', async () => {
         queueMockResponses([config.paymentResponse]);
@@ -231,6 +257,86 @@ describe('shopify.billing.request', () => {
           interval: BillingInterval.Every30Days,
           replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
           trialDays: 10,
+        },
+      },
+    });
+
+    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+    const response = await shopify.billing.request({
+      session,
+      plan: Responses.PLAN_1,
+    });
+
+    expect(response).toBe(Responses.CONFIRMATION_URL);
+    expect({
+      ...GRAPHQL_BASE_REQUEST,
+      data: {
+        query: expect.stringContaining('appSubscriptionCreate'),
+        variables: expect.objectContaining({
+          trialDays: 10,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        }),
+      },
+    }).toMatchMadeHttpRequest();
+  });
+
+  test('can request subscription with discount amount fields', async () => {
+    shopify = shopifyApi({
+      ...testConfig,
+      billing: {
+        [Responses.PLAN_1]: {
+          amount: 5,
+          currencyCode: 'USD',
+          interval: BillingInterval.Every30Days,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+          trialDays: 10,
+          discount: {
+            durationLimitInIntervals: 5,
+            value: {
+              amount: 2,
+            },
+          },
+        },
+      },
+    });
+
+    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+    const response = await shopify.billing.request({
+      session,
+      plan: Responses.PLAN_1,
+    });
+
+    expect(response).toBe(Responses.CONFIRMATION_URL);
+    expect({
+      ...GRAPHQL_BASE_REQUEST,
+      data: {
+        query: expect.stringContaining('appSubscriptionCreate'),
+        variables: expect.objectContaining({
+          trialDays: 10,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        }),
+      },
+    }).toMatchMadeHttpRequest();
+  });
+
+  test('can request subscription with discount percentage fields', async () => {
+    shopify = shopifyApi({
+      ...testConfig,
+      billing: {
+        [Responses.PLAN_1]: {
+          amount: 5,
+          currencyCode: 'USD',
+          interval: BillingInterval.Every30Days,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+          trialDays: 10,
+          discount: {
+            durationLimitInIntervals: 5,
+            value: {
+              percentage: 0.2,
+            },
+          },
         },
       },
     });

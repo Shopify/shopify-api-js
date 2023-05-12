@@ -71,7 +71,7 @@ export class Dispute extends Base {
   public evidence_sent_on: string | null;
   public finalized_on: string | null;
   public id: number | null;
-  public network_reason_code: number | null;
+  public network_reason_code: string | null;
   public order_id: number | null;
   public reason: string | null;
   public status: string | null;

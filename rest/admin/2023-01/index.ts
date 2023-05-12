@@ -30,6 +30,7 @@ import {CustomerSavedSearch} from './customer_saved_search';
 import {DeprecatedApiCall} from './deprecated_api_call';
 import {DiscountCode} from './discount_code';
 import {Dispute} from './dispute';
+import {DisputeEvidence} from './dispute_evidence';
 import {DisputeFileUpload} from './dispute_file_upload';
 import {DraftOrder} from './draft_order';
 import {Event} from './event';
@@ -106,6 +107,7 @@ export interface RestResources extends ShopifyRestResources {
   DeprecatedApiCall: typeof DeprecatedApiCall;
   DiscountCode: typeof DiscountCode;
   Dispute: typeof Dispute;
+  DisputeEvidence: typeof DisputeEvidence;
   DisputeFileUpload: typeof DisputeFileUpload;
   DraftOrder: typeof DraftOrder;
   Event: typeof Event;
@@ -183,6 +185,7 @@ export const restResources: RestResources = {
   DeprecatedApiCall,
   DiscountCode,
   Dispute,
+  DisputeEvidence,
   DisputeFileUpload,
   DraftOrder,
   Event,
