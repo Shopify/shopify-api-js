@@ -85,6 +85,7 @@ export class CarrierService extends Base {
   public admin_graphql_api_id: string | null;
   public callback_url: string | null;
   public carrier_service_type: string | null;
+  public format: string | null;
   public id: number | null;
   public name: string | null;
   public service_discovery: boolean | null;

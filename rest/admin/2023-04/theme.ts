@@ -91,6 +91,7 @@ export class Theme extends Base {
   public previewable: boolean | null;
   public processing: boolean | null;
   public role: string | null;
+  public src: string | null;
   public theme_store_id: number | null;
   public updated_at: string | null;
 }

@@ -174,7 +174,13 @@ describe('AuthScopes.has', () => {
       'read_products',
       'read_orders',
     ]);
-
     expect(scopes1.has(scopes2)).toBeFalsy();
+  });
+
+  it('can be created from another AuthScopes instance', () => {
+    const scopeString = 'read_customers,write_customers,read_products';
+    const scopes1 = new AuthScopes(scopeString);
+    const scopes2 = new AuthScopes(scopes1 as any);
+    expect(scopes2.toString()).toEqual('write_customers,read_products');
   });
 });

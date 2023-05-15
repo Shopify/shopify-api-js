@@ -48,7 +48,7 @@ export class Shop extends Base {
   public country: string | null;
   public country_code: string | null;
   public country_name: string | null;
-  public county_taxes: string | null;
+  public county_taxes: boolean | null;
   public created_at: string | null;
   public currency: string | null;
   public customer_email: string | null;

@@ -107,7 +107,7 @@ export class Event extends Base {
     return response ? response.body : null;
   }
 
-  public arguments: string | null;
+  public arguments: string[] | null;
   public body: string | null;
   public created_at: string | null;
   public description: string | null;

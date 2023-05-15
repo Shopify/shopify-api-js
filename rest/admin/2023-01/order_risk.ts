@@ -26,8 +26,8 @@ interface AllArgs {
 export class OrderRisk extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'order_risk';
-  protected static pluralName = 'order_risks';
+  protected static resourceName = 'risk';
+  protected static pluralName = 'risks';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -100,6 +100,6 @@ export class OrderRisk extends Base {
   public message: string | null;
   public order_id: number | null;
   public recommendation: string | null;
-  public score: number | null;
+  public score: string | null;
   public source: string | null;
 }

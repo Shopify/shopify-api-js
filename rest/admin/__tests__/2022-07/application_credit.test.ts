@@ -31,11 +31,11 @@ describe('ApplicationCredit resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636125, "amount": "5.00", "description": "application credit for refund", "test": null, "currency": "USD"}}));
+    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636134, "amount": "5.00", "description": "application credit for refund", "test": null, "currency": "USD"}}));
 
     const application_credit = new shopify.rest.ApplicationCredit({session: session});
     application_credit.description = "application credit for refund";
-    application_credit.amount = 5.0;
+    application_credit.amount = "5.00";
     await application_credit.save({});
 
     expect({
@@ -44,16 +44,16 @@ describe('ApplicationCredit resource', () => {
       path: '/admin/api/2022-07/application_credits.json',
       query: '',
       headers,
-      data: { "application_credit": {"description": "application credit for refund", "amount": 5.0} }
+      data: { "application_credit": {"description": "application credit for refund", "amount": "5.00"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636126, "amount": "5.00", "description": "application credit for refund", "test": true, "currency": "USD"}}));
+    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636131, "amount": "5.00", "description": "application credit for refund", "test": true, "currency": "USD"}}));
 
     const application_credit = new shopify.rest.ApplicationCredit({session: session});
     application_credit.description = "application credit for refund";
-    application_credit.amount = 5.0;
+    application_credit.amount = "5.00";
     application_credit.test = true;
     await application_credit.save({});
 
@@ -63,7 +63,7 @@ describe('ApplicationCredit resource', () => {
       path: '/admin/api/2022-07/application_credits.json',
       query: '',
       headers,
-      data: { "application_credit": {"description": "application credit for refund", "amount": 5.0, "test": true} }
+      data: { "application_credit": {"description": "application credit for refund", "amount": "5.00", "test": true} }
     }).toMatchMadeHttpRequest();
   });
 

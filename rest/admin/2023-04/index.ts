@@ -29,6 +29,8 @@ import {CustomerAddress} from './customer_address';
 import {CustomerSavedSearch} from './customer_saved_search';
 import {DeprecatedApiCall} from './deprecated_api_call';
 import {DiscountCode} from './discount_code';
+import {Dispute} from './dispute';
+import {DisputeEvidence} from './dispute_evidence';
 import {DisputeFileUpload} from './dispute_file_upload';
 import {DraftOrder} from './draft_order';
 import {Event} from './event';
@@ -52,6 +54,7 @@ import {OrderRisk} from './order_risk';
 import {Page} from './page';
 import {Payment} from './payment';
 import {PaymentGateway} from './payment_gateway';
+import {PaymentTransaction} from './payment_transaction';
 import {Payout} from './payout';
 import {Policy} from './policy';
 import {PriceRule} from './price_rule';
@@ -103,6 +106,8 @@ export interface RestResources extends ShopifyRestResources {
   CustomerSavedSearch: typeof CustomerSavedSearch;
   DeprecatedApiCall: typeof DeprecatedApiCall;
   DiscountCode: typeof DiscountCode;
+  Dispute: typeof Dispute;
+  DisputeEvidence: typeof DisputeEvidence;
   DisputeFileUpload: typeof DisputeFileUpload;
   DraftOrder: typeof DraftOrder;
   Event: typeof Event;
@@ -126,6 +131,7 @@ export interface RestResources extends ShopifyRestResources {
   Page: typeof Page;
   Payment: typeof Payment;
   PaymentGateway: typeof PaymentGateway;
+  PaymentTransaction: typeof PaymentTransaction;
   Payout: typeof Payout;
   Policy: typeof Policy;
   PriceRule: typeof PriceRule;
@@ -178,6 +184,8 @@ export const restResources: RestResources = {
   CustomerSavedSearch,
   DeprecatedApiCall,
   DiscountCode,
+  Dispute,
+  DisputeEvidence,
   DisputeFileUpload,
   DraftOrder,
   Event,
@@ -201,6 +209,7 @@ export const restResources: RestResources = {
   Page,
   Payment,
   PaymentGateway,
+  PaymentTransaction,
   Payout,
   Policy,
   PriceRule,
