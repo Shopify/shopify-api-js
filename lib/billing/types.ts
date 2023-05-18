@@ -1,4 +1,3 @@
-import {Session} from '../session/session';
 import {
   BillingInterval,
   BillingReplacementBehavior,
@@ -50,19 +49,6 @@ export interface BillingConfig {
     | BillingConfigOneTimePlan
     | BillingConfigSubscriptionPlan
     | BillingConfigUsagePlan;
-}
-
-export interface CheckParams {
-  session: Session;
-  plans: string[] | string;
-  isTest?: boolean;
-}
-
-export interface RequestParams {
-  session: Session;
-  plan: string;
-  isTest?: boolean;
-  returnUrl?: string;
 }
 
 interface ActiveSubscription {

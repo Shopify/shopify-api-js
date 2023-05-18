@@ -1,5 +1,5 @@
 import {ConfigInterface} from '../base-types';
-import {BillingInterval} from '../types';
+import {BillingInterval, BillingRequestParams} from '../types';
 import {BillingError} from '../error';
 import {buildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
 import {
@@ -10,7 +10,6 @@ import {hashString} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
 
 import {
-  RequestParams,
   RequestResponse,
   RecurringPaymentResponse,
   SinglePaymentResponse,
@@ -44,7 +43,7 @@ export function request(config: ConfigInterface) {
     plan,
     isTest = true,
     returnUrl: returnUrlParam,
-  }: RequestParams): Promise<string> {
+  }: BillingRequestParams): Promise<string> {
     if (!config.billing || !config.billing[plan]) {
       throw new BillingError({
         message: `Could not find plan ${plan} in billing settings`,
