@@ -18,6 +18,7 @@ import {
   WebhookValidationMissingHeaders,
   WebhookValidationValid,
   WebhookValidationInvalid,
+  HttpWebhookHandlerWithCallback,
 } from './types';
 import {validate} from './validate';
 
@@ -41,7 +42,7 @@ const STATUS_TEXT_LOOKUP: {[key: string]: string} = {
 
 export function process(
   config: ConfigInterface,
-  webhookRegistry: WebhookRegistry,
+  webhookRegistry: WebhookRegistry<HttpWebhookHandlerWithCallback>,
 ) {
   return async function process({
     rawBody,
@@ -92,7 +93,7 @@ export function process(
 
 async function callWebhookHandlers(
   config: ConfigInterface,
-  webhookRegistry: WebhookRegistry,
+  webhookRegistry: WebhookRegistry<HttpWebhookHandlerWithCallback>,
   webhookCheck: WebhookValidationValid,
   rawBody: string,
 ): Promise<HandlerCallResult> {
@@ -113,6 +114,17 @@ async function callWebhookHandlers(
     if (handler.deliveryMethod !== DeliveryMethod.Http) {
       continue;
     }
+    if (!handler.callback) {
+      response.statusCode = StatusCode.InternalServerError;
+      response.errorMessage =
+        "Cannot call webhooks.process with a webhook handler that doesn't have a callback";
+
+      throw new ShopifyErrors.MissingWebhookCallbackError({
+        message: response.errorMessage,
+        response,
+      });
+    }
+
     found = true;
 
     await log.debug('Found HTTP handler, triggering it', loggingContext);

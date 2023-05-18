@@ -25,6 +25,8 @@ export interface HttpWebhookHandler extends BaseWebhookHandler {
   deliveryMethod: DeliveryMethod.Http;
   privateMetafieldNamespaces?: string[];
   callbackUrl: string;
+}
+export interface HttpWebhookHandlerWithCallback extends HttpWebhookHandler {
   callback: WebhookHandlerFunction;
 }
 
@@ -41,12 +43,15 @@ export interface PubSubWebhookHandler extends BaseWebhookHandler {
 
 export type WebhookHandler =
   | HttpWebhookHandler
+  | HttpWebhookHandlerWithCallback
   | EventBridgeWebhookHandler
   | PubSubWebhookHandler;
 
-export interface WebhookRegistry {
+export interface WebhookRegistry<
+  Handler extends WebhookHandler = WebhookHandler,
+> {
   // See https://shopify.dev/docs/api/admin-graphql/latest/enums/webhooksubscriptiontopic for available topics
-  [topic: string]: WebhookHandler[];
+  [topic: string]: Handler[];
 }
 
 export enum WebhookOperation {

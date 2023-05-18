@@ -1,14 +1,20 @@
 import {
   DeliveryMethod,
-  HttpWebhookHandler,
   EventBridgeWebhookHandler,
   PubSubWebhookHandler,
+  HttpWebhookHandlerWithCallback,
+  HttpWebhookHandler,
 } from '../types';
 
-export const HTTP_HANDLER: HttpWebhookHandler = {
+export const HTTP_HANDLER: HttpWebhookHandlerWithCallback = {
   deliveryMethod: DeliveryMethod.Http,
   callbackUrl: '/webhooks',
   callback: jest.fn(),
+};
+
+export const HTTP_HANDLER_WITHOUT_CALLBACK: HttpWebhookHandler = {
+  deliveryMethod: DeliveryMethod.Http,
+  callbackUrl: '/webhooks',
 };
 
 export const EVENT_BRIDGE_HANDLER: EventBridgeWebhookHandler = {

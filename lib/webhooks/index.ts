@@ -4,6 +4,7 @@ import {addHandlers, getTopicsAdded, getHandlers, registry} from './registry';
 import {register} from './register';
 import {process} from './process';
 import {validate} from './validate';
+import {HttpWebhookHandlerWithCallback, WebhookRegistry} from './types';
 
 export function shopifyWebhooks(config: ConfigInterface) {
   const webhookRegistry = registry();
@@ -13,7 +14,10 @@ export function shopifyWebhooks(config: ConfigInterface) {
     getTopicsAdded: getTopicsAdded(webhookRegistry),
     getHandlers: getHandlers(webhookRegistry),
     register: register(config, webhookRegistry),
-    process: process(config, webhookRegistry),
+    process: process(
+      config,
+      webhookRegistry as WebhookRegistry<HttpWebhookHandlerWithCallback>,
+    ),
     validate: validate(config),
   };
 }

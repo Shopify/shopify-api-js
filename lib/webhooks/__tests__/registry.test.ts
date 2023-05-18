@@ -1,6 +1,6 @@
 import {LogSeverity} from '../../types';
 import {shopify} from '../../__tests__/test-helper';
-import {HttpWebhookHandler} from '../types';
+import {HttpWebhookHandlerWithCallback} from '../types';
 
 import {EVENT_BRIDGE_HANDLER, HTTP_HANDLER, PUB_SUB_HANDLER} from './handlers';
 
@@ -15,8 +15,8 @@ function genericWebhookHandler(
 }
 
 describe('shopify.webhooks.addHandlers', () => {
-  let handler1: HttpWebhookHandler;
-  let handler2: HttpWebhookHandler;
+  let handler1: HttpWebhookHandlerWithCallback;
+  let handler2: HttpWebhookHandlerWithCallback;
 
   it('adds two handlers to the webhook registry', async () => {
     handler1 = {
@@ -74,7 +74,7 @@ describe('shopify.webhooks.addHandlers', () => {
   });
 
   it('adds handler with lowercase/slash-period format to the webhook registry', async () => {
-    const handler3: HttpWebhookHandler = {
+    const handler3: HttpWebhookHandlerWithCallback = {
       ...HTTP_HANDLER,
       callback: jest.fn().mockImplementation(genericWebhookHandler),
     };
