@@ -6,36 +6,18 @@ To do that, you'll need to perform the following steps:
 
 1. Set up your webhook handlers by calling [shopify.webhooks.addHandlers](../reference/webhooks/addHandlers.md).
 1. Register your handlers with Shopify after the app is installed by calling [shopify.webhooks.register](../reference/webhooks/register.md).
-1. Process incoming events by setting up an endpoint that calls [shopfiy.webhooks.process](../reference/webhooks/process.md).
+1. Process incoming events by doing one of these:
+   1. setting up an endpoint that calls [shopfiy.webhooks.validate](../reference/webhooks/validate.md).
+   1. setting up an endpoint that calls [shopfiy.webhooks.process](../reference/webhooks/process.md).
 
-Below is a simplified example of what the combination of these steps looks like in practice:
+Below is an example of how to register webhooks after OAuth completes:
 
 ```ts
 const shopify = shopifyApi({
   /* ... */
 });
 
-const handleWebhookRequest = async (
-  topic: string,
-  shop: string,
-  webhookRequestBody: string,
-  webhookId: string,
-  apiVersion: string,
-) => {
-  const sessionId = shopify.session.getOfflineId({shop});
-
-  // Fetch the session from storage and process the webhook event
-};
-
-shopify.webhooks.addHandlers({
-  PRODUCTS_CREATE: [
-    {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: '/webhooks',
-      callback: handleWebhookRequest,
-    },
-  ],
-});
+// Call shopify.webhooks.addHandlers here (see examples below)
 
 const app = express();
 
@@ -61,6 +43,64 @@ app.get('/auth/callback', async (req, res) => {
   }
 
   return res.redirect('/'); // or wherever you want your user to end up after OAuth completes
+});
+```
+
+You can use `validate` to process your webhooks:
+
+```ts
+// Add handlers for the events you want to subscribe to. You don't need a callback if you're calling `validate`
+shopify.webhooks.addHandlers({
+  PRODUCTS_CREATE: [
+    {deliveryMethod: DeliveryMethod.Http, callbackUrl: '/webhooks'},
+  ],
+});
+
+// Handle webhooks
+app.post('/webhooks', express.text({type: '*/*'}), async (req, res) => {
+  const {valid, topic, domain} = await shopify.webhooks.validate({
+    rawBody: req.body, // is a string
+    rawRequest: req,
+    rawResponse: res,
+  });
+
+  if (!valid) {
+    console.error('Invalid webhook call, not handling it');
+    res.send(400); // Bad Request
+  }
+
+  console.log(`Received webhook for ${topic} for shop ${domain}`);
+
+  const sessionId = shopify.session.getOfflineId({shop: domain});
+
+  // Run your code here!
+});
+```
+
+Or you can pass in a `callback` in your handler configuration, and call `process`:
+
+```ts
+const handleWebhookRequest = async (
+  topic: string,
+  shop: string,
+  webhookRequestBody: string,
+  webhookId: string,
+  apiVersion: string,
+) => {
+  const sessionId = shopify.session.getOfflineId({shop});
+
+  // Run your code here!
+};
+
+// Add handlers for the events you want to subscribe to. You _must_ set a callback function when calling `process`
+shopify.webhooks.addHandlers({
+  PRODUCTS_CREATE: [
+    {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: '/webhooks',
+      callback: handleWebhookRequest,
+    },
+  ],
 });
 
 // Process webhooks
