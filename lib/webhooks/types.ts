@@ -25,6 +25,8 @@ export interface HttpWebhookHandler extends BaseWebhookHandler {
   deliveryMethod: DeliveryMethod.Http;
   privateMetafieldNamespaces?: string[];
   callbackUrl: string;
+}
+export interface HttpWebhookHandlerWithCallback extends HttpWebhookHandler {
   callback: WebhookHandlerFunction;
 }
 
@@ -41,12 +43,15 @@ export interface PubSubWebhookHandler extends BaseWebhookHandler {
 
 export type WebhookHandler =
   | HttpWebhookHandler
+  | HttpWebhookHandlerWithCallback
   | EventBridgeWebhookHandler
   | PubSubWebhookHandler;
 
-export interface WebhookRegistry {
+export interface WebhookRegistry<
+  Handler extends WebhookHandler = WebhookHandler,
+> {
   // See https://shopify.dev/docs/api/admin-graphql/latest/enums/webhooksubscriptiontopic for available topics
-  [topic: string]: WebhookHandler[];
+  [topic: string]: Handler[];
 }
 
 export enum WebhookOperation {
@@ -115,3 +120,39 @@ export interface AddHandlersParams {
 export interface WebhookProcessParams extends AdapterArgs {
   rawBody: string;
 }
+
+export interface WebhookValidateParams extends WebhookProcessParams {}
+
+export enum WebhookValidationErrorReason {
+  MissingHeaders = 'missing_headers',
+  MissingBody = 'missing_body',
+  InvalidHmac = 'invalid_hmac',
+}
+
+export interface WebhookFields {
+  webhookId: string;
+  apiVersion: string;
+  domain: string;
+  hmac: string;
+  topic: string;
+}
+
+export interface WebhookValidationInvalid {
+  valid: false;
+  reason: WebhookValidationErrorReason;
+}
+
+export interface WebhookValidationMissingHeaders
+  extends WebhookValidationInvalid {
+  reason: WebhookValidationErrorReason.MissingHeaders;
+  missingHeaders: string[];
+}
+
+export interface WebhookValidationValid extends WebhookFields {
+  valid: true;
+}
+
+export type WebhookValidation =
+  | WebhookValidationValid
+  | WebhookValidationInvalid
+  | WebhookValidationMissingHeaders;

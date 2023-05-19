@@ -6,7 +6,7 @@ import {
   queueMockResponse,
   shopify,
 } from '../../__tests__/test-helper';
-import {HttpWebhookHandler} from '../types';
+import {HttpWebhookHandlerWithCallback} from '../types';
 import {InvalidDeliveryMethodError, InvalidWebhookError} from '../../error';
 import {LogSeverity} from '../../types';
 import {shopifyApi, Shopify} from '../..';
@@ -27,9 +27,15 @@ const session = new Session({
 describe('webhooks', () => {
   it('HTTP handlers that point to the same location are merged', async () => {
     const topic = 'PRODUCTS_CREATE';
-    const handler1: HttpWebhookHandler = {...HTTP_HANDLER, callback: jest.fn()};
-    const handler2: HttpWebhookHandler = {...HTTP_HANDLER};
-    const handler3: HttpWebhookHandler = {...HTTP_HANDLER, callback: jest.fn()};
+    const handler1: HttpWebhookHandlerWithCallback = {
+      ...HTTP_HANDLER,
+      callback: jest.fn(),
+    };
+    const handler2: HttpWebhookHandlerWithCallback = {...HTTP_HANDLER};
+    const handler3: HttpWebhookHandlerWithCallback = {
+      ...HTTP_HANDLER,
+      callback: jest.fn(),
+    };
 
     shopify.webhooks.addHandlers({[topic]: handler1});
 
@@ -154,8 +160,8 @@ describe('webhooks', () => {
 
 describe('dual webhook registry instances', () => {
   let shopify2: Shopify;
-  let handler1: HttpWebhookHandler;
-  let handler2: HttpWebhookHandler;
+  let handler1: HttpWebhookHandlerWithCallback;
+  let handler2: HttpWebhookHandlerWithCallback;
 
   beforeEach(async () => {
     handler1 = {...HTTP_HANDLER, callbackUrl: '/webhooks', callback: jest.fn()};

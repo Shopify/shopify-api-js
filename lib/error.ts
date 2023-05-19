@@ -103,6 +103,7 @@ export class InvalidWebhookError extends ShopifyError {
     this.response = response;
   }
 }
+export class MissingWebhookCallbackError extends InvalidWebhookError {}
 export class SessionStorageError extends ShopifyError {}
 
 export class MissingRequiredArgument extends ShopifyError {}

@@ -5,7 +5,7 @@ import {InvalidWebhookError} from '../../error';
 import {LogSeverity} from '../../types';
 import {shopify} from '../../__tests__/test-helper';
 
-import {HTTP_HANDLER} from './handlers';
+import {HTTP_HANDLER, HTTP_HANDLER_WITHOUT_CALLBACK} from './handlers';
 import {getTestExpressApp, headers, hmac} from './utils';
 
 interface TestResponseInterface {
@@ -216,9 +216,22 @@ describe('shopify.webhooks.process', () => {
       .send(rawBody)
       .expect(StatusCode.Unauthorized);
 
-    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Warning,
       expect.stringContaining('apiSecretKey should be set to'),
     );
+  });
+
+  it('throws if the handler does not have a callback', async () => {
+    const handler = HTTP_HANDLER_WITHOUT_CALLBACK;
+    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
+
+    const response = await request(app)
+      .post('/webhooks')
+      .set(headers({hmac: hmac(shopify.config.apiSecretKey, rawBody)}))
+      .send(rawBody)
+      .expect(StatusCode.InternalServerError);
+
+    expect(response.body.data.errorThrown).toBeTruthy();
   });
 });
