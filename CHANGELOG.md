@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.2.0
+
+### Minor Changes
+
+- 57f31117: Add webhooks.validate method to support webhooks without callbacks
+- 65eb416f: Export BillingCheckParams, BillingRequestParams and session.getJwtSessionId
+
 ## 7.1.0
 
 ### Minor Changes
