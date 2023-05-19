@@ -1,3 +1,4 @@
+import {BillingCheckParams} from '../types';
 import {ConfigInterface} from '../base-types';
 import {
   graphqlClientClass,
@@ -5,11 +6,7 @@ import {
 } from '../clients/graphql/graphql_client';
 import {BillingError} from '../error';
 
-import {
-  CheckParams,
-  CurrentAppInstallation,
-  CurrentAppInstallations,
-} from './types';
+import {CurrentAppInstallation, CurrentAppInstallations} from './types';
 
 interface CheckInternalParams {
   plans: string[];
@@ -28,7 +25,7 @@ export function check(config: ConfigInterface) {
     session,
     plans,
     isTest = true,
-  }: CheckParams): Promise<boolean> {
+  }: BillingCheckParams): Promise<boolean> {
     if (!config.billing) {
       throw new BillingError({
         message: 'Attempted to look for purchases without billing configs',
