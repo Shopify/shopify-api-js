@@ -1,7 +1,7 @@
 # shopify.webhooks.validate
 
 This method validates an incoming request for `Http` handlers.
-If the call is invalid, it will return a valid field as `false`.
+If the call is invalid, it will return a `valid` field set to `false`.
 
 ## Example
 
@@ -18,7 +18,7 @@ app.post('/webhooks', express.text({type: '*/*'}), async (req, res) => {
     res.send(400); // Bad Request
   }
 
-  // Run my code here
+  // Run my webhook-processing code here
 });
 ```
 

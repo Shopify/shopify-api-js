@@ -29,7 +29,7 @@ const HANDLER_PROPERTIES: {
   webhookId: ShopifyHeader.WebhookId,
 };
 
-export function validate(config: ConfigInterface) {
+export function validateFactory(config: ConfigInterface) {
   return async function validate({
     rawBody,
     ...adapterArgs

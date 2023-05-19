@@ -121,9 +121,7 @@ export interface WebhookProcessParams extends AdapterArgs {
   rawBody: string;
 }
 
-export interface WebhookValidateParams extends AdapterArgs {
-  rawBody: string;
-}
+export interface WebhookValidateParams extends WebhookProcessParams {}
 
 export enum WebhookValidationErrorReason {
   MissingHeaders = 'missing_headers',

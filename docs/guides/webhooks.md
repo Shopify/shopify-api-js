@@ -6,7 +6,7 @@ To do that, you'll need to perform the following steps:
 
 1. Set up your webhook handlers by calling [shopify.webhooks.addHandlers](../reference/webhooks/addHandlers.md).
 1. Register your handlers with Shopify after the app is installed by calling [shopify.webhooks.register](../reference/webhooks/register.md).
-1. Process incoming events by doing one of these:
+1. Process incoming events by doing **ONE** of the following:
    1. setting up an endpoint that calls [shopfiy.webhooks.validate](../reference/webhooks/validate.md).
    1. setting up an endpoint that calls [shopfiy.webhooks.process](../reference/webhooks/process.md).
 
@@ -49,7 +49,7 @@ app.get('/auth/callback', async (req, res) => {
 You can use `validate` to process your webhooks:
 
 ```ts
-// Add handlers for the events you want to subscribe to. You don't need a callback if you're calling `validate`
+// Add handlers for the events you want to subscribe to. You don't need a callback if you're just using `validate`
 shopify.webhooks.addHandlers({
   PRODUCTS_CREATE: [
     {deliveryMethod: DeliveryMethod.Http, callbackUrl: '/webhooks'},
@@ -73,11 +73,11 @@ app.post('/webhooks', express.text({type: '*/*'}), async (req, res) => {
 
   const sessionId = shopify.session.getOfflineId({shop: domain});
 
-  // Run your code here!
+  // Run your webhook-processing code here!
 });
 ```
 
-Or you can pass in a `callback` in your handler configuration, and call `process`:
+**OR**, you can pass in a `callback` in your handler configuration, and call `process`:
 
 ```ts
 const handleWebhookRequest = async (
@@ -89,10 +89,10 @@ const handleWebhookRequest = async (
 ) => {
   const sessionId = shopify.session.getOfflineId({shop});
 
-  // Run your code here!
+  // Run your webhook-processing code here!
 };
 
-// Add handlers for the events you want to subscribe to. You _must_ set a callback function when calling `process`
+// Add handlers for the events you want to subscribe to. You **MUST** set a callback function when calling `process`
 shopify.webhooks.addHandlers({
   PRODUCTS_CREATE: [
     {
