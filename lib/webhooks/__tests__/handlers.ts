@@ -1,9 +1,9 @@
 import {
   DeliveryMethod,
   EventBridgeWebhookHandler,
-  PubSubWebhookHandler,
-  HttpWebhookHandlerWithCallback,
   HttpWebhookHandler,
+  HttpWebhookHandlerWithCallback,
+  PubSubWebhookHandler,
 } from '../types';
 
 export const HTTP_HANDLER: HttpWebhookHandlerWithCallback = {

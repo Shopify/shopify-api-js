@@ -3,7 +3,7 @@ import {ConfigInterface} from '../base-types';
 import {addHandlers, getTopicsAdded, getHandlers, registry} from './registry';
 import {register} from './register';
 import {process} from './process';
-import {validate} from './validate';
+import {validateFactory} from './validate';
 import {HttpWebhookHandlerWithCallback, WebhookRegistry} from './types';
 
 export function shopifyWebhooks(config: ConfigInterface) {
@@ -18,7 +18,7 @@ export function shopifyWebhooks(config: ConfigInterface) {
       config,
       webhookRegistry as WebhookRegistry<HttpWebhookHandlerWithCallback>,
     ),
-    validate: validate(config),
+    validate: validateFactory(config),
   };
 }
 

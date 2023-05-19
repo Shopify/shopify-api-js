@@ -11,16 +11,16 @@ import * as ShopifyErrors from '../error';
 import {logger} from '../logger';
 
 import {
-  WebhookRegistry,
-  WebhookProcessParams,
   DeliveryMethod,
+  HttpWebhookHandlerWithCallback,
+  WebhookProcessParams,
+  WebhookRegistry,
   WebhookValidationErrorReason,
+  WebhookValidationInvalid,
   WebhookValidationMissingHeaders,
   WebhookValidationValid,
-  WebhookValidationInvalid,
-  HttpWebhookHandlerWithCallback,
 } from './types';
-import {validate} from './validate';
+import {validateFactory} from './validate';
 
 interface HandlerCallResult {
   statusCode: StatusCode;
@@ -56,7 +56,10 @@ export function process(
 
     await logger(config).info('Receiving webhook request');
 
-    const webhookCheck = await validate(config)({rawBody, ...adapterArgs});
+    const webhookCheck = await validateFactory(config)({
+      rawBody,
+      ...adapterArgs,
+    });
 
     let errorMessage = 'Unknown error while handling webhook';
     if (webhookCheck.valid) {
