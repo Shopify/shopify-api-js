@@ -63,10 +63,10 @@ describe('shopify.billing.cancel', () => {
         query: expect.stringContaining('appSubscriptionCancel'),
         variables: expect.objectContaining({
           id: subscriptionId,
-          prorate: false,
+          prorate: true,
         }),
       },
-    });
+    }).toMatchMadeHttpRequest();
   });
 
   test('throws a BillingError when an error occurs', async () => {
