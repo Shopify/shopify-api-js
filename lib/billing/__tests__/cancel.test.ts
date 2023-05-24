@@ -1,7 +1,7 @@
 import {testConfig, queueMockResponses} from '../../__tests__/test-helper';
 import {Session} from '../../session/session';
 import {LATEST_API_VERSION} from '../../types';
-import {shopifyApi, Shopify, BillingInterval} from '../..';
+import {shopifyApi, Shopify, BillingError, BillingInterval} from '../..';
 
 import * as Responses from './responses';
 
@@ -38,7 +38,7 @@ describe('shopify.billing.cancel', () => {
     });
   });
 
-  test('After a user cancels the check function should return', async () => {
+  test('returns the details of the subscription successfully cancelled', async () => {
     queueMockResponses([Responses.CANCEL_RESPONSE]);
 
     const {
@@ -53,7 +53,10 @@ describe('shopify.billing.cancel', () => {
       subscriptionId,
     });
 
-    expect(response).toEqual(JSON.parse(Responses.CANCEL_RESPONSE));
+    expect(response).toEqual(
+      JSON.parse(Responses.CANCEL_RESPONSE).data.appSubscriptionCancel
+        .appSubscription,
+    );
     expect({
       ...GRAPHQL_BASE_REQUEST,
       data: {
@@ -64,5 +67,43 @@ describe('shopify.billing.cancel', () => {
         }),
       },
     });
+  });
+
+  test('throws a BillingError when an error occurs', async () => {
+    queueMockResponses([Responses.CANCEL_RESPONSE_WITH_USER_ERRORS]);
+
+    const {
+      data: {
+        currentAppInstallation: {activeSubscriptions},
+      },
+    } = Responses.EXISTING_SUBSCRIPTION_OBJECT;
+
+    const subscriptionId = activeSubscriptions[0].id;
+
+    expect(() =>
+      shopify.billing.cancel({
+        session,
+        subscriptionId,
+      }),
+    ).rejects.toThrowError(BillingError);
+  });
+
+  test('throws a BillingError when a user error occurs', async () => {
+    queueMockResponses([Responses.CANCEL_RESPONSE_WITH_ERRORS]);
+
+    const {
+      data: {
+        currentAppInstallation: {activeSubscriptions},
+      },
+    } = Responses.EXISTING_SUBSCRIPTION_OBJECT;
+
+    const subscriptionId = activeSubscriptions[0].id;
+
+    expect(() =>
+      shopify.billing.cancel({
+        session,
+        subscriptionId,
+      }),
+    ).rejects.toThrowError(BillingError);
   });
 });

@@ -6,7 +6,7 @@ Cancel a subscription plan by the given id.
 
 ### Cancel a subscription plan, given an id
 
-The call to `cancel` will return an `CancelResponse` object, containing the current active subscriptions, and will throw a `BillingError` if any errors occur.
+The call to `cancel` will return an `AppSubscription` object, containing the details of the subscription just cancelled successfully, and will throw a `BillingError` if any errors occur.
 
 ```ts
 const subscriptionId = "gid://shopify/AppSubscription/1234567890"; // this can be obtained from a call to shopify.billing.subscriptions()
@@ -24,9 +24,9 @@ try {
 }
 // canceledSubscription will have the following shape:
 // {
-//   data: {
-//     currentAppInstallation: ActiveSubscriptions;
-//   };
+//   id: string;
+//   name: string;
+//   test: boolean;
 // }
 ```
 
@@ -54,29 +54,15 @@ Whether to issue prorated credits for the unused portion of the app subscription
 
 ## Return
 
-`CancelResponse`
+`AppSubscription`
 
-An object containing a `data` object with a list of the current app subscriptions after a successful cancel with the following shape:
+An object containing the `id`, `name` and `test` properties of the subscription that was just successfully cancelled:
 
 ```ts
 {
-  data: {
-    currentAppInstallation: {
-      activeSubscriptions: [
-        {
-          id: string;
-          name: string;
-          test: boolean;
-        },
-        {
-          id: string;
-          name: string;
-          test: boolean;
-        },
-        // ...
-      ];
-    },
-  },
+  id: string;
+  name: string;
+  test: boolean;
 }
 ```
 

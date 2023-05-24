@@ -54,7 +54,7 @@ The `Session` for the current request.
 
 `ActiveSubscriptions`
 
-An object containing an array with subscription details, with the following shape:
+An object with an `activeSubscriptions` property containing an array with app subscription details, with the following shape:
 
 ```ts
 {

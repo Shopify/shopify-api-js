@@ -155,6 +155,33 @@ export const CANCEL_RESPONSE = JSON.stringify({
   },
 });
 
+export const CANCEL_RESPONSE_WITH_USER_ERRORS = JSON.stringify({
+  data: {
+    appSubscriptionCancel: {
+      appSubscription: {
+        id: 'gid://123',
+        name: PLAN_1,
+        test: true,
+      },
+      userErrors: ['Oops, something went wrong'],
+    },
+  },
+});
+
+export const CANCEL_RESPONSE_WITH_ERRORS = JSON.stringify({
+  data: {
+    appSubscriptionCancel: {
+      appSubscription: {
+        id: 'gid://123',
+        name: PLAN_1,
+        test: true,
+      },
+      userErrors: [],
+    },
+  },
+  errors: [{message: 'Oops, something went wrong'}],
+});
+
 export const SUBSCRIPTIONS_RESPONSE = JSON.stringify({
   data: {
     currentAppInstallation: {

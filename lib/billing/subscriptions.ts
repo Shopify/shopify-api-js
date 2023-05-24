@@ -1,9 +1,12 @@
 import {BillingError} from '../error';
 import {ConfigInterface} from '../base-types';
 import {graphqlClientClass} from '../clients/graphql/graphql_client';
-import {BillingSubscriptionParams} from '../types';
 
-import {ActiveSubscriptions, SubscriptionResponse} from './types';
+import {
+  ActiveSubscriptions,
+  BillingSubscriptionParams,
+  SubscriptionResponse,
+} from './types';
 
 const SUBSCRIPTION_QUERY = `
   query appSubscription {

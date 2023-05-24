@@ -3,6 +3,7 @@ import {
   BillingReplacementBehavior,
   RecurringBillingIntervals,
 } from '../types';
+import {Session} from '../session/session';
 
 export interface BillingConfigPlan {
   amount: number;
@@ -51,14 +52,38 @@ export interface BillingConfig {
     | BillingConfigUsagePlan;
 }
 
-export interface ActiveSubscription {
+export interface BillingCheckParams {
+  session: Session;
+  plans: string[] | string;
+  isTest?: boolean;
+}
+
+export interface BillingRequestParams {
+  session: Session;
+  plan: string;
+  isTest?: boolean;
+  returnUrl?: string;
+}
+
+export interface BillingCancelParams {
+  session: Session;
+  subscriptionId: string;
+  prorate?: boolean;
+  isTest?: boolean;
+}
+
+export interface BillingSubscriptionParams {
+  session: Session;
+}
+
+export interface AppSubscription {
   id: string;
   name: string;
   test: boolean;
 }
 
 export interface ActiveSubscriptions {
-  activeSubscriptions: ActiveSubscription[];
+  activeSubscriptions: AppSubscription[];
 }
 
 interface OneTimePurchase {
@@ -111,11 +136,15 @@ export interface SubscriptionResponse {
   data: {
     currentAppInstallation: ActiveSubscriptions;
   };
+  errors?: string[];
 }
 
 export interface CancelResponse {
   data: {
-    currentAppInstallation: ActiveSubscriptions;
+    appSubscriptionCancel: {
+      appSubscription: AppSubscription;
+      userErrors: string[];
+    };
   };
   errors?: string[];
 }

@@ -103,7 +103,7 @@ const activeSubscriptions = await shopify.api.billing.subscriptions({
 
 The `cancel` method will require the `session` object that is setup during authorization as well as the subscription id.
 
-The call to `cancel` will return an `CancelResponse` object, containing the current active subscriptions, and will throw a `BillingError` if any errors occur.
+The call to `cancel` will return an `AppSubscription` object, containing the details of the subscription just cancelled successfully, and will throw a `BillingError` if any errors occur.
 
 ```js
 // using the example activeSubscriptions response above...
@@ -116,10 +116,9 @@ const canceledSubscription = await shopify.billing.cancel({
 
 // canceledSubscription will have the following shape:
 // {
-//   data: {
-//     currentAppInstallation: ActiveSubscriptions;
-//   };
-//   errors?: string[];
+//   id: string;
+//   name: string;
+//   test: boolean;
 // }
 ```
 
