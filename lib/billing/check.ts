@@ -1,4 +1,3 @@
-import {BillingCheckParams} from '../types';
 import {ConfigInterface} from '../base-types';
 import {
   graphqlClientClass,
@@ -6,7 +5,11 @@ import {
 } from '../clients/graphql/graphql_client';
 import {BillingError} from '../error';
 
-import {CurrentAppInstallation, CurrentAppInstallations} from './types';
+import {
+  BillingCheckParams,
+  CurrentAppInstallation,
+  CurrentAppInstallations,
+} from './types';
 
 interface CheckInternalParams {
   plans: string[];

@@ -1,5 +1,5 @@
 import {ConfigInterface} from '../base-types';
-import {BillingInterval, BillingRequestParams} from '../types';
+import {BillingInterval} from '../types';
 import {BillingError} from '../error';
 import {buildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
 import {
@@ -10,12 +10,13 @@ import {hashString} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
 
 import {
-  RequestResponse,
-  RecurringPaymentResponse,
-  SinglePaymentResponse,
   BillingConfigSubscriptionPlan,
   BillingConfigOneTimePlan,
   BillingConfigUsagePlan,
+  BillingRequestParams,
+  RecurringPaymentResponse,
+  RequestResponse,
+  SinglePaymentResponse,
 } from './types';
 
 interface RequestInternalParams {

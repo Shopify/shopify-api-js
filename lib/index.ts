@@ -23,6 +23,7 @@ export * from '../rest/types';
 export * from './types';
 export * from './base-types';
 export * from './auth/types';
+export * from './billing/types';
 export * from './clients/types';
 export * from './session/types';
 export * from './webhooks/types';

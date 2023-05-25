@@ -1,5 +1,3 @@
-import {Session} from './session/session';
-
 export enum LogSeverity {
   Error,
   Warning,
@@ -60,17 +58,4 @@ export enum BillingReplacementBehavior {
   ApplyImmediately = 'APPLY_IMMEDIATELY',
   ApplyOnNextBillingCycle = 'APPLY_ON_NEXT_BILLING_CYCLE',
   Standard = 'STANDARD',
-}
-
-export interface BillingCheckParams {
-  session: Session;
-  plans: string[] | string;
-  isTest?: boolean;
-}
-
-export interface BillingRequestParams {
-  session: Session;
-  plan: string;
-  isTest?: boolean;
-  returnUrl?: string;
 }

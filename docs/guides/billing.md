@@ -82,4 +82,46 @@ If you're gating access to the entire app, you should check for billing:
 
 **Note**: the merchant may refuse payment when prompted or cancel subscriptions later on, but the app will already be installed at that point. We recommend using [billing webhooks](https://shopify.dev/docs/apps/billing#webhooks-for-billing) to revoke access for merchants when they cancel / decline payment.
 
+## Canceling a subscription
+
+With the `cancel` method you'll be able to cancel a single subscription. First, you'll need to obtain the id for the subscription you wish to cancel, using the `subscriptions` method.
+
+```js
+const activeSubscriptions = await shopify.api.billing.subscriptions({
+  session: res.locals.shopify.session,
+});
+
+// activeSubscriptions will be an array of subscription details, e.g.,
+// [
+//   {
+//     "name": "My Shopify Subscription Charge",
+//     "id": "gid://shopify/AppSubscription/1234567890",
+//     "test": true
+//   },
+// ],
+```
+
+The `cancel` method will require the `session` object that is setup during authorization as well as the subscription id.
+
+The call to `cancel` will return an `AppSubscription` object, containing the details of the subscription just cancelled successfully, and will throw a `BillingError` if any errors occur.
+
+```js
+// using the example activeSubscriptions response above...
+const subscriptionId = activeSubscriptions[0].id;  // "gid://shopify/AppSubscription/1234567890"
+const canceledSubscription = await shopify.billing.cancel({
+  session,
+  subscriptionId,
+  prorate: true,  // Whether to issue prorated credits for the unused portion of the app subscription. Defaults to true.
+})
+
+// canceledSubscription will have the following shape:
+// {
+//   id: string;
+//   name: string;
+//   test: boolean;
+// }
+```
+
+See the [billing reference](../reference/billing/README.md) for details on how to call the `subscriptions` and `cancel` endpoints.
+
 [Back to guide index](../../README.md#guides)
