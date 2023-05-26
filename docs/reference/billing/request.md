@@ -148,7 +148,7 @@ The URL to confirm the charge with the merchant.
 >
 > The app **must** redirect the merchant to this URL so that they can confirm the charge before Shopify applies it.
 >
-> The merchant will be sent back to your app's main page after the process is complete.
+> After the process is complete, the merchant will be sent back to the page referenced by the `returnUrl` parameter, if set. Otherwise, the merchant will be sent to your app's main page.
 
 ### if `returnObject` parameter is `true`
 
@@ -189,6 +189,6 @@ The URL to confirm the charge with the merchant.
 >
 > The app **must** redirect the merchant to this URL so that they can confirm the charge before Shopify applies it.
 >
-> The merchant will be sent back to your app's main page after the process is complete.
+> After the process is complete, the merchant will be sent back to the page referenced by the `returnUrl` parameter, if set. Otherwise, the merchant will be sent to your app's main page.
 
 [Back to shopify.billing](./README.md)

@@ -107,7 +107,7 @@ describe('shopify.billing.cancel', () => {
     ).rejects.toThrowError(BillingError);
   });
 
-  test('throws a BillingError when an error occurs', async () => {
+  test('throws a BillingError when a user error occurs', async () => {
     queueMockResponses([Responses.CANCEL_RESPONSE_WITH_USER_ERRORS]);
 
     const {
@@ -126,7 +126,7 @@ describe('shopify.billing.cancel', () => {
     ).rejects.toThrowError(BillingError);
   });
 
-  test('throws a BillingError when a user error occurs', async () => {
+  test('throws a BillingError when an error occurs', async () => {
     queueMockResponses([Responses.CANCEL_RESPONSE_WITH_ERRORS]);
 
     const {
