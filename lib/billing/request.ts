@@ -14,8 +14,9 @@ import {
   BillingConfigOneTimePlan,
   BillingConfigUsagePlan,
   BillingRequestParams,
+  BillingRequestResponse,
   RecurringPaymentResponse,
-  RequestResponse,
+  RequestResponseData,
   SinglePaymentResponse,
 } from './types';
 
@@ -39,12 +40,13 @@ interface RequestUsageSubscriptionInternalParams extends RequestInternalParams {
 }
 
 export function request(config: ConfigInterface) {
-  return async function ({
+  return async function <Params extends BillingRequestParams>({
     session,
     plan,
     isTest = true,
     returnUrl: returnUrlParam,
-  }: BillingRequestParams): Promise<string> {
+    returnObject = false,
+  }: Params): Promise<BillingRequestResponse<Params>> {
     if (!config.billing || !config.billing[plan]) {
       throw new BillingError({
         message: `Could not find plan ${plan} in billing settings`,
@@ -68,7 +70,7 @@ export function request(config: ConfigInterface) {
     const GraphqlClient = graphqlClientClass({config});
     const client = new GraphqlClient({session});
 
-    let data: RequestResponse;
+    let data: RequestResponseData;
     switch (billingConfig.interval) {
       case BillingInterval.OneTime: {
         const mutationOneTimeResponse = await requestSinglePayment({
@@ -110,7 +112,14 @@ export function request(config: ConfigInterface) {
       });
     }
 
-    return data.confirmationUrl;
+    if (returnObject) {
+      return data as Omit<
+        RequestResponseData,
+        'userErrors'
+      > as BillingRequestResponse<Params>;
+    } else {
+      return data.confirmationUrl as BillingRequestResponse<Params>;
+    }
   };
 }
 
@@ -257,6 +266,11 @@ const RECURRING_PURCHASE_MUTATION = `
       trialDays: $trialDays
       replacementBehavior: $replacementBehavior
     ) {
+      appSubscription {
+        id
+        name
+        test
+      }
       confirmationUrl
       userErrors {
         field
@@ -279,6 +293,11 @@ const ONE_TIME_PURCHASE_MUTATION = `
       returnUrl: $returnUrl
       test: $test
     ) {
+      appPurchaseOneTime {
+        id
+        name
+        test
+      }
       confirmationUrl
       userErrors {
         field

@@ -3,6 +3,7 @@ import {Session} from '../../session/session';
 import {LATEST_API_VERSION, BillingInterval} from '../../types';
 import {BillingError} from '../../error';
 import {shopifyApi, Shopify} from '../..';
+import {BillingCheckResponseObject} from '../types';
 
 import * as Responses from './responses';
 
@@ -254,6 +255,38 @@ describe('shopify.billing.check', () => {
         ...GRAPHQL_BASE_REQUEST,
         data: expect.stringContaining('activeSubscriptions'),
       }).toMatchMadeHttpRequest();
+    });
+
+    test('check returns valid response object', async () => {
+      queueMockResponses(
+        [
+          Responses
+            .EXISTING_ONE_TIME_PAYMENTS_WITH_PAGINATION_AND_SUBSCRIPTION[0],
+        ],
+        [
+          Responses
+            .EXISTING_ONE_TIME_PAYMENTS_WITH_PAGINATION_AND_SUBSCRIPTION[1],
+        ],
+      );
+
+      const responseObject = (await shopify.billing.check({
+        session,
+        plans: Responses.ALL_PLANS,
+        returnObject: true,
+      })) as BillingCheckResponseObject;
+
+      expect(responseObject.hasActivePayment).toBeTruthy();
+      expect(responseObject.oneTimePurchases.length).toBe(2);
+      responseObject.oneTimePurchases.map((purchase) => {
+        expect(Responses.ALL_PLANS.includes(purchase.name)).toBeTruthy();
+        expect(purchase.status).toBe('ACTIVE');
+        expect(purchase.id).toBeDefined();
+      });
+      expect(responseObject.appSubscriptions.length).toBe(1);
+      responseObject.appSubscriptions.map((subscription) => {
+        expect(Responses.ALL_PLANS.includes(subscription.name)).toBeTruthy();
+        expect(subscription.id).toBeDefined();
+      });
     });
   });
 });
