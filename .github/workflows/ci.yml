@@ -2,7 +2,7 @@ on: [push, pull_request]
 name: CI
 jobs:
   CI:
-    name: CI (${{ matrix.version }})
+    name: CI_Node_${{ matrix.version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
