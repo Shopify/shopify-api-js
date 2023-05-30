@@ -243,7 +243,7 @@ describe('shopify.billing.request', () => {
                   query: expect.stringContaining(config.mutationName),
                   variables: expect.objectContaining({
                     test: isTest,
-                    returnUrl: 'https://test_host_name',
+                    returnUrl: `https://test_host_name?shop=${DOMAIN}`,
                   }),
                 },
               }).toMatchMadeHttpRequest();
