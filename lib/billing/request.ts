@@ -61,7 +61,7 @@ export function request(config: ConfigInterface) {
       hashString(`admin.shopify.com/store/${cleanShopName}`, HashFormat.Base64),
     );
 
-    const appUrl = `${config.hostScheme}://${config.hostName}`;
+    const appUrl = `${config.hostScheme}://${config.hostName}?shop=${session.shop}`;
 
     // if provided a return URL, use it, otherwise use the embedded app URL or hosted app URL
     const returnUrl =
