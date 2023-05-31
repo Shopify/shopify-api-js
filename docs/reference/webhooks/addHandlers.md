@@ -82,7 +82,7 @@ The `async` callback to call when a shop triggers a `topic` event.
 
 #### privateMetafieldNamespaces
 
-`string[]` | Defaults to `[]`
+`string[]` | Defaults to `[]` | :warning: deprecated, will be removed in v8.0.0
 
 Namespaces to be included in the callback, defaulting to all of them.
 

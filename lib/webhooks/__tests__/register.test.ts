@@ -110,7 +110,7 @@ describe('shopify.webhooks.register', () => {
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...HTTP_HANDLER,
-      privateMetafieldNamespaces: ['new-private-namespace'],
+      metafieldNamespaces: ['new-namespace'],
     };
     const responses = [mockResponses.successUpdateResponse];
 
@@ -126,7 +126,7 @@ describe('shopify.webhooks.register', () => {
       `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
       {
         callbackUrl: `"https://test_host_name/webhooks"`,
-        privateMetafieldNamespaces: '["new-private-namespace"]',
+        metafieldNamespaces: '["new-namespace"]',
       },
     );
     assertRegisterResponse({registerReturn, topic, responses});
