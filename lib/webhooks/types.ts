@@ -23,6 +23,7 @@ interface BaseWebhookHandler {
 
 export interface HttpWebhookHandler extends BaseWebhookHandler {
   deliveryMethod: DeliveryMethod.Http;
+  // Deprecated, should be removed in next major release
   privateMetafieldNamespaces?: string[];
   callbackUrl: string;
 }
@@ -97,6 +98,7 @@ export interface WebhookCheckResponseNode<
     topic: string;
     includeFields: string[];
     metafieldNamespaces: string[];
+    // Deprecated, should be removed in next major release
     privateMetafieldNamespaces: string[];
   } & T;
 }

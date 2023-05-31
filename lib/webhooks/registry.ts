@@ -85,9 +85,18 @@ function mergeOrAddHandler(
   topic: string,
   handler: WebhookHandler,
 ) {
+  const log = logger(config);
+
   handler.includeFields?.sort();
   handler.metafieldNamespaces?.sort();
   if (handler.deliveryMethod === DeliveryMethod.Http) {
+    if (handler.privateMetafieldNamespaces) {
+      log.deprecated(
+        '8.0.0',
+        'The privateMetafieldNamespaces handler option is deprecated, and will be removed in v8.0.0. See https://shopify.dev/docs/apps/custom-data/metafields/migrate-private-metafields',
+      );
+    }
+
     handler.privateMetafieldNamespaces?.sort();
   }
 
@@ -111,7 +120,7 @@ function mergeOrAddHandler(
     }
 
     if (handler.deliveryMethod === DeliveryMethod.Http) {
-      logger(config).info(
+      log.info(
         `Detected multiple handlers for '${topic}', webhooks.process will call them sequentially`,
       );
       break;
