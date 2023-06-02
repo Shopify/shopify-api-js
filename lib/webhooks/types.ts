@@ -55,6 +55,9 @@ export interface WebhookRegistry<
   [topic: string]: Handler[];
 }
 
+// eslint-disable-next-line no-warning-comments
+// TODO Rethink the wording for this enum - the operations we're doing are actually "subscribing" and "unsubscribing"
+// Consider changing the values when releasing v8.0.0 when it can be safely deprecated
 export enum WebhookOperation {
   Create = 'create',
   Update = 'update',
@@ -69,6 +72,7 @@ export interface RegisterResult {
   success: boolean;
   deliveryMethod: DeliveryMethod;
   result: unknown;
+  operation: WebhookOperation;
 }
 
 export interface RegisterReturn {

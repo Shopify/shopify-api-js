@@ -53,11 +53,23 @@ Returns an object containing a list of results, indexed by topic. Each entry in 
 
 Whether the registration was successful.
 
+### deliveryMethod
+
+`string`
+
+The configured delivery method for the registered webhook.
+
 ### result
 
 `array`
 
 The body from the Shopify request to register the webhook.
+
+### operation
+
+`WebhookOperation`
+
+Which operation was performed to obtain this result.
 
 > **Note**: This object will only contain results for a handler if any of its information was updated with Shopify.
 

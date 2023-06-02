@@ -1,9 +1,18 @@
 import {Method, Header} from '@shopify/network';
 
-import {RegisterParams, RegisterReturn, WebhookHandler} from '../types';
+import {
+  RegisterParams,
+  RegisterReturn,
+  WebhookHandler,
+  WebhookOperation,
+} from '../types';
 import {gdprTopics, ShopifyHeader} from '../../types';
 import {DataType} from '../../clients/types';
-import {queueMockResponse, shopify} from '../../__tests__/test-helper';
+import {
+  queueMockResponse,
+  queueMockResponses,
+  shopify,
+} from '../../__tests__/test-helper';
 import {mockTestRequests} from '../../../adapters/mock/mock_test_requests';
 import {queryTemplate} from '../query-template';
 import {TEMPLATE_GET_HANDLERS, TEMPLATE_MUTATION} from '../register';
@@ -356,6 +365,34 @@ describe('shopify.webhooks.register', () => {
       {arn: '"arn:test"'},
     );
     assertRegisterResponse({registerReturn, topic, responses});
+  });
+
+  it('returns which operation was done for each handler', async () => {
+    // We have a pre-existing webhook for PRODUCTS_CREATE, so we expect it to be deleted, whereas we expect a new one to
+    // be created for PRODUCTS_DELETE
+    shopify.webhooks.addHandlers({
+      PRODUCTS_UPDATE: {...HTTP_HANDLER, includeFields: ['id', 'title']},
+      PRODUCTS_DELETE: HTTP_HANDLER,
+    });
+
+    queueMockResponses(
+      [JSON.stringify(mockResponses.webhookCheckMultiHandlerResponse)],
+      [JSON.stringify(mockResponses.successResponse)],
+      [JSON.stringify(mockResponses.successUpdateResponse)],
+      [JSON.stringify(mockResponses.successDeleteResponse)],
+    );
+
+    const registerReturn = await shopify.webhooks.register({session});
+
+    expect(registerReturn.PRODUCTS_CREATE[0].operation).toEqual(
+      WebhookOperation.Delete,
+    );
+    expect(registerReturn.PRODUCTS_DELETE[0].operation).toEqual(
+      WebhookOperation.Create,
+    );
+    expect(registerReturn.PRODUCTS_UPDATE[0].operation).toEqual(
+      WebhookOperation.Update,
+    );
   });
 });
 
