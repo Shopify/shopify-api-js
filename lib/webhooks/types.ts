@@ -69,6 +69,7 @@ export interface RegisterResult {
   success: boolean;
   deliveryMethod: DeliveryMethod;
   result: unknown;
+  operation: WebhookOperation;
 }
 
 export interface RegisterReturn {

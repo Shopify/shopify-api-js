@@ -367,6 +367,7 @@ async function runMutation({
       deliveryMethod: handler.deliveryMethod,
       success: isSuccess(result.body, handler, operation),
       result: result.body,
+      operation,
     };
   } catch (error) {
     if (error instanceof InvalidDeliveryMethodError) {
@@ -374,6 +375,7 @@ async function runMutation({
         deliveryMethod: handler.deliveryMethod,
         success: false,
         result: {message: error.message},
+        operation,
       };
     } else {
       throw error;
