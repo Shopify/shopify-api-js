@@ -368,10 +368,10 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('returns which operation was done for each handler', async () => {
+    // We have a pre-existing webhook for PRODUCTS_CREATE, so we expect it to be deleted, whereas we expect a new one to
+    // be created for PRODUCTS_DELETE
     shopify.webhooks.addHandlers({
       PRODUCTS_UPDATE: {...HTTP_HANDLER, includeFields: ['id', 'title']},
-    });
-    shopify.webhooks.addHandlers({
       PRODUCTS_DELETE: HTTP_HANDLER,
     });
 
