@@ -497,7 +497,7 @@ function isSuccess(
   );
 }
 
-export const TEMPLATE_GET_HANDLERS = `{
+export const TEMPLATE_GET_HANDLERS = `query shopifyApiReadWebhookSubscriptions {
   webhookSubscriptions(
     first: 250,
     after: {{END_CURSOR}},
@@ -532,7 +532,7 @@ export const TEMPLATE_GET_HANDLERS = `{
 }`;
 
 export const TEMPLATE_MUTATION = `
-  mutation webhookSubscription {
+  mutation shopifyApiCreateWebhookSubscription {
     {{MUTATION_NAME}}(
       {{IDENTIFIER}},
       {{MUTATION_PARAMS}}
