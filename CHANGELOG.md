@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.3.1
+
+### Patch Changes
+
+- 85e7478f: [Internal] Improved tracking of webhook registration GraphQL calls
+
 ## 7.3.0
 
 ### Minor Changes
