@@ -4,7 +4,7 @@ This section of the documentation provides thorough details on the parameters an
 
 ## [shopifyApi](./shopifyApi.md)
 
-<!-- ### shopify.[clients](./clients/README.md) -->
+### shopify.[clients](./clients/README.md)
 
 ### shopify.[auth](./auth/README.md)
 
