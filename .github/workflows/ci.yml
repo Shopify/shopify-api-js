@@ -1,0 +1,25 @@
+on: [push, pull_request]
+name: CI
+jobs:
+  CI:
+    name: CI_Node_${{ matrix.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [14, 16, 18, 20]
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.version }}
+      # TODO Remove the --ignore-engines flag when we drop support for Node 14
+      - name: Install
+        run: yarn install --ignore-engines
+      - name: Lint
+        run: yarn lint
+      - name: Test
+        run: yarn test
+      - name: Test REST resources
+        run: yarn test:rest_resources
+      - name: Run isomorphic adapter tests
+        run: yarn test:adapters

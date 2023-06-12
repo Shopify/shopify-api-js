@@ -1,0 +1,35 @@
+name: Create release PR and/or publish release to NPM
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Update PR for publishing new release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Create release Pull Request or publish to NPM
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          title: Packages for release
+          publish: yarn release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SHOPIFY_GH_ACCESS_TOKEN }}

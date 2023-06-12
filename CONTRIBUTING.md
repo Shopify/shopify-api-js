@@ -11,7 +11,7 @@ We welcome your contributions to the project. There are a few steps to take when
 
 # Bug Reporting
 
-Shopify Admin API Library for Node uses GitHub issue tracking to manage bugs, please open an issue there.
+Shopify API Library for Node uses GitHub issue tracking to manage bugs, please open an issue there.
 
 # Feature Request
 
@@ -27,10 +27,10 @@ Requirements:
 You can set up your development environment by running the following:
 
 ```
-git clone git@github.com:Shopify/shopify-node-api.git # get the code
-cd shopify-node-api                                   # change into the source directory
-yarn install                                          # install dependencies
-yarn build                                            # build library
+git clone git@github.com:Shopify/shopify-api-js.git # get the code
+cd shopify-node-api                                 # change into the source directory
+yarn install                                        # install dependencies
+yarn build                                          # build library
 ```
 
 Helpful commands

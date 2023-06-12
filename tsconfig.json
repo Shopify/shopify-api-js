@@ -6,10 +6,11 @@
     "declarationMap": true,
     "pretty": true,
     "moduleResolution": "node",
-    "target": "es5",
+    "module": "commonjs",
+    "target": "es2015",
     "downlevelIteration": true,
     "esModuleInterop": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "noEmitOnError": false,
     "experimentalDecorators": true,
     "noUnusedParameters": true,
@@ -19,6 +20,7 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "lib": [
       "dom",
       "dom.iterable",
@@ -26,33 +28,22 @@
       "es2016",
       "es2017",
       "es2018",
+      "es2019",
+      "es2020",
       "esnext.asynciterable"
     ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "outDir": "./dist",
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["@cloudflare/workers-types", "node", "jest"],
     "baseUrl": ".",
-    "rootDir": "src"
+    "rootDir": "."
   },
   "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
+    "lib/**/*.ts",
+    "adapters/**/*.ts",
+    "rest/**/*.ts",
+    "runtime/**/*.ts",
   ],
   "exclude": [
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/test/*"
+    "**/*.test.ts", "**/test/*", "**/__tests__/*",
   ],
-  "typedocOptions": {
-    "inputFiles": [
-      "./src"
-    ],
-    "mode": "file",
-    "out": "tsdocs",
-    "exclude": "**/test/**",
-    "excludeNotExported": true,
-    "excludePrivate": true,
-    "disableSources": true
-  }
 }
