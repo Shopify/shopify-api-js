@@ -1,5 +1,8 @@
 import '../../../test/test_helper';
+<<<<<<< HEAD
 import * as ShopifyErrors from '../../../error';
+=======
+>>>>>>> main
 
 import {AuthScopes} from '../index';
 
@@ -66,6 +69,7 @@ describe('AuthScopes.equals', () => {
     expect(scopes2.equals(scopes1)).toBeFalsy();
   });
 
+<<<<<<< HEAD
   it('throws an error if no scopes', () => {
     const scopes1 = new AuthScopes('write_customers,read_products');
     const scopes2: string = '';
@@ -76,6 +80,11 @@ describe('AuthScopes.equals', () => {
   it('allows comparing against strings', () => {
     const scopes1 = new AuthScopes('write_customers,read_products,write_products');
 
+=======
+  it('allows comparing against strings', () => {
+    const scopes1 = new AuthScopes('write_customers,read_products,write_products');
+
+>>>>>>> main
     expect(scopes1.equals('write_customers,read_products,write_products')).toBeTruthy();
   });
 
