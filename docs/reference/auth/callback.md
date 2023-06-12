@@ -1,64 +1,70 @@
-# shopify.auth.callback
+# auth.callback
 
-Process Shopify's callback request after the user approves the app installation.
-Once the merchant approves the app's request for scopes, Shopify will redirect them back to your app, using the `callbackPath` parameter from `shopify.auth.begin`.
+Completes the OAuth process with Shopify.
 
-Your app must then call `shopify.auth.callback` to complete the OAuth process, which will create a new Shopify `Session` and return the appropriate HTTP headers your app with which your app must respond.
+If successful, it will save a new `Session` object using your configured `sessionStorage`, that contains an access token, that the app can use to interact with Shopify APIs.
+
+> **Note**: this method sets HTTP headers to update the OAuth cookies.
+> For worker runtimes, you'll need to add the headers to your response.
 
 ## Example
 
-### Node.js
+<div>Node.js
 
 ```ts
-app.get('/auth/callback', async (req, res) => {
-  // The library will automatically set the appropriate HTTP headers
-  const callback = await shopify.auth.callback({
-    rawRequest: req,
-    rawResponse: res,
-  });
+// The library will automatically set the appropriate HTTP headers in Node.js runtimes
+const {session, headers} = await shopify.auth.callback({
+  isOnline: false,
+  rawRequest: req,
+  rawResponse: res,
+});
 
-  // You can now use callback.session to make API requests
+res.redirect('/my-apps-entry-page');
+```
 
-  res.redirect('/my-apps-entry-page');
+</div><div>Worker
+
+```ts
+const {session, headers} = await shopify.auth.callback<Headers>({
+  isOnline: false,
+  rawRequest: request,
+});
+
+// The callback returns some HTTP headers, but you can redirect to any route here
+return new Response('', {
+  status: 302,
+  // Headers are of type [string, string][]
+  headers: [...headers, ['Location', '/my-apps-entry-page']],
 });
 ```
 
-### Cloudflare workers
-
-```ts
-async function handleFetch(request: Request): Promise<Response> {
-  const callback = await shopify.auth.callback<Headers>({
-    rawRequest: request,
-  });
-
-  // You can now use callback.session to make API requests
-
-  // The callback returns some HTTP headers, but you can redirect to any route here
-  return new Response('', {
-    status: 302,
-    // Headers are of type [string, string][]
-    headers: [...callback.headers, ['Location', '/my-apps-entry-page']],
-  });
-}
-```
+</div>
 
 ## Parameters
 
+### isOnline
+
+`bool` | :exclamation: required
+
+`true` if the session is online and `false` otherwise. Must match the value from `auth.begin`.
+
 ### rawRequest
 
-`AdapterRequest`| :exclamation: required
+`AdapterRequest` | :exclamation: required
 
 The HTTP Request object used by your runtime.
 
 ### rawResponse
 
-`AdapterResponse`| :exclamation: required for Node.js
+`AdapterResponse` | :exclamation: required _for Node.js runtimes only_
 
-The HTTP Response object used by your runtime.
+The HTTP Response object used by your runtime. Required for Node.js.
 
 ## Return
 
-Returns an object containing:
+`Promise<CallbackResponse>`
+
+Returns a promise that resolves to an object containing a session and the necessary response HTTP headers.
 
 ### session
 
@@ -68,10 +74,8 @@ The new Shopify session, containing the API access token.
 
 ### headers
 
-`AdapterHeaders`
+`AdapterHeaders` (`[string, string[]][] | undefined`)
 
-The HTTP headers to include in the response.
-In TypeScript, you can pass in a type to get a typed object back - see the Cloudflare example above.
-Returns `undefined` for Node.js.
+The HTTP headers to include in the response. In TypeScript, you can pass in a type to get a typed object back - see the Cloudflare example above. Returns `undefined` for Node.js because they're automatically set.
 
-[Back to shopify.auth](./README.md)
+[Back to index](./README.md)

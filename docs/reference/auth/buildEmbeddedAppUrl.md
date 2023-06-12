@@ -1,31 +1,25 @@
-# shopify.auth.buildEmbeddedAppUrl
+# auth.buildEmbeddedAppUrl
 
-Constructs the redirection URL for [getEmbeddedAppUrl](./getEmbeddedAppUrl.md) based on the given `host`.
-
-This utility relies on the host query param being a Base 64 encoded string. All requests from Shopify should include this param in the correct format.
+Constructs a URL that points to the Shopify surface for the given `host` query argument.
 
 ## Example
 
 ```ts
-app.get('/redirect/endpoint', (req, res) => {
-  const redirectURL = shopify.auth.buildEmbeddedAppUrl(req.query.host);
-
-  res.redirect(redirectURL);
-});
+const redirectUrl = shopify.auth.buildEmbeddedAppUrl(req.query.host);
 ```
 
 ## Parameters
 
 ### host
 
-`string` | :exclamation: required
+`string`
 
-The `host` parameter from the Shopify request.
+The `host` query argument from the request.
 
 ## Return
 
 `string`
 
-The appropriate Shopify address to redirect to.
+A URL pointing to the appropriate address for the given host.
 
-[Back to shopify.auth](./README.md)
+[Back to index](./README.md)

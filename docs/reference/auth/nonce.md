@@ -1,17 +1,17 @@
-# shopify.auth.nonce
+# auth.nonce
 
-Generates a string of 15 characters that are cryptographically random, suitable for short-lived values in cookies to aid validation of requests/responses.
+Creates a random string of characters to serve as a link between the `begin` and `callback` requests, so that the library can compare the requests.
 
 ## Example
 
 ```ts
-const state = shopify.auth.nonce();
+const nonce = shopify.auth.nonce();
 ```
 
 ## Return
 
 `string`
 
-A random string of characters.
+A string of random characters.
 
-[Back to shopify.auth](./README.md)
+[Back to index](./README.md)
