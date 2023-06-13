@@ -17,6 +17,5 @@ export default function validateShop(shop: string): boolean {
   if (runningNetworkTests()) return true;
 >>>>>>> origin/isomorphic/main
   const shopUrlRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.(com|io)[/]*$/;
->>>>>>> origin/isomorphic/crypto
   return shopUrlRegex.test(shop);
 }
