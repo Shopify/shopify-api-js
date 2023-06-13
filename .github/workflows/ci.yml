@@ -11,14 +11,25 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v3
         with:
+<<<<<<< HEAD:.github/workflows/ci.yml
           node-version: ${{ matrix.version }}
+=======
+          node-version: '16.x'
+>>>>>>> origin/isomorphic/main:.github/workflows/workflow.yml
       - name: Install
         run: yarn install
       - name: Lint
         run: yarn lint
       - name: Test
         run: yarn test
+<<<<<<< HEAD:.github/workflows/ci.yml
       - name: Test REST resources
         run: yarn test:rest_resources
       - name: Run isomorphic adapter tests
         run: yarn test:adapters
+=======
+      - name: Test network adapters
+        run: yarn e2etest
+      # - name: Test REST resources
+      #   run: yarn test_rest_resources
+>>>>>>> origin/isomorphic/main:.github/workflows/workflow.yml

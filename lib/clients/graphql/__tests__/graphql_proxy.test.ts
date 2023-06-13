@@ -1,14 +1,26 @@
+<<<<<<< HEAD:lib/clients/graphql/__tests__/graphql_proxy.test.ts
 import http from 'http';
 
 import jwt from 'jsonwebtoken';
 import express, {Request, Response} from 'express';
 import request from 'supertest';
 
+=======
+import express, {
+  Request as ExpressRequest,
+  Response as ExpressResponse,
+} from 'express';
+import request from 'supertest';
+
+import * as mockAdapter from '../../adapters/mock';
+import {setAbstractFetchFunc, Request, Response} from '../../runtime/http';
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/graphql_proxy.test.ts
 import {Session} from '../../auth/session';
 import {InvalidSession, SessionNotFound} from '../../error';
 import graphqlProxy from '../graphql_proxy';
 import {Context} from '../../context';
 import {JwtPayload} from '../decode-session-token';
+import {signJWT} from '../setup-jest';
 
 const successResponse = {
   data: {
@@ -42,8 +54,18 @@ describe('GraphQL proxy with session', () => {
   const app = express();
   app.post('/proxy', async (req: Request, res: Response) => {
     try {
+<<<<<<< HEAD:lib/clients/graphql/__tests__/graphql_proxy.test.ts
       const response = await graphqlProxy(req, res);
       res.send(response.body);
+=======
+      const internalResponse = {
+        statusCode: 200,
+        statusText: 'OK',
+      } as Response;
+      const response = await graphqlProxy(await convertRequest(req));
+      internalResponse.body = JSON.stringify(response.body);
+      convertResponse(internalResponse, res);
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/graphql_proxy.test.ts
     } catch (err) {
       res.status(400);
       res.send(JSON.stringify(err.message));
@@ -73,9 +95,7 @@ describe('GraphQL proxy with session', () => {
     );
     session.accessToken = accessToken;
     await Context.SESSION_STORAGE.storeSession(session);
-    token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    token = await signJWT(jwtPayload);
   });
 
   it('can forward query and return response', async () => {
@@ -127,15 +147,17 @@ describe('GraphQL proxy', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
       },
+<<<<<<< HEAD:lib/clients/graphql/__tests__/graphql_proxy.test.ts
     } as http.IncomingMessage;
     const res = {} as http.ServerResponse;
+=======
+    } as any as Request;
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/graphql_proxy.test.ts
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop,
@@ -144,12 +166,17 @@ describe('GraphQL proxy', () => {
     );
     Context.SESSION_STORAGE.storeSession(session);
 
-    await expect(graphqlProxy(req, res)).rejects.toThrow(InvalidSession);
+    await expect(graphqlProxy(req)).rejects.toThrow(InvalidSession);
   });
 
   it('throws an error if no session', async () => {
+<<<<<<< HEAD:lib/clients/graphql/__tests__/graphql_proxy.test.ts
     const req = {headers: {}} as http.IncomingMessage;
     const res = {} as http.ServerResponse;
     await expect(graphqlProxy(req, res)).rejects.toThrow(SessionNotFound);
+=======
+    const req = {headers: {}} as Request;
+    await expect(graphqlProxy(req)).rejects.toThrow(SessionNotFound);
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/graphql_proxy.test.ts
   });
 });

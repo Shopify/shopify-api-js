@@ -27,11 +27,19 @@ export class PaymentGateway extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/payment_gateway.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "payment_gateways/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "payment_gateways.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "payment_gateways/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "payment_gateways.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "payment_gateways/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "payment_gateways.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "payment_gateways.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "payment_gateways/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "payment_gateways/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "payment_gateways/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/payment_gateway.ts
   ];
 
   public static async find(

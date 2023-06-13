@@ -19,7 +19,11 @@ describe('Balance resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"balance": [{"amount": "53.99", "currency": "USD"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"balance": [{"currency": "USD", "amount": "53.99"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Balance.all({
       session: test_session,

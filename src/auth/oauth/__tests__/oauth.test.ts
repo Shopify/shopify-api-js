@@ -1,7 +1,5 @@
 import querystring from 'querystring';
 
-import jwt from 'jsonwebtoken';
-
 import {
   setAbstractFetchFunc,
   Request,
@@ -9,9 +7,9 @@ import {
   Cookies,
   CookieJar,
   getHeaders,
-} from '../../../adapters/abstract-http';
-import Shopify from '../../../index-node';
-import * as mockAdapter from '../../../adapters/mock-adapter';
+} from '../../../runtime/http';
+import Shopify from '../../../adapters/node';
+import * as mockAdapter from '../../../adapters/mock';
 import {ShopifyOAuth} from '../oauth';
 import {Context} from '../../../context';
 import * as ShopifyErrors from '../../../error';
@@ -22,7 +20,12 @@ import {AuthQuery} from '../types';
 import {generateLocalHmac} from '../../../utils/hmac-validator';
 import {JwtPayload} from '../../../utils/decode-session-token';
 import loadCurrentSession from '../../../utils/load-current-session';
+<<<<<<< HEAD
 import {CustomSessionStorage} from '../../session';
+=======
+import {CustomSessionStorage, Session} from '../../session';
+import {signJWT} from '../../../utils/setup-jest';
+>>>>>>> origin/isomorphic/main
 
 jest.mock('cookies');
 
@@ -201,24 +204,13 @@ describe('beginAuth', () => {
 });
 
 describe('validateAuthCallback', () => {
-  let cookies: {
-    id: string;
-    expires?: Date;
-  } = {
-    id: '',
-    expires: undefined,
-  };
   let req: Request;
   let res: Response;
 
   beforeEach(() => {
-    cookies = {
-      id: '',
-      expires: undefined,
-    };
-
     req = {} as Request;
     res = {} as Response;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
     Cookies.prototype.set.mockImplementation(
@@ -241,6 +233,8 @@ describe('validateAuthCallback', () => {
 >>>>>>> origin/isomorphic/crypto
 
     // Cookies.prototype.get.mockImplementation(() => currentSessionId(res));
+=======
+>>>>>>> origin/isomorphic/main
   });
 
   test('throws Context error when not properly initialized', async () => {
@@ -252,7 +246,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     await expect(
@@ -278,6 +272,7 @@ describe('validateAuthCallback', () => {
 
     await Context.SESSION_STORAGE.deleteSession(cookies.id);
 
+    copySessionCookieToRequest(req, res);
     await expect(
       ShopifyOAuth.validateAuthCallback(req, res, {
         shop: 'I do not exist',
@@ -300,6 +295,7 @@ describe('validateAuthCallback', () => {
     };
     testCallbackQuery.hmac = 'definitely the wrong hmac';
 
+    copySessionCookieToRequest(req, res);
     await expect(
       ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery),
     ).rejects.toThrow(Shopify.Errors.InvalidOAuthError);
@@ -349,7 +345,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -370,6 +366,7 @@ describe('validateAuthCallback', () => {
       () => Promise.resolve(true),
     );
 
+    copySessionCookieToRequest(req, res);
     await expect(
       ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery),
     ).rejects.toThrow(Shopify.Errors.SessionStorageError);
@@ -384,7 +381,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -397,6 +394,7 @@ describe('validateAuthCallback', () => {
     mockAdapter.queueResponse(
       buildMockResponse(JSON.stringify(successResponse)),
     );
+    copySessionCookieToRequest(req, res);
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
@@ -412,7 +410,7 @@ describe('validateAuthCallback', () => {
       timestamp: Number(new Date()).toString(),
       code: 'some random auth code',
     };
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     /* eslint-disable @typescript-eslint/naming-convention */
@@ -443,6 +441,7 @@ describe('validateAuthCallback', () => {
     mockAdapter.queueResponse(
       buildMockResponse(JSON.stringify(successResponse)),
     );
+    copySessionCookieToRequest(req, res);
     await ShopifyOAuth.validateAuthCallback(req, res, testCallbackQuery);
     session = await Context.SESSION_STORAGE.loadSession(cookies.id);
 
@@ -492,12 +491,13 @@ describe('validateAuthCallback', () => {
       code: 'some random auth code',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     mockAdapter.queueResponse(
       buildMockResponse(JSON.stringify(successResponse)),
     );
+    copySessionCookieToRequest(req, res);
     const returnedSession = await ShopifyOAuth.validateAuthCallback(
       req,
       res,
@@ -531,9 +531,7 @@ describe('validateAuthCallback', () => {
 
     // Simulate a subsequent JWT request to see if the session is loaded as the current one
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const jwtReq = {
       method: 'GET',
       url: `https://${shop}`,
@@ -541,9 +539,8 @@ describe('validateAuthCallback', () => {
         authorization: `Bearer ${token}`,
       },
     } as Request;
-    const jwtRes = {} as Response;
 
-    const currentSession = await loadCurrentSession(jwtReq, jwtRes);
+    const currentSession = await loadCurrentSession(jwtReq);
     expect(currentSession).not.toBe(null);
     expect(currentSession?.id).toEqual(jwtSessionId);
     expect(cookies?.expires?.getTime() as number).toBeWithinSecondsOf(
@@ -583,12 +580,13 @@ describe('validateAuthCallback', () => {
       code: 'some random auth code',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     mockAdapter.queueResponse(
       buildMockResponse(JSON.stringify(successResponse)),
     );
+    copySessionCookieToRequest(req, res);
     const returnedSession = await ShopifyOAuth.validateAuthCallback(
       req,
       res,
@@ -645,12 +643,13 @@ describe('validateAuthCallback', () => {
       code: 'some random auth code',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     mockAdapter.queueResponse(
       buildMockResponse(JSON.stringify(successResponse)),
     );
+    copySessionCookieToRequest(req, res);
     const returnedSession = await ShopifyOAuth.validateAuthCallback(
       req,
       res,
@@ -701,12 +700,13 @@ describe('validateAuthCallback', () => {
       code: 'some random auth code',
     };
     /* eslint-enable @typescript-eslint/naming-convention */
-    const expectedHmac = generateLocalHmac(testCallbackQuery);
+    const expectedHmac = await generateLocalHmac(testCallbackQuery);
     testCallbackQuery.hmac = expectedHmac;
 
     mockAdapter.queueResponse(
       buildMockResponse(JSON.stringify(successResponse)),
     );
+    copySessionCookieToRequest(req, res);
     const returnedSession = await ShopifyOAuth.validateAuthCallback(
       req,
       res,
@@ -714,7 +714,6 @@ describe('validateAuthCallback', () => {
     );
     expect(returnedSession.id).toEqual(currentSessionId(res));
     expect(returnedSession.id).toEqual(ShopifyOAuth.getOfflineSessionId(shop));
-    expect(cookies?.expires?.getTime()).toBeUndefined();
     expect(returnedSession?.expires?.getTime()).toBeUndefined();
 
     const cookieSession = await Context.SESSION_STORAGE.loadSession(
@@ -740,4 +739,19 @@ function currentCookieJar(res: Response): CookieJar {
 function currentSessionId(res: Response): string {
   const jar = currentCookieJar(res);
   return jar[Shopify.Auth.SESSION_COOKIE_NAME]?.value;
+}
+
+function copySessionCookieToRequest(req: Request, res: Response) {
+  if (!req.headers) req.headers = {};
+  const responseJar = Cookies.parseCookies(
+    getHeaders(res.headers, 'Set-Cookie'),
+  );
+  const sessionCookieName = Shopify.Auth.SESSION_COOKIE_NAME;
+  if (responseJar[sessionCookieName]) {
+    req.headers.Cookie = `${sessionCookieName}=${responseJar[sessionCookieName].value}`;
+    const sigName = `${sessionCookieName}.sig`;
+    if (responseJar[sigName]) {
+      req.headers.Cookie += `,${sigName}=${responseJar[sigName].value}`;
+    }
+  }
 }

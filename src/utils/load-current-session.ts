@@ -1,4 +1,4 @@
-import {Request, Response} from '../adapters/abstract-http';
+import {Request} from '../runtime/http';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
@@ -7,10 +7,15 @@ import {Session} from '../auth/session';
 import decodeSessionToken from './decode-session-token';
 
 /**
- * Loads the current user's session, based on the given request and response.
+ * Loads the current user's session, based on the given request.
  *
+<<<<<<< HEAD
  * @param req Current HTTP request
  * @param res Current HTTP response
+=======
+ * @param request  Current HTTP request
+ * @param isOnline Whether to load online (default) or offline sessions (optional)
+>>>>>>> origin/isomorphic/main
  */
 export default async function loadCurrentSession(
 <<<<<<< HEAD
@@ -35,16 +40,11 @@ export default async function loadCurrentSession(
     }
 =======
   request: Request,
-  response: Response,
   isOnline = true,
 ): Promise<Session | undefined> {
   Context.throwIfUninitialized();
 
-  const sessionId = await ShopifyOAuth.getCurrentSessionId(
-    request,
-    response,
-    isOnline,
-  );
+  const sessionId = await ShopifyOAuth.getCurrentSessionId(request, isOnline);
   if (!sessionId) {
     return Promise.resolve(undefined);
 >>>>>>> origin/isomorphic/crypto

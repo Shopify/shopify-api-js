@@ -48,6 +48,7 @@ export class GiftCard extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/gift_card.ts
     {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
@@ -55,6 +56,15 @@ export class GiftCard extends Base {
     {"http_method": "post", "operation": "disable", "ids": ["id"], "path": "gift_cards/<id>/disable.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
+    {"http_method": "post", "operation": "disable", "ids": ["id"], "path": "gift_cards/<id>/disable.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "gift_cards/search.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/gift_card.ts
   ];
 
   public static async find(
@@ -129,7 +139,11 @@ export class GiftCard extends Base {
       operation: "search",
       session: session,
       urlIds: {},
+<<<<<<< HEAD:src/rest-resources/2022-10/gift_card.ts
       params: {"order": order, "query": query, "limit": limit, "fields": fields, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
+=======
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/gift_card.ts
       body: {},
       entity: null,
     });

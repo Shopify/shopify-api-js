@@ -38,12 +38,21 @@ export class Country extends Base {
     "provinces": Province
   };
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/country.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "countries/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "countries/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "countries.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "countries/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "countries.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "countries/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "countries.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "countries.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "countries/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "countries/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "countries/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "countries/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/country.ts
   ];
 
   public static async find(

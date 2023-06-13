@@ -13,9 +13,15 @@ import {
 import {ApiVersion, ShopifyHeader} from '../../base-types';
 import {Context} from '../../context';
 import {DataType} from '../../clients/types';
-import {setAbstractFetchFunc, Response} from '../../adapters/abstract-http';
-import Shopify from '../../index-node';
-import * as mockAdapter from '../../adapters/mock-adapter';
+import {
+  setAbstractFetchFunc,
+  Request,
+  Response,
+  flatHeaders,
+  canonicalizeHeaders,
+} from '../../runtime/http';
+import Shopify from '../../adapters/node';
+import * as mockAdapter from '../../adapters/mock';
 import ShopifyWebhooks from '..';
 import {
   buildQuery as createWebhookQuery,
@@ -391,7 +397,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     });
 
     const app = express();
-    app.post('/webhooks', ShopifyWebhooks.Registry.process);
+    app.post('/webhooks', expressAdapter(ShopifyWebhooks.Registry.process));
 
     await request(app)
       .post('/webhooks')
@@ -406,7 +412,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
       webhookHandler: genericWebhookHandler,
     });
     const app = express();
-    app.post('/webhooks', ShopifyWebhooks.Registry.process);
+    app.post('/webhooks', expressAdapter(ShopifyWebhooks.Registry.process));
 
     await request(app)
       .post('/webhooks')
@@ -430,7 +436,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await expressAdapter(ShopifyWebhooks.Registry.process)(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error).toBeInstanceOf(Shopify.Errors.InvalidWebhookError);
@@ -455,7 +461,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await expressAdapter(ShopifyWebhooks.Registry.process)(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error).toBeInstanceOf(Shopify.Errors.InvalidWebhookError);
@@ -480,7 +486,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await expressAdapter(ShopifyWebhooks.Registry.process)(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error).toBeInstanceOf(Shopify.Errors.InvalidWebhookError);
@@ -504,7 +510,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await expressAdapter(ShopifyWebhooks.Registry.process)(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error).toBeInstanceOf(Shopify.Errors.InvalidWebhookError);
@@ -545,7 +551,7 @@ describe('ShopifyWebhooks.Registry.process', () => {
     app.post('/webhooks', async (req, res) => {
       let errorThrown = false;
       try {
-        await ShopifyWebhooks.Registry.process(req, res);
+        await expressAdapter(ShopifyWebhooks.Registry.process)(req, res);
       } catch (error) {
         errorThrown = true;
         expect(error.message).toEqual(errorMessage);
@@ -980,6 +986,47 @@ function queueMockResponse(body: string, partial: Partial<Response> = {}) {
     ...partial,
     body,
   });
+}
+
+function expressAdapter(
+  func: (req: Request, res: Response) => Promise<void>,
+): (req: express.Request, res: express.Response) => Promise<void> {
+  return async function (
+    req: express.Request,
+    res: express.Response,
+  ): Promise<void> {
+    const body = await new Promise<string>((resolve, reject) => {
+      let str = '';
+      req.on('data', (chunk) => {
+        str += chunk.toString();
+      });
+      req.on('error', (error) => reject(error));
+      req.on('end', () => resolve(str));
+    });
+    const internalRequest: Request = {
+      method: req.method,
+      headers: canonicalizeHeaders(req.headers as any),
+      url: req.url,
+      body,
+    };
+    const internalResponse: Response = {
+      statusCode: 204,
+      statusText: 'No content',
+    };
+    let thrown;
+    try {
+      await func(internalRequest, internalResponse);
+    } catch (err) {
+      thrown = err;
+    }
+    res.statusCode = internalResponse.statusCode;
+    res.statusMessage = internalResponse.statusText;
+    for (const [key, values] of flatHeaders(internalResponse.headers ?? {})) {
+      res.header(key, values);
+    }
+    res.end(internalResponse.body);
+    if (thrown) throw thrown;
+  };
 }
 
 // function queueMockResponses(

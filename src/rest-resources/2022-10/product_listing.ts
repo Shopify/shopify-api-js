@@ -47,12 +47,21 @@ export class ProductListing extends Base {
     "variants": Variant
   };
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/product_listing.ts
     {"http_method": "delete", "operation": "delete", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "product_listings/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "product_listings.json"},
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
     {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
     {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "product_listings.json"},
+    {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "product_listings/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/product_listing.ts
   ];
   protected static PRIMARY_KEY: string = "product_id";
 
@@ -107,6 +116,29 @@ export class ProductListing extends Base {
     return response as ProductListing[];
   }
 
+<<<<<<< HEAD:src/rest-resources/2022-10/product_listing.ts
+=======
+  public static async product_ids(
+    {
+      session,
+      limit = null,
+      ...otherArgs
+    }: ProductIdsArgs
+  ): Promise<unknown> {
+    const response = await ProductListing.request({
+      http_method: "get",
+      operation: "product_ids",
+      session: session,
+      urlIds: {},
+      params: {"limit": limit, ...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/product_listing.ts
   public static async count(
     {
       session,

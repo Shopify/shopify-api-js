@@ -20,8 +20,13 @@ export class ProductResourceFeedback extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-04/product_resource_feedback.ts
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"},
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/product_resource_feedback.ts
   ];
 
   protected static getJsonBodyName(): string

@@ -2,8 +2,8 @@ import {Session} from '../auth/session';
 import {ApiVersion} from '../base-types';
 import {Context} from '../context';
 import {RestResourceRequestError, RestResourceError} from '../error';
-import * as mockAdapter from '../adapters/mock-adapter';
-import {setAbstractFetchFunc, Response} from '../adapters/abstract-http';
+import * as mockAdapter from '../adapters/mock';
+import {setAbstractFetchFunc, Response} from '../runtime/http';
 
 import FakeResource from './fake-resource';
 import FakeResourceWithCustomPrefix from './fake-resource-with-custom-prefix';
@@ -13,18 +13,17 @@ setAbstractFetchFunc(mockAdapter.abstractFetch);
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
-    /* eslint-disable @typescript-eslint/naming-convention */
     interface Matchers<R> {
       toBeWithinSecondsOf(compareDate: number, seconds: number): R;
       toMatchMadeHttpRequest(): R;
     }
-    /* eslint-enable @typescript-eslint/naming-convention */
   }
 }
 
 describe('Base REST resource', () => {
   const domain = 'test-shop.myshopify.io';
   const prefix = '/admin/api/unstable';
+  /* eslint-disable-next-line @typescript-eslint/naming-convention */
   const headers = {'X-Shopify-Access-Token': 'access-token'};
   const session = new Session('1234', domain, '1234', true);
   session.accessToken = 'access-token';
@@ -62,7 +61,8 @@ describe('Base REST resource', () => {
     expect({
       method: 'GET',
       domain,
-      path: `${prefix}/fake_resources/1.json?param=value`,
+      path: `${prefix}/fake_resources/1.json`,
+      query: 'param=value',
       headers,
     }).toMatchMadeHttpRequest();
   });
@@ -388,13 +388,15 @@ describe('Base REST resource', () => {
     expect({
       method: 'GET',
       domain,
-      path: `${prefix}/fake_resources.json?page_info=nextToken`,
+      path: `${prefix}/fake_resources.json`,
+      query: 'page_info=nextToken',
       headers,
     }).toMatchMadeHttpRequest();
     expect({
       method: 'GET',
       domain,
-      path: `${prefix}/fake_resources.json?page_info=previousToken`,
+      path: `${prefix}/fake_resources.json`,
+      query: 'page_info=previousToken',
       headers,
     }).toMatchMadeHttpRequest();
   });

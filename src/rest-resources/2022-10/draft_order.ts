@@ -57,6 +57,7 @@ export class DraftOrder extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/draft_order.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
@@ -65,6 +66,16 @@ export class DraftOrder extends Base {
     {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
     {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
+    {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
+    {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/draft_order.ts
   ];
 
   public static async find(
@@ -176,7 +187,11 @@ export class DraftOrder extends Base {
       operation: "complete",
       session: this.session,
       urlIds: {"id": this.id},
+<<<<<<< HEAD:src/rest-resources/2022-10/draft_order.ts
       params: {"payment_gateway_id": payment_gateway_id, "payment_pending": payment_pending, ...otherArgs},
+=======
+      params: {"payment_pending": payment_pending, ...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/draft_order.ts
       body: body,
       entity: this,
     });

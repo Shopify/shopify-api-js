@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 import querystring from 'querystring';
 
 import {v4 as uuidv4} from 'uuid';
 // import Cookies from 'cookies';
 
+=======
+import {Request, Response, Cookies, getHeader} from '../../runtime/http';
+import {crypto} from '../../runtime/crypto';
+>>>>>>> origin/isomorphic/main
 import {Context} from '../../context';
 import nonce from '../../utils/nonce';
 import validateHmac from '../../utils/hmac-validator';
@@ -64,8 +69,27 @@ const ShopifyOAuth = {
 
     const state = nonce();
 
+<<<<<<< HEAD
     cookies.set(ShopifyOAuth.STATE_COOKIE_NAME, state, {
       signed: true,
+=======
+    const session = new Session(
+      isOnline ? uuidv4() : this.getOfflineSessionId(shop),
+      shop,
+      state,
+      isOnline,
+    );
+
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(session);
+
+    if (!sessionStored) {
+      throw new ShopifyErrors.SessionStorageError(
+        'OAuth Session could not be saved. Please check your session storage functionality.',
+      );
+    }
+
+    await cookies.setAndSign(ShopifyOAuth.SESSION_COOKIE_NAME, session.id, {
+>>>>>>> origin/isomorphic/main
       expires: new Date(Date.now() + 60000),
       sameSite: 'lax',
       secure: true,
@@ -86,7 +110,8 @@ const ShopifyOAuth = {
     };
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    const queryString = querystring.stringify(query);
+    // const queryString = querystring.stringify(query);
+    const queryString = new URLSearchParams(query).toString();
 
     return `https://${cleanShop}/admin/oauth/authorize?${queryString}`;
   },
@@ -122,7 +147,7 @@ const ShopifyOAuth = {
     );
     deleteCookie(request, response, this.STATE_COOKIE_NAME);
 
-    const sessionCookie = this.getCookieSessionId(request, response);
+    const sessionCookie = await this.getCookieSessionId(request);
     if (!sessionCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
@@ -143,7 +168,7 @@ const ShopifyOAuth = {
       );
     }
 
-    if (!validQuery(query, currentSession)) {
+    if (!(await validQuery(query, currentSession))) {
       throw new ShopifyErrors.InvalidOAuthError('Invalid OAuth callback.');
     }
 
@@ -205,12 +230,15 @@ const ShopifyOAuth = {
       currentSession.scope = responseBody.scope;
     }
 
-    cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
-      signed: true,
-      expires: Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
-      sameSite: 'lax',
-      secure: true,
-    });
+    await cookies.setAndSign(
+      ShopifyOAuth.SESSION_COOKIE_NAME,
+      currentSession.id,
+      {
+        expires: Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
+        sameSite: 'lax',
+        secure: true,
+      },
+    );
 
     const sessionStored = await Context.SESSION_STORAGE.storeSession(
       currentSession,
@@ -228,17 +256,21 @@ const ShopifyOAuth = {
    * Loads the current session id from the session cookie.
    *
    * @param request HTTP request object
-   * @param response HTTP response object
    */
+<<<<<<< HEAD
   getCookieSessionId(
     request: http.IncomingMessage,
     response: http.ServerResponse,
   ): string | undefined {
     const cookies = new Cookies(request, response, {
+=======
+  getCookieSessionId(request: Request): Promise<string | undefined> {
+    const cookies = new Cookies(request, {} as Response, {
+>>>>>>> origin/isomorphic/main
       secure: true,
       keys: [Context.API_SECRET_KEY],
     });
-    return cookies.get(this.SESSION_COOKIE_NAME, {signed: true});
+    return cookies.getAndVerify(this.SESSION_COOKIE_NAME);
   },
 
   /**
@@ -264,18 +296,16 @@ const ShopifyOAuth = {
    * Extracts the current session id from the request / response pair.
    *
    * @param request  HTTP request object
-   * @param response HTTP response object
    * @param isOnline Whether to load online (default) or offline sessions (optional)
    */
   async getCurrentSessionId(
     request: Request,
-    response: Response,
     isOnline = true,
   ): Promise<string | undefined> {
     let currentSessionId: string | undefined;
 
     if (Context.IS_EMBEDDED_APP) {
-      const authHeader = request.headers.authorization;
+      const authHeader = getHeader(request.headers, 'Authorization');
       if (authHeader) {
         const matches = authHeader.match(/^Bearer (.+)$/);
         if (!matches) {
@@ -299,11 +329,15 @@ const ShopifyOAuth = {
     // JWT.
     if (!currentSessionId) {
       // We still want to get the offline session id from the cookie to make sure it's validated
+<<<<<<< HEAD
       currentSessionId = getValueFromCookie(
         request,
         response,
         this.SESSION_COOKIE_NAME,
       );
+=======
+      currentSessionId = await this.getCookieSessionId(request);
+>>>>>>> origin/isomorphic/main
     }
 
     return currentSessionId;
@@ -316,12 +350,25 @@ const ShopifyOAuth = {
  * @param query Current HTTP Request Query
  * @param session Current session
  */
-function validQuery(query: AuthQuery, session: Session): boolean {
+async function validQuery(
+  query: AuthQuery,
+  session: Session,
+): Promise<boolean> {
   return (
+<<<<<<< HEAD
     validateHmac(query) && safeCompare(query.state, session.state as string)
+=======
+    (await validateHmac(query)) &&
+    validateShop(query.shop) &&
+    safeCompare(query.state, session.state as string)
+>>>>>>> origin/isomorphic/main
   );
 }
 
 =======
 >>>>>>> e83b5faf (Run yarn lint --fix on all files)
 export {ShopifyOAuth};
+
+function uuidv4() {
+  return crypto.randomUUID();
+}

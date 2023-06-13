@@ -19,7 +19,11 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_applications": [{"id": 1066176000, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2022-10-03T13:14:18-04:00", "updated_at": "2022-10-03T13:14:18-04:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true}, {"id": 1066176001, "application_id": "com.example", "platform": "android", "created_at": "2022-10-03T13:14:18-04:00", "updated_at": "2022-10-03T13:14:18-04:00", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_applications": [{"id": 1066176004, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2022-02-03T16:41:51-05:00", "updated_at": "2022-02-03T16:41:51-05:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true}, {"id": 1066176005, "application_id": "com.example", "platform": "android", "created_at": "2022-02-03T16:41:51-05:00", "updated_at": "2022-02-03T16:41:51-05:00", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false}]}));
+>>>>>>> origin/isomorphic/main
 
     await MobilePlatformApplication.all({
       session: test_session,
@@ -36,7 +40,11 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"id": 1066175998, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2022-10-03T13:14:13-04:00", "updated_at": "2022-10-03T13:14:13-04:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"id": 1066176006, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2022-02-03T16:41:53-05:00", "updated_at": "2022-02-03T16:41:53-05:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true}}));
+>>>>>>> origin/isomorphic/main
 
     const mobile_platform_application = new MobilePlatformApplication({session: test_session});
     mobile_platform_application.platform = "ios";
@@ -56,7 +64,11 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_3', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"id": 1066175999, "application_id": "com.example", "platform": "android", "created_at": "2022-10-03T13:14:16-04:00", "updated_at": "2022-10-03T13:14:16-04:00", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"id": 1066176007, "application_id": "com.example", "platform": "android", "created_at": "2022-02-03T16:41:54-05:00", "updated_at": "2022-02-03T16:41:54-05:00", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false}}));
+>>>>>>> origin/isomorphic/main
 
     const mobile_platform_application = new MobilePlatformApplication({session: test_session});
     mobile_platform_application.platform = "android";
@@ -78,7 +90,11 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_4', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"id": 1066175996, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2022-10-03T13:14:05-04:00", "updated_at": "2022-10-03T13:14:05-04:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"id": 1066176008, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2022-02-03T16:41:54-05:00", "updated_at": "2022-02-03T16:41:54-05:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true}}));
+>>>>>>> origin/isomorphic/main
 
     await MobilePlatformApplication.find({
       session: test_session,
@@ -96,7 +112,11 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_5', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"application_id": "A1B2.ca.domain.app", "platform": "ios", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true, "id": 1066175997, "created_at": "2022-10-03T13:14:07-04:00", "updated_at": "2022-10-03T13:14:08-04:00"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"application_id": "A1B2.ca.domain.app", "platform": "ios", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true, "id": 1066176009, "created_at": "2022-02-03T16:41:55-05:00", "updated_at": "2022-02-03T16:41:57-05:00"}}));
+>>>>>>> origin/isomorphic/main
 
     const mobile_platform_application = new MobilePlatformApplication({session: test_session});
     mobile_platform_application.id = 1066175997;
@@ -115,12 +135,20 @@ describe('MobilePlatformApplication resource', () => {
       path: '/admin/api/2022-01/mobile_platform_applications/1066175997.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: { "mobile_platform_application": {"application_id": "A1B2.ca.domain.app", "platform": "ios", "created_at": "2022-10-03T13:14:07-04:00", "updated_at": "2022-10-03T13:14:07-04:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true} }
+=======
+      data: { "mobile_platform_application": {"id": 1066176009, "application_id": "A1B2.ca.domain.app", "platform": "ios", "created_at": "2022-02-03T16:41:55-05:00", "updated_at": "2022-02-03T16:41:55-05:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 
   it('test_6', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"application_id": "com.example.news.app", "platform": "android", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false, "id": 1066176002, "created_at": "2022-10-03T13:14:21-04:00", "updated_at": "2022-10-03T13:14:23-04:00"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"mobile_platform_application": {"application_id": "com.example.news.app", "platform": "android", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false, "id": 1066176010, "created_at": "2022-02-03T16:41:57-05:00", "updated_at": "2022-02-03T16:41:59-05:00"}}));
+>>>>>>> origin/isomorphic/main
 
     const mobile_platform_application = new MobilePlatformApplication({session: test_session});
     mobile_platform_application.id = 1066176002;
@@ -141,7 +169,11 @@ describe('MobilePlatformApplication resource', () => {
       path: '/admin/api/2022-01/mobile_platform_applications/1066176002.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: { "mobile_platform_application": {"application_id": "com.example.news.app", "platform": "android", "created_at": "2022-10-03T13:14:21-04:00", "updated_at": "2022-10-03T13:14:21-04:00", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false} }
+=======
+      data: { "mobile_platform_application": {"id": 1066176010, "application_id": "com.example.news.app", "platform": "android", "created_at": "2022-02-03T16:41:57-05:00", "updated_at": "2022-02-03T16:41:57-05:00", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 

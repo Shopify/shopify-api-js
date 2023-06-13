@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 import querystring, {ParsedUrlQueryInput} from 'querystring';
 
+=======
+>>>>>>> origin/isomorphic/main
 import {Method, StatusCode} from '@shopify/network';
 
 import {
@@ -9,10 +12,18 @@ import {
   Headers,
   Request,
   Response,
-} from '../../adapters/abstract-http';
+} from '../../runtime/http';
+import {hashStringWithSHA256} from '../../runtime/crypto';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_APP_DEV_KIT_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
+<<<<<<< HEAD
+=======
+import runningNetworkTests from '../../utils/network-tests';
+import platform from '../../utils/platform';
+import {Context, LOG_SEVERITY} from '../../context';
+import ProcessedQuery from '../../utils/processed-query';
+>>>>>>> origin/isomorphic/main
 
 import {
   DataType,
@@ -85,7 +96,7 @@ class HttpClient {
 
     const extraHeaders = params.extraHeaders ?? {};
 
-    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
+    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | ${platform()}`;
 
     if (Context.USER_AGENT_PREFIX) {
       userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
@@ -103,6 +114,7 @@ class HttpClient {
 
     let headers: Headers = {
       ...extraHeaders,
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'User-Agent': userAgent,
     };
     let body;
@@ -114,20 +126,30 @@ class HttpClient {
             body = typeof data === 'string' ? data : JSON.stringify(data);
             break;
           case DataType.URLEncoded:
+<<<<<<< HEAD
             body = typeof data === 'string' ? data : querystring.stringify(data as ParsedUrlQueryInput);
+=======
+            body =
+              typeof data === 'string'
+                ? data
+                : new URLSearchParams(data as any).toString();
+>>>>>>> origin/isomorphic/main
             break;
           case DataType.GraphQL:
             body = data as string;
             break;
         }
         headers = {
+          /* eslint-disable @typescript-eslint/naming-convention */
           'Content-Type': type,
-          'Content-Length': Buffer.byteLength(body as string).toString(),
+          'Content-Length': new TextEncoder().encode(body).length.toString(),
+          /* eslint-enable @typescript-eslint/naming-convention */
           ...extraHeaders,
         };
       }
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     const queryString = params.query ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}` : '';
 
@@ -135,8 +157,16 @@ class HttpClient {
     const options: RequestInit = {
 =======
     const url = `https://${this.domain}${this.getRequestPath(
+=======
+    let query = ProcessedQuery.stringify(params.query);
+    if (query.length > 0) {
+      query = `?${query}`;
+    }
+    const schema = runningNetworkTests() ? 'http' : 'https';
+    const url = `${schema}://${this.domain}${this.getRequestPath(
+>>>>>>> origin/isomorphic/main
       params.path,
-    )}${ProcessedQuery.stringify(params.query)}`;
+    )}${query}`;
 
     const req: Request = {
       url,
@@ -297,10 +327,7 @@ class HttpClient {
         path: req.url,
       };
 
-      const depHash = crypto
-        .createHash('md5')
-        .update(JSON.stringify(deprecation))
-        .digest('hex');
+      const depHash = await hashStringWithSHA256(JSON.stringify(deprecation));
 
       if (
         !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
@@ -309,15 +336,12 @@ class HttpClient {
       ) {
         this.LOGGED_DEPRECATIONS[depHash] = Date.now();
 
-        if (Context.LOG_FILE) {
+        if (Context.LOG_FUNCTION) {
           const stack = new Error().stack;
           const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
             deprecation,
           )}\n    Stack Trace: ${stack}\n`;
-          fs.writeFileSync(Context.LOG_FILE, log, {
-            flag: 'a',
-            encoding: 'utf-8',
-          });
+          await Context.LOG_FUNCTION(LOG_SEVERITY.Warning, log);
         } else {
           console.warn('API Deprecation Notice:', deprecation);
         }

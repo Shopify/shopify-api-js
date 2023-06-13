@@ -19,7 +19,11 @@ describe('AndroidPayKey resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/android_pay_key.test.ts
     fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811894, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv+TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM+616y8SrKwaVOSu4U8=\n"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811899, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}));
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/android_pay_key.test.ts
 
     const android_pay_key = new AndroidPayKey({session: test_session});
 
@@ -36,7 +40,11 @@ describe('AndroidPayKey resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/android_pay_key.test.ts
     fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811895, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv+TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM+616y8SrKwaVOSu4U8=\n"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"android_pay_key": {"id": 964811897, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}));
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/android_pay_key.test.ts
 
     await AndroidPayKey.find({
       session: test_session,

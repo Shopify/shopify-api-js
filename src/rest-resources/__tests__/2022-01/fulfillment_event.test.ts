@@ -19,7 +19,11 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_events": [{"id": 944956394, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-10-03T13:13:46-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-10-03T13:13:46-04:00", "updated_at": "2022-10-03T13:13:46-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956394"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_events": [{"id": 944956398, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-02-03T16:32:07-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-02-03T16:32:07-05:00", "updated_at": "2022-02-03T16:32:07-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956398"}]}));
+>>>>>>> origin/isomorphic/main
 
     await FulfillmentEvent.all({
       session: test_session,
@@ -38,7 +42,11 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_event": {"id": 944956392, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-10-03T13:13:41-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-10-03T13:13:41-04:00", "updated_at": "2022-10-03T13:13:41-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956392"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_event": {"id": 944956396, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-02-03T16:32:04-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-02-03T16:32:04-05:00", "updated_at": "2022-02-03T16:32:04-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956396"}}));
+>>>>>>> origin/isomorphic/main
 
     const fulfillment_event = new FulfillmentEvent({session: test_session});
     fulfillment_event.order_id = 450789469;
@@ -57,7 +65,11 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_3', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_event": {"id": 944956393, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-10-03T13:13:43-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-10-03T13:13:43-04:00", "updated_at": "2022-10-03T13:13:43-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956393"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"fulfillment_event": {"id": 944956395, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2022-02-03T16:31:55-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2022-02-03T16:31:55-05:00", "updated_at": "2022-02-03T16:31:55-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956395"}}));
+>>>>>>> origin/isomorphic/main
 
     await FulfillmentEvent.find({
       session: test_session,

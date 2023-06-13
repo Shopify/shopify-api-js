@@ -1,8 +1,12 @@
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
 import {
   queueMockResponse,
   queueMockResponses,
   shopify,
 } from '../../../__tests__/test-helper';
+=======
+import {ShopifyHeader} from '../../../base-types';
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestRequestReturn, PageInfo} from '../types';
 <<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
@@ -17,9 +21,9 @@ import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 =======
 import {Context} from '../../../context';
-import {setAbstractFetchFunc, Response} from '../../../adapters/abstract-http';
-import Shopify from '../../../index-node';
-import * as mockAdapter from '../../../adapters/mock-adapter';
+import {setAbstractFetchFunc, Response} from '../../../runtime/http';
+import Shopify from '../../../adapters/node';
+import * as mockAdapter from '../../../adapters/mock';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 >>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
@@ -109,7 +113,12 @@ describe('REST client', () => {
     expect({
       method: 'GET',
       domain,
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       path: `/admin/api/${shopify.config.apiVersion}/products.json?path=some_path`,
+=======
+      path: '/admin/api/unstable/products.json',
+      query: 'path=some_path',
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
     }).toMatchMadeHttpRequest();
   });
 
@@ -134,7 +143,12 @@ describe('REST client', () => {
     expect({
       method: 'POST',
       domain,
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       path: `/admin/api/${shopify.config.apiVersion}/products.json`,
+=======
+      path: '/admin/api/unstable/products.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
@@ -165,9 +179,16 @@ describe('REST client', () => {
     expect({
       method: 'POST',
       domain,
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       path: `/admin/api/${shopify.config.apiVersion}/products.json`,
       headers: {'Content-Type': DataType.URLEncoded.toString()},
       data: 'title=Test+product+%2B+something+else&amount=10',
+=======
+      path: '/admin/api/unstable/products.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
+      headers: {'Content-Type': DataType.URLEncoded.toString()},
+      data: new URLSearchParams(postData as any).toString(),
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
     }).toMatchMadeHttpRequest();
   });
 
@@ -192,7 +213,12 @@ describe('REST client', () => {
     expect({
       method: 'PUT',
       domain,
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       path: `/admin/api/${shopify.config.apiVersion}/products/123.json`,
+=======
+      path: '/admin/api/unstable/products/123.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(putData),
     }).toMatchMadeHttpRequest();
@@ -222,6 +248,7 @@ describe('REST client', () => {
     const client = new shopify.clients.Rest({session});
 
     const customHeaders: {[key: string]: string} = {
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'X-Not-A-Real-Header': 'some_value',
     };
 

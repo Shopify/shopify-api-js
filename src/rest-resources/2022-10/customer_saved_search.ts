@@ -44,6 +44,7 @@ export class CustomerSavedSearch extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/customer_saved_search.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "customer_saved_searches/count.json"},
     {"http_method": "get", "operation": "customers", "ids": ["id"], "path": "customer_saved_searches/<id>/customers.json"},
@@ -51,6 +52,15 @@ export class CustomerSavedSearch extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "customer_saved_searches.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customer_saved_searches/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "customer_saved_searches.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "customer_saved_searches.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "customer_saved_searches/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
+    {"http_method": "get", "operation": "customers", "ids": ["id"], "path": "customer_saved_searches/<id>/customers.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/customer_saved_search.ts
   ];
 
   public static async find(

@@ -19,7 +19,11 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-04/discount_code.test.ts
     fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 1054381139, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-10-03T12:22:02-04:00", "updated_at": "2022-10-03T12:22:02-04:00"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 1054381140, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-02-03T16:43:10-05:00", "updated_at": "2022-02-03T16:43:10-05:00"}}));
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/discount_code.test.ts
 
     const discount_code = new DiscountCode({session: test_session});
     discount_code.price_rule_id = 507328175;
@@ -37,7 +41,11 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-04/discount_code.test.ts
     fetchMock.mockResponseOnce(JSON.stringify({"discount_codes": [{"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_codes": [{"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-02-03T16:32:42-05:00", "updated_at": "2022-02-03T16:32:42-05:00"}]}));
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/discount_code.test.ts
 
     await DiscountCode.all({
       session: test_session,
@@ -55,7 +63,11 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_3', async () => {
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-04/discount_code.test.ts
     fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "WINTERSALE20OFF", "usage_count": 0, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:22:08-04:00"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "WINTERSALE20OFF", "usage_count": 0, "created_at": "2022-02-03T16:32:42-05:00", "updated_at": "2022-02-03T16:43:11-05:00"}}));
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/discount_code.test.ts
 
     const discount_code = new DiscountCode({session: test_session});
     discount_code.price_rule_id = 507328175;
@@ -69,12 +81,20 @@ describe('DiscountCode resource', () => {
       path: '/admin/api/2022-04/price_rules/507328175/discount_codes/507328175.json',
       query: '',
       headers,
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-04/discount_code.test.ts
       data: { "discount_code": {"code": "WINTERSALE20OFF"} }
+=======
+      data: { "discount_code": {"id": 507328175, "code": "WINTERSALE20OFF"} }
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/discount_code.test.ts
     }).toMatchMadeHttpRequest();
   });
 
   it('test_4', async () => {
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-04/discount_code.test.ts
     fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2022-02-03T16:32:42-05:00", "updated_at": "2022-02-03T16:32:42-05:00"}}));
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/discount_code.test.ts
 
     await DiscountCode.find({
       session: test_session,
@@ -129,7 +149,11 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_7', async () => {
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-04/discount_code.test.ts
     fetchMock.mockResponseOnce(JSON.stringify({"discount_code_creation": {"id": 989355119, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2022-10-03T12:22:11-04:00", "updated_at": "2022-10-03T12:22:11-04:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code_creation": {"id": 989355120, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2022-02-03T16:43:23-05:00", "updated_at": "2022-02-03T16:43:23-05:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/discount_code.test.ts
 
     const discount_code = new DiscountCode({session: test_session});
     discount_code.price_rule_id = 507328175;
@@ -148,7 +172,11 @@ describe('DiscountCode resource', () => {
   });
 
   it('test_8', async () => {
+<<<<<<< HEAD:src/rest-resources/__tests__/2022-04/discount_code.test.ts
     fetchMock.mockResponseOnce(JSON.stringify({"discount_code_creation": {"id": 173232803, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"discount_code_creation": {"id": 173232803, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2022-02-03T16:32:42-05:00", "updated_at": "2022-02-03T16:32:42-05:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
+>>>>>>> origin/isomorphic/main:src/rest-resources/__tests__/2021-07/discount_code.test.ts
 
     await DiscountCode.get_all({
       session: test_session,

@@ -56,12 +56,21 @@ export class Page extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/page.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "pages/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "pages/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "pages.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "pages/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "pages.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "pages/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "pages/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "pages/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/page.ts
   ];
 
   public static async find(

@@ -327,7 +327,7 @@
 
   ```js
   app.post('/graphql', async (req, res) => {
-    await Shopify.Utils.graphqlProxy(req, res);
+    await Shopify.Utils.graphqlProxy(req);
   });
   ```
 
@@ -335,7 +335,7 @@
 
   ```js
   app.post('/graphql', async (req, res) => {
-    const response = await Shopify.Utils.graphqlProxy(req, res);
+    const response = await Shopify.Utils.graphqlProxy(req);
     res.status(200).send(response.body);
   });
   ```

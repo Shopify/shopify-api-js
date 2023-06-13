@@ -19,7 +19,11 @@ describe('CarrierService resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"id": 1036894956, "name": "Shipping Rate Provider", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894956", "format": "json", "callback_url": "http://shipping.example.com/"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"id": 1036894963, "name": "Shipping Rate Provider", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894963", "format": "json", "callback_url": "http://shippingrateprovider.com/"}}));
+>>>>>>> origin/isomorphic/main
 
     const carrier_service = new CarrierService({session: test_session});
     carrier_service.name = "Shipping Rate Provider";
@@ -33,12 +37,20 @@ describe('CarrierService resource', () => {
       path: '/admin/api/2022-01/carrier_services.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: { "carrier_service": {"name": "Shipping Rate Provider", "callback_url": "http://shipping.example.com", "service_discovery": true} }
+=======
+      data: { "carrier_service": {"name": "Shipping Rate Provider", "callback_url": "http://shippingrateprovider.com", "service_discovery": true} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"carrier_services": [{"id": 1036894960, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894960", "format": "json", "callback_url": "http://example.com/"}, {"id": 260046840, "name": "ups_shipping", "active": true, "service_discovery": true, "carrier_service_type": "legacy", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/260046840"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"carrier_services": [{"id": 1036894965, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894965", "format": "json", "callback_url": "http://example.com/"}, {"id": 260046840, "name": "ups_shipping", "active": true, "service_discovery": true, "carrier_service_type": "legacy", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/260046840"}]}));
+>>>>>>> origin/isomorphic/main
 
     await CarrierService.all({
       session: test_session,
@@ -55,7 +67,11 @@ describe('CarrierService resource', () => {
   });
 
   it('test_3', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"active": false, "id": 1036894958, "name": "Some new name", "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894958", "format": "json", "callback_url": "http://example.com/"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"active": false, "id": 1036894964, "name": "Some new name", "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894964", "format": "json", "callback_url": "http://example.com/"}}));
+>>>>>>> origin/isomorphic/main
 
     const carrier_service = new CarrierService({session: test_session});
     carrier_service.id = 1036894958;
@@ -69,12 +85,20 @@ describe('CarrierService resource', () => {
       path: '/admin/api/2022-01/carrier_services/1036894958.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: { "carrier_service": {"name": "Some new name", "active": false} }
+=======
+      data: { "carrier_service": {"id": 1036894964, "name": "Some new name", "active": false} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 
   it('test_4', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"id": 1036894954, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894954", "format": "json", "callback_url": "http://example.com/"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"carrier_service": {"id": 1036894966, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894966", "format": "json", "callback_url": "http://example.com/"}}));
+>>>>>>> origin/isomorphic/main
 
     await CarrierService.find({
       session: test_session,

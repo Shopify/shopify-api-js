@@ -42,9 +42,15 @@ export class Refund extends Base {
   };
   protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"},
+<<<<<<< HEAD:src/rest-resources/2022-10/refund.ts
     {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/refunds/<id>.json"},
     {"http_method": "post", "operation": "calculate", "ids": ["order_id"], "path": "orders/<order_id>/refunds/calculate.json"},
     {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/refunds/<id>.json"},
+    {"http_method": "post", "operation": "calculate", "ids": ["order_id"], "path": "orders/<order_id>/refunds/calculate.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/refund.ts
   ];
 
   public static async find(

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import http from 'http';
 
 import Cookies from 'cookies';
@@ -6,6 +7,9 @@ import Cookies from 'cookies';
 =======
 import {Request, Response} from '../adapters/abstract-http';
 >>>>>>> origin/isomorphic/crypto
+=======
+import {Request} from '../runtime/http';
+>>>>>>> origin/isomorphic/main
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
@@ -13,10 +17,15 @@ import {ShopifyOAuth} from '../auth/oauth/oauth';
 import decodeSessionToken from './decode-session-token';
 
 /**
- * Finds and deletes the current user's session, based on the given request and response
+ * Finds and deletes the current user's session, based on the given request
  *
+<<<<<<< HEAD
  * @param req Current HTTP request
  * @param res Current HTTP response
+=======
+ * @param request  Current HTTP request
+ * @param isOnline Whether to load online (default) or offline sessions (optional)
+>>>>>>> origin/isomorphic/main
  */
 export default async function deleteCurrentSession(
 <<<<<<< HEAD
@@ -34,16 +43,11 @@ export default async function deleteCurrentSession(
       }
 =======
   request: Request,
-  response: Response,
   isOnline = true,
 ): Promise<boolean | never> {
   Context.throwIfUninitialized();
 
-  const sessionId = await ShopifyOAuth.getCurrentSessionId(
-    request,
-    response,
-    isOnline,
-  );
+  const sessionId = await ShopifyOAuth.getCurrentSessionId(request, isOnline);
   if (!sessionId) {
     throw new ShopifyErrors.SessionNotFound('No active session found.');
   }

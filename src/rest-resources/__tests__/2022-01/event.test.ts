@@ -19,7 +19,11 @@ describe('Event resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 365755215, "subject_id": 632910392, "created_at": "2008-01-10T07:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Nano - 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/632910392\">IPod Nano - 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Nano - 8GB.", "path": "/admin/products/632910392"}, {"id": 677313116, "subject_id": 921728736, "created_at": "2008-01-10T08:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Touch 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/921728736\">IPod Touch 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Touch 8GB.", "path": "/admin/products/921728736"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 164748010, "subject_id": 450789469, "created_at": "2008-01-10T06:00:00-05:00", "subject_type": "Order", "verb": "confirmed", "arguments": ["#1001", "Bob Norman"], "body": null, "message": "Received new order <a href=\"https://jsmith.myshopify.com/admin/orders/450789469\">#1001</a> by Bob Norman.", "author": "Shopify", "description": "Received new order #1001 by Bob Norman.", "path": "/admin/orders/450789469"}, {"id": 365755215, "subject_id": 632910392, "created_at": "2008-01-10T07:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Nano - 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/632910392\">IPod Nano - 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Nano - 8GB.", "path": "/admin/products/632910392"}, {"id": 677313116, "subject_id": 921728736, "created_at": "2008-01-10T08:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Touch 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/921728736\">IPod Touch 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Touch 8GB.", "path": "/admin/products/921728736"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Event.all({
       session: test_session,
@@ -37,7 +41,11 @@ describe('Event resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"events": []}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 677313116, "subject_id": 921728736, "created_at": "2008-01-10T08:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Touch 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/921728736\">IPod Touch 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Touch 8GB.", "path": "/admin/products/921728736"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Event.all({
       session: test_session,
@@ -56,7 +64,11 @@ describe('Event resource', () => {
   });
 
   it('test_3', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 164748010, "subject_id": 450789469, "created_at": "2008-01-10T06:00:00-05:00", "subject_type": "Order", "verb": "confirmed", "arguments": ["#1001", "Bob Norman"], "body": null, "message": "Received new order <a href=\"https://jsmith.myshopify.com/admin/orders/450789469\">#1001</a> by Bob Norman.", "author": "Shopify", "description": "Received new order #1001 by Bob Norman.", "path": "/admin/orders/450789469"}, {"id": 365755215, "subject_id": 632910392, "created_at": "2008-01-10T07:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Nano - 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/632910392\">IPod Nano - 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Nano - 8GB.", "path": "/admin/products/632910392"}, {"id": 677313116, "subject_id": 921728736, "created_at": "2008-01-10T08:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Touch 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/921728736\">IPod Touch 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Touch 8GB.", "path": "/admin/products/921728736"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 103105390, "subject_id": 450789469, "created_at": "2008-01-10T05:00:00-05:00", "subject_type": "Order", "verb": "authorization_success", "arguments": ["389404469", "210.94", "USD"], "body": null, "message": "A transaction was authorized.", "author": "Shopify", "description": "A transaction was authorized.", "path": "/admin/orders/450789469"}, {"id": 164748010, "subject_id": 450789469, "created_at": "2008-01-10T06:00:00-05:00", "subject_type": "Order", "verb": "confirmed", "arguments": ["#1001", "Bob Norman"], "body": null, "message": "Received new order <a href=\"https://jsmith.myshopify.com/admin/orders/450789469\">#1001</a> by Bob Norman.", "author": "Shopify", "description": "Received new order #1001 by Bob Norman.", "path": "/admin/orders/450789469"}, {"id": 852065041, "subject_id": 450789469, "created_at": "2008-01-10T09:00:00-05:00", "subject_type": "Order", "verb": "placed", "arguments": [], "body": null, "message": "This order was created for Bob Norman from draft order <a href=\"https://jsmith.myshopify.com/admin/draft_orders/72885271\">#D4</a>.", "author": "Shopify", "description": "This order was created for Bob Norman from draft order #D4.", "path": "/admin/orders/450789469"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Event.all({
       session: test_session,
@@ -93,7 +105,11 @@ describe('Event resource', () => {
   });
 
   it('test_5', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 103105390, "subject_id": 450789469, "created_at": "2008-01-10T05:00:00-05:00", "subject_type": "Order", "verb": "authorization_success", "arguments": ["389404469", "210.94", "USD"], "body": null, "message": "A transaction was authorized.", "author": "Shopify", "description": "A transaction was authorized.", "path": "/admin/orders/450789469"}, {"id": 164748010, "subject_id": 450789469, "created_at": "2008-01-10T06:00:00-05:00", "subject_type": "Order", "verb": "confirmed", "arguments": ["#1001", "Bob Norman"], "body": null, "message": "Received new order <a href=\"https://jsmith.myshopify.com/admin/orders/450789469\">#1001</a> by Bob Norman.", "author": "Shopify", "description": "Received new order #1001 by Bob Norman.", "path": "/admin/orders/450789469"}, {"id": 852065041, "subject_id": 450789469, "created_at": "2008-01-10T09:00:00-05:00", "subject_type": "Order", "verb": "placed", "arguments": [], "body": null, "message": "This order was created for Bob Norman from draft order <a href=\"https://jsmith.myshopify.com/admin/draft_orders/72885271\">#D4</a>.", "author": "Shopify", "description": "This order was created for Bob Norman from draft order #D4.", "path": "/admin/orders/450789469"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 677313116, "subject_id": 921728736, "created_at": "2008-01-10T08:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Touch 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/921728736\">IPod Touch 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Touch 8GB.", "path": "/admin/products/921728736"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Event.all({
       session: test_session,
@@ -111,6 +127,27 @@ describe('Event resource', () => {
   });
 
   it('test_6', async () => {
+<<<<<<< HEAD
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 365755215, "subject_id": 632910392, "created_at": "2008-01-10T07:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Nano - 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/632910392\">IPod Nano - 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Nano - 8GB.", "path": "/admin/products/632910392"}, {"id": 677313116, "subject_id": 921728736, "created_at": "2008-01-10T08:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Touch 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/921728736\">IPod Touch 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Touch 8GB.", "path": "/admin/products/921728736"}]}));
+
+    await Event.all({
+      session: test_session,
+      since_id: "164748010",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/events.json',
+      query: 'since_id=164748010',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_7', async () => {
+>>>>>>> origin/isomorphic/main
     fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 164748010, "subject_id": 450789469, "created_at": "2008-01-10T06:00:00-05:00", "subject_type": "Order", "verb": "confirmed", "arguments": ["#1001", "Bob Norman"], "body": null, "message": "Received new order <a href=\"https://jsmith.myshopify.com/admin/orders/450789469\">#1001</a> by Bob Norman.", "author": "Shopify", "description": "Received new order #1001 by Bob Norman.", "path": "/admin/orders/450789469"}, {"id": 365755215, "subject_id": 632910392, "created_at": "2008-01-10T07:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Nano - 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/632910392\">IPod Nano - 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Nano - 8GB.", "path": "/admin/products/632910392"}, {"id": 677313116, "subject_id": 921728736, "created_at": "2008-01-10T08:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Touch 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/921728736\">IPod Touch 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Touch 8GB.", "path": "/admin/products/921728736"}]}));
 
     await Event.all({
@@ -128,8 +165,13 @@ describe('Event resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_7', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"events": [{"id": 677313116, "subject_id": 921728736, "created_at": "2008-01-10T08:00:00-05:00", "subject_type": "Product", "verb": "create", "arguments": ["IPod Touch 8GB"], "body": null, "message": "Product was created: <a href=\"https://jsmith.myshopify.com/admin/products/921728736\">IPod Touch 8GB</a>.", "author": "Shopify", "description": "Product was created: IPod Touch 8GB.", "path": "/admin/products/921728736"}]}));
+=======
+  it('test_8', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"events": []}));
+>>>>>>> origin/isomorphic/main
 
     await Event.all({
       session: test_session,
@@ -183,6 +225,7 @@ describe('Event resource', () => {
   });
 
   it('test_10', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"count": 3}));
 
     await Event.count({
@@ -200,6 +243,8 @@ describe('Event resource', () => {
   });
 
   it('test_11', async () => {
+=======
+>>>>>>> origin/isomorphic/main
     fetchMock.mockResponseOnce(JSON.stringify({"count": 1}));
 
     await Event.count({
@@ -217,4 +262,24 @@ describe('Event resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
+=======
+  it('test_11', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"count": 3}));
+
+    await Event.count({
+      session: test_session,
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/events/count.json',
+      query: '',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+>>>>>>> origin/isomorphic/main
 });

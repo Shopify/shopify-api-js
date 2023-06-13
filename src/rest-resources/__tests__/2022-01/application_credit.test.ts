@@ -19,7 +19,29 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636125, "amount": "5.00", "description": "application credit for refund", "test": true}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636133, "amount": "5.00", "description": "application credit for refund", "test": null}}));
+
+    const application_credit = new ApplicationCredit({session: test_session});
+    application_credit.description = "application credit for refund";
+    application_credit.amount = 5.0;
+    await application_credit.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-01/application_credits.json',
+      query: '',
+      headers,
+      data: { "application_credit": {"description": "application credit for refund", "amount": 5.0} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_2', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"application_credit": {"id": 1031636134, "amount": "5.00", "description": "application credit for refund", "test": true}}));
+>>>>>>> origin/isomorphic/main
 
     const application_credit = new ApplicationCredit({session: test_session});
     application_credit.description = "application credit for refund";
@@ -34,6 +56,7 @@ describe('ApplicationCredit resource', () => {
       query: '',
       headers,
       data: { "application_credit": {"description": "application credit for refund", "amount": 5.0, "test": true} }
+<<<<<<< HEAD
     }).toMatchMadeHttpRequest();
   });
 
@@ -52,6 +75,8 @@ describe('ApplicationCredit resource', () => {
       query: '',
       headers,
       data: { "application_credit": {"description": "application credit for refund", "amount": 5.0} }
+=======
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 

@@ -1,5 +1,3 @@
-import crypto from 'crypto';
-
 import * as ShopifyErrors from '../error';
 
 /**
@@ -12,6 +10,7 @@ export default function safeCompare(
   a: string | { [key: string]: string; } | Array<string | number>,
   b: string | { [key: string]: string; } | Array<string | number>,
 ): boolean {
+<<<<<<< HEAD
   if (typeof a === typeof b) {
     let buffA: Buffer;
     let buffB: Buffer;
@@ -23,9 +22,15 @@ export default function safeCompare(
       buffA = Buffer.from(a);
       buffB = Buffer.from(b);
     }
+=======
+  if (typeof strA === typeof strB) {
+    const enc = new TextEncoder();
+    const buffA = enc.encode(JSON.stringify(strA));
+    const buffB = enc.encode(JSON.stringify(strB));
+>>>>>>> origin/isomorphic/main
 
     if (buffA.length === buffB.length) {
-      return crypto.timingSafeEqual(buffA, buffB);
+      return timingSafeEqual(buffA, buffB);
     }
   } else {
     throw new ShopifyErrors.SafeCompareError(
@@ -33,4 +38,15 @@ export default function safeCompare(
     );
   }
   return false;
+}
+
+// Buffer must be same length for this function to be secure.
+function timingSafeEqual(bufA: ArrayBuffer, bufB: ArrayBuffer): boolean {
+  const viewA = new Uint8Array(bufA);
+  const viewB = new Uint8Array(bufB);
+  let out = 0;
+  for (let i = 0; i < viewA.length; i++) {
+    out |= viewA[i] ^ viewB[i];
+  }
+  return out === 0;
 }

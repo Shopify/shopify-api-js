@@ -71,6 +71,7 @@ export class Article extends Base {
     "metafields": Metafield
   };
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/article.ts
     {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
     {"http_method": "get", "operation": "authors", "ids": [], "path": "articles/authors.json"},
     {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
@@ -80,6 +81,17 @@ export class Article extends Base {
     {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
     {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
     {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
+    {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
+    {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "get", "operation": "authors", "ids": [], "path": "articles/authors.json"},
+    {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
+    {"http_method": "get", "operation": "tags", "ids": [], "path": "articles/tags.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/article.ts
   ];
 
   public static async find(
@@ -145,6 +157,36 @@ export class Article extends Base {
     return response as Article[];
   }
 
+<<<<<<< HEAD:src/rest-resources/2022-10/article.ts
+=======
+  public static async count(
+    {
+      session,
+      blog_id = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      published_at_min = null,
+      published_at_max = null,
+      published_status = null,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
+    const response = await Article.request({
+      http_method: "get",
+      operation: "count",
+      session: session,
+      urlIds: {"blog_id": blog_id},
+      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/article.ts
   public static async authors(
     {
       session,

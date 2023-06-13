@@ -1,6 +1,6 @@
 import querystring from 'querystring';
-import fs from 'fs';
 
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
 import {HttpClient} from '../http_client';
 import {DataType, HeaderParams, RequestReturn} from '../../types';
 import * as ShopifyErrors from '../../../error';
@@ -9,16 +9,35 @@ import {Context} from '../../../context';
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
 const logFilePath = `${process.cwd()}/src/clients/http_client/__tests__/test_logs.txt`;
+=======
+import Shopify from '../../../adapters/node';
+import {setAbstractFetchFunc, Response, Headers} from '../../../runtime/http';
+import * as mockAdapter from '../../../adapters/mock';
+import {Context} from '../../../context';
+import {DataType} from '../types';
+import {HttpClient} from '../http_client';
+import {LogSeverity} from '../../../base-types';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
+
+const domain = 'test-shop.myshopify.io';
+const successResponseBody = JSON.stringify({
+  message: 'Your HTTP request was successful!',
+});
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
 
 const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
   beforeEach(() => {
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
     fs.writeFileSync(logFilePath, '');
+=======
+    mockAdapter.reset();
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
   });
 
   afterAll(() => {
     setRestClientRetryTime(originalRetryTime);
-    fs.writeFileSync(logFilePath, '');
   });
 
   it('validates the given domain', () => {
@@ -61,6 +80,7 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
@@ -89,6 +109,7 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
@@ -138,8 +159,9 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: querystring.stringify(postData),
+      data: new URLSearchParams(postData as any).toString(),
     }).toMatchMadeHttpRequest();
   });
 
@@ -166,6 +188,7 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.URLEncoded.toString()},
       data: querystring.stringify(postData),
     }).toMatchMadeHttpRequest();
@@ -202,6 +225,7 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.GraphQL.toString()},
       data: graphqlQuery,
     }).toMatchMadeHttpRequest();
@@ -230,6 +254,7 @@ describe('HTTP client', () => {
       method: 'PUT',
       domain,
       path: '/url/path/123',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(putData),
     }).toMatchMadeHttpRequest();
@@ -286,16 +311,31 @@ describe('HTTP client', () => {
     fetchMock.mockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
         {status: 403, statusText, headers: {'x-request-id': requestId}},
+=======
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
+        {statusCode: 403, statusText, headers: {'x-request-id': requestId}},
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
       ],
       [JSON.stringify({}), {status: 404, statusText, headers: {}}],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
         {status: 429, statusText, headers: {'x-request-id': requestId}},
       ],
       [
         JSON.stringify({}),
         {status: 500, statusText, headers: {'x-request-id': requestId}},
+=======
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
+        {statusCode: 429, statusText, headers: {'x-request-id': requestId}},
+      ],
+      [
+        JSON.stringify({}),
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
+        {statusCode: 500, statusText, headers: {'x-request-id': requestId}},
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
       ],
     );
 
@@ -304,14 +344,26 @@ describe('HTTP client', () => {
     await testErrorResponse(429, ShopifyErrors.HttpThrottlingError, true);
     await testErrorResponse(500, ShopifyErrors.HttpInternalError, true);
 
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
     fetchMock.mockRejectOnce(() => Promise.reject());
     await testErrorResponse(null, ShopifyErrors.HttpRequestError, false);
+=======
+    class MyError extends Error {
+      constructor(...args: any) {
+        super(...args);
+        Object.setPrototypeOf(this, new.target.prototype);
+      }
+    }
+    mockAdapter.queueError(new MyError());
+    await testErrorResponse(null, MyError, false);
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
   });
 
   it('allows custom headers', async () => {
     const client = new HttpClient(domain);
 
     const customHeaders = {
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'X-Not-A-Real-Header': 'some_value',
     };
 
@@ -331,8 +383,14 @@ describe('HTTP client', () => {
   it('extends User-Agent if it is provided', async () => {
     const client = new HttpClient(domain);
 
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
     let customHeaders: HeaderParams = {'User-Agent': 'My agent'};
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+=======
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
+    let customHeaders: Headers = {'User-Agent': 'My agent'};
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
@@ -342,12 +400,14 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         'User-Agent': expect.stringContaining(
           'My agent | Shopify API Library v',
         ),
       },
     }).toMatchMadeHttpRequest();
 
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
     customHeaders = {'user-agent': 'My lowercase agent'};
 
     fetchMock.mockResponseOnce(buildMockResponse(successResponse));
@@ -360,6 +420,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         'User-Agent': expect.stringContaining(
           'My lowercase agent | Shopify API Library v',
         ),
@@ -386,13 +447,19 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         'User-Agent': expect.stringContaining(
           'Context Agent | Shopify API Library v',
         ),
       },
     }).toMatchMadeHttpRequest();
 
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
     const customHeaders: HeaderParams = {'User-Agent': 'Headers Agent'};
+=======
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
+    const customHeaders: Headers = {'User-Agent': 'Headers Agent'};
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
@@ -402,6 +469,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         'User-Agent': expect.stringContaining(
           'Headers Agent | Context Agent | Shopify API Library v',
         ),
@@ -521,6 +589,7 @@ describe('HTTP client', () => {
         {
           status: 429,
           statusText: 'Did not work',
+          /* eslint-disable-next-line @typescript-eslint/naming-convention */
           headers: {'Retry-After': realWaitTime.toString()},
         },
       ],
@@ -558,6 +627,7 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
+            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -573,6 +643,7 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
+            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -613,6 +684,7 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
+            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -625,6 +697,7 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
+            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -637,6 +710,7 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
+            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -661,7 +735,10 @@ describe('HTTP client', () => {
   });
 
   it('writes deprecation notices to log file if one is specified in Context', async () => {
-    Context.LOG_FILE = logFilePath;
+    const logs: [LogSeverity, string][] = [];
+    Context.LOG_FUNCTION = async (sev, msg) => {
+      logs.push([sev, msg]);
+    };
     Context.initialize(Context);
 
     const client = new HttpClient(domain);
@@ -673,6 +750,7 @@ describe('HTTP client', () => {
       {
         status: 200,
         headers: {
+          /* eslint-disable-next-line @typescript-eslint/naming-convention */
           'X-Shopify-API-Deprecated-Reason':
             'This API endpoint has been deprecated',
         },
@@ -681,17 +759,11 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    // open and read test log file
-    const fileContent = fs.readFileSync(logFilePath, {
-      encoding: 'utf-8',
-      flag: 'r',
-    });
-
-    expect(fileContent).toContain('API Deprecation Notice');
-    expect(fileContent).toContain(
+    expect(logs[0][1]).toContain('API Deprecation Notice');
+    expect(logs[0][1]).toContain(
       ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
     );
-    expect(fileContent).toContain(`Stack Trace: Error:`);
+    expect(logs[0][1]).toContain(`Stack Trace: Error`);
   });
 
   it('properly encodes strings in the error message', async () => {

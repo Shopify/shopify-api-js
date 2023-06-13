@@ -51,12 +51,21 @@ export class CustomCollection extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/custom_collection.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "custom_collections/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "custom_collections/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "custom_collections.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "custom_collections/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "custom_collections.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "custom_collections/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "custom_collections.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "custom_collections.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "custom_collections/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "custom_collections/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "custom_collections/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "custom_collections/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/custom_collection.ts
   ];
 
   public static async find(

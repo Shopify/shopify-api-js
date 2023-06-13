@@ -52,6 +52,7 @@ interface SetArgs {
 export class InventoryLevel extends Base {
   public static apiVersion = ApiVersion.April23;
 
+<<<<<<< HEAD:rest/admin/2023-04/inventory_level.ts
   protected static resourceName = 'inventory_level';
   protected static pluralName = 'inventory_levels';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -60,6 +61,16 @@ export class InventoryLevel extends Base {
     {"http_method": "delete", "operation": "delete", "ids": [], "path": "inventory_levels.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_levels.json"},
     {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
+=======
+  protected static NAME = 'inventory_level';
+  protected static PLURAL_NAME = 'inventory_levels';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_levels.json"},
+    {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
+    {"http_method": "delete", "operation": "delete", "ids": [], "path": "inventory_levels.json"},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/inventory_level.ts
     {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
     {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
   ];

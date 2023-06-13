@@ -19,7 +19,11 @@ describe('StorefrontAccessToken resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"storefront_access_token": {"access_token": "45ca0032e77093b648d94244e45fab27", "access_scope": "unauthenticated_read_product_listings", "created_at": "2022-10-03T13:03:45-04:00", "id": 1003303990, "admin_graphql_api_id": "gid://shopify/StorefrontAccessToken/1003303990", "title": "Test"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"storefront_access_token": {"access_token": "0db00803dd4e5b98676e060f7997d07f", "access_scope": "unauthenticated_read_product_listings", "created_at": "2022-02-03T17:16:52-05:00", "id": 1003304191, "admin_graphql_api_id": "gid://shopify/StorefrontAccessToken/1003304191", "title": "Test"}}));
+>>>>>>> origin/isomorphic/main
 
     const storefront_access_token = new StorefrontAccessToken({session: test_session});
     storefront_access_token.title = "Test";
@@ -36,7 +40,11 @@ describe('StorefrontAccessToken resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"storefront_access_tokens": [{"access_token": "378d95641257a4ab3feff967ee234f4d", "access_scope": "unauthenticated_read_product_listings", "created_at": "2022-10-03T12:44:45-04:00", "id": 755357713, "admin_graphql_api_id": "gid://shopify/StorefrontAccessToken/755357713", "title": "API Client Extension"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"storefront_access_tokens": [{"access_token": "378d95641257a4ab3feff967ee234f4d", "access_scope": "unauthenticated_read_product_listings", "created_at": "2022-02-03T17:14:40-05:00", "id": 755357713, "admin_graphql_api_id": "gid://shopify/StorefrontAccessToken/755357713", "title": "API Client Extension"}]}));
+>>>>>>> origin/isomorphic/main
 
     await StorefrontAccessToken.all({
       session: test_session,

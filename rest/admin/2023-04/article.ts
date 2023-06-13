@@ -71,6 +71,7 @@ interface TagsArgs {
 export class Article extends Base {
   public static apiVersion = ApiVersion.April23;
 
+<<<<<<< HEAD:rest/admin/2023-04/article.ts
   protected static resourceName = 'article';
   protected static pluralName = 'articles';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -87,6 +88,24 @@ export class Article extends Base {
     {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
     {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
     {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"}
+=======
+  protected static NAME = 'article';
+  protected static PLURAL_NAME = 'articles';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
+    "metafields": Metafield
+  };
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
+    {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
+    {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
+    {"http_method": "get", "operation": "authors", "ids": [], "path": "articles/authors.json"},
+    {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
+    {"http_method": "get", "operation": "tags", "ids": [], "path": "articles/tags.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/article.ts
   ];
 
   public static async find(
@@ -191,6 +210,28 @@ export class Article extends Base {
       session: session,
       urlIds: {"blog_id": blog_id},
       params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
+<<<<<<< HEAD:rest/admin/2023-04/article.ts
+=======
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public static async authors(
+    {
+      session,
+      ...otherArgs
+    }: AuthorsArgs
+  ): Promise<unknown> {
+    const response = await Article.request({
+      http_method: "get",
+      operation: "authors",
+      session: session,
+      urlIds: {},
+      params: {...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/article.ts
       body: {},
       entity: null,
     });

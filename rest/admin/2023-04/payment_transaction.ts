@@ -28,6 +28,7 @@ interface TransactionsArgs {
 export class PaymentTransaction extends Base {
   public static apiVersion = ApiVersion.April23;
 
+<<<<<<< HEAD:rest/admin/2023-04/payment_transaction.ts
   protected static resourceName = 'payment_transaction';
   protected static pluralName = 'payment_transactions';
   protected static hasOne: {[key: string]: typeof Base} = {
@@ -35,6 +36,15 @@ export class PaymentTransaction extends Base {
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+=======
+  protected static NAME = 'payment_transaction';
+  protected static PLURAL_NAME = 'payment_transactions';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
+    "currency": Currency
+  };
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/payment_transaction.ts
     {"http_method": "get", "operation": "transactions", "ids": [], "path": "shopify_payments/balance/transactions.json"}
   ];
 

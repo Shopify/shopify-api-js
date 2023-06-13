@@ -25,9 +25,15 @@ export class ApplicationCredit extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-04/application_credit.ts
     {"http_method": "get", "operation": "get", "ids": [], "path": "application_credits.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_credits/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_credits.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": [], "path": "application_credits.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "application_credits.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_credits/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/application_credit.ts
   ];
 
   public static async find(

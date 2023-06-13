@@ -1,9 +1,9 @@
 import {ShopifyHeader} from '../../../base-types';
 import {GraphqlClient} from '../graphql_client';
 import {Context} from '../../../context';
-import {setAbstractFetchFunc, Response} from '../../../adapters/abstract-http';
-import Shopify from '../../../index-node';
-import * as mockAdapter from '../../../adapters/mock-adapter';
+import {setAbstractFetchFunc, Response} from '../../../runtime/http';
+import Shopify from '../../../adapters/node';
+import * as mockAdapter from '../../../adapters/mock';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -43,6 +43,7 @@ describe('GraphQL client', () => {
   it('merges custom headers with default', async () => {
     const client: GraphqlClient = new GraphqlClient(DOMAIN, 'bork');
     const customHeader: {[key: string]: string} = {
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'X-Glib-Glob': 'goobers',
     };
 
@@ -137,9 +138,11 @@ describe('GraphQL client', () => {
       domain: DOMAIN,
       path: '/admin/api/unstable/graphql.json',
       headers: {
+        /* eslint-disable @typescript-eslint/naming-convention */
         'Content-Length': '219',
         'Content-Type': 'application/json',
         'X-Shopify-Access-Token': 'bork',
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
       data: JSON.stringify(queryWithVariables),
     }).toMatchMadeHttpRequest();

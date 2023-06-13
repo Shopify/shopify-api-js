@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 // import fetch from 'node-fetch';
 import { StatusCode } from '@shopify/network';
 import { GraphqlClient } from '../clients/graphql/graphql_client';
@@ -8,8 +9,12 @@ import { createHmac } from 'crypto';
 import {createHmac} from 'crypto';
 import type {IncomingMessage, ServerResponse} from 'http';
 
+=======
+>>>>>>> origin/isomorphic/main
 import {StatusCode} from '@shopify/network';
 
+import {Request, Response, flatHeaders} from '../runtime/http';
+import {createSHA256HMAC} from '../runtime/crypto';
 import {GraphqlClient} from '../clients/graphql/graphql_client';
 import {ApiVersion, ShopifyHeader} from '../base-types';
 >>>>>>> origin/isomorphic/crypto
@@ -84,10 +89,14 @@ interface RegistryInterface {
    * @param response HTTP response to the request
    */
 <<<<<<< HEAD
+<<<<<<< HEAD
   process(options: ProcessOptions): ProcessReturn,
 =======
   process(request: IncomingMessage, response: ServerResponse): Promise<void>;
 >>>>>>> origin/isomorphic/crypto
+=======
+  process(request: Request, response: Response): Promise<void>;
+>>>>>>> origin/isomorphic/main
 
   /**
    * Confirms that the given path is a webhook path
@@ -300,6 +309,7 @@ const WebhooksRegistry: RegistryInterface = {
   },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   process({ headers, body }: ProcessOptions): ProcessReturn {
     let hmac: string | undefined;
     let topic: string | undefined;
@@ -323,23 +333,94 @@ const WebhooksRegistry: RegistryInterface = {
     response: ServerResponse,
   ): Promise<void> {
     let reqBody = '';
+=======
+  async process(request: Request, response: Response): Promise<void> {
+    const reqBody = request.body;
+>>>>>>> origin/isomorphic/main
 
-    const promise: Promise<void> = new Promise((resolve, reject) => {
-      request.on('data', (chunk) => {
-        reqBody += chunk;
-      });
+    if (!reqBody) {
+      response.statusCode = StatusCode.BadRequest;
+      throw new ShopifyErrors.InvalidWebhookError(
+        'No body was received when processing webhook',
+      );
+    }
 
-      request.on('end', async () => {
-        if (!reqBody.length) {
-          response.writeHead(StatusCode.BadRequest);
-          response.end();
-          return reject(
-            new ShopifyErrors.InvalidWebhookError(
-              'No body was received when processing webhook',
-            ),
+    let hmac: string | undefined;
+    let topic: string | undefined;
+    let domain: string | undefined;
+    for (const [header, value] of flatHeaders(request.headers)) {
+      switch (header.toLowerCase()) {
+        case ShopifyHeader.Hmac.toLowerCase():
+          hmac = value;
+          break;
+        case ShopifyHeader.Topic.toLowerCase():
+          topic = value;
+          break;
+        case ShopifyHeader.Domain.toLowerCase():
+          domain = value;
+          break;
+      }
+    }
+
+    const missingHeaders = [];
+    if (!hmac) {
+      missingHeaders.push(ShopifyHeader.Hmac);
+    }
+    if (!topic) {
+      missingHeaders.push(ShopifyHeader.Topic);
+    }
+    if (!domain) {
+      missingHeaders.push(ShopifyHeader.Domain);
+    }
+
+    if (missingHeaders.length > 0) {
+      response.statusCode = StatusCode.BadRequest;
+      throw new ShopifyErrors.InvalidWebhookError(
+        `Missing one or more of the required HTTP headers to process webhooks: [${missingHeaders.join(
+          ', ',
+        )}]`,
+      );
+    }
+
+    let statusCode: StatusCode | undefined;
+    let responseError: Error | undefined;
+    const headers = {};
+
+    const generatedHash = await createSHA256HMAC(
+      Context.API_SECRET_KEY,
+      reqBody,
+    );
+
+    if (ShopifyUtilities.safeCompare(generatedHash, hmac as string)) {
+      const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
+      const webhookEntry = WebhooksRegistry.getHandler(graphqlTopic);
+
+      if (webhookEntry) {
+        try {
+          await webhookEntry.webhookHandler(
+            graphqlTopic,
+            domain as string,
+            reqBody,
           );
+          statusCode = StatusCode.Ok;
+        } catch (error) {
+          statusCode = StatusCode.InternalServerError;
+          responseError = error;
         }
+      } else {
+        statusCode = StatusCode.Forbidden;
+        responseError = new ShopifyErrors.InvalidWebhookError(
+          `No webhook is registered for topic ${topic}`,
+        );
+      }
+    } else {
+      statusCode = StatusCode.Forbidden;
+      responseError = new ShopifyErrors.InvalidWebhookError(
+        `Could not validate request for topic ${topic}`,
+      );
+    }
 
+<<<<<<< HEAD
         let hmac: string | string[] | undefined;
         let topic: string | string[] | undefined;
         let domain: string | string[] | undefined;
@@ -428,6 +509,13 @@ const WebhooksRegistry: RegistryInterface = {
     });
 
     return promise;
+=======
+    response.statusCode = statusCode;
+    response.headers = headers;
+    if (responseError) {
+      throw responseError;
+    }
+>>>>>>> origin/isomorphic/main
   },
 
   isWebhookPath(path: string): boolean {

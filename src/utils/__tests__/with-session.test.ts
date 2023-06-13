@@ -1,12 +1,12 @@
-import jwt from 'jsonwebtoken';
-
 import {
   setAbstractFetchFunc,
   Request,
   Response,
-} from '../../adapters/abstract-http';
-import Shopify from '../../index-node';
-import * as mockAdapter from '../../adapters/mock-adapter';
+  Cookies,
+  Headers,
+} from '../../runtime/http';
+import Shopify from '../../adapters/node';
+import * as mockAdapter from '../../adapters/mock';
 import {Session} from '../../auth/session';
 import OAuth, {ShopifyOAuth} from '../../auth/oauth';
 import withSession from '../with-session';
@@ -14,6 +14,7 @@ import {Context} from '../../context';
 import {RestWithSession, GraphqlWithSession} from '../types';
 import {RestClient} from '../../clients/rest';
 import {GraphqlClient} from '../../clients/graphql';
+import {signJWT} from '../setup-jest';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -47,13 +48,12 @@ describe('withSession', () => {
 
   it('throws an error when there is no session matching the params requested', async () => {
     const req = {} as Request;
-    const res = {} as Response;
 
     await expect(
       withSession({clientType: 'rest', isOnline: false, shop}),
     ).rejects.toThrow(Shopify.Errors.SessionNotFound);
     await expect(
-      withSession({clientType: 'graphql', isOnline: true, req, res}),
+      withSession({clientType: 'graphql', isOnline: true, req}),
     ).rejects.toThrowError(Shopify.Errors.SessionNotFound);
   });
 
@@ -104,17 +104,16 @@ describe('withSession', () => {
     await Context.SESSION_STORAGE.storeSession(session);
 
     const req = {
-      headers: {
-        Cookie: `${Shopify.Auth.SESSION_COOKIE_NAME}=${sessionId}`,
-      },
+      headers: await createSessionCookieHeader(
+        sessionId,
+        Context.API_SECRET_KEY,
+      ),
     } as any as Request;
-    const res = {} as Response;
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',
       isOnline: true,
       req,
-      res,
     })) as RestWithSession;
 
     expect(restRequestCtx).toBeDefined();
@@ -125,7 +124,6 @@ describe('withSession', () => {
       clientType: 'graphql',
       isOnline: true,
       req,
-      res,
     })) as GraphqlWithSession;
 
     expect(gqlRequestCtx).toBeDefined();
@@ -155,21 +153,17 @@ describe('withSession', () => {
       sid: 'abc123',
     };
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
 
     const restRequestCtx = (await withSession({
       clientType: 'rest',
       isOnline: true,
       req,
-      res,
     })) as RestWithSession;
 
     expect(restRequestCtx).toBeDefined();
@@ -180,7 +174,6 @@ describe('withSession', () => {
       clientType: 'graphql',
       isOnline: true,
       req,
-      res,
     })) as GraphqlWithSession;
 
     expect(gqlRequestCtx).toBeDefined();
@@ -188,3 +181,19 @@ describe('withSession', () => {
     expect(gqlRequestCtx.client).toBeInstanceOf(GraphqlClient);
   });
 });
+
+async function createSessionCookieHeader(
+  sessionId: string,
+  key: string,
+): Promise<Headers> {
+  const req = {} as Request;
+  const res = {} as Response;
+  const cookies = new Cookies(req, res, {keys: [key]});
+  await cookies.setAndSign(Shopify.Auth.SESSION_COOKIE_NAME, sessionId);
+
+  return {
+    Cookie: Object.values(cookies.outgoingCookieJar)
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join(','),
+  };
+}

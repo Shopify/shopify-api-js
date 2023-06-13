@@ -34,11 +34,19 @@ export class Report extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/report.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "reports/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "reports.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "reports/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "reports.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "reports/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "reports.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "reports.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "reports/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "reports/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "reports/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/report.ts
   ];
 
   public static async find(

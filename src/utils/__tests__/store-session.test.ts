@@ -1,20 +1,15 @@
-import jwt from 'jsonwebtoken';
-
-import {
-  setAbstractFetchFunc,
-  Request,
-  Response,
-} from '../../adapters/abstract-http';
-import * as mockAdapter from '../../adapters/mock-adapter';
+import {setAbstractFetchFunc, Request} from '../../runtime/http';
+import * as mockAdapter from '../../adapters/mock';
 import {Session} from '../../auth/session';
 import {Context} from '../../context';
 import loadCurrentSession from '../load-current-session';
 import storeSession from '../store-session';
+import {signJWT} from '../setup-jest';
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
 describe('storeSession', () => {
-  it('can store the current session after a change', async () => {
+  it.only('can store the current session after a change', async () => {
     const jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
@@ -30,15 +25,12 @@ describe('storeSession', () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
 
     const session = new Session(
       `test-shop.myshopify.io_${jwtPayload.sub}`,
@@ -48,13 +40,13 @@ describe('storeSession', () => {
     );
     await storeSession(session);
 
-    let loadedSession = await loadCurrentSession(req, res);
+    let loadedSession = await loadCurrentSession(req);
     expect(loadedSession).toEqual(session);
 
     session.state = 'new_state';
     await storeSession(session);
 
-    loadedSession = await loadCurrentSession(req, res);
+    loadedSession = await loadCurrentSession(req);
     expect(loadedSession).toEqual(session);
   });
 });

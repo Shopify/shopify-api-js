@@ -20,6 +20,7 @@ interface FindArgs {
   id: number | string;
   fields?: unknown;
 }
+<<<<<<< HEAD:rest/admin/2022-04/customer.ts
 interface DeleteArgs {
 <<<<<<< HEAD:rest/admin/2022-04/customer.ts
   session: Session;
@@ -28,6 +29,8 @@ interface DeleteArgs {
 >>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/customer.ts
   id: number | string;
 }
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/customer.ts
 interface AllArgs {
   [key: string]: unknown;
   session: Session;
@@ -74,9 +77,15 @@ interface SendInviteArgs {
 export class Customer extends Base {
   public static apiVersion = ApiVersion.April22;
 
+<<<<<<< HEAD:rest/admin/2022-04/customer.ts
   protected static resourceName = 'customer';
   protected static pluralName = 'customers';
   protected static hasOne: {[key: string]: typeof Base} = {
+=======
+  protected static NAME = 'customer';
+  protected static PLURAL_NAME = 'customers';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/customer.ts
     "metafield": Metafield
   };
 <<<<<<< HEAD:rest/admin/2022-04/customer.ts
@@ -85,6 +94,7 @@ export class Customer extends Base {
 =======
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:rest/admin/2022-04/customer.ts
 >>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/customer.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customers/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
@@ -96,6 +106,17 @@ export class Customer extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
     {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "customers/search.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "post", "operation": "account_activation_url", "ids": ["id"], "path": "customers/<id>/account_activation_url.json"},
+    {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
+    {"http_method": "get", "operation": "orders", "ids": ["id"], "path": "customers/<id>/orders.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/customer.ts
   ];
 
   public static async find(
@@ -130,6 +151,7 @@ export class Customer extends Base {
     return response ? response.body : null;
   }
 
+<<<<<<< HEAD:rest/admin/2022-04/customer.ts
   public static async delete(
     {
       session,
@@ -147,6 +169,8 @@ export class Customer extends Base {
     return response ? response.body : null;
   }
 
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/customer.ts
   public static async all(
     {
       session,
@@ -230,6 +254,48 @@ export class Customer extends Base {
       session: session,
       urlIds: {},
       params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
+<<<<<<< HEAD:rest/admin/2022-04/customer.ts
+=======
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public static async count(
+    {
+      session,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
+    const response = await Customer.request({
+      http_method: "get",
+      operation: "count",
+      session: session,
+      urlIds: {},
+      params: {...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public static async orders(
+    {
+      session,
+      id,
+      ...otherArgs
+    }: OrdersArgs
+  ): Promise<unknown> {
+    const response = await Customer.request({
+      http_method: "get",
+      operation: "orders",
+      session: session,
+      urlIds: {"id": id},
+      params: {...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/customer.ts
       body: {},
       entity: null,
     });

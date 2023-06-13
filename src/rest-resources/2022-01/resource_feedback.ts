@@ -19,8 +19,13 @@ export class ResourceFeedback extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD
     {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"}
+>>>>>>> origin/isomorphic/main
   ];
 
   public static async all(

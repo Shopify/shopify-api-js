@@ -63,6 +63,7 @@ interface SpamArgs {
 export class Comment extends Base {
   public static apiVersion = ApiVersion.January23;
 
+<<<<<<< HEAD:rest/admin/2023-01/comment.ts
   protected static resourceName = 'comment';
   protected static pluralName = 'comments';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -78,6 +79,23 @@ export class Comment extends Base {
     {"http_method": "post", "operation": "restore", "ids": ["id"], "path": "comments/<id>/restore.json"},
     {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"}
+=======
+  protected static NAME = 'comment';
+  protected static PLURAL_NAME = 'comments';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "comments.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "comments/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "comments/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "comments.json"},
+    {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
+    {"http_method": "post", "operation": "not_spam", "ids": ["id"], "path": "comments/<id>/not_spam.json"},
+    {"http_method": "post", "operation": "approve", "ids": ["id"], "path": "comments/<id>/approve.json"},
+    {"http_method": "post", "operation": "remove", "ids": ["id"], "path": "comments/<id>/remove.json"},
+    {"http_method": "post", "operation": "restore", "ids": ["id"], "path": "comments/<id>/restore.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/comment.ts
   ];
 
   public static async find(
@@ -178,6 +196,28 @@ export class Comment extends Base {
       operation: "not_spam",
       session: this.session,
       urlIds: {"id": this.id},
+<<<<<<< HEAD:rest/admin/2023-01/comment.ts
+=======
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async approve(
+    {
+      body = null,
+      ...otherArgs
+    }: ApproveArgs
+  ): Promise<unknown> {
+    const response = await Comment.request({
+      http_method: "post",
+      operation: "approve",
+      session: this.session,
+      urlIds: {"id": this.id},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/comment.ts
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -216,6 +256,7 @@ export class Comment extends Base {
       operation: "restore",
       session: this.session,
       urlIds: {"id": this.id},
+<<<<<<< HEAD:rest/admin/2023-01/comment.ts
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -235,6 +276,8 @@ export class Comment extends Base {
       operation: "spam",
       session: this.session,
       urlIds: {"id": this.id},
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/comment.ts
       params: {...otherArgs},
       body: body,
       entity: this,

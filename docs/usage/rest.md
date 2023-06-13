@@ -135,14 +135,50 @@ Once OAuth is complete, we can use the library's `RestClient` to make an API cal
 You can run the code below in any endpoint where you have access to a request and response objects.
 
 ```ts
+<<<<<<< HEAD
   const session = await Shopify.Utils.loadCurrentSession(req, res); // load the current session to get the `accessToken`
   const client = new Shopify.Clients.Rest.RestClient(session.shop, session.accessToken); // create a new client for the specified shop
   const products = await client.get({ // use client.get to request the REST endpoint you need, in this case "products"
       path: 'products'
   });
+=======
+// Load the current session to get the `accessToken`.
+const session = await Shopify.Utils.loadCurrentSession(req);
+// Create a new client for the specified shop.
+const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
+// Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
+const products = await client.get({
+  path: 'products',
+});
+>>>>>>> origin/isomorphic/main
 
   // do something with the returned data
 ```
 
+<<<<<<< HEAD
 [Back to guide index](../index.md)
 >>>>>>> 256689b9 (Splitting getting started guide into docs pages)
+=======
+### Perform a `POST` request:
+
+```ts
+// Load the current session to get the `accessToken`.
+const session = await Shopify.Utils.loadCurrentSession(req);
+// Create a new client for the specified shop.
+const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
+// Build your post request body.
+const body = {
+  ...
+};
+// Use `client.post` to send your request to the specified Shopify REST API endpoint.
+await client.post({
+  path: 'products',
+  data: body,
+  type: DataType.JSON,
+});
+```
+
+_for more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/admin-api/rest/reference/products/product#create-2021-01)._
+
+[Back to guide index](../README.md)
+>>>>>>> origin/isomorphic/main

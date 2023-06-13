@@ -11,7 +11,10 @@ import {ApiVersion} from '../../../lib/types';
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
+<<<<<<< HEAD:rest/admin/2022-04/shop.ts
 >>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/shop.ts
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/shop.ts
 
 interface AllArgs {
   [key: string]: unknown;
@@ -22,11 +25,19 @@ interface AllArgs {
 export class Shop extends Base {
   public static apiVersion = ApiVersion.April22;
 
+<<<<<<< HEAD:rest/admin/2022-04/shop.ts
   protected static resourceName = 'shop';
   protected static pluralName = 'shops';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+=======
+  protected static NAME = 'shop';
+  protected static PLURAL_NAME = 'shops';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/shop.ts
     {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
   ];
 

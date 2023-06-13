@@ -39,6 +39,7 @@ export class Variant extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/variant.ts
     {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/variants/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/variants/count.json"},
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
@@ -49,6 +50,14 @@ export class Variant extends Base {
   protected static READ_ONLY_ATTRIBUTES: string[] = [
     "inventory_quantity",
     "inventory_quantity_adjustment"
+=======
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
+    {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/variants/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "variants/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "variants/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/variants/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/variant.ts
   ];
 
   public static async find(

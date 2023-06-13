@@ -53,6 +53,7 @@ export class DiscountCode extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/discount_code.ts
     {"http_method": "delete", "operation": "delete", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "discount_codes/count.json"},
     {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"},
@@ -63,6 +64,18 @@ export class DiscountCode extends Base {
     {"http_method": "post", "operation": "batch", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/batch.json"},
     {"http_method": "post", "operation": "post", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
     {"http_method": "put", "operation": "put", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
+    {"http_method": "put", "operation": "put", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
+    {"http_method": "get", "operation": "lookup", "ids": [], "path": "discount_codes/lookup.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "discount_codes/count.json"},
+    {"http_method": "post", "operation": "batch", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/batch.json"},
+    {"http_method": "get", "operation": "get_all", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/discount_code.ts
   ];
 
   public static async find(
@@ -115,6 +128,29 @@ export class DiscountCode extends Base {
     return response as DiscountCode[];
   }
 
+<<<<<<< HEAD:src/rest-resources/2022-10/discount_code.ts
+=======
+  public static async lookup(
+    {
+      session,
+      code = null,
+      ...otherArgs
+    }: LookupArgs
+  ): Promise<unknown> {
+    const response = await DiscountCode.request({
+      http_method: "get",
+      operation: "lookup",
+      session: session,
+      urlIds: {},
+      params: {"code": code, ...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/discount_code.ts
   public static async count(
     {
       session,

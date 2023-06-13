@@ -31,6 +31,10 @@ export class AbandonedCheckout extends Base {
     "discount_codes": DiscountCode
   };
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:rest/admin/2022-10/abandoned_checkout.ts
+=======
+    {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/abandoned_checkout.ts
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];
 
@@ -52,7 +56,11 @@ export class AbandonedCheckout extends Base {
       operation: "checkouts",
       session: session,
       urlIds: {},
+<<<<<<< HEAD:rest/admin/2022-10/abandoned_checkout.ts
       params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, ...otherArgs},
+=======
+      params: {"since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, "limit": limit, ...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/abandoned_checkout.ts
       body: {},
       entity: null,
     });

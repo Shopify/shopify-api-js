@@ -19,7 +19,11 @@ describe('ResourceFeedback resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"resource_feedback": {"created_at": "2022-10-03T12:45:53-04:00", "updated_at": "2022-10-03T12:45:53-04:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-10-03T12:45:51-04:00", "state": "requires_action"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"resource_feedback": {"created_at": "2022-02-03T17:00:24-05:00", "updated_at": "2022-02-03T17:00:24-05:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-02-03T17:00:23-05:00", "state": "requires_action"}}));
+>>>>>>> origin/isomorphic/main
 
     const resource_feedback = new ResourceFeedback({session: test_session});
     resource_feedback.state = "requires_action";
@@ -35,12 +39,20 @@ describe('ResourceFeedback resource', () => {
       path: '/admin/api/2022-01/resource_feedback.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: { "resource_feedback": {"state": "requires_action", "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-10-03T16:45:51.594730Z"} }
+=======
+      data: { "resource_feedback": {"state": "requires_action", "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-02-03T22:00:23.179942Z"} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"resource_feedback": {"created_at": "2022-10-03T12:45:55-04:00", "updated_at": "2022-10-03T12:45:55-04:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": [], "feedback_generated_at": "2022-10-03T12:45:53-04:00", "state": "success"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"resource_feedback": {"created_at": "2022-02-03T17:00:25-05:00", "updated_at": "2022-02-03T17:00:25-05:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": [], "feedback_generated_at": "2022-02-03T17:00:24-05:00", "state": "success"}}));
+>>>>>>> origin/isomorphic/main
 
     const resource_feedback = new ResourceFeedback({session: test_session});
     resource_feedback.state = "success";
@@ -53,12 +65,20 @@ describe('ResourceFeedback resource', () => {
       path: '/admin/api/2022-01/resource_feedback.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: { "resource_feedback": {"state": "success", "feedback_generated_at": "2022-10-03T16:45:53.872041Z"} }
+=======
+      data: { "resource_feedback": {"state": "success", "feedback_generated_at": "2022-02-03T22:00:24.490026Z"} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 
   it('test_3', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"resource_feedback": [{"created_at": "2022-10-03T12:45:57-04:00", "updated_at": "2022-10-03T12:45:57-04:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-10-03T11:45:57-04:00", "state": "requires_action"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"resource_feedback": [{"created_at": "2022-02-03T17:00:28-05:00", "updated_at": "2022-02-03T17:00:28-05:00", "resource_id": 548380009, "resource_type": "Shop", "resource_updated_at": null, "messages": ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at": "2022-02-03T16:00:28-05:00", "state": "requires_action"}]}));
+>>>>>>> origin/isomorphic/main
 
     await ResourceFeedback.all({
       session: test_session,

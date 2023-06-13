@@ -23,9 +23,15 @@ export class AndroidPayKey extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/android_pay_key.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "android_pay_keys.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": [], "path": "android_pay_keys.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "android_pay_keys/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/android_pay_key.ts
   ];
 
   public static async find(

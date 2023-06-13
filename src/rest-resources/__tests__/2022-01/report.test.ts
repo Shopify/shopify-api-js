@@ -19,7 +19,11 @@ describe('Report resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-10-03T12:44:45-04:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-02-03T16:53:36-05:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Report.all({
       session: test_session,
@@ -36,24 +40,9 @@ describe('Report resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-10-03T12:44:45-04:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
-
-    await Report.all({
-      session: test_session,
-      updated_at_min: "2005-07-31 15:57:11 EDT -04:00",
-    });
-
-    expect({
-      method: 'GET',
-      domain,
-      path: '/admin/api/2022-01/reports.json',
-      query: 'updated_at_min=2005-07-31+15%3A57%3A11+EDT+-04%3A00',
-      headers,
-      data: null
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('test_3', async () => {
+=======
     fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
 
     await Report.all({
@@ -71,8 +60,55 @@ describe('Report resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('test_3', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-02-03T16:53:36-05:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
+>>>>>>> origin/isomorphic/main
+
+    await Report.all({
+      session: test_session,
+      updated_at_min: "2005-07-31 15:57:11 EDT -04:00",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/reports.json',
+      query: 'updated_at_min=2005-07-31+15%3A57%3A11+EDT+-04%3A00',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+<<<<<<< HEAD
+  it('test_3', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
+=======
+  it('test_4', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 752357116, "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales"}, {"id": 517154478, "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today"}]}));
+>>>>>>> origin/isomorphic/main
+
+    await Report.all({
+      session: test_session,
+      ids: "517154478",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/reports.json',
+      query: 'ids=517154478',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+<<<<<<< HEAD
   it('test_4', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}, {"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-10-03T12:44:45-04:00", "category": "custom_app_reports"}]}));
+=======
+  it('test_5', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}, {"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2022-02-03T16:53:36-05:00", "category": "custom_app_reports"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Report.all({
       session: test_session,
@@ -108,7 +144,11 @@ describe('Report resource', () => {
   });
 
   it('test_6', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"report": {"id": 1016888664, "name": "A new app report", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -1m UNTIL today ORDER BY total_sales", "updated_at": "2022-10-03T12:53:33-04:00", "category": "custom_app_reports"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"report": {"id": 1016888665, "name": "A new app report", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -1m UNTIL today ORDER BY total_sales", "updated_at": "2022-02-03T16:56:32-05:00", "category": "custom_app_reports"}}));
+>>>>>>> origin/isomorphic/main
 
     const report = new Report({session: test_session});
     report.name = "A new app report";
@@ -163,7 +203,11 @@ describe('Report resource', () => {
   });
 
   it('test_9', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"report": {"name": "Changed Report Name", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales", "id": 517154478, "updated_at": "2022-10-03T12:53:27-04:00", "category": "custom_app_reports"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"report": {"name": "Changed Report Name", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales", "id": 517154478, "updated_at": "2022-02-03T16:56:34-05:00", "category": "custom_app_reports"}}));
+>>>>>>> origin/isomorphic/main
 
     const report = new Report({session: test_session});
     report.id = 517154478;
@@ -177,7 +221,11 @@ describe('Report resource', () => {
       path: '/admin/api/2022-01/reports/517154478.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: { "report": {"name": "Changed Report Name", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales"} }
+=======
+      data: { "report": {"id": 517154478, "name": "Changed Report Name", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales"} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 

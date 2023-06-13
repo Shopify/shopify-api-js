@@ -19,6 +19,7 @@ describe('Metafield resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 106172460, "namespace": "notes", "key": "note", "value": "B flat", "value_type": "string", "description": "This is for notes", "owner_id": 622762746, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "draft_order", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/106172460"}]}));
 
     await Metafield.all({
@@ -38,6 +39,9 @@ describe('Metafield resource', () => {
 
   it('test_2', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 721389482, "namespace": "affiliates", "key": "app_key", "value": "app_key", "value_type": "string", "description": null, "owner_id": 548380009, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "shop", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 721389482, "namespace": "affiliates", "key": "app_key", "value": "app_key", "value_type": "string", "description": null, "owner_id": 548380009, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "owner_resource": "shop", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Metafield.all({
       session: test_session,
@@ -53,6 +57,7 @@ describe('Metafield resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_3', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 51714266, "namespace": "my_namespace", "key": "my_key", "value": "Hello", "value_type": "string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/51714266"}, {"id": 116539875, "namespace": "descriptors", "key": "subtitle", "value": "The best ipod", "value_type": "string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/116539875"}, {"id": 263497237, "namespace": "installments", "key": "disable", "value": true, "value_type": "boolean", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "boolean", "admin_graphql_api_id": "gid://shopify/Metafield/263497237"}, {"id": 273160493, "namespace": "facts", "key": "isbn", "value": "978-0-14-004259-7", "value_type": "string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/273160493"}, {"id": 524118066, "namespace": "facts", "key": "ean", "value": "0123456789012", "value_type": "string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/524118066"}, {"id": 543636738, "namespace": "reviews", "key": "rating_count", "value": 1, "value_type": "integer", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/543636738"}, {"id": 572384404, "namespace": "reviews", "key": "rating", "value": "{\"value\": \"3.5\", \"scale_min\": \"1.0\", \"scale_max\": \"5.0\"}", "value_type": "json_string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "rating", "admin_graphql_api_id": "gid://shopify/Metafield/572384404"}, {"id": 613330208, "namespace": "shopify_filter", "key": "display", "value": "retina", "value_type": "string", "description": "This field keeps track of the type of display", "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/613330208"}, {"id": 779326701, "namespace": "facts", "key": "upc", "value": "012345678901", "value_type": "string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/779326701"}, {"id": 845366454, "namespace": "translations", "key": "title_fr", "value": "produit", "value_type": "string", "description": "French product title", "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/845366454"}, {"id": 861799889, "namespace": "my_other_fields", "key": "organic", "value": true, "value_type": "boolean", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "boolean", "admin_graphql_api_id": "gid://shopify/Metafield/861799889"}, {"id": 870326793, "namespace": "descriptors", "key": "care_guide", "value": "Wash in cold water", "value_type": "string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": null, "admin_graphql_api_id": "gid://shopify/Metafield/870326793"}, {"id": 908250163, "namespace": "my_other_fields", "key": "shipping_policy", "value": "Ships for free in Canada", "value_type": "string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "multi_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/908250163"}, {"id": 925288667, "namespace": "my_other_fields", "key": "year_released", "value": 2019, "value_type": "integer", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/925288667"}, {"id": 1001077698, "namespace": "my_fields", "key": "best_for", "value": "travel", "value_type": "string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/1001077698"}, {"id": 1029402048, "namespace": "my_other_fields", "key": "ingredients", "value": "[\"apple\", \"music\", \"u2\"]", "value_type": "json_string", "description": null, "owner_id": 632910392, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "product", "type": "list.single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/1029402048"}]}));
 
@@ -217,6 +222,10 @@ describe('Metafield resource', () => {
 
   it('test_12', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 1063298215, "namespace": "inventory", "key": "warehouse", "value": 25, "value_type": "integer", "description": null, "owner_id": 548380009, "created_at": "2022-10-03T12:19:23-04:00", "updated_at": "2022-10-03T12:19:23-04:00", "owner_resource": "shop", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/1063298215"}]}));
+=======
+  it('test_2', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 1063298241, "namespace": "inventory", "key": "warehouse", "value": 25, "value_type": "integer", "description": null, "owner_id": 548380009, "created_at": "2022-02-03T17:01:04-05:00", "updated_at": "2022-02-03T17:01:04-05:00", "owner_resource": "shop", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/1063298241"}]}));
+>>>>>>> origin/isomorphic/main
 
     await Metafield.all({
       session: test_session,
@@ -233,12 +242,41 @@ describe('Metafield resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_13', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"count": 1}));
 
     await Metafield.count({
       session: test_session,
       page_id: 131092082,
+=======
+  it('test_3', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"id": 1063298244, "namespace": "inventory", "key": "warehouse", "value": 25, "value_type": "integer", "description": null, "owner_id": 548380009, "created_at": "2022-02-03T17:01:25-05:00", "updated_at": "2022-02-03T17:01:25-05:00", "owner_resource": "shop", "type": "number_integer", "admin_graphql_api_id": "gid://shopify/Metafield/1063298244"}}));
+
+    const metafield = new Metafield({session: test_session});
+    metafield.namespace = "inventory";
+    metafield.key = "warehouse";
+    metafield.value = 25;
+    metafield.type = "number_integer";
+    await metafield.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-01/metafields.json',
+      query: '',
+      headers,
+      data: { "metafield": {"namespace": "inventory", "key": "warehouse", "value": 25, "type": "number_integer"} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_4', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"metafields": [{"id": 625663657, "namespace": "translation", "key": "title_fr", "value": "tbn", "description": "French product image title", "owner_id": 850703190, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "owner_resource": "product_image", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/625663657"}]}));
+
+    await Metafield.all({
+      session: test_session,
+      metafield: {"owner_id": "850703190", "owner_resource": "product_image"},
+>>>>>>> origin/isomorphic/main
     });
 
     expect({
@@ -251,6 +289,7 @@ describe('Metafield resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_14', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"count": 3}));
 
@@ -306,6 +345,9 @@ describe('Metafield resource', () => {
   });
 
   it('test_17', async () => {
+=======
+  it('test_5', async () => {
+>>>>>>> origin/isomorphic/main
     fetchMock.mockResponseOnce(JSON.stringify({"count": 1}));
 
     await Metafield.count({
@@ -322,6 +364,7 @@ describe('Metafield resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_18', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"count": 1}));
 
@@ -451,6 +494,10 @@ describe('Metafield resource', () => {
 
   it('test_25', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"id": 721389482, "namespace": "affiliates", "key": "app_key", "value": "app_key", "value_type": "string", "description": null, "owner_id": 548380009, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "shop", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}}));
+=======
+  it('test_6', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"id": 721389482, "namespace": "affiliates", "key": "app_key", "value": "app_key", "value_type": "string", "description": null, "owner_id": 548380009, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T16:53:36-05:00", "owner_resource": "shop", "type": "string", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}}));
+>>>>>>> origin/isomorphic/main
 
     await Metafield.find({
       session: test_session,
@@ -467,8 +514,13 @@ describe('Metafield resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_26', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"id": 915396079, "namespace": "notes", "key": "buyer", "value": "Notes about this buyer", "value_type": "string", "description": "This field is for buyer notes", "owner_id": 450789469, "created_at": "2022-10-03T12:15:55-04:00", "updated_at": "2022-10-03T12:15:55-04:00", "owner_resource": "order", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/915396079"}}));
+=======
+  it('test_7', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"metafield": {"value": "something new", "value_type": "string", "namespace": "affiliates", "key": "app_key", "id": 721389482, "description": null, "owner_id": 548380009, "created_at": "2022-02-03T16:53:36-05:00", "updated_at": "2022-02-03T17:01:32-05:00", "owner_resource": "shop", "type": "single_line_text_field", "admin_graphql_api_id": "gid://shopify/Metafield/721389482"}}));
+>>>>>>> origin/isomorphic/main
 
     await Metafield.find({
       session: test_session,
@@ -482,7 +534,11 @@ describe('Metafield resource', () => {
       path: '/admin/api/2022-01/orders/450789469/metafields/915396079.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: null
+=======
+      data: { "metafield": {"id": 721389482, "value": "something new", "type": "single_line_text_field"} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 

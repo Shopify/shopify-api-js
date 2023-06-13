@@ -13,10 +13,6 @@ interface FindArgs {
   id: number | string;
   fields?: unknown;
 }
-interface DeleteArgs {
-  session: SessionInterface;
-  id: number | string;
-}
 interface AllArgs {
   [key: string]: unknown;
   session: SessionInterface;
@@ -66,6 +62,7 @@ export class Customer extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/customer.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customers/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
@@ -76,6 +73,17 @@ export class Customer extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
     {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "customers/search.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "post", "operation": "account_activation_url", "ids": ["id"], "path": "customers/<id>/account_activation_url.json"},
+    {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
+    {"http_method": "get", "operation": "orders", "ids": ["id"], "path": "customers/<id>/orders.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/customer.ts
   ];
 
   public static async find(
@@ -93,6 +101,7 @@ export class Customer extends Base {
     return result ? result[0] as Customer : null;
   }
 
+<<<<<<< HEAD:src/rest-resources/2022-10/customer.ts
   public static async delete(
     {
       session,
@@ -110,6 +119,8 @@ export class Customer extends Base {
     return response ? response.body : null;
   }
 
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/customer.ts
   public static async all(
     {
       session,
@@ -133,6 +144,32 @@ export class Customer extends Base {
     return response as Customer[];
   }
 
+<<<<<<< HEAD:src/rest-resources/2022-10/customer.ts
+=======
+  public static async search(
+    {
+      session,
+      order = null,
+      query = null,
+      limit = null,
+      fields = null,
+      ...otherArgs
+    }: SearchArgs
+  ): Promise<unknown> {
+    const response = await Customer.request({
+      http_method: "get",
+      operation: "search",
+      session: session,
+      urlIds: {},
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/customer.ts
   public static async count(
     {
       session,
@@ -165,6 +202,7 @@ export class Customer extends Base {
       operation: "orders",
       session: session,
       urlIds: {"id": id},
+<<<<<<< HEAD:src/rest-resources/2022-10/customer.ts
       params: {"status": status, ...otherArgs},
       body: {},
       entity: null,
@@ -189,6 +227,9 @@ export class Customer extends Base {
       session: session,
       urlIds: {},
       params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
+=======
+      params: {...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/customer.ts
       body: {},
       entity: null,
     });

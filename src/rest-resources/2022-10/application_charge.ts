@@ -26,9 +26,15 @@ export class ApplicationCharge extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/application_charge.ts
     {"http_method": "get", "operation": "get", "ids": [], "path": "application_charges.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_charges/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_charges.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": [], "path": "application_charges.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_charges/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "application_charges.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/application_charge.ts
   ];
 
   public static async find(

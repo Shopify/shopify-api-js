@@ -19,7 +19,11 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"usage_charge": {"id": 1034618208, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2022-10-03T12:53:15-04:00", "billing_on": null, "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"usage_charge": {"id": 1034618215, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2022-02-03T16:42:27-05:00", "billing_on": null, "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
+>>>>>>> origin/isomorphic/main
 
     const usage_charge = new UsageCharge({session: test_session});
     usage_charge.recurring_application_charge_id = 455696195;
@@ -38,7 +42,11 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"usage_charges": [{"id": 1034618206, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-10-03T12:53:13-04:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"usage_charges": [{"id": 1034618218, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-02-03T16:42:30-05:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
+>>>>>>> origin/isomorphic/main
 
     await UsageCharge.all({
       session: test_session,
@@ -56,7 +64,11 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_3', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"usage_charge": {"id": 1034618210, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-10-03T12:53:16-04:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"usage_charge": {"id": 1034618217, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2022-02-03T16:42:29-05:00", "billing_on": null, "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
+>>>>>>> origin/isomorphic/main
 
     await UsageCharge.find({
       session: test_session,

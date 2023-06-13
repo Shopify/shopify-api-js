@@ -118,8 +118,13 @@ export class FakeResource extends Base {
     session,
     id,
     other_resource_id,
+<<<<<<< HEAD:lib/clients/rest/__tests__/resources/fake-resource.ts
   }: FakeResourceCustomArgs): Promise<Body> {
     const response = await this.request<Body>({
+=======
+  }: FakeResourceCustomArgs): Promise<string> => {
+    const response = await FakeResource.request({
+>>>>>>> origin/isomorphic/main:src/__tests__/fake-resource.ts
       http_method: 'get',
       operation: 'custom',
       session,
@@ -127,11 +132,15 @@ export class FakeResource extends Base {
     });
 
 <<<<<<< HEAD:lib/clients/rest/__tests__/resources/fake-resource.ts
+<<<<<<< HEAD:lib/clients/rest/__tests__/resources/fake-resource.ts
     return response.body;
   }
 =======
     // FIXME
     return response.body as any;
+=======
+    return response.body as string;
+>>>>>>> origin/isomorphic/main:src/__tests__/fake-resource.ts
   };
 >>>>>>> origin/isomorphic/crypto:src/__tests__/fake-resource.ts
 

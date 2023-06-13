@@ -65,6 +65,7 @@ interface CountArgs {
 export class Product extends Base {
   public static apiVersion = ApiVersion.April23;
 
+<<<<<<< HEAD:rest/admin/2023-04/product.ts
   protected static resourceName = 'product';
   protected static pluralName = 'products';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -79,6 +80,22 @@ export class Product extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "products/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"}
+=======
+  protected static NAME = 'product';
+  protected static PLURAL_NAME = 'products';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
+    "images": Image,
+    "variants": Variant
+  };
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "products.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "products/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "products/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "products/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/product.ts
   ];
 
   public static async find(

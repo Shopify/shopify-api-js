@@ -26,8 +26,13 @@ export class GiftCardAdjustment extends Base {
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"},
+<<<<<<< HEAD:src/rest-resources/2022-10/gift_card_adjustment.ts
     {"http_method": "get", "operation": "get", "ids": ["gift_card_id", "id"], "path": "gift_cards/<gift_card_id>/adjustments/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"},
+    {"http_method": "get", "operation": "get", "ids": ["gift_card_id", "id"], "path": "gift_cards/<gift_card_id>/adjustments/9.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/gift_card_adjustment.ts
   ];
 
   protected static getJsonBodyName(): string

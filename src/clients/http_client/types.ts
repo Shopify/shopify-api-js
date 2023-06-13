@@ -1,10 +1,14 @@
 import type {Method} from '@shopify/network';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export type HeaderParams = Record<string, string | number>;
 =======
 import type {Headers} from '../../adapters/abstract-http';
 >>>>>>> origin/isomorphic/crypto
+=======
+import type {Headers} from '../../runtime/http';
+>>>>>>> origin/isomorphic/main
 
 export enum DataType {
   JSON = 'application/json',

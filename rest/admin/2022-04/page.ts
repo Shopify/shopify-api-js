@@ -56,6 +56,7 @@ interface CountArgs {
 export class Page extends Base {
   public static apiVersion = ApiVersion.April22;
 
+<<<<<<< HEAD:rest/admin/2022-04/page.ts
   protected static resourceName = 'page';
   protected static pluralName = 'pages';
   protected static hasOne: {[key: string]: typeof Base} = {
@@ -69,6 +70,21 @@ export class Page extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "pages/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"}
+=======
+  protected static NAME = 'page';
+  protected static PLURAL_NAME = 'pages';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
+    "metafield": Metafield
+  };
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "pages.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "pages/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "pages/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "pages/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/page.ts
   ];
 
   public static async find(

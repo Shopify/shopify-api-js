@@ -78,6 +78,7 @@ export class Order extends Base {
     "refunds": Refund
   };
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:rest/admin/2022-10/order.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "orders/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "orders/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "orders.json"},
@@ -87,6 +88,17 @@ export class Order extends Base {
     {"http_method": "post", "operation": "open", "ids": ["id"], "path": "orders/<id>/open.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "orders.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "orders/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "orders.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "orders/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "orders/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "orders/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "orders/count.json"},
+    {"http_method": "post", "operation": "close", "ids": ["id"], "path": "orders/<id>/close.json"},
+    {"http_method": "post", "operation": "open", "ids": ["id"], "path": "orders/<id>/open.json"},
+    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "orders/<id>/cancel.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "orders.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/order.ts
   ];
 
   public static async find(
@@ -176,6 +188,47 @@ export class Order extends Base {
     return response ? response.body : null;
   }
 
+<<<<<<< HEAD:rest/admin/2022-10/order.ts
+=======
+  public async close(
+    {
+      body = null,
+      ...otherArgs
+    }: CloseArgs
+  ): Promise<unknown> {
+    const response = await Order.request({
+      http_method: "post",
+      operation: "close",
+      session: this.session,
+      urlIds: {"id": this.id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async open(
+    {
+      body = null,
+      ...otherArgs
+    }: OpenArgs
+  ): Promise<unknown> {
+    const response = await Order.request({
+      http_method: "post",
+      operation: "open",
+      session: this.session,
+      urlIds: {"id": this.id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/order.ts
   public async cancel(
     {
       amount = null,
@@ -194,6 +247,7 @@ export class Order extends Base {
       session: this.session,
       urlIds: {"id": this.id},
       params: {"amount": amount, "currency": currency, "restock": restock, "reason": reason, "email": email, "refund": refund, ...otherArgs},
+<<<<<<< HEAD:rest/admin/2022-10/order.ts
       body: body,
       entity: this,
     });
@@ -232,6 +286,8 @@ export class Order extends Base {
       session: this.session,
       urlIds: {"id": this.id},
       params: {...otherArgs},
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/order.ts
       body: body,
       entity: this,
     });

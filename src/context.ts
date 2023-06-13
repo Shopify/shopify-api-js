@@ -3,13 +3,20 @@ import path from 'path';
 import * as ShopifyErrors from './error';
 <<<<<<< HEAD
 import {SessionStorage} from './auth/session/session_storage';
+<<<<<<< HEAD
 import {SQLiteSessionStorage} from './auth/session/storage/sqlite';
 import {ApiVersion, ContextParams} from './base-types';
+=======
+import {MemorySessionStorage} from './auth/session/storage/memory';
+import {ApiVersion, ContextParams, LogSeverity} from './base-types';
+>>>>>>> origin/isomorphic/main
 import {AuthScopes} from './auth/scopes';
 =======
 import {Session, SessionStorage, MemorySessionStorage} from './auth/session';
 import {ApiVersion, ContextParams} from './types';
 >>>>>>> e83b5faf (Run yarn lint --fix on all files)
+
+export {LogSeverity as LOG_SEVERITY};
 
 interface ContextInterface extends ContextParams {
   HOST_SCHEME: string;
@@ -103,10 +110,6 @@ const Context: ContextInterface = {
 
     if (params.USER_AGENT_PREFIX) {
       this.USER_AGENT_PREFIX = params.USER_AGENT_PREFIX;
-    }
-
-    if (params.LOG_FILE) {
-      this.LOG_FILE = params.LOG_FILE;
     }
 
     if (params.PRIVATE_APP_STOREFRONT_ACCESS_TOKEN) {

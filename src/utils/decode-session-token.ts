@@ -4,12 +4,16 @@ import {Context} from '../context';
 import * as ShopifyErrors from '../error';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 const JWT_PERMITTED_CLOCK_TOLERANCE = 10;
 
 =======
 
 =======
+=======
+
+>>>>>>> origin/isomorphic/main
 import {getHMACKey} from './get-hmac-key';
 >>>>>>> origin/isomorphic/crypto
 import validateShop from './shop-validator';

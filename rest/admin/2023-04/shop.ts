@@ -2,11 +2,14 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD:rest/admin/2023-04/shop.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/shop.ts
 interface AllArgs {
   [key: string]: unknown;
   session: Session;
@@ -16,11 +19,19 @@ interface AllArgs {
 export class Shop extends Base {
   public static apiVersion = ApiVersion.April23;
 
+<<<<<<< HEAD:rest/admin/2023-04/shop.ts
   protected static resourceName = 'shop';
   protected static pluralName = 'shops';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+=======
+  protected static NAME = 'shop';
+  protected static PLURAL_NAME = 'shops';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/shop.ts
     {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
   ];
 

@@ -38,6 +38,7 @@ interface CountArgs {
 export class PriceRule extends Base {
   public static apiVersion = ApiVersion.October22;
 
+<<<<<<< HEAD:rest/admin/2022-10/price_rule.ts
   protected static resourceName = 'price_rule';
   protected static pluralName = 'price_rules';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -49,6 +50,19 @@ export class PriceRule extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "price_rules/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"}
+=======
+  protected static NAME = 'price_rule';
+  protected static PLURAL_NAME = 'price_rules';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "price_rules.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "price_rules/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "price_rules/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "price_rules/count.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/price_rule.ts
   ];
 
   public static async find(

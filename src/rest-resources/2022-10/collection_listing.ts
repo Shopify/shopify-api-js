@@ -38,11 +38,19 @@ export class CollectionListing extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/collection_listing.ts
     {"http_method": "delete", "operation": "delete", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "collection_listings.json"},
     {"http_method": "get", "operation": "get", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"},
     {"http_method": "get", "operation": "product_ids", "ids": ["collection_id"], "path": "collection_listings/<collection_id>/product_ids.json"},
     {"http_method": "put", "operation": "put", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "collection_listings.json"},
+    {"http_method": "get", "operation": "product_ids", "ids": ["collection_id"], "path": "collection_listings/<collection_id>/product_ids.json"},
+    {"http_method": "get", "operation": "get", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/collection_listing.ts
   ];
   protected static PRIMARY_KEY: string = "collection_id";
 

@@ -46,6 +46,7 @@ interface ProductIdsArgs {
 export class ProductListing extends Base {
   public static apiVersion = ApiVersion.April23;
 
+<<<<<<< HEAD:rest/admin/2023-04/product_listing.ts
   protected static resourceName = 'product_listing';
   protected static pluralName = 'product_listings';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -60,6 +61,22 @@ export class ProductListing extends Base {
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
     {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
     {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
+=======
+  protected static NAME = 'product_listing';
+  protected static PLURAL_NAME = 'product_listings';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
+    "images": Image,
+    "variants": Variant
+  };
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "product_listings.json"},
+    {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "product_listings/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/product_listing.ts
   ];
   protected static primaryKey: string = "product_id";
 
@@ -146,6 +163,28 @@ export class ProductListing extends Base {
       session: session,
       urlIds: {},
       params: {"limit": limit, ...otherArgs},
+<<<<<<< HEAD:rest/admin/2023-04/product_listing.ts
+=======
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public static async count(
+    {
+      session,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
+    const response = await ProductListing.request({
+      http_method: "get",
+      operation: "count",
+      session: session,
+      urlIds: {},
+      params: {...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/product_listing.ts
       body: {},
       entity: null,
     });

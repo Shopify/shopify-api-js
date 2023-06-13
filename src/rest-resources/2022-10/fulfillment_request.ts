@@ -26,8 +26,13 @@ export class FulfillmentRequest extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/fulfillment_request.ts
     {"http_method": "post", "operation": "accept", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request/accept.json"},
     {"http_method": "post", "operation": "post", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request.json"},
+=======
+    {"http_method": "post", "operation": "post", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request.json"},
+    {"http_method": "post", "operation": "accept", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request/accept.json"},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/fulfillment_request.ts
     {"http_method": "post", "operation": "reject", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request/reject.json"}
   ];
 
@@ -65,7 +70,11 @@ export class FulfillmentRequest extends Base {
       operation: "reject",
       session: this.session,
       urlIds: {"fulfillment_order_id": this.fulfillment_order_id},
+<<<<<<< HEAD:src/rest-resources/2022-10/fulfillment_request.ts
       params: {"message": message, "reason": reason, "line_items": line_items, ...otherArgs},
+=======
+      params: {"message": message, ...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/fulfillment_request.ts
       body: body,
       entity: this,
     });

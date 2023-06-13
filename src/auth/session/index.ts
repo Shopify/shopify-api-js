@@ -1,5 +1,5 @@
 import {Session} from './session';
-import {SessionStorage} from './session_storage';
+import type {SessionStorage} from './session_storage';
 import {MemorySessionStorage} from './storage/memory';
 import {CustomSessionStorage} from './storage/custom';
 

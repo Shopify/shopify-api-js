@@ -1,5 +1,3 @@
-import querystring from 'querystring';
-
 import {Context} from '../../context';
 import {ShopifyHeader} from '../../types';
 import {HttpClient} from '../http_client/http_client';
@@ -7,8 +5,12 @@ import {RequestParams, GetRequestParams} from '../http_client/types';
 <<<<<<< HEAD
 =======
 import * as ShopifyErrors from '../../error';
+<<<<<<< HEAD
 import {getHeader} from '../../adapters/abstract-http';
 >>>>>>> origin/isomorphic/crypto
+=======
+import {getHeader} from '../../runtime/http';
+>>>>>>> origin/isomorphic/main
 
 import {RestRequestReturn, PageInfo} from './types';
 
@@ -86,8 +88,13 @@ class RestClient extends HttpClient {
 
   private buildRequestParams(newPageUrl: string): GetRequestParams {
     const url = new URL(newPageUrl);
+<<<<<<< HEAD
     const path = url.pathname.replace(/^\/admin\/api\/[^/]+\/(.*)\.json$/, '$1');
     const query = querystring.decode(url.search.replace(/^\?(.*)/, '$1')) as Record<string, string | number>;
+=======
+    const path = url.pathname.replace(new RegExp(pattern), '$1');
+    const query = Object.fromEntries(new URLSearchParams(url.search).entries());
+>>>>>>> origin/isomorphic/main
     return {
       path,
       query,

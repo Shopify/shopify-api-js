@@ -19,6 +19,7 @@ describe('InventoryLevel resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"inventory_levels": [{"inventory_item_id": 49148385, "location_id": 655441491, "available": 2, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=49148385"}, {"inventory_item_id": 808950810, "location_id": 655441491, "available": 1, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}, {"inventory_item_id": 457924702, "location_id": 655441491, "available": 4, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=457924702"}, {"inventory_item_id": 39072856, "location_id": 655441491, "available": 3, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=39072856"}]}));
 
     await InventoryLevel.all({
@@ -38,6 +39,9 @@ describe('InventoryLevel resource', () => {
 
   it('test_2', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"inventory_levels": [{"inventory_item_id": 808950810, "location_id": 487838322, "available": 9, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/548380009?inventory_item_id=808950810"}, {"inventory_item_id": 39072856, "location_id": 487838322, "available": 27, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/548380009?inventory_item_id=39072856"}, {"inventory_item_id": 808950810, "location_id": 655441491, "available": 1, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}, {"inventory_item_id": 39072856, "location_id": 655441491, "available": 3, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=39072856"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"inventory_levels": [{"inventory_item_id": 808950810, "location_id": 487838322, "available": 9, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/548380009?inventory_item_id=808950810"}, {"inventory_item_id": 39072856, "location_id": 487838322, "available": 27, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/548380009?inventory_item_id=39072856"}, {"inventory_item_id": 808950810, "location_id": 655441491, "available": 1, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}, {"inventory_item_id": 39072856, "location_id": 655441491, "available": 3, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=39072856"}]}));
+>>>>>>> origin/isomorphic/main
 
     await InventoryLevel.all({
       session: test_session,
@@ -55,8 +59,13 @@ describe('InventoryLevel resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_3', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"inventory_levels": [{"inventory_item_id": 808950810, "location_id": 487838322, "available": 9, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/548380009?inventory_item_id=808950810"}, {"inventory_item_id": 808950810, "location_id": 655441491, "available": 1, "updated_at": "2022-10-03T13:07:13-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}]}));
+=======
+  it('test_2', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"inventory_levels": [{"inventory_item_id": 808950810, "location_id": 487838322, "available": 9, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/548380009?inventory_item_id=808950810"}, {"inventory_item_id": 808950810, "location_id": 655441491, "available": 1, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}]}));
+>>>>>>> origin/isomorphic/main
 
     await InventoryLevel.all({
       session: test_session,
@@ -73,8 +82,31 @@ describe('InventoryLevel resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_4', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"inventory_level": {"inventory_item_id": 808950810, "location_id": 655441491, "available": 6, "updated_at": "2022-10-03T13:14:39-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}}));
+=======
+  it('test_3', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"inventory_levels": [{"inventory_item_id": 49148385, "location_id": 655441491, "available": 2, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=49148385"}, {"inventory_item_id": 808950810, "location_id": 655441491, "available": 1, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}, {"inventory_item_id": 457924702, "location_id": 655441491, "available": 4, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=457924702"}, {"inventory_item_id": 39072856, "location_id": 655441491, "available": 3, "updated_at": "2022-02-03T17:14:40-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=39072856"}]}));
+
+    await InventoryLevel.all({
+      session: test_session,
+      location_ids: "655441491",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/inventory_levels.json',
+      query: 'location_ids=655441491',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_4', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"inventory_level": {"inventory_item_id": 808950810, "location_id": 655441491, "available": 6, "updated_at": "2022-02-03T17:17:55-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}}));
+>>>>>>> origin/isomorphic/main
 
     const inventory_level = new InventoryLevel({session: test_session});
 
@@ -112,7 +144,11 @@ describe('InventoryLevel resource', () => {
   });
 
   it('test_6', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"inventory_level": {"inventory_item_id": 457924702, "location_id": 844681632, "available": 0, "updated_at": "2022-10-03T13:14:35-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/844681632?inventory_item_id=457924702"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"inventory_level": {"inventory_item_id": 457924702, "location_id": 844681632, "available": 0, "updated_at": "2022-02-03T17:18:03-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/844681632?inventory_item_id=457924702"}}));
+>>>>>>> origin/isomorphic/main
 
     const inventory_level = new InventoryLevel({session: test_session});
 
@@ -131,7 +167,11 @@ describe('InventoryLevel resource', () => {
   });
 
   it('test_7', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"inventory_level": {"inventory_item_id": 808950810, "location_id": 655441491, "available": 42, "updated_at": "2022-10-03T13:14:50-04:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"inventory_level": {"inventory_item_id": 808950810, "location_id": 655441491, "available": 42, "updated_at": "2022-02-03T17:17:38-05:00", "admin_graphql_api_id": "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}}));
+>>>>>>> origin/isomorphic/main
 
     const inventory_level = new InventoryLevel({session: test_session});
 

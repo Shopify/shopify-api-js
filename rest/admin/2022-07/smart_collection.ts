@@ -59,6 +59,7 @@ interface OrderArgs {
 export class SmartCollection extends Base {
   public static apiVersion = ApiVersion.July22;
 
+<<<<<<< HEAD:rest/admin/2022-07/smart_collection.ts
   protected static resourceName = 'smart_collection';
   protected static pluralName = 'smart_collections';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -71,6 +72,20 @@ export class SmartCollection extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "smart_collections.json"},
     {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"}
+=======
+  protected static NAME = 'smart_collection';
+  protected static PLURAL_NAME = 'smart_collections';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "smart_collections.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "smart_collections.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "smart_collections/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/smart_collection.ts
   ];
 
   public static async find(

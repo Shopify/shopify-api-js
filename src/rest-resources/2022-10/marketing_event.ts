@@ -46,6 +46,7 @@ export class MarketingEvent extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/marketing_event.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "marketing_events/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "marketing_events/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "marketing_events.json"},
@@ -53,6 +54,15 @@ export class MarketingEvent extends Base {
     {"http_method": "post", "operation": "engagements", "ids": ["id"], "path": "marketing_events/<id>/engagements.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "marketing_events.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "marketing_events/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "marketing_events.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "marketing_events.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "marketing_events/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "marketing_events/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "marketing_events/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "marketing_events/<id>.json"},
+    {"http_method": "post", "operation": "engagements", "ids": ["id"], "path": "marketing_events/<id>/engagements.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/marketing_event.ts
   ];
 
   public static async find(

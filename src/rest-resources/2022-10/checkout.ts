@@ -37,11 +37,19 @@ export class Checkout extends Base {
     "gift_cards": GiftCard
   };
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/checkout.ts
     {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
     {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"},
     {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
     {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
+    {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
+    {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"},
+    {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/checkout.ts
   ];
   protected static PRIMARY_KEY: string = "token";
 

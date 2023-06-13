@@ -30,6 +30,7 @@ interface CheckoutsArgs {
 export class AbandonedCheckout extends Base {
   public static apiVersion = ApiVersion.July22;
 
+<<<<<<< HEAD:rest/admin/2022-07/abandoned_checkout.ts
   protected static resourceName = 'abandoned_checkout';
   protected static pluralName = 'abandoned_checkouts';
   protected static hasOne: {[key: string]: typeof Base} = {
@@ -37,13 +38,25 @@ export class AbandonedCheckout extends Base {
     "customer": Customer
   };
   protected static hasMany: {[key: string]: typeof Base} = {
+=======
+  protected static NAME = 'abandoned_checkout';
+  protected static PLURAL_NAME = 'abandoned_checkouts';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
+    "currency": Currency,
+    "customer": Customer
+  };
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/abandoned_checkout.ts
     "discount_codes": DiscountCode
   };
 <<<<<<< HEAD:rest/admin/2022-07/abandoned_checkout.ts
   protected static paths: ResourcePath[] = [
 =======
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:rest/admin/2022-07/abandoned_checkout.ts
 >>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-07/abandoned_checkout.ts
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/abandoned_checkout.ts
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];

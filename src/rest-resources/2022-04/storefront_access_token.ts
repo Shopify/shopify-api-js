@@ -23,9 +23,15 @@ export class StorefrontAccessToken extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-04/storefront_access_token.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "storefront_access_tokens/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "storefront_access_tokens.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "storefront_access_tokens.json"}
+=======
+    {"http_method": "post", "operation": "post", "ids": [], "path": "storefront_access_tokens.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "storefront_access_tokens.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "storefront_access_tokens/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/storefront_access_token.ts
   ];
 
   public static async delete(

@@ -19,7 +19,11 @@ describe('GiftCardAdjustment resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"adjustments": [{"id": 1064273908, "gift_card_id": 1035197676, "api_client_id": null, "user_id": null, "order_transaction_id": null, "number": null, "amount": "10.00", "processed_at": null, "created_at": "2022-10-03T13:07:13-04:00", "updated_at": "2022-10-03T13:07:13-04:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"adjustments": [{"id": 8, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2022-02-03T16:57:27-05:00", "created_at": "2022-02-03T16:57:27-05:00", "updated_at": "2022-02-03T16:57:27-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}]}));
+>>>>>>> origin/isomorphic/main
 
     await GiftCardAdjustment.all({
       session: test_session,
@@ -37,6 +41,7 @@ describe('GiftCardAdjustment resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 1064273909, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2022-04-03T13:10:51-04:00", "created_at": "2022-10-03T13:10:51-04:00", "updated_at": "2022-10-03T13:10:51-04:00", "note": null, "remote_transaction_ref": null, "remote_transaction_url": null}}));
 
     const gift_card_adjustment = new GiftCardAdjustment({session: test_session});
@@ -57,6 +62,9 @@ describe('GiftCardAdjustment resource', () => {
 
   it('test_3', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 1064273910, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2022-10-03T13:10:53-04:00", "created_at": "2022-10-03T13:10:53-04:00", "updated_at": "2022-10-03T13:10:53-04:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 10, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2022-02-03T16:57:31-05:00", "created_at": "2022-02-03T16:57:31-05:00", "updated_at": "2022-02-03T16:57:31-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+>>>>>>> origin/isomorphic/main
 
     const gift_card_adjustment = new GiftCardAdjustment({session: test_session});
     gift_card_adjustment.gift_card_id = 1035197676;
@@ -74,8 +82,13 @@ describe('GiftCardAdjustment resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_4', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 1064273911, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "-20.00", "processed_at": "2022-10-03T13:10:54-04:00", "created_at": "2022-10-03T13:10:54-04:00", "updated_at": "2022-10-03T13:10:54-04:00", "note": "Customer spent $20 via external service", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+=======
+  it('test_3', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 11, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "-20.00", "processed_at": "2022-02-03T16:57:33-05:00", "created_at": "2022-02-03T16:57:33-05:00", "updated_at": "2022-02-03T16:57:33-05:00", "note": "Customer spent $20 via external service", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+>>>>>>> origin/isomorphic/main
 
     const gift_card_adjustment = new GiftCardAdjustment({session: test_session});
     gift_card_adjustment.gift_card_id = 1035197676;
@@ -93,8 +106,13 @@ describe('GiftCardAdjustment resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_5', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 1064273912, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2022-10-03T13:10:57-04:00", "created_at": "2022-10-03T13:10:57-04:00", "updated_at": "2022-10-03T13:10:57-04:00", "note": null, "remote_transaction_ref": "gift_card_app_transaction_193402", "remote_transaction_url": "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}}));
+=======
+  it('test_4', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 12, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2022-02-03T16:57:34-05:00", "created_at": "2022-02-03T16:57:34-05:00", "updated_at": "2022-02-03T16:57:34-05:00", "note": null, "remote_transaction_ref": "gift_card_app_transaction_193402", "remote_transaction_url": "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}}));
+>>>>>>> origin/isomorphic/main
 
     const gift_card_adjustment = new GiftCardAdjustment({session: test_session});
     gift_card_adjustment.gift_card_id = 1035197676;
@@ -110,11 +128,37 @@ describe('GiftCardAdjustment resource', () => {
       query: '',
       headers,
       data: { "adjustment": {"amount": 10.0, "remote_transaction_ref": "gift_card_app_transaction_193402", "remote_transaction_url": "http://example.com/my-gift-card-app/gift_card_adjustments/193402"} }
+<<<<<<< HEAD
+=======
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_5', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 13, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2021-08-03T16:57:35-04:00", "created_at": "2022-02-03T16:57:35-05:00", "updated_at": "2022-02-03T16:57:35-05:00", "note": null, "remote_transaction_ref": null, "remote_transaction_url": null}}));
+
+    const gift_card_adjustment = new GiftCardAdjustment({session: test_session});
+    gift_card_adjustment.gift_card_id = 1035197676;
+    gift_card_adjustment.amount = 10.0;
+    gift_card_adjustment.processed_at = "2021-08-03T16:57:35-04:00";
+    await gift_card_adjustment.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-01/gift_cards/1035197676/adjustments.json',
+      query: '',
+      headers,
+      data: { "adjustment": {"amount": 10.0, "processed_at": "2021-08-03T16:57:35-04:00"} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 
   it('test_6', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 1064273908, "gift_card_id": 1035197676, "api_client_id": null, "user_id": null, "order_transaction_id": null, "number": null, "amount": "10.00", "processed_at": null, "created_at": "2022-10-03T13:07:13-04:00", "updated_at": "2022-10-03T13:07:13-04:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"adjustment": {"id": 9, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2022-02-03T16:57:29-05:00", "created_at": "2022-02-03T16:57:29-05:00", "updated_at": "2022-02-03T16:57:29-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+>>>>>>> origin/isomorphic/main
 
     await GiftCardAdjustment.find({
       session: test_session,

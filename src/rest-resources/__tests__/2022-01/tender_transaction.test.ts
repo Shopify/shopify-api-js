@@ -19,6 +19,7 @@ describe('TenderTransaction resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222834, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-07T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "credit_card"}]}));
 
     await TenderTransaction.all({
@@ -56,6 +57,9 @@ describe('TenderTransaction resource', () => {
 
   it('test_3', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222837, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-05T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "credit_card"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222878, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-05T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "unknown"}]}));
+>>>>>>> origin/isomorphic/main
 
     await TenderTransaction.all({
       session: test_session,
@@ -72,8 +76,31 @@ describe('TenderTransaction resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_4', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222844, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-07T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "credit_card"}, {"id": 1011222843, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-05T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "credit_card"}]}));
+=======
+  it('test_2', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222880, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-05T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "unknown"}, {"id": 1011222881, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-07T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "unknown"}]}));
+
+    await TenderTransaction.all({
+      session: test_session,
+      order: "processed_at ASC",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/tender_transactions.json',
+      query: 'order=processed_at+ASC',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_3', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222895, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-07T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "unknown"}, {"id": 1011222894, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-05T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "unknown"}]}));
+>>>>>>> origin/isomorphic/main
 
     await TenderTransaction.all({
       session: test_session,
@@ -89,8 +116,31 @@ describe('TenderTransaction resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_5', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222848, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-07T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "credit_card"}]}));
+=======
+  it('test_4', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222897, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-07T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "unknown"}]}));
+
+    await TenderTransaction.all({
+      session: test_session,
+      since_id: "1011222896",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/tender_transactions.json',
+      query: 'since_id=1011222896',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_5', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222899, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-07T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "unknown"}]}));
+>>>>>>> origin/isomorphic/main
 
     await TenderTransaction.all({
       session: test_session,
@@ -108,7 +158,11 @@ describe('TenderTransaction resource', () => {
   });
 
   it('test_6', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222849, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-05T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "credit_card"}, {"id": 1011222850, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-07T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "credit_card"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"tender_transactions": [{"id": 1011222900, "order_id": 450789469, "amount": "250.94", "currency": "USD", "user_id": null, "test": false, "processed_at": "2005-08-05T10:22:51-04:00", "remote_reference": "authorization-key", "payment_details": null, "payment_method": "unknown"}]}));
+>>>>>>> origin/isomorphic/main
 
     await TenderTransaction.all({
       session: test_session,

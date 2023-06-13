@@ -28,6 +28,7 @@ interface CompleteArgs {
 export class Checkout extends Base {
   public static apiVersion = ApiVersion.January23;
 
+<<<<<<< HEAD:rest/admin/2023-01/checkout.ts
   protected static resourceName = 'checkout';
   protected static pluralName = 'checkouts';
   protected static hasOne: {[key: string]: typeof Base} = {
@@ -43,6 +44,23 @@ export class Checkout extends Base {
     {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
     {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
+=======
+  protected static NAME = 'checkout';
+  protected static PLURAL_NAME = 'checkouts';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
+    "discount_code": DiscountCode,
+    "order": Order
+  };
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
+    "gift_cards": GiftCard
+  };
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
+    {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
+    {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"},
+    {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/checkout.ts
   ];
   protected static primaryKey: string = "token";
 

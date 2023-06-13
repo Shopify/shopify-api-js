@@ -19,7 +19,11 @@ describe('Collect resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"collect": {"id": 1071559580, "collection_id": 841564295, "product_id": 921728736, "created_at": "2022-10-03T13:19:30-04:00", "updated_at": "2022-10-03T13:19:30-04:00", "position": 2, "sort_value": "0000000002"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"collect": {"id": 1071559588, "collection_id": 841564295, "product_id": 921728736, "created_at": "2022-02-03T17:18:06-05:00", "updated_at": "2022-02-03T17:18:06-05:00", "position": 2, "sort_value": "0000000002"}}));
+>>>>>>> origin/isomorphic/main
 
     const collect = new Collect({session: test_session});
     collect.product_id = 921728736;
@@ -37,8 +41,64 @@ describe('Collect resource', () => {
   });
 
   it('test_2', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"collects": [{"id": 358268117, "collection_id": 482865238, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 773559378, "collection_id": 395646240, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 800915878, "collection_id": 482865238, "product_id": 921728736, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}]}));
+
+<<<<<<< HEAD
+=======
+    await Collect.all({
+      session: test_session,
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/collects.json',
+      query: '',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_3', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"collects": [{"id": 358268117, "collection_id": 482865238, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 773559378, "collection_id": 395646240, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}]}));
+
+    await Collect.all({
+      session: test_session,
+      product_id: "632910392",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/collects.json',
+      query: 'product_id=632910392',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_4', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"collects": [{"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 1071559590, "collection_id": 841564295, "product_id": 921728736, "created_at": "2022-02-03T17:18:22-05:00", "updated_at": "2022-02-03T17:18:22-05:00", "position": 2, "sort_value": "0000000002"}]}));
+
+    await Collect.all({
+      session: test_session,
+      collection_id: "841564295",
+    });
+
+    expect({
+      method: 'GET',
+      domain,
+      path: '/admin/api/2022-01/collects.json',
+      query: 'collection_id=841564295',
+      headers,
+      data: null
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_5', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({}));
 
+>>>>>>> origin/isomorphic/main
     await Collect.delete({
       session: test_session,
       id: 455204334,
@@ -54,7 +114,11 @@ describe('Collect resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_3', async () => {
+=======
+  it('test_6', async () => {
+>>>>>>> origin/isomorphic/main
     fetchMock.mockResponseOnce(JSON.stringify({"collect": {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}}));
 
     await Collect.find({
@@ -72,8 +136,13 @@ describe('Collect resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+<<<<<<< HEAD
   it('test_4', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"collects": [{"id": 358268117, "collection_id": 482865238, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 773559378, "collection_id": 395646240, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}]}));
+=======
+  it('test_7', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"count": 2}));
+>>>>>>> origin/isomorphic/main
 
     await Collect.all({
       session: test_session,
@@ -162,7 +231,11 @@ describe('Collect resource', () => {
   });
 
   it('test_9', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"count": 2}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"count": 1}));
+>>>>>>> origin/isomorphic/main
 
     await Collect.count({
       session: test_session,

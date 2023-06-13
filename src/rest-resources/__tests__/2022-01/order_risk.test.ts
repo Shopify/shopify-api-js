@@ -19,7 +19,11 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_1', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"risk": {"id": 1029151490, "order_id": 450789469, "checkout_id": 901414060, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order came from an anonymous proxy", "merchant_message": "This order came from an anonymous proxy"}}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"risk": {"id": 700140154, "order_id": 450789469, "checkout_id": 901414060, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order came from an anonymous proxy", "merchant_message": "This order came from an anonymous proxy"}}));
+>>>>>>> origin/isomorphic/main
 
     const order_risk = new OrderRisk({session: test_session});
     order_risk.order_id = 450789469;
@@ -42,7 +46,11 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_2', async () => {
+<<<<<<< HEAD
     fetchMock.mockResponseOnce(JSON.stringify({"risks": [{"id": 284138680, "order_id": 450789469, "checkout_id": null, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order was placed from a proxy IP", "merchant_message": "This order was placed from a proxy IP"}, {"id": 1029151489, "order_id": 450789469, "checkout_id": 901414060, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order came from an anonymous proxy", "merchant_message": "This order came from an anonymous proxy"}]}));
+=======
+    fetchMock.mockResponseOnce(JSON.stringify({"risks": [{"id": 284138680, "order_id": 450789469, "checkout_id": null, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order was placed from a proxy IP", "merchant_message": "This order was placed from a proxy IP"}, {"id": 700140156, "order_id": 450789469, "checkout_id": 901414060, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order came from an anonymous proxy", "merchant_message": "This order came from an anonymous proxy"}]}));
+>>>>>>> origin/isomorphic/main
 
     await OrderRisk.all({
       session: test_session,
@@ -97,7 +105,11 @@ describe('OrderRisk resource', () => {
       path: '/admin/api/2022-01/orders/450789469/risks/284138680.json',
       query: '',
       headers,
+<<<<<<< HEAD
       data: { "risk": {"message": "After further review, this is a legitimate order", "recommendation": "accept", "source": "External", "cause_cancel": false, "score": 0.0} }
+=======
+      data: { "risk": {"id": 284138680, "message": "After further review, this is a legitimate order", "recommendation": "accept", "source": "External", "cause_cancel": false, "score": 0.0} }
+>>>>>>> origin/isomorphic/main
     }).toMatchMadeHttpRequest();
   });
 

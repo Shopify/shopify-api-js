@@ -1,4 +1,5 @@
 <<<<<<< HEAD:src/utils/test/delete-current-session.test.ts
+<<<<<<< HEAD:src/utils/test/delete-current-session.test.ts
 import '../../test/test_helper';
 
 import http from 'http';
@@ -7,19 +8,27 @@ import http from 'http';
 >>>>>>> origin/isomorphic/crypto:src/utils/__tests__/delete-current-session.test.ts
 import jwt from 'jsonwebtoken';
 
+=======
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/delete-current-session.test.ts
 import {
   setAbstractFetchFunc,
   Headers,
   Request,
   Response,
-} from '../../adapters/abstract-http';
-import Shopify from '../../index-node';
-import * as mockAdapter from '../../adapters/mock-adapter';
+  Cookies,
+} from '../../runtime/http';
+import Shopify from '../../adapters/node';
+import * as mockAdapter from '../../adapters/mock';
 import {Context} from '../../context';
 import {Session} from '../../auth/session';
 import {JwtPayload} from '../decode-session-token';
 import deleteCurrentSession from '../delete-current-session';
 import loadCurrentSession from '../load-current-session';
+<<<<<<< HEAD:src/utils/test/delete-current-session.test.ts
+=======
+import {ShopifyOAuth} from '../../auth/oauth/oauth';
+import {signJWT} from '../setup-jest';
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/delete-current-session.test.ts
 
 setAbstractFetchFunc(mockAdapter.abstractFetch);
 
@@ -48,9 +57,11 @@ describe('deleteCurrenSession', () => {
 
     const sessionId = '1234-this-is-a-cookie-session-id';
     const req = {
-      headers: createSessionCookieHeader(sessionId),
+      headers: await createSessionCookieHeader(
+        sessionId,
+        Context.API_SECRET_KEY,
+      ),
     } as any as Request;
-    const res = {} as Response;
 
 <<<<<<< HEAD:src/utils/test/delete-current-session.test.ts
     const session = new Session(cookieId);
@@ -67,27 +78,30 @@ describe('deleteCurrenSession', () => {
     ).resolves.toEqual(true);
 >>>>>>> origin/isomorphic/crypto:src/utils/__tests__/delete-current-session.test.ts
 
-    await expect(deleteCurrentSession(req, res)).resolves.toBe(true);
-    await expect(loadCurrentSession(req, res)).resolves.toBe(undefined);
+    await expect(deleteCurrentSession(req)).resolves.toBe(true);
+    await expect(loadCurrentSession(req)).resolves.toBe(undefined);
   });
 
   it('finds and deletes the current session when using JWT', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
+<<<<<<< HEAD:src/utils/test/delete-current-session.test.ts
     const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {algorithm: 'HS256'});
+=======
+    const token = await signJWT(jwtPayload);
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/delete-current-session.test.ts
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
 
     const session = new Session(`test-shop.myshopify.io_${jwtPayload.sub}`);
     await expect(Context.storeSession(session)).resolves.toEqual(true);
 
-    await expect(deleteCurrentSession(req, res)).resolves.toBe(true);
-    await expect(loadCurrentSession(req, res)).resolves.toBe(undefined);
+    await expect(deleteCurrentSession(req)).resolves.toBe(true);
+    await expect(loadCurrentSession(req)).resolves.toBe(undefined);
   });
 
 <<<<<<< HEAD:src/utils/test/delete-current-session.test.ts
@@ -100,9 +114,11 @@ describe('deleteCurrenSession', () => {
       'test-shop.myshopify.io',
     );
     const req = {
-      headers: createSessionCookieHeader(sessionId),
+      headers: await createSessionCookieHeader(
+        sessionId,
+        Context.API_SECRET_KEY,
+      ),
     } as any as Request;
-    const res = {} as Response;
 
     const session = new Session(
       sessionId,
@@ -114,23 +130,20 @@ describe('deleteCurrenSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    await expect(deleteCurrentSession(req, res, false)).resolves.toBe(true);
-    await expect(loadCurrentSession(req, res, false)).resolves.toBe(undefined);
+    await expect(deleteCurrentSession(req, false)).resolves.toBe(true);
+    await expect(loadCurrentSession(req, false)).resolves.toBe(undefined);
   });
 
   it('finds and deletes the current offline session when using JWT', async () => {
     Context.IS_EMBEDDED_APP = true;
     Context.initialize(Context);
 
-    const token = jwt.sign(jwtPayload, Context.API_SECRET_KEY, {
-      algorithm: 'HS256',
-    });
+    const token = await signJWT(jwtPayload);
     const req = {
       headers: {
         authorization: `Bearer ${token}`,
       },
     } as any as Request;
-    const res = {} as Response;
 
     const session = new Session(
       ShopifyOAuth.getOfflineSessionId('test-shop.myshopify.io'),
@@ -142,8 +155,8 @@ describe('deleteCurrenSession', () => {
       Context.SESSION_STORAGE.storeSession(session),
     ).resolves.toEqual(true);
 
-    await expect(deleteCurrentSession(req, res, false)).resolves.toBe(true);
-    await expect(loadCurrentSession(req, res, false)).resolves.toBe(undefined);
+    await expect(deleteCurrentSession(req, false)).resolves.toBe(true);
+    await expect(loadCurrentSession(req, false)).resolves.toBe(undefined);
   });
 
 >>>>>>> origin/isomorphic/crypto:src/utils/__tests__/delete-current-session.test.ts
@@ -152,12 +165,15 @@ describe('deleteCurrenSession', () => {
     Context.initialize(Context);
 
     const req = {} as Request;
-    const res = {} as Response;
 
+<<<<<<< HEAD:src/utils/test/delete-current-session.test.ts
 <<<<<<< HEAD:src/utils/test/delete-current-session.test.ts
     await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.SessionNotFound);
 =======
     await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(
+=======
+    await expect(() => deleteCurrentSession(req)).rejects.toBeInstanceOf(
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/delete-current-session.test.ts
       Shopify.Errors.SessionNotFound,
     );
 >>>>>>> origin/isomorphic/crypto:src/utils/__tests__/delete-current-session.test.ts
@@ -184,17 +200,26 @@ describe('deleteCurrenSession', () => {
     await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(ShopifyErrors.MissingJwtTokenError);
 =======
     } as any as Request;
-    const res = {} as Response;
 
-    await expect(() => deleteCurrentSession(req, res)).rejects.toBeInstanceOf(
+    await expect(() => deleteCurrentSession(req)).rejects.toBeInstanceOf(
       Shopify.Errors.MissingJwtTokenError,
     );
 >>>>>>> origin/isomorphic/crypto:src/utils/__tests__/delete-current-session.test.ts
   });
 });
 
-function createSessionCookieHeader(sessionId: string): Headers {
+async function createSessionCookieHeader(
+  sessionId: string,
+  key: string,
+): Promise<Headers> {
+  const req = {} as Request;
+  const res = {} as Response;
+  const cookies = new Cookies(req, res, {keys: [key]});
+  await cookies.setAndSign(Shopify.Auth.SESSION_COOKIE_NAME, sessionId);
+
   return {
-    Cookie: `${Shopify.Auth.SESSION_COOKIE_NAME}=${sessionId}`,
+    Cookie: Object.values(cookies.outgoingCookieJar)
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join(','),
   };
 }

@@ -50,9 +50,15 @@ export class InventoryLevel extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/inventory_level.ts
     {"http_method": "delete", "operation": "delete", "ids": [], "path": "inventory_levels.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_levels.json"},
     {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_levels.json"},
+    {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
+    {"http_method": "delete", "operation": "delete", "ids": [], "path": "inventory_levels.json"},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/inventory_level.ts
     {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
     {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
   ];

@@ -1,16 +1,14 @@
-// import fetchMock from 'jest-fetch-mock';
 import * as jose from 'jose';
 
 import {Context} from '../context';
 import {ApiVersion} from '../base-types';
 import {MemorySessionStorage} from '../auth/session';
-import {JwtPayload} from '../utils/decode-session-token';
-import * as mockAdapter from '../adapters/mock-adapter';
+import * as mockAdapter from '../adapters/mock';
+import {canonicalizeHeaders} from '../runtime/http/headers';
+
+import {JwtPayload} from './decode-session-token';
 import {getHMACKey} from './get-hmac-key';
 
-// fetchMock.enableMocks();
-
-// let currentCall = 0;
 beforeEach(() => {
   // We want to reset the Context object on every run so that tests start with a consistent state
   Context.initialize({
@@ -26,10 +24,6 @@ beforeEach(() => {
     CUSTOM_SHOP_DOMAINS: undefined,
     BILLING: undefined,
   });
-
-  // fetchMock.mockReset();
-
-  // currentCall = 0;
 });
 
 interface AssertHttpRequestParams {
@@ -81,9 +75,12 @@ expect.extend({
       };
     }
   },
+
   toMatchMadeHttpRequest({
     method,
     headers = {},
+    path,
+    domain,
     data,
   }: AssertHttpRequestParams) {
     const bodyObject = data && typeof data !== 'string';
@@ -115,8 +112,20 @@ expect.extend({
     lastRequest.domain = parsedURL.hostname;
     lastRequest.query = parsedURL.search.slice(1);
     lastRequest.data = lastRequest.body;
+<<<<<<< HEAD
     expect(lastRequest).toMatchObject({method, headers, body: data});
 >>>>>>> origin/isomorphic/crypto
+=======
+    canonicalizeHeaders(lastRequest.headers);
+    canonicalizeHeaders(headers as any);
+    expect(lastRequest).toMatchObject({
+      method,
+      headers,
+      path,
+      domain,
+      body: data,
+    });
+>>>>>>> origin/isomorphic/main
 
     return {
       message: () => `expected to have seen the right HTTP requests`,
@@ -126,7 +135,7 @@ expect.extend({
 });
 
 export async function signJWT(payload: JwtPayload): Promise<string> {
-  return await new jose.SignJWT(payload as any)
+  return new jose.SignJWT(payload as any)
     .setProtectedHeader({alg: 'HS256'})
     .sign(getHMACKey(Context.API_SECRET_KEY));
 }

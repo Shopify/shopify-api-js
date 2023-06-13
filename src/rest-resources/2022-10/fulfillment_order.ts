@@ -63,6 +63,7 @@ export class FulfillmentOrder extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:src/rest-resources/2022-10/fulfillment_order.ts
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_orders/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
     {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillment_orders/<id>/cancel.json"},
@@ -73,6 +74,17 @@ export class FulfillmentOrder extends Base {
     {"http_method": "post", "operation": "release_hold", "ids": ["id"], "path": "fulfillment_orders/<id>/release_hold.json"},
     {"http_method": "post", "operation": "reschedule", "ids": ["id"], "path": "fulfillment_orders/<id>/reschedule.json"},
     {"http_method": "post", "operation": "set_fulfillment_orders_deadline", "ids": [], "path": "fulfillment_orders/set_fulfillment_orders_deadline.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_orders/<id>.json"},
+    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillment_orders/<id>/cancel.json"},
+    {"http_method": "post", "operation": "close", "ids": ["id"], "path": "fulfillment_orders/<id>/close.json"},
+    {"http_method": "post", "operation": "move", "ids": ["id"], "path": "fulfillment_orders/<id>/move.json"},
+    {"http_method": "post", "operation": "open", "ids": ["id"], "path": "fulfillment_orders/<id>/open.json"},
+    {"http_method": "post", "operation": "reschedule", "ids": ["id"], "path": "fulfillment_orders/<id>/reschedule.json"},
+    {"http_method": "post", "operation": "hold", "ids": ["id"], "path": "fulfillment_orders/<id>/hold.json"},
+    {"http_method": "post", "operation": "release_hold", "ids": ["id"], "path": "fulfillment_orders/<id>/release_hold.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/fulfillment_order.ts
   ];
 
   public static async find(
@@ -137,28 +149,8 @@ export class FulfillmentOrder extends Base {
       session: this.session,
       urlIds: {"id": this.id},
       params: {"message": message, ...otherArgs},
-      body: body,
-      entity: this,
-    });
-
-    return response ? response.body : null;
-  }
-
-  public async hold(
-    {
-      reason = null,
-      reason_notes = null,
-      notify_merchant = null,
-      body = null,
-      ...otherArgs
-    }: HoldArgs
-  ): Promise<unknown> {
-    const response = await FulfillmentOrder.request({
-      http_method: "post",
-      operation: "hold",
-      session: this.session,
-      urlIds: {"id": this.id},
-      params: {"reason": reason, "reason_notes": reason_notes, "notify_merchant": notify_merchant, ...otherArgs},
+<<<<<<< HEAD:src/rest-resources/2022-10/fulfillment_order.ts
+=======
       body: body,
       entity: this,
     });
@@ -198,6 +190,90 @@ export class FulfillmentOrder extends Base {
       session: this.session,
       urlIds: {"id": this.id},
       params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async reschedule(
+    {
+      body = null,
+      ...otherArgs
+    }: RescheduleArgs
+  ): Promise<unknown> {
+    const response = await FulfillmentOrder.request({
+      http_method: "post",
+      operation: "reschedule",
+      session: this.session,
+      urlIds: {"id": this.id},
+      params: {...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/fulfillment_order.ts
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async hold(
+    {
+      reason = null,
+      reason_notes = null,
+      notify_merchant = null,
+      body = null,
+      ...otherArgs
+    }: HoldArgs
+  ): Promise<unknown> {
+    const response = await FulfillmentOrder.request({
+      http_method: "post",
+      operation: "hold",
+      session: this.session,
+      urlIds: {"id": this.id},
+      params: {"reason": reason, "reason_notes": reason_notes, "notify_merchant": notify_merchant, ...otherArgs},
+<<<<<<< HEAD:src/rest-resources/2022-10/fulfillment_order.ts
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async move(
+    {
+      new_location_id = null,
+      body = null,
+      ...otherArgs
+    }: MoveArgs
+  ): Promise<unknown> {
+    const response = await FulfillmentOrder.request({
+      http_method: "post",
+      operation: "move",
+      session: this.session,
+      urlIds: {"id": this.id},
+      params: {"new_location_id": new_location_id, ...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async open(
+    {
+      body = null,
+      ...otherArgs
+    }: OpenArgs
+  ): Promise<unknown> {
+    const response = await FulfillmentOrder.request({
+      http_method: "post",
+      operation: "open",
+      session: this.session,
+      urlIds: {"id": this.id},
+      params: {...otherArgs},
+=======
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/fulfillment_order.ts
       body: body,
       entity: this,
     });
