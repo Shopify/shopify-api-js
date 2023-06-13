@@ -82,7 +82,11 @@ describe('SmartCollection resource', () => {
     expect({
       method: 'GET',
       domain,
+<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/smart_collection.test.ts
       path: '/admin/api/2022-10/smart_collections.json',
+========
+      path: '/admin/api/2022-07/smart_collections.json',
+>>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/smart_collection.test.ts
       query: 'ids=482865238%2C1063001348',
       headers,
       data: null
@@ -115,6 +119,8 @@ describe('SmartCollection resource', () => {
 
   it('test_6', async () => {
     fetchMock.mockResponseOnce(JSON.stringify({"smart_collection": {"id": 1063001336, "handle": "macbooks", "title": "Macbooks", "updated_at": "2022-10-03T13:17:01-04:00", "body_html": null, "published_at": "2022-10-03T13:16:55-04:00", "sort_order": "best-selling", "template_suffix": null, "disjunctive": false, "rules": [{"column": "vendor", "relation": "equals", "condition": "Apple"}], "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001336", "image": {"created_at": "2022-10-03T13:16:58-04:00", "alt": "Rails Logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/rails_logo20221003-23488-4mmir0.gif?v=1664817421"}}}));
+<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/smart_collection.test.ts
+========
 
     const smart_collection = new SmartCollection({session: test_session});
     smart_collection.title = "Macbooks";
@@ -134,10 +140,88 @@ describe('SmartCollection resource', () => {
     expect({
       method: 'POST',
       domain,
-      path: '/admin/api/2022-10/smart_collections.json',
+      path: '/admin/api/2022-07/smart_collections.json',
       query: '',
       headers,
       data: { "smart_collection": {"title": "Macbooks", "rules": [{"column": "vendor", "relation": "equals", "condition": "Apple"}], "image": {"src": "http://example.com/rails_logo.gif", "alt": "Rails Logo"}} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_7', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"smart_collection": {"id": 1063001339, "handle": "macbooks", "title": "Macbooks", "updated_at": "2022-10-03T13:17:45-04:00", "body_html": null, "published_at": "2022-10-03T13:17:42-04:00", "sort_order": "best-selling", "template_suffix": null, "disjunctive": false, "rules": [{"column": "vendor", "relation": "equals", "condition": "Apple"}], "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001339", "image": {"created_at": "2022-10-03T13:17:45-04:00", "alt": "iPod", "width": 1, "height": 1, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/df3e567d6f16d040326c7a0ea29a4f41.gif?v=1664817465"}}}));
+
+    const smart_collection = new SmartCollection({session: test_session});
+    smart_collection.title = "Macbooks";
+    smart_collection.rules = [
+      {
+        "column": "vendor",
+        "relation": "equals",
+        "condition": "Apple"
+      }
+    ];
+    smart_collection.image = {
+      "attachment": "R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\n",
+      "alt": "iPod"
+    };
+    await smart_collection.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-07/smart_collections.json',
+      query: '',
+      headers,
+      data: { "smart_collection": {"title": "Macbooks", "rules": [{"column": "vendor", "relation": "equals", "condition": "Apple"}], "image": {"attachment": "R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\n", "alt": "iPod"}} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_8', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"smart_collection": {"id": 1063001346, "handle": "ipods-1", "title": "IPods", "updated_at": "2022-10-03T13:18:22-04:00", "body_html": null, "published_at": "2022-10-03T13:18:22-04:00", "sort_order": "best-selling", "template_suffix": null, "disjunctive": false, "rules": [{"column": "title", "relation": "starts_with", "condition": "iPod"}], "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001346"}}));
+
+    const smart_collection = new SmartCollection({session: test_session});
+    smart_collection.title = "IPods";
+    smart_collection.rules = [
+      {
+        "column": "title",
+        "relation": "starts_with",
+        "condition": "iPod"
+      }
+    ];
+    await smart_collection.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-07/smart_collections.json',
+      query: '',
+      headers,
+      data: { "smart_collection": {"title": "IPods", "rules": [{"column": "title", "relation": "starts_with", "condition": "iPod"}]} }
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('test_9', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({"smart_collection": {"id": 1063001347, "handle": "macbooks", "title": "Macbooks", "updated_at": "2022-10-03T13:18:27-04:00", "body_html": null, "published_at": null, "sort_order": "best-selling", "template_suffix": null, "disjunctive": false, "rules": [{"column": "vendor", "relation": "equals", "condition": "Apple"}], "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001347"}}));
+>>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/smart_collection.test.ts
+
+    const smart_collection = new SmartCollection({session: test_session});
+    smart_collection.title = "Macbooks";
+    smart_collection.rules = [
+      {
+        "column": "vendor",
+        "relation": "equals",
+        "condition": "Apple"
+      }
+    ];
+    smart_collection.published = false;
+    await smart_collection.save({});
+
+    expect({
+      method: 'POST',
+      domain,
+      path: '/admin/api/2022-10/smart_collections.json',
+      query: '',
+      headers,
+      data: { "smart_collection": {"title": "Macbooks", "rules": [{"column": "vendor", "relation": "equals", "condition": "Apple"}], "published": false} }
     }).toMatchMadeHttpRequest();
   });
 
@@ -394,7 +478,11 @@ describe('SmartCollection resource', () => {
     expect({
       method: 'PUT',
       domain,
+<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/smart_collection.test.ts
       path: '/admin/api/2022-10/smart_collections/482865238.json',
+========
+      path: '/admin/api/2022-07/smart_collections/482865238.json',
+>>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/smart_collection.test.ts
       query: '',
       headers,
       data: { "smart_collection": {"published": false} }

@@ -552,6 +552,7 @@ You can follow our [getting started guide](docs/index.md), which will provide in
 - [Webhooks](docs/usage/webhooks.md)
   - [Register a Webhook](docs/usage/webhooks.md#register-a-webhook)
   - [Process a Webhook](docs/usage/webhooks.md#process-a-webhook)
+- [Billing](docs/usage/billing.md)
 - [Known issues and caveats](docs/issues.md)
   - [Notes on session handling](docs/issues.md#notes-on-session-handling)
 >>>>>>> 256689b9 (Splitting getting started guide into docs pages)

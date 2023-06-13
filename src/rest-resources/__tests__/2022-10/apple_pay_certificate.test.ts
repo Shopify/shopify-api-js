@@ -46,7 +46,11 @@ describe('ApplePayCertificate resource', () => {
     expect({
       method: 'GET',
       domain,
+<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/apple_pay_certificate.test.ts
       path: '/admin/api/2022-10/apple_pay_certificates/1068938276.json',
+========
+      path: '/admin/api/2022-07/apple_pay_certificates/1068938276.json',
+>>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/apple_pay_certificate.test.ts
       query: '',
       headers,
       data: null
@@ -102,7 +106,11 @@ describe('ApplePayCertificate resource', () => {
     expect({
       method: 'GET',
       domain,
+<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/apple_pay_certificate.test.ts
       path: '/admin/api/2022-10/apple_pay_certificates/1068938275/csr.json',
+========
+      path: '/admin/api/2022-07/apple_pay_certificates/1068938275/csr.json',
+>>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/apple_pay_certificate.test.ts
       query: '',
       headers,
       data: null

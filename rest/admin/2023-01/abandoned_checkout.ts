@@ -1,11 +1,6 @@
-/***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
-
-import {Base} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
 
 import {Currency} from './currency';
 import {Customer} from './customer';
@@ -13,52 +8,51 @@ import {DiscountCode} from './discount_code';
 
 interface CheckoutsArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
+  limit?: unknown;
   since_id?: unknown;
   created_at_min?: unknown;
   created_at_max?: unknown;
   updated_at_min?: unknown;
   updated_at_max?: unknown;
   status?: unknown;
-  limit?: unknown;
 }
 
 export class AbandonedCheckout extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.April22;
 
-  protected static resourceName = 'abandoned_checkout';
-  protected static pluralName = 'abandoned_checkouts';
-  protected static hasOne: {[key: string]: typeof Base} = {
+  protected static NAME = 'abandoned_checkout';
+  protected static PLURAL_NAME = 'abandoned_checkouts';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
     "currency": Currency,
     "customer": Customer
   };
-  protected static hasMany: {[key: string]: typeof Base} = {
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
     "discount_codes": DiscountCode
   };
-  protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];
 
   public static async checkouts(
     {
       session,
+      limit = null,
       since_id = null,
       created_at_min = null,
       created_at_max = null,
       updated_at_min = null,
       updated_at_max = null,
       status = null,
-      limit = null,
       ...otherArgs
     }: CheckoutsArgs
   ): Promise<unknown> {
-    const response = await this.request<AbandonedCheckout>({
+    const response = await AbandonedCheckout.request({
       http_method: "get",
       operation: "checkouts",
       session: session,
       urlIds: {},
-      params: {"since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, "limit": limit, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, ...otherArgs},
       body: {},
       entity: null,
     });

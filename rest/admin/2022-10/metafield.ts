@@ -1,14 +1,9 @@
-/***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
-
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   article_id?: number | string | null;
   blog_id?: number | string | null;
@@ -20,10 +15,9 @@ interface FindArgs {
   product_image_id?: number | string | null;
   product_id?: number | string | null;
   variant_id?: number | string | null;
-  fields?: unknown;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   article_id?: number | string | null;
   blog_id?: number | string | null;
@@ -38,7 +32,7 @@ interface DeleteArgs {
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   article_id?: number | string | null;
   blog_id?: number | string | null;
   collection_id?: number | string | null;
@@ -58,12 +52,13 @@ interface AllArgs {
   namespace?: unknown;
   key?: unknown;
   type?: unknown;
+  value_type?: unknown;
   fields?: unknown;
   metafield?: {[key: string]: unknown} | null;
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   article_id?: number | string | null;
   blog_id?: number | string | null;
   collection_id?: number | string | null;
@@ -77,15 +72,14 @@ interface CountArgs {
 }
 
 export class Metafield extends Base {
-  public static apiVersion = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'metafield';
-  protected static pluralName = 'metafields';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'metafield';
+  protected static PLURAL_NAME = 'metafields';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["article_id", "id"], "path": "articles/<article_id>/metafields/<id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["collection_id", "id"], "path": "collections/<collection_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/metafields/<id>.json"},
@@ -97,7 +91,6 @@ export class Metafield extends Base {
     {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": ["article_id"], "path": "articles/<article_id>/metafields/count.json"},
-    {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["collection_id"], "path": "collections/<collection_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["customer_id"], "path": "customers/<customer_id>/metafields/count.json"},
@@ -111,8 +104,6 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "get", "ids": ["article_id"], "path": "articles/<article_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["article_id", "id"], "path": "articles/<article_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
-    {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
-    {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["collection_id"], "path": "collections/<collection_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["collection_id", "id"], "path": "collections/<collection_id>/metafields/<id>.json"},
@@ -120,6 +111,7 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "get", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["draft_order_id"], "path": "draft_orders/<draft_order_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["draft_order_id", "id"], "path": "draft_orders/<draft_order_id>/metafields/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "metafields.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/metafields.json"},
@@ -134,7 +126,6 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "get", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["article_id"], "path": "articles/<article_id>/metafields.json"},
     {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
-    {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
     {"http_method": "post", "operation": "post", "ids": ["collection_id"], "path": "collections/<collection_id>/metafields.json"},
     {"http_method": "post", "operation": "post", "ids": ["customer_id"], "path": "customers/<customer_id>/metafields.json"},
     {"http_method": "post", "operation": "post", "ids": ["draft_order_id"], "path": "draft_orders/<draft_order_id>/metafields.json"},
@@ -145,7 +136,6 @@ export class Metafield extends Base {
     {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/metafields.json"},
     {"http_method": "post", "operation": "post", "ids": ["variant_id"], "path": "variants/<variant_id>/metafields.json"},
     {"http_method": "put", "operation": "put", "ids": ["article_id", "id"], "path": "articles/<article_id>/metafields/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["collection_id", "id"], "path": "collections/<collection_id>/metafields/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/metafields/<id>.json"},
@@ -171,16 +161,15 @@ export class Metafield extends Base {
       page_id = null,
       product_image_id = null,
       product_id = null,
-      variant_id = null,
-      fields = null
+      variant_id = null
     }: FindArgs
   ): Promise<Metafield | null> {
-    const result = await this.baseFind<Metafield>({
+    const result = await Metafield.baseFind({
       session: session,
       urlIds: {"id": id, "article_id": article_id, "blog_id": blog_id, "collection_id": collection_id, "customer_id": customer_id, "draft_order_id": draft_order_id, "order_id": order_id, "page_id": page_id, "product_image_id": product_image_id, "product_id": product_id, "variant_id": variant_id},
-      params: {"fields": fields},
+      params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] as Metafield : null;
   }
 
   public static async delete(
@@ -199,7 +188,7 @@ export class Metafield extends Base {
       variant_id = null
     }: DeleteArgs
   ): Promise<unknown> {
-    const response = await this.request<Metafield>({
+    const response = await Metafield.request({
       http_method: "delete",
       operation: "delete",
       session: session,
@@ -232,18 +221,19 @@ export class Metafield extends Base {
       namespace = null,
       key = null,
       type = null,
+      value_type = null,
       fields = null,
       metafield = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Metafield>> {
-    const response = await this.baseFind<Metafield>({
+  ): Promise<Metafield[]> {
+    const response = await Metafield.baseFind({
       session: session,
       urlIds: {"article_id": article_id, "blog_id": blog_id, "collection_id": collection_id, "customer_id": customer_id, "draft_order_id": draft_order_id, "order_id": order_id, "page_id": page_id, "product_image_id": product_image_id, "product_id": product_id, "variant_id": variant_id},
-      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "namespace": namespace, "key": key, "type": type, "fields": fields, "metafield": metafield, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "namespace": namespace, "key": key, "type": type, "value_type": value_type, "fields": fields, "metafield": metafield, ...otherArgs},
     });
 
-    return response;
+    return response as Metafield[];
   }
 
   public static async count(
@@ -262,7 +252,7 @@ export class Metafield extends Base {
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
-    const response = await this.request<Metafield>({
+    const response = await Metafield.request({
       http_method: "get",
       operation: "count",
       session: session,
@@ -277,7 +267,7 @@ export class Metafield extends Base {
 
   public key: string | null;
   public namespace: string | null;
-  public value: string | number | number | boolean | string | null;
+  public value: string | number | number | null;
   public article_id: number | null;
   public blog_id: number | null;
   public collection_id: number | null;
@@ -294,5 +284,6 @@ export class Metafield extends Base {
   public product_image_id: number | null;
   public type: string | null;
   public updated_at: string | null;
+  public value_type: string | null;
   public variant_id: number | null;
 }

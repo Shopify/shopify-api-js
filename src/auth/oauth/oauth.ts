@@ -16,7 +16,6 @@ import {DataType, HttpClient} from '../../clients/http_client';
 =======
 import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
->>>>>>> b9763756 (Fix almost all dependency cycle errors)
 import * as ShopifyErrors from '../../error';
 import {SessionInterface} from '../session/types';
 import {sanitizeShop} from '../../utils/shop-validator';
@@ -63,11 +62,7 @@ const ShopifyOAuth = {
       secure: true,
     });
 
-<<<<<<< HEAD
-    const state = isOnline ? `online_${nonce()}` : `offline_${nonce()}`;
-=======
     const state = nonce();
->>>>>>> b9763756 (Fix almost all dependency cycle errors)
 
     cookies.set(ShopifyOAuth.STATE_COOKIE_NAME, state, {
       signed: true,
@@ -127,8 +122,8 @@ const ShopifyOAuth = {
     );
     deleteCookie(request, response, this.STATE_COOKIE_NAME);
 
-<<<<<<< HEAD
-    if (!stateFromCookie) {
+    const sessionCookie = this.getCookieSessionId(request, response);
+    if (!sessionCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
 =======
@@ -139,14 +134,16 @@ const ShopifyOAuth = {
       currentSession = await Context.loadSession(sessionCookie);
     }
 
+    let currentSession = await Context.SESSION_STORAGE.loadSession(
+      sessionCookie,
+    );
     if (!currentSession) {
       throw new ShopifyErrors.SessionNotFound(
         `Cannot complete OAuth process. No session found for the specified shop url: ${query.shop}`,
->>>>>>> e83b5faf (Run yarn lint --fix on all files)
       );
     }
 
-    if (!validQuery(query, stateFromCookie)) {
+    if (!validQuery(query, currentSession)) {
       throw new ShopifyErrors.InvalidOAuthError('Invalid OAuth callback.');
     }
 
@@ -171,62 +168,60 @@ const ShopifyOAuth = {
     const postResponse = await client.post(postParams);
 
     if (currentSession.isOnline) {
-      const responseBody = postResponse.body as OnlineAccessResponse;
-      const {access_token, scope, ...rest} = responseBody;
-      const sessionExpiration = new Date(Date.now() + responseBody.expires_in * 1000);
+      const responseBody = postResponse.body;
+      const {access_token, scope, ...rest} = responseBody; // eslint-disable-line @typescript-eslint/naming-convention
+      const sessionExpiration = new Date(
+        Date.now() + responseBody.expires_in * 1000,
+      );
       currentSession.accessToken = access_token;
       currentSession.expires = sessionExpiration;
       currentSession.scope = scope;
-      currentSession.onlineAccesInfo = rest;
+      currentSession.onlineAccessInfo = rest;
+
+      // For an online session in an embedded app, we no longer want the cookie session so we delete it
+      if (Context.IS_EMBEDDED_APP) {
+        // If this is an online session for an embedded app, replace the online session with a JWT session
+        const onlineInfo = currentSession.onlineAccessInfo as OnlineAccessInfo;
+        const jwtSessionId = this.getJwtSessionId(
+          currentSession.shop,
+          `${onlineInfo.associated_user.id}`,
+        );
+        const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
+
+        const sessionDeleted = await Context.SESSION_STORAGE.deleteSession(
+          currentSession.id,
+        );
+        if (!sessionDeleted) {
+          throw new ShopifyErrors.SessionStorageError(
+            'OAuth Session could not be deleted. Please check your session storage functionality.',
+          );
+        }
+        currentSession = jwtSession;
+      }
     } else {
+      // Offline sessions (embedded / non-embedded) will use the same id so they don't need to be updated
       const responseBody = postResponse.body as AccessTokenResponse;
       currentSession.accessToken = responseBody.access_token;
       currentSession.scope = responseBody.scope;
     }
 
-    // If this is an offline session, we're no longer interested in the cookie. If it is online in an embedded app, we
-    // want the cookie session to expire a few seconds from now to give the app time to load itself to set up a JWT.
-    // Otherwise, we want to leave the cookie session alone until the actual expiration.
-    let oauthSessionExpiration = currentSession.expires;
-    if (!currentSession.isOnline) {
-      oauthSessionExpiration = new Date();
-    } else if (Context.IS_EMBEDDED_APP) {
-      // If this is an online session for an embedded app, prepare a JWT session to be used going forward
-      const onlineInfo = currentSession.onlineAccesInfo as OnlineAccessInfo;
-      const jwtSessionId = this.getJwtSessionId(currentSession.shop, `${onlineInfo.associated_user.id}`);
-      const jwtSession = Session.cloneSession(currentSession, jwtSessionId);
-      await Context.storeSession(jwtSession);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    } else {
-      await Context.storeSession(currentSession);
->>>>>>> e83b5faf (Run yarn lint --fix on all files)
-    }
-
-    return session;
-=======
-
-      currentSession.expires = new Date(Date.now() + 30000);
-=======
->>>>>>> 671b7980 (Match OAuth cookie expiration to session)
-=======
-
-      // Make sure the current OAuth session expires along with the cookie
-      oauthSessionExpiration = new Date(Date.now() + 30000);
-      currentSession.expires = oauthSessionExpiration;
->>>>>>> 887e90ca (Clone the JWT session before overriding the expiration)
-    }
-
     cookies.set(ShopifyOAuth.SESSION_COOKIE_NAME, currentSession.id, {
       signed: true,
-      expires: oauthSessionExpiration,
-      sameSite: 'none',
+      expires: Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
+      sameSite: 'lax',
       secure: true,
     });
 
-    await Context.storeSession(currentSession);
->>>>>>> 56b68641 (Extend cookie OAuth session to allow initial app loads)
+    const sessionStored = await Context.SESSION_STORAGE.storeSession(
+      currentSession,
+    );
+    if (!sessionStored) {
+      throw new ShopifyErrors.SessionStorageError(
+        'OAuth Session could not be saved. Please check your session storage functionality.',
+      );
+    }
+
+    return currentSession;
   },
 
   /**
@@ -244,7 +239,6 @@ const ShopifyOAuth = {
       keys: [Context.API_SECRET_KEY],
     });
     return cookies.get(this.SESSION_COOKIE_NAME, {signed: true});
->>>>>>> e83b5faf (Run yarn lint --fix on all files)
   },
 
   /**
@@ -320,116 +314,12 @@ const ShopifyOAuth = {
  * Uses the validation utils validateHmac, and safeCompare to assess whether the callback is valid.
  *
  * @param query Current HTTP Request Query
- * @param stateFromCookie state value from the current cookie
+ * @param session Current session
  */
-<<<<<<< HEAD
-function validQuery(query: AuthQuery, stateFromCookie: string): boolean {
-  return validateHmac(query) && safeCompare(query.state, stateFromCookie);
-=======
 function validQuery(query: AuthQuery, session: Session): boolean {
-<<<<<<< HEAD
   return (
-    validateHmac(query) &&
-    validateShop(query.shop) &&
-    safeCompare(query.state, session.state as string)
+    validateHmac(query) && safeCompare(query.state, session.state as string)
   );
->>>>>>> b9763756 (Fix almost all dependency cycle errors)
-=======
-  return validateHmac(query) && validateShop(query.shop) && safeCompare(query.state, session.state as string);
->>>>>>> 844b0ba2 (Run yarn lint --fix on all files)
-}
-
-<<<<<<< HEAD
-/**
- * Loads a given value from the cookie
- *
- * @param request HTTP request object
- * @param response HTTP response object
- * @param name Name of the cookie to load
- */
-function getValueFromCookie(
-  request: http.IncomingMessage,
-  response: http.ServerResponse,
-  name: string,
-): string | undefined {
-  const cookies = new Cookies(request, response, {
-    secure: true,
-    keys: [Context.API_SECRET_KEY],
-  });
-  return cookies.get(name, {signed: true});
-}
-
-/**
- * Loads a given value from the cookie
- *
- * @param request HTTP request object
- * @param response HTTP response object
- * @param name Name of the cookie to load
- */
-function deleteCookie(
-  request: http.IncomingMessage,
-  response: http.ServerResponse,
-  name: string,
-): void {
-  const cookies = new Cookies(request, response, {
-    secure: true,
-    keys: [Context.API_SECRET_KEY],
-  });
-  cookies.set(name);
-}
-
-/**
- * Creates a new session from the response from the access token request.
- *
- * @param postResponse Response from the access token request
- * @param shop Shop url: {shop}.myshopify.com
- * @param stateFromCookie State from the cookie received by the OAuth callback
- * @param isOnline Boolean indicating if the access token is for online access
- * @returns SessionInterface
- */
-function createSession(
-  postResponse: RequestReturn,
-  shop: string,
-  stateFromCookie: string,
-  isOnline: boolean,
-): SessionInterface {
-  let session: Session;
-
-  if (isOnline) {
-    let sessionId: string;
-    const responseBody = postResponse.body as OnlineAccessResponse;
-    const {access_token, scope, ...rest} = responseBody; // eslint-disable-line @typescript-eslint/naming-convention
-    const sessionExpiration = new Date(
-      Date.now() + responseBody.expires_in * 1000,
-    );
-
-    if (Context.IS_EMBEDDED_APP) {
-      sessionId = ShopifyOAuth.getJwtSessionId(
-        shop,
-        `${(rest as OnlineAccessInfo).associated_user.id}`,
-      );
-    } else {
-      sessionId = uuidv4();
-    }
-
-    session = new Session(sessionId, shop, stateFromCookie, isOnline);
-    session.accessToken = access_token;
-    session.scope = scope;
-    session.expires = sessionExpiration;
-    session.onlineAccessInfo = rest;
-  } else {
-    const responseBody = postResponse.body as AccessTokenResponse;
-    session = new Session(
-      ShopifyOAuth.getOfflineSessionId(shop),
-      shop,
-      stateFromCookie,
-      isOnline,
-    );
-    session.accessToken = responseBody.access_token;
-    session.scope = responseBody.scope;
-  }
-
-  return session;
 }
 
 =======

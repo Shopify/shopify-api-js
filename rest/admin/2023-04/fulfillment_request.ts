@@ -2,9 +2,14 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD:rest/admin/2023-04/fulfillment_request.ts
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {ApiVersion} from '../../base-types';
+>>>>>>> upstream/v5:src/rest-resources/2022-04/fulfillment_request.ts
 
 interface AcceptArgs {
   [key: string]: unknown;

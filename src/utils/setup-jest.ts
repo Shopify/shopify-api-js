@@ -86,19 +86,6 @@ expect.extend({
     headers = {},
     data,
   }: AssertHttpRequestParams) {
-<<<<<<< HEAD
-    const searchUrl = new URL(
-      `https://${domain}${path}${
-        query ? `?${query.replace(/\+/g, '%20')}` : ''
-      }`,
-    );
-
-    // We compare the sorted query items, so we can expect arguments in a different order
-    const searchQueryItems = Array.from(
-      searchUrl.searchParams.entries(),
-    ).sort();
-    const cleanSearchUrl = searchUrl.toString().split('?')[0];
-
     const bodyObject = data && typeof data !== 'string';
     const maxCall = currentCall + tries;
     for (let i = currentCall; i < maxCall; i++) {

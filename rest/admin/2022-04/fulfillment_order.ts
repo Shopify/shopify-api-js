@@ -1,25 +1,14 @@
-/***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
-
-<<<<<<< HEAD:rest/admin/2022-04/fulfillment_order.ts
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
-=======
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
->>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-01/fulfillment_order.ts
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   order_id?: number | string | null;
 }
 interface CancelArgs {
@@ -40,7 +29,7 @@ interface HoldArgs {
 }
 interface MoveArgs {
   [key: string]: unknown;
-  fulfillment_order?: unknown;
+  new_location_id?: unknown;
   body?: {[key: string]: unknown} | null;
 }
 interface OpenArgs {
@@ -57,13 +46,13 @@ interface RescheduleArgs {
 }
 
 export class FulfillmentOrder extends Base {
-  public static apiVersion = ApiVersion.April22;
+  public static API_VERSION = ApiVersion.April22;
 
-  protected static resourceName = 'fulfillment_order';
-  protected static pluralName = 'fulfillment_orders';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'fulfillment_order';
+  protected static PLURAL_NAME = 'fulfillment_orders';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_orders/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
     {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillment_orders/<id>/cancel.json"},
@@ -81,12 +70,12 @@ export class FulfillmentOrder extends Base {
       id
     }: FindArgs
   ): Promise<FulfillmentOrder | null> {
-    const result = await this.baseFind<FulfillmentOrder>({
+    const result = await FulfillmentOrder.baseFind({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] as FulfillmentOrder : null;
   }
 
   public static async all(
@@ -95,14 +84,14 @@ export class FulfillmentOrder extends Base {
       order_id = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<FulfillmentOrder>> {
-    const response = await this.baseFind<FulfillmentOrder>({
+  ): Promise<FulfillmentOrder[]> {
+    const response = await FulfillmentOrder.baseFind({
       session: session,
       urlIds: {"order_id": order_id},
       params: {...otherArgs},
     });
 
-    return response;
+    return response as FulfillmentOrder[];
   }
 
   public async cancel(
@@ -111,7 +100,7 @@ export class FulfillmentOrder extends Base {
       ...otherArgs
     }: CancelArgs
   ): Promise<unknown> {
-    const response = await this.request<FulfillmentOrder>({
+    const response = await FulfillmentOrder.request({
       http_method: "post",
       operation: "cancel",
       session: this.session,
@@ -131,7 +120,7 @@ export class FulfillmentOrder extends Base {
       ...otherArgs
     }: CloseArgs
   ): Promise<unknown> {
-    const response = await this.request<FulfillmentOrder>({
+    const response = await FulfillmentOrder.request({
       http_method: "post",
       operation: "close",
       session: this.session,
@@ -153,7 +142,7 @@ export class FulfillmentOrder extends Base {
       ...otherArgs
     }: HoldArgs
   ): Promise<unknown> {
-    const response = await this.request<FulfillmentOrder>({
+    const response = await FulfillmentOrder.request({
       http_method: "post",
       operation: "hold",
       session: this.session,
@@ -168,17 +157,17 @@ export class FulfillmentOrder extends Base {
 
   public async move(
     {
-      fulfillment_order = null,
+      new_location_id = null,
       body = null,
       ...otherArgs
     }: MoveArgs
   ): Promise<unknown> {
-    const response = await this.request<FulfillmentOrder>({
+    const response = await FulfillmentOrder.request({
       http_method: "post",
       operation: "move",
       session: this.session,
       urlIds: {"id": this.id},
-      params: {"fulfillment_order": fulfillment_order, ...otherArgs},
+      params: {"new_location_id": new_location_id, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -192,7 +181,7 @@ export class FulfillmentOrder extends Base {
       ...otherArgs
     }: OpenArgs
   ): Promise<unknown> {
-    const response = await this.request<FulfillmentOrder>({
+    const response = await FulfillmentOrder.request({
       http_method: "post",
       operation: "open",
       session: this.session,
@@ -211,7 +200,7 @@ export class FulfillmentOrder extends Base {
       ...otherArgs
     }: ReleaseHoldArgs
   ): Promise<unknown> {
-    const response = await this.request<FulfillmentOrder>({
+    const response = await FulfillmentOrder.request({
       http_method: "post",
       operation: "release_hold",
       session: this.session,
@@ -230,7 +219,7 @@ export class FulfillmentOrder extends Base {
       ...otherArgs
     }: RescheduleArgs
   ): Promise<unknown> {
-    const response = await this.request<FulfillmentOrder>({
+    const response = await FulfillmentOrder.request({
       http_method: "post",
       operation: "reschedule",
       session: this.session,
@@ -248,7 +237,6 @@ export class FulfillmentOrder extends Base {
   public delivery_method: {[key: string]: unknown} | null;
   public destination: {[key: string]: unknown} | null;
   public fulfill_at: string | null;
-  public fulfill_by: string | null;
   public fulfillment_holds: {[key: string]: unknown}[] | null;
   public id: number | null;
   public international_duties: {[key: string]: unknown} | null;

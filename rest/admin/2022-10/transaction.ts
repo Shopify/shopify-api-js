@@ -1,14 +1,9 @@
-/***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
-
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   order_id?: number | string | null;
   fields?: unknown;
@@ -16,7 +11,7 @@ interface FindArgs {
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   order_id?: number | string | null;
   since_id?: unknown;
   fields?: unknown;
@@ -24,18 +19,18 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   order_id?: number | string | null;
 }
 
 export class Transaction extends Base {
-  public static apiVersion = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'transaction';
-  protected static pluralName = 'transactions';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'transaction';
+  protected static PLURAL_NAME = 'transactions';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/transactions/count.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/transactions/<id>.json"},
@@ -51,12 +46,12 @@ export class Transaction extends Base {
       in_shop_currency = null
     }: FindArgs
   ): Promise<Transaction | null> {
-    const result = await this.baseFind<Transaction>({
+    const result = await Transaction.baseFind({
       session: session,
       urlIds: {"id": id, "order_id": order_id},
       params: {"fields": fields, "in_shop_currency": in_shop_currency},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] as Transaction : null;
   }
 
   public static async all(
@@ -68,14 +63,14 @@ export class Transaction extends Base {
       in_shop_currency = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Transaction>> {
-    const response = await this.baseFind<Transaction>({
+  ): Promise<Transaction[]> {
+    const response = await Transaction.baseFind({
       session: session,
       urlIds: {"order_id": order_id},
       params: {"since_id": since_id, "fields": fields, "in_shop_currency": in_shop_currency, ...otherArgs},
     });
 
-    return response;
+    return response as Transaction[];
   }
 
   public static async count(
@@ -85,7 +80,7 @@ export class Transaction extends Base {
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
-    const response = await this.request<Transaction>({
+    const response = await Transaction.request({
       http_method: "get",
       operation: "count",
       session: session,

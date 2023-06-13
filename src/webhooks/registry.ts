@@ -343,6 +343,7 @@ const WebhooksRegistry: RegistryInterface = {
         let hmac: string | string[] | undefined;
         let topic: string | string[] | undefined;
         let domain: string | string[] | undefined;
+        let webhookId: string | string[] | undefined;
         Object.entries(request.headers).map(([header, value]) => {
           switch (header.toLowerCase()) {
             case ShopifyHeader.Hmac.toLowerCase():
@@ -353,6 +354,9 @@ const WebhooksRegistry: RegistryInterface = {
               break;
             case ShopifyHeader.Domain.toLowerCase():
               domain = value;
+              break;
+            case ShopifyHeader.WebhookId.toLowerCase():
+              webhookId = value;
               break;
           }
         });
@@ -388,13 +392,42 @@ const WebhooksRegistry: RegistryInterface = {
       const graphqlTopic = (topic as string).toUpperCase().replace(/\//g, '_');
       const webhookEntry = this.webhookRegistry.find(e => e.topic === graphqlTopic);
 
-      if (webhookEntry) {
-        webhookEntry.webhookHandler(graphqlTopic, (domain as string), body);
-        result.statusCode = StatusCode.Ok
-        result.headers = {};
-      }
-    }
-    return result;
+          if (webhookEntry) {
+            try {
+              await webhookEntry.webhookHandler(
+                graphqlTopic,
+                domain as string,
+                reqBody,
+              );
+              statusCode = StatusCode.Ok;
+            } catch (error) {
+              statusCode = StatusCode.InternalServerError;
+              responseError = error;
+            }
+          } else {
+            statusCode = StatusCode.NotFound;
+            responseError = new ShopifyErrors.InvalidWebhookError(
+              `No webhook is registered for topic ${topic}`,
+            );
+          }
+        } else {
+          statusCode = StatusCode.Unauthorized;
+          responseError = new ShopifyErrors.InvalidWebhookError(
+            `Could not validate request for topic ${topic}`,
+          );
+        }
+
+        response.writeHead(statusCode, headers);
+        response.end();
+        if (responseError) {
+          return reject(responseError);
+        } else {
+          return resolve();
+        }
+      });
+    });
+
+    return promise;
   },
 
   isWebhookPath(path: string): boolean {

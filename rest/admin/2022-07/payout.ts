@@ -1,25 +1,14 @@
-/***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
-
-<<<<<<< HEAD:rest/admin/2022-07/payout.ts
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
-=======
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
->>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-01/payout.ts
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   since_id?: unknown;
   last_id?: unknown;
   date_min?: unknown;
@@ -29,13 +18,13 @@ interface AllArgs {
 }
 
 export class Payout extends Base {
-  public static apiVersion = ApiVersion.July22;
+  public static API_VERSION = ApiVersion.April22;
 
-  protected static resourceName = 'payout';
-  protected static pluralName = 'payouts';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'payout';
+  protected static PLURAL_NAME = 'payouts';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/payouts.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/payouts/<id>.json"}
   ];
@@ -46,12 +35,12 @@ export class Payout extends Base {
       id
     }: FindArgs
   ): Promise<Payout | null> {
-    const result = await this.baseFind<Payout>({
+    const result = await Payout.baseFind({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] as Payout : null;
   }
 
   public static async all(
@@ -65,14 +54,14 @@ export class Payout extends Base {
       status = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Payout>> {
-    const response = await this.baseFind<Payout>({
+  ): Promise<Payout[]> {
+    const response = await Payout.baseFind({
       session: session,
       urlIds: {},
       params: {"since_id": since_id, "last_id": last_id, "date_min": date_min, "date_max": date_max, "date": date, "status": status, ...otherArgs},
     });
 
-    return response;
+    return response as Payout[];
   }
 
   public amount: string | null;

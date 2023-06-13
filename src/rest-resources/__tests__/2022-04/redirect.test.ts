@@ -6,7 +6,7 @@ import {Session} from '../../../auth/session';
 import {Context} from '../../../context';
 import {ApiVersion} from '../../../base-types';
 
-import {Redirect} from '../../2022-10';
+import {Redirect} from '../../2022-04';
 
 describe('Redirect resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -15,7 +15,7 @@ describe('Redirect resource', () => {
   test_session.accessToken = 'this_is_a_test_token';
 
   beforeEach(() => {
-    Context.API_VERSION = ApiVersion.October22;
+    Context.API_VERSION = ApiVersion.April22;
   });
 
   it('test_1', async () => {
@@ -29,7 +29,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-10/redirects.json',
+      path: '/admin/api/2022-04/redirects.json',
       query: 'since_id=668809255',
       headers,
       data: null
@@ -46,11 +46,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'GET',
       domain,
-<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/redirect.test.ts
-      path: '/admin/api/2022-10/redirects.json',
-========
-      path: '/admin/api/2022-07/redirects.json',
->>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/redirect.test.ts
+      path: '/admin/api/2022-04/redirects.json',
       query: '',
       headers,
       data: null
@@ -67,7 +63,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-10/redirects/count.json',
+      path: '/admin/api/2022-04/redirects/count.json',
       query: '',
       headers,
       data: null
@@ -85,7 +81,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-10/redirects/668809255.json',
+      path: '/admin/api/2022-04/redirects/668809255.json',
       query: '',
       headers,
       data: null
@@ -104,7 +100,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'PUT',
       domain,
-      path: '/admin/api/2022-10/redirects/950115854.json',
+      path: '/admin/api/2022-04/redirects/950115854.json',
       query: '',
       headers,
       data: { "redirect": {"path": "/powermac", "target": "/pages/macpro"} }
@@ -122,11 +118,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'PUT',
       domain,
-<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/redirect.test.ts
-      path: '/admin/api/2022-10/redirects/668809255.json',
-========
-      path: '/admin/api/2022-07/redirects/668809255.json',
->>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/redirect.test.ts
+      path: '/admin/api/2022-04/redirects/668809255.json',
       query: '',
       headers,
       data: { "redirect": {"path": "/tiger"} }
@@ -144,11 +136,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'PUT',
       domain,
-<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/redirect.test.ts
-      path: '/admin/api/2022-10/redirects/668809255.json',
-========
-      path: '/admin/api/2022-07/redirects/668809255.json',
->>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/redirect.test.ts
+      path: '/admin/api/2022-04/redirects/668809255.json',
       query: '',
       headers,
       data: { "redirect": {"target": "/pages/macpro"} }
@@ -166,7 +154,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'DELETE',
       domain,
-      path: '/admin/api/2022-10/redirects/668809255.json',
+      path: '/admin/api/2022-04/redirects/668809255.json',
       query: '',
       headers,
       data: null
@@ -184,11 +172,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'POST',
       domain,
-<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/redirect.test.ts
-      path: '/admin/api/2022-10/redirects.json',
-========
-      path: '/admin/api/2022-07/redirects.json',
->>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/redirect.test.ts
+      path: '/admin/api/2022-04/redirects.json',
       query: '',
       headers,
       data: { "redirect": {"path": "/ipod", "target": "/pages/itunes"} }
@@ -206,11 +190,7 @@ describe('Redirect resource', () => {
     expect({
       method: 'POST',
       domain,
-<<<<<<<< HEAD:src/rest-resources/__tests__/2022-10/redirect.test.ts
-      path: '/admin/api/2022-10/redirects.json',
-========
-      path: '/admin/api/2022-07/redirects.json',
->>>>>>>> upstream/v5:src/rest-resources/__tests__/2022-07/redirect.test.ts
+      path: '/admin/api/2022-04/redirects.json',
       query: '',
       headers,
       data: { "redirect": {"path": "http://www.apple.com/forums", "target": "http://forums.apple.com"} }

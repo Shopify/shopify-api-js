@@ -1,46 +1,41 @@
-/***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
-
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
 
 import {Country} from './country';
 import {Province} from './province';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   order_id?: number | string | null;
   fulfillment_id?: number | string | null;
   event_id?: unknown;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   order_id?: number | string | null;
   fulfillment_id?: number | string | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   order_id?: number | string | null;
   fulfillment_id?: number | string | null;
 }
 
 export class FulfillmentEvent extends Base {
-  public static apiVersion = ApiVersion.April23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'fulfillment_event';
-  protected static pluralName = 'fulfillment_events';
-  protected static hasOne: {[key: string]: typeof Base} = {
+  protected static NAME = 'fulfillment_event';
+  protected static PLURAL_NAME = 'fulfillment_events';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
     "country": Country,
     "province": Province
   };
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["order_id", "fulfillment_id", "id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id", "id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
@@ -61,12 +56,12 @@ export class FulfillmentEvent extends Base {
       event_id = null
     }: FindArgs
   ): Promise<FulfillmentEvent | null> {
-    const result = await this.baseFind<FulfillmentEvent>({
+    const result = await FulfillmentEvent.baseFind({
       session: session,
       urlIds: {"id": id, "order_id": order_id, "fulfillment_id": fulfillment_id},
       params: {"event_id": event_id},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] as FulfillmentEvent : null;
   }
 
   public static async delete(
@@ -77,7 +72,7 @@ export class FulfillmentEvent extends Base {
       fulfillment_id = null
     }: DeleteArgs
   ): Promise<unknown> {
-    const response = await this.request<FulfillmentEvent>({
+    const response = await FulfillmentEvent.request({
       http_method: "delete",
       operation: "delete",
       session: session,
@@ -95,14 +90,14 @@ export class FulfillmentEvent extends Base {
       fulfillment_id = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<FulfillmentEvent>> {
-    const response = await this.baseFind<FulfillmentEvent>({
+  ): Promise<FulfillmentEvent[]> {
+    const response = await FulfillmentEvent.baseFind({
       session: session,
       urlIds: {"order_id": order_id, "fulfillment_id": fulfillment_id},
       params: {...otherArgs},
     });
 
-    return response;
+    return response as FulfillmentEvent[];
   }
 
   public address1: string | null;

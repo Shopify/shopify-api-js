@@ -1,32 +1,21 @@
-/***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
-
-<<<<<<< HEAD:rest/admin/2022-07/shop.ts
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
-=======
 import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
->>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-01/shop.ts
 
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   fields?: unknown;
 }
 
 export class Shop extends Base {
-  public static apiVersion = ApiVersion.July22;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'shop';
-  protected static pluralName = 'shops';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'shop';
+  protected static PLURAL_NAME = 'shops';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
   ];
 
@@ -36,14 +25,14 @@ export class Shop extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Shop>> {
-    const response = await this.baseFind<Shop>({
+  ): Promise<Shop[]> {
+    const response = await Shop.baseFind({
       session: session,
       urlIds: {},
       params: {"fields": fields, ...otherArgs},
     });
 
-    return response;
+    return response as Shop[];
   }
 
   public address1: string | null;
@@ -54,7 +43,7 @@ export class Shop extends Base {
   public country: string | null;
   public country_code: string | null;
   public country_name: string | null;
-  public county_taxes: boolean | null;
+  public county_taxes: string | null;
   public created_at: string | null;
   public currency: string | null;
   public customer_email: string | null;

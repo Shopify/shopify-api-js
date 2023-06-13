@@ -38,6 +38,17 @@ interface CancelArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
 }
+<<<<<<<< HEAD:src/rest-resources/2022-10/fulfillment.ts
+========
+interface CompleteArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
+interface OpenArgs {
+  [key: string]: unknown;
+  body?: {[key: string]: unknown} | null;
+}
+>>>>>>>> upstream/v5:src/rest-resources/2022-04/fulfillment.ts
 interface UpdateTrackingArgs {
   [key: string]: unknown;
   body?: {[key: string]: unknown} | null;
@@ -56,8 +67,18 @@ export class Fulfillment extends Base {
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"},
     {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillments/<id>/cancel.json"},
+<<<<<<<< HEAD:src/rest-resources/2022-10/fulfillment.ts
     {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
     {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"}
+========
+    {"http_method": "post", "operation": "cancel", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/cancel.json"},
+    {"http_method": "post", "operation": "complete", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/complete.json"},
+    {"http_method": "post", "operation": "open", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>/open.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
+    {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"},
+    {"http_method": "put", "operation": "put", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"}
+>>>>>>>> upstream/v5:src/rest-resources/2022-04/fulfillment.ts
   ];
 
   public static async find(
@@ -134,7 +155,49 @@ export class Fulfillment extends Base {
       http_method: "post",
       operation: "cancel",
       session: this.session,
+<<<<<<<< HEAD:src/rest-resources/2022-10/fulfillment.ts
       urlIds: {"id": this.id},
+========
+      urlIds: {"id": this.id, "order_id": this.order_id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async complete(
+    {
+      body = null,
+      ...otherArgs
+    }: CompleteArgs
+  ): Promise<unknown> {
+    const response = await Fulfillment.request({
+      http_method: "post",
+      operation: "complete",
+      session: this.session,
+      urlIds: {"id": this.id, "order_id": this.order_id},
+      params: {...otherArgs},
+      body: body,
+      entity: this,
+    });
+
+    return response ? response.body : null;
+  }
+
+  public async open(
+    {
+      body = null,
+      ...otherArgs
+    }: OpenArgs
+  ): Promise<unknown> {
+    const response = await Fulfillment.request({
+      http_method: "post",
+      operation: "open",
+      session: this.session,
+      urlIds: {"id": this.id, "order_id": this.order_id},
+>>>>>>>> upstream/v5:src/rest-resources/2022-04/fulfillment.ts
       params: {...otherArgs},
       body: body,
       entity: this,
