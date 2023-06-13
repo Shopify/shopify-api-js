@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 import http from 'http';
 
 import Cookies from 'cookies';
 
+=======
+import {Request, Response} from '../adapters/abstract-http';
+>>>>>>> origin/isomorphic/crypto
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
@@ -15,6 +19,7 @@ import decodeSessionToken from './decode-session-token';
  * @param res Current HTTP response
  */
 export default async function deleteCurrentSession(
+<<<<<<< HEAD
   req: http.IncomingMessage,
   res: http.ServerResponse,
 ): Promise<boolean | never> {
@@ -27,6 +32,22 @@ export default async function deleteCurrentSession(
       if (!matches) {
         throw new ShopifyErrors.MissingJwtTokenError('Missing Bearer token in authorization header');
       }
+=======
+  request: Request,
+  response: Response,
+  isOnline = true,
+): Promise<boolean | never> {
+  Context.throwIfUninitialized();
+
+  const sessionId = await ShopifyOAuth.getCurrentSessionId(
+    request,
+    response,
+    isOnline,
+  );
+  if (!sessionId) {
+    throw new ShopifyErrors.SessionNotFound('No active session found.');
+  }
+>>>>>>> origin/isomorphic/crypto
 
       const jwtPayload = decodeSessionToken(matches[1]);
       const jwtSessionId = ShopifyOAuth.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);

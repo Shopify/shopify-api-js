@@ -273,6 +273,7 @@
 
 ### Added
 
+<<<<<<< HEAD
 - Support for specifying the URI scheme of the host [#385](https://github.com/Shopify/shopify-api-js/pull/385)
 - Add optional `saving` parameter to `serialize` of `Base` class - default is `false` and will include read-only attributes in returned object; `true` used for `save` when committing via API to Shopify.
 
@@ -300,6 +301,11 @@
   - All response fields are now contained within a `response` object, to make it easier to access them
 - ⚠️ [Breaking] Update supported Admin API versions [#310](https://github.com/Shopify/shopify-api-js/pull/310)
 - Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-api-js/pull/301)
+=======
+- ⚠️ [Breaking] The `getCurrentSessionId` and `decodeSessionToken` utils functions now return Promises
+- ⚠️ [Breaking] Update supported Admin API versions [#310](https://github.com/Shopify/shopify-node-api/pull/310)
+- Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-node-api/pull/301)
+>>>>>>> origin/isomorphic/crypto
 
 ### Fixed
 

@@ -1,8 +1,15 @@
 import querystring, {ParsedUrlQueryInput} from 'querystring';
 
-import fetch, {RequestInit, Response} from 'node-fetch';
 import {Method, StatusCode} from '@shopify/network';
 
+import {
+  getHeader,
+  isOK,
+  abstractFetch,
+  Headers,
+  Request,
+  Response,
+} from '../../adapters/abstract-http';
 import * as ShopifyErrors from '../../error';
 import {SHOPIFY_APP_DEV_KIT_VERSION} from '../../version';
 import validateShop from '../../utils/shop-validator';
@@ -59,6 +66,7 @@ class HttpClient {
   protected async request(params: RequestParams): Promise<RequestReturn> {
     const maxTries = params.tries ? params.tries : 1;
     if (maxTries <= 0) {
+<<<<<<< HEAD
       throw new ShopifyErrors.HttpRequestError(`Number of tries must be >= 0, got ${maxTries}`);
     }
 
@@ -69,14 +77,35 @@ class HttpClient {
         delete params.extraHeaders['user-agent'];
       } else if (params.extraHeaders['User-Agent']) {
         userAgent = `${params.extraHeaders['User-Agent']} | ${userAgent}`;
+=======
+      throw new ShopifyErrors.HttpRequestError(
+        `Number of tries must be >= 0, got ${maxTries}`,
+      );
+    }
+
+    const extraHeaders = params.extraHeaders ?? {};
+
+    let userAgent = `Shopify API Library v${SHOPIFY_API_LIBRARY_VERSION} | Node ${process.version}`;
+
+    if (Context.USER_AGENT_PREFIX) {
+      userAgent = `${Context.USER_AGENT_PREFIX} | ${userAgent}`;
+    }
+
+    if (extraHeaders) {
+      if (extraHeaders['user-agent']) {
+        userAgent = `${extraHeaders['user-agent']} | ${userAgent}`;
+        delete extraHeaders['user-agent'];
+      } else if (extraHeaders['User-Agent']) {
+        userAgent = `${extraHeaders['User-Agent']} | ${userAgent}`;
+>>>>>>> origin/isomorphic/crypto
       }
     }
 
-    let headers: typeof params.extraHeaders = {
-      ...params.extraHeaders,
+    let headers: Headers = {
+      ...extraHeaders,
       'User-Agent': userAgent,
     };
-    let body = null;
+    let body;
     if (params.method === Method.Post || params.method === Method.Put) {
       const {type, data} = params as PostRequestParams;
       if (data) {
@@ -93,26 +122,40 @@ class HttpClient {
         }
         headers = {
           'Content-Type': type,
-          'Content-Length': Buffer.byteLength(body as string),
-          ...params.extraHeaders,
+          'Content-Length': Buffer.byteLength(body as string).toString(),
+          ...extraHeaders,
         };
       }
     }
 
+<<<<<<< HEAD
     const queryString = params.query ? `?${querystring.stringify(params.query as ParsedUrlQueryInput)}` : '';
 
     const url = `https://${this.domain}${params.path}${queryString}`;
     const options: RequestInit = {
+=======
+    const url = `https://${this.domain}${this.getRequestPath(
+      params.path,
+    )}${ProcessedQuery.stringify(params.query)}`;
+
+    const req: Request = {
+      url,
+>>>>>>> origin/isomorphic/crypto
       method: params.method.toString(),
       headers,
       body,
-    } as RequestInit;
+    };
 
     let tries = 0;
     while (tries < maxTries) {
       try {
+<<<<<<< HEAD
         return await this.doRequest(url, options);
       } catch (e) {
+=======
+        return await this.doRequest(req);
+      } catch (error) {
+>>>>>>> origin/isomorphic/crypto
         tries++;
         if (e instanceof ShopifyErrors.HttpRetriableError) {
           // We're not out of tries yet, use them
@@ -143,6 +186,7 @@ class HttpClient {
     throw new ShopifyErrors.ShopifyError(`Unexpected flow, reached maximum HTTP tries but did not throw an error`);
   }
 
+<<<<<<< HEAD
   private async doRequest(url: string, options: RequestInit): Promise<RequestReturn> {
     return fetch(url, options)
       .then(async (response: Response) => {
@@ -191,6 +235,100 @@ class HttpClient {
           throw error;
         }
       });
+=======
+  protected getRequestPath(path: string): string {
+    return `/${path.replace(/^\//, '')}`;
+  }
+
+  private throwFailedRequest(response: Response) {
+    const body = JSON.parse(response.body!);
+    const errorMessages: string[] = [];
+    if (body.errors) {
+      errorMessages.push(JSON.stringify(body.errors, null, 2));
+    }
+    const requestId = getHeader(response.headers, 'x-request-id');
+    if (requestId) {
+      errorMessages.push(
+        `If you report this error, please include this id: ${requestId}`,
+      );
+    }
+
+    const errorMessage = errorMessages.length
+      ? `:\n${errorMessages.join('\n')}`
+      : '';
+    switch (true) {
+      case response.statusCode === StatusCode.TooManyRequests: {
+        const retryAfter = getHeader(response.headers, 'Retry-After');
+        throw new ShopifyErrors.HttpThrottlingError(
+          `Shopify is throttling requests${errorMessage}`,
+          retryAfter ? parseFloat(retryAfter) : undefined,
+        );
+      }
+      case response.statusCode >= StatusCode.InternalServerError:
+        throw new ShopifyErrors.HttpInternalError(
+          `Shopify internal error${errorMessage}`,
+        );
+      default:
+        throw new ShopifyErrors.HttpResponseError(
+          `Received an error response (${response.statusCode} ${response.statusText}) from Shopify${errorMessage}`,
+          response.statusCode,
+          response.statusText,
+        );
+    }
+    // Unreachable. We’ll have *definitely* thrown by this point.
+    // return;
+  }
+
+  private async doRequest(req: Request): Promise<RequestReturn> {
+    const response = await abstractFetch(req);
+
+    if (!isOK(response)) {
+      this.throwFailedRequest(response);
+    }
+
+    const body = JSON.parse(response.body!);
+    const deprecationReason = getHeader(
+      response.headers,
+      'X-Shopify-API-Deprecated-Reason',
+    );
+    if (deprecationReason) {
+      const deprecation = {
+        message: deprecationReason,
+        path: req.url,
+      };
+
+      const depHash = crypto
+        .createHash('md5')
+        .update(JSON.stringify(deprecation))
+        .digest('hex');
+
+      if (
+        !Object.keys(this.LOGGED_DEPRECATIONS).includes(depHash) ||
+        Date.now() - this.LOGGED_DEPRECATIONS[depHash] >=
+          HttpClient.DEPRECATION_ALERT_DELAY
+      ) {
+        this.LOGGED_DEPRECATIONS[depHash] = Date.now();
+
+        if (Context.LOG_FILE) {
+          const stack = new Error().stack;
+          const log = `API Deprecation Notice ${new Date().toLocaleString()} : ${JSON.stringify(
+            deprecation,
+          )}\n    Stack Trace: ${stack}\n`;
+          fs.writeFileSync(Context.LOG_FILE, log, {
+            flag: 'a',
+            encoding: 'utf-8',
+          });
+        } else {
+          console.warn('API Deprecation Notice:', deprecation);
+        }
+      }
+    }
+
+    return {
+      body,
+      headers: response.headers ?? {},
+    };
+>>>>>>> origin/isomorphic/crypto
   }
 }
 

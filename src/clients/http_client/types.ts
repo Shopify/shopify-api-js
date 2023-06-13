@@ -1,7 +1,10 @@
-import {Method} from '@shopify/network';
-import {Headers} from 'node-fetch';
+import type {Method} from '@shopify/network';
 
+<<<<<<< HEAD
 export type HeaderParams = Record<string, string | number>;
+=======
+import type {Headers} from '../../adapters/abstract-http';
+>>>>>>> origin/isomorphic/crypto
 
 export enum DataType {
   JSON = 'application/json',
@@ -12,9 +15,15 @@ export enum DataType {
 export interface GetRequestParams {
   path: string;
   type?: DataType;
+<<<<<<< HEAD
   data?: Record<string, unknown> | string;
   query?: Record<string, string | number>;
   extraHeaders?: HeaderParams;
+=======
+  data?: {[key: string]: unknown} | string;
+  query?: {[key: string]: QueryParams};
+  extraHeaders?: Headers;
+>>>>>>> origin/isomorphic/crypto
   tries?: number;
 }
 

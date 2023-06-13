@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 // import fetch from 'node-fetch';
 import { StatusCode } from '@shopify/network';
 import { GraphqlClient } from '../clients/graphql/graphql_client';
 import { ShopifyHeader, ApiVersion } from '../types';
 import { createHmac } from 'crypto';
+=======
+import {createHmac} from 'crypto';
+import type {IncomingMessage, ServerResponse} from 'http';
+
+import {StatusCode} from '@shopify/network';
+
+import {GraphqlClient} from '../clients/graphql/graphql_client';
+import {ApiVersion, ShopifyHeader} from '../base-types';
+>>>>>>> origin/isomorphic/crypto
 import ShopifyUtilities from '../utils';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
@@ -73,7 +83,11 @@ interface RegistryInterface {
    * @param request HTTP request received from Shopify
    * @param response HTTP response to the request
    */
+<<<<<<< HEAD
   process(options: ProcessOptions): ProcessReturn,
+=======
+  process(request: IncomingMessage, response: ServerResponse): Promise<void>;
+>>>>>>> origin/isomorphic/crypto
 
   /**
    * Confirms that the given path is a webhook path
@@ -285,6 +299,7 @@ const WebhooksRegistry: RegistryInterface = {
     return { success: success, result: result.body };
   },
 
+<<<<<<< HEAD
   process({ headers, body }: ProcessOptions): ProcessReturn {
     let hmac: string | undefined;
     let topic: string | undefined;
@@ -302,6 +317,46 @@ const WebhooksRegistry: RegistryInterface = {
           break;
       }
     }
+=======
+  async process(
+    request: IncomingMessage,
+    response: ServerResponse,
+  ): Promise<void> {
+    let reqBody = '';
+
+    const promise: Promise<void> = new Promise((resolve, reject) => {
+      request.on('data', (chunk) => {
+        reqBody += chunk;
+      });
+
+      request.on('end', async () => {
+        if (!reqBody.length) {
+          response.writeHead(StatusCode.BadRequest);
+          response.end();
+          return reject(
+            new ShopifyErrors.InvalidWebhookError(
+              'No body was received when processing webhook',
+            ),
+          );
+        }
+
+        let hmac: string | string[] | undefined;
+        let topic: string | string[] | undefined;
+        let domain: string | string[] | undefined;
+        Object.entries(request.headers).map(([header, value]) => {
+          switch (header.toLowerCase()) {
+            case ShopifyHeader.Hmac.toLowerCase():
+              hmac = value;
+              break;
+            case ShopifyHeader.Topic.toLowerCase():
+              topic = value;
+              break;
+            case ShopifyHeader.Domain.toLowerCase():
+              domain = value;
+              break;
+          }
+        });
+>>>>>>> origin/isomorphic/crypto
 
         const missingHeaders = [];
         if (!hmac) {

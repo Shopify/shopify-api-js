@@ -1,12 +1,16 @@
-import fetchMock from 'jest-fetch-mock';
+// import fetchMock from 'jest-fetch-mock';
+import * as jose from 'jose';
 
 import {Context} from '../context';
 import {ApiVersion} from '../base-types';
 import {MemorySessionStorage} from '../auth/session';
+import {JwtPayload} from '../utils/decode-session-token';
+import * as mockAdapter from '../adapters/mock-adapter';
+import {getHMACKey} from './get-hmac-key';
 
-fetchMock.enableMocks();
+// fetchMock.enableMocks();
 
-let currentCall = 0;
+// let currentCall = 0;
 beforeEach(() => {
   // We want to reset the Context object on every run so that tests start with a consistent state
   Context.initialize({
@@ -23,9 +27,9 @@ beforeEach(() => {
     BILLING: undefined,
   });
 
-  fetchMock.mockReset();
+  // fetchMock.mockReset();
 
-  currentCall = 0;
+  // currentCall = 0;
 });
 
 interface AssertHttpRequestParams {
@@ -79,13 +83,10 @@ expect.extend({
   },
   toMatchMadeHttpRequest({
     method,
-    domain,
-    path,
-    query = '',
     headers = {},
-    data = null,
-    tries = 1,
+    data,
   }: AssertHttpRequestParams) {
+<<<<<<< HEAD
     const searchUrl = new URL(
       `https://${domain}${path}${
         query ? `?${query.replace(/\+/g, '%20')}` : ''
@@ -120,6 +121,15 @@ expect.extend({
       expect(requestQueryItems).toEqual(searchQueryItems);
       expect(mockCall[1]).toMatchObject({method, headers, body: data});
     }
+=======
+    const lastRequest: any = mockAdapter.getLastRequest();
+    const parsedURL = new URL(lastRequest.url);
+    lastRequest.path = parsedURL.pathname;
+    lastRequest.domain = parsedURL.hostname;
+    lastRequest.query = parsedURL.search.slice(1);
+    lastRequest.data = lastRequest.body;
+    expect(lastRequest).toMatchObject({method, headers, body: data});
+>>>>>>> origin/isomorphic/crypto
 
     return {
       message: () => `expected to have seen the right HTTP requests`,
@@ -127,3 +137,9 @@ expect.extend({
     };
   },
 });
+
+export async function signJWT(payload: JwtPayload): Promise<string> {
+  return await new jose.SignJWT(payload as any)
+    .setProtectedHeader({alg: 'HS256'})
+    .sign(getHMACKey(Context.API_SECRET_KEY));
+}

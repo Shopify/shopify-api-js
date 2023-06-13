@@ -126,8 +126,14 @@ export class FakeResource extends Base {
       urlIds: {id, other_resource_id},
     });
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/resources/fake-resource.ts
     return response.body;
   }
+=======
+    // FIXME
+    return response.body as any;
+  };
+>>>>>>> origin/isomorphic/crypto:src/__tests__/fake-resource.ts
 
   id?: number | string | null;
   attribute?: string | null;

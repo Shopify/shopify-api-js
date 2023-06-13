@@ -1,5 +1,4 @@
-import http from 'http';
-
+import {Request, Response} from '../adapters/abstract-http';
 import {Context} from '../context';
 import * as ShopifyErrors from '../error';
 import {ShopifyOAuth} from '../auth/oauth/oauth';
@@ -14,6 +13,7 @@ import decodeSessionToken from './decode-session-token';
  * @param res Current HTTP response
  */
 export default async function loadCurrentSession(
+<<<<<<< HEAD
   request: http.IncomingMessage,
   response: http.ServerResponse,
 ): Promise<Session | undefined> {
@@ -33,6 +33,21 @@ export default async function loadCurrentSession(
       const jwtSessionId = ShopifyOAuth.getJwtSessionId(jwtPayload.dest.replace(/^https:\/\//, ''), jwtPayload.sub);
       session = await Context.loadSession(jwtSessionId);
     }
+=======
+  request: Request,
+  response: Response,
+  isOnline = true,
+): Promise<Session | undefined> {
+  Context.throwIfUninitialized();
+
+  const sessionId = await ShopifyOAuth.getCurrentSessionId(
+    request,
+    response,
+    isOnline,
+  );
+  if (!sessionId) {
+    return Promise.resolve(undefined);
+>>>>>>> origin/isomorphic/crypto
   }
 
   // We fall back to the cookie session to allow apps to load their skeleton page after OAuth, so they can set up App

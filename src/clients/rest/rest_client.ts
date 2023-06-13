@@ -4,6 +4,11 @@ import {Context} from '../../context';
 import {ShopifyHeader} from '../../types';
 import {HttpClient} from '../http_client/http_client';
 import {RequestParams, GetRequestParams} from '../http_client/types';
+<<<<<<< HEAD
+=======
+import * as ShopifyErrors from '../../error';
+import {getHeader} from '../../adapters/abstract-http';
+>>>>>>> origin/isomorphic/crypto
 
 import {RestRequestReturn, PageInfo} from './types';
 
@@ -25,8 +30,13 @@ class RestClient extends HttpClient {
 
     const ret = (await super.request(params)) as RestRequestReturn;
 
+<<<<<<< HEAD
     const link = ret.headers.get('link');
     if (params.query && link !== undefined) {
+=======
+    const link = getHeader(ret.headers, 'link');
+    if (link !== undefined) {
+>>>>>>> origin/isomorphic/crypto
       const pageInfo: PageInfo = {
         limit: params.query.limit.toString(),
       };
