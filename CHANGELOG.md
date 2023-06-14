@@ -4,6 +4,10 @@
 
 ### Patch Changes
 
+<<<<<<< HEAD
+=======
+- a9ef2e20: Fix crypto module set up for node, so it doesn't break webpack apps
+>>>>>>> 841041a531376ae37c8fd1b367e61b259db87dcd
 - 85e7478f: [Internal] Improved tracking of webhook registration GraphQL calls
 
 ## 7.3.0
