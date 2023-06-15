@@ -5,13 +5,15 @@ As of v6 of the library, there are no `SessionStorage` implementations included 
 The previous implementations of `SessionStorage` are now available in their own packages, the source of which is available in the respective directory in the [`Shopify/shopify-app-js` repo](https://github.com/Shopify/shopify-app-js/tree/main/packages).
 
 |                      Package                      |  Session storage object  | Notes                                    |
-| :-----------------------------------------------: | :----------------------: | ---------------------------------------- |
+|:-------------------------------------------------:|:------------------------:|------------------------------------------|
 |   `@shopify/shopify-app-session-storage-memory`   |   MemorySessionStorage   |                                          |
 |  `@shopify/shopify-app-session-storage-mongodb`   |  MongoDBSessionStorage   |                                          |
 |   `@shopify/shopify-app-session-storage-mysql`    |   MySQLSessionStorage    |                                          |
 | `@shopify/shopify-app-session-storage-postgresql` | PostgreSQLSessionStorage |                                          |
 |   `@shopify/shopify-app-session-storage-redis`    |   RedisSessionStorage    |                                          |
 |   `@shopify/shopify-app-session-storage-sqlite`   |   SQLiteSessionStorage   |                                          |
+|  `@shopify/shopify-app-session-storage-dynamodb`  |  DynamoDBSessionStorage  |                                          |
+|     `@shopify/shopify-app-session-storage-kv`     |     KVSessionStorage     |                                          |
 |      `@shopify/shopify-app-session-storage`       |      SessionStorage      | Abstract class used by the classes above |
 
 ## Basics
