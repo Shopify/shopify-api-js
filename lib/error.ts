@@ -56,11 +56,11 @@ interface HttpThrottlingErrorParams extends HttpThrottlingErrorData {
   message: string;
 }
 export class HttpThrottlingError extends HttpRetriableError {
-  readonly response: HttpThrottlingErrorData;
+  readonly throttlingResponse: HttpThrottlingErrorData;
 
   public constructor({retryAfter, ...params}: HttpThrottlingErrorParams) {
     super(params);
-    this.response.retryAfter = retryAfter;
+    this.throttlingResponse.retryAfter = retryAfter;
   }
 }
 

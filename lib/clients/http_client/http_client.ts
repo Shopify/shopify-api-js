@@ -181,9 +181,9 @@ export class HttpClient {
             let waitTime = this.httpClass().RETRY_WAIT_TIME;
             if (
               error instanceof ShopifyErrors.HttpThrottlingError &&
-              error.response.retryAfter
+              error.throttlingResponse.retryAfter
             ) {
-              waitTime = error.response.retryAfter * 1000;
+              waitTime = error.throttlingResponse.retryAfter * 1000;
             }
             await sleep(waitTime);
             continue;
