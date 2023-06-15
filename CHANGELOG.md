@@ -5,12 +5,11 @@
 ### Patch Changes
 
 <<<<<<< HEAD
+=======
+- a9ef2e20: Fix crypto module set up for node, so it doesn't break webpack apps
+>>>>>>> 841041a531376ae37c8fd1b367e61b259db87dcd
 - 85e7478f: [Internal] Improved tracking of webhook registration GraphQL calls
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 ## 7.3.0
 
 ### Minor Changes
@@ -190,44 +189,12 @@
 
 - Added support for the `2022-10` API version [#535](https://github.com/Shopify/shopify-api-js/pull/535)
 
-=======
->>>>>>> upstream/v5
-## [5.3.0] - 2022-12-05
-
-- [Minor] Pass webhook id to handlers [#606](https://github.com/Shopify/shopify-api-node/pull/606)
-
-## [5.2.0] - 2022-10-04
-
-- Added support for the `2022-10` API version [#535](https://github.com/Shopify/shopify-api-node/pull/535)
-
 ## [5.1.0] - 2022-09-19
 
-<<<<<<< HEAD
 - Increased tolerance for expired JWT session tokens from 5s to 10s [#462](https://github.com/Shopify/shopify-api-js/pull/462)
 - Add support for billing to the library [#449](https://github.com/Shopify/shopify-api-js/pull/449)
 - Allow dynamically typing the body of REST and GraphQL request responses, so callers don't need to cast it [#447](https://github.com/Shopify/shopify-api-js/pull/447)
 - Rather than create a temporary session in order to store a session id in a cookie for the OAuth transaction, we can store the `state` in the cookie instead, that can then be compared against the `state` provided by Shopify in the callback. [#438](https://github.com/Shopify/shopify-api-js/pull/438)
-=======
-=======
-=======
-## [5.1.0] - 2022-09-19
-
->>>>>>> 888ddd18 (v5.1.0)
-- Increased tolerance for expired JWT session tokens from 5s to 10s [#462](https://github.com/Shopify/shopify-api-node/pull/462)
->>>>>>> ffea7e52 (Increase JWT validation tolerance)
-- Add support for billing to the library [#449](https://github.com/Shopify/shopify-api-node/pull/449)
-- Allow dynamically typing the body of REST and GraphQL request responses, so callers don't need to cast it [#447](https://github.com/Shopify/shopify-api-node/pull/447)
-<<<<<<< HEAD
->>>>>>> 85c72bea (Add billing support)
-=======
-- Rather than create a temporary session in order to store a session id in a cookie for the OAuth transaction, we can store the `state` in the cookie instead, that can then be compared against the `state` provided by Shopify in the callback. [#438](https://github.com/Shopify/shopify-api-node/pull/438)
->>>>>>> 970dc560 (Store state instead of session id in cookie)
-=======
-- Increased tolerance for expired JWT session tokens from 5s to 10s [#462](https://github.com/Shopify/shopify-api-node/pull/462)
-- Add support for billing to the library [#449](https://github.com/Shopify/shopify-api-node/pull/449)
-- Allow dynamically typing the body of REST and GraphQL request responses, so callers don't need to cast it [#447](https://github.com/Shopify/shopify-api-node/pull/447)
-- Rather than create a temporary session in order to store a session id in a cookie for the OAuth transaction, we can store the `state` in the cookie instead, that can then be compared against the `state` provided by Shopify in the callback. [#438](https://github.com/Shopify/shopify-api-node/pull/438)
->>>>>>> upstream/v5
 
 ## [5.0.1] - 2022-08-03
 
@@ -267,9 +234,6 @@
 
 ## [3.1.2] - 2022-06-07
 
-=======
-## [Unreleased]
->>>>>>> a230deb6 (v0.2.1)
 ### Added
 
 - Store user id and expiration date of online tokens
@@ -283,13 +247,10 @@
 
 ### Added
 
-<<<<<<< HEAD
 - Support for specifying the URI scheme of the host [#385](https://github.com/Shopify/shopify-api-js/pull/385)
 - Add optional `saving` parameter to `serialize` of `Base` class - default is `false` and will include read-only attributes in returned object; `true` used for `save` when committing via API to Shopify.
 
 ### Fixed
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 - Fixes [#363](https://github.com/Shopify/shopify-api-js/issues/363)
   - Webhooks `register` now checks for any attempt to register a GDPR topic (not done via API but by Partner Dashboard), provides an error message in response
@@ -311,11 +272,6 @@
   - All response fields are now contained within a `response` object, to make it easier to access them
 - ⚠️ [Breaking] Update supported Admin API versions [#310](https://github.com/Shopify/shopify-api-js/pull/310)
 - Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-api-js/pull/301)
-=======
-- ⚠️ [Breaking] The `getCurrentSessionId` and `decodeSessionToken` utils functions now return Promises
-- ⚠️ [Breaking] Update supported Admin API versions [#310](https://github.com/Shopify/shopify-node-api/pull/310)
-- Allow full paths in REST requests [#301](https://github.com/Shopify/shopify-node-api/pull/301)
->>>>>>> origin/isomorphic/crypto
 
 ### Fixed
 
@@ -327,7 +283,7 @@
 
   ```js
   app.post('/graphql', async (req, res) => {
-    await Shopify.Utils.graphqlProxy(req);
+    await Shopify.Utils.graphqlProxy(req, res);
   });
   ```
 
@@ -335,7 +291,7 @@
 
   ```js
   app.post('/graphql', async (req, res) => {
-    const response = await Shopify.Utils.graphqlProxy(req);
+    const response = await Shopify.Utils.graphqlProxy(req, res);
     res.status(200).send(response.body);
   });
   ```
@@ -473,22 +429,6 @@
 - Preserve the OAuth cookie session for a few seconds so SPA can perform their initial load using it [#70](https://github.com/Shopify/shopify-api-js/pull/70)
 - Session fetches now return `undefined` when a session is not available [#64](https://github.com/Shopify/shopify-api-js/pull/64)
 - Add `deleteCurrentSession` utils method [#60](https://github.com/Shopify/shopify-api-js/pull/60)
-=======
-=======
-
-## [0.2.2] - 2021-01-14
-
-### Fixed
-
-- Ensure that the OAuth session expiration matches the cookie expiration [#72](https://github.com/shopify/shopify_ts_api/pull/72) / [#73](https://github.com/shopify/shopify_ts_api/pull/73)
-
->>>>>>> a230deb6 (v0.2.1)
-## [0.2.0] - 2021-01-13
-
-- Preserve the OAuth cookie session for a few seconds so SPA can perform their initial load using it [#70](https://github.com/shopify/shopify_ts_api/pull/70)
-- Session fetches now return `undefined` when a session is not available [#64](https://github.com/shopify/shopify_ts_api/pull/64)
-- Add `deleteCurrentSession` utils method [#60](https://github.com/shopify/shopify_ts_api/pull/60)
->>>>>>> d55a06e9 (v0.2.0)
 
 ## [0.1.0] - 2020-12-17
 
