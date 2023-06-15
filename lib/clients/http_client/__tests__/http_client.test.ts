@@ -589,7 +589,6 @@ describe('HTTP client', () => {
         {
           status: 429,
           statusText: 'Did not work',
-          /* eslint-disable-next-line @typescript-eslint/naming-convention */
           headers: {'Retry-After': realWaitTime.toString()},
         },
       ],
@@ -627,7 +626,6 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
-            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -643,7 +641,6 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
-            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -684,7 +681,6 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
-            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -697,7 +693,6 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
-            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -710,7 +705,6 @@ describe('HTTP client', () => {
         {
           status: 200,
           headers: {
-            /* eslint-disable-next-line @typescript-eslint/naming-convention */
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
           },
@@ -750,7 +744,6 @@ describe('HTTP client', () => {
       {
         status: 200,
         headers: {
-          /* eslint-disable-next-line @typescript-eslint/naming-convention */
           'X-Shopify-API-Deprecated-Reason':
             'This API endpoint has been deprecated',
         },
@@ -763,7 +756,7 @@ describe('HTTP client', () => {
     expect(logs[0][1]).toContain(
       ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
     );
-    expect(logs[0][1]).toContain(`Stack Trace: Error`);
+    expect(logs[0][1]).toContain(`Stack Trace: Error:`);
   });
 
   it('properly encodes strings in the error message', async () => {
