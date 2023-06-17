@@ -6,7 +6,7 @@ import {
   BillingInterval,
   BillingReplacementBehavior,
 } from '../../types';
-import {BillingConfig} from '../types';
+import {BillingConfig, BillingConfigCombinationPlan} from '../types';
 import {shopifyApi, Shopify} from '../..';
 
 import * as Responses from './responses';
@@ -169,6 +169,31 @@ const SUBSCRIPTION_TEST_CONFIGS: TestConfigInterface[] = [
         interval: BillingInterval.Usage,
         replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
         trialDays: 10,
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
+    errorResponse: '',
+    mutationName: 'appSubscriptionCreate',
+  },
+];
+
+const COMBINATION_TEST_CONFIGS: TestConfigInterface[] = [
+  {
+    name: 'can request combination billing plans',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        interval: BillingInterval.Combination,
+        subscriptionPlan: {
+          amount: 5,
+          currencyCode: 'USD',
+        },
+        usagePlan: {
+          amount: 5,
+          currencyCode: 'USD',
+          usageTerms: '1 dollar per click',
+        },
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
@@ -399,6 +424,70 @@ describe('shopify.billing.request', () => {
                   trialDays: 10,
                   replacementBehavior:
                     BillingReplacementBehavior.ApplyImmediately,
+                }),
+              },
+            }).toMatchMadeHttpRequest();
+          });
+        });
+      });
+
+      COMBINATION_TEST_CONFIGS.forEach((config) => {
+        describe(`combination tests`, () => {
+          test(`${config.name}`, async () => {
+            shopify = shopifyApi({
+              ...testConfig,
+              billing: config.billingConfig,
+            });
+
+            queueMockResponses([config.paymentResponse]);
+
+            const response = await shopify.billing.request({
+              session,
+              plan: Responses.PLAN_1,
+              returnObject,
+            });
+
+            if (returnObject) {
+              expect(response).toStrictEqual(config.responseObject);
+            } else {
+              expect(response).toBe(Responses.CONFIRMATION_URL);
+            }
+            const billingConfig = config.billingConfig[
+              Responses.PLAN_1
+            ] as BillingConfigCombinationPlan;
+            expect({
+              ...GRAPHQL_BASE_REQUEST,
+              data: {
+                query: expect.stringContaining(config.mutationName),
+                variables: expect.objectContaining({
+                  lineItems: [
+                    {
+                      plan: {
+                        appRecurringPricingDetails: {
+                          discount: {
+                            value: {},
+                          },
+                          interval: BillingInterval.Every30Days,
+                          price: {
+                            amount: billingConfig.subscriptionPlan.amount,
+                            currencyCode:
+                              billingConfig.subscriptionPlan.currencyCode,
+                          },
+                        },
+                      },
+                    },
+                    {
+                      plan: {
+                        appUsagePricingDetails: {
+                          cappedAmount: {
+                            amount: billingConfig.usagePlan.amount,
+                            currencyCode: billingConfig.usagePlan.currencyCode,
+                          },
+                          terms: billingConfig.usagePlan.usageTerms,
+                        },
+                      },
+                    },
+                  ],
                 }),
               },
             }).toMatchMadeHttpRequest();

@@ -45,11 +45,26 @@ export interface BillingConfigUsagePlan extends BillingConfigPlan {
   replacementBehavior?: BillingReplacementBehavior;
 }
 
+export interface BillingConfigCombinationPlan {
+  interval: BillingInterval.Combination;
+  subscriptionPlan: Omit<
+    BillingConfigSubscriptionPlan,
+    'interval' | 'trialDays' | 'replacementBehavior'
+  >;
+  usagePlan: Omit<
+    BillingConfigUsagePlan,
+    'interval' | 'trialDays' | 'replacementBehavior'
+  >;
+  trialDays?: number;
+  replacementBehavior?: BillingReplacementBehavior;
+}
+
 export interface BillingConfig {
   [plan: string]:
     | BillingConfigOneTimePlan
     | BillingConfigSubscriptionPlan
-    | BillingConfigUsagePlan;
+    | BillingConfigUsagePlan
+    | BillingConfigCombinationPlan;
 }
 
 export interface BillingCheckParams {
