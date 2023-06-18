@@ -1,6 +1,11 @@
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+/***********************************************************************************************************************
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
+
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {Currency} from './currency';
 import {Customer} from './customer';

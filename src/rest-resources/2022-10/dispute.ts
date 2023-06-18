@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface FindArgs {
   session: SessionInterface;
@@ -20,7 +21,7 @@ interface AllArgs {
 }
 
 export class Dispute extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'dispute';
   protected static PLURAL_NAME = 'disputes';
@@ -37,12 +38,12 @@ export class Dispute extends Base {
       id
     }: FindArgs
   ): Promise<Dispute | null> {
-    const result = await Dispute.baseFind({
+    const result = await this.baseFind<Dispute>({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result ? result[0] as Dispute : null;
+    return result ? result[0] : null;
   }
 
   public static async all(
@@ -55,13 +56,13 @@ export class Dispute extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<Dispute[]> {
-    const response = await Dispute.baseFind({
+    const response = await this.baseFind<Dispute>({
       session: session,
       urlIds: {},
       params: {"since_id": since_id, "last_id": last_id, "status": status, "initiated_at": initiated_at, ...otherArgs},
     });
 
-    return response as Dispute[];
+    return response;
   }
 
   public amount: string | null;

@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface FindArgs {
   session: SessionInterface;
@@ -25,15 +26,9 @@ export class ApplicationCredit extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-<<<<<<< HEAD
     {"http_method": "get", "operation": "get", "ids": [], "path": "application_credits.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_credits/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_credits.json"}
-=======
-    {"http_method": "post", "operation": "post", "ids": [], "path": "application_credits.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "application_credits.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_credits/<id>.json"}
->>>>>>> origin/isomorphic/main
   ];
 
   public static async find(
@@ -43,12 +38,12 @@ export class ApplicationCredit extends Base {
       fields = null
     }: FindArgs
   ): Promise<ApplicationCredit | null> {
-    const result = await ApplicationCredit.baseFind({
+    const result = await this.baseFind<ApplicationCredit>({
       session: session,
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] as ApplicationCredit : null;
+    return result ? result[0] : null;
   }
 
   public static async all(
@@ -58,13 +53,13 @@ export class ApplicationCredit extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<ApplicationCredit[]> {
-    const response = await ApplicationCredit.baseFind({
+    const response = await this.baseFind<ApplicationCredit>({
       session: session,
       urlIds: {},
       params: {"fields": fields, ...otherArgs},
     });
 
-    return response as ApplicationCredit[];
+    return response;
   }
 
   public amount: number | null;

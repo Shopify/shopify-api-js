@@ -2,9 +2,15 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
 import {ApiVersion} from '../../../lib/types';
+=======
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 interface AcceptArgs {
   [key: string]: unknown;

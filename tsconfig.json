@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "composite": true,
     "declaration": true,
     "declarationMap": true,
     "pretty": true,
@@ -35,7 +34,8 @@
     "typeRoots": ["./node_modules/@types"],
     "types": ["@cloudflare/workers-types", "node", "jest"],
     "baseUrl": ".",
-    "rootDir": "."
+    "rootDir": ".",
+    "outDir": "dist"
   },
   "include": [
     "lib/**/*.ts",
@@ -44,7 +44,7 @@
     "runtime/**/*.ts",
   ],
   "exclude": [
-    "**/*.test.ts", "**/test/*", "**/__tests__/*",
+    "**/*.test.ts", "**/test/*", "**/__tests__/*", "**/__e2etests__/*", "**/dist/*", "./jest.config.ts",
   ],
 <<<<<<< HEAD
 }

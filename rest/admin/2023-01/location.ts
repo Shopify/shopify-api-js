@@ -2,37 +2,37 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
 }
 interface InventoryLevelsArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 
 export class Location extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'location';
-  protected static pluralName = 'locations';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'location';
+  protected static PLURAL_NAME = 'locations';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "count", "ids": [], "path": "locations/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "locations.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "locations/<id>.json"},
@@ -50,7 +50,7 @@ export class Location extends Base {
       urlIds: {"id": id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async all(
@@ -58,7 +58,7 @@ export class Location extends Base {
       session,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Location>> {
+  ): Promise<Location[]> {
     const response = await this.baseFind<Location>({
       session: session,
       urlIds: {},

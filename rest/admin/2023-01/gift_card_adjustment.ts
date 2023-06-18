@@ -2,30 +2,30 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   gift_card_id?: number | string | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   gift_card_id?: number | string | null;
 }
 
 export class GiftCardAdjustment extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'gift_card_adjustment';
-  protected static pluralName = 'gift_card_adjustments';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'gift_card_adjustment';
+  protected static PLURAL_NAME = 'gift_card_adjustments';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"},
     {"http_method": "get", "operation": "get", "ids": ["gift_card_id", "id"], "path": "gift_cards/<gift_card_id>/adjustments/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"}
@@ -48,7 +48,7 @@ export class GiftCardAdjustment extends Base {
       urlIds: {"id": id, "gift_card_id": gift_card_id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async all(
@@ -57,7 +57,7 @@ export class GiftCardAdjustment extends Base {
       gift_card_id = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<GiftCardAdjustment>> {
+  ): Promise<GiftCardAdjustment[]> {
     const response = await this.baseFind<GiftCardAdjustment>({
       session: session,
       urlIds: {"gift_card_id": gift_card_id},

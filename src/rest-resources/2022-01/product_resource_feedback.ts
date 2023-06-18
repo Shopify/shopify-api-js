@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface AllArgs {
   [key: string]: unknown;
@@ -20,13 +21,8 @@ export class ProductResourceFeedback extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-<<<<<<< HEAD
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"}
-=======
-    {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"},
-    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"}
->>>>>>> origin/isomorphic/main
   ];
 
   protected static getJsonBodyName(): string
@@ -41,13 +37,13 @@ export class ProductResourceFeedback extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<ProductResourceFeedback[]> {
-    const response = await ProductResourceFeedback.baseFind({
+    const response = await this.baseFind<ProductResourceFeedback>({
       session: session,
       urlIds: {"product_id": product_id},
       params: {...otherArgs},
     });
 
-    return response as ProductResourceFeedback[];
+    return response;
   }
 
   public created_at: string | null;

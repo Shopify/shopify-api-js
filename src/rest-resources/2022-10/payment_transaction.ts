@@ -2,11 +2,12 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
-import {Currency} from './currency';
+import { Currency } from './currency';
 
 interface TransactionsArgs {
   [key: string]: unknown;
@@ -19,7 +20,7 @@ interface TransactionsArgs {
 }
 
 export class PaymentTransaction extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'payment_transaction';
   protected static PLURAL_NAME = 'payment_transactions';
@@ -42,7 +43,7 @@ export class PaymentTransaction extends Base {
       ...otherArgs
     }: TransactionsArgs
   ): Promise<unknown> {
-    const response = await PaymentTransaction.request({
+    const response = await this.request<PaymentTransaction>({
       http_method: "get",
       operation: "transactions",
       session: session,

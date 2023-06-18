@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface AllArgs {
   [key: string]: unknown;
@@ -18,7 +19,7 @@ interface AllArgs {
 }
 
 export class TenderTransaction extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'tender_transaction';
   protected static PLURAL_NAME = 'tender_transactions';
@@ -40,13 +41,13 @@ export class TenderTransaction extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<TenderTransaction[]> {
-    const response = await TenderTransaction.baseFind({
+    const response = await this.baseFind<TenderTransaction>({
       session: session,
       urlIds: {},
       params: {"limit": limit, "since_id": since_id, "processed_at_min": processed_at_min, "processed_at_max": processed_at_max, "processed_at": processed_at, "order": order, ...otherArgs},
     });
 
-    return response as TenderTransaction[];
+    return response;
   }
 
   public amount: string | null;

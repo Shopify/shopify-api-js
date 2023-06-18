@@ -2,23 +2,23 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   limit?: unknown;
   since_id?: unknown;
   path?: unknown;
@@ -27,19 +27,19 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   path?: unknown;
   target?: unknown;
 }
 
 export class Redirect extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'redirect';
-  protected static pluralName = 'redirects';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'redirect';
+  protected static PLURAL_NAME = 'redirects';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "redirects/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "redirects/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "redirects.json"},
@@ -60,7 +60,7 @@ export class Redirect extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -90,7 +90,7 @@ export class Redirect extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Redirect>> {
+  ): Promise<Redirect[]> {
     const response = await this.baseFind<Redirect>({
       session: session,
       urlIds: {},

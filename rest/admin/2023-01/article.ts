@@ -2,27 +2,27 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {Metafield} from './metafield';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   blog_id?: number | string | null;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   blog_id?: number | string | null;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   blog_id?: number | string | null;
   limit?: unknown;
   since_id?: unknown;
@@ -40,11 +40,11 @@ interface AllArgs {
 }
 interface AuthorsArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   blog_id?: number | string | null;
   created_at_min?: unknown;
   created_at_max?: unknown;
@@ -56,22 +56,22 @@ interface CountArgs {
 }
 interface TagsArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   blog_id?: number | string | null;
   limit?: unknown;
   popular?: unknown;
 }
 
 export class Article extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'article';
-  protected static pluralName = 'articles';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {
+  protected static NAME = 'article';
+  protected static PLURAL_NAME = 'articles';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
     "metafields": Metafield
   };
-  protected static paths: ResourcePath[] = [
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
     {"http_method": "get", "operation": "authors", "ids": [], "path": "articles/authors.json"},
     {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
@@ -96,7 +96,7 @@ export class Article extends Base {
       urlIds: {"id": id, "blog_id": blog_id},
       params: {"fields": fields},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -136,7 +136,7 @@ export class Article extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Article>> {
+  ): Promise<Article[]> {
     const response = await this.baseFind<Article>({
       session: session,
       urlIds: {"blog_id": blog_id},

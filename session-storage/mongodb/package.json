@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/session-storage/mongodb/index.js",
+  "types": "../../dist/session-storage/mongodb/index.d.ts"
+}

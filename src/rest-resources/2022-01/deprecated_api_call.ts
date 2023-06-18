@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface AllArgs {
   [key: string]: unknown;
@@ -28,13 +29,13 @@ export class DeprecatedApiCall extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<DeprecatedApiCall[]> {
-    const response = await DeprecatedApiCall.baseFind({
+    const response = await this.baseFind<DeprecatedApiCall>({
       session: session,
       urlIds: {},
       params: {...otherArgs},
     });
 
-    return response as DeprecatedApiCall[];
+    return response;
   }
 
   public data_updated_at: string | null;

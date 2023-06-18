@@ -2,33 +2,38 @@
   "name": "@shopify/shopify-api",
   "version": "5.0.1",
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/lib/index.js",
+  "types": "./dist/lib/index.d.ts",
   "exports": {
     ".": {
+      "default": "./lib/index.js",
       "require": "./lib/index.js",
-      "types": "./lib/index.d.ts",
-      "default": "./lib/index.js"
+      "types": "./lib/index.d.ts"
+    },
+    "./session-storage/*": {
+      "import": "./session-storage/*.js",
+      "require": "./session-storage/*.js",
+      "types": "./session-storage/*.d.ts"
     },
     "./rest/admin/*": {
-      "import": "./rest/admin/*/index.js",
-      "require": "./rest/admin/*/index.js",
-      "types": "./rest/admin/*/index.d.ts"
+      "import": "./dist/rest/admin/*/index.js",
+      "require": "./dist/rest/admin/*/index.js",
+      "types": "./dist/rest/admin/*/index.d.ts"
     },
     "./runtime": {
-      "import": "./runtime/index.js",
-      "require": "./runtime/index.js",
-      "types": "./runtime/index.d.ts"
+      "import": "./dist/runtime/index.js",
+      "require": "./dist/runtime/index.js",
+      "types": "./dist/runtime/index.d.ts"
     },
     "./adapters/node": {
-      "import": "./adapters/node/index.js",
-      "require": "./adapters/node/index.js",
-      "types": "./adapters/node/index.d.ts"
+      "import": "./dist/adapters/node/index.js",
+      "require": "./dist/adapters/node/index.js",
+      "types": "./dist/adapters/node/index.d.ts"
     },
     "./adapters/cf-worker": {
-      "import": "./adapters/cf-worker/index.js",
-      "require": "./adapters/cf-worker/index.js",
-      "types": "./adapters/cf-worker/index.d.ts"
+      "import": "./dist/adapters/cf-worker/index.js",
+      "require": "./dist/adapters/cf-worker/index.js",
+      "types": "./dist/adapters/cf-worker/index.d.ts"
     }
   },
   "prettier": "@shopify/prettier-config",
@@ -57,15 +62,6 @@
     "clean": "yarn tsc --build --clean",
     "prebuild": "yarn tsc --build --clean",
     "build": "tsc",
-    "release": "yarn build && changeset publish"
-=======
-    "test": "jest --testPathIgnorePatterns=src/rest-resources/__tests__ --testPathIgnorePatterns=src/clients/http_client/__e2etests__",
-    "e2etest:build": "yarn build && yarn rollup -c src/clients/http_client/__e2etests__/rollup.test-cf-worker-app.config.js",
-    "e2etest": "yarn e2etest:build && yarn jest --no-coverage --testPathPattern=\\\"src/.*e2e-runner.test.ts\\\"",
-    "test_rest_resources": "ls src/rest-resources/__tests__ | xargs -I \"{}\" sh -c 'yarn jest --no-coverage --testPathPattern=\\\"{}\\\" || exit 255'",
-    "build": "tsc",
-    "lint": "eslint '**/*.{ts,tsx}' --max-warnings 0",
-    "clean": "rimraf ./dist ./bundle tsconfig.tsbuildinfo",
     "prepublishOnly": "yarn run build",
     "preversion": "yarn run test",
     "postversion": "git push origin main --follow-tags && echo \"Log in to shipit to deploy version $npm_package_version\""
@@ -147,17 +143,8 @@
     "rollup": "^2.70.1",
     "rollup-plugin-swc": "^0.2.1",
     "supertest": "^6.1.3",
-    "ts-jest": "^27.1.1",
-    "typescript": "^4.6.2"
->>>>>>> origin/isomorphic/main
-  },
-  "files": [
-    "**/*.d.ts",
-    "**/*.d.ts.map",
-    "**/*.js",
-    "**/*.js.map",
-    "!bundle/*",
-    "!node_modules",
-    "!adapters/__e2etests__/*"
-  ]
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.6.3"
+  }
 }

@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
   session: SessionInterface;
@@ -18,7 +19,7 @@ interface AllArgs {
 }
 
 export class InventoryItem extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'inventory_item';
   protected static PLURAL_NAME = 'inventory_items';
@@ -36,12 +37,12 @@ export class InventoryItem extends Base {
       id
     }: FindArgs
   ): Promise<InventoryItem | null> {
-    const result = await InventoryItem.baseFind({
+    const result = await this.baseFind<InventoryItem>({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result ? result[0] as InventoryItem : null;
+    return result ? result[0] : null;
   }
 
   public static async all(
@@ -52,13 +53,13 @@ export class InventoryItem extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<InventoryItem[]> {
-    const response = await InventoryItem.baseFind({
+    const response = await this.baseFind<InventoryItem>({
       session: session,
       urlIds: {},
       params: {"ids": ids, "limit": limit, ...otherArgs},
     });
 
-    return response as InventoryItem[];
+    return response;
   }
 
   public cost: string | null;

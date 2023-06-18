@@ -2,14 +2,9 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-<<<<<<< HEAD:rest/admin/2022-04/cancellation_request.ts
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {ApiVersion} from '../../../lib/types';
-=======
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {ApiVersion} from '../../base-types';
->>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/cancellation_request.ts
+import {ApiVersion} from '../../../lib/base-types';
 
 interface AcceptArgs {
   [key: string]: unknown;

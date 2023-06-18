@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {Currency} from './currency';
 import {Customer} from './customer';
@@ -23,7 +24,7 @@ interface CheckoutsArgs {
 }
 
 export class AbandonedCheckout extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'abandoned_checkout';
   protected static PLURAL_NAME = 'abandoned_checkouts';
@@ -52,7 +53,7 @@ export class AbandonedCheckout extends Base {
       ...otherArgs
     }: CheckoutsArgs
   ): Promise<unknown> {
-    const response = await AbandonedCheckout.request({
+    const response = await this.request<AbandonedCheckout>({
       http_method: "get",
       operation: "checkouts",
       session: session,

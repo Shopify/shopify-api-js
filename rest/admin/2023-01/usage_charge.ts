@@ -2,36 +2,32 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
-
-import {Currency} from './currency';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   recurring_application_charge_id?: number | string | null;
   fields?: unknown;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   recurring_application_charge_id?: number | string | null;
   fields?: unknown;
 }
 
 export class UsageCharge extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'usage_charge';
-  protected static pluralName = 'usage_charges';
-  protected static hasOne: {[key: string]: typeof Base} = {
-    "currency": Currency
-  };
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'usage_charge';
+  protected static PLURAL_NAME = 'usage_charges';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["recurring_application_charge_id"], "path": "recurring_application_charges/<recurring_application_charge_id>/usage_charges.json"},
     {"http_method": "get", "operation": "get", "ids": ["recurring_application_charge_id", "id"], "path": "recurring_application_charges/<recurring_application_charge_id>/usage_charges/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["recurring_application_charge_id"], "path": "recurring_application_charges/<recurring_application_charge_id>/usage_charges.json"}
@@ -50,7 +46,7 @@ export class UsageCharge extends Base {
       urlIds: {"id": id, "recurring_application_charge_id": recurring_application_charge_id},
       params: {"fields": fields},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async all(
@@ -60,7 +56,7 @@ export class UsageCharge extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<UsageCharge>> {
+  ): Promise<UsageCharge[]> {
     const response = await this.baseFind<UsageCharge>({
       session: session,
       urlIds: {"recurring_application_charge_id": recurring_application_charge_id},
@@ -71,10 +67,9 @@ export class UsageCharge extends Base {
   }
 
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
   public description: string | null;
   public id: number | null;
-  public price: string | null;
+  public price: number | null;
   public recurring_application_charge_id: number | null;
   public updated_at: string | null;
 }

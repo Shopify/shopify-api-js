@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface AllArgs {
   [key: string]: unknown;
@@ -19,13 +20,8 @@ export class ResourceFeedback extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-<<<<<<< HEAD
     {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"}
-=======
-    {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"}
->>>>>>> origin/isomorphic/main
   ];
 
   public static async all(
@@ -34,13 +30,13 @@ export class ResourceFeedback extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<ResourceFeedback[]> {
-    const response = await ResourceFeedback.baseFind({
+    const response = await this.baseFind<ResourceFeedback>({
       session: session,
       urlIds: {},
       params: {...otherArgs},
     });
 
-    return response as ResourceFeedback[];
+    return response;
   }
 
   public created_at: string | null;

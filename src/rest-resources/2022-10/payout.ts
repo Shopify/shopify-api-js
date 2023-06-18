@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
   session: SessionInterface;
@@ -22,7 +23,7 @@ interface AllArgs {
 }
 
 export class Payout extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'payout';
   protected static PLURAL_NAME = 'payouts';
@@ -39,12 +40,12 @@ export class Payout extends Base {
       id
     }: FindArgs
   ): Promise<Payout | null> {
-    const result = await Payout.baseFind({
+    const result = await this.baseFind<Payout>({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result ? result[0] as Payout : null;
+    return result ? result[0] : null;
   }
 
   public static async all(
@@ -59,13 +60,13 @@ export class Payout extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<Payout[]> {
-    const response = await Payout.baseFind({
+    const response = await this.baseFind<Payout>({
       session: session,
       urlIds: {},
       params: {"since_id": since_id, "last_id": last_id, "date_min": date_min, "date_max": date_max, "date": date, "status": status, ...otherArgs},
     });
 
-    return response as Payout[];
+    return response;
   }
 
   public amount: string | null;

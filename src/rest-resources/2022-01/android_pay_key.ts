@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface FindArgs {
   session: SessionInterface;
@@ -23,15 +24,9 @@ export class AndroidPayKey extends Base {
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-<<<<<<< HEAD
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "android_pay_keys.json"}
-=======
-    {"http_method": "post", "operation": "post", "ids": [], "path": "android_pay_keys.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "android_pay_keys/<id>.json"}
->>>>>>> origin/isomorphic/main
   ];
 
   public static async find(
@@ -40,12 +35,12 @@ export class AndroidPayKey extends Base {
       id
     }: FindArgs
   ): Promise<AndroidPayKey | null> {
-    const result = await AndroidPayKey.baseFind({
+    const result = await this.baseFind<AndroidPayKey>({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result ? result[0] as AndroidPayKey : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -54,7 +49,7 @@ export class AndroidPayKey extends Base {
       id
     }: DeleteArgs
   ): Promise<unknown> {
-    const response = await AndroidPayKey.request({
+    const response = await this.request<AndroidPayKey>({
       http_method: "delete",
       operation: "delete",
       session: session,

@@ -1,4 +1,5 @@
 import querystring from 'querystring';
+"@testing-library/jest-dom"
 
 <<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
 import {HttpClient} from '../http_client';

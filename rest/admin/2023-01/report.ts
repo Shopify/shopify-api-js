@@ -2,23 +2,23 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   ids?: unknown;
   limit?: unknown;
   since_id?: unknown;
@@ -28,13 +28,13 @@ interface AllArgs {
 }
 
 export class Report extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'report';
-  protected static pluralName = 'reports';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'report';
+  protected static PLURAL_NAME = 'reports';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "reports/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "reports.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "reports/<id>.json"},
@@ -54,7 +54,7 @@ export class Report extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -85,7 +85,7 @@ export class Report extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Report>> {
+  ): Promise<Report[]> {
     const response = await this.baseFind<Report>({
       session: session,
       urlIds: {},

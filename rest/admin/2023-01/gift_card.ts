@@ -2,21 +2,18 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
-
-import {Balance} from './balance';
-import {Currency} from './currency';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   status?: unknown;
   limit?: unknown;
   since_id?: unknown;
@@ -24,12 +21,12 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   status?: unknown;
 }
 interface SearchArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   order?: unknown;
   query?: unknown;
   limit?: unknown;
@@ -45,16 +42,13 @@ interface DisableArgs {
 }
 
 export class GiftCard extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'gift_card';
-  protected static pluralName = 'gift_cards';
-  protected static hasOne: {[key: string]: typeof Base} = {
-    "balance": Balance,
-    "currency": Currency
-  };
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'gift_card';
+  protected static PLURAL_NAME = 'gift_cards';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
@@ -75,7 +69,7 @@ export class GiftCard extends Base {
       urlIds: {"id": id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async all(
@@ -87,7 +81,7 @@ export class GiftCard extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<GiftCard>> {
+  ): Promise<GiftCard[]> {
     const response = await this.baseFind<GiftCard>({
       session: session,
       urlIds: {},
@@ -164,15 +158,15 @@ export class GiftCard extends Base {
   }
 
   public api_client_id: number | null;
-  public balance: Balance | null | {[key: string]: any};
+  public balance: number | null;
   public code: string | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public customer_id: number | null;
   public disabled_at: string | null;
   public expires_on: string | null;
   public id: number | null;
-  public initial_value: string | null;
+  public initial_value: number | null;
   public last_characters: string | null;
   public line_item_id: number | null;
   public note: string | null;

@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/adapters/cf-worker/index.js",
+  "types": "../../dist/adapters/cf-worker/index.d.ts"
+}

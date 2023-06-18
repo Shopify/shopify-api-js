@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/adapters/node/index.js",
+  "types": "../../dist/adapters/node/index.d.ts"
+}

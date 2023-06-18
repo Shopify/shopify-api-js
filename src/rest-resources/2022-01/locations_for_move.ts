@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface AllArgs {
   [key: string]: unknown;
@@ -30,13 +31,13 @@ export class LocationsForMove extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<LocationsForMove[]> {
-    const response = await LocationsForMove.baseFind({
+    const response = await this.baseFind<LocationsForMove>({
       session: session,
       urlIds: {"fulfillment_order_id": fulfillment_order_id},
       params: {...otherArgs},
     });
 
-    return response as LocationsForMove[];
+    return response;
   }
 
   public locations_for_move: {[key: string]: unknown}[] | null;

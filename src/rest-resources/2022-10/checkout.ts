@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {DiscountCode} from './discount_code';
 import {Order} from './order';
@@ -25,7 +26,7 @@ interface CompleteArgs {
 }
 
 export class Checkout extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'checkout';
   protected static PLURAL_NAME = 'checkouts';
@@ -37,19 +38,11 @@ export class Checkout extends Base {
     "gift_cards": GiftCard
   };
   protected static PATHS: ResourcePath[] = [
-<<<<<<< HEAD:src/rest-resources/2022-10/checkout.ts
     {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
     {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"},
     {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
     {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
-=======
-    {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
-    {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
-    {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"},
-    {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"}
->>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/checkout.ts
   ];
   protected static PRIMARY_KEY: string = "token";
 
@@ -59,12 +52,12 @@ export class Checkout extends Base {
       token
     }: FindArgs
   ): Promise<Checkout | null> {
-    const result = await Checkout.baseFind({
+    const result = await this.baseFind<Checkout>({
       session: session,
       urlIds: {"token": token},
       params: {},
     });
-    return result ? result[0] as Checkout : null;
+    return result ? result[0] : null;
   }
 
   public static async shipping_rates(
@@ -74,7 +67,7 @@ export class Checkout extends Base {
       ...otherArgs
     }: ShippingRatesArgs
   ): Promise<unknown> {
-    const response = await Checkout.request({
+    const response = await this.request<Checkout>({
       http_method: "get",
       operation: "shipping_rates",
       session: session,
@@ -93,7 +86,7 @@ export class Checkout extends Base {
       ...otherArgs
     }: CompleteArgs
   ): Promise<unknown> {
-    const response = await Checkout.request({
+    const response = await this.request<Checkout>({
       http_method: "post",
       operation: "complete",
       session: this.session,

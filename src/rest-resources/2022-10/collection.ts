@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {Image} from './image';
 
@@ -21,7 +22,7 @@ interface ProductsArgs {
 }
 
 export class Collection extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'collection';
   protected static PLURAL_NAME = 'collections';
@@ -41,12 +42,12 @@ export class Collection extends Base {
       fields = null
     }: FindArgs
   ): Promise<Collection | null> {
-    const result = await Collection.baseFind({
+    const result = await this.baseFind<Collection>({
       session: session,
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] as Collection : null;
+    return result ? result[0] : null;
   }
 
   public static async products(
@@ -57,7 +58,7 @@ export class Collection extends Base {
       ...otherArgs
     }: ProductsArgs
   ): Promise<unknown> {
-    const response = await Collection.request({
+    const response = await this.request<Collection>({
       http_method: "get",
       operation: "products",
       session: session,

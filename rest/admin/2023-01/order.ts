@@ -2,10 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {Customer} from './customer';
 import {DiscountCode} from './discount_code';
@@ -13,17 +13,17 @@ import {Fulfillment} from './fulfillment';
 import {Refund} from './refund';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   ids?: unknown;
   limit?: unknown;
   since_id?: unknown;
@@ -41,7 +41,7 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   created_at_min?: unknown;
   created_at_max?: unknown;
   updated_at_min?: unknown;
@@ -70,19 +70,19 @@ interface OpenArgs {
 }
 
 export class Order extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'order';
-  protected static pluralName = 'orders';
-  protected static hasOne: {[key: string]: typeof Base} = {
+  protected static NAME = 'order';
+  protected static PLURAL_NAME = 'orders';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
     "customer": Customer
   };
-  protected static hasMany: {[key: string]: typeof Base} = {
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
     "discount_codes": DiscountCode,
     "fulfillments": Fulfillment,
     "refunds": Refund
   };
-  protected static paths: ResourcePath[] = [
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "orders/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "orders/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "orders.json"},
@@ -106,7 +106,7 @@ export class Order extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -145,7 +145,7 @@ export class Order extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Order>> {
+  ): Promise<Order[]> {
     const response = await this.baseFind<Order>({
       session: session,
       urlIds: {},
@@ -255,7 +255,6 @@ export class Order extends Base {
   public checkout_token: string | null;
   public client_details: {[key: string]: unknown} | null;
   public closed_at: string | null;
-  public company: {[key: string]: unknown} | null;
   public created_at: string | null;
   public currency: string | null;
   public current_subtotal_price: string | null;
@@ -280,7 +279,6 @@ export class Order extends Base {
   public id: number | null;
   public landing_site: string | null;
   public location_id: number | null;
-  public merchant_of_record_app_id: number | null;
   public name: string | null;
   public note: string | null;
   public note_attributes: {[key: string]: unknown}[] | null;
@@ -302,7 +300,7 @@ export class Order extends Base {
   public source_identifier: string | null;
   public source_name: string | null;
   public source_url: string | null;
-  public subtotal_price: string | null;
+  public subtotal_price: number | null;
   public subtotal_price_set: {[key: string]: unknown} | null;
   public tags: string | null;
   public tax_lines: {[key: string]: unknown}[] | null;

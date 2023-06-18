@@ -2,16 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-<<<<<<< HEAD:rest/admin/2022-04/article.ts
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
-=======
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
->>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/article.ts
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {Metafield} from './metafield';
 
@@ -116,12 +110,15 @@ export class Article extends Base {
       fields = null
     }: FindArgs
   ): Promise<Article | null> {
-    const result = await this.baseFind<Article>({
+    return (await this.baseFind<Article>({
       session: session,
-      urlIds: {"id": id, "blog_id": blog_id},
-      params: {"fields": fields},
-    });
-    return result.data ? result.data[0] : null;
+      urlIds: { "id": id, "blog_id": blog_id },
+      params: { "fields": fields },
+    })).data ? (await this.baseFind<Article>({
+      session: session,
+      urlIds: { "id": id, "blog_id": blog_id },
+      params: { "fields": fields },
+    })).data[0] : null;
   }
 
   public static async delete(
@@ -162,13 +159,12 @@ export class Article extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<FindAllResponse<Article>> {
-    const response = await this.baseFind<Article>({
-      session: session,
-      urlIds: {"blog_id": blog_id},
-      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "handle": handle, "tag": tag, "author": author, "fields": fields, ...otherArgs},
-    });
 
-    return response;
+    return await this.baseFind<Article>({
+      session: session,
+      urlIds: { "blog_id": blog_id },
+      params: { "limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "handle": handle, "tag": tag, "author": author, "fields": fields, ...otherArgs },
+    });
   }
 
   public static async authors(
@@ -177,17 +173,24 @@ export class Article extends Base {
       ...otherArgs
     }: AuthorsArgs
   ): Promise<unknown> {
-    const response = await this.request<Article>({
+
+    return await this.request<Article>({
       http_method: "get",
       operation: "authors",
       session: session,
       urlIds: {},
-      params: {...otherArgs},
+      params: { ...otherArgs },
       body: {},
       entity: null,
-    });
-
-    return response ? response.body : null;
+    }) ? (await this.request<Article>({
+      http_method: "get",
+      operation: "authors",
+      session: session,
+      urlIds: {},
+      params: { ...otherArgs },
+      body: {},
+      entity: null,
+    })).body : null;
   }
 
   public static async count(

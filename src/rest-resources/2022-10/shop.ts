@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface AllArgs {
   [key: string]: unknown;
@@ -13,7 +14,7 @@ interface AllArgs {
 }
 
 export class Shop extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'shop';
   protected static PLURAL_NAME = 'shops';
@@ -30,13 +31,13 @@ export class Shop extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<Shop[]> {
-    const response = await Shop.baseFind({
+    const response = await this.baseFind<Shop>({
       session: session,
       urlIds: {},
       params: {"fields": fields, ...otherArgs},
     });
 
-    return response as Shop[];
+    return response;
   }
 
   public address1: string | null;
@@ -67,7 +68,6 @@ export class Shop extends Base {
   public id: number | null;
   public latitude: number | null;
   public longitude: number | null;
-  public marketing_sms_consent_enabled_at_checkout: boolean | null;
   public money_format: string | null;
   public money_in_emails_format: string | null;
   public money_with_currency_format: string | null;

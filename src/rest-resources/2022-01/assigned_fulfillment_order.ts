@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface AllArgs {
   [key: string]: unknown;
@@ -32,13 +33,13 @@ export class AssignedFulfillmentOrder extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<AssignedFulfillmentOrder[]> {
-    const response = await AssignedFulfillmentOrder.baseFind({
+    const response = await this.baseFind<AssignedFulfillmentOrder>({
       session: session,
       urlIds: {},
       params: {"assignment_status": assignment_status, "location_ids": location_ids, ...otherArgs},
     });
 
-    return response as AssignedFulfillmentOrder[];
+    return response;
   }
 
   public assigned_location_id: number | null;

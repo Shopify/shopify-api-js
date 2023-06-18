@@ -2,11 +2,12 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
-import {Customer} from './customer';
+import { Customer } from './customer';
 
 interface FindArgs {
   session: SessionInterface;
@@ -48,7 +49,7 @@ interface CompleteArgs {
 }
 
 export class DraftOrder extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'draft_order';
   protected static PLURAL_NAME = 'draft_orders';
@@ -57,7 +58,6 @@ export class DraftOrder extends Base {
   };
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-<<<<<<< HEAD:src/rest-resources/2022-10/draft_order.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
@@ -66,16 +66,6 @@ export class DraftOrder extends Base {
     {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
     {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"}
-=======
-    {"http_method": "post", "operation": "post", "ids": [], "path": "draft_orders.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "draft_orders/<id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
-    {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
-    {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"}
->>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/draft_order.ts
   ];
 
   public static async find(
@@ -85,12 +75,12 @@ export class DraftOrder extends Base {
       fields = null
     }: FindArgs
   ): Promise<DraftOrder | null> {
-    const result = await DraftOrder.baseFind({
+    const result = await this.baseFind<DraftOrder>({
       session: session,
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result ? result[0] as DraftOrder : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -99,7 +89,7 @@ export class DraftOrder extends Base {
       id
     }: DeleteArgs
   ): Promise<unknown> {
-    const response = await DraftOrder.request({
+    const response = await this.request<DraftOrder>({
       http_method: "delete",
       operation: "delete",
       session: session,
@@ -123,13 +113,13 @@ export class DraftOrder extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<DraftOrder[]> {
-    const response = await DraftOrder.baseFind({
+    const response = await this.baseFind<DraftOrder>({
       session: session,
       urlIds: {},
       params: {"fields": fields, "limit": limit, "since_id": since_id, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "ids": ids, "status": status, ...otherArgs},
     });
 
-    return response as DraftOrder[];
+    return response;
   }
 
   public static async count(
@@ -142,7 +132,7 @@ export class DraftOrder extends Base {
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
-    const response = await DraftOrder.request({
+    const response = await this.request<DraftOrder>({
       http_method: "get",
       operation: "count",
       session: session,
@@ -161,7 +151,7 @@ export class DraftOrder extends Base {
       ...otherArgs
     }: SendInvoiceArgs
   ): Promise<unknown> {
-    const response = await DraftOrder.request({
+    const response = await this.request<DraftOrder>({
       http_method: "post",
       operation: "send_invoice",
       session: this.session,
@@ -182,16 +172,12 @@ export class DraftOrder extends Base {
       ...otherArgs
     }: CompleteArgs
   ): Promise<unknown> {
-    const response = await DraftOrder.request({
+    const response = await this.request<DraftOrder>({
       http_method: "put",
       operation: "complete",
       session: this.session,
       urlIds: {"id": this.id},
-<<<<<<< HEAD:src/rest-resources/2022-10/draft_order.ts
       params: {"payment_gateway_id": payment_gateway_id, "payment_pending": payment_pending, ...otherArgs},
-=======
-      params: {"payment_pending": payment_pending, ...otherArgs},
->>>>>>> origin/isomorphic/main:src/rest-resources/2021-10/draft_order.ts
       body: body,
       entity: this,
     });

@@ -2,7 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {ShopifyRestResources} from '../../types';
+import {ShopifyRestResources} from '../../../lib/rest/types';
 
 import {AbandonedCheckout} from './abandoned_checkout';
 import {AccessScope} from './access_scope';

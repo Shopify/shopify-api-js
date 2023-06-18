@@ -2,6 +2,7 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD
 <<<<<<< HEAD:rest/admin/2022-04/redirect.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -12,6 +13,12 @@ import Base, {ResourcePath} from '../../base-rest-resource';
 import {SessionInterface} from '../../auth/session/types';
 import {ApiVersion} from '../../base-types';
 >>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-01/redirect.ts
+=======
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 interface FindArgs {
   session: Session;

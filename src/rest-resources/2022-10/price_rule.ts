@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface FindArgs {
   session: SessionInterface;
@@ -35,28 +36,19 @@ interface CountArgs {
 }
 
 export class PriceRule extends Base {
-  public static API_VERSION = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.January22;
 
   protected static NAME = 'price_rule';
   protected static PLURAL_NAME = 'price_rules';
   protected static HAS_ONE: {[key: string]: typeof Base} = {};
   protected static HAS_MANY: {[key: string]: typeof Base} = {};
   protected static PATHS: ResourcePath[] = [
-<<<<<<< HEAD:src/rest-resources/2022-10/price_rule.ts
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "price_rules/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "price_rules/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "price_rules.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "price_rules/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"}
-=======
-    {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "price_rules.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "price_rules/<id>.json"},
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "price_rules/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "price_rules/count.json"}
->>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/price_rule.ts
   ];
 
   public static async find(
@@ -65,12 +57,12 @@ export class PriceRule extends Base {
       id
     }: FindArgs
   ): Promise<PriceRule | null> {
-    const result = await PriceRule.baseFind({
+    const result = await this.baseFind<PriceRule>({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result ? result[0] as PriceRule : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -79,7 +71,7 @@ export class PriceRule extends Base {
       id
     }: DeleteArgs
   ): Promise<unknown> {
-    const response = await PriceRule.request({
+    const response = await this.request<PriceRule>({
       http_method: "delete",
       operation: "delete",
       session: session,
@@ -107,13 +99,13 @@ export class PriceRule extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<PriceRule[]> {
-    const response = await PriceRule.baseFind({
+    const response = await this.baseFind<PriceRule>({
       session: session,
       urlIds: {},
       params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "starts_at_min": starts_at_min, "starts_at_max": starts_at_max, "ends_at_min": ends_at_min, "ends_at_max": ends_at_max, "times_used": times_used, ...otherArgs},
     });
 
-    return response as PriceRule[];
+    return response;
   }
 
   public static async count(
@@ -122,7 +114,7 @@ export class PriceRule extends Base {
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
-    const response = await PriceRule.request({
+    const response = await this.request<PriceRule>({
       http_method: "get",
       operation: "count",
       session: session,
@@ -138,7 +130,6 @@ export class PriceRule extends Base {
   public allocation_limit: number | null;
   public allocation_method: string | null;
   public created_at: string | null;
-  public customer_segment_prerequisite_ids: number[] | null;
   public customer_selection: string | null;
   public ends_at: string | null;
   public entitled_collection_ids: number[] | null;
@@ -151,6 +142,7 @@ export class PriceRule extends Base {
   public prerequisite_customer_ids: number[] | null;
   public prerequisite_product_ids: number[] | null;
   public prerequisite_quantity_range: {[key: string]: unknown} | null;
+  public prerequisite_saved_search_ids: number[] | null;
   public prerequisite_shipping_price_range: {[key: string]: unknown} | null;
   public prerequisite_subtotal_range: {[key: string]: unknown} | null;
   public prerequisite_to_entitlement_purchase: {[key: string]: unknown} | null;

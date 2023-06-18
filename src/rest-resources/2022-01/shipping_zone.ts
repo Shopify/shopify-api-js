@@ -2,9 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import Base, {ResourcePath} from '../../base-rest-resource';
-import {SessionInterface} from '../../auth/session/types';
-import {ApiVersion} from '../../base-types';
+import {Base} from '../../base';
+import {ResourcePath} from '../../types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {Country} from './country';
 import {Province} from './province';
@@ -36,13 +37,13 @@ export class ShippingZone extends Base {
       ...otherArgs
     }: AllArgs
   ): Promise<ShippingZone[]> {
-    const response = await ShippingZone.baseFind({
+    const response = await this.baseFind<ShippingZone>({
       session: session,
       urlIds: {},
       params: {"fields": fields, ...otherArgs},
     });
 
-    return response as ShippingZone[];
+    return response;
   }
 
   public carrier_shipping_rate_providers: unknown | null;

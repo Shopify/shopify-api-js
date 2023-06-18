@@ -2,25 +2,25 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {Metafield} from './metafield';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   fields?: unknown;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   limit?: unknown;
   since_id?: unknown;
   title?: unknown;
@@ -36,7 +36,7 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   title?: unknown;
   created_at_min?: unknown;
   created_at_max?: unknown;
@@ -48,15 +48,15 @@ interface CountArgs {
 }
 
 export class Page extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'page';
-  protected static pluralName = 'pages';
-  protected static hasOne: {[key: string]: typeof Base} = {
+  protected static NAME = 'page';
+  protected static PLURAL_NAME = 'pages';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
     "metafield": Metafield
   };
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "pages/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": [], "path": "pages/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "pages.json"},
@@ -77,7 +77,7 @@ export class Page extends Base {
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -114,7 +114,7 @@ export class Page extends Base {
       published_status = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Page>> {
+  ): Promise<Page[]> {
     const response = await this.baseFind<Page>({
       session: session,
       urlIds: {},
