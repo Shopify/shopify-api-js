@@ -1,22 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import querystring from 'querystring';
-
-import {v4 as uuidv4} from 'uuid';
-// import Cookies from 'cookies';
-
-=======
 import {Request, Response, Cookies, getHeader} from '../../runtime/http';
-=======
-import {
-  Request,
-  Response,
-  Cookies,
-  getHeader,
-  setHeader,
-  abstractConvertRequest,
-} from '../../runtime/http';
->>>>>>> origin/isomorphic/express-adapter
 import {crypto} from '../../runtime/crypto';
 >>>>>>> origin/isomorphic/main
 import {Context} from '../../context';
@@ -46,62 +28,60 @@ import {
   OnlineAccessInfo,
 } from './types';
 
+export interface BeginAuthOptions {
+  isOnline: boolean;
+  shop?: string;
+}
+
+export interface BeginAuthReturn {
+  redirectUrl: string;
+  sessionCookies: string[];
+}
+
+const defaultBeginAuthOptions: BeginAuthOptions = {
+  isOnline: true
+}
+
 const ShopifyOAuth = {
   SESSION_COOKIE_NAME: 'shopify_app_session',
   STATE_COOKIE_NAME: 'shopify_app_state',
 
   /**
-   * Initializes a session and cookie for the OAuth process, and returns the necessary authorization url.
+   * Initializes a session and cookie for the OAuth process, and returns the
+   * necessary authorization url.
    *
    * @param request Current HTTP Request
-   * @param response Current HTTP Response
    * @param shop Shop url: {shop}.myshopify.com
-   * @param redirect Redirect url for callback
-   * @param isOnline Boolean value. If true, appends 'per-user' grant options to authorization url to receive online access token.
-   *                 During final oauth request, will receive back the online access token and current online session information.
-   *                 Defaults to online access.
+   * @param redirectPath Redirect url for callback
+   * @param options Options object
+   * @param options.isOnline Boolean value. If true, appends 'per-user' grant
+   *                         options to authorization url to receive online
+   *                         access token. During final oauth request, will
+   *                         receive back the online access token and current
+   *                         online session information. Defaults to online
+   *                         access.
+   * @param options.shop Shop url: {shop}.myshopify.com
    */
   async beginAuth(
-    request: unknown,
+    request: Request,
+    response: Response,
     shop: string,
     redirectPath: string,
-<<<<<<< HEAD
     isOnline = true,
-<<<<<<< HEAD
-=======
-    isOnline = false,
->>>>>>> e83b5faf (Run yarn lint --fix on all files)
   ): Promise<string> {
-=======
-  ): Promise<Response> {
->>>>>>> origin/isomorphic/express-adapter
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
     const cleanShop = sanitizeShop(shop, true)!;
 
-    const response: Response = {
-      statusCode: 200,
-      statusText: 'OK',
-      headers: {},
-      continue: false,
-    };
-    const cookies = new Cookies(
-      await abstractConvertRequest(request),
-      response,
-      {
-        keys: [Context.API_SECRET_KEY],
-        secure: true,
-      },
-    );
+    const cookies = new Cookies(request, response, {
+      keys: [Context.API_SECRET_KEY],
+      secure: true,
+    });
 
     const state = nonce();
 
-<<<<<<< HEAD
-    cookies.set(ShopifyOAuth.STATE_COOKIE_NAME, state, {
-      signed: true,
-=======
     const session = new Session(
-      isOnline ? uuidv4() : this.getOfflineSessionId(shop),
+      sessionId,
       shop,
       state,
       isOnline,
@@ -140,18 +120,7 @@ const ShopifyOAuth = {
     // const queryString = querystring.stringify(query);
     const queryString = new URLSearchParams(query).toString();
 
-<<<<<<< HEAD
-    return `https://${cleanShop}/admin/oauth/authorize?${queryString}`;
-=======
-    response.statusCode = 302;
-    response.statusText = 'Redirect';
-    setHeader(
-      response.headers!,
-      'location',
-      `https://${shop}/admin/oauth/authorize?${queryString}`,
-    );
-    return response;
->>>>>>> origin/isomorphic/express-adapter
+    return `https://${shop}/admin/oauth/authorize?${queryString}`;
   },
 
   /**
@@ -163,14 +132,12 @@ const ShopifyOAuth = {
    * @param response Current HTTP Response
    * @param query Current HTTP Request Query, containing the information to be validated.
    *              Depending on framework, this may need to be cast as "unknown" before being passed.
-   * @param isOnline Boolean value. Defaults to true (online access).
    * @returns SessionInterface
    */
   async validateAuthCallback(
     request: Request,
+    response: Response,
     query: AuthQuery,
-<<<<<<< HEAD
-<<<<<<< HEAD
   ): Promise<SessionInterface> {
 =======
   ): Promise<void> {
@@ -191,24 +158,12 @@ const ShopifyOAuth = {
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
 
-    const convertedRequest = await abstractConvertRequest(request);
-
-    const response: Response = {
-      statusCode: 200,
-      statusText: 'OK',
-      headers: {},
-      continue: true,
-    };
-    const cookies = new Cookies(convertedRequest, response, {
+    const cookies = new Cookies(request, response, {
       keys: [Context.API_SECRET_KEY],
       secure: true,
     });
 
-    const sessionCookie = await this.getCookieSessionId(
-      convertedRequest,
-      response,
-    );
->>>>>>> origin/isomorphic/express-adapter
+    const sessionCookie = await this.getCookieSessionId(request);
     if (!sessionCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
@@ -291,16 +246,6 @@ const ShopifyOAuth = {
       currentSession.scope = responseBody.scope;
     }
 
-    await cookies.setAndSign(
-      ShopifyOAuth.SESSION_COOKIE_NAME,
-      currentSession.id,
-      {
-        expires: Context.IS_EMBEDDED_APP ? new Date() : currentSession.expires,
-        sameSite: 'lax',
-        secure: true,
-      },
-    );
-
     const sessionStored = await Context.SESSION_STORAGE.storeSession(
       currentSession,
     );
@@ -329,7 +274,6 @@ const ShopifyOAuth = {
 =======
   getCookieSessionId(request: Request): Promise<string | undefined> {
     const cookies = new Cookies(request, {} as Response, {
->>>>>>> origin/isomorphic/main
       secure: true,
       keys: [Context.API_SECRET_KEY],
     });
