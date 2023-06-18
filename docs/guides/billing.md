@@ -71,6 +71,18 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 
 1. Prior to `ApiVersion.April23` the currency code must be `USD`.
 
+### Combination Billing Plans
+
+| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                            |
+| --------------------- | ---------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `interval`            | `COMBINATION`                      |    Yes    |       -       | `BillingInterval.Combination`                                                                                                                                          |
+| `subscriptionPlan` | `BillingConfigSubscriptionPlan` |    Yes     |       -       | `BillingConfigSubscriptionPlan` value other than `interval`, `trialDays` and `replacementBehavior`, see [Recurring Billing Plan](#recurring-billing-plans) for more information. |
+| `usagePlan` | `BillingConfigUsagePlan` |    Yes     |       -       | `BillingConfigUsagePlan` value other than `interval`, `trialDays` and `replacementBehavior`, see [Usage Billing Plan](#usage-billing-plans) for more information. |
+| `trialDays`           | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                                    |
+| `replacementBehavior` | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/docs/api/admin-graphql/latest/mutations/appSubscriptionCreate) for more information. |
+
+> **Note** `interval` of the subscription plan is fixed at `EVERY_30_DAYS`.
+
 ## When should the app check for payment?
 
 As mentioned above, billing requires a session to access the API, which means that the app must actually be installed before it can request payment.
