@@ -181,7 +181,7 @@ const SUBSCRIPTION_TEST_CONFIGS: TestConfigInterface[] = [
 
 const COMBINATION_TEST_CONFIGS: TestConfigInterface[] = [
   {
-    name: 'can request combination billing plans',
+    name: 'combination config',
     billingConfig: {
       [Responses.PLAN_1]: {
         interval: BillingInterval.Combination,
