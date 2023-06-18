@@ -52,27 +52,44 @@ interface CookiesOptions {
   secure: boolean;
 }
 export class Cookies {
-  static parseCookies(hdrs: string[]): CookieJar {
-    const entries = hdrs
-      .filter((hdr) => hdr.trim().length > 0)
-      .map((cookieDef) => {
-        const [keyval, ...opts] = cookieDef.split(';');
+  static parseRequestCookies(hdrs: string[]): CookieJar {
+    const cookieDefs = hdrs.filter((hdr) => hdr.trim().length > 0);
+
+    const entries = cookieDefs.flatMap((hdr) =>
+      hdr.split(';').map((keyval) => {
         const [name, value] = splitN(keyval, '=', 2).map((value) =>
           value.trim(),
         );
-        return [
+
+        return [name, {name, value}];
+      }),
+    );
+
+    return this.buildCookieJar(entries);
+  }
+
+  static parseResponseCookies(hdrs: string[]): CookieJar {
+    const cookieDefs = hdrs.filter((hdr) => hdr.trim().length > 0);
+
+    const entries = cookieDefs.map((cookieDef) => {
+      const [keyval, ...opts] = cookieDef.split(';');
+      const [name, value] = splitN(keyval, '=', 2).map((value) => value.trim());
+      return [
+        name,
+        {
           name,
-          {
-            name,
-            value,
-            ...Object.fromEntries(
-              opts.map((opt) =>
-                splitN(opt, '=', 2).map((value) => value.trim()),
-              ),
-            ),
-          },
-        ];
-      });
+          value,
+          ...Object.fromEntries(
+            opts.map((opt) => splitN(opt, '=', 2).map((value) => value.trim())),
+          ),
+        },
+      ];
+    });
+
+    return this.buildCookieJar(entries);
+  }
+
+  static buildCookieJar(entries: any) {
     const jar = Object.fromEntries(entries) as CookieJar;
     for (const cookie of Object.values(jar)) {
       if (typeof cookie.expires === 'string') {
@@ -108,9 +125,11 @@ export class Cookies {
     if (keys) this.keys = keys;
 
     const cookieReqHdr = getHeader(req.headers, 'Cookie') ?? '';
-    this.receivedCookieJar = Cookies.parseCookies(cookieReqHdr.split(','));
+    this.receivedCookieJar = Cookies.parseRequestCookies(
+      cookieReqHdr.split(','),
+    );
     const cookieResHdr = getHeaders(response.headers, 'Set-Cookie') ?? [];
-    this.outgoingCookieJar = Cookies.parseCookies(cookieResHdr);
+    this.outgoingCookieJar = Cookies.parseResponseCookies(cookieResHdr);
   }
 
   toHeaders(): string[] {

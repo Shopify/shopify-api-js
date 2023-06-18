@@ -18,7 +18,7 @@ describe('Wrapper to create HMACs', () => {
       const nodeHmac = crypto
         .createHmac('sha256', secret)
         .update(payload, 'utf8')
-        .digest('base64');
+        .digest('hex');
 
       expect(hmac).toEqual(nodeHmac);
     }

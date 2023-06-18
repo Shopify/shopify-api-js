@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import querystring from 'querystring';
 
 import {v4 as uuidv4} from 'uuid';
@@ -6,6 +7,16 @@ import {v4 as uuidv4} from 'uuid';
 
 =======
 import {Request, Response, Cookies, getHeader} from '../../runtime/http';
+=======
+import {
+  Request,
+  Response,
+  Cookies,
+  getHeader,
+  setHeader,
+  abstractConvertRequest,
+} from '../../runtime/http';
+>>>>>>> origin/isomorphic/express-adapter
 import {crypto} from '../../runtime/crypto';
 >>>>>>> origin/isomorphic/main
 import {Context} from '../../context';
@@ -22,8 +33,11 @@ import {DataType, HttpClient} from '../../clients/http_client';
 import {HttpClient} from '../../clients/http_client/http_client';
 import {DataType} from '../../clients/http_client/types';
 import * as ShopifyErrors from '../../error';
+<<<<<<< HEAD
 import {SessionInterface} from '../session/types';
 import {sanitizeShop} from '../../utils/shop-validator';
+=======
+>>>>>>> origin/isomorphic/express-adapter
 
 import {
   AuthQuery,
@@ -48,24 +62,37 @@ const ShopifyOAuth = {
    *                 Defaults to online access.
    */
   async beginAuth(
-    request: Request,
-    response: Response,
+    request: unknown,
     shop: string,
     redirectPath: string,
 <<<<<<< HEAD
     isOnline = true,
+<<<<<<< HEAD
 =======
     isOnline = false,
 >>>>>>> e83b5faf (Run yarn lint --fix on all files)
   ): Promise<string> {
+=======
+  ): Promise<Response> {
+>>>>>>> origin/isomorphic/express-adapter
     Context.throwIfUninitialized();
     Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
     const cleanShop = sanitizeShop(shop, true)!;
 
-    const cookies = new Cookies(request, response, {
-      keys: [Context.API_SECRET_KEY],
-      secure: true,
-    });
+    const response: Response = {
+      statusCode: 200,
+      statusText: 'OK',
+      headers: {},
+      continue: false,
+    };
+    const cookies = new Cookies(
+      await abstractConvertRequest(request),
+      response,
+      {
+        keys: [Context.API_SECRET_KEY],
+        secure: true,
+      },
+    );
 
     const state = nonce();
 
@@ -113,7 +140,18 @@ const ShopifyOAuth = {
     // const queryString = querystring.stringify(query);
     const queryString = new URLSearchParams(query).toString();
 
+<<<<<<< HEAD
     return `https://${cleanShop}/admin/oauth/authorize?${queryString}`;
+=======
+    response.statusCode = 302;
+    response.statusText = 'Redirect';
+    setHeader(
+      response.headers!,
+      'location',
+      `https://${shop}/admin/oauth/authorize?${queryString}`,
+    );
+    return response;
+>>>>>>> origin/isomorphic/express-adapter
   },
 
   /**
@@ -130,8 +168,8 @@ const ShopifyOAuth = {
    */
   async validateAuthCallback(
     request: Request,
-    response: Response,
     query: AuthQuery,
+<<<<<<< HEAD
 <<<<<<< HEAD
   ): Promise<SessionInterface> {
 =======
@@ -148,6 +186,29 @@ const ShopifyOAuth = {
     deleteCookie(request, response, this.STATE_COOKIE_NAME);
 
     const sessionCookie = await this.getCookieSessionId(request);
+=======
+  ): Promise<Response> {
+    Context.throwIfUninitialized();
+    Context.throwIfPrivateApp('Cannot perform OAuth for private apps');
+
+    const convertedRequest = await abstractConvertRequest(request);
+
+    const response: Response = {
+      statusCode: 200,
+      statusText: 'OK',
+      headers: {},
+      continue: true,
+    };
+    const cookies = new Cookies(convertedRequest, response, {
+      keys: [Context.API_SECRET_KEY],
+      secure: true,
+    });
+
+    const sessionCookie = await this.getCookieSessionId(
+      convertedRequest,
+      response,
+    );
+>>>>>>> origin/isomorphic/express-adapter
     if (!sessionCookie) {
       throw new ShopifyErrors.CookieNotFound(
         `Cannot complete OAuth process. Could not find an OAuth cookie for shop url: ${query.shop}`,
@@ -249,7 +310,9 @@ const ShopifyOAuth = {
       );
     }
 
-    return currentSession;
+    response.extra = {session: currentSession};
+
+    return response;
   },
 
   /**
