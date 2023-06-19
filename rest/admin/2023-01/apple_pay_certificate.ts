@@ -2,33 +2,33 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import { ApiVersion } from '../../../lib/base-types';
+import { SessionInterface } from '../../../lib/session/types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface CsrArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 
 export class ApplePayCertificate extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'apple_pay_certificate';
-  protected static pluralName = 'apple_pay_certificates';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'apple_pay_certificate';
+  protected static PLURAL_NAME = 'apple_pay_certificates';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"},
     {"http_method": "get", "operation": "csr", "ids": ["id"], "path": "apple_pay_certificates/<id>/csr.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"},
@@ -47,7 +47,7 @@ export class ApplePayCertificate extends Base {
       urlIds: {"id": id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(

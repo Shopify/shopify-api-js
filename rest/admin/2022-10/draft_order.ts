@@ -2,10 +2,17 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 import {Customer} from './customer';
 
@@ -51,6 +58,7 @@ interface CompleteArgs {
 export class DraftOrder extends Base {
   public static apiVersion = ApiVersion.October22;
 
+<<<<<<< HEAD:rest/admin/2022-10/draft_order.ts
   protected static resourceName = 'draft_order';
   protected static pluralName = 'draft_orders';
   protected static hasOne: {[key: string]: typeof Base} = {
@@ -66,6 +74,23 @@ export class DraftOrder extends Base {
     {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
     {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"}
+=======
+  protected static NAME = 'draft_order';
+  protected static PLURAL_NAME = 'draft_orders';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
+    "customer": Customer
+  };
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "post", "operation": "post", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
+    {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
+    {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/draft_order.ts
   ];
 
   public static async find(
@@ -177,7 +202,11 @@ export class DraftOrder extends Base {
       operation: "complete",
       session: this.session,
       urlIds: {"id": this.id},
+<<<<<<< HEAD:rest/admin/2022-10/draft_order.ts
       params: {"payment_gateway_id": payment_gateway_id, "payment_pending": payment_pending, ...otherArgs},
+=======
+      params: {"payment_pending": payment_pending, ...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/draft_order.ts
       body: body,
       entity: this,
     });

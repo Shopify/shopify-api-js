@@ -1,13 +1,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "composite": true,
     "declaration": true,
     "declarationMap": true,
     "pretty": true,
     "moduleResolution": "node",
     "module": "commonjs",
-    "target": "es2015",
+    "target": "es2022",
     "downlevelIteration": true,
     "esModuleInterop": true,
     "sourceMap": true,
@@ -35,7 +34,8 @@
     "typeRoots": ["./node_modules/@types"],
     "types": ["@cloudflare/workers-types", "node", "jest"],
     "baseUrl": ".",
-    "rootDir": "."
+    "rootDir": ".",
+    "outDir": "dist"
   },
   "include": [
     "lib/**/*.ts",
@@ -44,6 +44,21 @@
     "runtime/**/*.ts",
   ],
   "exclude": [
-    "**/*.test.ts", "**/test/*", "**/__tests__/*",
+    "**/*.test.ts", "**/test/*", "**/__tests__/*", "**/__e2etests__/*", "**/dist/*", "./jest.config.ts",
   ],
+<<<<<<< HEAD
 }
+=======
+  "typedocOptions": {
+    "inputFiles": [
+      "./src"
+    ],
+    "mode": "file",
+    "out": "tsdocs",
+    "exclude": "**/test/**",
+    "excludeNotExported": true,
+    "excludePrivate": true,
+    "disableSources": true
+  }
+}
+>>>>>>> 256689b9 (Splitting getting started guide into docs pages)

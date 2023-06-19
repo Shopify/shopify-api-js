@@ -2,10 +2,16 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD:rest/admin/2023-04/asset.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+>>>>>>> upstream/v5:src/rest-resources/2022-04/asset.ts
 
 interface DeleteArgs {
   session: Session;

@@ -2,10 +2,16 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD:rest/admin/2023-01/metafield.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+>>>>>>> upstream/v5:src/rest-resources/2022-04/metafield.ts
 
 interface FindArgs {
   session: Session;
@@ -94,6 +100,7 @@ export class Metafield extends Base {
     {"http_method": "delete", "operation": "delete", "ids": ["order_id", "id"], "path": "orders/<order_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["page_id", "id"], "path": "pages/<page_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["product_image_id", "id"], "path": "product_images/<product_image_id>/metafields/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_image_id", "id"], "path": "product_images/<product_image_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/metafields/<id>.json"},
     {"http_method": "delete", "operation": "delete", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "count", "ids": ["article_id"], "path": "articles/<article_id>/metafields/count.json"},
@@ -105,6 +112,7 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "count", "ids": [], "path": "metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["page_id"], "path": "pages/<page_id>/metafields/count.json"},
+    {"http_method": "get", "operation": "count", "ids": ["page_id"], "path": "pages/<page_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["product_image_id"], "path": "product_images/<product_image_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/metafields/count.json"},
     {"http_method": "get", "operation": "count", "ids": ["variant_id"], "path": "variants/<variant_id>/metafields/count.json"},
@@ -112,7 +120,10 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "get", "ids": ["article_id", "id"], "path": "articles/<article_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},
+<<<<<<< HEAD:rest/admin/2023-01/metafield.ts
     {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
+=======
+>>>>>>> upstream/v5:src/rest-resources/2022-04/metafield.ts
     {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["collection_id"], "path": "collections/<collection_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["collection_id", "id"], "path": "collections/<collection_id>/metafields/<id>.json"},
@@ -131,6 +142,7 @@ export class Metafield extends Base {
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/metafields.json"},
     {"http_method": "get", "operation": "get", "ids": ["product_id", "id"], "path": "products/<product_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["variant_id"], "path": "variants/<variant_id>/metafields.json"},
+    {"http_method": "get", "operation": "get", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["article_id"], "path": "articles/<article_id>/metafields.json"},
     {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/metafields.json"},

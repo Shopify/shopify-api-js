@@ -2,10 +2,23 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD:rest/admin/2022-04/smart_collection.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/smart_collection.ts
+=======
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 interface FindArgs {
   session: Session;
@@ -53,6 +66,7 @@ interface OrderArgs {
 export class SmartCollection extends Base {
   public static apiVersion = ApiVersion.April22;
 
+<<<<<<< HEAD:rest/admin/2022-04/smart_collection.ts
   protected static resourceName = 'smart_collection';
   protected static pluralName = 'smart_collections';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -65,6 +79,20 @@ export class SmartCollection extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "smart_collections.json"},
     {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"}
+=======
+  protected static NAME = 'smart_collection';
+  protected static PLURAL_NAME = 'smart_collections';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "smart_collections.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "smart_collections.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "smart_collections/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "smart_collections/<id>.json"},
+    {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/smart_collection.ts
   ];
 
   public static async find(

@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/session-storage/memory/index.js",
+  "types": "../../dist/session-storage/memory/index.d.ts"
+}

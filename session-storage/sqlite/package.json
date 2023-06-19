@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/session-storage/sqlite/index.js",
+  "types": "../../dist/session-storage/sqlite/index.d.ts"
+}

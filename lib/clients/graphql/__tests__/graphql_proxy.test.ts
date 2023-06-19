@@ -1,15 +1,26 @@
+<<<<<<< HEAD:lib/clients/graphql/__tests__/graphql_proxy.test.ts
+import http from 'http';
+
+import jwt from 'jsonwebtoken';
 import express, {Request, Response} from 'express';
 import request from 'supertest';
 
-import {
-  queueMockResponses,
-  shopify,
-  signJWT,
-} from '../../../__tests__/test-helper';
-import {Session} from '../../../session/session';
-import {InvalidSession} from '../../../error';
-import {JwtPayload} from '../../../session/types';
-import {canonicalizeHeaders, NormalizedRequest} from '../../../../runtime/http';
+=======
+import express, {
+  Request as ExpressRequest,
+  Response as ExpressResponse,
+} from 'express';
+import request from 'supertest';
+
+import * as mockAdapter from '../../adapters/mock';
+import {setAbstractFetchFunc, Request, Response} from '../../runtime/http';
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/graphql_proxy.test.ts
+import {Session} from '../../auth/session';
+import {InvalidSession, SessionNotFound} from '../../error';
+import graphqlProxy from '../graphql_proxy';
+import {Context} from '../../context';
+import {JwtPayload} from '../decode-session-token';
+import {signJWT} from '../setup-jest';
 
 const successResponse = {
   data: {
@@ -37,29 +48,24 @@ const objectQuery = {
 };
 const shop = 'shop.myshopify.com';
 const accessToken = 'dangit';
-let session: Session;
 let token = '';
 
 describe('GraphQL proxy with session', () => {
   const app = express();
-  app.use(express.text());
-  app.use(express.json());
   app.post('/proxy', async (req: Request, res: Response) => {
     try {
-      // Convert the request to a normalized request here because we're using the mock adapter, rather than the node one
-      const request: NormalizedRequest = {
-        headers: canonicalizeHeaders({...req.headers} as any),
-        method: req.method ?? 'GET',
-        url: req.url!,
-        body: req.body,
-      };
-
-      const testResponse = await shopify.clients.graphqlProxy({
-        rawBody: request.body!,
-        session,
-      });
-
-      res.send(testResponse.body);
+<<<<<<< HEAD:lib/clients/graphql/__tests__/graphql_proxy.test.ts
+      const response = await graphqlProxy(req, res);
+      res.send(response.body);
+=======
+      const internalResponse = {
+        statusCode: 200,
+        statusText: 'OK',
+      } as Response;
+      const response = await graphqlProxy(await convertRequest(req));
+      internalResponse.body = JSON.stringify(response.body);
+      convertResponse(internalResponse, res);
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/graphql_proxy.test.ts
     } catch (err) {
       res.status(400);
       res.send(JSON.stringify(err.message));
@@ -67,12 +73,12 @@ describe('GraphQL proxy with session', () => {
   });
 
   beforeEach(async () => {
-    shopify.config.isEmbeddedApp = true;
-
+    Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
     const jwtPayload: JwtPayload = {
       iss: 'https://shop.myshopify.com/admin',
       dest: 'https://shop.myshopify.com',
-      aud: shopify.config.apiKey,
+      aud: Context.API_KEY,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -81,25 +87,25 @@ describe('GraphQL proxy with session', () => {
       sid: 'abc123',
     };
 
-    session = new Session({
-      id: `shop.myshopify.com_${jwtPayload.sub}`,
+    const session = new Session(
+      `shop.myshopify.com_${jwtPayload.sub}`,
       shop,
-      state: 'state',
-      isOnline: true,
-      accessToken,
-    });
-    token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
+      'state',
+      true,
+    );
+    session.accessToken = accessToken;
+    await Context.SESSION_STORAGE.storeSession(session);
+    token = await signJWT(jwtPayload);
   });
 
   it('can forward query and return response', async () => {
-    queueMockResponses(
-      [JSON.stringify(successResponse)],
-      [JSON.stringify(successResponse)],
+    fetchMock.mockResponses(
+      JSON.stringify(successResponse),
+      JSON.stringify(successResponse),
     );
 
     const firstResponse = await request(app)
       .post('/proxy')
-      .set('content-type', 'text/plain')
       .set('authorization', `Bearer ${token}`)
       .send(shopQuery)
       .expect(200);
@@ -108,7 +114,6 @@ describe('GraphQL proxy with session', () => {
 
     const nextResponse = await request(app)
       .post('/proxy')
-      .set('content-type', 'application/json')
       .set('authorization', `Bearer ${token}`)
       .send(objectQuery)
       .expect(200);
@@ -128,12 +133,12 @@ describe('GraphQL proxy with session', () => {
 
 describe('GraphQL proxy', () => {
   it('throws an error if no token', async () => {
-    shopify.config.isEmbeddedApp = true;
-
+    Context.IS_EMBEDDED_APP = true;
+    Context.initialize(Context);
     const jwtPayload: JwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: shopify.config.apiKey,
+      aud: Context.API_KEY,
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -142,18 +147,36 @@ describe('GraphQL proxy', () => {
       sid: 'abc123',
     };
 
-    const session = new Session({
-      id: `test-shop.myshopify.io_${jwtPayload.sub}`,
+    const token = await signJWT(jwtPayload);
+    const req = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+<<<<<<< HEAD:lib/clients/graphql/__tests__/graphql_proxy.test.ts
+    } as http.IncomingMessage;
+    const res = {} as http.ServerResponse;
+=======
+    } as any as Request;
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/graphql_proxy.test.ts
+    const session = new Session(
+      `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop,
-      state: 'state',
-      isOnline: true,
-    });
+      'state',
+      true,
+    );
+    Context.SESSION_STORAGE.storeSession(session);
 
-    await expect(
-      shopify.clients.graphqlProxy({
-        rawBody: '',
-        session,
-      }),
-    ).rejects.toThrow(InvalidSession);
+    await expect(graphqlProxy(req)).rejects.toThrow(InvalidSession);
+  });
+
+  it('throws an error if no session', async () => {
+<<<<<<< HEAD:lib/clients/graphql/__tests__/graphql_proxy.test.ts
+    const req = {headers: {}} as http.IncomingMessage;
+    const res = {} as http.ServerResponse;
+    await expect(graphqlProxy(req, res)).rejects.toThrow(SessionNotFound);
+=======
+    const req = {headers: {}} as Request;
+    await expect(graphqlProxy(req)).rejects.toThrow(SessionNotFound);
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/graphql_proxy.test.ts
   });
 });

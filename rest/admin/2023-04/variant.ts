@@ -2,10 +2,16 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD:rest/admin/2023-04/variant.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+>>>>>>> upstream/v5:src/rest-resources/2022-04/variant.ts
 
 interface FindArgs {
   session: Session;
@@ -35,6 +41,7 @@ interface CountArgs {
 export class Variant extends Base {
   public static apiVersion = ApiVersion.April23;
 
+<<<<<<< HEAD:rest/admin/2023-04/variant.ts
   protected static resourceName = 'variant';
   protected static pluralName = 'variants';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -50,6 +57,19 @@ export class Variant extends Base {
   protected static readOnlyAttributes: string[] = [
     "inventory_quantity",
     "inventory_quantity_adjustment"
+=======
+  protected static NAME = 'variant';
+  protected static PLURAL_NAME = 'variants';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
+    {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/variants/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "variants/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "variants/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/variants/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/variant.ts
   ];
 
   public static async find(

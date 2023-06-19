@@ -2,10 +2,23 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD:rest/admin/2022-07/transaction.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-04/transaction.ts
+=======
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 interface FindArgs {
   session: Session;
@@ -31,6 +44,7 @@ interface CountArgs {
 export class Transaction extends Base {
   public static apiVersion = ApiVersion.July22;
 
+<<<<<<< HEAD:rest/admin/2022-07/transaction.ts
   protected static resourceName = 'transaction';
   protected static pluralName = 'transactions';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -40,6 +54,17 @@ export class Transaction extends Base {
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/transactions/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"}
+=======
+  protected static NAME = 'transaction';
+  protected static PLURAL_NAME = 'transactions';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"},
+    {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/transactions/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/transactions/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/transaction.ts
   ];
 
   public static async find(

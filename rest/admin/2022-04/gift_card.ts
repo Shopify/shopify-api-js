@@ -2,13 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
-
-import {Balance} from './balance';
-import {Currency} from './currency';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
   session: Session;

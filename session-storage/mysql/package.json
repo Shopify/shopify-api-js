@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/session-storage/mysql/index.js",
+  "types": "../../dist/session-storage/mysql/index.d.ts"
+}

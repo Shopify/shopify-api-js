@@ -2,10 +2,17 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 import {DiscountCode} from './discount_code';
 import {Order} from './order';
@@ -28,6 +35,7 @@ interface CompleteArgs {
 export class Checkout extends Base {
   public static apiVersion = ApiVersion.October22;
 
+<<<<<<< HEAD:rest/admin/2022-10/checkout.ts
   protected static resourceName = 'checkout';
   protected static pluralName = 'checkouts';
   protected static hasOne: {[key: string]: typeof Base} = {
@@ -43,6 +51,23 @@ export class Checkout extends Base {
     {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
     {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
+=======
+  protected static NAME = 'checkout';
+  protected static PLURAL_NAME = 'checkouts';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
+    "discount_code": DiscountCode,
+    "order": Order
+  };
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
+    "gift_cards": GiftCard
+  };
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
+    {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
+    {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"},
+    {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/checkout.ts
   ];
   protected static primaryKey: string = "token";
 

@@ -1,5 +1,4 @@
-import {ShopifyRestResources} from '../rest/types';
-
+import {ShopifyRestResources} from './rest/types';
 import {AuthScopes} from './auth/scopes';
 import {BillingConfig} from './billing/types';
 import {ApiVersion, LogSeverity} from './types';

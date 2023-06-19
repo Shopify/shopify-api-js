@@ -4,8 +4,8 @@
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 import {DiscountCode} from './discount_code';
 import {Order} from './order';

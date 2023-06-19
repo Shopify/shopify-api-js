@@ -13,6 +13,7 @@ import {
   BillingConfigSubscriptionPlan,
   BillingConfigOneTimePlan,
   BillingConfigUsagePlan,
+  BillingConfigCombinationPlan,
   BillingRequestParams,
   BillingRequestResponse,
   RecurringPaymentResponse,
@@ -37,6 +38,10 @@ interface RequestOneTimePaymentInternalParams extends RequestInternalParams {
 
 interface RequestUsageSubscriptionInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigUsagePlan;
+}
+
+interface RequestCombinationInternalParams extends RequestInternalParams {
+  billingConfig: BillingConfigCombinationPlan;
 }
 
 export function request(config: ConfigInterface) {
@@ -86,6 +91,17 @@ export function request(config: ConfigInterface) {
       case BillingInterval.Usage: {
         const mutationUsageResponse = await requestUsagePayment({
           billingConfig: billingConfig as BillingConfigUsagePlan,
+          plan,
+          client,
+          returnUrl,
+          isTest,
+        });
+        data = mutationUsageResponse.data.appSubscriptionCreate;
+        break;
+      }
+      case BillingInterval.Combination: {
+        const mutationUsageResponse = await requestCombinationPayment({
+          billingConfig: billingConfig as BillingConfigCombinationPlan,
           plan,
           client,
           returnUrl,
@@ -198,6 +214,72 @@ async function requestUsagePayment({
                 cappedAmount: {
                   amount: billingConfig.amount,
                   currencyCode: billingConfig.currencyCode,
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  if (mutationResponse.body.errors?.length) {
+    throw new BillingError({
+      message: `Error while billing the store:: ${mutationResponse.body.errors}`,
+      errorData: mutationResponse.body.errors,
+    });
+  }
+
+  return mutationResponse.body;
+}
+
+async function requestCombinationPayment({
+  billingConfig,
+  plan,
+  client,
+  returnUrl,
+  isTest,
+}: RequestCombinationInternalParams): Promise<RecurringPaymentResponse> {
+  const mutationResponse = await client.query<RecurringPaymentResponse>({
+    data: {
+      query: RECURRING_PURCHASE_MUTATION,
+      variables: {
+        name: plan,
+        returnUrl,
+        test: isTest,
+        trialDays: billingConfig.trialDays,
+        replacementBehavior: billingConfig.replacementBehavior,
+        lineItems: [
+          {
+            plan: {
+              appRecurringPricingDetails: {
+                interval: BillingInterval.Every30Days,
+                price: {
+                  amount: billingConfig.subscriptionPlan.amount,
+                  currencyCode: billingConfig.subscriptionPlan.currencyCode,
+                },
+                discount: {
+                  durationLimitInIntervals:
+                    billingConfig.subscriptionPlan.discount
+                      ?.durationLimitInIntervals,
+                  value: {
+                    amount:
+                      billingConfig.subscriptionPlan.discount?.value?.amount,
+                    percentage:
+                      billingConfig.subscriptionPlan.discount?.value
+                        ?.percentage,
+                  },
+                },
+              },
+            },
+          },
+          {
+            plan: {
+              appUsagePricingDetails: {
+                terms: billingConfig.usagePlan.usageTerms,
+                cappedAmount: {
+                  amount: billingConfig.usagePlan.amount,
+                  currencyCode: billingConfig.usagePlan.currencyCode,
                 },
               },
             },

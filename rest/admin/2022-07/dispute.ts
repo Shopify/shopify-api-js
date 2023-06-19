@@ -1,19 +1,25 @@
+<<<<<<< HEAD
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+=======
 /***********************************************************************************************************************
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   since_id?: unknown;
   last_id?: unknown;
   status?: unknown;
@@ -21,13 +27,13 @@ interface AllArgs {
 }
 
 export class Dispute extends Base {
-  public static apiVersion = ApiVersion.July22;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'dispute';
-  protected static pluralName = 'disputes';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'dispute';
+  protected static PLURAL_NAME = 'disputes';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/disputes.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/disputes/<id>.json"}
   ];
@@ -38,12 +44,12 @@ export class Dispute extends Base {
       id
     }: FindArgs
   ): Promise<Dispute | null> {
-    const result = await this.baseFind<Dispute>({
+    const result = await Dispute.baseFind({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] as Dispute : null;
   }
 
   public static async all(
@@ -55,14 +61,14 @@ export class Dispute extends Base {
       initiated_at = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Dispute>> {
-    const response = await this.baseFind<Dispute>({
+  ): Promise<Dispute[]> {
+    const response = await Dispute.baseFind({
       session: session,
       urlIds: {},
       params: {"since_id": since_id, "last_id": last_id, "status": status, "initiated_at": initiated_at, ...otherArgs},
     });
 
-    return response;
+    return response as Dispute[];
   }
 
   public amount: string | null;
@@ -71,7 +77,7 @@ export class Dispute extends Base {
   public evidence_sent_on: string | null;
   public finalized_on: string | null;
   public id: number | null;
-  public network_reason_code: string | null;
+  public network_reason_code: number | null;
   public order_id: number | null;
   public reason: string | null;
   public status: string | null;

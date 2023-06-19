@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/session-storage/kv/index.js",
+  "types": "../../dist/session-storage/kv/index.d.ts"
+}

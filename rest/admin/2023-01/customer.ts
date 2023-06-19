@@ -1,26 +1,17 @@
-/***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
-
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
 
 import {Metafield} from './metafield';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   fields?: unknown;
 }
-interface DeleteArgs {
-  session: Session;
-  id: number | string;
-}
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   ids?: unknown;
   since_id?: unknown;
   created_at_min?: unknown;
@@ -32,21 +23,17 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
-  created_at_min?: unknown;
-  created_at_max?: unknown;
-  updated_at_min?: unknown;
-  updated_at_max?: unknown;
+  session: SessionInterface;
 }
 interface OrdersArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   id: number | string;
   status?: unknown;
 }
 interface SearchArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   order?: unknown;
   query?: unknown;
   limit?: unknown;
@@ -62,16 +49,16 @@ interface SendInviteArgs {
 }
 
 export class Customer extends Base {
-  public static apiVersion = ApiVersion.January23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'customer';
-  protected static pluralName = 'customers';
-  protected static hasOne: {[key: string]: typeof Base} = {
+  protected static NAME = 'customer';
+  protected static PLURAL_NAME = 'customers';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {
     "metafield": Metafield
   };
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customers/<id>.json"},
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:rest/admin/2023-01/customer.ts
     {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
@@ -81,6 +68,17 @@ export class Customer extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
     {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "customers/search.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "post", "operation": "account_activation_url", "ids": ["id"], "path": "customers/<id>/account_activation_url.json"},
+    {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
+    {"http_method": "get", "operation": "orders", "ids": ["id"], "path": "customers/<id>/orders.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/customer.ts
   ];
 
   public static async find(
@@ -90,29 +88,12 @@ export class Customer extends Base {
       fields = null
     }: FindArgs
   ): Promise<Customer | null> {
-    const result = await this.baseFind<Customer>({
+    const result = await Customer.baseFind({
       session: session,
       urlIds: {"id": id},
       params: {"fields": fields},
     });
-    return result.data ? result.data[0] : null;
-  }
-
-  public static async delete(
-    {
-      session,
-      id
-    }: DeleteArgs
-  ): Promise<unknown> {
-    const response = await this.request<Customer>({
-      http_method: "delete",
-      operation: "delete",
-      session: session,
-      urlIds: {"id": id},
-      params: {},
-    });
-
-    return response ? response.body : null;
+    return result ? result[0] as Customer : null;
   }
 
   public static async all(
@@ -128,32 +109,54 @@ export class Customer extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Customer>> {
-    const response = await this.baseFind<Customer>({
+  ): Promise<Customer[]> {
+    const response = await Customer.baseFind({
       session: session,
       urlIds: {},
       params: {"ids": ids, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "limit": limit, "fields": fields, ...otherArgs},
     });
 
-    return response;
+    return response as Customer[];
   }
 
+<<<<<<< HEAD:rest/admin/2023-01/customer.ts
+=======
+  public static async search(
+    {
+      session,
+      order = null,
+      query = null,
+      limit = null,
+      fields = null,
+      ...otherArgs
+    }: SearchArgs
+  ): Promise<unknown> {
+    const response = await Customer.request({
+      http_method: "get",
+      operation: "search",
+      session: session,
+      urlIds: {},
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
+      body: {},
+      entity: null,
+    });
+
+    return response ? response.body : null;
+  }
+
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/customer.ts
   public static async count(
     {
       session,
-      created_at_min = null,
-      created_at_max = null,
-      updated_at_min = null,
-      updated_at_max = null,
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
-    const response = await this.request<Customer>({
+    const response = await Customer.request({
       http_method: "get",
       operation: "count",
       session: session,
       urlIds: {},
-      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
+      params: {...otherArgs},
       body: {},
       entity: null,
     });
@@ -169,11 +172,12 @@ export class Customer extends Base {
       ...otherArgs
     }: OrdersArgs
   ): Promise<unknown> {
-    const response = await this.request<Customer>({
+    const response = await Customer.request({
       http_method: "get",
       operation: "orders",
       session: session,
       urlIds: {"id": id},
+<<<<<<< HEAD:rest/admin/2023-01/customer.ts
       params: {"status": status, ...otherArgs},
       body: {},
       entity: null,
@@ -192,12 +196,15 @@ export class Customer extends Base {
       ...otherArgs
     }: SearchArgs
   ): Promise<unknown> {
-    const response = await this.request<Customer>({
+    const response = await Customer.request({
       http_method: "get",
       operation: "search",
       session: session,
       urlIds: {},
       params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
+=======
+      params: {...otherArgs},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2022-01/customer.ts
       body: {},
       entity: null,
     });
@@ -211,7 +218,7 @@ export class Customer extends Base {
       ...otherArgs
     }: AccountActivationUrlArgs
   ): Promise<unknown> {
-    const response = await this.request<Customer>({
+    const response = await Customer.request({
       http_method: "post",
       operation: "account_activation_url",
       session: this.session,
@@ -230,7 +237,7 @@ export class Customer extends Base {
       ...otherArgs
     }: SendInviteArgs
   ): Promise<unknown> {
-    const response = await this.request<Customer>({
+    const response = await Customer.request({
       http_method: "post",
       operation: "send_invite",
       session: this.session,
@@ -250,7 +257,6 @@ export class Customer extends Base {
   public currency: string | null;
   public default_address: {[key: string]: unknown} | null;
   public email: string | null;
-  public email_marketing_consent: {[key: string]: unknown} | null;
   public first_name: string | null;
   public id: number | null;
   public last_name: string | null;
@@ -261,8 +267,6 @@ export class Customer extends Base {
   public multipass_identifier: string | null;
   public note: string | null;
   public orders_count: number | null;
-  public password: string | null;
-  public password_confirmation: string | null;
   public phone: string | null;
   public sms_marketing_consent: {[key: string]: unknown} | null;
   public state: string | null;

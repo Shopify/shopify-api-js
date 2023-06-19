@@ -2,13 +2,12 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import { ApiVersion } from '../../../lib/base-types';
+import { Base } from '../../base';
+import { ResourcePath } from '../../types';
 
-import {Country} from './country';
-import {Province} from './province';
+import { Country } from './country';
+import { Province } from './province';
 
 interface AllArgs {
   [key: string]: unknown;

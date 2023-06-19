@@ -1,10 +1,15 @@
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
 import {
   queueMockResponse,
   queueMockResponses,
   shopify,
 } from '../../../__tests__/test-helper';
+=======
+import {ShopifyHeader} from '../../../base-types';
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestRequestReturn, PageInfo} from '../types';
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
 import * as ShopifyErrors from '../../../error';
 import {
   ApiVersion,
@@ -14,17 +19,26 @@ import {
 } from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
+=======
+import {Context} from '../../../context';
+import {setAbstractFetchFunc, Response} from '../../../runtime/http';
+import Shopify from '../../../adapters/node';
+import * as mockAdapter from '../../../adapters/mock';
+
+setAbstractFetchFunc(mockAdapter.abstractFetch);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
 const domain = 'test-shop.myshopify.io';
-const successResponse = {
+const successResponseBody = JSON.stringify({
   products: [
     {
       title: 'Test title',
       amount: 10,
     },
   ],
-};
+});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
 const accessToken = 'dangit';
 let session: Session;
 let jwtPayload: JwtPayload;
@@ -56,9 +70,20 @@ describe('REST client', () => {
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
+=======
+describe('REST client', () => {
+  beforeEach(() => {
+    mockAdapter.reset();
+  });
+
+  it('can make GET request', async () => {
+    const client = new RestClient(domain, 'dummy-token');
+
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     await expect(client.get({path: 'products'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'GET',
@@ -70,7 +95,11 @@ describe('REST client', () => {
   it('can make GET request with path in query', async () => {
     const client = new shopify.clients.Rest({session});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
     const getRequest = {
       path: 'products',
       query: {
@@ -79,19 +108,28 @@ describe('REST client', () => {
     };
 
     await expect(client.get(getRequest)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'GET',
       domain,
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       path: `/admin/api/${shopify.config.apiVersion}/products.json?path=some_path`,
+=======
+      path: '/admin/api/unstable/products.json',
+      query: 'path=some_path',
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
     }).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with JSON data', async () => {
     const client = new shopify.clients.Rest({session});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     const postData = {
       title: 'Test product',
@@ -100,12 +138,17 @@ describe('REST client', () => {
 
     await expect(
       client.post({path: 'products', type: DataType.JSON, data: postData}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    ).resolves.toEqual(buildExpectedResponse(successResponseBody));
 
     expect({
       method: 'POST',
       domain,
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       path: `/admin/api/${shopify.config.apiVersion}/products.json`,
+=======
+      path: '/admin/api/unstable/products.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
@@ -114,7 +157,11 @@ describe('REST client', () => {
   it('can make POST request with form data', async () => {
     const client = new shopify.clients.Rest({session});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     const postData = {
       title: 'Test product + something else',
@@ -127,21 +174,32 @@ describe('REST client', () => {
         type: DataType.URLEncoded,
         data: postData,
       }),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    ).resolves.toEqual(buildExpectedResponse(successResponseBody));
 
     expect({
       method: 'POST',
       domain,
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       path: `/admin/api/${shopify.config.apiVersion}/products.json`,
       headers: {'Content-Type': DataType.URLEncoded.toString()},
       data: 'title=Test+product+%2B+something+else&amount=10',
+=======
+      path: '/admin/api/unstable/products.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
+      headers: {'Content-Type': DataType.URLEncoded.toString()},
+      data: new URLSearchParams(postData as any).toString(),
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
     }).toMatchMadeHttpRequest();
   });
 
   it('can make PUT request with JSON data', async () => {
     const client = new shopify.clients.Rest({session});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     const putData = {
       title: 'Test product',
@@ -150,12 +208,17 @@ describe('REST client', () => {
 
     await expect(
       client.put({path: 'products/123', type: DataType.JSON, data: putData}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    ).resolves.toEqual(buildExpectedResponse(successResponseBody));
 
     expect({
       method: 'PUT',
       domain,
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       path: `/admin/api/${shopify.config.apiVersion}/products/123.json`,
+=======
+      path: '/admin/api/unstable/products/123.json',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
+>>>>>>> origin/isomorphic/main:src/clients/rest/__tests__/rest_client.test.ts
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(putData),
     }).toMatchMadeHttpRequest();
@@ -164,10 +227,14 @@ describe('REST client', () => {
   it('can make DELETE request', async () => {
     const client = new shopify.clients.Rest({session});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     await expect(client.delete({path: 'products/123'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
 
     expect({
@@ -181,14 +248,19 @@ describe('REST client', () => {
     const client = new shopify.clients.Rest({session});
 
     const customHeaders: {[key: string]: string} = {
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'X-Not-A-Real-Header': 'some_value',
     };
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     await expect(
       client.get({path: 'products', extraHeaders: customHeaders}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+    ).resolves.toEqual(buildExpectedResponse(successResponseBody));
 
     customHeaders[ShopifyHeader.AccessToken] = accessToken;
     expect({
@@ -209,7 +281,11 @@ describe('REST client', () => {
     ];
 
     queueMockResponses([
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       JSON.stringify(successResponse),
+=======
+      successResponseBody,
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
       {headers: {link: linkHeaders.join(', ')}},
     ]);
 
@@ -231,6 +307,7 @@ describe('REST client', () => {
     ];
 
     queueMockResponses(
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
       [
         JSON.stringify(successResponse),
         {headers: {link: linkHeaders.join(', ')}},
@@ -243,6 +320,11 @@ describe('REST client', () => {
         JSON.stringify(successResponse),
         {headers: {link: linkHeaders.join(', ')}},
       ],
+=======
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
     );
 
     const initialResponse = (await client.get({
@@ -273,16 +355,13 @@ describe('REST client', () => {
     ];
 
     queueMockResponses(
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
+=======
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
       [
-        JSON.stringify(successResponse),
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
-      [
-        JSON.stringify(successResponse),
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
-      [
-        JSON.stringify(successResponse),
+        successResponseBody,
         {headers: {link: `<${params.previousPageUrl}>; rel="previous"`}},
       ],
     );
@@ -312,16 +391,13 @@ describe('REST client', () => {
     ];
 
     queueMockResponses(
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
+=======
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+      [successResponseBody, {headers: {link: linkHeaders.join(', ')}}],
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
       [
-        JSON.stringify(successResponse),
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
-      [
-        JSON.stringify(successResponse),
-        {headers: {link: linkHeaders.join(', ')}},
-      ],
-      [
-        JSON.stringify(successResponse),
+        successResponseBody,
         {headers: {link: `<${params.previousPageUrl}>; rel="next"`}},
       ],
     );
@@ -352,10 +428,14 @@ describe('REST client', () => {
 
     const client = new shopify.clients.Rest({session});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     await expect(client.get({path: 'products'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
 
     const customHeaders: {[key: string]: string} = {};
@@ -373,6 +453,7 @@ describe('REST client', () => {
   });
 
   it('fails to instantiate without access token', () => {
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     const sessionWithoutAccessToken = new Session({
       id: `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop: domain,
@@ -383,15 +464,24 @@ describe('REST client', () => {
     expect(
       () => new shopify.clients.Rest({session: sessionWithoutAccessToken}),
     ).toThrow(ShopifyErrors.MissingRequiredArgument);
+=======
+    expect(() => new RestClient(domain)).toThrow(
+      Shopify.Errors.MissingRequiredArgument,
+    );
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
   });
 
   it('allows paths with .json', async () => {
     const client = new shopify.clients.Rest({session});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     await expect(client.get({path: 'products.json'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'GET',
@@ -403,10 +493,14 @@ describe('REST client', () => {
   it('allows full paths', async () => {
     const client = new shopify.clients.Rest({session});
 
+<<<<<<< HEAD:lib/clients/rest/__tests__/rest_client.test.ts
     queueMockResponse(JSON.stringify(successResponse));
+=======
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/crypto:src/clients/rest/__tests__/rest_client.test.ts
 
     await expect(client.get({path: '/admin/some-path.json'})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+      buildExpectedResponse(successResponseBody),
     );
     expect({
       method: 'GET',
@@ -482,18 +576,29 @@ function getDefaultPageInfo(): PageInfo {
   };
 }
 
-function buildExpectedResponse(
-  obj: unknown,
-  pageInfo?: PageInfo,
-): RestRequestReturn {
-  const expectedResponse: RestRequestReturn = {
-    body: obj,
-    headers: expect.objectContaining({}),
-  };
+function queueMockResponse(body: string, partial: Partial<Response> = {}) {
+  mockAdapter.queueResponse({
+    statusCode: 200,
+    statusText: 'OK',
+    headers: {},
+    ...partial,
+    body,
+  });
+}
 
-  if (pageInfo) {
-    expectedResponse.pageInfo = pageInfo;
+function queueMockResponses(
+  ...responses: Parameters<typeof queueMockResponse>[]
+) {
+  for (const [body, response] of responses) {
+    queueMockResponse(body, response);
   }
+}
+
+function buildExpectedResponse(body: string): Response {
+  const expectedResponse: Partial<Response> = {
+    headers: expect.objectContaining({}),
+    body: JSON.parse(body),
+  };
 
   return expect.objectContaining(expectedResponse);
 }

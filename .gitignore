@@ -6,6 +6,7 @@ coverage/
 yarn-error.log
 tsdocs/
 tsconfig.tsbuildinfo
+<<<<<<< HEAD
 database.sqlite
 bundle/
 *.d.ts
@@ -15,3 +16,6 @@ bundle/
 *.tgz
 .vscode/
 
+=======
+bundle/
+>>>>>>> origin/isomorphic/main

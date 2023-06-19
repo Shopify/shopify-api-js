@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/session-storage/postgresql/index.js",
+  "types": "../../dist/session-storage/postgresql/index.d.ts"
+}

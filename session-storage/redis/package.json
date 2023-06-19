@@ -1,0 +1,4 @@
+{
+  "main": "../../dist/session-storage/redis/index.js",
+  "types": "../../dist/session-storage/redis/index.d.ts"
+}

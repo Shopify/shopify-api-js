@@ -1,4 +1,13 @@
+<<<<<<< HEAD:lib/auth/oauth/__tests__/nonce.test.ts
 import {shopify} from '../../../__tests__/test-helper';
+=======
+import crypto from 'crypto';
+
+import {setCrypto} from '../../runtime/crypto';
+import nonce from '../nonce';
+>>>>>>> origin/isomorphic/main:src/utils/__tests__/nonce.test.ts
+
+setCrypto(crypto.webcrypto as any);
 
 test('nonce always returns a new 15 digit random number as a string', () => {
   const firstNonce = shopify.auth.nonce();

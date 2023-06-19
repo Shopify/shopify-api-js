@@ -1,78 +1,67 @@
-import {
-  buildExpectedResponse,
-  buildMockResponse,
-  queueError,
-  queueMockResponse,
-  queueMockResponses,
-  shopify,
-} from '../../../__tests__/test-helper';
-import {httpClientClass} from '../http_client';
-import {DataType, HeaderParams} from '../../types';
+import querystring from 'querystring';
+"@testing-library/jest-dom"
+
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
+import {HttpClient} from '../http_client';
+import {DataType, HeaderParams, RequestReturn} from '../../types';
 import * as ShopifyErrors from '../../../error';
-import {LogSeverity} from '../../../types';
+import {Context} from '../../../context';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
+const logFilePath = `${process.cwd()}/src/clients/http_client/__tests__/test_logs.txt`;
+=======
+import Shopify from '../../../adapters/node';
+import {setAbstractFetchFunc, Response, Headers} from '../../../runtime/http';
+import * as mockAdapter from '../../../adapters/mock';
+import {Context} from '../../../context';
+import {DataType} from '../types';
+import {HttpClient} from '../http_client';
+import {LogSeverity} from '../../../base-types';
 
-let HttpClient: ReturnType<typeof httpClientClass>;
-let originalRetryTime: number;
+setAbstractFetchFunc(mockAdapter.abstractFetch);
 
+const domain = 'test-shop.myshopify.io';
+const successResponseBody = JSON.stringify({
+  message: 'Your HTTP request was successful!',
+});
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
+
+const originalRetryTime = HttpClient.RETRY_WAIT_TIME;
 describe('HTTP client', () => {
   beforeEach(() => {
-    HttpClient = httpClientClass(shopify.config);
-    originalRetryTime = HttpClient.RETRY_WAIT_TIME;
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
+    fs.writeFileSync(logFilePath, '');
+=======
+    mockAdapter.reset();
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
   });
 
   afterAll(() => {
     setRestClientRetryTime(originalRetryTime);
   });
 
-  it('can make GET request', async () => {
-    const client = new HttpClient({domain});
+  it('validates the given domain', () => {
+    expect(() => new HttpClient('invalid domain')).toThrow(
+      ShopifyErrors.InvalidShopError,
+    );
+  });
 
-    queueMockResponse(buildMockResponse(successResponse));
+  it('can make GET request', async () => {
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     await expect(client.get({path: '/url/path'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
-    expect({
-      method: 'GET',
-      domain,
-      path: '/url/path',
-      headers: {
-        'User-Agent': expect.stringContaining('Shopify API Library v'),
-      },
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('allows the body to contain non-json 2xx response without dying', () => {
-    const client = new HttpClient({domain});
-    queueMockResponse('not a json object');
-
-    const request = client.get({path: '/url/path'});
-
     expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
-    expect(request).resolves.toMatchObject({body: {}});
-  });
-
-  it('handles non-json non-2xx response', () => {
-    const client = new HttpClient({domain});
-    queueMockResponse('not a json object', {
-      statusCode: 404,
-      statusText: 'not found',
-      headers: {},
-    });
-
-    const request = client.get({path: '/url/path'});
-
-    expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
-    expect(request).rejects.toBeInstanceOf(ShopifyErrors.HttpResponseError);
   });
 
   it('can make POST request with type JSON', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -92,69 +81,16 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
-      headers: {
-        'Content-Length': JSON.stringify(postData).length,
-        'Content-Type': DataType.JSON.toString(),
-        'User-Agent': expect.stringContaining('Shopify API Library v'),
-      },
-      data: JSON.stringify(postData),
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('defaults to JSON type for POST and PUT', async () => {
-    const client = new HttpClient({domain});
-
-    queueMockResponses(
-      [buildMockResponse(successResponse)],
-      [buildMockResponse(successResponse)],
-    );
-
-    const postData = {
-      title: 'Test product',
-      amount: 10,
-    };
-
-    expect(
-      await client.post({
-        path: '/url/path',
-        data: postData,
-      }),
-    ).toEqual(buildExpectedResponse(successResponse));
-    expect(
-      await client.put({
-        path: '/url/path',
-        data: postData,
-      }),
-    ).toEqual(buildExpectedResponse(successResponse));
-
-    expect({
-      method: 'POST',
-      domain,
-      path: '/url/path',
-      headers: {
-        'Content-Length': JSON.stringify(postData).length,
-        'Content-Type': DataType.JSON.toString(),
-        'User-Agent': expect.stringContaining('Shopify API Library v'),
-      },
-      data: JSON.stringify(postData),
-    }).toMatchMadeHttpRequest();
-    expect({
-      method: 'PUT',
-      domain,
-      path: '/url/path',
-      headers: {
-        'Content-Length': JSON.stringify(postData).length,
-        'Content-Type': DataType.JSON.toString(),
-        'User-Agent': expect.stringContaining('Shopify API Library v'),
-      },
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
+      headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with type JSON and data is already formatted', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -174,15 +110,16 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with zero-length JSON', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     const postParams = {
       path: '/url/path',
@@ -201,12 +138,12 @@ describe('HTTP client', () => {
   });
 
   it('can make POST request with form-data type', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     const postData = {
-      title: 'Test product + something else',
+      title: 'Test product',
       amount: 10,
     };
 
@@ -223,15 +160,16 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: 'title=Test+product+%2B+something+else&amount=10',
+      data: new URLSearchParams(postData as any).toString(),
     }).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with form-data type and data is already formatted', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     const postData = {
       title: 'Test product',
@@ -241,7 +179,7 @@ describe('HTTP client', () => {
     const postParams = {
       path: '/url/path',
       type: DataType.URLEncoded,
-      data: new URLSearchParams(postData as any).toString(),
+      data: querystring.stringify(postData),
     };
 
     await expect(client.post(postParams)).resolves.toEqual(
@@ -251,15 +189,16 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: 'title=Test+product&amount=10',
+      data: querystring.stringify(postData),
     }).toMatchMadeHttpRequest();
   });
 
   it('can make POST request with GraphQL type', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     const graphqlQuery = `
       query {
@@ -287,15 +226,16 @@ describe('HTTP client', () => {
       method: 'POST',
       domain,
       path: '/url/path',
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       headers: {'Content-Type': DataType.GraphQL.toString()},
       data: graphqlQuery,
     }).toMatchMadeHttpRequest();
   });
 
   it('can make PUT request with type JSON', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     const putData = {
       title: 'Test product',
@@ -315,19 +255,16 @@ describe('HTTP client', () => {
       method: 'PUT',
       domain,
       path: '/url/path/123',
-      headers: {
-        'Content-Length': JSON.stringify(putData).length,
-        'Content-Type': DataType.JSON.toString(),
-        'User-Agent': expect.stringContaining('Shopify API Library v'),
-      },
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
+      headers: {'Content-Type': DataType.JSON.toString()},
       data: JSON.stringify(putData),
     }).toMatchMadeHttpRequest();
   });
 
   it('can make DELETE request', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     await expect(client.delete({path: '/url/path/123'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -336,14 +273,11 @@ describe('HTTP client', () => {
       method: 'DELETE',
       domain,
       path: '/url/path/123',
-      headers: {
-        'User-Agent': expect.stringContaining('Shopify API Library v'),
-      },
     }).toMatchMadeHttpRequest();
   });
 
   it('gracefully handles errors', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
     const statusText = 'Did not work';
     const requestId = 'Request id header';
@@ -358,8 +292,8 @@ describe('HTTP client', () => {
         caught = true;
         expect(error).toBeInstanceOf(expectedError);
         if (expectedError === ShopifyErrors.HttpResponseError) {
-          expect(error).toHaveProperty('response.code', status);
-          expect(error).toHaveProperty('response.statusText', statusText);
+          expect(error).toHaveProperty('code', status);
+          expect(error).toHaveProperty('statusText', statusText);
         }
         if (expectRequestId) {
           expect(error.message).toContain(requestId);
@@ -375,19 +309,34 @@ describe('HTTP client', () => {
       expect(caught).toEqual(true);
     };
 
-    queueMockResponses(
+    fetchMock.mockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
+        {status: 403, statusText, headers: {'x-request-id': requestId}},
+=======
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         {statusCode: 403, statusText, headers: {'x-request-id': requestId}},
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
       ],
-      [JSON.stringify({}), {statusCode: 404, statusText, headers: {}}],
+      [JSON.stringify({}), {status: 404, statusText, headers: {}}],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
+        {status: 429, statusText, headers: {'x-request-id': requestId}},
+      ],
+      [
+        JSON.stringify({}),
+        {status: 500, statusText, headers: {'x-request-id': requestId}},
+=======
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         {statusCode: 429, statusText, headers: {'x-request-id': requestId}},
       ],
       [
         JSON.stringify({}),
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         {statusCode: 500, statusText, headers: {'x-request-id': requestId}},
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
       ],
     );
 
@@ -396,24 +345,30 @@ describe('HTTP client', () => {
     await testErrorResponse(429, ShopifyErrors.HttpThrottlingError, true);
     await testErrorResponse(500, ShopifyErrors.HttpInternalError, true);
 
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
+    fetchMock.mockRejectOnce(() => Promise.reject());
+    await testErrorResponse(null, ShopifyErrors.HttpRequestError, false);
+=======
     class MyError extends Error {
       constructor(...args: any) {
         super(...args);
         Object.setPrototypeOf(this, new.target.prototype);
       }
     }
-    queueError(new MyError());
+    mockAdapter.queueError(new MyError());
     await testErrorResponse(null, MyError, false);
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
   });
 
   it('allows custom headers', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
     const customHeaders = {
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       'X-Not-A-Real-Header': 'some_value',
     };
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
@@ -426,11 +381,17 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('extends User-Agent (uppercase) if it is provided', async () => {
-    const client = new HttpClient({domain});
+  it('extends User-Agent if it is provided', async () => {
+    const client = new HttpClient(domain);
 
-    const customHeaders: HeaderParams = {'User-Agent': 'My agent'};
-    queueMockResponse(buildMockResponse(successResponse));
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
+    let customHeaders: HeaderParams = {'User-Agent': 'My agent'};
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
+=======
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
+    let customHeaders: Headers = {'User-Agent': 'My agent'};
+    queueMockResponse(successResponseBody);
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
@@ -440,18 +401,17 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         'User-Agent': expect.stringContaining(
           'My agent | Shopify API Library v',
         ),
       },
     }).toMatchMadeHttpRequest();
-  });
 
-  it('extends User-Agent (lowercase) if it is provided', async () => {
-    const client = new HttpClient({domain});
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
+    customHeaders = {'user-agent': 'My lowercase agent'};
 
-    const customHeaders: HeaderParams = {'user-agent': 'My lowercase agent'};
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
@@ -461,6 +421,7 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         'User-Agent': expect.stringContaining(
           'My lowercase agent | Shopify API Library v',
         ),
@@ -468,12 +429,16 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('extends a User-Agent provided by config', async () => {
-    shopify.config.userAgentPrefix = 'Config Agent';
+  it('extends a User-Agent provided by Context', async () => {
+    Context.USER_AGENT_PREFIX = 'Context Agent';
+    Context.initialize(Context);
 
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponses(
+      buildMockResponse(successResponse),
+      buildMockResponse(successResponse),
+    );
 
     await expect(client.get({path: '/url/path'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -483,21 +448,19 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         'User-Agent': expect.stringContaining(
-          'Config Agent | Shopify API Library v',
+          'Context Agent | Shopify API Library v',
         ),
       },
     }).toMatchMadeHttpRequest();
-  });
 
-  it('extends a User-Agent provided by config and an extra header', async () => {
-    shopify.config.userAgentPrefix = 'Config Agent';
-
-    const client = new HttpClient({domain});
-
-    queueMockResponse(buildMockResponse(successResponse));
-
+<<<<<<< HEAD:lib/clients/http_client/__tests__/http_client.test.ts
     const customHeaders: HeaderParams = {'User-Agent': 'Headers Agent'};
+=======
+    /* eslint-disable-next-line @typescript-eslint/naming-convention */
+    const customHeaders: Headers = {'User-Agent': 'Headers Agent'};
+>>>>>>> origin/isomorphic/main:src/clients/http_client/__tests__/http_client.test.ts
 
     await expect(
       client.get({path: '/url/path', extraHeaders: customHeaders}),
@@ -507,15 +470,18 @@ describe('HTTP client', () => {
       domain,
       path: '/url/path',
       headers: {
+        /* eslint-disable-next-line @typescript-eslint/naming-convention */
         'User-Agent': expect.stringContaining(
-          'Headers Agent | Config Agent | Shopify API Library v',
+          'Headers Agent | Context Agent | Shopify API Library v',
         ),
       },
     }).toMatchMadeHttpRequest();
   });
 
   it('fails with invalid retry count', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     await expect(
       client.get({path: '/url/path', tries: -1}),
@@ -524,18 +490,18 @@ describe('HTTP client', () => {
 
   it('retries failed requests but returns success', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponses(
+    fetchMock.mockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {statusCode: 429, statusText: 'Did not work'},
+        {status: 429, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {statusCode: 429, statusText: 'Did not work'},
+        {status: 429, statusText: 'Did not work'},
       ],
-      [buildMockResponse(successResponse), {statusCode: 200}],
+      [buildMockResponse(successResponse), {status: 200}],
     );
 
     await expect(client.get({path: '/url/path', tries: 3})).resolves.toEqual(
@@ -545,23 +511,24 @@ describe('HTTP client', () => {
       method: 'GET',
       domain,
       path: '/url/path',
-      attempts: 3,
+      tries: 3,
     }).toMatchMadeHttpRequest();
   });
 
   it('retries failed requests and stops on non-retriable errors', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponses(
+    fetchMock.mockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {statusCode: 500, statusText: 'Did not work'},
+        {status: 500, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {statusCode: 403, statusText: 'Did not work'},
+        {status: 403, statusText: 'Did not work'},
       ],
+      [buildMockResponse(successResponse), {status: 200}],
     );
 
     await expect(
@@ -572,26 +539,30 @@ describe('HTTP client', () => {
       method: 'GET',
       domain,
       path: '/url/path',
-      attempts: 2,
+      tries: 2,
     }).toMatchMadeHttpRequest();
   });
 
   it('stops retrying after reaching the limit', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponses(
+    fetchMock.mockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {statusCode: 500, statusText: 'Did not work'},
+        {status: 500, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {statusCode: 500, statusText: 'Did not work'},
+        {status: 500, statusText: 'Did not work'},
       ],
       [
         JSON.stringify({errors: 'Something went wrong!'}),
-        {statusCode: 500, statusText: 'Did not work'},
+        {status: 500, statusText: 'Did not work'},
+      ],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {status: 500, statusText: 'Did not work'},
       ],
     );
 
@@ -602,7 +573,7 @@ describe('HTTP client', () => {
       method: 'GET',
       domain,
       path: '/url/path',
-      attempts: 3,
+      tries: 3,
     }).toMatchMadeHttpRequest();
   });
 
@@ -611,18 +582,18 @@ describe('HTTP client', () => {
     setRestClientRetryTime(4000);
     const realWaitTime = 0.05;
 
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponses(
+    fetchMock.mockResponses(
       [
         JSON.stringify({errors: 'Something went wrong!'}),
         {
-          statusCode: 429,
+          status: 429,
           statusText: 'Did not work',
           headers: {'Retry-After': realWaitTime.toString()},
         },
       ],
-      [JSON.stringify(successResponse), {statusCode: 200}],
+      [JSON.stringify(successResponse), {status: 200}],
     );
 
     // If we don't retry within an acceptable amount of time, we assume to be paused for longer than Retry-After
@@ -639,25 +610,22 @@ describe('HTTP client', () => {
       method: 'GET',
       domain,
       path: '/url/path',
-      attempts: 2,
+      tries: 2,
     }).toMatchMadeHttpRequest();
     clearTimeout(retryTimeout);
   });
 
   it('logs deprecation headers to the console when they are present', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
+    console.warn = jest.fn();
 
-    const postBody = {
-      query: 'some query',
-    };
-
-    queueMockResponses(
+    fetchMock.mockResponses(
       [
         JSON.stringify({
           message: 'Some deprecated request',
         }),
         {
-          statusCode: 200,
+          status: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -667,10 +635,12 @@ describe('HTTP client', () => {
       [
         JSON.stringify({
           message: 'Some deprecated post request',
-          body: postBody,
+          body: {
+            query: 'some query',
+          },
         }),
         {
-          statusCode: 200,
+          status: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -681,53 +651,36 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    // first call to .log is .debug with package and runtime info during initialization
-    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
-    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('API Deprecation Notice'),
-    );
-    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining(
-        JSON.stringify({
-          message: 'This API endpoint has been deprecated',
-          path: 'https://test-shop.myshopify.io/url/path',
-        }),
-      ),
-    );
+    expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
+      message: 'This API endpoint has been deprecated',
+      path: 'https://test-shop.myshopify.io/url/path',
+    });
 
     await client.post({
       path: '/url/path',
       type: DataType.JSON,
-      data: postBody,
+      data: {query: 'some query'},
     });
 
-    expect(shopify.config.logger.log).toHaveBeenCalledTimes(3);
-    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining(
-        JSON.stringify({
-          message: 'This API endpoint has been deprecated',
-          path: 'https://test-shop.myshopify.io/url/path',
-          body: `${JSON.stringify(postBody)}...`,
-        }),
-      ),
-    );
+    expect(console.warn).toHaveBeenCalledWith('API Deprecation Notice:', {
+      message: 'This API endpoint has been deprecated',
+      path: 'https://test-shop.myshopify.io/url/path',
+    });
   });
 
   it('will wait 5 minutes before logging repeat deprecation alerts', async () => {
     jest.useFakeTimers();
 
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
+    console.warn = jest.fn();
 
-    queueMockResponses(
+    fetchMock.mockResponses(
       [
         JSON.stringify({
           message: 'Some deprecated request',
         }),
         {
-          statusCode: 200,
+          status: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -739,7 +692,7 @@ describe('HTTP client', () => {
           message: 'Some deprecated request',
         }),
         {
-          statusCode: 200,
+          status: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -751,7 +704,7 @@ describe('HTTP client', () => {
           message: 'Some deprecated request',
         }),
         {
-          statusCode: 200,
+          status: 200,
           headers: {
             'X-Shopify-API-Deprecated-Reason':
               'This API endpoint has been deprecated',
@@ -763,12 +716,8 @@ describe('HTTP client', () => {
     await client.get({path: '/url/path'});
     // this one should skip it
     await client.get({path: '/url/path'});
-    // first call to .log is .debug with package and runtime info during initialization
-    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
-    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
-      LogSeverity.Warning,
-      expect.anything(),
-    );
+    // one warn so far
+    expect(console.warn).toHaveBeenCalledTimes(1);
 
     // use jest.fn() to advance time by 5 minutes
     const currentTime = Date.now();
@@ -777,22 +726,24 @@ describe('HTTP client', () => {
     // should warn a second time since 5 mins have passed
     await client.get({path: '/url/path'});
 
-    expect(shopify.config.logger.log).toHaveBeenCalledTimes(3);
-    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
-      LogSeverity.Warning,
-      expect.anything(),
-    );
+    expect(console.warn).toHaveBeenCalledTimes(2);
   });
 
-  it('calls log function with deprecation notice if one is specified in config', async () => {
-    const client = new HttpClient({domain});
+  it('writes deprecation notices to log file if one is specified in Context', async () => {
+    const logs: [LogSeverity, string][] = [];
+    Context.LOG_FUNCTION = async (sev, msg) => {
+      logs.push([sev, msg]);
+    };
+    Context.initialize(Context);
 
-    queueMockResponse(
+    const client = new HttpClient(domain);
+
+    fetchMock.mockResponse(
       JSON.stringify({
         message: 'Some deprecated request',
       }),
       {
-        statusCode: 200,
+        status: 200,
         headers: {
           'X-Shopify-API-Deprecated-Reason':
             'This API endpoint has been deprecated',
@@ -802,32 +753,20 @@ describe('HTTP client', () => {
 
     await client.get({path: '/url/path'});
 
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('API Deprecation Notice'),
+    expect(logs[0][1]).toContain('API Deprecation Notice');
+    expect(logs[0][1]).toContain(
+      ': {"message":"This API endpoint has been deprecated","path":"https://test-shop.myshopify.io/url/path"}',
     );
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining(
-        JSON.stringify({
-          message: 'This API endpoint has been deprecated',
-          path: 'https://test-shop.myshopify.io/url/path',
-        }),
-      ),
-    );
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('Stack Trace: Error'),
-    );
+    expect(logs[0][1]).toContain(`Stack Trace: Error:`);
   });
 
   it('properly encodes strings in the error message', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponses([
+    fetchMock.mockResponses([
       JSON.stringify({errors: 'Something went wrong'}),
-      {statusCode: 500, statusText: 'Did not work'},
+      {status: 500, statusText: 'Did not work'},
     ]);
 
     let caught = false;
@@ -847,13 +786,13 @@ describe('HTTP client', () => {
 
   it('properly encodes objects in the error message', async () => {
     setRestClientRetryTime(0);
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponses([
+    fetchMock.mockResponses([
       JSON.stringify({
         errors: {title: 'Invalid title', description: 'Invalid description'},
       }),
-      {statusCode: 500, statusText: 'Did not work'},
+      {status: 500, statusText: 'Did not work'},
     ]);
 
     let caught = false;
@@ -876,9 +815,9 @@ describe('HTTP client', () => {
   });
 
   it('adds missing slashes to paths', async () => {
-    const client = new HttpClient({domain});
+    const client = new HttpClient(domain);
 
-    queueMockResponse(buildMockResponse(successResponse));
+    fetchMock.mockResponseOnce(buildMockResponse(successResponse));
 
     await expect(client.get({path: 'url/path'})).resolves.toEqual(
       buildExpectedResponse(successResponse),
@@ -887,8 +826,8 @@ describe('HTTP client', () => {
   });
 
   it('properly formats arrays and hashes in query strings', async () => {
-    queueMockResponse(JSON.stringify({}));
-    const client = new HttpClient({domain});
+    fetchMock.mockResponse(JSON.stringify({}));
+    const client = new HttpClient(domain);
 
     await client.get({
       path: '/url/path',
@@ -906,114 +845,22 @@ describe('HTTP client', () => {
       query: encodeURI('array[]=a&array[]=b&array[]=c&hash[a]=b&hash[c]=d'),
     }).toMatchMadeHttpRequest();
   });
-
-  it('throws exceptions with response details on internal errors', async () => {
-    const client = new HttpClient({domain});
-
-    queueMockResponse(JSON.stringify({errors: 'Error 500'}), {
-      statusCode: 500,
-      statusText: 'Error 500',
-      headers: {'X-Text-Header': 'Error 500'},
-    });
-
-    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
-    expectedError.toBeInstanceOf(ShopifyErrors.HttpInternalError);
-    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
-    expectedError.toMatchObject({
-      response: {
-        body: {errors: 'Error 500'},
-        code: 500,
-        statusText: 'Error 500',
-        headers: {'X-Text-Header': ['Error 500']},
-      },
-    });
-  });
-
-  it('throws exceptions with response details on throttled requests', async () => {
-    const client = new HttpClient({domain});
-
-    queueMockResponse(JSON.stringify({errors: 'Error 429'}), {
-      statusCode: 429,
-      statusText: 'Error 429',
-      headers: {'X-Text-Header': 'Error 429', 'Retry-After': '100'},
-    });
-
-    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
-    expectedError.toBeInstanceOf(ShopifyErrors.HttpThrottlingError);
-    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
-    expectedError.toMatchObject({
-      response: {
-        body: {errors: 'Error 429'},
-        code: 429,
-        statusText: 'Error 429',
-        headers: {'X-Text-Header': ['Error 429'], 'Retry-After': ['100']},
-        retryAfter: 100,
-      },
-    });
-  });
-
-  it('throws exceptions with response details on any other errors', async () => {
-    const client = new HttpClient({domain});
-
-    queueMockResponse(JSON.stringify({errors: 'Error 403'}), {
-      statusCode: 403,
-      statusText: 'Error 403',
-      headers: {'X-Text-Header': 'Error 403'},
-    });
-
-    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
-    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
-    expectedError.toMatchObject({
-      response: {
-        body: {errors: 'Error 403'},
-        code: 403,
-        statusText: 'Error 403',
-        headers: {'X-Text-Header': ['Error 403']},
-      },
-    });
-  });
-
-  it('does not log HTTP requests when the setting is off', async () => {
-    shopify.config.logger.httpRequests = false;
-    shopify.config.logger.log = jest.fn();
-
-    const data = {test: 'data'};
-    const client = new HttpClient({domain});
-    queueMockResponse(buildMockResponse(successResponse));
-
-    await client.post({path: '/url/path', data});
-
-    expect(shopify.config.logger.log).not.toHaveBeenCalled();
-  });
-
-  it('logs HTTP requests when the setting is on', async () => {
-    shopify.config.logger.httpRequests = true;
-    shopify.config.logger.log = jest.fn();
-
-    const data = {test: 'data'};
-    const client = new HttpClient({domain});
-    queueMockResponse(buildMockResponse(successResponse));
-
-    await client.post({path: '/url/path', data});
-
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Debug,
-      expect.anything(),
-    );
-    const logMessage = (shopify.config.logger.log as jest.Mock).mock
-      .calls[0][1];
-    expect(logMessage).toContain('Making HTTP request');
-    expect(logMessage).toContain(
-      'POST https://test-shop.myshopify.io/url/path',
-    );
-    expect(logMessage).toContain(
-      'Headers: {"User-Agent":["Shopify API Library',
-    );
-    expect(logMessage).toContain('Body: "{\\"test\\":\\"data\\"}"');
-  });
 });
 
 function setRestClientRetryTime(time: number) {
   // We de-type HttpClient here so we can alter its readonly time property
   (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
+}
+
+function buildMockResponse(obj: unknown): string {
+  return JSON.stringify(obj);
+}
+
+function buildExpectedResponse(obj: unknown): RequestReturn {
+  const expectedResponse: RequestReturn = {
+    body: obj,
+    headers: expect.objectContaining({}),
+  };
+
+  return expect.objectContaining(expectedResponse);
 }

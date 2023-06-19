@@ -9,6 +9,8 @@ export interface GraphqlClientParams {
   apiVersion?: ApiVersion;
 }
 
+export interface PaymentsAppsClientParams extends GraphqlClientParams {}
+
 export interface StorefrontClientParams {
   domain: string;
   storefrontAccessToken: string;

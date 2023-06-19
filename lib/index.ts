@@ -1,31 +1,24 @@
-import {compare} from 'compare-versions';
+import { loadRestResources } from '../rest/load-rest-resources';
+import { ShopifyRestResources } from '../rest/types';
 
-import {loadRestResources} from '../rest/load-rest-resources';
-import {ShopifyRestResources} from '../rest/types';
-import {abstractRuntimeString} from '../runtime/platform';
-
-import {DeprecatedV5Types} from './deprecated-v5-types';
-import {ConfigParams, ConfigInterface} from './base-types';
-import {validateConfig} from './config';
-import {clientClasses, ShopifyClients} from './clients';
-import {shopifyAuth, ShopifyAuth} from './auth';
-import {shopifySession, ShopifySession} from './session';
-import {shopifyUtils, ShopifyUtils} from './utils';
-import {shopifyWebhooks, ShopifyWebhooks} from './webhooks';
-import {shopifyBilling, ShopifyBilling} from './billing';
-import {logger, ShopifyLogger} from './logger';
-import {SHOPIFY_API_LIBRARY_VERSION} from './version';
+import { shopifyAuth } from './auth';
+import { ConfigParams, Shopify } from './base-types';
+import { shopifyBilling } from './billing';
+import { validateConfig } from './config';
+import { shopifySession } from './session';
+import { shopifyUtils } from './utils';
+import { shopifyWebhooks } from './webhooks';
 
 export * from './error';
 export * from './session/classes';
 
 export * from '../rest/types';
-export * from './types';
-export * from './base-types';
 export * from './auth/types';
+export * from './base-types';
 export * from './billing/types';
 export * from './clients/types';
 export * from './session/types';
+export * from './types';
 export * from './webhooks/types';
 
 // Temporarily export the deprecated v5 types as a Shopify object (as opposed to the type above) to help folks find

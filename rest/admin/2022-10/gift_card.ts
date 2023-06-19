@@ -1,22 +1,25 @@
+<<<<<<< HEAD
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+=======
 /***********************************************************************************************************************
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
-
-import {Balance} from './balance';
-import {Currency} from './currency';
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   status?: unknown;
   limit?: unknown;
   since_id?: unknown;
@@ -24,20 +27,16 @@ interface AllArgs {
 }
 interface CountArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   status?: unknown;
 }
 interface SearchArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   order?: unknown;
   query?: unknown;
   limit?: unknown;
   fields?: unknown;
-  created_at_min?: unknown;
-  created_at_max?: unknown;
-  updated_at_min?: unknown;
-  updated_at_max?: unknown;
 }
 interface DisableArgs {
   [key: string]: unknown;
@@ -45,16 +44,14 @@ interface DisableArgs {
 }
 
 export class GiftCard extends Base {
-  public static apiVersion = ApiVersion.October22;
+  public static API_VERSION = ApiVersion.April22;
 
-  protected static resourceName = 'gift_card';
-  protected static pluralName = 'gift_cards';
-  protected static hasOne: {[key: string]: typeof Base} = {
-    "balance": Balance,
-    "currency": Currency
-  };
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'gift_card';
+  protected static PLURAL_NAME = 'gift_cards';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+<<<<<<< HEAD:rest/admin/2022-10/gift_card.ts
     {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
@@ -62,6 +59,15 @@ export class GiftCard extends Base {
     {"http_method": "post", "operation": "disable", "ids": ["id"], "path": "gift_cards/<id>/disable.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"}
+=======
+    {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
+    {"http_method": "post", "operation": "disable", "ids": ["id"], "path": "gift_cards/<id>/disable.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "gift_cards/search.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-07/gift_card.ts
   ];
 
   public static async find(
@@ -70,12 +76,12 @@ export class GiftCard extends Base {
       id
     }: FindArgs
   ): Promise<GiftCard | null> {
-    const result = await this.baseFind<GiftCard>({
+    const result = await GiftCard.baseFind({
       session: session,
       urlIds: {"id": id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] as GiftCard : null;
   }
 
   public static async all(
@@ -87,14 +93,14 @@ export class GiftCard extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<GiftCard>> {
-    const response = await this.baseFind<GiftCard>({
+  ): Promise<GiftCard[]> {
+    const response = await GiftCard.baseFind({
       session: session,
       urlIds: {},
       params: {"status": status, "limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
     });
 
-    return response;
+    return response as GiftCard[];
   }
 
   public static async count(
@@ -104,7 +110,7 @@ export class GiftCard extends Base {
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
-    const response = await this.request<GiftCard>({
+    const response = await GiftCard.request({
       http_method: "get",
       operation: "count",
       session: session,
@@ -124,19 +130,15 @@ export class GiftCard extends Base {
       query = null,
       limit = null,
       fields = null,
-      created_at_min = null,
-      created_at_max = null,
-      updated_at_min = null,
-      updated_at_max = null,
       ...otherArgs
     }: SearchArgs
   ): Promise<unknown> {
-    const response = await this.request<GiftCard>({
+    const response = await GiftCard.request({
       http_method: "get",
       operation: "search",
       session: session,
       urlIds: {},
-      params: {"order": order, "query": query, "limit": limit, "fields": fields, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -150,7 +152,7 @@ export class GiftCard extends Base {
       ...otherArgs
     }: DisableArgs
   ): Promise<unknown> {
-    const response = await this.request<GiftCard>({
+    const response = await GiftCard.request({
       http_method: "post",
       operation: "disable",
       session: this.session,
@@ -164,15 +166,15 @@ export class GiftCard extends Base {
   }
 
   public api_client_id: number | null;
-  public balance: Balance | null | {[key: string]: any};
+  public balance: number | null;
   public code: string | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public customer_id: number | null;
   public disabled_at: string | null;
   public expires_on: string | null;
   public id: number | null;
-  public initial_value: string | null;
+  public initial_value: number | null;
   public last_characters: string | null;
   public line_item_id: number | null;
   public note: string | null;

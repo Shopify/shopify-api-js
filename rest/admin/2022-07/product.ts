@@ -2,10 +2,23 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
+<<<<<<< HEAD
+<<<<<<< HEAD:rest/admin/2022-07/product.ts
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+=======
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+>>>>>>> 1a149a83 (Add 2022-10 REST resources):src/rest-resources/2022-01/product.ts
+=======
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 import {Image} from './image';
 import {Variant} from './variant';
@@ -59,6 +72,7 @@ interface CountArgs {
 export class Product extends Base {
   public static apiVersion = ApiVersion.July22;
 
+<<<<<<< HEAD:rest/admin/2022-07/product.ts
   protected static resourceName = 'product';
   protected static pluralName = 'products';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -73,6 +87,22 @@ export class Product extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "products/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"}
+=======
+  protected static NAME = 'product';
+  protected static PLURAL_NAME = 'products';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {
+    "images": Image,
+    "variants": Variant
+  };
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "products.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "products/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "products/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"},
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "products/<id>.json"}
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/product.ts
   ];
 
   public static async find(

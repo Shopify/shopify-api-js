@@ -1,26 +1,32 @@
+<<<<<<< HEAD
+import Base, {ResourcePath} from '../../base-rest-resource';
+import {SessionInterface} from '../../auth/session/types';
+import {ApiVersion} from '../../base-types';
+=======
 /***********************************************************************************************************************
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {Base} from '../../../lib/rest/base';
+import {ResourcePath} from '../../../lib/rest/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
+>>>>>>> origin/improve_build_process
 
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   fields?: unknown;
 }
 
 export class Shop extends Base {
-  public static apiVersion = ApiVersion.July22;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'shop';
-  protected static pluralName = 'shops';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'shop';
+  protected static PLURAL_NAME = 'shops';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
   ];
 
@@ -30,14 +36,14 @@ export class Shop extends Base {
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<Shop>> {
-    const response = await this.baseFind<Shop>({
+  ): Promise<Shop[]> {
+    const response = await Shop.baseFind({
       session: session,
       urlIds: {},
       params: {"fields": fields, ...otherArgs},
     });
 
-    return response;
+    return response as Shop[];
   }
 
   public address1: string | null;
@@ -48,7 +54,7 @@ export class Shop extends Base {
   public country: string | null;
   public country_code: string | null;
   public country_name: string | null;
-  public county_taxes: boolean | null;
+  public county_taxes: string | null;
   public created_at: string | null;
   public currency: string | null;
   public customer_email: string | null;

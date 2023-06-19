@@ -1,5 +1,3 @@
-import {AdapterResponse} from '../runtime/http/types';
-
 export class ShopifyError extends Error {
   constructor(...args: any) {
     super(...args);
@@ -12,9 +10,9 @@ export class InvalidShopError extends ShopifyError {}
 export class InvalidHostError extends ShopifyError {}
 export class InvalidJwtError extends ShopifyError {}
 export class MissingJwtTokenError extends ShopifyError {}
-export class InvalidDeliveryMethodError extends ShopifyError {}
 
 export class SafeCompareError extends ShopifyError {}
+export class UninitializedContextError extends ShopifyError {}
 export class PrivateAppError extends ShopifyError {}
 
 export class HttpRequestError extends ShopifyError {}
@@ -58,52 +56,36 @@ interface HttpThrottlingErrorParams extends HttpThrottlingErrorData {
   message: string;
 }
 export class HttpThrottlingError extends HttpRetriableError {
-  readonly response: HttpThrottlingErrorData;
+  readonly throttlingResponse: HttpThrottlingErrorData;
 
   public constructor({retryAfter, ...params}: HttpThrottlingErrorParams) {
     super(params);
-    this.response.retryAfter = retryAfter;
+    this.throttlingResponse.retryAfter = retryAfter;
   }
 }
 
 export class RestResourceError extends ShopifyError {}
 export class GraphqlQueryError extends ShopifyError {
   readonly response: {[key: string]: unknown};
-  headers?: {[key: string]: unknown};
 
   public constructor({
     message,
     response,
-    headers,
   }: {
     message: string;
     response: {[key: string]: unknown};
-    headers?: {[key: string]: unknown};
   }) {
     super(message);
     this.response = response;
-    this.headers = headers;
   }
 }
 
 export class InvalidOAuthError extends ShopifyError {}
-export class BotActivityDetected extends ShopifyError {}
+export class SessionNotFound extends ShopifyError {}
 export class CookieNotFound extends ShopifyError {}
 export class InvalidSession extends ShopifyError {}
 
-interface InvalidWebhookParams {
-  message: string;
-  response: AdapterResponse;
-}
-export class InvalidWebhookError extends ShopifyError {
-  readonly response: AdapterResponse;
-
-  public constructor({message, response}: InvalidWebhookParams) {
-    super(message);
-    this.response = response;
-  }
-}
-export class MissingWebhookCallbackError extends InvalidWebhookError {}
+export class InvalidWebhookError extends ShopifyError {}
 export class SessionStorageError extends ShopifyError {}
 
 export class MissingRequiredArgument extends ShopifyError {}
@@ -121,5 +103,8 @@ export class BillingError extends ShopifyError {
     this.errorData = errorData;
   }
 }
+<<<<<<< HEAD:lib/error.ts
 
 export class FeatureDeprecatedError extends ShopifyError {}
+=======
+>>>>>>> 85c72bea (Add billing support):src/error.ts

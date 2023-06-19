@@ -2,33 +2,33 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface DeleteArgs {
-  session: Session;
+  session: SessionInterface;
   id: number | string;
 }
 interface AllArgs {
   [key: string]: unknown;
-  session: Session;
+  session: SessionInterface;
   scope?: unknown;
 }
 
 export class FulfillmentService extends Base {
-  public static apiVersion = ApiVersion.April23;
+  public static API_VERSION = ApiVersion.January22;
 
-  protected static resourceName = 'fulfillment_service';
-  protected static pluralName = 'fulfillment_services';
-  protected static hasOne: {[key: string]: typeof Base} = {};
-  protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static paths: ResourcePath[] = [
+  protected static NAME = 'fulfillment_service';
+  protected static PLURAL_NAME = 'fulfillment_services';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "fulfillment_services/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "fulfillment_services.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_services/<id>.json"},
@@ -47,7 +47,7 @@ export class FulfillmentService extends Base {
       urlIds: {"id": id},
       params: {},
     });
-    return result.data ? result.data[0] : null;
+    return result ? result[0] : null;
   }
 
   public static async delete(
@@ -73,7 +73,7 @@ export class FulfillmentService extends Base {
       scope = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<FulfillmentService>> {
+  ): Promise<FulfillmentService[]> {
     const response = await this.baseFind<FulfillmentService>({
       session: session,
       urlIds: {},
@@ -85,13 +85,13 @@ export class FulfillmentService extends Base {
 
   public admin_graphql_api_id: string | null;
   public callback_url: string | null;
+  public format: string | null;
   public fulfillment_orders_opt_in: boolean | null;
   public handle: string | null;
   public id: number | null;
   public inventory_management: boolean | null;
   public location_id: number | null;
   public name: string | null;
-  public permits_sku_sharing: boolean | null;
   public provider_id: string | null;
   public requires_shipping_method: boolean | null;
   public tracking_support: boolean | null;

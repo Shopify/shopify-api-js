@@ -155,6 +155,7 @@ Whether to add the current timestamp to every logged message.
 
 This function returns an object containing the following properties:
 
+<<<<<<< HEAD
 | Property                            | Description                                                                                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | config                              | The options used to set up the object, containing the parameters of this function.                                                                      |
@@ -165,5 +166,39 @@ This function returns an object containing the following properties:
 | [billing](./billing/README.md)      | Object containing functions to enable apps to bill merchants.                                                                                           |
 | [utils](./utils/README.md)          | Object containing general functions to help build apps.                                                                                                 |
 | [rest](../guides/rest-resources.md) | Object containing OO representations of the Admin REST API. See the [API reference documentation](https://shopify.dev/docs/api/admin-rest) for details. |
+=======
+### config
+
+The options used to set up the object, containing the parameters of this function.
+
+### [auth](./auth/README.md)
+
+Object containing functions to authenticate with Shopify APIs.
+
+<!-- ### [clients](./clients/README.md) -->
+
+Object containing clients to access Shopify APIs.
+
+<!-- ### [session](./session/README.md) -->
+
+Object containing functions to manage Shopify sessions.
+
+<!-- ### [webhooks](./webhooks/README.md) -->
+
+Object containing functions to handle Shopify webhooks.
+
+<!-- ### [billing](./billing/README.md) -->
+
+Object containing functions to enable apps to bill merchants.
+
+<!-- ### [utils](./utils/README.md) -->
+
+Object containing general functions to help build apps.
+
+### rest
+
+Object containing OO representations of the Admin REST API.
+See the [API reference documentation](https://shopify.dev/api/admin-rest) for details.
+>>>>>>> af919a3c (Add OAuth reference docs pages)
 
 [Back to reference index](./README.md)

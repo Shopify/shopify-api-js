@@ -2,10 +2,10 @@
 * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
 ***********************************************************************************************************************/
 
-import {Base, FindAllResponse} from '../../base';
+import {Base} from '../../base';
 import {ResourcePath} from '../../types';
-import {Session} from '../../../lib/session/session';
-import {ApiVersion} from '../../../lib/types';
+import {SessionInterface} from '../../../lib/session/types';
+import {ApiVersion} from '../../../lib/base-types';
 
 interface FindArgs {
   session: Session;
@@ -28,6 +28,7 @@ interface InventoryLevelsArgs {
 export class Location extends Base {
   public static apiVersion = ApiVersion.April22;
 
+<<<<<<< HEAD:rest/admin/2022-04/location.ts
   protected static resourceName = 'location';
   protected static pluralName = 'locations';
   protected static hasOne: {[key: string]: typeof Base} = {};
@@ -36,6 +37,16 @@ export class Location extends Base {
     {"http_method": "get", "operation": "count", "ids": [], "path": "locations/count.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "locations.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "locations/<id>.json"},
+=======
+  protected static NAME = 'location';
+  protected static PLURAL_NAME = 'locations';
+  protected static HAS_ONE: {[key: string]: typeof Base} = {};
+  protected static HAS_MANY: {[key: string]: typeof Base} = {};
+  protected static PATHS: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "locations.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "locations/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "locations/count.json"},
+>>>>>>> origin/isomorphic/main:src/rest-resources/2021-04/location.ts
     {"http_method": "get", "operation": "inventory_levels", "ids": ["id"], "path": "locations/<id>/inventory_levels.json"}
   ];
 
