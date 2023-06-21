@@ -5,12 +5,13 @@ import '..';
 import '../../../runtime/__tests__/all.test';
 import {runTests, E2eTestEnvironment} from '../../__e2etests__/e2e-runner.test';
 
-const cfWorkerAppPort = '7777';
-const dummyServerPort = '7778';
+const webApiAppPort = '8888';
+const dummyServerPort = '8889';
 
-const workerEnvironment: E2eTestEnvironment = {
-  name: 'CF Worker',
-  domain: `http://localhost:${cfWorkerAppPort}`,
+// We should also try running this on a different environment that implements the Web API for better coverage.
+const webApiEnvironment: E2eTestEnvironment = {
+  name: 'Web API',
+  domain: `http://localhost:${webApiAppPort}`,
   dummyServerPort,
   process: spawn(
     'yarn',
@@ -19,7 +20,7 @@ const workerEnvironment: E2eTestEnvironment = {
       '--global',
       `HTTP_SERVER_PORT=${dummyServerPort}`,
       '--port',
-      `${cfWorkerAppPort}`,
+      `${webApiAppPort}`,
       '--modules',
       'bundle/test-web-api-app.js',
     ],
@@ -32,4 +33,4 @@ const workerEnvironment: E2eTestEnvironment = {
   ready: false,
 };
 
-runTests(workerEnvironment);
+runTests(webApiEnvironment);

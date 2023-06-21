@@ -1,4 +1,4 @@
-import '../../cf-worker';
+import '../../web-api';
 import {Headers} from '../../../runtime/http';
 import {
   DataType,
@@ -60,7 +60,7 @@ export default {
 
       testCount++;
       console.log(
-        `[cfWorker] testRequest #${testCount} = ${JSON.stringify(
+        `[webApi] testRequest #${testCount} = ${JSON.stringify(
           testRequest,
           undefined,
           2,
@@ -70,11 +70,11 @@ export default {
       if (typeof testRequest.retryTimeoutTimer !== 'undefined') {
         setRestClientRetryTime(testRequest.retryTimeoutTimer);
         console.log(
-          `[cfWorker] RETRY_TIME_WAIT (BEFORE) = ${HttpClient.RETRY_WAIT_TIME}\n`,
+          `[webApi] RETRY_TIME_WAIT (BEFORE) = ${HttpClient.RETRY_WAIT_TIME}\n`,
         );
         if (testRequest.retryTimeoutTimer !== 0) {
           console.log(
-            `[cfWorker] setting setTimeout @ ${HttpClient.RETRY_WAIT_TIME} ms\n`,
+            `[webApi] setting setTimeout @ ${HttpClient.RETRY_WAIT_TIME} ms\n`,
           );
 
           retryTimeout = setTimeout(() => {
@@ -84,7 +84,7 @@ export default {
               );
             } catch (error) {
               console.log(
-                `[cfWorker] ${RED}setTimeout fired!${RESET} @ ${HttpClient.RETRY_WAIT_TIME}\n`,
+                `[webApi] ${RED}setTimeout fired!${RESET} @ ${HttpClient.RETRY_WAIT_TIME}\n`,
               );
               testFailedDebug = JSON.stringify({
                 errorMessageReceived: error.message,
@@ -105,7 +105,7 @@ export default {
             });
             if (timedOut) {
               console.log(
-                `[cfWorker] timedOut=${timedOut}, testPassed=${testPassed}, testFailedDebug=${testFailedDebug}\n`,
+                `[webApi] timedOut=${timedOut}, testPassed=${testPassed}, testFailedDebug=${testFailedDebug}\n`,
               );
             } else {
               testPassed =
@@ -183,7 +183,7 @@ export default {
       }
 
       console.log(
-        `[cfWorker] test #${testCount} passed=${
+        `[webApi] test #${testCount} passed=${
           testPassed ? GREEN : RED
         }${testPassed}${RESET}, debug=${JSON.stringify(
           testFailedDebug,

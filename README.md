@@ -56,6 +56,13 @@ import '@shopify/shopify-api/adapters/cf-worker';
 ```
 
 </div>
+</div><div>Generic runtimes that implement the [Web API](https://developer.mozilla.org/en-US/docs/Web/API)
+
+```ts
+import '@shopify/shopify-api/adapters/web-api';
+```
+
+</div>
 
 Next, configure the library - you'll need some values in advance:
 

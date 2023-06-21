@@ -5,17 +5,17 @@ import {
   setAbstractConvertHeadersFunc,
   setAbstractRuntimeString,
 } from '../../runtime';
+
 import {
   webApiConvertHeaders,
   webApiConvertRequest,
   webApiConvertResponse,
   webApiFetch,
-} from '../web-api/adapter';
-
-import {workerRuntimeString} from './adapter';
+  webApiRuntimeString,
+} from './adapter';
 
 setAbstractFetchFunc(webApiFetch);
 setAbstractConvertRequestFunc(webApiConvertRequest);
 setAbstractConvertResponseFunc(webApiConvertResponse);
 setAbstractConvertHeadersFunc(webApiConvertHeaders);
-setAbstractRuntimeString(workerRuntimeString);
+setAbstractRuntimeString(webApiRuntimeString);
