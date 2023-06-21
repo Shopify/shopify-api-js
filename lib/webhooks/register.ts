@@ -508,7 +508,6 @@ export const TEMPLATE_GET_HANDLERS = `query shopifyApiReadWebhookSubscriptions {
         topic
         includeFields
         metafieldNamespaces
-        privateMetafieldNamespaces
         endpoint {
           __typename
           ... on WebhookHttpEndpoint {
