@@ -151,16 +151,26 @@ async function getExistingHandlers(
 }
 
 function buildCheckQuery(config: ConfigInterface, endCursor: string | null) {
-  let query = queryTemplate(TEMPLATE_GET_HANDLERS, {
-    END_CURSOR: JSON.stringify(endCursor),
-  });
+  return removeDeprecatedFields(
+    config,
+    queryTemplate(TEMPLATE_GET_HANDLERS, {
+      END_CURSOR: JSON.stringify(endCursor),
+    }),
+  );
+}
+
+function removeDeprecatedFields(
+  config: ConfigInterface,
+  query: string,
+): string {
+  let processedQuery = query;
 
   // The privateMetafieldNamespaces field was deprecated in the July22 version, so we need to stop sending it
   if (versionCompatible(config)(ApiVersion.July22)) {
-    query = query.replace('privateMetafieldNamespaces', '');
+    processedQuery = processedQuery.replace('privateMetafieldNamespaces', '');
   }
 
-  return query;
+  return processedQuery;
 }
 
 function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
