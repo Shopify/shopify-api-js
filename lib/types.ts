@@ -5,7 +5,7 @@ export enum LogSeverity {
   Debug,
 }
 
-export enum ApiVersion 
+export enum ApiVersion {
   April22 = '2022-04',
   July22 = '2022-07',
   October22 = '2022-10',
