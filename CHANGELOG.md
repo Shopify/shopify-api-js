@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.5.0
+
+### Minor Changes
+
+- 7a953a92: Adding support for 2023-07 API version
+
 ## 7.4.0
 
 ### Minor Changes
