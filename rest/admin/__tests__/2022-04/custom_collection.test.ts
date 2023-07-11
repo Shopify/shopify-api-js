@@ -31,7 +31,7 @@ describe('CustomCollection resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"custom_collections": [{"id": 841564295, "handle": "ipods", "title": "IPods", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}, {"id": 395646240, "handle": "ipods_two", "title": "IPods Two", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever. Again</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/395646240"}, {"id": 691652237, "handle": "non-ipods", "title": "Non Ipods", "updated_at": "2013-02-01T19:00:00-05:00", "body_html": "<p>No ipods here</p>", "published_at": "2013-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/691652237"}]}));
+    queueMockResponse(JSON.stringify({"custom_collections": [{"id": 841564295, "handle": "ipods", "title": "IPods", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}, {"id": 395646240, "handle": "ipods_two", "title": "IPods Two", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever. Again</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/395646240"}, {"id": 691652237, "handle": "non-ipods", "title": "Non Ipods", "updated_at": "2013-02-01T19:00:00-05:00", "body_html": "<p>No ipods here</p>", "published_at": "2013-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/691652237"}]}));
 
     await shopify.rest.CustomCollection.all({
       session: session,
@@ -49,7 +49,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"custom_collections": [{"id": 841564295, "handle": "ipods", "title": "IPods", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}, {"id": 395646240, "handle": "ipods_two", "title": "IPods Two", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever. Again</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/395646240"}, {"id": 691652237, "handle": "non-ipods", "title": "Non Ipods", "updated_at": "2013-02-01T19:00:00-05:00", "body_html": "<p>No ipods here</p>", "published_at": "2013-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/691652237"}]}));
+    queueMockResponse(JSON.stringify({"custom_collections": [{"id": 841564295, "handle": "ipods", "title": "IPods", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}, {"id": 395646240, "handle": "ipods_two", "title": "IPods Two", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever. Again</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/395646240"}, {"id": 691652237, "handle": "non-ipods", "title": "Non Ipods", "updated_at": "2013-02-01T19:00:00-05:00", "body_html": "<p>No ipods here</p>", "published_at": "2013-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/691652237"}]}));
 
     await shopify.rest.CustomCollection.all({
       session: session,
@@ -66,7 +66,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"custom_collections": [{"id": 1063001323, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-02-02T09:16:09-05:00", "body_html": null, "published_at": "2023-02-02T09:16:09-05:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001323"}]}));
+    queueMockResponse(JSON.stringify({"custom_collections": [{"id": 1063001359, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-06-16T13:16:33-04:00", "body_html": null, "published_at": "2023-06-16T13:16:33-04:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001359"}]}));
 
     await shopify.rest.CustomCollection.all({
       session: session,
@@ -84,7 +84,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_4', async () => {
-    queueMockResponse(JSON.stringify({"custom_collections": [{"id": 841564295, "handle": "ipods", "title": "IPods", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}, {"id": 395646240, "handle": "ipods_two", "title": "IPods Two", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever. Again</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/395646240"}]}));
+    queueMockResponse(JSON.stringify({"custom_collections": [{"id": 841564295, "handle": "ipods", "title": "IPods", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}, {"id": 395646240, "handle": "ipods_two", "title": "IPods Two", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever. Again</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/395646240"}]}));
 
     await shopify.rest.CustomCollection.all({
       session: session,
@@ -137,7 +137,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_7', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"id": 841564295, "handle": "ipods", "title": "IPods", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "products_count": 1, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"id": 841564295, "handle": "ipods", "title": "IPods", "updated_at": "2008-02-01T19:00:00-05:00", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "products_count": 1, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}}));
 
     await shopify.rest.CustomCollection.find({
       session: session,
@@ -155,7 +155,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_8', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "id": 841564295, "updated_at": "2023-02-02T09:15:50-05:00", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "id": 841564295, "updated_at": "2023-06-16T13:16:16-04:00", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.id = 841564295;
@@ -182,7 +182,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_9', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "id": 841564295, "updated_at": "2023-02-02T09:16:34-05:00", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "id": 841564295, "updated_at": "2023-06-16T13:16:45-04:00", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.id = 841564295;
@@ -207,7 +207,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_10', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "id": 841564295, "published_at": null, "updated_at": "2023-02-02T09:15:35-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "id": 841564295, "published_at": null, "updated_at": "2023-06-16T13:15:59-04:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.id = 841564295;
@@ -225,7 +225,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_11', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "id": 841564295, "published_at": "2023-02-02T09:15:33-05:00", "updated_at": "2023-02-02T09:15:33-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "id": 841564295, "published_at": "2023-06-16T13:15:42-04:00", "updated_at": "2023-06-16T13:15:42-04:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.id = 841564295;
@@ -243,12 +243,12 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_12', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"body_html": "<p>The best selling ipod ever</p>", "handle": "ipods", "updated_at": "2023-02-02T09:16:52-05:00", "id": 841564295, "sort_order": "manual", "title": "IPods", "template_suffix": null, "published_at": "2008-02-01T19:00:00-05:00", "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295"}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"body_html": "<p>The best selling ipod ever</p>", "handle": "ipods", "updated_at": "2023-06-16T13:16:32-04:00", "id": 841564295, "sort_order": "manual", "title": "IPods", "template_suffix": null, "published_at": "2008-02-01T19:00:00-05:00", "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295"}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.id = 841564295;
     custom_collection.image = "";
-    custom_collection.updated_at = "2023-02-02T09:16:51-05:00";
+    custom_collection.updated_at = "2023-06-16T13:16:31-04:00";
     custom_collection.title = "IPods";
     custom_collection.handle = "ipods";
     custom_collection.body_html = "<p>The best selling ipod ever</p>";
@@ -265,12 +265,12 @@ describe('CustomCollection resource', () => {
       path: '/admin/api/2022-04/custom_collections/841564295.json',
       query: '',
       headers,
-      data: { "custom_collection": {"image": "", "updated_at": "2023-02-02T09:16:51-05:00", "title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295"} }
+      data: { "custom_collection": {"image": "", "updated_at": "2023-06-16T13:16:31-04:00", "title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295"} }
     }).toMatchMadeHttpRequest();
   });
 
   it('test_13', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"updated_at": "2023-02-02T09:15:55-05:00", "id": 841564295, "title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:15:55-05:00", "alt": "Rails logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/fd43f2c8883f6e9b680e3295fd990d2c.gif?v=1675347355"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"updated_at": "2023-06-16T13:15:52-04:00", "id": 841564295, "title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:15:52-04:00", "alt": "Rails logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/fd43f2c8883f6e9b680e3295fd990d2c.gif?v=1686935752"}}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.id = 841564295;
@@ -291,7 +291,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_14', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"updated_at": "2023-02-02T09:15:06-05:00", "id": 841564295, "title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"alt": "Rails logo", "created_at": "2023-02-02T09:15:05-05:00", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/rails_logo20230202-30594-4ovwaj.gif?v=1675347306"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"updated_at": "2023-06-16T13:16:27-04:00", "id": 841564295, "title": "IPods", "handle": "ipods", "body_html": "<p>The best selling ipod ever</p>", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"alt": "Rails logo", "created_at": "2023-06-16T13:16:26-04:00", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/rails_logo20230616-3055169-4d0b9f.gif?v=1686935787"}}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.id = 841564295;
@@ -311,7 +311,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_15', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"body_html": "<p>5000 songs in your pocket</p>", "title": "IPods", "handle": "ipods", "id": 841564295, "updated_at": "2023-02-02T09:16:17-05:00", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-02-02T09:09:49-05:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1675346989"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"body_html": "<p>5000 songs in your pocket</p>", "title": "IPods", "handle": "ipods", "id": 841564295, "updated_at": "2023-06-16T13:16:04-04:00", "published_at": "2008-02-01T19:00:00-05:00", "sort_order": "manual", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/841564295", "image": {"created_at": "2023-06-16T13:14:16-04:00", "alt": "MP3 Player 8gb", "width": 123, "height": 456, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1686935656"}}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.id = 841564295;
@@ -347,7 +347,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_17', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001312, "handle": "ipods-1", "title": "IPods", "updated_at": "2023-02-02T09:15:15-05:00", "body_html": null, "published_at": "2023-02-02T09:15:15-05:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001312"}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001352, "handle": "ipods-1", "title": "IPods", "updated_at": "2023-06-16T13:16:08-04:00", "body_html": null, "published_at": "2023-06-16T13:16:07-04:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001352"}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.title = "IPods";
@@ -369,7 +369,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_18', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001320, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-02-02T09:15:58-05:00", "body_html": null, "published_at": "2023-02-02T09:15:58-05:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001320"}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001356, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-06-16T13:16:19-04:00", "body_html": null, "published_at": "2023-06-16T13:16:19-04:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001356"}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.title = "Macbooks";
@@ -386,7 +386,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_19', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001319, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-02-02T09:15:52-05:00", "body_html": null, "published_at": "2023-02-02T09:15:51-05:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001319"}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001351, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-06-16T13:16:05-04:00", "body_html": null, "published_at": "2023-06-16T13:16:05-04:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001351"}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.title = "Macbooks";
@@ -411,7 +411,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_20', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001325, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-02-02T09:16:15-05:00", "body_html": null, "published_at": "2023-02-02T09:16:15-05:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001325", "image": {"created_at": "2023-02-02T09:16:15-05:00", "alt": "Rails Logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/rails_logo20230202-30594-o04pu9.gif?v=1675347375"}}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001363, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-06-16T13:16:55-04:00", "body_html": null, "published_at": "2023-06-16T13:16:55-04:00", "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001363", "image": {"created_at": "2023-06-16T13:16:55-04:00", "alt": "Rails Logo", "width": 110, "height": 140, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/rails_logo20230616-3055169-zxdcrf.gif?v=1686935815"}}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.title = "Macbooks";
@@ -432,7 +432,7 @@ describe('CustomCollection resource', () => {
   });
 
   it('test_21', async () => {
-    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001316, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-02-02T09:15:38-05:00", "body_html": null, "published_at": null, "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001316"}}));
+    queueMockResponse(JSON.stringify({"custom_collection": {"id": 1063001353, "handle": "macbooks", "title": "Macbooks", "updated_at": "2023-06-16T13:16:13-04:00", "body_html": null, "published_at": null, "sort_order": "best-selling", "template_suffix": null, "published_scope": "web", "admin_graphql_api_id": "gid://shopify/Collection/1063001353"}}));
 
     const custom_collection = new shopify.rest.CustomCollection({session: session});
     custom_collection.title = "Macbooks";
