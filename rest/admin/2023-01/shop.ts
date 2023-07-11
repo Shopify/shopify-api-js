@@ -90,7 +90,7 @@ export class Shop extends Base {
   public shop_owner: string | null;
   public source: string | null;
   public tax_shipping: string | null;
-  public taxes_included: string | null;
+  public taxes_included: boolean | null;
   public timezone: string | null;
   public transactional_sms_disabled: boolean | null;
   public updated_at: string | null;

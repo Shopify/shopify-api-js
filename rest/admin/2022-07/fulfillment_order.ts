@@ -27,9 +27,7 @@ interface CloseArgs {
 }
 interface HoldArgs {
   [key: string]: unknown;
-  reason?: unknown;
-  reason_notes?: unknown;
-  notify_merchant?: unknown;
+  fulfillment_hold?: unknown;
   body?: {[key: string]: unknown} | null;
 }
 interface MoveArgs {
@@ -147,9 +145,7 @@ export class FulfillmentOrder extends Base {
 
   public async hold(
     {
-      reason = null,
-      reason_notes = null,
-      notify_merchant = null,
+      fulfillment_hold = null,
       body = null,
       ...otherArgs
     }: HoldArgs
@@ -159,7 +155,7 @@ export class FulfillmentOrder extends Base {
       operation: "hold",
       session: this.session,
       urlIds: {"id": this.id},
-      params: {"reason": reason, "reason_notes": reason_notes, "notify_merchant": notify_merchant, ...otherArgs},
+      params: {"fulfillment_hold": fulfillment_hold, ...otherArgs},
       body: body,
       entity: this,
     });
