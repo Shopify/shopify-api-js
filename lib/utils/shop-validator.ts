@@ -33,7 +33,8 @@ export function sanitizeHost(config: ConfigInterface) {
     let sanitizedHost = base64regex.test(host) ? host : null;
     if (sanitizedHost) {
       const url = new URL(`https://${decodeHost(sanitizedHost)}`);
-      if (!sanitizeShop(config)(url.hostname, false)) {
+      // allow-list of origins
+      if (!/\.((my)?shopify\.com|myshopify\.io|spin\.dev)$/.test(url.hostname)) {
         sanitizedHost = null;
       }
     }
