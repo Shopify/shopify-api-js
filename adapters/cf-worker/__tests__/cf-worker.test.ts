@@ -21,7 +21,7 @@ const workerEnvironment: E2eTestEnvironment = {
       '--port',
       `${cfWorkerAppPort}`,
       '--modules',
-      'bundle/test-cf-worker-app.js',
+      'bundle/test-web-api-app.js',
     ],
     {
       detached: true,

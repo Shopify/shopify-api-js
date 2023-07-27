@@ -221,8 +221,9 @@ describe('shopify.logger', () => {
   it('can use a custom async logger', async () => {
     const testLogFilePath = path.join(__dirname, 'test.log');
 
+    let promise: Promise<any> = Promise.resolve();
     const log = (severity: LogSeverity, message: string) => {
-      fs.promises
+      promise = fs.promises
         .writeFile(testLogFilePath, `${severity}: ${message}`)
         .catch((error) => {
           console.error(error);
@@ -236,7 +237,9 @@ describe('shopify.logger', () => {
 
     shopify.logger.log(LogSeverity.Debug, 'debug message');
 
-    fs.appendFileSync(testLogFilePath, '');
+    // Wait for the write operation to finish
+    await promise;
+
     const logContent = await fs.promises.readFile(testLogFilePath, 'utf8');
 
     expect(logContent).toEqual(

@@ -2,7 +2,7 @@ import {ConfigInterface} from '../base-types';
 
 import {sanitizeShop, sanitizeHost} from './shop-validator';
 import {validateHmac} from './hmac-validator';
-import {versionCompatible} from './version-compatible';
+import {versionCompatible, versionPriorTo} from './version-compatible';
 
 export function shopifyUtils(config: ConfigInterface) {
   return {
@@ -10,6 +10,7 @@ export function shopifyUtils(config: ConfigInterface) {
     sanitizeHost: sanitizeHost(config),
     validateHmac: validateHmac(config),
     versionCompatible: versionCompatible(config),
+    versionPriorTo: versionPriorTo(config),
   };
 }
 

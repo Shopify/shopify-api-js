@@ -83,7 +83,7 @@ describe('Country resource', () => {
   });
 
   it('test_4', async () => {
-    queueMockResponse(JSON.stringify({"country": {"id": 1070231512, "name": "France", "code": "FR", "tax_name": "TVA", "tax": 0.2, "provinces": []}}));
+    queueMockResponse(JSON.stringify({"country": {"id": 1070231510, "name": "France", "code": "FR", "tax_name": "TVA", "tax": 0.2, "provinces": []}}));
 
     const country = new shopify.rest.Country({session: session});
     country.code = "FR";

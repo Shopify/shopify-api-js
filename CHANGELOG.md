@@ -1,5 +1,18 @@
 # Changelog
 
+## 7.5.0
+
+### Minor Changes
+
+- 7a953a92: Adding support for 2023-07 API version
+
+## 7.4.0
+
+### Minor Changes
+
+- 9735d0c3: Stop sending the privateMetafieldNamespaces field in webhook queries to avoid the API duplication warning, and added a new shopify.utils.versionPriorTo method to help with cases like this one where apps will need to stop doing something that was deprecated.
+- 1d84c135: Add Web API runtime adapter
+
 ## 7.3.1
 
 ### Patch Changes

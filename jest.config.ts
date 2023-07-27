@@ -15,6 +15,9 @@ if (compare(process.version, '15.0.0', '>=')) {
   projects.push(
     './lib/__tests__/jest_projects/adapters.cf-worker.jest.config.ts',
   );
+  projects.push(
+    './lib/__tests__/jest_projects/adapters.web-api.jest.config.ts',
+  );
 }
 
 const config: Config = {

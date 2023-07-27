@@ -31,7 +31,7 @@ describe('FulfillmentEvent resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"fulfillment_events": [{"id": 944956392, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-02-02T10:00:14-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-02-02T10:00:14-05:00", "updated_at": "2023-02-02T10:00:14-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956392"}]}));
+    queueMockResponse(JSON.stringify({"fulfillment_events": [{"id": 944956396, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-06-14T14:21:36-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-06-14T14:21:36-04:00", "updated_at": "2023-06-14T14:21:36-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956396"}]}));
 
     await shopify.rest.FulfillmentEvent.all({
       session: session,
@@ -50,7 +50,7 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"fulfillment_event": {"id": 944956393, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-02-02T10:00:17-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-02-02T10:00:17-05:00", "updated_at": "2023-02-02T10:00:17-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956393"}}));
+    queueMockResponse(JSON.stringify({"fulfillment_event": {"id": 944956397, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-06-14T14:21:39-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-06-14T14:21:39-04:00", "updated_at": "2023-06-14T14:21:39-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956397"}}));
 
     const fulfillment_event = new shopify.rest.FulfillmentEvent({session: session});
     fulfillment_event.order_id = 450789469;
@@ -69,19 +69,19 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"fulfillment_event": {"id": 944956394, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-02-02T10:00:18-05:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-02-02T10:00:18-05:00", "updated_at": "2023-02-02T10:00:18-05:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956394"}}));
+    queueMockResponse(JSON.stringify({"fulfillment_event": {"id": 944956398, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-06-14T14:21:39-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-06-14T14:21:39-04:00", "updated_at": "2023-06-14T14:21:39-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956398"}}));
 
     await shopify.rest.FulfillmentEvent.find({
       session: session,
       order_id: 450789469,
       fulfillment_id: 255858046,
-      id: 944956394,
+      id: 944956398,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2022-04/orders/450789469/fulfillments/255858046/events/944956394.json',
+      path: '/admin/api/2022-04/orders/450789469/fulfillments/255858046/events/944956398.json',
       query: '',
       headers,
       data: undefined
@@ -95,13 +95,13 @@ describe('FulfillmentEvent resource', () => {
       session: session,
       order_id: 450789469,
       fulfillment_id: 255858046,
-      id: 944956391,
+      id: 944956395,
     });
 
     expect({
       method: 'DELETE',
       domain,
-      path: '/admin/api/2022-04/orders/450789469/fulfillments/255858046/events/944956391.json',
+      path: '/admin/api/2022-04/orders/450789469/fulfillments/255858046/events/944956395.json',
       query: '',
       headers,
       data: undefined

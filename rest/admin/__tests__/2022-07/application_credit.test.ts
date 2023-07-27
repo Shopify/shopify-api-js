@@ -31,7 +31,7 @@ describe('ApplicationCredit resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636134, "amount": "5.00", "description": "application credit for refund", "test": null, "currency": "USD"}}));
+    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636128, "amount": "5.00", "description": "application credit for refund", "test": null, "currency": "USD"}}));
 
     const application_credit = new shopify.rest.ApplicationCredit({session: session});
     application_credit.description = "application credit for refund";
@@ -49,7 +49,7 @@ describe('ApplicationCredit resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636131, "amount": "5.00", "description": "application credit for refund", "test": true, "currency": "USD"}}));
+    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636127, "amount": "5.00", "description": "application credit for refund", "test": true, "currency": "USD"}}));
 
     const application_credit = new shopify.rest.ApplicationCredit({session: session});
     application_credit.description = "application credit for refund";

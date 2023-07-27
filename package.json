@@ -1,6 +1,6 @@
 {
   "name": "@shopify/shopify-api",
-  "version": "7.3.1",
+  "version": "7.5.0",
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -20,24 +20,19 @@
       "require": "./runtime/index.js",
       "types": "./runtime/index.d.ts"
     },
-    "./adapters/node": {
-      "import": "./adapters/node/index.js",
-      "require": "./adapters/node/index.js",
-      "types": "./adapters/node/index.d.ts"
-    },
-    "./adapters/cf-worker": {
-      "import": "./adapters/cf-worker/index.js",
-      "require": "./adapters/cf-worker/index.js",
-      "types": "./adapters/cf-worker/index.d.ts"
+    "./adapters/*": {
+      "import": "./adapters/*/index.js",
+      "require": "./adapters/*/index.js",
+      "types": "./adapters/*/index.d.ts"
     }
   },
   "prettier": "@shopify/prettier-config",
   "scripts": {
     "test:all": "yarn pretest:adapters && jest && yarn posttest:adapters",
     "test": "jest --selectProjects library",
-    "pretest:adapters": "yarn build && yarn rollup -c adapters/__e2etests__/rollup.test-cf-worker-app.config.js",
+    "pretest:adapters": "yarn build && yarn rollup -c adapters/__e2etests__/rollup.test-web-api-app.config.js",
     "posttest:adapters": "yarn clean",
-    "test:adapters": "jest --selectProjects adapters:mock adapters:node adapters:cf-worker",
+    "test:adapters": "jest --selectProjects adapters:mock adapters:node adapters:cf-worker adapters:web-api",
     "test:rest_resources": "jest --selectProjects rest_resources",
     "lint": "jest --selectProjects lint",
     "test:dev": "jest --selectProjects library lint",
