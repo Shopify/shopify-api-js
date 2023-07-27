@@ -243,14 +243,14 @@ export class Base {
     return instance;
   }
 
-  #session: Session;
+  psession: Session;
 
   get session(): Session {
-    return this.#session;
+    return this.psession;
   }
 
   constructor({session, fromData}: BaseConstructorArgs) {
-    this.#session = session;
+    this.psession = session;
 
     if (fromData) {
       this.setData(fromData);
@@ -298,7 +298,7 @@ export class Base {
 
     return Object.entries(this).reduce((acc: Body, [attribute, value]) => {
       if (
-        ['#session'].includes(attribute) ||
+        ['psession'].includes(attribute) ||
         (saving && readOnlyAttributes.includes(attribute))
       ) {
         return acc;
