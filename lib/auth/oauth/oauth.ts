@@ -36,6 +36,16 @@ import {
 import {nonce} from './nonce';
 import {safeCompare} from './safe-compare';
 
+export interface ExchangeParams {
+  shop: string;
+  sessionToken: string;
+  isOnline: boolean;
+}
+
+export interface ExchangeResponse {
+  session: Session;
+}
+
 export interface CallbackResponse<T = AdapterHeaders> {
   headers: T;
   session: Session;
@@ -46,6 +56,11 @@ interface BotLog {
   log: ShopifyLogger;
   func: string;
 }
+
+const IdTokenType = "urn:ietf:params:oauth:token-type:id_token";
+const OnlineTokenType = "urn:shopify:params:oauth:token-type:online-access-token";
+const OfflineTokenType = "urn:shopify:params:oauth:token-type:offline-access-token";
+const TokenExchangeGrantType = "urn:ietf:params:oauth:grant-type:token-exchange";
 
 const logForBot = ({request, log, func}: BotLog) => {
   log.debug(`Possible bot request to auth ${func}: `, {
@@ -208,6 +223,54 @@ export function callback(config: ConfigInterface) {
         cookies.response.headers!,
         adapterArgs,
       )) as T,
+      session,
+    };
+  };
+}
+
+export function exchange(config: ConfigInterface) {
+  return async ({
+    shop,
+    sessionToken,
+    isOnline,
+  }: ExchangeParams): Promise<ExchangeResponse> => {
+    throwIfCustomStoreApp(
+      config.isCustomStoreApp,
+      'Cannot perform OAuth for private apps',
+    );
+
+    const log = logger(config);
+
+    log.info('Exchanging token', {shop});
+
+    const body = {
+      client_id: config.apiKey,
+      client_secret: config.apiSecretKey,
+      grant_type: TokenExchangeGrantType,
+      subject_token: sessionToken,
+      subject_token_type: IdTokenType,
+      requested_token_type: isOnline ? OnlineTokenType : OfflineTokenType,
+    };
+
+    const postParams = {
+      path: '/admin/oauth/access_token',
+      type: DataType.JSON,
+      data: body,
+    };
+    const cleanShop = sanitizeShop(config)(shop, true)!;
+
+    const HttpClient = httpClientClass(config);
+    const client = new HttpClient({domain: cleanShop});
+    const postResponse = await client.post(postParams);
+
+    const session: Session = createSession({
+      postResponse,
+      shop: cleanShop,
+      stateFromCookie: "",
+      config,
+    });
+
+    return {
       session,
     };
   };
