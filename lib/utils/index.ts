@@ -7,7 +7,7 @@ import {versionCompatible, versionPriorTo} from './version-compatible';
 export function shopifyUtils(config: ConfigInterface) {
   return {
     sanitizeShop: sanitizeShop(config),
-    sanitizeHost: sanitizeHost(config),
+    sanitizeHost: sanitizeHost(),
     validateHmac: validateHmac(config),
     versionCompatible: versionCompatible(config),
     versionPriorTo: versionPriorTo(config),

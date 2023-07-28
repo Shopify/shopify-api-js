@@ -26,15 +26,23 @@ export function sanitizeShop(config: ConfigInterface) {
   };
 }
 
-export function sanitizeHost(config: ConfigInterface) {
+export function sanitizeHost() {
   return (host: string, throwOnInvalid = false): string | null => {
     const base64regex = /^[0-9a-zA-Z+/]+={0,2}$/;
 
     let sanitizedHost = base64regex.test(host) ? host : null;
     if (sanitizedHost) {
-      const url = new URL(`https://${decodeHost(sanitizedHost)}`);
-      // allow-list of origins
-      if (!/\.((my)?shopify\.com|myshopify\.io|spin\.dev)$/.test(url.hostname)) {
+      const {hostname} = new URL(`https://${decodeHost(sanitizedHost)}`);
+
+      const originsRegex = [
+        'myshopify\\.com',
+        'shopify\\.com',
+        'myshopify\\.io',
+        'spin\\.dev',
+      ];
+
+      const hostRegex = new RegExp(`\\.(${originsRegex.join('|')})$`);
+      if (!hostRegex.test(hostname)) {
         sanitizedHost = null;
       }
     }
