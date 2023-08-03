@@ -65,4 +65,29 @@ describe('JWT session token', () => {
       ShopifyErrors.InvalidJwtError,
     );
   });
+
+  test("doesn't fail on a mismatching API key when not checking the token's audience", async () => {
+    shopify.config.apiKey = 'something_else';
+
+    // The token is signed with a key that is not the current value
+    const token = await signJWT(shopify.config.apiSecretKey, payload);
+
+    const actualPayload = await shopify.session.decodeSessionToken(token, {
+      checkAudience: false,
+    });
+    expect(actualPayload).toStrictEqual(payload);
+  });
+
+  test("doesn't fail on a missing aud field when not checking the token's audience", async () => {
+    const payloadWithoutAud = {...payload};
+    delete (payloadWithoutAud as any).aud;
+
+    // The token is signed with a key that is not the current value
+    const token = await signJWT(shopify.config.apiSecretKey, payload);
+
+    const actualPayload = await shopify.session.decodeSessionToken(token, {
+      checkAudience: false,
+    });
+    expect(actualPayload).toStrictEqual(payload);
+  });
 });

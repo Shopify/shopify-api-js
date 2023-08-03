@@ -1,4 +1,9 @@
 {
   "retryOn429": true,
-  "fallbackRetryDelay": "1s"
+  "fallbackRetryDelay": "1s",
+  "ignorePatterns": [
+    {
+      "pattern": "^https://help.shopify.com"
+    }
+  ]
 }
