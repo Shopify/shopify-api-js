@@ -9,7 +9,7 @@ You should **_never_** read the shop from user inputs or URLs.
 
 ```ts
 async function myWebhookHandler(topic, shop) {
-  const offlineSessionId = await shopify.session.getOfflineId({shop});
+  const offlineSessionId = await shopify.session.getOfflineId(shop);
 
   // use sessionId to retrieve session from app's session storage
   // getSessionFromStorage() must be provided by application

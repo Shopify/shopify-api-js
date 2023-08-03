@@ -71,7 +71,7 @@ app.post('/webhooks', express.text({type: '*/*'}), async (req, res) => {
 
   console.log(`Received webhook for ${topic} for shop ${domain}`);
 
-  const sessionId = shopify.session.getOfflineId({shop: domain});
+  const sessionId = shopify.session.getOfflineId(domain);
 
   // Run your webhook-processing code here!
 });
@@ -87,7 +87,7 @@ const handleWebhookRequest = async (
   webhookId: string,
   apiVersion: string,
 ) => {
-  const sessionId = shopify.session.getOfflineId({shop});
+  const sessionId = shopify.session.getOfflineId(shop);
 
   // Run your webhook-processing code here!
 };

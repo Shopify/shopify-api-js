@@ -21,7 +21,7 @@ const handleWebhookRequest = async (
   webhookId: string,
   apiVersion: string,
 ) => {
-  const sessionId = shopify.session.getOfflineId({shop});
+  const sessionId = shopify.session.getOfflineId(shop);
 
   // Fetch the session from storage and process the webhook event
 };
