@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.5.1
+
+### Patch Changes
+
+- 6f075397: Allow not checking a session token payload's `aud` field to support tokens generated outside of the Shopify Admin.
+- ce638203: Fixing host validation to work with unified admin shops
+
 ## 7.5.0
 
 ### Minor Changes
