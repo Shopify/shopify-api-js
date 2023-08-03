@@ -8,8 +8,15 @@ import {JwtPayload} from './types';
 
 const JWT_PERMITTED_CLOCK_TOLERANCE = 10;
 
+export interface DecodeSessionTokenOptions {
+  checkAudience?: boolean;
+}
+
 export function decodeSessionToken(config: ConfigInterface) {
-  return async (token: string): Promise<JwtPayload> => {
+  return async (
+    token: string,
+    {checkAudience = true}: DecodeSessionTokenOptions = {},
+  ): Promise<JwtPayload> => {
     let payload: JwtPayload;
     try {
       payload = (
@@ -26,7 +33,7 @@ export function decodeSessionToken(config: ConfigInterface) {
 
     // The exp and nbf fields are validated by the JWT library
 
-    if (payload.aud !== config.apiKey) {
+    if (checkAudience && payload.aud !== config.apiKey) {
       throw new ShopifyErrors.InvalidJwtError(
         'Session token had invalid API key',
       );

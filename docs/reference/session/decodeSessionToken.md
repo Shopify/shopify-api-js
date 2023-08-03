@@ -22,6 +22,19 @@ app.get('/fetch-some-data', async (req, res) => {
 
 The token to parse.
 
+### options
+
+`Object`
+
+An object that allows the following fields:
+
+#### checkAudience
+
+`boolean` | Defaults to `true`
+
+Whether the method should check the `aud` field in the decoded payload.
+This should always be set to `true` if the token is coming from the Shopify Admin.
+
 ## Return
 
 `Promise<JwtPayload>`
