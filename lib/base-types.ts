@@ -18,6 +18,7 @@ export interface ConfigParams<T extends ShopifyRestResources = any> {
   adminApiAccessToken?: string;
   userAgentPrefix?: string;
   privateAppStorefrontAccessToken?: string;
+  usePrivateToken?: boolean;
   customShopDomains?: (RegExp | string)[];
   billing?: BillingConfig;
   restResources?: T;

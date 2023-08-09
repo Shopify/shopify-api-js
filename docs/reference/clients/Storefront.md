@@ -8,7 +8,7 @@ Instances of this class can make requests to the Shopify Storefront API.
 
 You can create Storefront API access tokens for both **private apps** and **sales channels**, but you **must use offline access tokens** for sales channels. Please read [our documentation](https://shopify.dev/docs/custom-storefronts/building-with-the-storefront-api/products-collections/getting-started) to learn more about Storefront Access Tokens.
 
-If you are building a private app, you can set a default Storefront Access Token for all `Storefront` client instances by setting the `config.privateAppStorefrontAccessToken` property when calling [`shopifyApi`](../shopifyApi.md).
+If you are building a private app, you can set a default Storefront Access Token for all `Storefront` client instances by setting `config.usePrivateToken = true` and the `config.privateAppStorefrontAccessToken` property when calling [`shopifyApi`](../shopifyApi.md).
 
 ## Constructor
 
