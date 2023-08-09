@@ -27,7 +27,6 @@ export enum ShopifyHeader {
   Topic = 'X-Shopify-Topic',
   WebhookId = 'X-Shopify-Webhook-Id',
   StorefrontAccessToken = 'X-Shopify-Storefront-Access-Token',
-  StorefrontPrivateToken = 'Shopify-Storefront-Private-Token',
   StorefrontSDKVariant = 'X-SDK-Variant',
   StorefrontSDKVersion = 'X-SDK-Version',
 }
