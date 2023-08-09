@@ -96,7 +96,7 @@ describe('Storefront GraphQL client', () => {
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers: {
-        [ShopifyHeader.StorefrontAccessToken]: 'private_token',
+        [ShopifyHeader.StorefrontPrivateToken]: 'private_token',
       },
     }).toMatchMadeHttpRequest();
   });
