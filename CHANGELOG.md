@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.5.2
+
+### Patch Changes
+
+- c2962537: Fix storefront client incorrectly setting private token as access token
+
 ## 7.5.1
 
 ### Patch Changes
