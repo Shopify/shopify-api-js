@@ -75,8 +75,7 @@ describe('Storefront GraphQL client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('can return response from config private app setting', async () => {
-    shopify.config.isCustomStoreApp = true;
+  it('can return response from private acess token in config setting', async () => {
     shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
     const client = new shopify.clients.Storefront({
@@ -96,7 +95,7 @@ describe('Storefront GraphQL client', () => {
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
       data: QUERY,
       headers: {
-        [ShopifyHeader.StorefrontAccessToken]: 'private_token',
+        [ShopifyHeader.StorefrontPrivateToken]: 'private_token',
       },
     }).toMatchMadeHttpRequest();
   });
