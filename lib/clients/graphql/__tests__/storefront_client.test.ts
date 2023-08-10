@@ -76,7 +76,7 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('can return response from private acess token in config setting', async () => {
-    shopify.config.usePrivateToken = true;
+    shopify.config.usePrivateStorefrontAccessToken = true;
     shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
     const client = new shopify.clients.Storefront({
@@ -101,8 +101,8 @@ describe('Storefront GraphQL client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('defaults to public access token if `usePrivateToken` is false', async () => {
-    shopify.config.usePrivateToken = false;
+  it('defaults to public access token if `usePrivateStorefrontAccessToken` is false', async () => {
+    shopify.config.usePrivateStorefrontAccessToken = false;
     shopify.config.privateAppStorefrontAccessToken = 'private_token';
 
     const client = new shopify.clients.Storefront({
