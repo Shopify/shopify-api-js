@@ -4,8 +4,18 @@ Shopify requests include an `hmac` query argument (or, in the case of app proxy 
 
 ## Example
 
+For OAuth requests:
+
 ```ts
 const isValid = await shopify.utils.validateHmac(req.query);
+```
+
+For App Proxy requests:
+
+```ts
+const isValid = await shopify.utils.validateHmac(req.query, {
+  signator: 'appProxy',
+});
 ```
 
 ## Parameters
