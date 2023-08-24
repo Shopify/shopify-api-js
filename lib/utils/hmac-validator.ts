@@ -9,7 +9,9 @@ import ProcessedQuery from './processed-query';
 
 const HMAC_TIMESTAMP_PERMITTED_CLOCK_TOLERANCE_SEC = 90;
 
-function stringifyQuery(query: AuthQuery): string {
+export type HMACSignator = 'admin' | 'appProxy';
+
+function stringifyQueryForAdmin(query: AuthQuery): string {
   const processedQuery = new ProcessedQuery();
   Object.keys(query)
     .sort((val1, val2) => val1.localeCompare(val2))
@@ -18,27 +20,51 @@ function stringifyQuery(query: AuthQuery): string {
   return processedQuery.stringify(true);
 }
 
+function stringifyQueryForAppProxy(query: AuthQuery): string {
+  return Object.entries(query)
+    .sort(([val1], [val2]) => val1.localeCompare(val2))
+    .reduce((acc, [key, value]) => {
+      return `${acc}${key}=${Array.isArray(value) ? value.join(',') : value}`;
+    }, '');
+}
+
 export function generateLocalHmac(config: ConfigInterface) {
-  return async (params: AuthQuery): Promise<string> => {
-    // assumes that 'signature' (from Shopify) will only ever be a hmac value
+  return async (
+    params: AuthQuery,
+    signator: HMACSignator = 'admin',
+  ): Promise<string> => {
     const {hmac, signature, ...query} = params;
-    const queryString = stringifyQuery(query);
+
+    const queryString =
+      signator === 'admin'
+        ? stringifyQueryForAdmin(query)
+        : stringifyQueryForAppProxy(query);
+
     return createSHA256HMAC(config.apiSecretKey, queryString, HashFormat.Hex);
   };
 }
 
 export function validateHmac(config: ConfigInterface) {
-  return async (query: AuthQuery): Promise<boolean> => {
-    if (!query.hmac && !query.signature) {
+  return async (
+    query: AuthQuery,
+    {signator}: {signator: HMACSignator} = {signator: 'admin'},
+  ): Promise<boolean> => {
+    if (signator === 'admin' && !query.hmac) {
       throw new ShopifyErrors.InvalidHmacError(
         'Query does not contain an HMAC value.',
       );
     }
 
+    if (signator === 'appProxy' && !query.signature) {
+      throw new ShopifyErrors.InvalidHmacError(
+        'Query does not contain a signature value.',
+      );
+    }
+
     validateHmacTimestamp(query);
 
-    const hmac = query.signature || query.hmac;
-    const localHmac = await generateLocalHmac(config)(query);
+    const hmac = signator === 'appProxy' ? query.signature : query.hmac;
+    const localHmac = await generateLocalHmac(config)(query, signator);
 
     return safeCompare(hmac as string, localHmac);
   };
