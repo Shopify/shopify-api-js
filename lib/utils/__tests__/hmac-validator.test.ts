@@ -83,7 +83,7 @@ describe('validateHmac', () => {
         );
       });
 
-      test('throws InvalidHmacError when timestamp is more than 10 seconds in the future', async () => {
+      test('throws InvalidHmacError when timestamp is more than 90 seconds in the future', async () => {
         shopify.config.apiSecretKey = 'my super secret key';
         const timestamp = String(getCurrentTimeInSec() + 91);
         const queryString = `code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=${timestamp}`;
@@ -175,7 +175,7 @@ describe('validateHmac', () => {
       );
     });
 
-    test('throws InvalidHmacError when timestamp is more than 10 seconds in the future', async () => {
+    test('throws InvalidHmacError when timestamp is more than 90 seconds in the future', async () => {
       shopify.config.apiSecretKey = 'my super secret key';
       const timestamp = String(getCurrentTimeInSec() + 91);
       const queryString = `code=some+code+goes+here&shop=the+shop+URL&state=some+nonce+passed+from+auth&timestamp=${timestamp}`;
