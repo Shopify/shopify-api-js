@@ -74,6 +74,7 @@ export interface BillingRequestParams {
   isTest?: boolean;
   returnUrl?: string;
   returnObject?: boolean;
+  trialDaysOverride?: number;
 }
 
 export interface BillingRequestResponseObject {
