@@ -407,4 +407,72 @@ describe('shopify.billing.request', () => {
       });
     });
   });
+
+  it('applies trialDays override when set', async () => {
+    shopify = shopifyApi({
+      ...testConfig,
+      billing: {
+        [Responses.PLAN_1]: {
+          amount: 5,
+          currencyCode: 'USD',
+          interval: BillingInterval.Every30Days,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+          trialDays: 10,
+        },
+      },
+    });
+
+    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+    await shopify.billing.request({
+      session,
+      plan: Responses.PLAN_1,
+      returnObject: true,
+      trialDays: 20,
+    });
+
+    expect({
+      ...GRAPHQL_BASE_REQUEST,
+      data: {
+        query: expect.stringContaining('appSubscriptionCreate'),
+        variables: expect.objectContaining({
+          trialDays: 20,
+        }),
+      },
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('applies a trialDays override of 0', async () => {
+    shopify = shopifyApi({
+      ...testConfig,
+      billing: {
+        [Responses.PLAN_1]: {
+          amount: 5,
+          currencyCode: 'USD',
+          interval: BillingInterval.Every30Days,
+          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+          trialDays: 10,
+        },
+      },
+    });
+
+    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+    await shopify.billing.request({
+      session,
+      plan: Responses.PLAN_1,
+      returnObject: true,
+      trialDays: 0,
+    });
+
+    expect({
+      ...GRAPHQL_BASE_REQUEST,
+      data: {
+        query: expect.stringContaining('appSubscriptionCreate'),
+        variables: expect.objectContaining({
+          trialDays: 0,
+        }),
+      },
+    }).toMatchMadeHttpRequest();
+  });
 });

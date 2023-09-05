@@ -136,6 +136,12 @@ Which URL to redirect the merchant to after the charge is confirmed.
 
 Whether to return the `confirmationUrl` as a `string`, or to return a more detailed object (see below).
 
+### trialDays
+
+`number`
+
+Override value for the `trialDays` config option. Only applies to recurring purchases.
+
 ## Return
 
 ### if `returnObject` parameter is `false` (default)

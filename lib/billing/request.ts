@@ -29,6 +29,7 @@ interface RequestInternalParams {
 
 interface RequestSubscriptionInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigSubscriptionPlan;
+  trialDays?: number;
 }
 
 interface RequestOneTimePaymentInternalParams extends RequestInternalParams {
@@ -37,6 +38,7 @@ interface RequestOneTimePaymentInternalParams extends RequestInternalParams {
 
 interface RequestUsageSubscriptionInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigUsagePlan;
+  trialDays?: number;
 }
 
 export function request(config: ConfigInterface) {
@@ -46,6 +48,7 @@ export function request(config: ConfigInterface) {
     isTest = true,
     returnUrl: returnUrlParam,
     returnObject = false,
+    trialDays = undefined,
   }: Params): Promise<BillingRequestResponse<Params>> {
     if (!config.billing || !config.billing[plan]) {
       throw new BillingError({
@@ -90,6 +93,7 @@ export function request(config: ConfigInterface) {
           client,
           returnUrl,
           isTest,
+          trialDays,
         });
         data = mutationUsageResponse.data.appSubscriptionCreate;
         break;
@@ -101,6 +105,7 @@ export function request(config: ConfigInterface) {
           client,
           returnUrl,
           isTest,
+          trialDays,
         });
         data = mutationRecurringResponse.data.appSubscriptionCreate;
       }
@@ -129,13 +134,16 @@ async function requestRecurringPayment({
   client,
   returnUrl,
   isTest,
+  trialDays,
 }: RequestSubscriptionInternalParams): Promise<RecurringPaymentResponse> {
+  const trialDaysValue =
+    trialDays === undefined ? billingConfig.trialDays : trialDays;
   const mutationResponse = await client.query<RecurringPaymentResponse>({
     data: {
       query: RECURRING_PURCHASE_MUTATION,
       variables: {
         name: plan,
-        trialDays: billingConfig.trialDays,
+        trialDays: trialDaysValue,
         replacementBehavior: billingConfig.replacementBehavior,
         returnUrl,
         test: isTest,
@@ -180,7 +188,10 @@ async function requestUsagePayment({
   client,
   returnUrl,
   isTest,
+  trialDays,
 }: RequestUsageSubscriptionInternalParams): Promise<RecurringPaymentResponse> {
+  const trialDaysValue =
+    trialDays === undefined ? billingConfig.trialDays : trialDays;
   const mutationResponse = await client.query<RecurringPaymentResponse>({
     data: {
       query: RECURRING_PURCHASE_MUTATION,
@@ -188,7 +199,7 @@ async function requestUsagePayment({
         name: plan,
         returnUrl,
         test: isTest,
-        trialDays: billingConfig.trialDays,
+        trialDays: trialDaysValue,
         replacementBehavior: billingConfig.replacementBehavior,
         lineItems: [
           {
