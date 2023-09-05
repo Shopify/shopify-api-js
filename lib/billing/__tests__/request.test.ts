@@ -428,7 +428,7 @@ describe('shopify.billing.request', () => {
       session,
       plan: Responses.PLAN_1,
       returnObject: true,
-      trialDaysOverride: 20,
+      trialDays: 20,
     });
 
     expect({
@@ -462,7 +462,7 @@ describe('shopify.billing.request', () => {
       session,
       plan: Responses.PLAN_1,
       returnObject: true,
-      trialDaysOverride: 0,
+      trialDays: 0,
     });
 
     expect({

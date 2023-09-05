@@ -136,7 +136,7 @@ Which URL to redirect the merchant to after the charge is confirmed.
 
 Whether to return the `confirmationUrl` as a `string`, or to return a more detailed object (see below).
 
-### trialDaysOverride
+### trialDays
 
 `number`
 
