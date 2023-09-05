@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.6.0
+
+### Minor Changes
+
+- d2df0b1b: validateHmac now accepts an optional second param. Use this to support HMAC validation for app proxy requests
+
 ## 7.5.2
 
 ### Patch Changes
