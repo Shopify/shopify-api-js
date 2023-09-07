@@ -47,11 +47,75 @@ interface BotLog {
   func: string;
 }
 
+export interface TokenExchangeParams {
+  shop: string;
+  sessionToken: string;
+  isOnline: boolean;
+}
+
+export interface TokenExchangeResponse {
+  session: Session;
+}
+
+const IdTokenType = "urn:ietf:params:oauth:token-type:id_token";
+const OnlineTokenType = "urn:shopify:params:oauth:token-type:online-access-token";
+const OfflineTokenType = "urn:shopify:params:oauth:token-type:offline-access-token";
+const TokenExchangeGrantType = "urn:ietf:params:oauth:grant-type:token-exchange";
+
+
 const logForBot = ({request, log, func}: BotLog) => {
   log.debug(`Possible bot request to auth ${func}: `, {
     userAgent: request.headers['User-Agent'],
   });
 };
+
+export function tokenExchange(config: ConfigInterface) {
+  return async ({
+    shop,
+    sessionToken,
+    isOnline,
+  }: TokenExchangeParams): Promise<TokenExchangeResponse> => {
+    throwIfCustomStoreApp(
+      config.isCustomStoreApp,
+      'Cannot perform OAuth for private apps',
+    );
+
+    const log = logger(config);
+
+    log.info('Exchanging token', {shop});
+
+    const body = {
+      client_id: config.apiKey,
+      client_secret: config.apiSecretKey,
+      grant_type: TokenExchangeGrantType,
+      subject_token: sessionToken,
+      subject_token_type: IdTokenType,
+      requested_token_type: isOnline ? OnlineTokenType : OfflineTokenType,
+    };
+
+    const postParams = {
+      path: '/admin/oauth/access_token',
+      type: DataType.JSON,
+      data: body,
+    };
+    const cleanShop = sanitizeShop(config)(shop, true)!;
+
+    const HttpClient = httpClientClass(config);
+    const client = new HttpClient({domain: cleanShop});
+    const postResponse = await client.post(postParams);
+
+    const session: Session = createSession({
+      postResponse,
+      shop: cleanShop,
+      stateFromCookie: "",
+      config,
+    });
+
+    return {
+      session,
+    };
+  };
+}
 
 export function begin(config: ConfigInterface) {
   return async ({
