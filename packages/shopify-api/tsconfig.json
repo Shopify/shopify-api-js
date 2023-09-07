@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "outDir": "./dist",
     "types": ["@cloudflare/workers-types", "node", "jest"],
     "baseUrl": ".",
     "rootDir": ".",
