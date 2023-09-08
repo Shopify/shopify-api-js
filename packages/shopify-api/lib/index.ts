@@ -14,6 +14,7 @@ import {shopifyBilling, ShopifyBilling} from './billing';
 import {logger, ShopifyLogger} from './logger';
 import {SHOPIFY_API_LIBRARY_VERSION} from './version';
 import {restClientClass} from './clients/admin/rest/client';
+import {ShopifyFlow, shopifyFlow} from './flow';
 
 export * from './error';
 export * from './session/classes';
@@ -41,6 +42,7 @@ export interface Shopify<
   billing: ShopifyBilling;
   logger: ShopifyLogger;
   rest: Resources;
+  flow: ShopifyFlow;
 }
 
 export function shopifyApi<
@@ -69,6 +71,7 @@ export function shopifyApi<
     billing: shopifyBilling(validatedConfig),
     logger: logger(validatedConfig),
     rest: {} as Resources,
+    flow: shopifyFlow(validatedConfig),
   };
 
   if (restResources) {
