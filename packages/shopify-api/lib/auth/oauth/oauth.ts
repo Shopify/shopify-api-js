@@ -101,6 +101,8 @@ export function tokenExchange(config: ConfigInterface) {
         Accept: 'application/json',
       },
     };
+
+    log.info(`Token exchange params: , ${JSON.stringify(postParams)}`)
     const cleanShop = sanitizeShop(config)(shop, true)!;
 
     const HttpClient = httpClientClass(config);

@@ -3,6 +3,7 @@ import {SESSION_COOKIE_NAME} from '../auth/oauth/types';
 import {
   abstractConvertRequest,
   Cookies,
+  NormalizedRequest,
   NormalizedResponse,
 } from '../../runtime/http';
 import {sanitizeShop} from '../utils/shop-validator';
@@ -39,20 +40,14 @@ export function getCurrentSessionId(config: ConfigInterface) {
         isOnline,
       });
 
-      const authHeader = request.headers.Authorization;
-      if (authHeader) {
-        const matches = (
-          typeof authHeader === 'string' ? authHeader : authHeader[0]
-        ).match(/^Bearer (.+)$/);
-        if (!matches) {
-          log.error('Missing Bearer token in authorization header', {isOnline});
+      const sessionTokenString = getSessionTokenString(
+        request,
+        config,
+        isOnline,
+      );
 
-          throw new ShopifyErrors.MissingJwtTokenError(
-            'Missing Bearer token in authorization header',
-          );
-        }
-
-        const jwtPayload = await decodeSessionToken(config)(matches[1]);
+      if (sessionTokenString) {
+        const jwtPayload = await decodeSessionToken(config)(sessionTokenString);
         const shop = jwtPayload.dest.replace(/^https:\/\//, '');
 
         log.debug('Found valid JWT payload', {shop, isOnline});
@@ -92,4 +87,34 @@ export function customAppSession(config: ConfigInterface) {
       isOnline: false,
     });
   };
+}
+
+function getSessionTokenString(
+  request: NormalizedRequest,
+  config: ConfigInterface,
+  isOnline: boolean,
+) {
+  const log = logger(config);
+  const url = new URL(request.url);
+  const authHeader = request.headers.Authorization;
+  const authParam = url.searchParams.get('id_token')!;
+
+  if (authHeader) {
+    const matches = (
+      typeof authHeader === 'string' ? authHeader : authHeader[0]
+    ).match(/^Bearer (.+)$/);
+    if (!matches) {
+      log.error('Missing Bearer token in authorization header', {
+        isOnline,
+      });
+
+      throw new ShopifyErrors.MissingJwtTokenError(
+        'Missing Bearer token in authorization header',
+      );
+    }
+
+    return matches[1];
+  } else {
+    return authParam;
+  }
 }
