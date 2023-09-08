@@ -97,6 +97,9 @@ export function tokenExchange(config: ConfigInterface) {
       path: '/admin/oauth/access_token',
       type: DataType.JSON,
       data: body,
+      extraHeaders: {
+        Accept: 'application/json',
+      },
     };
     const cleanShop = sanitizeShop(config)(shop, true)!;
 
