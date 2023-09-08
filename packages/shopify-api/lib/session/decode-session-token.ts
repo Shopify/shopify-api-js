@@ -6,7 +6,7 @@ import {getHMACKey} from '../utils/get-hmac-key';
 
 import {JwtPayload} from './types';
 
-const JWT_PERMITTED_CLOCK_TOLERANCE = 1;
+const JWT_PERMITTED_CLOCK_TOLERANCE = 10;
 
 export interface DecodeSessionTokenOptions {
   checkAudience?: boolean;

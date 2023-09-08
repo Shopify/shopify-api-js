@@ -110,7 +110,7 @@ export function tokenExchange(config: ConfigInterface) {
     const session: Session = createSession({
       postResponse,
       shop: cleanShop,
-      stateFromCookie: "",
+      stateFromCookie: '',
       config,
     });
 
