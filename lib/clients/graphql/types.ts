@@ -9,7 +9,7 @@ export interface GraphqlClientParams {
   apiVersion?: ApiVersion;
 }
 
-export interface StorefrontClientParams {
+export interface DeprecatedStorefrontClientParams {
   domain: string;
   storefrontAccessToken: string;
   apiVersion?: ApiVersion;

@@ -95,13 +95,24 @@ export class GraphqlClient {
   }
 
   protected getApiHeaders(): HeaderParams {
-    const customStoreAppAccessToken =
-      this.graphqlClass().config.adminApiAccessToken ??
-      this.graphqlClass().config.apiSecretKey;
+    const {config} = this.graphqlClass();
+
+    let accessToken: string | undefined;
+    if (config.isCustomStoreApp) {
+      // Deprecated: starting in v8, we should only get the token from adminApiAccessToken
+      accessToken = config.adminApiAccessToken ?? config.apiSecretKey;
+    } else {
+      accessToken = this.session.accessToken;
+
+      if (!accessToken) {
+        throw new ShopifyErrors.MissingRequiredArgument(
+          'Session missing access token.',
+        );
+      }
+    }
+
     return {
-      [ShopifyHeader.AccessToken]: this.graphqlClass().config.isCustomStoreApp
-        ? customStoreAppAccessToken
-        : (this.session.accessToken as string),
+      [ShopifyHeader.AccessToken]: accessToken,
     };
   }
 
