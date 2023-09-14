@@ -136,11 +136,7 @@ Which URL to redirect the merchant to after the charge is confirmed.
 
 Whether to return the `confirmationUrl` as a `string`, or to return a more detailed object (see below).
 
-### trialDays
-
-`number`
-
-Override value for the `trialDays` config option. Only applies to recurring purchases.
+> **Note**: You can override any billing configuration fields at request time by passing them into your `billing.request` call.
 
 ## Return
 

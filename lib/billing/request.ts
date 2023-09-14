@@ -18,6 +18,7 @@ import {
   RecurringPaymentResponse,
   RequestResponseData,
   SinglePaymentResponse,
+  BillingConfigItem,
 } from './types';
 
 interface RequestInternalParams {
@@ -29,7 +30,6 @@ interface RequestInternalParams {
 
 interface RequestSubscriptionInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigSubscriptionPlan;
-  trialDays?: number;
 }
 
 interface RequestOneTimePaymentInternalParams extends RequestInternalParams {
@@ -38,7 +38,6 @@ interface RequestOneTimePaymentInternalParams extends RequestInternalParams {
 
 interface RequestUsageSubscriptionInternalParams extends RequestInternalParams {
   billingConfig: BillingConfigUsagePlan;
-  trialDays?: number;
 }
 
 export function request(config: ConfigInterface) {
@@ -48,7 +47,7 @@ export function request(config: ConfigInterface) {
     isTest = true,
     returnUrl: returnUrlParam,
     returnObject = false,
-    trialDays = undefined,
+    ...overrides
   }: Params): Promise<BillingRequestResponse<Params>> {
     if (!config.billing || !config.billing[plan]) {
       throw new BillingError({
@@ -57,7 +56,10 @@ export function request(config: ConfigInterface) {
       });
     }
 
-    const billingConfig = config.billing[plan];
+    const billingConfig: BillingConfigItem = {...config.billing[plan]};
+    const filteredOverrides = Object.fromEntries(
+      Object.entries(overrides).filter(([_key, value]) => value !== undefined),
+    );
 
     const cleanShopName = session.shop.replace('.myshopify.com', '');
     const embeddedAppUrl = buildEmbeddedAppUrl(config)(
@@ -77,7 +79,7 @@ export function request(config: ConfigInterface) {
     switch (billingConfig.interval) {
       case BillingInterval.OneTime: {
         const mutationOneTimeResponse = await requestSinglePayment({
-          billingConfig: billingConfig as BillingConfigOneTimePlan,
+          billingConfig: {...billingConfig, ...filteredOverrides},
           plan,
           client,
           returnUrl,
@@ -88,24 +90,22 @@ export function request(config: ConfigInterface) {
       }
       case BillingInterval.Usage: {
         const mutationUsageResponse = await requestUsagePayment({
-          billingConfig: billingConfig as BillingConfigUsagePlan,
+          billingConfig: {...billingConfig, ...filteredOverrides},
           plan,
           client,
           returnUrl,
           isTest,
-          trialDays,
         });
         data = mutationUsageResponse.data.appSubscriptionCreate;
         break;
       }
       default: {
         const mutationRecurringResponse = await requestRecurringPayment({
-          billingConfig: billingConfig as BillingConfigSubscriptionPlan,
+          billingConfig: {...billingConfig, ...filteredOverrides},
           plan,
           client,
           returnUrl,
           isTest,
-          trialDays,
         });
         data = mutationRecurringResponse.data.appSubscriptionCreate;
       }
@@ -134,16 +134,13 @@ async function requestRecurringPayment({
   client,
   returnUrl,
   isTest,
-  trialDays,
 }: RequestSubscriptionInternalParams): Promise<RecurringPaymentResponse> {
-  const trialDaysValue =
-    trialDays === undefined ? billingConfig.trialDays : trialDays;
   const mutationResponse = await client.query<RecurringPaymentResponse>({
     data: {
       query: RECURRING_PURCHASE_MUTATION,
       variables: {
         name: plan,
-        trialDays: trialDaysValue,
+        trialDays: billingConfig.trialDays,
         replacementBehavior: billingConfig.replacementBehavior,
         returnUrl,
         test: isTest,
@@ -188,10 +185,7 @@ async function requestUsagePayment({
   client,
   returnUrl,
   isTest,
-  trialDays,
 }: RequestUsageSubscriptionInternalParams): Promise<RecurringPaymentResponse> {
-  const trialDaysValue =
-    trialDays === undefined ? billingConfig.trialDays : trialDays;
   const mutationResponse = await client.query<RecurringPaymentResponse>({
     data: {
       query: RECURRING_PURCHASE_MUTATION,
@@ -199,7 +193,7 @@ async function requestUsagePayment({
         name: plan,
         returnUrl,
         test: isTest,
-        trialDays: trialDaysValue,
+        trialDays: billingConfig.trialDays,
         replacementBehavior: billingConfig.replacementBehavior,
         lineItems: [
           {

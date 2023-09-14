@@ -169,6 +169,7 @@ const SUBSCRIPTION_TEST_CONFIGS: TestConfigInterface[] = [
         interval: BillingInterval.Usage,
         replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
         trialDays: 10,
+        usageTerms: '1 dollar per click',
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
@@ -408,71 +409,133 @@ describe('shopify.billing.request', () => {
     });
   });
 
-  it('applies trialDays override when set', async () => {
-    shopify = shopifyApi({
-      ...testConfig,
-      billing: {
-        [Responses.PLAN_1]: {
-          amount: 5,
-          currencyCode: 'USD',
-          interval: BillingInterval.Every30Days,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-          trialDays: 10,
+  describe('billing config overrides', () => {
+    it.each([
+      {field: 'trialDays', value: 20, expected: '"trialDays":20'},
+      {field: 'amount', value: 10, expected: '"amount":10'},
+      {field: 'currencyCode', value: 'CAD', expected: '"currencyCode":"CAD"'},
+      {
+        field: 'replacementBehavior',
+        value: BillingReplacementBehavior.ApplyImmediately,
+        expected: '"replacementBehavior":"APPLY_IMMEDIATELY"',
+      },
+      {
+        field: 'usageTerms',
+        value: 'Different usage terms',
+        expected: '"terms":"Different usage terms"',
+      },
+      {
+        field: 'discount',
+        value: {durationLimitInIntervals: 10, value: {amount: 2}},
+        expected:
+          '"discount":{"durationLimitInIntervals":10,"value":{"amount":2}}',
+      },
+    ])('applies $field override when set', async ({field, value, expected}) => {
+      shopify = shopifyApi({
+        ...testConfig,
+        billing: {
+          [Responses.PLAN_1]: {
+            interval: BillingInterval.Every30Days,
+            amount: 5,
+            currencyCode: 'USD',
+            replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+            discount: {durationLimitInIntervals: 5, value: {amount: 2}},
+            trialDays: 10,
+            [field]: value,
+          },
+          [Responses.PLAN_2]: {
+            interval: BillingInterval.Usage,
+            amount: 5,
+            currencyCode: 'USD',
+            replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+            usageTerms: 'Usage terms',
+            trialDays: 10,
+            [field]: value,
+          },
         },
-      },
+      });
+
+      queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+      await shopify.billing.request({
+        session,
+        plan: field === 'usageTerms' ? Responses.PLAN_2 : Responses.PLAN_1,
+        returnObject: true,
+        [field]: value,
+      });
+
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: expect.stringContaining(expected),
+      }).toMatchMadeHttpRequest();
     });
 
-    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
-
-    await shopify.billing.request({
-      session,
-      plan: Responses.PLAN_1,
-      returnObject: true,
-      trialDays: 20,
-    });
-
-    expect({
-      ...GRAPHQL_BASE_REQUEST,
-      data: {
-        query: expect.stringContaining('appSubscriptionCreate'),
-        variables: expect.objectContaining({
-          trialDays: 20,
-        }),
-      },
-    }).toMatchMadeHttpRequest();
-  });
-
-  it('applies a trialDays override of 0', async () => {
-    shopify = shopifyApi({
-      ...testConfig,
-      billing: {
-        [Responses.PLAN_1]: {
-          amount: 5,
-          currencyCode: 'USD',
-          interval: BillingInterval.Every30Days,
-          replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-          trialDays: 10,
+    it('applies a trialDays override of 0', async () => {
+      shopify = shopifyApi({
+        ...testConfig,
+        billing: {
+          [Responses.PLAN_1]: {
+            amount: 5,
+            currencyCode: 'USD',
+            interval: BillingInterval.Every30Days,
+            replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+            trialDays: 10,
+          },
         },
-      },
+      });
+
+      queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+      await shopify.billing.request({
+        session,
+        plan: Responses.PLAN_1,
+        returnObject: true,
+        trialDays: 0,
+      });
+
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: {
+          query: expect.stringContaining('appSubscriptionCreate'),
+          variables: expect.objectContaining({
+            trialDays: 0,
+          }),
+        },
+      }).toMatchMadeHttpRequest();
     });
 
-    queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+    it("ignores overrides if they're undefined", async () => {
+      shopify = shopifyApi({
+        ...testConfig,
+        billing: {
+          [Responses.PLAN_1]: {
+            amount: 5,
+            currencyCode: 'USD',
+            interval: BillingInterval.Every30Days,
+            replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+            trialDays: 10,
+          },
+        },
+      });
 
-    await shopify.billing.request({
-      session,
-      plan: Responses.PLAN_1,
-      returnObject: true,
-      trialDays: 0,
+      queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
+
+      await shopify.billing.request({
+        session,
+        plan: Responses.PLAN_1,
+        returnObject: true,
+        trialDays: undefined,
+      });
+
+      expect({
+        ...GRAPHQL_BASE_REQUEST,
+        data: {
+          query: expect.stringContaining('appSubscriptionCreate'),
+          variables: expect.objectContaining({
+            trialDays: 10,
+          }),
+        },
+      }).toMatchMadeHttpRequest();
     });
-
-    expect({
-      ...GRAPHQL_BASE_REQUEST,
-      data: {
-        query: expect.stringContaining('appSubscriptionCreate'),
-        variables: expect.objectContaining({
-          trialDays: 0,
-        }),
-      },
-    }).toMatchMadeHttpRequest();
   });
 });
