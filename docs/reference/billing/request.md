@@ -136,7 +136,22 @@ Which URL to redirect the merchant to after the charge is confirmed.
 
 Whether to return the `confirmationUrl` as a `string`, or to return a more detailed object (see below).
 
-> **Note**: You can override any billing configuration fields at request time by passing them into your `billing.request` call.
+### Plan Overrides
+
+You can override any billing configuration fields at request time by passing them into your `billing.request` call.
+
+```ts
+const billingResponse = await shopify.billing.request({
+  session: callback.session,
+  plan: 'My billing plan',
+  returnObject: true,
+  isTest: true,
+  trialDays: 4, // Overrides the trial days set in 'My billing plan'
+  amount: 13, // Overrides the amount set in 'My billing plan'
+});
+
+res.redirect(billingResponse.confirmationUrl);
+```
 
 ## Return
 
