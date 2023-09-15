@@ -15,7 +15,7 @@ export interface BillingConfigOneTimePlan extends BillingConfigPlan {
 }
 
 export interface BillingConfigSubscriptionPlan extends BillingConfigPlan {
-  interval: RecurringBillingIntervals;
+  interval: Exclude<RecurringBillingIntervals, BillingInterval.Usage>;
   trialDays?: number;
   replacementBehavior?: BillingReplacementBehavior;
   discount?: BillingConfigSubscriptionPlanDiscount;
@@ -45,12 +45,19 @@ export interface BillingConfigUsagePlan extends BillingConfigPlan {
   replacementBehavior?: BillingReplacementBehavior;
 }
 
+export type BillingConfigItem =
+  | BillingConfigOneTimePlan
+  | BillingConfigSubscriptionPlan
+  | BillingConfigUsagePlan;
+
 export interface BillingConfig {
-  [plan: string]:
-    | BillingConfigOneTimePlan
-    | BillingConfigSubscriptionPlan
-    | BillingConfigUsagePlan;
+  [plan: string]: BillingConfigItem;
 }
+
+export type RequestConfigOverrides =
+  | Partial<BillingConfigOneTimePlan>
+  | Partial<BillingConfigSubscriptionPlan>
+  | Partial<BillingConfigUsagePlan>;
 
 export interface BillingCheckParams {
   session: Session;
@@ -68,14 +75,13 @@ export interface BillingCheckResponseObject {
 export type BillingCheckResponse<Params extends BillingCheckParams> =
   Params['returnObject'] extends true ? BillingCheckResponseObject : boolean;
 
-export interface BillingRequestParams {
+export type BillingRequestParams = {
   session: Session;
   plan: string;
   isTest?: boolean;
   returnUrl?: string;
   returnObject?: boolean;
-  trialDays?: number;
-}
+} & RequestConfigOverrides;
 
 export interface BillingRequestResponseObject {
   confirmationUrl: string;
