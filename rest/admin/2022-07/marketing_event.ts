@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -42,77 +42,101 @@ interface EngagementsArgs {
 export class MarketingEvent extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'marketing_event';
-  protected static pluralName = 'marketing_events';
+  protected static resourceNames: string[] = ['marketing_event'];
+  protected static pluralNames: string[] = ['marketing_events'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "marketing_events/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "marketing_events/count.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "marketing_events.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "marketing_events/<id>.json"},
-    {"http_method": "post", "operation": "engagements", "ids": ["id"], "path": "marketing_events/<id>/engagements.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "marketing_events.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "marketing_events/<id>.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: ['id'],
+      path: 'marketing_events/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: [],
+      path: 'marketing_events/count.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: [],
+      path: 'marketing_events.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'marketing_events/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'engagements',
+      ids: ['id'],
+      path: 'marketing_events/<id>/engagements.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: [],
+      path: 'marketing_events.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['id'],
+      path: 'marketing_events/<id>.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id
-    }: FindArgs
-  ): Promise<MarketingEvent | null> {
+  public static async find({
+    session,
+    id,
+  }: FindArgs): Promise<MarketingEvent | null> {
     const result = await this.baseFind<MarketingEvent>({
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete(
-    {
-      session,
-      id
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
     const response = await this.request<MarketingEvent>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      limit = null,
-      offset = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<MarketingEvent>> {
+  public static async all({
+    session,
+    limit = null,
+    offset = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<MarketingEvent>> {
     const response = await this.baseFind<MarketingEvent>({
       session: session,
       urlIds: {},
-      params: {"limit": limit, "offset": offset, ...otherArgs},
+      params: {limit: limit, offset: offset, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<MarketingEvent>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
       urlIds: {},
       params: {...otherArgs},
@@ -123,27 +147,36 @@ export class MarketingEvent extends Base {
     return response ? response.body : null;
   }
 
-  public async engagements(
-    {
-      occurred_on = null,
-      impressions_count = null,
-      views_count = null,
-      clicks_count = null,
-      shares_count = null,
-      favorites_count = null,
-      comments_count = null,
-      ad_spend = null,
-      is_cumulative = null,
-      body = null,
-      ...otherArgs
-    }: EngagementsArgs
-  ): Promise<unknown> {
+  public async engagements({
+    occurred_on = null,
+    impressions_count = null,
+    views_count = null,
+    clicks_count = null,
+    shares_count = null,
+    favorites_count = null,
+    comments_count = null,
+    ad_spend = null,
+    is_cumulative = null,
+    body = null,
+    ...otherArgs
+  }: EngagementsArgs): Promise<unknown> {
     const response = await this.request<MarketingEvent>({
-      http_method: "post",
-      operation: "engagements",
+      http_method: 'post',
+      operation: 'engagements',
       session: this.session,
-      urlIds: {"id": this.id},
-      params: {"occurred_on": occurred_on, "impressions_count": impressions_count, "views_count": views_count, "clicks_count": clicks_count, "shares_count": shares_count, "favorites_count": favorites_count, "comments_count": comments_count, "ad_spend": ad_spend, "is_cumulative": is_cumulative, ...otherArgs},
+      urlIds: {id: this.id},
+      params: {
+        occurred_on: occurred_on,
+        impressions_count: impressions_count,
+        views_count: views_count,
+        clicks_count: clicks_count,
+        shares_count: shares_count,
+        favorites_count: favorites_count,
+        comments_count: comments_count,
+        ad_spend: ad_spend,
+        is_cumulative: is_cumulative,
+        ...otherArgs,
+      },
       body: body,
       entity: this,
     });

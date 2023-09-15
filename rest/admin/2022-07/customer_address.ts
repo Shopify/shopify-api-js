@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -36,85 +36,111 @@ interface SetArgs {
 export class CustomerAddress extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'customer_address';
-  protected static pluralName = 'customer_addresses';
+  protected static resourceNames: string[] = ['customer_address', 'address'];
+  protected static pluralNames: string[] = ['customer_addresses', 'addresses'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
-    {"http_method": "get", "operation": "get", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses.json"},
-    {"http_method": "put", "operation": "default", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>/default.json"},
-    {"http_method": "put", "operation": "put", "ids": ["customer_id", "id"], "path": "customers/<customer_id>/addresses/<id>.json"},
-    {"http_method": "put", "operation": "set", "ids": ["customer_id"], "path": "customers/<customer_id>/addresses/set.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: ['customer_id', 'id'],
+      path: 'customers/<customer_id>/addresses/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['customer_id'],
+      path: 'customers/<customer_id>/addresses.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['customer_id', 'id'],
+      path: 'customers/<customer_id>/addresses/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: ['customer_id'],
+      path: 'customers/<customer_id>/addresses.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'default',
+      ids: ['customer_id', 'id'],
+      path: 'customers/<customer_id>/addresses/<id>/default.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['customer_id', 'id'],
+      path: 'customers/<customer_id>/addresses/<id>.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'set',
+      ids: ['customer_id'],
+      path: 'customers/<customer_id>/addresses/set.json',
+    },
   ];
 
-  protected static getJsonBodyName(): string
-  {
-    return "address";
+  protected static getJsonBodyName(): string {
+    return 'address';
   }
 
-  public static async find(
-    {
-      session,
-      id,
-      customer_id = null
-    }: FindArgs
-  ): Promise<CustomerAddress | null> {
+  public static async find({
+    session,
+    id,
+    customer_id = null,
+  }: FindArgs): Promise<CustomerAddress | null> {
     const result = await this.baseFind<CustomerAddress>({
       session: session,
-      urlIds: {"id": id, "customer_id": customer_id},
+      urlIds: {id: id, customer_id: customer_id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete(
-    {
-      session,
-      id,
-      customer_id = null
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({
+    session,
+    id,
+    customer_id = null,
+  }: DeleteArgs): Promise<unknown> {
     const response = await this.request<CustomerAddress>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
-      urlIds: {"id": id, "customer_id": customer_id},
+      urlIds: {id: id, customer_id: customer_id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      customer_id = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<CustomerAddress>> {
+  public static async all({
+    session,
+    customer_id = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<CustomerAddress>> {
     const response = await this.baseFind<CustomerAddress>({
       session: session,
-      urlIds: {"customer_id": customer_id},
+      urlIds: {customer_id: customer_id},
       params: {...otherArgs},
     });
 
     return response;
   }
 
-  public async default(
-    {
-      body = null,
-      ...otherArgs
-    }: DefaultArgs
-  ): Promise<unknown> {
+  public async default({
+    body = null,
+    ...otherArgs
+  }: DefaultArgs): Promise<unknown> {
     const response = await this.request<CustomerAddress>({
-      http_method: "put",
-      operation: "default",
+      http_method: 'put',
+      operation: 'default',
       session: this.session,
-      urlIds: {"id": this.id, "customer_id": this.customer_id},
+      urlIds: {id: this.id, customer_id: this.customer_id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -123,20 +149,18 @@ export class CustomerAddress extends Base {
     return response ? response.body : null;
   }
 
-  public async set(
-    {
-      address_ids = null,
-      operation = null,
-      body = null,
-      ...otherArgs
-    }: SetArgs
-  ): Promise<unknown> {
+  public async set({
+    address_ids = null,
+    operation = null,
+    body = null,
+    ...otherArgs
+  }: SetArgs): Promise<unknown> {
     const response = await this.request<CustomerAddress>({
-      http_method: "put",
-      operation: "set",
+      http_method: 'put',
+      operation: 'set',
       session: this.session,
-      urlIds: {"customer_id": this.customer_id},
-      params: {"address_ids": address_ids, "operation": operation, ...otherArgs},
+      urlIds: {customer_id: this.customer_id},
+      params: {address_ids: address_ids, operation: operation, ...otherArgs},
       body: body,
       entity: this,
     });

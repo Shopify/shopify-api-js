@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -46,70 +46,100 @@ interface SetArgs {
 export class InventoryLevel extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'inventory_level';
-  protected static pluralName = 'inventory_levels';
+  protected static resourceNames: string[] = ['inventory_level'];
+  protected static pluralNames: string[] = ['inventory_levels'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": [], "path": "inventory_levels.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_levels.json"},
-    {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
-    {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
-    {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: [],
+      path: 'inventory_levels.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: [],
+      path: 'inventory_levels.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'adjust',
+      ids: [],
+      path: 'inventory_levels/adjust.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'connect',
+      ids: [],
+      path: 'inventory_levels/connect.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'set',
+      ids: [],
+      path: 'inventory_levels/set.json',
+    },
   ];
 
-  public static async delete(
-    {
-      session,
-      inventory_item_id = null,
-      location_id = null
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({
+    session,
+    inventory_item_id = null,
+    location_id = null,
+  }: DeleteArgs): Promise<unknown> {
     const response = await this.request<InventoryLevel>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
       urlIds: {},
-      params: {"inventory_item_id": inventory_item_id, "location_id": location_id},
+      params: {inventory_item_id: inventory_item_id, location_id: location_id},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      inventory_item_ids = null,
-      location_ids = null,
-      limit = null,
-      updated_at_min = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<InventoryLevel>> {
+  public static async all({
+    session,
+    inventory_item_ids = null,
+    location_ids = null,
+    limit = null,
+    updated_at_min = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<InventoryLevel>> {
     const response = await this.baseFind<InventoryLevel>({
       session: session,
       urlIds: {},
-      params: {"inventory_item_ids": inventory_item_ids, "location_ids": location_ids, "limit": limit, "updated_at_min": updated_at_min, ...otherArgs},
+      params: {
+        inventory_item_ids: inventory_item_ids,
+        location_ids: location_ids,
+        limit: limit,
+        updated_at_min: updated_at_min,
+        ...otherArgs,
+      },
     });
 
     return response;
   }
 
-  public async adjust(
-    {
-      inventory_item_id = null,
-      location_id = null,
-      available_adjustment = null,
-      body = null,
-      ...otherArgs
-    }: AdjustArgs
-  ): Promise<unknown> {
+  public async adjust({
+    inventory_item_id = null,
+    location_id = null,
+    available_adjustment = null,
+    body = null,
+    ...otherArgs
+  }: AdjustArgs): Promise<unknown> {
     const response = await this.request<InventoryLevel>({
-      http_method: "post",
-      operation: "adjust",
+      http_method: 'post',
+      operation: 'adjust',
       session: this.session,
       urlIds: {},
-      params: {"inventory_item_id": inventory_item_id, "location_id": location_id, "available_adjustment": available_adjustment, ...otherArgs},
+      params: {
+        inventory_item_id: inventory_item_id,
+        location_id: location_id,
+        available_adjustment: available_adjustment,
+        ...otherArgs,
+      },
       body: body,
       entity: this,
     });
@@ -117,21 +147,24 @@ export class InventoryLevel extends Base {
     return response ? response.body : null;
   }
 
-  public async connect(
-    {
-      inventory_item_id = null,
-      location_id = null,
-      relocate_if_necessary = null,
-      body = null,
-      ...otherArgs
-    }: ConnectArgs
-  ): Promise<unknown> {
+  public async connect({
+    inventory_item_id = null,
+    location_id = null,
+    relocate_if_necessary = null,
+    body = null,
+    ...otherArgs
+  }: ConnectArgs): Promise<unknown> {
     const response = await this.request<InventoryLevel>({
-      http_method: "post",
-      operation: "connect",
+      http_method: 'post',
+      operation: 'connect',
       session: this.session,
       urlIds: {},
-      params: {"inventory_item_id": inventory_item_id, "location_id": location_id, "relocate_if_necessary": relocate_if_necessary, ...otherArgs},
+      params: {
+        inventory_item_id: inventory_item_id,
+        location_id: location_id,
+        relocate_if_necessary: relocate_if_necessary,
+        ...otherArgs,
+      },
       body: body,
       entity: this,
     });
@@ -139,22 +172,26 @@ export class InventoryLevel extends Base {
     return response ? response.body : null;
   }
 
-  public async set(
-    {
-      inventory_item_id = null,
-      location_id = null,
-      available = null,
-      disconnect_if_necessary = null,
-      body = null,
-      ...otherArgs
-    }: SetArgs
-  ): Promise<unknown> {
+  public async set({
+    inventory_item_id = null,
+    location_id = null,
+    available = null,
+    disconnect_if_necessary = null,
+    body = null,
+    ...otherArgs
+  }: SetArgs): Promise<unknown> {
     const response = await this.request<InventoryLevel>({
-      http_method: "post",
-      operation: "set",
+      http_method: 'post',
+      operation: 'set',
       session: this.session,
       urlIds: {},
-      params: {"inventory_item_id": inventory_item_id, "location_id": location_id, "available": available, "disconnect_if_necessary": disconnect_if_necessary, ...otherArgs},
+      params: {
+        inventory_item_id: inventory_item_id,
+        location_id: location_id,
+        available: available,
+        disconnect_if_necessary: disconnect_if_necessary,
+        ...otherArgs,
+      },
       body: body,
       entity: this,
     });

@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -28,37 +28,45 @@ interface InventoryLevelsArgs {
 export class Location extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'location';
-  protected static pluralName = 'locations';
+  protected static resourceNames: string[] = ['location'];
+  protected static pluralNames: string[] = ['locations'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "count", "ids": [], "path": "locations/count.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "locations.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "locations/<id>.json"},
-    {"http_method": "get", "operation": "inventory_levels", "ids": ["id"], "path": "locations/<id>/inventory_levels.json"}
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: [],
+      path: 'locations/count.json',
+    },
+    {http_method: 'get', operation: 'get', ids: [], path: 'locations.json'},
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'locations/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'inventory_levels',
+      ids: ['id'],
+      path: 'locations/<id>/inventory_levels.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id
-    }: FindArgs
-  ): Promise<Location | null> {
+  public static async find({session, id}: FindArgs): Promise<Location | null> {
     const result = await this.baseFind<Location>({
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all(
-    {
-      session,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Location>> {
+  public static async all({
+    session,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Location>> {
     const response = await this.baseFind<Location>({
       session: session,
       urlIds: {},
@@ -68,15 +76,13 @@ export class Location extends Base {
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Location>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
       urlIds: {},
       params: {...otherArgs},
@@ -87,18 +93,16 @@ export class Location extends Base {
     return response ? response.body : null;
   }
 
-  public static async inventory_levels(
-    {
-      session,
-      id,
-      ...otherArgs
-    }: InventoryLevelsArgs
-  ): Promise<unknown> {
+  public static async inventory_levels({
+    session,
+    id,
+    ...otherArgs
+  }: InventoryLevelsArgs): Promise<unknown> {
     const response = await this.request<Location>({
-      http_method: "get",
-      operation: "inventory_levels",
+      http_method: 'get',
+      operation: 'inventory_levels',
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {...otherArgs},
       body: {},
       entity: null,

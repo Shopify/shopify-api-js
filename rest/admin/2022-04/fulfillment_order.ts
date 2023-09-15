@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -51,63 +51,102 @@ interface RescheduleArgs {
 export class FulfillmentOrder extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'fulfillment_order';
-  protected static pluralName = 'fulfillment_orders';
+  protected static resourceNames: string[] = ['fulfillment_order'];
+  protected static pluralNames: string[] = ['fulfillment_orders'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_orders/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillment_orders.json"},
-    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillment_orders/<id>/cancel.json"},
-    {"http_method": "post", "operation": "close", "ids": ["id"], "path": "fulfillment_orders/<id>/close.json"},
-    {"http_method": "post", "operation": "hold", "ids": ["id"], "path": "fulfillment_orders/<id>/hold.json"},
-    {"http_method": "post", "operation": "move", "ids": ["id"], "path": "fulfillment_orders/<id>/move.json"},
-    {"http_method": "post", "operation": "open", "ids": ["id"], "path": "fulfillment_orders/<id>/open.json"},
-    {"http_method": "post", "operation": "release_hold", "ids": ["id"], "path": "fulfillment_orders/<id>/release_hold.json"},
-    {"http_method": "post", "operation": "reschedule", "ids": ["id"], "path": "fulfillment_orders/<id>/reschedule.json"}
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'fulfillment_orders/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['order_id'],
+      path: 'orders/<order_id>/fulfillment_orders.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'cancel',
+      ids: ['id'],
+      path: 'fulfillment_orders/<id>/cancel.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'close',
+      ids: ['id'],
+      path: 'fulfillment_orders/<id>/close.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'hold',
+      ids: ['id'],
+      path: 'fulfillment_orders/<id>/hold.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'move',
+      ids: ['id'],
+      path: 'fulfillment_orders/<id>/move.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'open',
+      ids: ['id'],
+      path: 'fulfillment_orders/<id>/open.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'release_hold',
+      ids: ['id'],
+      path: 'fulfillment_orders/<id>/release_hold.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'reschedule',
+      ids: ['id'],
+      path: 'fulfillment_orders/<id>/reschedule.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id
-    }: FindArgs
-  ): Promise<FulfillmentOrder | null> {
+  public static async find({
+    session,
+    id,
+  }: FindArgs): Promise<FulfillmentOrder | null> {
     const result = await this.baseFind<FulfillmentOrder>({
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all(
-    {
-      session,
-      order_id = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<FulfillmentOrder>> {
+  public static async all({
+    session,
+    order_id = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<FulfillmentOrder>> {
     const response = await this.baseFind<FulfillmentOrder>({
       session: session,
-      urlIds: {"order_id": order_id},
+      urlIds: {order_id: order_id},
       params: {...otherArgs},
     });
 
     return response;
   }
 
-  public async cancel(
-    {
-      body = null,
-      ...otherArgs
-    }: CancelArgs
-  ): Promise<unknown> {
+  public async cancel({
+    body = null,
+    ...otherArgs
+  }: CancelArgs): Promise<unknown> {
     const response = await this.request<FulfillmentOrder>({
-      http_method: "post",
-      operation: "cancel",
+      http_method: 'post',
+      operation: 'cancel',
       session: this.session,
-      urlIds: {"id": this.id},
+      urlIds: {id: this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -116,19 +155,17 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async close(
-    {
-      message = null,
-      body = null,
-      ...otherArgs
-    }: CloseArgs
-  ): Promise<unknown> {
+  public async close({
+    message = null,
+    body = null,
+    ...otherArgs
+  }: CloseArgs): Promise<unknown> {
     const response = await this.request<FulfillmentOrder>({
-      http_method: "post",
-      operation: "close",
+      http_method: 'post',
+      operation: 'close',
       session: this.session,
-      urlIds: {"id": this.id},
-      params: {"message": message, ...otherArgs},
+      urlIds: {id: this.id},
+      params: {message: message, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -136,19 +173,17 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async hold(
-    {
-      fulfillment_hold = null,
-      body = null,
-      ...otherArgs
-    }: HoldArgs
-  ): Promise<unknown> {
+  public async hold({
+    fulfillment_hold = null,
+    body = null,
+    ...otherArgs
+  }: HoldArgs): Promise<unknown> {
     const response = await this.request<FulfillmentOrder>({
-      http_method: "post",
-      operation: "hold",
+      http_method: 'post',
+      operation: 'hold',
       session: this.session,
-      urlIds: {"id": this.id},
-      params: {"fulfillment_hold": fulfillment_hold, ...otherArgs},
+      urlIds: {id: this.id},
+      params: {fulfillment_hold: fulfillment_hold, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -156,19 +191,17 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async move(
-    {
-      fulfillment_order = null,
-      body = null,
-      ...otherArgs
-    }: MoveArgs
-  ): Promise<unknown> {
+  public async move({
+    fulfillment_order = null,
+    body = null,
+    ...otherArgs
+  }: MoveArgs): Promise<unknown> {
     const response = await this.request<FulfillmentOrder>({
-      http_method: "post",
-      operation: "move",
+      http_method: 'post',
+      operation: 'move',
       session: this.session,
-      urlIds: {"id": this.id},
-      params: {"fulfillment_order": fulfillment_order, ...otherArgs},
+      urlIds: {id: this.id},
+      params: {fulfillment_order: fulfillment_order, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -176,17 +209,12 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async open(
-    {
-      body = null,
-      ...otherArgs
-    }: OpenArgs
-  ): Promise<unknown> {
+  public async open({body = null, ...otherArgs}: OpenArgs): Promise<unknown> {
     const response = await this.request<FulfillmentOrder>({
-      http_method: "post",
-      operation: "open",
+      http_method: 'post',
+      operation: 'open',
       session: this.session,
-      urlIds: {"id": this.id},
+      urlIds: {id: this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -195,17 +223,15 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async release_hold(
-    {
-      body = null,
-      ...otherArgs
-    }: ReleaseHoldArgs
-  ): Promise<unknown> {
+  public async release_hold({
+    body = null,
+    ...otherArgs
+  }: ReleaseHoldArgs): Promise<unknown> {
     const response = await this.request<FulfillmentOrder>({
-      http_method: "post",
-      operation: "release_hold",
+      http_method: 'post',
+      operation: 'release_hold',
       session: this.session,
-      urlIds: {"id": this.id},
+      urlIds: {id: this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -214,17 +240,15 @@ export class FulfillmentOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async reschedule(
-    {
-      body = null,
-      ...otherArgs
-    }: RescheduleArgs
-  ): Promise<unknown> {
+  public async reschedule({
+    body = null,
+    ...otherArgs
+  }: RescheduleArgs): Promise<unknown> {
     const response = await this.request<FulfillmentOrder>({
-      http_method: "post",
-      operation: "reschedule",
+      http_method: 'post',
+      operation: 'reschedule',
       session: this.session,
-      urlIds: {"id": this.id},
+      urlIds: {id: this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

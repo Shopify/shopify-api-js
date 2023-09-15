@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -24,60 +24,76 @@ interface AllArgs {
 export class FulfillmentService extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'fulfillment_service';
-  protected static pluralName = 'fulfillment_services';
+  protected static resourceNames: string[] = ['fulfillment_service'];
+  protected static pluralNames: string[] = ['fulfillment_services'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "fulfillment_services/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "fulfillment_services.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "fulfillment_services/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillment_services.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "fulfillment_services/<id>.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: ['id'],
+      path: 'fulfillment_services/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: [],
+      path: 'fulfillment_services.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'fulfillment_services/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: [],
+      path: 'fulfillment_services.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['id'],
+      path: 'fulfillment_services/<id>.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id
-    }: FindArgs
-  ): Promise<FulfillmentService | null> {
+  public static async find({
+    session,
+    id,
+  }: FindArgs): Promise<FulfillmentService | null> {
     const result = await this.baseFind<FulfillmentService>({
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete(
-    {
-      session,
-      id
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
     const response = await this.request<FulfillmentService>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      scope = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<FulfillmentService>> {
+  public static async all({
+    session,
+    scope = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<FulfillmentService>> {
     const response = await this.baseFind<FulfillmentService>({
       session: session,
       urlIds: {},
-      params: {"scope": scope, ...otherArgs},
+      params: {scope: scope, ...otherArgs},
     });
 
     return response;

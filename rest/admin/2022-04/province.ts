@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -29,63 +29,77 @@ interface CountArgs {
 export class Province extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'province';
-  protected static pluralName = 'provinces';
+  protected static resourceNames: string[] = ['province'];
+  protected static pluralNames: string[] = ['provinces'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "count", "ids": ["country_id"], "path": "countries/<country_id>/provinces/count.json"},
-    {"http_method": "get", "operation": "get", "ids": ["country_id"], "path": "countries/<country_id>/provinces.json"},
-    {"http_method": "get", "operation": "get", "ids": ["country_id", "id"], "path": "countries/<country_id>/provinces/<id>.json"},
-    {"http_method": "put", "operation": "put", "ids": ["country_id", "id"], "path": "countries/<country_id>/provinces/<id>.json"}
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: ['country_id'],
+      path: 'countries/<country_id>/provinces/count.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['country_id'],
+      path: 'countries/<country_id>/provinces.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['country_id', 'id'],
+      path: 'countries/<country_id>/provinces/<id>.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['country_id', 'id'],
+      path: 'countries/<country_id>/provinces/<id>.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      country_id = null,
-      fields = null
-    }: FindArgs
-  ): Promise<Province | null> {
+  public static async find({
+    session,
+    id,
+    country_id = null,
+    fields = null,
+  }: FindArgs): Promise<Province | null> {
     const result = await this.baseFind<Province>({
       session: session,
-      urlIds: {"id": id, "country_id": country_id},
-      params: {"fields": fields},
+      urlIds: {id: id, country_id: country_id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all(
-    {
-      session,
-      country_id = null,
-      since_id = null,
-      fields = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Province>> {
+  public static async all({
+    session,
+    country_id = null,
+    since_id = null,
+    fields = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Province>> {
     const response = await this.baseFind<Province>({
       session: session,
-      urlIds: {"country_id": country_id},
-      params: {"since_id": since_id, "fields": fields, ...otherArgs},
+      urlIds: {country_id: country_id},
+      params: {since_id: since_id, fields: fields, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      country_id = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    country_id = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Province>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
-      urlIds: {"country_id": country_id},
+      urlIds: {country_id: country_id},
       params: {...otherArgs},
       body: {},
       entity: null,

@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
@@ -17,27 +17,35 @@ interface FindArgs {
 export class DisputeEvidence extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'dispute_evidence';
-  protected static pluralName = 'dispute_evidences';
+  protected static resourceNames: string[] = ['dispute_evidence'];
+  protected static pluralNames: string[] = ['dispute_evidences'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
-    "fulfillments": Fulfillment
+    fulfillments: Fulfillment,
   };
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_evidences.json"},
-    {"http_method": "put", "operation": "put", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_evidences.json"}
-  ];
-  protected static primaryKey: string = "dispute_id";
-
-  public static async find(
     {
-      session,
-      dispute_id
-    }: FindArgs
-  ): Promise<DisputeEvidence | null> {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['dispute_id'],
+      path: 'shopify_payments/disputes/<dispute_id>/dispute_evidences.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['dispute_id'],
+      path: 'shopify_payments/disputes/<dispute_id>/dispute_evidences.json',
+    },
+  ];
+  protected static primaryKey: string = 'dispute_id';
+
+  public static async find({
+    session,
+    dispute_id,
+  }: FindArgs): Promise<DisputeEvidence | null> {
     const result = await this.baseFind<DisputeEvidence>({
       session: session,
-      urlIds: {"dispute_id": dispute_id},
+      urlIds: {dispute_id: dispute_id},
       params: {},
     });
     return result.data ? result.data[0] : null;

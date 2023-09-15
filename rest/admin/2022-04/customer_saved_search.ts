@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -40,83 +40,107 @@ interface CustomersArgs {
 export class CustomerSavedSearch extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'customer_saved_search';
-  protected static pluralName = 'customer_saved_searches';
+  protected static resourceNames: string[] = ['customer_saved_search'];
+  protected static pluralNames: string[] = ['customer_saved_searches'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "customer_saved_searches/count.json"},
-    {"http_method": "get", "operation": "customers", "ids": ["id"], "path": "customer_saved_searches/<id>/customers.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "customer_saved_searches.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "customer_saved_searches.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customer_saved_searches/<id>.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: ['id'],
+      path: 'customer_saved_searches/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: [],
+      path: 'customer_saved_searches/count.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'customers',
+      ids: ['id'],
+      path: 'customer_saved_searches/<id>/customers.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: [],
+      path: 'customer_saved_searches.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'customer_saved_searches/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: [],
+      path: 'customer_saved_searches.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['id'],
+      path: 'customer_saved_searches/<id>.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      fields = null
-    }: FindArgs
-  ): Promise<CustomerSavedSearch | null> {
+  public static async find({
+    session,
+    id,
+    fields = null,
+  }: FindArgs): Promise<CustomerSavedSearch | null> {
     const result = await this.baseFind<CustomerSavedSearch>({
       session: session,
-      urlIds: {"id": id},
-      params: {"fields": fields},
+      urlIds: {id: id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete(
-    {
-      session,
-      id
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
     const response = await this.request<CustomerSavedSearch>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      limit = null,
-      since_id = null,
-      fields = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<CustomerSavedSearch>> {
+  public static async all({
+    session,
+    limit = null,
+    since_id = null,
+    fields = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<CustomerSavedSearch>> {
     const response = await this.baseFind<CustomerSavedSearch>({
       session: session,
       urlIds: {},
-      params: {"limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
+      params: {limit: limit, since_id: since_id, fields: fields, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      since_id = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    since_id = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<CustomerSavedSearch>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
       urlIds: {},
-      params: {"since_id": since_id, ...otherArgs},
+      params: {since_id: since_id, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -124,22 +148,20 @@ export class CustomerSavedSearch extends Base {
     return response ? response.body : null;
   }
 
-  public static async customers(
-    {
-      session,
-      id,
-      order = null,
-      limit = null,
-      fields = null,
-      ...otherArgs
-    }: CustomersArgs
-  ): Promise<unknown> {
+  public static async customers({
+    session,
+    id,
+    order = null,
+    limit = null,
+    fields = null,
+    ...otherArgs
+  }: CustomersArgs): Promise<unknown> {
     const response = await this.request<CustomerSavedSearch>({
-      http_method: "get",
-      operation: "customers",
+      http_method: 'get',
+      operation: 'customers',
       session: session,
-      urlIds: {"id": id},
-      params: {"order": order, "limit": limit, "fields": fields, ...otherArgs},
+      urlIds: {id: id},
+      params: {order: order, limit: limit, fields: fields, ...otherArgs},
       body: {},
       entity: null,
     });

@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -25,56 +25,57 @@ interface CurrentArgs {
 export class User extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'user';
-  protected static pluralName = 'users';
+  protected static resourceNames: string[] = ['user'];
+  protected static pluralNames: string[] = ['users'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "current", "ids": [], "path": "users/current.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "users.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "users/<id>.json"}
+    {
+      http_method: 'get',
+      operation: 'current',
+      ids: [],
+      path: 'users/current.json',
+    },
+    {http_method: 'get', operation: 'get', ids: [], path: 'users.json'},
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'users/<id>.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id
-    }: FindArgs
-  ): Promise<User | null> {
+  public static async find({session, id}: FindArgs): Promise<User | null> {
     const result = await this.baseFind<User>({
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all(
-    {
-      session,
-      limit = null,
-      page_info = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<User>> {
+  public static async all({
+    session,
+    limit = null,
+    page_info = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<User>> {
     const response = await this.baseFind<User>({
       session: session,
       urlIds: {},
-      params: {"limit": limit, "page_info": page_info, ...otherArgs},
+      params: {limit: limit, page_info: page_info, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async current(
-    {
-      session,
-      ...otherArgs
-    }: CurrentArgs
-  ): Promise<unknown> {
+  public static async current({
+    session,
+    ...otherArgs
+  }: CurrentArgs): Promise<unknown> {
     const response = await this.request<User>({
-      http_method: "get",
-      operation: "current",
+      http_method: 'get',
+      operation: 'current',
       session: session,
       urlIds: {},
       params: {...otherArgs},

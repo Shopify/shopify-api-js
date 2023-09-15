@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -72,108 +72,157 @@ interface OpenArgs {
 export class Order extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'order';
-  protected static pluralName = 'orders';
+  protected static resourceNames: string[] = ['order'];
+  protected static pluralNames: string[] = ['orders'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    "customer": Customer
+    customer: Customer,
   };
   protected static hasMany: {[key: string]: typeof Base} = {
-    "discount_codes": DiscountCode,
-    "fulfillments": Fulfillment,
-    "refunds": Refund
+    discount_codes: DiscountCode,
+    fulfillments: Fulfillment,
+    refunds: Refund,
   };
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "orders/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "orders/count.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "orders.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "orders/<id>.json"},
-    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "orders/<id>/cancel.json"},
-    {"http_method": "post", "operation": "close", "ids": ["id"], "path": "orders/<id>/close.json"},
-    {"http_method": "post", "operation": "open", "ids": ["id"], "path": "orders/<id>/open.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "orders.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "orders/<id>.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: ['id'],
+      path: 'orders/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: [],
+      path: 'orders/count.json',
+    },
+    {http_method: 'get', operation: 'get', ids: [], path: 'orders.json'},
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'orders/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'cancel',
+      ids: ['id'],
+      path: 'orders/<id>/cancel.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'close',
+      ids: ['id'],
+      path: 'orders/<id>/close.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'open',
+      ids: ['id'],
+      path: 'orders/<id>/open.json',
+    },
+    {http_method: 'post', operation: 'post', ids: [], path: 'orders.json'},
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['id'],
+      path: 'orders/<id>.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      fields = null
-    }: FindArgs
-  ): Promise<Order | null> {
+  public static async find({
+    session,
+    id,
+    fields = null,
+  }: FindArgs): Promise<Order | null> {
     const result = await this.baseFind<Order>({
       session: session,
-      urlIds: {"id": id},
-      params: {"fields": fields},
+      urlIds: {id: id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete(
-    {
-      session,
-      id
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
     const response = await this.request<Order>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      ids = null,
-      limit = null,
-      since_id = null,
-      created_at_min = null,
-      created_at_max = null,
-      updated_at_min = null,
-      updated_at_max = null,
-      processed_at_min = null,
-      processed_at_max = null,
-      attribution_app_id = null,
-      status = null,
-      financial_status = null,
-      fulfillment_status = null,
-      fields = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Order>> {
+  public static async all({
+    session,
+    ids = null,
+    limit = null,
+    since_id = null,
+    created_at_min = null,
+    created_at_max = null,
+    updated_at_min = null,
+    updated_at_max = null,
+    processed_at_min = null,
+    processed_at_max = null,
+    attribution_app_id = null,
+    status = null,
+    financial_status = null,
+    fulfillment_status = null,
+    fields = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Order>> {
     const response = await this.baseFind<Order>({
       session: session,
       urlIds: {},
-      params: {"ids": ids, "limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "processed_at_min": processed_at_min, "processed_at_max": processed_at_max, "attribution_app_id": attribution_app_id, "status": status, "financial_status": financial_status, "fulfillment_status": fulfillment_status, "fields": fields, ...otherArgs},
+      params: {
+        ids: ids,
+        limit: limit,
+        since_id: since_id,
+        created_at_min: created_at_min,
+        created_at_max: created_at_max,
+        updated_at_min: updated_at_min,
+        updated_at_max: updated_at_max,
+        processed_at_min: processed_at_min,
+        processed_at_max: processed_at_max,
+        attribution_app_id: attribution_app_id,
+        status: status,
+        financial_status: financial_status,
+        fulfillment_status: fulfillment_status,
+        fields: fields,
+        ...otherArgs,
+      },
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      created_at_min = null,
-      created_at_max = null,
-      updated_at_min = null,
-      updated_at_max = null,
-      status = null,
-      financial_status = null,
-      fulfillment_status = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    created_at_min = null,
+    created_at_max = null,
+    updated_at_min = null,
+    updated_at_max = null,
+    status = null,
+    financial_status = null,
+    fulfillment_status = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Order>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
       urlIds: {},
-      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, "financial_status": financial_status, "fulfillment_status": fulfillment_status, ...otherArgs},
+      params: {
+        created_at_min: created_at_min,
+        created_at_max: created_at_max,
+        updated_at_min: updated_at_min,
+        updated_at_max: updated_at_max,
+        status: status,
+        financial_status: financial_status,
+        fulfillment_status: fulfillment_status,
+        ...otherArgs,
+      },
       body: {},
       entity: null,
     });
@@ -181,24 +230,30 @@ export class Order extends Base {
     return response ? response.body : null;
   }
 
-  public async cancel(
-    {
-      amount = null,
-      currency = null,
-      restock = null,
-      reason = null,
-      email = null,
-      refund = null,
-      body = null,
-      ...otherArgs
-    }: CancelArgs
-  ): Promise<unknown> {
+  public async cancel({
+    amount = null,
+    currency = null,
+    restock = null,
+    reason = null,
+    email = null,
+    refund = null,
+    body = null,
+    ...otherArgs
+  }: CancelArgs): Promise<unknown> {
     const response = await this.request<Order>({
-      http_method: "post",
-      operation: "cancel",
+      http_method: 'post',
+      operation: 'cancel',
       session: this.session,
-      urlIds: {"id": this.id},
-      params: {"amount": amount, "currency": currency, "restock": restock, "reason": reason, "email": email, "refund": refund, ...otherArgs},
+      urlIds: {id: this.id},
+      params: {
+        amount: amount,
+        currency: currency,
+        restock: restock,
+        reason: reason,
+        email: email,
+        refund: refund,
+        ...otherArgs,
+      },
       body: body,
       entity: this,
     });
@@ -206,17 +261,12 @@ export class Order extends Base {
     return response ? response.body : null;
   }
 
-  public async close(
-    {
-      body = null,
-      ...otherArgs
-    }: CloseArgs
-  ): Promise<unknown> {
+  public async close({body = null, ...otherArgs}: CloseArgs): Promise<unknown> {
     const response = await this.request<Order>({
-      http_method: "post",
-      operation: "close",
+      http_method: 'post',
+      operation: 'close',
       session: this.session,
-      urlIds: {"id": this.id},
+      urlIds: {id: this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -225,17 +275,12 @@ export class Order extends Base {
     return response ? response.body : null;
   }
 
-  public async open(
-    {
-      body = null,
-      ...otherArgs
-    }: OpenArgs
-  ): Promise<unknown> {
+  public async open({body = null, ...otherArgs}: OpenArgs): Promise<unknown> {
     const response = await this.request<Order>({
-      http_method: "post",
-      operation: "open",
+      http_method: 'post',
+      operation: 'open',
       session: this.session,
-      urlIds: {"id": this.id},
+      urlIds: {id: this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

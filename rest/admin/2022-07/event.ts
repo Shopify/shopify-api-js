@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -35,71 +35,98 @@ interface CountArgs {
 export class Event extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'event';
-  protected static pluralName = 'events';
+  protected static resourceNames: string[] = ['event'];
+  protected static pluralNames: string[] = ['events'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "count", "ids": [], "path": "events/count.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "events.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "events/<id>.json"},
-    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/events.json"},
-    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/events.json"}
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: [],
+      path: 'events/count.json',
+    },
+    {http_method: 'get', operation: 'get', ids: [], path: 'events.json'},
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'events/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['order_id'],
+      path: 'orders/<order_id>/events.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['product_id'],
+      path: 'products/<product_id>/events.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      fields = null
-    }: FindArgs
-  ): Promise<Event | null> {
+  public static async find({
+    session,
+    id,
+    fields = null,
+  }: FindArgs): Promise<Event | null> {
     const result = await this.baseFind<Event>({
       session: session,
-      urlIds: {"id": id},
-      params: {"fields": fields},
+      urlIds: {id: id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all(
-    {
-      session,
-      order_id = null,
-      product_id = null,
-      limit = null,
-      since_id = null,
-      created_at_min = null,
-      created_at_max = null,
-      filter = null,
-      verb = null,
-      fields = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Event>> {
+  public static async all({
+    session,
+    order_id = null,
+    product_id = null,
+    limit = null,
+    since_id = null,
+    created_at_min = null,
+    created_at_max = null,
+    filter = null,
+    verb = null,
+    fields = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Event>> {
     const response = await this.baseFind<Event>({
       session: session,
-      urlIds: {"order_id": order_id, "product_id": product_id},
-      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "filter": filter, "verb": verb, "fields": fields, ...otherArgs},
+      urlIds: {order_id: order_id, product_id: product_id},
+      params: {
+        limit: limit,
+        since_id: since_id,
+        created_at_min: created_at_min,
+        created_at_max: created_at_max,
+        filter: filter,
+        verb: verb,
+        fields: fields,
+        ...otherArgs,
+      },
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      created_at_min = null,
-      created_at_max = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    created_at_min = null,
+    created_at_max = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Event>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
       urlIds: {},
-      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, ...otherArgs},
+      params: {
+        created_at_min: created_at_min,
+        created_at_max: created_at_max,
+        ...otherArgs,
+      },
       body: {},
       entity: null,
     });

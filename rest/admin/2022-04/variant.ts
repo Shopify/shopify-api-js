@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -35,88 +35,116 @@ interface CountArgs {
 export class Variant extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'variant';
-  protected static pluralName = 'variants';
+  protected static resourceNames: string[] = ['variant'];
+  protected static pluralNames: string[] = ['variants'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/variants/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/variants/count.json"},
-    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "variants/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/variants.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "variants/<id>.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: ['product_id', 'id'],
+      path: 'products/<product_id>/variants/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: ['product_id'],
+      path: 'products/<product_id>/variants/count.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['product_id'],
+      path: 'products/<product_id>/variants.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'variants/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: ['product_id'],
+      path: 'products/<product_id>/variants.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['id'],
+      path: 'variants/<id>.json',
+    },
   ];
   protected static readOnlyAttributes: string[] = [
-    "inventory_quantity",
-    "inventory_quantity_adjustment"
+    'inventory_quantity',
+    'inventory_quantity_adjustment',
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      fields = null
-    }: FindArgs
-  ): Promise<Variant | null> {
+  public static async find({
+    session,
+    id,
+    fields = null,
+  }: FindArgs): Promise<Variant | null> {
     const result = await this.baseFind<Variant>({
       session: session,
-      urlIds: {"id": id},
-      params: {"fields": fields},
+      urlIds: {id: id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete(
-    {
-      session,
-      id,
-      product_id = null
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({
+    session,
+    id,
+    product_id = null,
+  }: DeleteArgs): Promise<unknown> {
     const response = await this.request<Variant>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
-      urlIds: {"id": id, "product_id": product_id},
+      urlIds: {id: id, product_id: product_id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      product_id = null,
-      limit = null,
-      presentment_currencies = null,
-      since_id = null,
-      fields = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Variant>> {
+  public static async all({
+    session,
+    product_id = null,
+    limit = null,
+    presentment_currencies = null,
+    since_id = null,
+    fields = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Variant>> {
     const response = await this.baseFind<Variant>({
       session: session,
-      urlIds: {"product_id": product_id},
-      params: {"limit": limit, "presentment_currencies": presentment_currencies, "since_id": since_id, "fields": fields, ...otherArgs},
+      urlIds: {product_id: product_id},
+      params: {
+        limit: limit,
+        presentment_currencies: presentment_currencies,
+        since_id: since_id,
+        fields: fields,
+        ...otherArgs,
+      },
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      product_id = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    product_id = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Variant>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
-      urlIds: {"product_id": product_id},
+      urlIds: {product_id: product_id},
       params: {...otherArgs},
       body: {},
       entity: null,

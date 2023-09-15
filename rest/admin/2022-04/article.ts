@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -65,96 +65,148 @@ interface TagsArgs {
 export class Article extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'article';
-  protected static pluralName = 'articles';
+  protected static resourceNames: string[] = ['article'];
+  protected static pluralNames: string[] = ['articles'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
-    "metafields": Metafield
+    metafields: Metafield,
   };
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
-    {"http_method": "get", "operation": "authors", "ids": [], "path": "articles/authors.json"},
-    {"http_method": "get", "operation": "count", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/count.json"},
-    {"http_method": "get", "operation": "get", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
-    {"http_method": "get", "operation": "get", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"},
-    {"http_method": "get", "operation": "tags", "ids": [], "path": "articles/tags.json"},
-    {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
-    {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
-    {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: ['blog_id', 'id'],
+      path: 'blogs/<blog_id>/articles/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'authors',
+      ids: [],
+      path: 'articles/authors.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: ['blog_id'],
+      path: 'blogs/<blog_id>/articles/count.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['blog_id'],
+      path: 'blogs/<blog_id>/articles.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['blog_id', 'id'],
+      path: 'blogs/<blog_id>/articles/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'tags',
+      ids: [],
+      path: 'articles/tags.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'tags',
+      ids: ['blog_id'],
+      path: 'blogs/<blog_id>/articles/tags.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: ['blog_id'],
+      path: 'blogs/<blog_id>/articles.json',
+    },
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['blog_id', 'id'],
+      path: 'blogs/<blog_id>/articles/<id>.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      blog_id = null,
-      fields = null
-    }: FindArgs
-  ): Promise<Article | null> {
+  public static async find({
+    session,
+    id,
+    blog_id = null,
+    fields = null,
+  }: FindArgs): Promise<Article | null> {
     const result = await this.baseFind<Article>({
       session: session,
-      urlIds: {"id": id, "blog_id": blog_id},
-      params: {"fields": fields},
+      urlIds: {id: id, blog_id: blog_id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete(
-    {
-      session,
-      id,
-      blog_id = null
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({
+    session,
+    id,
+    blog_id = null,
+  }: DeleteArgs): Promise<unknown> {
     const response = await this.request<Article>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
-      urlIds: {"id": id, "blog_id": blog_id},
+      urlIds: {id: id, blog_id: blog_id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      blog_id = null,
-      limit = null,
-      since_id = null,
-      created_at_min = null,
-      created_at_max = null,
-      updated_at_min = null,
-      updated_at_max = null,
-      published_at_min = null,
-      published_at_max = null,
-      published_status = null,
-      handle = null,
-      tag = null,
-      author = null,
-      fields = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Article>> {
+  public static async all({
+    session,
+    blog_id = null,
+    limit = null,
+    since_id = null,
+    created_at_min = null,
+    created_at_max = null,
+    updated_at_min = null,
+    updated_at_max = null,
+    published_at_min = null,
+    published_at_max = null,
+    published_status = null,
+    handle = null,
+    tag = null,
+    author = null,
+    fields = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Article>> {
     const response = await this.baseFind<Article>({
       session: session,
-      urlIds: {"blog_id": blog_id},
-      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "handle": handle, "tag": tag, "author": author, "fields": fields, ...otherArgs},
+      urlIds: {blog_id: blog_id},
+      params: {
+        limit: limit,
+        since_id: since_id,
+        created_at_min: created_at_min,
+        created_at_max: created_at_max,
+        updated_at_min: updated_at_min,
+        updated_at_max: updated_at_max,
+        published_at_min: published_at_min,
+        published_at_max: published_at_max,
+        published_status: published_status,
+        handle: handle,
+        tag: tag,
+        author: author,
+        fields: fields,
+        ...otherArgs,
+      },
     });
 
     return response;
   }
 
-  public static async authors(
-    {
-      session,
-      ...otherArgs
-    }: AuthorsArgs
-  ): Promise<unknown> {
+  public static async authors({
+    session,
+    ...otherArgs
+  }: AuthorsArgs): Promise<unknown> {
     const response = await this.request<Article>({
-      http_method: "get",
-      operation: "authors",
+      http_method: 'get',
+      operation: 'authors',
       session: session,
       urlIds: {},
       params: {...otherArgs},
@@ -165,26 +217,33 @@ export class Article extends Base {
     return response ? response.body : null;
   }
 
-  public static async count(
-    {
-      session,
-      blog_id = null,
-      created_at_min = null,
-      created_at_max = null,
-      updated_at_min = null,
-      updated_at_max = null,
-      published_at_min = null,
-      published_at_max = null,
-      published_status = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    blog_id = null,
+    created_at_min = null,
+    created_at_max = null,
+    updated_at_min = null,
+    updated_at_max = null,
+    published_at_min = null,
+    published_at_max = null,
+    published_status = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Article>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
-      urlIds: {"blog_id": blog_id},
-      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
+      urlIds: {blog_id: blog_id},
+      params: {
+        created_at_min: created_at_min,
+        created_at_max: created_at_max,
+        updated_at_min: updated_at_min,
+        updated_at_max: updated_at_max,
+        published_at_min: published_at_min,
+        published_at_max: published_at_max,
+        published_status: published_status,
+        ...otherArgs,
+      },
       body: {},
       entity: null,
     });
@@ -192,21 +251,19 @@ export class Article extends Base {
     return response ? response.body : null;
   }
 
-  public static async tags(
-    {
-      session,
-      blog_id = null,
-      limit = null,
-      popular = null,
-      ...otherArgs
-    }: TagsArgs
-  ): Promise<unknown> {
+  public static async tags({
+    session,
+    blog_id = null,
+    limit = null,
+    popular = null,
+    ...otherArgs
+  }: TagsArgs): Promise<unknown> {
     const response = await this.request<Article>({
-      http_method: "get",
-      operation: "tags",
+      http_method: 'get',
+      operation: 'tags',
       session: session,
-      urlIds: {"blog_id": blog_id},
-      params: {"limit": limit, "popular": popular, ...otherArgs},
+      urlIds: {blog_id: blog_id},
+      params: {limit: limit, popular: popular, ...otherArgs},
       body: {},
       entity: null,
     });

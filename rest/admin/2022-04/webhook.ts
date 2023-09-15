@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -39,89 +39,109 @@ interface CountArgs {
 export class Webhook extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'webhook';
-  protected static pluralName = 'webhooks';
+  protected static resourceNames: string[] = ['webhook'];
+  protected static pluralNames: string[] = ['webhooks'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "webhooks/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "webhooks/count.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "webhooks.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "webhooks/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "webhooks.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "webhooks/<id>.json"}
+    {
+      http_method: 'delete',
+      operation: 'delete',
+      ids: ['id'],
+      path: 'webhooks/<id>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: [],
+      path: 'webhooks/count.json',
+    },
+    {http_method: 'get', operation: 'get', ids: [], path: 'webhooks.json'},
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'webhooks/<id>.json',
+    },
+    {http_method: 'post', operation: 'post', ids: [], path: 'webhooks.json'},
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['id'],
+      path: 'webhooks/<id>.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      fields = null
-    }: FindArgs
-  ): Promise<Webhook | null> {
+  public static async find({
+    session,
+    id,
+    fields = null,
+  }: FindArgs): Promise<Webhook | null> {
     const result = await this.baseFind<Webhook>({
       session: session,
-      urlIds: {"id": id},
-      params: {"fields": fields},
+      urlIds: {id: id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete(
-    {
-      session,
-      id
-    }: DeleteArgs
-  ): Promise<unknown> {
+  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
     const response = await this.request<Webhook>({
-      http_method: "delete",
-      operation: "delete",
+      http_method: 'delete',
+      operation: 'delete',
       session: session,
-      urlIds: {"id": id},
+      urlIds: {id: id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all(
-    {
-      session,
-      address = null,
-      created_at_max = null,
-      created_at_min = null,
-      fields = null,
-      limit = null,
-      since_id = null,
-      topic = null,
-      updated_at_min = null,
-      updated_at_max = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Webhook>> {
+  public static async all({
+    session,
+    address = null,
+    created_at_max = null,
+    created_at_min = null,
+    fields = null,
+    limit = null,
+    since_id = null,
+    topic = null,
+    updated_at_min = null,
+    updated_at_max = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Webhook>> {
     const response = await this.baseFind<Webhook>({
       session: session,
       urlIds: {},
-      params: {"address": address, "created_at_max": created_at_max, "created_at_min": created_at_min, "fields": fields, "limit": limit, "since_id": since_id, "topic": topic, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
+      params: {
+        address: address,
+        created_at_max: created_at_max,
+        created_at_min: created_at_min,
+        fields: fields,
+        limit: limit,
+        since_id: since_id,
+        topic: topic,
+        updated_at_min: updated_at_min,
+        updated_at_max: updated_at_max,
+        ...otherArgs,
+      },
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      address = null,
-      topic = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    address = null,
+    topic = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Webhook>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
       urlIds: {},
-      params: {"address": address, "topic": topic, ...otherArgs},
+      params: {address: address, topic: topic, ...otherArgs},
       body: {},
       entity: null,
     });

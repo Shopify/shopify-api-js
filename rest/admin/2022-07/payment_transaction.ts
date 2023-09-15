@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
@@ -22,33 +22,43 @@ interface TransactionsArgs {
 export class PaymentTransaction extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'payment_transaction';
-  protected static pluralName = 'payment_transactions';
+  protected static resourceNames: string[] = ['payment_transaction'];
+  protected static pluralNames: string[] = ['payment_transactions'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    "currency": Currency
+    currency: Currency,
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "transactions", "ids": [], "path": "shopify_payments/balance/transactions.json"}
+    {
+      http_method: 'get',
+      operation: 'transactions',
+      ids: [],
+      path: 'shopify_payments/balance/transactions.json',
+    },
   ];
 
-  public static async transactions(
-    {
-      session,
-      since_id = null,
-      last_id = null,
-      test = null,
-      payout_id = null,
-      payout_status = null,
-      ...otherArgs
-    }: TransactionsArgs
-  ): Promise<unknown> {
+  public static async transactions({
+    session,
+    since_id = null,
+    last_id = null,
+    test = null,
+    payout_id = null,
+    payout_status = null,
+    ...otherArgs
+  }: TransactionsArgs): Promise<unknown> {
     const response = await this.request<PaymentTransaction>({
-      http_method: "get",
-      operation: "transactions",
+      http_method: 'get',
+      operation: 'transactions',
       session: session,
       urlIds: {},
-      params: {"since_id": since_id, "last_id": last_id, "test": test, "payout_id": payout_id, "payout_status": payout_status, ...otherArgs},
+      params: {
+        since_id: since_id,
+        last_id: last_id,
+        test: test,
+        payout_id: payout_id,
+        payout_status: payout_status,
+        ...otherArgs,
+      },
       body: {},
       entity: null,
     });

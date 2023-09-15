@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -31,65 +31,84 @@ interface CountArgs {
 export class Transaction extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'transaction';
-  protected static pluralName = 'transactions';
+  protected static resourceNames: string[] = ['transaction'];
+  protected static pluralNames: string[] = ['transactions'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/transactions/count.json"},
-    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"},
-    {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/transactions/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/transactions.json"}
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: ['order_id'],
+      path: 'orders/<order_id>/transactions/count.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['order_id'],
+      path: 'orders/<order_id>/transactions.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['order_id', 'id'],
+      path: 'orders/<order_id>/transactions/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: ['order_id'],
+      path: 'orders/<order_id>/transactions.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      order_id = null,
-      fields = null,
-      in_shop_currency = null
-    }: FindArgs
-  ): Promise<Transaction | null> {
+  public static async find({
+    session,
+    id,
+    order_id = null,
+    fields = null,
+    in_shop_currency = null,
+  }: FindArgs): Promise<Transaction | null> {
     const result = await this.baseFind<Transaction>({
       session: session,
-      urlIds: {"id": id, "order_id": order_id},
-      params: {"fields": fields, "in_shop_currency": in_shop_currency},
+      urlIds: {id: id, order_id: order_id},
+      params: {fields: fields, in_shop_currency: in_shop_currency},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all(
-    {
-      session,
-      order_id = null,
-      since_id = null,
-      fields = null,
-      in_shop_currency = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Transaction>> {
+  public static async all({
+    session,
+    order_id = null,
+    since_id = null,
+    fields = null,
+    in_shop_currency = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Transaction>> {
     const response = await this.baseFind<Transaction>({
       session: session,
-      urlIds: {"order_id": order_id},
-      params: {"since_id": since_id, "fields": fields, "in_shop_currency": in_shop_currency, ...otherArgs},
+      urlIds: {order_id: order_id},
+      params: {
+        since_id: since_id,
+        fields: fields,
+        in_shop_currency: in_shop_currency,
+        ...otherArgs,
+      },
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      order_id = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    order_id = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Transaction>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
-      urlIds: {"order_id": order_id},
+      urlIds: {order_id: order_id},
       params: {...otherArgs},
       body: {},
       entity: null,

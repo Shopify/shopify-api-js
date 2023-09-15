@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
@@ -28,50 +28,66 @@ interface CompleteArgs {
 export class Checkout extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'checkout';
-  protected static pluralName = 'checkouts';
+  protected static resourceNames: string[] = ['checkout'];
+  protected static pluralNames: string[] = ['checkouts'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    "discount_code": DiscountCode,
-    "order": Order
+    discount_code: DiscountCode,
+    order: Order,
   };
   protected static hasMany: {[key: string]: typeof Base} = {
-    "gift_cards": GiftCard
+    gift_cards: GiftCard,
   };
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": ["token"], "path": "checkouts/<token>.json"},
-    {"http_method": "get", "operation": "shipping_rates", "ids": ["token"], "path": "checkouts/<token>/shipping_rates.json"},
-    {"http_method": "post", "operation": "complete", "ids": ["token"], "path": "checkouts/<token>/complete.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "checkouts.json"},
-    {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
-  ];
-  protected static primaryKey: string = "token";
-
-  public static async find(
     {
-      session,
-      token
-    }: FindArgs
-  ): Promise<Checkout | null> {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['token'],
+      path: 'checkouts/<token>.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'shipping_rates',
+      ids: ['token'],
+      path: 'checkouts/<token>/shipping_rates.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'complete',
+      ids: ['token'],
+      path: 'checkouts/<token>/complete.json',
+    },
+    {http_method: 'post', operation: 'post', ids: [], path: 'checkouts.json'},
+    {
+      http_method: 'put',
+      operation: 'put',
+      ids: ['token'],
+      path: 'checkouts/<token>.json',
+    },
+  ];
+  protected static primaryKey: string = 'token';
+
+  public static async find({
+    session,
+    token,
+  }: FindArgs): Promise<Checkout | null> {
     const result = await this.baseFind<Checkout>({
       session: session,
-      urlIds: {"token": token},
+      urlIds: {token: token},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async shipping_rates(
-    {
-      session,
-      token,
-      ...otherArgs
-    }: ShippingRatesArgs
-  ): Promise<unknown> {
+  public static async shipping_rates({
+    session,
+    token,
+    ...otherArgs
+  }: ShippingRatesArgs): Promise<unknown> {
     const response = await this.request<Checkout>({
-      http_method: "get",
-      operation: "shipping_rates",
+      http_method: 'get',
+      operation: 'shipping_rates',
       session: session,
-      urlIds: {"token": token},
+      urlIds: {token: token},
       params: {...otherArgs},
       body: {},
       entity: null,
@@ -80,17 +96,15 @@ export class Checkout extends Base {
     return response ? response.body : null;
   }
 
-  public async complete(
-    {
-      body = null,
-      ...otherArgs
-    }: CompleteArgs
-  ): Promise<unknown> {
+  public async complete({
+    body = null,
+    ...otherArgs
+  }: CompleteArgs): Promise<unknown> {
     const response = await this.request<Checkout>({
-      http_method: "post",
-      operation: "complete",
+      http_method: 'post',
+      operation: 'complete',
       session: this.session,
-      urlIds: {"token": this.token},
+      urlIds: {token: this.token},
       params: {...otherArgs},
       body: body,
       entity: this,

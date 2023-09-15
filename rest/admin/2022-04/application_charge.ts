@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -24,45 +24,56 @@ interface AllArgs {
 export class ApplicationCharge extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'application_charge';
-  protected static pluralName = 'application_charges';
+  protected static resourceNames: string[] = ['application_charge'];
+  protected static pluralNames: string[] = ['application_charges'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    "currency": Currency
+    currency: Currency,
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "application_charges.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_charges/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "application_charges.json"}
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: [],
+      path: 'application_charges.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['id'],
+      path: 'application_charges/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: [],
+      path: 'application_charges.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      fields = null
-    }: FindArgs
-  ): Promise<ApplicationCharge | null> {
+  public static async find({
+    session,
+    id,
+    fields = null,
+  }: FindArgs): Promise<ApplicationCharge | null> {
     const result = await this.baseFind<ApplicationCharge>({
       session: session,
-      urlIds: {"id": id},
-      params: {"fields": fields},
+      urlIds: {id: id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all(
-    {
-      session,
-      since_id = null,
-      fields = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<ApplicationCharge>> {
+  public static async all({
+    session,
+    since_id = null,
+    fields = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<ApplicationCharge>> {
     const response = await this.baseFind<ApplicationCharge>({
       session: session,
       urlIds: {},
-      params: {"since_id": since_id, "fields": fields, ...otherArgs},
+      params: {since_id: since_id, fields: fields, ...otherArgs},
     });
 
     return response;

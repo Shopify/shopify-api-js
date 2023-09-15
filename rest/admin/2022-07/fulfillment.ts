@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -49,77 +49,121 @@ interface UpdateTrackingArgs {
 export class Fulfillment extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'fulfillment';
-  protected static pluralName = 'fulfillments';
+  protected static resourceNames: string[] = ['fulfillment'];
+  protected static pluralNames: string[] = ['fulfillments'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "count", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments/count.json"},
-    {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
-    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/fulfillments.json"},
-    {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/fulfillments/<id>.json"},
-    {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillments/<id>/cancel.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
-    {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"}
+    {
+      http_method: 'get',
+      operation: 'count',
+      ids: ['order_id'],
+      path: 'orders/<order_id>/fulfillments/count.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['fulfillment_order_id'],
+      path: 'fulfillment_orders/<fulfillment_order_id>/fulfillments.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['order_id'],
+      path: 'orders/<order_id>/fulfillments.json',
+    },
+    {
+      http_method: 'get',
+      operation: 'get',
+      ids: ['order_id', 'id'],
+      path: 'orders/<order_id>/fulfillments/<id>.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'cancel',
+      ids: ['id'],
+      path: 'fulfillments/<id>/cancel.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: [],
+      path: 'fulfillments.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'update_tracking',
+      ids: ['id'],
+      path: 'fulfillments/<id>/update_tracking.json',
+    },
   ];
 
-  public static async find(
-    {
-      session,
-      id,
-      order_id = null,
-      fields = null
-    }: FindArgs
-  ): Promise<Fulfillment | null> {
+  public static async find({
+    session,
+    id,
+    order_id = null,
+    fields = null,
+  }: FindArgs): Promise<Fulfillment | null> {
     const result = await this.baseFind<Fulfillment>({
       session: session,
-      urlIds: {"id": id, "order_id": order_id},
-      params: {"fields": fields},
+      urlIds: {id: id, order_id: order_id},
+      params: {fields: fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all(
-    {
-      session,
-      fulfillment_order_id = null,
-      order_id = null,
-      created_at_max = null,
-      created_at_min = null,
-      fields = null,
-      limit = null,
-      since_id = null,
-      updated_at_max = null,
-      updated_at_min = null,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<Fulfillment>> {
+  public static async all({
+    session,
+    fulfillment_order_id = null,
+    order_id = null,
+    created_at_max = null,
+    created_at_min = null,
+    fields = null,
+    limit = null,
+    since_id = null,
+    updated_at_max = null,
+    updated_at_min = null,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<Fulfillment>> {
     const response = await this.baseFind<Fulfillment>({
       session: session,
-      urlIds: {"fulfillment_order_id": fulfillment_order_id, "order_id": order_id},
-      params: {"created_at_max": created_at_max, "created_at_min": created_at_min, "fields": fields, "limit": limit, "since_id": since_id, "updated_at_max": updated_at_max, "updated_at_min": updated_at_min, ...otherArgs},
+      urlIds: {fulfillment_order_id: fulfillment_order_id, order_id: order_id},
+      params: {
+        created_at_max: created_at_max,
+        created_at_min: created_at_min,
+        fields: fields,
+        limit: limit,
+        since_id: since_id,
+        updated_at_max: updated_at_max,
+        updated_at_min: updated_at_min,
+        ...otherArgs,
+      },
     });
 
     return response;
   }
 
-  public static async count(
-    {
-      session,
-      order_id = null,
-      created_at_min = null,
-      created_at_max = null,
-      updated_at_min = null,
-      updated_at_max = null,
-      ...otherArgs
-    }: CountArgs
-  ): Promise<unknown> {
+  public static async count({
+    session,
+    order_id = null,
+    created_at_min = null,
+    created_at_max = null,
+    updated_at_min = null,
+    updated_at_max = null,
+    ...otherArgs
+  }: CountArgs): Promise<unknown> {
     const response = await this.request<Fulfillment>({
-      http_method: "get",
-      operation: "count",
+      http_method: 'get',
+      operation: 'count',
       session: session,
-      urlIds: {"order_id": order_id},
-      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
+      urlIds: {order_id: order_id},
+      params: {
+        created_at_min: created_at_min,
+        created_at_max: created_at_max,
+        updated_at_min: updated_at_min,
+        updated_at_max: updated_at_max,
+        ...otherArgs,
+      },
       body: {},
       entity: null,
     });
@@ -127,17 +171,15 @@ export class Fulfillment extends Base {
     return response ? response.body : null;
   }
 
-  public async cancel(
-    {
-      body = null,
-      ...otherArgs
-    }: CancelArgs
-  ): Promise<unknown> {
+  public async cancel({
+    body = null,
+    ...otherArgs
+  }: CancelArgs): Promise<unknown> {
     const response = await this.request<Fulfillment>({
-      http_method: "post",
-      operation: "cancel",
+      http_method: 'post',
+      operation: 'cancel',
       session: this.session,
-      urlIds: {"id": this.id},
+      urlIds: {id: this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -146,20 +188,22 @@ export class Fulfillment extends Base {
     return response ? response.body : null;
   }
 
-  public async update_tracking(
-    {
-      notify_customer = null,
-      tracking_info = null,
-      body = null,
-      ...otherArgs
-    }: UpdateTrackingArgs
-  ): Promise<unknown> {
+  public async update_tracking({
+    notify_customer = null,
+    tracking_info = null,
+    body = null,
+    ...otherArgs
+  }: UpdateTrackingArgs): Promise<unknown> {
     const response = await this.request<Fulfillment>({
-      http_method: "post",
-      operation: "update_tracking",
+      http_method: 'post',
+      operation: 'update_tracking',
       session: this.session,
-      urlIds: {"id": this.id},
-      params: {"notify_customer": notify_customer, "tracking_info": tracking_info, ...otherArgs},
+      urlIds: {id: this.id},
+      params: {
+        notify_customer: notify_customer,
+        tracking_info: tracking_info,
+        ...otherArgs,
+      },
       body: body,
       entity: this,
     });

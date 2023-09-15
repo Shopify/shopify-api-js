@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -15,21 +15,19 @@ interface AllArgs {
 export class AccessScope extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'access_scope';
-  protected static pluralName = 'access_scopes';
+  protected static resourceNames: string[] = ['access_scope'];
+  protected static pluralNames: string[] = ['access_scopes'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
-  protected static customPrefix: string | null = "/admin/oauth";
+  protected static customPrefix: string | null = '/admin/oauth';
   protected static paths: ResourcePath[] = [
-    {"http_method": "get", "operation": "get", "ids": [], "path": "access_scopes.json"}
+    {http_method: 'get', operation: 'get', ids: [], path: 'access_scopes.json'},
   ];
 
-  public static async all(
-    {
-      session,
-      ...otherArgs
-    }: AllArgs
-  ): Promise<FindAllResponse<AccessScope>> {
+  public static async all({
+    session,
+    ...otherArgs
+  }: AllArgs): Promise<FindAllResponse<AccessScope>> {
     const response = await this.baseFind<AccessScope>({
       session: session,
       urlIds: {},

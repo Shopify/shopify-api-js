@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
-* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
-***********************************************************************************************************************/
+ * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+ ***********************************************************************************************************************/
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
@@ -20,29 +20,42 @@ interface RejectArgs {
 export class CancellationRequest extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'cancellation_request';
-  protected static pluralName = 'cancellation_requests';
+  protected static resourceNames: string[] = ['cancellation_request'];
+  protected static pluralNames: string[] = ['cancellation_requests'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "post", "operation": "accept", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request/accept.json"},
-    {"http_method": "post", "operation": "post", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request.json"},
-    {"http_method": "post", "operation": "reject", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request/reject.json"}
+    {
+      http_method: 'post',
+      operation: 'accept',
+      ids: ['fulfillment_order_id'],
+      path: 'fulfillment_orders/<fulfillment_order_id>/cancellation_request/accept.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'post',
+      ids: ['fulfillment_order_id'],
+      path: 'fulfillment_orders/<fulfillment_order_id>/cancellation_request.json',
+    },
+    {
+      http_method: 'post',
+      operation: 'reject',
+      ids: ['fulfillment_order_id'],
+      path: 'fulfillment_orders/<fulfillment_order_id>/cancellation_request/reject.json',
+    },
   ];
 
-  public async accept(
-    {
-      message = null,
-      body = null,
-      ...otherArgs
-    }: AcceptArgs
-  ): Promise<unknown> {
+  public async accept({
+    message = null,
+    body = null,
+    ...otherArgs
+  }: AcceptArgs): Promise<unknown> {
     const response = await this.request<CancellationRequest>({
-      http_method: "post",
-      operation: "accept",
+      http_method: 'post',
+      operation: 'accept',
       session: this.session,
-      urlIds: {"fulfillment_order_id": this.fulfillment_order_id},
-      params: {"message": message, ...otherArgs},
+      urlIds: {fulfillment_order_id: this.fulfillment_order_id},
+      params: {message: message, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -50,19 +63,17 @@ export class CancellationRequest extends Base {
     return response ? response.body : null;
   }
 
-  public async reject(
-    {
-      message = null,
-      body = null,
-      ...otherArgs
-    }: RejectArgs
-  ): Promise<unknown> {
+  public async reject({
+    message = null,
+    body = null,
+    ...otherArgs
+  }: RejectArgs): Promise<unknown> {
     const response = await this.request<CancellationRequest>({
-      http_method: "post",
-      operation: "reject",
+      http_method: 'post',
+      operation: 'reject',
       session: this.session,
-      urlIds: {"fulfillment_order_id": this.fulfillment_order_id},
-      params: {"message": message, ...otherArgs},
+      urlIds: {fulfillment_order_id: this.fulfillment_order_id},
+      params: {message: message, ...otherArgs},
       body: body,
       entity: this,
     });
