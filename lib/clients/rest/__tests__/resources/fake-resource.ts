@@ -23,8 +23,15 @@ interface FakeResourceCustomArgs {
 
 export class FakeResource extends Base {
   public static apiVersion = LATEST_API_VERSION;
-  protected static resourceName = 'fake_resource';
-  protected static pluralName = 'fake_resources';
+  protected static resourceNames: string[] = [
+    'fake_resource',
+    'fake_resource_alternative_name',
+  ];
+
+  protected static pluralNames: string[] = [
+    'fake_resources',
+    'fake_resource_alternative_names',
+  ];
 
   protected static readOnlyAttributes: string[] = ['unsaveable_attribute'];
 

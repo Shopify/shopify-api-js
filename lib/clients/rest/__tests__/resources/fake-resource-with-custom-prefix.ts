@@ -10,8 +10,14 @@ interface FakeResourceWithCustomPrefixFindArgs {
 
 export class FakeResourceWithCustomPrefix extends Base {
   public static apiVersion = LATEST_API_VERSION;
-  protected static resourceName = 'fake_resource_with_custom_prefix';
-  protected static pluralName = 'fake_resource_with_custom_prefixes';
+  protected static resourceNames: string[] = [
+    'fake_resource_with_custom_prefix',
+  ];
+
+  protected static pluralNames: string[] = [
+    'fake_resource_with_custom_prefixes',
+  ];
+
   protected static customPrefix = '/admin/custom_prefix';
 
   protected static hasOne = {};

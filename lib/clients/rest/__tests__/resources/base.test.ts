@@ -191,6 +191,28 @@ describe('Base REST resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('saves and updates with another resource name', async () => {
+    const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
+    const responseBody = {
+      fake_resource_alternative_name: {id: 1, attribute: 'attribute'},
+    };
+    queueMockResponse(JSON.stringify(responseBody));
+
+    const resource = new shopify.rest.FakeResource({session});
+
+    resource.attribute = 'attribute';
+    await resource.saveAndUpdate();
+
+    expect(resource.id).toEqual(1);
+    expect({
+      method: 'POST',
+      domain,
+      path: `${prefix}/fake_resources.json`,
+      headers,
+      data: JSON.stringify(expectedRequestBody),
+    }).toMatchMadeHttpRequest();
+  });
+
   it('saves existing resource', async () => {
     const expectedRequestBody = {
       fake_resource: {id: 1, attribute: 'attribute'},

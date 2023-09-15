@@ -57,8 +57,8 @@ export class Base {
   public static config: ConfigInterface;
 
   public static apiVersion: string;
-  protected static resourceName = '';
-  protected static pluralName = '';
+  protected static resourceNames: string[] = [];
+  protected static pluralNames: string[] = [];
   protected static primaryKey = 'id';
   protected static customPrefix: string | null = null;
   protected static readOnlyAttributes: string[] = [];
@@ -212,19 +212,22 @@ export class Base {
     session: Session,
     data: Body,
   ): T[] {
-    if (data[this.pluralName] || Array.isArray(data[this.resourceName])) {
-      return (data[this.pluralName] || data[this.resourceName]).reduce(
-        (acc: T[], entry: Body) =>
-          acc.concat(this.createInstance<T>(session, entry)),
-        [],
-      );
-    }
+    let instances: T[] = [];
+    this.resourceNames.forEach((resourceName, index) => {
+      if (data[this.pluralNames[index]] || Array.isArray(data[resourceName])) {
+        instances = instances.concat(
+          (data[this.pluralNames[index]] || data[resourceName]).reduce(
+            (acc: T[], entry: Body) =>
+              acc.concat(this.createInstance<T>(session, entry)),
+            [],
+          ),
+        );
+      } else if (data[resourceName]) {
+        instances.push(this.createInstance<T>(session, data[resourceName]));
+      }
+    });
 
-    if (data[this.resourceName]) {
-      return [this.createInstance<T>(session, data[this.resourceName])];
-    }
-
-    return [];
+    return instances;
   }
 
   protected static createInstance<T extends Base = Base>(
@@ -258,7 +261,7 @@ export class Base {
   }
 
   public async save({update = false}: SaveArgs = {}): Promise<void> {
-    const {primaryKey, resourceName} = this.resource();
+    const {primaryKey, resourceNames} = this.resource();
     const method = this[primaryKey] ? 'put' : 'post';
 
     const data = this.serialize(true);
@@ -272,7 +275,13 @@ export class Base {
       entity: this,
     });
 
-    const body: Body | undefined = (response.body as Body)[resourceName];
+    const matchResourceName = Object.keys(response.body as Body).filter(
+      (key: string) => resourceNames.includes(key),
+    );
+
+    const body: Body | undefined = (response.body as Body)[
+      matchResourceName[0]
+    ];
 
     if (update && body) {
       this.setData(body);
