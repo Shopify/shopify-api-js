@@ -72,8 +72,6 @@ interface OpenArgs {
 export class Order extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'order';
-  protected static pluralName = 'orders';
   protected static hasOne: {[key: string]: typeof Base} = {
     "customer": Customer
   };
@@ -92,6 +90,12 @@ export class Order extends Base {
     {"http_method": "post", "operation": "open", "ids": ["id"], "path": "orders/<id>/open.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "orders.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "orders/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "order"
+  ];
+  protected static pluralNames: string[] = [
+    "orders"
   ];
 
   public static async find(
@@ -256,6 +260,7 @@ export class Order extends Base {
   public client_details: {[key: string]: unknown} | null;
   public closed_at: string | null;
   public company: {[key: string]: unknown} | null;
+  public confirmation_number: string | null;
   public created_at: string | null;
   public currency: string | null;
   public current_subtotal_price: string | null;

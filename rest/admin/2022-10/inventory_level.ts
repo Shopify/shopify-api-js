@@ -46,8 +46,6 @@ interface SetArgs {
 export class InventoryLevel extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'inventory_level';
-  protected static pluralName = 'inventory_levels';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -56,6 +54,12 @@ export class InventoryLevel extends Base {
     {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
     {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
     {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "inventory_level"
+  ];
+  protected static pluralNames: string[] = [
+    "inventory_levels"
   ];
 
   public static async delete(

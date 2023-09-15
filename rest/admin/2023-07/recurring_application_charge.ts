@@ -32,8 +32,6 @@ interface CustomizeArgs {
 export class RecurringApplicationCharge extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'recurring_application_charge';
-  protected static pluralName = 'recurring_application_charges';
   protected static hasOne: {[key: string]: typeof Base} = {
     "currency": Currency
   };
@@ -44,6 +42,12 @@ export class RecurringApplicationCharge extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "recurring_application_charges.json"},
     {"http_method": "put", "operation": "customize", "ids": ["id"], "path": "recurring_application_charges/<id>/customize.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "recurring_application_charge"
+  ];
+  protected static pluralNames: string[] = [
+    "recurring_application_charges"
   ];
 
   public static async find(

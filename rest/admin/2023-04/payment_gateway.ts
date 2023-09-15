@@ -23,8 +23,6 @@ interface AllArgs {
 export class PaymentGateway extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'payment_gateway';
-  protected static pluralName = 'payment_gateways';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -33,6 +31,12 @@ export class PaymentGateway extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "payment_gateways/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "payment_gateways.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "payment_gateways/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "payment_gateway"
+  ];
+  protected static pluralNames: string[] = [
+    "payment_gateways"
   ];
 
   public static async find(

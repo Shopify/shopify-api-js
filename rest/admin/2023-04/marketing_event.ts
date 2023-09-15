@@ -42,8 +42,6 @@ interface EngagementsArgs {
 export class MarketingEvent extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'marketing_event';
-  protected static pluralName = 'marketing_events';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -54,6 +52,12 @@ export class MarketingEvent extends Base {
     {"http_method": "post", "operation": "engagements", "ids": ["id"], "path": "marketing_events/<id>/engagements.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "marketing_events.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "marketing_events/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "marketing_event"
+  ];
+  protected static pluralNames: string[] = [
+    "marketing_events"
   ];
 
   public static async find(

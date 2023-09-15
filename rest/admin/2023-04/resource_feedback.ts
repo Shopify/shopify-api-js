@@ -15,13 +15,17 @@ interface AllArgs {
 export class ResourceFeedback extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'resource_feedback';
-  protected static pluralName = 'resource_feedbacks';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "resource_feedback"
+  ];
+  protected static pluralNames: string[] = [
+    "resource_feedbacks"
   ];
 
   public static async all(

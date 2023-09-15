@@ -16,13 +16,17 @@ interface AllArgs {
 export class ProductResourceFeedback extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'product_resource_feedback';
-  protected static pluralName = 'product_resource_feedbacks';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "product_resource_feedback"
+  ];
+  protected static pluralNames: string[] = [
+    "product_resource_feedbacks"
   ];
 
   protected static getJsonBodyName(): string

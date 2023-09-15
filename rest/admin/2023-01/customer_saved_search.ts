@@ -40,8 +40,6 @@ interface CustomersArgs {
 export class CustomerSavedSearch extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'customer_saved_search';
-  protected static pluralName = 'customer_saved_searches';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -52,6 +50,12 @@ export class CustomerSavedSearch extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "customer_saved_searches.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customer_saved_searches/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "customer_saved_search"
+  ];
+  protected static pluralNames: string[] = [
+    "customer_saved_searches"
   ];
 
   public static async find(

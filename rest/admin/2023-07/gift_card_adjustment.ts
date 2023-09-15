@@ -21,14 +21,18 @@ interface AllArgs {
 export class GiftCardAdjustment extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'gift_card_adjustment';
-  protected static pluralName = 'gift_card_adjustments';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"},
     {"http_method": "get", "operation": "get", "ids": ["gift_card_id", "id"], "path": "gift_cards/<gift_card_id>/adjustments/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "gift_card_adjustment"
+  ];
+  protected static pluralNames: string[] = [
+    "gift_card_adjustments"
   ];
 
   protected static getJsonBodyName(): string

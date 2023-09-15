@@ -39,8 +39,6 @@ interface CountArgs {
 export class Webhook extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'webhook';
-  protected static pluralName = 'webhooks';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -50,6 +48,12 @@ export class Webhook extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "webhooks/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "webhooks.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "webhooks/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "webhook"
+  ];
+  protected static pluralNames: string[] = [
+    "webhooks"
   ];
 
   public static async find(

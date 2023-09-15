@@ -59,8 +59,6 @@ interface CountArgs {
 export class Product extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'product';
-  protected static pluralName = 'products';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
     "images": Image,
@@ -73,6 +71,12 @@ export class Product extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "products/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "product"
+  ];
+  protected static pluralNames: string[] = [
+    "products"
   ];
 
   public static async find(

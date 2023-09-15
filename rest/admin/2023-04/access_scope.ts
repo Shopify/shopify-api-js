@@ -15,13 +15,17 @@ interface AllArgs {
 export class AccessScope extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'access_scope';
-  protected static pluralName = 'access_scopes';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static customPrefix: string | null = "/admin/oauth";
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "access_scopes.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "access_scope"
+  ];
+  protected static pluralNames: string[] = [
+    "access_scopes"
   ];
 
   public static async all(

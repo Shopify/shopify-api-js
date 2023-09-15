@@ -24,8 +24,6 @@ interface AllArgs {
 export class ApplicationCharge extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'application_charge';
-  protected static pluralName = 'application_charges';
   protected static hasOne: {[key: string]: typeof Base} = {
     "currency": Currency
   };
@@ -34,6 +32,12 @@ export class ApplicationCharge extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "application_charges.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_charges/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_charges.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "application_charge"
+  ];
+  protected static pluralNames: string[] = [
+    "application_charges"
   ];
 
   public static async find(

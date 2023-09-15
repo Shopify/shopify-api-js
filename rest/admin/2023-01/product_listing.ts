@@ -40,8 +40,6 @@ interface ProductIdsArgs {
 export class ProductListing extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'product_listing';
-  protected static pluralName = 'product_listings';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
     "images": Image,
@@ -56,6 +54,12 @@ export class ProductListing extends Base {
     {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
   ];
   protected static primaryKey: string = "product_id";
+  protected static resourceNames: string[] = [
+    "product_listing"
+  ];
+  protected static pluralNames: string[] = [
+    "product_listings"
+  ];
 
   public static async find(
     {

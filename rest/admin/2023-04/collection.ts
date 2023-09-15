@@ -24,8 +24,6 @@ interface ProductsArgs {
 export class Collection extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'collection';
-  protected static pluralName = 'collections';
   protected static hasOne: {[key: string]: typeof Base} = {
     "image": Image
   };
@@ -33,6 +31,12 @@ export class Collection extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collections/<id>.json"},
     {"http_method": "get", "operation": "products", "ids": ["id"], "path": "collections/<id>/products.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "collection"
+  ];
+  protected static pluralNames: string[] = [
+    "collections"
   ];
 
   public static async find(

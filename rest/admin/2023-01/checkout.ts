@@ -28,8 +28,6 @@ interface CompleteArgs {
 export class Checkout extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'checkout';
-  protected static pluralName = 'checkouts';
   protected static hasOne: {[key: string]: typeof Base} = {
     "discount_code": DiscountCode,
     "order": Order
@@ -45,6 +43,12 @@ export class Checkout extends Base {
     {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
   ];
   protected static primaryKey: string = "token";
+  protected static resourceNames: string[] = [
+    "checkout"
+  ];
+  protected static pluralNames: string[] = [
+    "checkouts"
+  ];
 
   public static async find(
     {

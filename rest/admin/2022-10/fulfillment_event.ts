@@ -33,8 +33,6 @@ interface AllArgs {
 export class FulfillmentEvent extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'fulfillment_event';
-  protected static pluralName = 'fulfillment_events';
   protected static hasOne: {[key: string]: typeof Base} = {
     "country": Country,
     "province": Province
@@ -45,6 +43,12 @@ export class FulfillmentEvent extends Base {
     {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id", "id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "fulfillment_event"
+  ];
+  protected static pluralNames: string[] = [
+    "fulfillment_events"
   ];
 
   protected static getJsonBodyName(): string

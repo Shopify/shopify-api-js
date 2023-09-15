@@ -47,8 +47,6 @@ interface DisableArgs {
 export class GiftCard extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'gift_card';
-  protected static pluralName = 'gift_cards';
   protected static hasOne: {[key: string]: typeof Base} = {
     "balance": Balance,
     "currency": Currency
@@ -62,6 +60,12 @@ export class GiftCard extends Base {
     {"http_method": "post", "operation": "disable", "ids": ["id"], "path": "gift_cards/<id>/disable.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "gift_card"
+  ];
+  protected static pluralNames: string[] = [
+    "gift_cards"
   ];
 
   public static async find(

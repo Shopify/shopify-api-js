@@ -23,8 +23,6 @@ interface AllArgs {
 export class Asset extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'asset';
-  protected static pluralName = 'assets';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -34,6 +32,12 @@ export class Asset extends Base {
     {"http_method": "put", "operation": "put", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"}
   ];
   protected static primaryKey: string = "key";
+  protected static resourceNames: string[] = [
+    "asset"
+  ];
+  protected static pluralNames: string[] = [
+    "assets"
+  ];
 
   public static async delete(
     {

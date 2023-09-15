@@ -35,13 +35,13 @@ describe('LocationsForMove resource', () => {
 
     await shopify.rest.LocationsForMove.all({
       session: session,
-      fulfillment_order_id: 1046000814,
+      fulfillment_order_id: 1046000834,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2023-04/fulfillment_orders/1046000814/locations_for_move.json',
+      path: '/admin/api/2023-04/fulfillment_orders/1046000834/locations_for_move.json',
       query: '',
       headers,
       data: undefined

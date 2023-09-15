@@ -49,8 +49,6 @@ interface UpdateTrackingArgs {
 export class Fulfillment extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'fulfillment';
-  protected static pluralName = 'fulfillments';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -61,6 +59,12 @@ export class Fulfillment extends Base {
     {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillments/<id>/cancel.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
     {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "fulfillment"
+  ];
+  protected static pluralNames: string[] = [
+    "fulfillments"
   ];
 
   public static async find(

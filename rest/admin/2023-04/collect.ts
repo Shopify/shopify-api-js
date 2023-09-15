@@ -31,8 +31,6 @@ interface CountArgs {
 export class Collect extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'collect';
-  protected static pluralName = 'collects';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -41,6 +39,12 @@ export class Collect extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "collects.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collects/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "collects.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "collect"
+  ];
+  protected static pluralNames: string[] = [
+    "collects"
   ];
 
   public static async find(

@@ -49,8 +49,6 @@ interface BatchArgs {
 export class DiscountCode extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'discount_code';
-  protected static pluralName = 'discount_codes';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -64,6 +62,12 @@ export class DiscountCode extends Base {
     {"http_method": "post", "operation": "batch", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/batch.json"},
     {"http_method": "post", "operation": "post", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
     {"http_method": "put", "operation": "put", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "discount_code"
+  ];
+  protected static pluralNames: string[] = [
+    "discount_codes"
   ];
 
   public static async find(

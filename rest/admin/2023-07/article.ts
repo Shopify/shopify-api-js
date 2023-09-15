@@ -65,8 +65,6 @@ interface TagsArgs {
 export class Article extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'article';
-  protected static pluralName = 'articles';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
     "metafields": Metafield
@@ -81,6 +79,12 @@ export class Article extends Base {
     {"http_method": "get", "operation": "tags", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles/tags.json"},
     {"http_method": "post", "operation": "post", "ids": ["blog_id"], "path": "blogs/<blog_id>/articles.json"},
     {"http_method": "put", "operation": "put", "ids": ["blog_id", "id"], "path": "blogs/<blog_id>/articles/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "article"
+  ];
+  protected static pluralNames: string[] = [
+    "articles"
   ];
 
   public static async find(

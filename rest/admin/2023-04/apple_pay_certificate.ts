@@ -24,8 +24,6 @@ interface CsrArgs {
 export class ApplePayCertificate extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'apple_pay_certificate';
-  protected static pluralName = 'apple_pay_certificates';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -34,6 +32,12 @@ export class ApplePayCertificate extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "apple_pay_certificates.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "apple_pay_certificate"
+  ];
+  protected static pluralNames: string[] = [
+    "apple_pay_certificates"
   ];
 
   public static async find(

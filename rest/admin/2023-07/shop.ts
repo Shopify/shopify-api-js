@@ -16,12 +16,16 @@ interface AllArgs {
 export class Shop extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'shop';
-  protected static pluralName = 'shops';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "shop"
+  ];
+  protected static pluralNames: string[] = [
+    "shops"
   ];
 
   public static async all(

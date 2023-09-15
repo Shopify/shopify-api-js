@@ -79,8 +79,6 @@ interface CountArgs {
 export class Metafield extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'metafield';
-  protected static pluralName = 'metafields';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -156,6 +154,12 @@ export class Metafield extends Base {
     {"http_method": "put", "operation": "put", "ids": ["product_image_id", "id"], "path": "product_images/<product_image_id>/metafields/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["product_id", "id"], "path": "products/<product_id>/metafields/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "metafield"
+  ];
+  protected static pluralNames: string[] = [
+    "metafields"
   ];
 
   public static async find(

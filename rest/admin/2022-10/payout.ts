@@ -25,13 +25,17 @@ interface AllArgs {
 export class Payout extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'payout';
-  protected static pluralName = 'payouts';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/payouts.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/payouts/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "payout"
+  ];
+  protected static pluralNames: string[] = [
+    "payouts"
   ];
 
   public static async find(

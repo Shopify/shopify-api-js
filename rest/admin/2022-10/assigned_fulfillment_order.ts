@@ -17,12 +17,16 @@ interface AllArgs {
 export class AssignedFulfillmentOrder extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'fulfillment_order';
-  protected static pluralName = 'fulfillment_orders';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "assigned_fulfillment_orders.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "fulfillment_order"
+  ];
+  protected static pluralNames: string[] = [
+    "fulfillment_orders"
   ];
 
   public static async all(

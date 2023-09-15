@@ -28,8 +28,6 @@ interface InventoryLevelsArgs {
 export class Location extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'location';
-  protected static pluralName = 'locations';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -37,6 +35,12 @@ export class Location extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "locations.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "locations/<id>.json"},
     {"http_method": "get", "operation": "inventory_levels", "ids": ["id"], "path": "locations/<id>/inventory_levels.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "location"
+  ];
+  protected static pluralNames: string[] = [
+    "locations"
   ];
 
   public static async find(

@@ -25,8 +25,6 @@ interface AllArgs {
 export class Theme extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'theme';
-  protected static pluralName = 'themes';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -35,6 +33,12 @@ export class Theme extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "themes/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "themes.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "themes/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "theme"
+  ];
+  protected static pluralNames: string[] = [
+    "themes"
   ];
 
   public static async find(

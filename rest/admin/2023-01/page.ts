@@ -50,8 +50,6 @@ interface CountArgs {
 export class Page extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'page';
-  protected static pluralName = 'pages';
   protected static hasOne: {[key: string]: typeof Base} = {
     "metafield": Metafield
   };
@@ -63,6 +61,12 @@ export class Page extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "pages/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "page"
+  ];
+  protected static pluralNames: string[] = [
+    "pages"
   ];
 
   public static async find(

@@ -15,12 +15,16 @@ interface AllArgs {
 export class Currency extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'currency';
-  protected static pluralName = 'currencies';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "currencies.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "currency"
+  ];
+  protected static pluralNames: string[] = [
+    "currencies"
   ];
 
   public static async all(

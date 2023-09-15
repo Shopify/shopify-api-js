@@ -64,8 +64,6 @@ interface SendInviteArgs {
 export class Customer extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'customer';
-  protected static pluralName = 'customers';
   protected static hasOne: {[key: string]: typeof Base} = {
     "metafield": Metafield
   };
@@ -81,6 +79,12 @@ export class Customer extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
     {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "customer"
+  ];
+  protected static pluralNames: string[] = [
+    "customers"
   ];
 
   public static async find(

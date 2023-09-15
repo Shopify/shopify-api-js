@@ -15,12 +15,16 @@ interface AllArgs {
 export class DeprecatedApiCall extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'deprecated_api_call';
-  protected static pluralName = 'deprecated_api_calls';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "deprecated_api_calls.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "deprecated_api_call"
+  ];
+  protected static pluralNames: string[] = [
+    "deprecated_api_calls"
   ];
 
   public static async all(

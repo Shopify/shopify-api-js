@@ -22,14 +22,18 @@ interface TransactionsArgs {
 export class PaymentTransaction extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'payment_transaction';
-  protected static pluralName = 'payment_transactions';
   protected static hasOne: {[key: string]: typeof Base} = {
     "currency": Currency
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "transactions", "ids": [], "path": "shopify_payments/balance/transactions.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "payment_transaction"
+  ];
+  protected static pluralNames: string[] = [
+    "payment_transactions"
   ];
 
   public static async transactions(

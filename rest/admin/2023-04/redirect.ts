@@ -35,8 +35,6 @@ interface CountArgs {
 export class Redirect extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'redirect';
-  protected static pluralName = 'redirects';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -46,6 +44,12 @@ export class Redirect extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "redirects/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "redirects.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "redirects/<id>.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "redirect"
+  ];
+  protected static pluralNames: string[] = [
+    "redirects"
   ];
 
   public static async find(

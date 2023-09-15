@@ -19,14 +19,18 @@ interface AllArgs {
 export class StorefrontAccessToken extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'storefront_access_token';
-  protected static pluralName = 'storefront_access_tokens';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "storefront_access_tokens/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "storefront_access_tokens.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "storefront_access_tokens.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "storefront_access_token"
+  ];
+  protected static pluralNames: string[] = [
+    "storefront_access_tokens"
   ];
 
   public static async delete(

@@ -19,14 +19,18 @@ interface DeleteArgs {
 export class AndroidPayKey extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'android_pay_key';
-  protected static pluralName = 'android_pay_keys';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "android_pay_keys.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "android_pay_key"
+  ];
+  protected static pluralNames: string[] = [
+    "android_pay_keys"
   ];
 
   public static async find(

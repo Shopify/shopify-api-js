@@ -15,12 +15,16 @@ interface AllArgs {
 export class Policy extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'policy';
-  protected static pluralName = 'policies';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "policies.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "policy"
+  ];
+  protected static pluralNames: string[] = [
+    "policies"
   ];
 
   public static async all(

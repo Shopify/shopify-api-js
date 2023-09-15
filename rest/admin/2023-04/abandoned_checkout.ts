@@ -26,8 +26,6 @@ interface CheckoutsArgs {
 export class AbandonedCheckout extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'abandoned_checkout';
-  protected static pluralName = 'abandoned_checkouts';
   protected static hasOne: {[key: string]: typeof Base} = {
     "currency": Currency,
     "customer": Customer
@@ -38,6 +36,12 @@ export class AbandonedCheckout extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "abandoned_checkout"
+  ];
+  protected static pluralNames: string[] = [
+    "abandoned_checkouts"
   ];
 
   public static async checkouts(

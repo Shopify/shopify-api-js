@@ -21,12 +21,16 @@ interface AllArgs {
 export class TenderTransaction extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'tender_transaction';
-  protected static pluralName = 'tender_transactions';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "tender_transactions.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "tender_transaction"
+  ];
+  protected static pluralNames: string[] = [
+    "tender_transactions"
   ];
 
   public static async all(

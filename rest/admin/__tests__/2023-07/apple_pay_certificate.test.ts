@@ -31,7 +31,7 @@ describe('ApplePayCertificate resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"apple_pay_certificate": {"id": 1068938276, "status": "issuing", "merchant_id": null}}));
+    queueMockResponse(JSON.stringify({"apple_pay_certificate": {"id": 1068938275, "status": "issuing", "merchant_id": null}}));
 
     const apple_pay_certificate = new shopify.rest.ApplePayCertificate({session: session});
 
@@ -48,17 +48,17 @@ describe('ApplePayCertificate resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"apple_pay_certificate": {"id": 1068938275, "status": "csr", "merchant_id": null}}));
+    queueMockResponse(JSON.stringify({"apple_pay_certificate": {"id": 1068938276, "status": "csr", "merchant_id": null}}));
 
     await shopify.rest.ApplePayCertificate.find({
       session: session,
-      id: 1068938275,
+      id: 1068938276,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2023-07/apple_pay_certificates/1068938275.json',
+      path: '/admin/api/2023-07/apple_pay_certificates/1068938276.json',
       query: '',
       headers,
       data: undefined
@@ -90,13 +90,13 @@ describe('ApplePayCertificate resource', () => {
 
     await shopify.rest.ApplePayCertificate.delete({
       session: session,
-      id: 1068938278,
+      id: 1068938274,
     });
 
     expect({
       method: 'DELETE',
       domain,
-      path: '/admin/api/2023-07/apple_pay_certificates/1068938278.json',
+      path: '/admin/api/2023-07/apple_pay_certificates/1068938274.json',
       query: '',
       headers,
       data: undefined
@@ -108,13 +108,13 @@ describe('ApplePayCertificate resource', () => {
 
     await shopify.rest.ApplePayCertificate.csr({
       session: session,
-      id: 1068938274,
+      id: 1068938278,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2023-07/apple_pay_certificates/1068938274/csr.json',
+      path: '/admin/api/2023-07/apple_pay_certificates/1068938278/csr.json',
       query: '',
       headers,
       data: undefined

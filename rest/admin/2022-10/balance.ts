@@ -15,12 +15,16 @@ interface AllArgs {
 export class Balance extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'balance';
-  protected static pluralName = 'balances';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/balance.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "balance"
+  ];
+  protected static pluralNames: string[] = [
+    "balances"
   ];
 
   public static async all(
@@ -38,4 +42,5 @@ export class Balance extends Base {
     return response;
   }
 
+  public balance: {[key: string]: unknown}[] | null;
 }

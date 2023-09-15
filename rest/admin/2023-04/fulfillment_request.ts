@@ -22,14 +22,20 @@ interface RejectArgs {
 export class FulfillmentRequest extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'fulfillment_request';
-  protected static pluralName = 'fulfillment_requests';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "post", "operation": "accept", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request/accept.json"},
     {"http_method": "post", "operation": "post", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request.json"},
     {"http_method": "post", "operation": "reject", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request/reject.json"}
+  ];
+  protected static resourceNames: string[] = [
+    "submitted_fulfillment_order",
+    "fulfillment_order"
+  ];
+  protected static pluralNames: string[] = [
+    "submitted_fulfillment_orders",
+    "fulfillment_orders"
   ];
 
   public async accept(
