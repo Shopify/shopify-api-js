@@ -33,11 +33,11 @@ export class ApplicationCharge extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_charges/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_charges.json"}
   ];
-  protected static resourceNames: string[] = [
-    "application_charge"
-  ];
-  protected static pluralNames: string[] = [
-    "application_charges"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "application_charge",
+      "plural": "application_charges"
+    }
   ];
 
   public static async find(

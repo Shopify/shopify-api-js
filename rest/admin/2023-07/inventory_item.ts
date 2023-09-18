@@ -28,11 +28,11 @@ export class InventoryItem extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "inventory_items/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "inventory_items/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "inventory_item"
-  ];
-  protected static pluralNames: string[] = [
-    "inventory_items"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "inventory_item",
+      "plural": "inventory_items"
+    }
   ];
 
   public static async find(

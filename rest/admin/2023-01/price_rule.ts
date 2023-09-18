@@ -48,11 +48,11 @@ export class PriceRule extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "price_rule"
-  ];
-  protected static pluralNames: string[] = [
-    "price_rules"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "price_rule",
+      "plural": "price_rules"
+    }
   ];
 
   public static async find(

@@ -71,11 +71,11 @@ export class FulfillmentOrder extends Base {
     {"http_method": "post", "operation": "reschedule", "ids": ["id"], "path": "fulfillment_orders/<id>/reschedule.json"},
     {"http_method": "post", "operation": "set_fulfillment_orders_deadline", "ids": [], "path": "fulfillment_orders/set_fulfillment_orders_deadline.json"}
   ];
-  protected static resourceNames: string[] = [
-    "fulfillment_order"
-  ];
-  protected static pluralNames: string[] = [
-    "fulfillment_orders"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "fulfillment_order",
+      "plural": "fulfillment_orders"
+    }
   ];
 
   public static async find(

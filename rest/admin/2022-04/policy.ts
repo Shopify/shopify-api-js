@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -15,18 +15,24 @@ interface AllArgs {
 export class Policy extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['policy'];
-  protected static pluralNames: string[] = ['policies'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {http_method: 'get', operation: 'get', ids: [], path: 'policies.json'},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "policies.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "policy",
+      "plural": "policies"
+    }
   ];
 
-  public static async all({
-    session,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Policy>> {
+  public static async all(
+    {
+      session,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Policy>> {
     const response = await this.baseFind<Policy>({
       session: session,
       urlIds: {},

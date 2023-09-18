@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -16,27 +16,28 @@ interface AllArgs {
 export class LocationsForMove extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['locations_for_move'];
-  protected static pluralNames: string[] = ['locations_for_moves'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/locations_for_move.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['fulfillment_order_id'],
-      path: 'fulfillment_orders/<fulfillment_order_id>/locations_for_move.json',
-    },
+      "singular": "locations_for_move",
+      "plural": "locations_for_moves"
+    }
   ];
 
-  public static async all({
-    session,
-    fulfillment_order_id = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<LocationsForMove>> {
+  public static async all(
+    {
+      session,
+      fulfillment_order_id = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<LocationsForMove>> {
     const response = await this.baseFind<LocationsForMove>({
       session: session,
-      urlIds: {fulfillment_order_id: fulfillment_order_id},
+      urlIds: {"fulfillment_order_id": fulfillment_order_id},
       params: {...otherArgs},
     });
 

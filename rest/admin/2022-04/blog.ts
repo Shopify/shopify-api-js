@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -34,91 +34,85 @@ interface CountArgs {
 export class Blog extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['blog'];
-  protected static pluralNames: string[] = ['blogs'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
-    metafields: Metafield,
+    "metafields": Metafield
   };
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "blogs/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "blogs/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "blogs.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "blogs/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "blogs.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "blogs/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'blogs/<id>.json',
-    },
-    {http_method: 'get', operation: 'count', ids: [], path: 'blogs/count.json'},
-    {http_method: 'get', operation: 'get', ids: [], path: 'blogs.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'blogs/<id>.json',
-    },
-    {http_method: 'post', operation: 'post', ids: [], path: 'blogs.json'},
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'blogs/<id>.json',
-    },
+      "singular": "blog",
+      "plural": "blogs"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<Blog | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<Blog | null> {
     const result = await this.baseFind<Blog>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<Blog>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    limit = null,
-    since_id = null,
-    handle = null,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Blog>> {
+  public static async all(
+    {
+      session,
+      limit = null,
+      since_id = null,
+      handle = null,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Blog>> {
     const response = await this.baseFind<Blog>({
       session: session,
       urlIds: {},
-      params: {
-        limit: limit,
-        since_id: since_id,
-        handle: handle,
-        fields: fields,
-        ...otherArgs,
-      },
+      params: {"limit": limit, "since_id": since_id, "handle": handle, "fields": fields, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<Blog>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
       params: {...otherArgs},

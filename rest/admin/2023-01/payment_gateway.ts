@@ -32,11 +32,11 @@ export class PaymentGateway extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "payment_gateways.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "payment_gateways/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "payment_gateway"
-  ];
-  protected static pluralNames: string[] = [
-    "payment_gateways"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "payment_gateway",
+      "plural": "payment_gateways"
+    }
   ];
 
   public static async find(

@@ -29,11 +29,11 @@ export class PaymentTransaction extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "transactions", "ids": [], "path": "shopify_payments/balance/transactions.json"}
   ];
-  protected static resourceNames: string[] = [
-    "payment_transaction"
-  ];
-  protected static pluralNames: string[] = [
-    "payment_transactions"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "payment_transaction",
+      "plural": "payment_transactions"
+    }
   ];
 
   public static async transactions(

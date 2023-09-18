@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
@@ -26,56 +26,43 @@ interface CheckoutsArgs {
 export class AbandonedCheckout extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['abandoned_checkout'];
-  protected static pluralNames: string[] = ['abandoned_checkouts'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    currency: Currency,
-    customer: Customer,
+    "currency": Currency,
+    "customer": Customer
   };
   protected static hasMany: {[key: string]: typeof Base} = {
-    discount_codes: DiscountCode,
+    "discount_codes": DiscountCode
   };
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
+    {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'checkouts',
-      ids: [],
-      path: 'checkouts.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'checkouts',
-      ids: [],
-      path: 'checkouts.json',
-    },
+      "singular": "abandoned_checkout",
+      "plural": "abandoned_checkouts"
+    }
   ];
 
-  public static async checkouts({
-    session,
-    since_id = null,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    status = null,
-    limit = null,
-    ...otherArgs
-  }: CheckoutsArgs): Promise<unknown> {
+  public static async checkouts(
+    {
+      session,
+      since_id = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      status = null,
+      limit = null,
+      ...otherArgs
+    }: CheckoutsArgs
+  ): Promise<unknown> {
     const response = await this.request<AbandonedCheckout>({
-      http_method: 'get',
-      operation: 'checkouts',
+      http_method: "get",
+      operation: "checkouts",
       session: session,
       urlIds: {},
-      params: {
-        since_id: since_id,
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        status: status,
-        limit: limit,
-        ...otherArgs,
-      },
+      params: {"since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "status": status, "limit": limit, ...otherArgs},
       body: {},
       entity: null,
     });

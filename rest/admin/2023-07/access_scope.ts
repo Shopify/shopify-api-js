@@ -21,11 +21,11 @@ export class AccessScope extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "access_scopes.json"}
   ];
-  protected static resourceNames: string[] = [
-    "access_scope"
-  ];
-  protected static pluralNames: string[] = [
-    "access_scopes"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "access_scope",
+      "plural": "access_scopes"
+    }
   ];
 
   public static async all(

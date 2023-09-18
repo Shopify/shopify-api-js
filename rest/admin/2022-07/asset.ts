@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -23,65 +23,53 @@ interface AllArgs {
 export class Asset extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['asset'];
-  protected static pluralNames: string[] = ['assets'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['theme_id'],
-      path: 'themes/<theme_id>/assets.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['theme_id'],
-      path: 'themes/<theme_id>/assets.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['theme_id'],
-      path: 'themes/<theme_id>/assets.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['theme_id'],
-      path: 'themes/<theme_id>/assets.json',
-    },
+    {"http_method": "delete", "operation": "delete", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
+    {"http_method": "get", "operation": "get", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
+    {"http_method": "get", "operation": "get", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"},
+    {"http_method": "put", "operation": "put", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"}
   ];
-  protected static primaryKey: string = 'key';
+  protected static primaryKey: string = "key";
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "asset",
+      "plural": "assets"
+    }
+  ];
 
-  public static async delete({
-    session,
-    theme_id = null,
-    asset = null,
-  }: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      theme_id = null,
+      asset = null
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<Asset>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {theme_id: theme_id},
-      params: {asset: asset},
+      urlIds: {"theme_id": theme_id},
+      params: {"asset": asset},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    theme_id = null,
-    fields = null,
-    asset = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Asset>> {
+  public static async all(
+    {
+      session,
+      theme_id = null,
+      fields = null,
+      asset = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Asset>> {
     const response = await this.baseFind<Asset>({
       session: session,
-      urlIds: {theme_id: theme_id},
-      params: {fields: fields, asset: asset, ...otherArgs},
+      urlIds: {"theme_id": theme_id},
+      params: {"fields": fields, "asset": asset, ...otherArgs},
     });
 
     return response;

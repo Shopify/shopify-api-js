@@ -77,11 +77,11 @@ export class Comment extends Base {
     {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "comment"
-  ];
-  protected static pluralNames: string[] = [
-    "comments"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "comment",
+      "plural": "comments"
+    }
   ];
 
   public static async find(

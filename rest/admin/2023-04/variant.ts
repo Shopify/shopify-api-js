@@ -48,11 +48,11 @@ export class Variant extends Base {
   protected static readOnlyAttributes: string[] = [
     "inventory_quantity"
   ];
-  protected static resourceNames: string[] = [
-    "variant"
-  ];
-  protected static pluralNames: string[] = [
-    "variants"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "variant",
+      "plural": "variants"
+    }
   ];
 
   public static async find(

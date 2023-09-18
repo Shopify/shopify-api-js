@@ -45,11 +45,11 @@ export class Redirect extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "redirects.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "redirects/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "redirect"
-  ];
-  protected static pluralNames: string[] = [
-    "redirects"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "redirect",
+      "plural": "redirects"
+    }
   ];
 
   public static async find(

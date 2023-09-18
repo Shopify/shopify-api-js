@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -21,53 +21,46 @@ interface AllArgs {
 export class InventoryItem extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['inventory_item'];
-  protected static pluralNames: string[] = ['inventory_items'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_items.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "inventory_items/<id>.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "inventory_items/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'inventory_items.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'inventory_items/<id>.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'inventory_items/<id>.json',
-    },
+      "singular": "inventory_item",
+      "plural": "inventory_items"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-  }: FindArgs): Promise<InventoryItem | null> {
+  public static async find(
+    {
+      session,
+      id
+    }: FindArgs
+  ): Promise<InventoryItem | null> {
     const result = await this.baseFind<InventoryItem>({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all({
-    session,
-    ids = null,
-    limit = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<InventoryItem>> {
+  public static async all(
+    {
+      session,
+      ids = null,
+      limit = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<InventoryItem>> {
     const response = await this.baseFind<InventoryItem>({
       session: session,
       urlIds: {},
-      params: {ids: ids, limit: limit, ...otherArgs},
+      params: {"ids": ids, "limit": limit, ...otherArgs},
     });
 
     return response;

@@ -47,11 +47,11 @@ export class ScriptTag extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "script_tags.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "script_tags/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "script_tag"
-  ];
-  protected static pluralNames: string[] = [
-    "script_tags"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "script_tag",
+      "plural": "script_tags"
+    }
   ];
 
   public static async find(

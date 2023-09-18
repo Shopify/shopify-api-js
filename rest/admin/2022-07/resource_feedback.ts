@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -15,29 +15,25 @@ interface AllArgs {
 export class ResourceFeedback extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['resource_feedback'];
-  protected static pluralNames: string[] = ['resource_feedbacks'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'resource_feedback.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: [],
-      path: 'resource_feedback.json',
-    },
+      "singular": "resource_feedback",
+      "plural": "resource_feedbacks"
+    }
   ];
 
-  public static async all({
-    session,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<ResourceFeedback>> {
+  public static async all(
+    {
+      session,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<ResourceFeedback>> {
     const response = await this.baseFind<ResourceFeedback>({
       session: session,
       urlIds: {},

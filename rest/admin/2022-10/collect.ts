@@ -40,11 +40,11 @@ export class Collect extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collects/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "collects.json"}
   ];
-  protected static resourceNames: string[] = [
-    "collect"
-  ];
-  protected static pluralNames: string[] = [
-    "collects"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "collect",
+      "plural": "collects"
+    }
   ];
 
   public static async find(

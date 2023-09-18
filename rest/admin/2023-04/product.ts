@@ -72,11 +72,11 @@ export class Product extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "product"
-  ];
-  protected static pluralNames: string[] = [
-    "products"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "product",
+      "plural": "products"
+    }
   ];
 
   public static async find(

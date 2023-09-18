@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -23,71 +23,59 @@ interface AllArgs {
 export class MobilePlatformApplication extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['mobile_platform_application'];
-  protected static pluralNames: string[] = ['mobile_platform_applications'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "mobile_platform_applications.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "mobile_platform_applications.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'mobile_platform_applications/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'mobile_platform_applications.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'mobile_platform_applications/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: [],
-      path: 'mobile_platform_applications.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'mobile_platform_applications/<id>.json',
-    },
+      "singular": "mobile_platform_application",
+      "plural": "mobile_platform_applications"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-  }: FindArgs): Promise<MobilePlatformApplication | null> {
+  public static async find(
+    {
+      session,
+      id
+    }: FindArgs
+  ): Promise<MobilePlatformApplication | null> {
     const result = await this.baseFind<MobilePlatformApplication>({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<MobilePlatformApplication>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<MobilePlatformApplication>> {
+  public static async all(
+    {
+      session,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<MobilePlatformApplication>> {
     const response = await this.baseFind<MobilePlatformApplication>({
       session: session,
       urlIds: {},

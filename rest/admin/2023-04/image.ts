@@ -45,11 +45,11 @@ export class Image extends Base {
     {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/images.json"},
     {"http_method": "put", "operation": "put", "ids": ["product_id", "id"], "path": "products/<product_id>/images/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "image"
-  ];
-  protected static pluralNames: string[] = [
-    "images"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "image",
+      "plural": "images"
+    }
   ];
 
   public static async find(

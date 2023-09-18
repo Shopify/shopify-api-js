@@ -32,11 +32,11 @@ export class MobilePlatformApplication extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "mobile_platform_applications.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "mobile_platform_application"
-  ];
-  protected static pluralNames: string[] = [
-    "mobile_platform_applications"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "mobile_platform_application",
+      "plural": "mobile_platform_applications"
+    }
   ];
 
   public static async find(

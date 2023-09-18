@@ -37,11 +37,11 @@ export class Province extends Base {
     {"http_method": "get", "operation": "get", "ids": ["country_id", "id"], "path": "countries/<country_id>/provinces/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["country_id", "id"], "path": "countries/<country_id>/provinces/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "province"
-  ];
-  protected static pluralNames: string[] = [
-    "provinces"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "province",
+      "plural": "provinces"
+    }
   ];
 
   public static async find(

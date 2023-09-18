@@ -44,11 +44,11 @@ export class Country extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "countries.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "countries/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "country"
-  ];
-  protected static pluralNames: string[] = [
-    "countries"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "country",
+      "plural": "countries"
+    }
   ];
 
   public static async find(

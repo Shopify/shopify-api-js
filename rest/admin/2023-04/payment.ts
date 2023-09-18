@@ -40,11 +40,11 @@ export class Payment extends Base {
     {"http_method": "get", "operation": "get", "ids": ["checkout_id", "id"], "path": "checkouts/<checkout_id>/payments/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["checkout_id"], "path": "checkouts/<checkout_id>/payments.json"}
   ];
-  protected static resourceNames: string[] = [
-    "payment"
-  ];
-  protected static pluralNames: string[] = [
-    "payments"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "payment",
+      "plural": "payments"
+    }
   ];
 
   public static async find(

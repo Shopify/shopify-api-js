@@ -20,11 +20,11 @@ export class Policy extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "policies.json"}
   ];
-  protected static resourceNames: string[] = [
-    "policy"
-  ];
-  protected static pluralNames: string[] = [
-    "policies"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "policy",
+      "plural": "policies"
+    }
   ];
 
   public static async all(

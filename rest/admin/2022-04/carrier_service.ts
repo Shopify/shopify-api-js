@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -23,71 +23,59 @@ interface AllArgs {
 export class CarrierService extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['carrier_service'];
-  protected static pluralNames: string[] = ['carrier_services'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "carrier_services/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "carrier_services.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "carrier_services/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "carrier_services.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "carrier_services/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'carrier_services/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'carrier_services.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'carrier_services/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: [],
-      path: 'carrier_services.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'carrier_services/<id>.json',
-    },
+      "singular": "carrier_service",
+      "plural": "carrier_services"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-  }: FindArgs): Promise<CarrierService | null> {
+  public static async find(
+    {
+      session,
+      id
+    }: FindArgs
+  ): Promise<CarrierService | null> {
     const result = await this.baseFind<CarrierService>({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<CarrierService>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<CarrierService>> {
+  public static async all(
+    {
+      session,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<CarrierService>> {
     const response = await this.baseFind<CarrierService>({
       session: session,
       urlIds: {},

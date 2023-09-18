@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -64,141 +64,100 @@ interface SendInviteArgs {
 export class Customer extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['customer'];
-  protected static pluralNames: string[] = ['customers'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    metafield: Metafield,
+    "metafield": Metafield
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "customers/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "customers.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customers/<id>.json"},
+    {"http_method": "get", "operation": "orders", "ids": ["id"], "path": "customers/<id>/orders.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "customers/search.json"},
+    {"http_method": "post", "operation": "account_activation_url", "ids": ["id"], "path": "customers/<id>/account_activation_url.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "customers.json"},
+    {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'customers/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'count',
-      ids: [],
-      path: 'customers/count.json',
-    },
-    {http_method: 'get', operation: 'get', ids: [], path: 'customers.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'customers/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'orders',
-      ids: ['id'],
-      path: 'customers/<id>/orders.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'search',
-      ids: [],
-      path: 'customers/search.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'account_activation_url',
-      ids: ['id'],
-      path: 'customers/<id>/account_activation_url.json',
-    },
-    {http_method: 'post', operation: 'post', ids: [], path: 'customers.json'},
-    {
-      http_method: 'post',
-      operation: 'send_invite',
-      ids: ['id'],
-      path: 'customers/<id>/send_invite.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'customers/<id>.json',
-    },
+      "singular": "customer",
+      "plural": "customers"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<Customer | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<Customer | null> {
     const result = await this.baseFind<Customer>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<Customer>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    ids = null,
-    since_id = null,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    limit = null,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Customer>> {
+  public static async all(
+    {
+      session,
+      ids = null,
+      since_id = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      limit = null,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Customer>> {
     const response = await this.baseFind<Customer>({
       session: session,
       urlIds: {},
-      params: {
-        ids: ids,
-        since_id: since_id,
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        limit: limit,
-        fields: fields,
-        ...otherArgs,
-      },
+      params: {"ids": ids, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "limit": limit, "fields": fields, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<Customer>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
-      params: {
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        ...otherArgs,
-      },
+      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -206,18 +165,20 @@ export class Customer extends Base {
     return response ? response.body : null;
   }
 
-  public static async orders({
-    session,
-    id,
-    status = null,
-    ...otherArgs
-  }: OrdersArgs): Promise<unknown> {
+  public static async orders(
+    {
+      session,
+      id,
+      status = null,
+      ...otherArgs
+    }: OrdersArgs
+  ): Promise<unknown> {
     const response = await this.request<Customer>({
-      http_method: 'get',
-      operation: 'orders',
+      http_method: "get",
+      operation: "orders",
       session: session,
-      urlIds: {id: id},
-      params: {status: status, ...otherArgs},
+      urlIds: {"id": id},
+      params: {"status": status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -225,26 +186,22 @@ export class Customer extends Base {
     return response ? response.body : null;
   }
 
-  public static async search({
-    session,
-    order = null,
-    query = null,
-    limit = null,
-    fields = null,
-    ...otherArgs
-  }: SearchArgs): Promise<unknown> {
+  public static async search(
+    {
+      session,
+      order = null,
+      query = null,
+      limit = null,
+      fields = null,
+      ...otherArgs
+    }: SearchArgs
+  ): Promise<unknown> {
     const response = await this.request<Customer>({
-      http_method: 'get',
-      operation: 'search',
+      http_method: "get",
+      operation: "search",
       session: session,
       urlIds: {},
-      params: {
-        order: order,
-        query: query,
-        limit: limit,
-        fields: fields,
-        ...otherArgs,
-      },
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -252,15 +209,17 @@ export class Customer extends Base {
     return response ? response.body : null;
   }
 
-  public async account_activation_url({
-    body = null,
-    ...otherArgs
-  }: AccountActivationUrlArgs): Promise<unknown> {
+  public async account_activation_url(
+    {
+      body = null,
+      ...otherArgs
+    }: AccountActivationUrlArgs
+  ): Promise<unknown> {
     const response = await this.request<Customer>({
-      http_method: 'post',
-      operation: 'account_activation_url',
+      http_method: "post",
+      operation: "account_activation_url",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -269,15 +228,17 @@ export class Customer extends Base {
     return response ? response.body : null;
   }
 
-  public async send_invite({
-    body = null,
-    ...otherArgs
-  }: SendInviteArgs): Promise<unknown> {
+  public async send_invite(
+    {
+      body = null,
+      ...otherArgs
+    }: SendInviteArgs
+  ): Promise<unknown> {
     const response = await this.request<Customer>({
-      http_method: 'post',
-      operation: 'send_invite',
+      http_method: "post",
+      operation: "send_invite",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

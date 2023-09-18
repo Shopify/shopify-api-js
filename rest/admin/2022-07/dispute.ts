@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -23,52 +23,47 @@ interface AllArgs {
 export class Dispute extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['dispute'];
-  protected static pluralNames: string[] = ['disputes'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/disputes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/disputes/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'shopify_payments/disputes.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'shopify_payments/disputes/<id>.json',
-    },
+      "singular": "dispute",
+      "plural": "disputes"
+    }
   ];
 
-  public static async find({session, id}: FindArgs): Promise<Dispute | null> {
+  public static async find(
+    {
+      session,
+      id
+    }: FindArgs
+  ): Promise<Dispute | null> {
     const result = await this.baseFind<Dispute>({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all({
-    session,
-    since_id = null,
-    last_id = null,
-    status = null,
-    initiated_at = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Dispute>> {
+  public static async all(
+    {
+      session,
+      since_id = null,
+      last_id = null,
+      status = null,
+      initiated_at = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Dispute>> {
     const response = await this.baseFind<Dispute>({
       session: session,
       urlIds: {},
-      params: {
-        since_id: since_id,
-        last_id: last_id,
-        status: status,
-        initiated_at: initiated_at,
-        ...otherArgs,
-      },
+      params: {"since_id": since_id, "last_id": last_id, "status": status, "initiated_at": initiated_at, ...otherArgs},
     });
 
     return response;

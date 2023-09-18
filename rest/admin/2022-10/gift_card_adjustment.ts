@@ -28,11 +28,11 @@ export class GiftCardAdjustment extends Base {
     {"http_method": "get", "operation": "get", "ids": ["gift_card_id", "id"], "path": "gift_cards/<gift_card_id>/adjustments/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"}
   ];
-  protected static resourceNames: string[] = [
-    "gift_card_adjustment"
-  ];
-  protected static pluralNames: string[] = [
-    "gift_card_adjustments"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "gift_card_adjustment",
+      "plural": "gift_card_adjustments"
+    }
   ];
 
   protected static getJsonBodyName(): string

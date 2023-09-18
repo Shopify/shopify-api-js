@@ -20,11 +20,11 @@ export class Currency extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "currencies.json"}
   ];
-  protected static resourceNames: string[] = [
-    "currency"
-  ];
-  protected static pluralNames: string[] = [
-    "currencies"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "currency",
+      "plural": "currencies"
+    }
   ];
 
   public static async all(

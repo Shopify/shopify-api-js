@@ -39,11 +39,11 @@ export class Report extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "reports.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "reports/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "report"
-  ];
-  protected static pluralNames: string[] = [
-    "reports"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "report",
+      "plural": "reports"
+    }
   ];
 
   public static async find(

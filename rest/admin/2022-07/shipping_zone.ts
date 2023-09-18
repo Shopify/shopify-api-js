@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -19,31 +19,32 @@ interface AllArgs {
 export class ShippingZone extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['shipping_zone'];
-  protected static pluralNames: string[] = ['shipping_zones'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
-    countries: Country,
-    provinces: Province,
+    "countries": Country,
+    "provinces": Province
   };
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shipping_zones.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'shipping_zones.json',
-    },
+      "singular": "shipping_zone",
+      "plural": "shipping_zones"
+    }
   ];
 
-  public static async all({
-    session,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<ShippingZone>> {
+  public static async all(
+    {
+      session,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<ShippingZone>> {
     const response = await this.baseFind<ShippingZone>({
       session: session,
       urlIds: {},
-      params: {fields: fields, ...otherArgs},
+      params: {"fields": fields, ...otherArgs},
     });
 
     return response;

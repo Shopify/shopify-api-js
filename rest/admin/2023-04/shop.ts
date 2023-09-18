@@ -21,11 +21,11 @@ export class Shop extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
   ];
-  protected static resourceNames: string[] = [
-    "shop"
-  ];
-  protected static pluralNames: string[] = [
-    "shops"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "shop",
+      "plural": "shops"
+    }
   ];
 
   public static async all(

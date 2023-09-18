@@ -26,11 +26,11 @@ export class DisputeEvidence extends Base {
     {"http_method": "put", "operation": "put", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_evidences.json"}
   ];
   protected static primaryKey: string = "dispute_id";
-  protected static resourceNames: string[] = [
-    "dispute_evidence"
-  ];
-  protected static pluralNames: string[] = [
-    "dispute_evidences"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "dispute_evidence",
+      "plural": "dispute_evidences"
+    }
   ];
 
   public static async find(

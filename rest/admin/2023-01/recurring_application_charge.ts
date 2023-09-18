@@ -43,11 +43,11 @@ export class RecurringApplicationCharge extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "recurring_application_charges.json"},
     {"http_method": "put", "operation": "customize", "ids": ["id"], "path": "recurring_application_charges/<id>/customize.json"}
   ];
-  protected static resourceNames: string[] = [
-    "recurring_application_charge"
-  ];
-  protected static pluralNames: string[] = [
-    "recurring_application_charges"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "recurring_application_charge",
+      "plural": "recurring_application_charges"
+    }
   ];
 
   public static async find(

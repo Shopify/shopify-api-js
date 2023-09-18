@@ -37,11 +37,11 @@ export class AbandonedCheckout extends Base {
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];
-  protected static resourceNames: string[] = [
-    "abandoned_checkout"
-  ];
-  protected static pluralNames: string[] = [
-    "abandoned_checkouts"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "abandoned_checkout",
+      "plural": "abandoned_checkouts"
+    }
   ];
 
   public static async checkouts(

@@ -22,11 +22,11 @@ export class DisputeFileUpload extends Base {
     {"http_method": "delete", "operation": "delete", "ids": ["dispute_id", "id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_file_uploads/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_file_uploads.json"}
   ];
-  protected static resourceNames: string[] = [
-    "dispute_file_upload"
-  ];
-  protected static pluralNames: string[] = [
-    "dispute_file_uploads"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "dispute_file_upload",
+      "plural": "dispute_file_uploads"
+    }
   ];
 
   public static async delete(

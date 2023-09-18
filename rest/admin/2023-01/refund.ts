@@ -45,11 +45,11 @@ export class Refund extends Base {
     {"http_method": "post", "operation": "calculate", "ids": ["order_id"], "path": "orders/<order_id>/refunds/calculate.json"},
     {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"}
   ];
-  protected static resourceNames: string[] = [
-    "refund"
-  ];
-  protected static pluralNames: string[] = [
-    "refunds"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "refund",
+      "plural": "refunds"
+    }
   ];
 
   public static async find(

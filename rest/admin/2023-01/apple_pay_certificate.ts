@@ -33,11 +33,11 @@ export class ApplePayCertificate extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "apple_pay_certificates.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "apple_pay_certificate"
-  ];
-  protected static pluralNames: string[] = [
-    "apple_pay_certificates"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "apple_pay_certificate",
+      "plural": "apple_pay_certificates"
+    }
   ];
 
   public static async find(

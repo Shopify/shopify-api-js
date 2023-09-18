@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -21,41 +21,34 @@ interface AllArgs {
 export class TenderTransaction extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['tender_transaction'];
-  protected static pluralNames: string[] = ['tender_transactions'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "tender_transactions.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'tender_transactions.json',
-    },
+      "singular": "tender_transaction",
+      "plural": "tender_transactions"
+    }
   ];
 
-  public static async all({
-    session,
-    limit = null,
-    since_id = null,
-    processed_at_min = null,
-    processed_at_max = null,
-    processed_at = null,
-    order = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<TenderTransaction>> {
+  public static async all(
+    {
+      session,
+      limit = null,
+      since_id = null,
+      processed_at_min = null,
+      processed_at_max = null,
+      processed_at = null,
+      order = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<TenderTransaction>> {
     const response = await this.baseFind<TenderTransaction>({
       session: session,
       urlIds: {},
-      params: {
-        limit: limit,
-        since_id: since_id,
-        processed_at_min: processed_at_min,
-        processed_at_max: processed_at_max,
-        processed_at: processed_at,
-        order: order,
-        ...otherArgs,
-      },
+      params: {"limit": limit, "since_id": since_id, "processed_at_min": processed_at_min, "processed_at_max": processed_at_max, "processed_at": processed_at, "order": order, ...otherArgs},
     });
 
     return response;

@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -35,107 +35,89 @@ interface CountArgs {
 export class Image extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['image'];
-  protected static pluralNames: string[] = ['images'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id", "id"], "path": "products/<product_id>/images/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": ["product_id"], "path": "products/<product_id>/images/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/images.json"},
+    {"http_method": "get", "operation": "get", "ids": ["product_id", "id"], "path": "products/<product_id>/images/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/images.json"},
+    {"http_method": "put", "operation": "put", "ids": ["product_id", "id"], "path": "products/<product_id>/images/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['product_id', 'id'],
-      path: 'products/<product_id>/images/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'count',
-      ids: ['product_id'],
-      path: 'products/<product_id>/images/count.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['product_id'],
-      path: 'products/<product_id>/images.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['product_id', 'id'],
-      path: 'products/<product_id>/images/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: ['product_id'],
-      path: 'products/<product_id>/images.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['product_id', 'id'],
-      path: 'products/<product_id>/images/<id>.json',
-    },
+      "singular": "image",
+      "plural": "images"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    product_id = null,
-    fields = null,
-  }: FindArgs): Promise<Image | null> {
+  public static async find(
+    {
+      session,
+      id,
+      product_id = null,
+      fields = null
+    }: FindArgs
+  ): Promise<Image | null> {
     const result = await this.baseFind<Image>({
       session: session,
-      urlIds: {id: id, product_id: product_id},
-      params: {fields: fields},
+      urlIds: {"id": id, "product_id": product_id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({
-    session,
-    id,
-    product_id = null,
-  }: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id,
+      product_id = null
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<Image>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id, product_id: product_id},
+      urlIds: {"id": id, "product_id": product_id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    product_id = null,
-    since_id = null,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Image>> {
+  public static async all(
+    {
+      session,
+      product_id = null,
+      since_id = null,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Image>> {
     const response = await this.baseFind<Image>({
       session: session,
-      urlIds: {product_id: product_id},
-      params: {since_id: since_id, fields: fields, ...otherArgs},
+      urlIds: {"product_id": product_id},
+      params: {"since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    product_id = null,
-    since_id = null,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      product_id = null,
+      since_id = null,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<Image>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
-      urlIds: {product_id: product_id},
-      params: {since_id: since_id, ...otherArgs},
+      urlIds: {"product_id": product_id},
+      params: {"since_id": since_id, ...otherArgs},
       body: {},
       entity: null,
     });

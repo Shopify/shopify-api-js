@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -63,141 +63,88 @@ interface SpamArgs {
 export class Comment extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['comment'];
-  protected static pluralNames: string[] = ['comments'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "count", "ids": [], "path": "comments/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "comments.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "comments/<id>.json"},
+    {"http_method": "post", "operation": "approve", "ids": ["id"], "path": "comments/<id>/approve.json"},
+    {"http_method": "post", "operation": "not_spam", "ids": ["id"], "path": "comments/<id>/not_spam.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "comments.json"},
+    {"http_method": "post", "operation": "remove", "ids": ["id"], "path": "comments/<id>/remove.json"},
+    {"http_method": "post", "operation": "restore", "ids": ["id"], "path": "comments/<id>/restore.json"},
+    {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'count',
-      ids: [],
-      path: 'comments/count.json',
-    },
-    {http_method: 'get', operation: 'get', ids: [], path: 'comments.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'comments/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'approve',
-      ids: ['id'],
-      path: 'comments/<id>/approve.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'not_spam',
-      ids: ['id'],
-      path: 'comments/<id>/not_spam.json',
-    },
-    {http_method: 'post', operation: 'post', ids: [], path: 'comments.json'},
-    {
-      http_method: 'post',
-      operation: 'remove',
-      ids: ['id'],
-      path: 'comments/<id>/remove.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'restore',
-      ids: ['id'],
-      path: 'comments/<id>/restore.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'spam',
-      ids: ['id'],
-      path: 'comments/<id>/spam.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'comments/<id>.json',
-    },
+      "singular": "comment",
+      "plural": "comments"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<Comment | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<Comment | null> {
     const result = await this.baseFind<Comment>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all({
-    session,
-    limit = null,
-    since_id = null,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    published_at_min = null,
-    published_at_max = null,
-    fields = null,
-    published_status = null,
-    status = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Comment>> {
+  public static async all(
+    {
+      session,
+      limit = null,
+      since_id = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      published_at_min = null,
+      published_at_max = null,
+      fields = null,
+      published_status = null,
+      status = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Comment>> {
     const response = await this.baseFind<Comment>({
       session: session,
       urlIds: {},
-      params: {
-        limit: limit,
-        since_id: since_id,
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        published_at_min: published_at_min,
-        published_at_max: published_at_max,
-        fields: fields,
-        published_status: published_status,
-        status: status,
-        ...otherArgs,
-      },
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "fields": fields, "published_status": published_status, "status": status, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    published_at_min = null,
-    published_at_max = null,
-    published_status = null,
-    status = null,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      published_at_min = null,
+      published_at_max = null,
+      published_status = null,
+      status = null,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<Comment>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
-      params: {
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        published_at_min: published_at_min,
-        published_at_max: published_at_max,
-        published_status: published_status,
-        status: status,
-        ...otherArgs,
-      },
+      params: {"created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, "status": status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -205,15 +152,17 @@ export class Comment extends Base {
     return response ? response.body : null;
   }
 
-  public async approve({
-    body = null,
-    ...otherArgs
-  }: ApproveArgs): Promise<unknown> {
+  public async approve(
+    {
+      body = null,
+      ...otherArgs
+    }: ApproveArgs
+  ): Promise<unknown> {
     const response = await this.request<Comment>({
-      http_method: 'post',
-      operation: 'approve',
+      http_method: "post",
+      operation: "approve",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -222,15 +171,17 @@ export class Comment extends Base {
     return response ? response.body : null;
   }
 
-  public async not_spam({
-    body = null,
-    ...otherArgs
-  }: NotSpamArgs): Promise<unknown> {
+  public async not_spam(
+    {
+      body = null,
+      ...otherArgs
+    }: NotSpamArgs
+  ): Promise<unknown> {
     const response = await this.request<Comment>({
-      http_method: 'post',
-      operation: 'not_spam',
+      http_method: "post",
+      operation: "not_spam",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -239,15 +190,17 @@ export class Comment extends Base {
     return response ? response.body : null;
   }
 
-  public async remove({
-    body = null,
-    ...otherArgs
-  }: RemoveArgs): Promise<unknown> {
+  public async remove(
+    {
+      body = null,
+      ...otherArgs
+    }: RemoveArgs
+  ): Promise<unknown> {
     const response = await this.request<Comment>({
-      http_method: 'post',
-      operation: 'remove',
+      http_method: "post",
+      operation: "remove",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -256,15 +209,17 @@ export class Comment extends Base {
     return response ? response.body : null;
   }
 
-  public async restore({
-    body = null,
-    ...otherArgs
-  }: RestoreArgs): Promise<unknown> {
+  public async restore(
+    {
+      body = null,
+      ...otherArgs
+    }: RestoreArgs
+  ): Promise<unknown> {
     const response = await this.request<Comment>({
-      http_method: 'post',
-      operation: 'restore',
+      http_method: "post",
+      operation: "restore",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -273,12 +228,17 @@ export class Comment extends Base {
     return response ? response.body : null;
   }
 
-  public async spam({body = null, ...otherArgs}: SpamArgs): Promise<unknown> {
+  public async spam(
+    {
+      body = null,
+      ...otherArgs
+    }: SpamArgs
+  ): Promise<unknown> {
     const response = await this.request<Comment>({
-      http_method: 'post',
-      operation: 'spam',
+      http_method: "post",
+      operation: "spam",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

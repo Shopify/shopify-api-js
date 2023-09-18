@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -16,23 +16,29 @@ interface AllArgs {
 export class Shop extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['shop'];
-  protected static pluralNames: string[] = ['shops'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {http_method: 'get', operation: 'get', ids: [], path: 'shop.json'},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shop.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "shop",
+      "plural": "shops"
+    }
   ];
 
-  public static async all({
-    session,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Shop>> {
+  public static async all(
+    {
+      session,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Shop>> {
     const response = await this.baseFind<Shop>({
       session: session,
       urlIds: {},
-      params: {fields: fields, ...otherArgs},
+      params: {"fields": fields, ...otherArgs},
     });
 
     return response;

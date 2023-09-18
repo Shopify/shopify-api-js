@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -32,94 +32,84 @@ interface CustomizeArgs {
 export class RecurringApplicationCharge extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['recurring_application_charge'];
-  protected static pluralNames: string[] = ['recurring_application_charges'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    currency: Currency,
+    "currency": Currency
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "recurring_application_charges.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "recurring_application_charges.json"},
+    {"http_method": "put", "operation": "customize", "ids": ["id"], "path": "recurring_application_charges/<id>/customize.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'recurring_application_charges/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'recurring_application_charges.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'recurring_application_charges/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: [],
-      path: 'recurring_application_charges.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'customize',
-      ids: ['id'],
-      path: 'recurring_application_charges/<id>/customize.json',
-    },
+      "singular": "recurring_application_charge",
+      "plural": "recurring_application_charges"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<RecurringApplicationCharge | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<RecurringApplicationCharge | null> {
     const result = await this.baseFind<RecurringApplicationCharge>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<RecurringApplicationCharge>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    since_id = null,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<RecurringApplicationCharge>> {
+  public static async all(
+    {
+      session,
+      since_id = null,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<RecurringApplicationCharge>> {
     const response = await this.baseFind<RecurringApplicationCharge>({
       session: session,
       urlIds: {},
-      params: {since_id: since_id, fields: fields, ...otherArgs},
+      params: {"since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response;
   }
 
-  public async customize({
-    body = null,
-    ...otherArgs
-  }: CustomizeArgs): Promise<unknown> {
+  public async customize(
+    {
+      body = null,
+      ...otherArgs
+    }: CustomizeArgs
+  ): Promise<unknown> {
     const response = await this.request<RecurringApplicationCharge>({
-      http_method: 'put',
-      operation: 'customize',
+      http_method: "put",
+      operation: "customize",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

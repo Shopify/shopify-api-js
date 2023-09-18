@@ -20,11 +20,11 @@ export class DeprecatedApiCall extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "deprecated_api_calls.json"}
   ];
-  protected static resourceNames: string[] = [
-    "deprecated_api_call"
-  ];
-  protected static pluralNames: string[] = [
-    "deprecated_api_calls"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "deprecated_api_call",
+      "plural": "deprecated_api_calls"
+    }
   ];
 
   public static async all(

@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -49,135 +49,92 @@ interface BatchArgs {
 export class DiscountCode extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['discount_code'];
-  protected static pluralNames: string[] = ['discount_codes'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "discount_codes/count.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"},
+    {"http_method": "get", "operation": "get_all", "ids": ["price_rule_id", "batch_id"], "path": "price_rules/<price_rule_id>/batch/<batch_id>.json"},
+    {"http_method": "get", "operation": "lookup", "ids": [], "path": "discount_codes/lookup.json"},
+    {"http_method": "post", "operation": "batch", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/batch.json"},
+    {"http_method": "post", "operation": "post", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
+    {"http_method": "put", "operation": "put", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['price_rule_id', 'id'],
-      path: 'price_rules/<price_rule_id>/discount_codes/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'count',
-      ids: [],
-      path: 'discount_codes/count.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['price_rule_id', 'batch_id'],
-      path: 'price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['price_rule_id'],
-      path: 'price_rules/<price_rule_id>/discount_codes.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['price_rule_id', 'id'],
-      path: 'price_rules/<price_rule_id>/discount_codes/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get_all',
-      ids: ['price_rule_id', 'batch_id'],
-      path: 'price_rules/<price_rule_id>/batch/<batch_id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'lookup',
-      ids: [],
-      path: 'discount_codes/lookup.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'batch',
-      ids: ['price_rule_id'],
-      path: 'price_rules/<price_rule_id>/batch.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: ['price_rule_id'],
-      path: 'price_rules/<price_rule_id>/discount_codes.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['price_rule_id', 'id'],
-      path: 'price_rules/<price_rule_id>/discount_codes/<id>.json',
-    },
+      "singular": "discount_code",
+      "plural": "discount_codes"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    price_rule_id = null,
-  }: FindArgs): Promise<DiscountCode | null> {
+  public static async find(
+    {
+      session,
+      id,
+      price_rule_id = null
+    }: FindArgs
+  ): Promise<DiscountCode | null> {
     const result = await this.baseFind<DiscountCode>({
       session: session,
-      urlIds: {id: id, price_rule_id: price_rule_id},
+      urlIds: {"id": id, "price_rule_id": price_rule_id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({
-    session,
-    id,
-    price_rule_id = null,
-  }: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id,
+      price_rule_id = null
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<DiscountCode>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id, price_rule_id: price_rule_id},
+      urlIds: {"id": id, "price_rule_id": price_rule_id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    price_rule_id = null,
-    batch_id = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<DiscountCode>> {
+  public static async all(
+    {
+      session,
+      price_rule_id = null,
+      batch_id = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<DiscountCode>> {
     const response = await this.baseFind<DiscountCode>({
       session: session,
-      urlIds: {price_rule_id: price_rule_id, batch_id: batch_id},
+      urlIds: {"price_rule_id": price_rule_id, "batch_id": batch_id},
       params: {...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    times_used = null,
-    times_used_min = null,
-    times_used_max = null,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      times_used = null,
+      times_used_min = null,
+      times_used_max = null,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<DiscountCode>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
-      params: {
-        times_used: times_used,
-        times_used_min: times_used_min,
-        times_used_max: times_used_max,
-        ...otherArgs,
-      },
+      params: {"times_used": times_used, "times_used_min": times_used_min, "times_used_max": times_used_max, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -185,17 +142,19 @@ export class DiscountCode extends Base {
     return response ? response.body : null;
   }
 
-  public static async get_all({
-    session,
-    price_rule_id = null,
-    batch_id = null,
-    ...otherArgs
-  }: GetAllArgs): Promise<unknown> {
+  public static async get_all(
+    {
+      session,
+      price_rule_id = null,
+      batch_id = null,
+      ...otherArgs
+    }: GetAllArgs
+  ): Promise<unknown> {
     const response = await this.request<DiscountCode>({
-      http_method: 'get',
-      operation: 'get_all',
+      http_method: "get",
+      operation: "get_all",
       session: session,
-      urlIds: {price_rule_id: price_rule_id, batch_id: batch_id},
+      urlIds: {"price_rule_id": price_rule_id, "batch_id": batch_id},
       params: {...otherArgs},
       body: {},
       entity: null,
@@ -204,17 +163,19 @@ export class DiscountCode extends Base {
     return response ? response.body : null;
   }
 
-  public static async lookup({
-    session,
-    code = null,
-    ...otherArgs
-  }: LookupArgs): Promise<unknown> {
+  public static async lookup(
+    {
+      session,
+      code = null,
+      ...otherArgs
+    }: LookupArgs
+  ): Promise<unknown> {
     const response = await this.request<DiscountCode>({
-      http_method: 'get',
-      operation: 'lookup',
+      http_method: "get",
+      operation: "lookup",
       session: session,
       urlIds: {},
-      params: {code: code, ...otherArgs},
+      params: {"code": code, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -222,12 +183,17 @@ export class DiscountCode extends Base {
     return response ? response.body : null;
   }
 
-  public async batch({body = null, ...otherArgs}: BatchArgs): Promise<unknown> {
+  public async batch(
+    {
+      body = null,
+      ...otherArgs
+    }: BatchArgs
+  ): Promise<unknown> {
     const response = await this.request<DiscountCode>({
-      http_method: 'post',
-      operation: 'batch',
+      http_method: "post",
+      operation: "batch",
       session: this.session,
-      urlIds: {price_rule_id: this.price_rule_id},
+      urlIds: {"price_rule_id": this.price_rule_id},
       params: {...otherArgs},
       body: body,
       entity: this,

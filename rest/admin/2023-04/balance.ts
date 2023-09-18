@@ -20,11 +20,11 @@ export class Balance extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/balance.json"}
   ];
-  protected static resourceNames: string[] = [
-    "balance"
-  ];
-  protected static pluralNames: string[] = [
-    "balances"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "balance",
+      "plural": "balances"
+    }
   ];
 
   public static async all(

@@ -36,11 +36,11 @@ export class Location extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "locations/<id>.json"},
     {"http_method": "get", "operation": "inventory_levels", "ids": ["id"], "path": "locations/<id>/inventory_levels.json"}
   ];
-  protected static resourceNames: string[] = [
-    "location"
-  ];
-  protected static pluralNames: string[] = [
-    "locations"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "location",
+      "plural": "locations"
+    }
   ];
 
   public static async find(

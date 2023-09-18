@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -50,128 +50,104 @@ interface CountArgs {
 export class Page extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['page'];
-  protected static pluralNames: string[] = ['pages'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    metafield: Metafield,
+    "metafield": Metafield
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "pages/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "pages/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "pages.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "pages/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'pages/<id>.json',
-    },
-    {http_method: 'get', operation: 'count', ids: [], path: 'pages/count.json'},
-    {http_method: 'get', operation: 'get', ids: [], path: 'pages.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'pages/<id>.json',
-    },
-    {http_method: 'post', operation: 'post', ids: [], path: 'pages.json'},
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'pages/<id>.json',
-    },
+      "singular": "page",
+      "plural": "pages"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<Page | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<Page | null> {
     const result = await this.baseFind<Page>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<Page>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    limit = null,
-    since_id = null,
-    title = null,
-    handle = null,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    published_at_min = null,
-    published_at_max = null,
-    fields = null,
-    published_status = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Page>> {
+  public static async all(
+    {
+      session,
+      limit = null,
+      since_id = null,
+      title = null,
+      handle = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      published_at_min = null,
+      published_at_max = null,
+      fields = null,
+      published_status = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Page>> {
     const response = await this.baseFind<Page>({
       session: session,
       urlIds: {},
-      params: {
-        limit: limit,
-        since_id: since_id,
-        title: title,
-        handle: handle,
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        published_at_min: published_at_min,
-        published_at_max: published_at_max,
-        fields: fields,
-        published_status: published_status,
-        ...otherArgs,
-      },
+      params: {"limit": limit, "since_id": since_id, "title": title, "handle": handle, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "fields": fields, "published_status": published_status, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    title = null,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    published_at_min = null,
-    published_at_max = null,
-    published_status = null,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      title = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      published_at_min = null,
+      published_at_max = null,
+      published_status = null,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<Page>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
-      params: {
-        title: title,
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        published_at_min: published_at_min,
-        published_at_max: published_at_max,
-        published_status: published_status,
-        ...otherArgs,
-      },
+      params: {"title": title, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "published_at_min": published_at_min, "published_at_max": published_at_max, "published_status": published_status, ...otherArgs},
       body: {},
       entity: null,
     });

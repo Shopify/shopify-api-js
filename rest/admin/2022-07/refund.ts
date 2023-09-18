@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -35,94 +35,74 @@ interface CalculateArgs {
 export class Refund extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['refund'];
-  protected static pluralNames: string[] = ['refunds'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
-    transactions: Transaction,
+    "transactions": Transaction
   };
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/refunds/<id>.json"},
+    {"http_method": "post", "operation": "calculate", "ids": ["order_id"], "path": "orders/<order_id>/refunds/calculate.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['order_id'],
-      path: 'orders/<order_id>/refunds.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['order_id', 'id'],
-      path: 'orders/<order_id>/refunds/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'calculate',
-      ids: ['order_id'],
-      path: 'orders/<order_id>/refunds/calculate.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: ['order_id'],
-      path: 'orders/<order_id>/refunds.json',
-    },
+      "singular": "refund",
+      "plural": "refunds"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    order_id = null,
-    fields = null,
-    in_shop_currency = null,
-  }: FindArgs): Promise<Refund | null> {
+  public static async find(
+    {
+      session,
+      id,
+      order_id = null,
+      fields = null,
+      in_shop_currency = null
+    }: FindArgs
+  ): Promise<Refund | null> {
     const result = await this.baseFind<Refund>({
       session: session,
-      urlIds: {id: id, order_id: order_id},
-      params: {fields: fields, in_shop_currency: in_shop_currency},
+      urlIds: {"id": id, "order_id": order_id},
+      params: {"fields": fields, "in_shop_currency": in_shop_currency},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all({
-    session,
-    order_id = null,
-    limit = null,
-    fields = null,
-    in_shop_currency = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Refund>> {
+  public static async all(
+    {
+      session,
+      order_id = null,
+      limit = null,
+      fields = null,
+      in_shop_currency = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Refund>> {
     const response = await this.baseFind<Refund>({
       session: session,
-      urlIds: {order_id: order_id},
-      params: {
-        limit: limit,
-        fields: fields,
-        in_shop_currency: in_shop_currency,
-        ...otherArgs,
-      },
+      urlIds: {"order_id": order_id},
+      params: {"limit": limit, "fields": fields, "in_shop_currency": in_shop_currency, ...otherArgs},
     });
 
     return response;
   }
 
-  public async calculate({
-    shipping = null,
-    refund_line_items = null,
-    currency = null,
-    body = null,
-    ...otherArgs
-  }: CalculateArgs): Promise<unknown> {
+  public async calculate(
+    {
+      shipping = null,
+      refund_line_items = null,
+      currency = null,
+      body = null,
+      ...otherArgs
+    }: CalculateArgs
+  ): Promise<unknown> {
     const response = await this.request<Refund>({
-      http_method: 'post',
-      operation: 'calculate',
+      http_method: "post",
+      operation: "calculate",
       session: this.session,
-      urlIds: {order_id: this.order_id},
-      params: {
-        shipping: shipping,
-        refund_line_items: refund_line_items,
-        currency: currency,
-        ...otherArgs,
-      },
+      urlIds: {"order_id": this.order_id},
+      params: {"shipping": shipping, "refund_line_items": refund_line_items, "currency": currency, ...otherArgs},
       body: body,
       entity: this,
     });

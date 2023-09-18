@@ -22,11 +22,11 @@ export class AssignedFulfillmentOrder extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "assigned_fulfillment_orders.json"}
   ];
-  protected static resourceNames: string[] = [
-    "fulfillment_order"
-  ];
-  protected static pluralNames: string[] = [
-    "fulfillment_orders"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "fulfillment_order",
+      "plural": "fulfillment_orders"
+    }
   ];
 
   public static async all(

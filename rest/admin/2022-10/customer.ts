@@ -80,11 +80,11 @@ export class Customer extends Base {
     {"http_method": "post", "operation": "send_invite", "ids": ["id"], "path": "customers/<id>/send_invite.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customers/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "customer"
-  ];
-  protected static pluralNames: string[] = [
-    "customers"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "customer",
+      "plural": "customers"
+    }
   ];
 
   public static async find(

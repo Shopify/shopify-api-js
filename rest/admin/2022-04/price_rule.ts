@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -38,104 +38,89 @@ interface CountArgs {
 export class PriceRule extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['price_rule'];
-  protected static pluralNames: string[] = ['price_rules'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "price_rules/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "price_rules/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "price_rules.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "price_rules/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'price_rules/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'count',
-      ids: [],
-      path: 'price_rules/count.json',
-    },
-    {http_method: 'get', operation: 'get', ids: [], path: 'price_rules.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'price_rules/<id>.json',
-    },
-    {http_method: 'post', operation: 'post', ids: [], path: 'price_rules.json'},
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'price_rules/<id>.json',
-    },
+      "singular": "price_rule",
+      "plural": "price_rules"
+    }
   ];
 
-  public static async find({session, id}: FindArgs): Promise<PriceRule | null> {
+  public static async find(
+    {
+      session,
+      id
+    }: FindArgs
+  ): Promise<PriceRule | null> {
     const result = await this.baseFind<PriceRule>({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<PriceRule>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    limit = null,
-    since_id = null,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    starts_at_min = null,
-    starts_at_max = null,
-    ends_at_min = null,
-    ends_at_max = null,
-    times_used = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<PriceRule>> {
+  public static async all(
+    {
+      session,
+      limit = null,
+      since_id = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      starts_at_min = null,
+      starts_at_max = null,
+      ends_at_min = null,
+      ends_at_max = null,
+      times_used = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<PriceRule>> {
     const response = await this.baseFind<PriceRule>({
       session: session,
       urlIds: {},
-      params: {
-        limit: limit,
-        since_id: since_id,
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        starts_at_min: starts_at_min,
-        starts_at_max: starts_at_max,
-        ends_at_min: ends_at_min,
-        ends_at_max: ends_at_max,
-        times_used: times_used,
-        ...otherArgs,
-      },
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "starts_at_min": starts_at_min, "starts_at_max": starts_at_max, "ends_at_min": ends_at_min, "ends_at_max": ends_at_max, "times_used": times_used, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<PriceRule>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
       params: {...otherArgs},
@@ -165,9 +150,7 @@ export class PriceRule extends Base {
   public prerequisite_shipping_price_range: {[key: string]: unknown} | null;
   public prerequisite_subtotal_range: {[key: string]: unknown} | null;
   public prerequisite_to_entitlement_purchase: {[key: string]: unknown} | null;
-  public prerequisite_to_entitlement_quantity_ratio: {
-    [key: string]: unknown;
-  } | null;
+  public prerequisite_to_entitlement_quantity_ratio: {[key: string]: unknown} | null;
   public prerequisite_variant_ids: number[] | null;
   public starts_at: string | null;
   public target_selection: string | null;

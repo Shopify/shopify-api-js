@@ -53,11 +53,11 @@ export class MarketingEvent extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "marketing_events.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "marketing_events/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "marketing_event"
-  ];
-  protected static pluralNames: string[] = [
-    "marketing_events"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "marketing_event",
+      "plural": "marketing_events"
+    }
   ];
 
   public static async find(

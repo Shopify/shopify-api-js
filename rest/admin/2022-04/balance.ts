@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -15,23 +15,24 @@ interface AllArgs {
 export class Balance extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['balance'];
-  protected static pluralNames: string[] = ['balances'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/balance.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'shopify_payments/balance.json',
-    },
+      "singular": "balance",
+      "plural": "balances"
+    }
   ];
 
-  public static async all({
-    session,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Balance>> {
+  public static async all(
+    {
+      session,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Balance>> {
     const response = await this.baseFind<Balance>({
       session: session,
       urlIds: {},
@@ -40,4 +41,5 @@ export class Balance extends Base {
 
     return response;
   }
+
 }

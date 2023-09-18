@@ -64,11 +64,11 @@ export class SmartCollection extends Base {
     {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "smart_collection"
-  ];
-  protected static pluralNames: string[] = [
-    "smart_collections"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "smart_collection",
+      "plural": "smart_collections"
+    }
   ];
 
   public static async find(

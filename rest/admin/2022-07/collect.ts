@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -31,81 +31,81 @@ interface CountArgs {
 export class Collect extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['collect'];
-  protected static pluralNames: string[] = ['collects'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "collects/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "collects/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "collects.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collects/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "collects.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'collects/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'count',
-      ids: [],
-      path: 'collects/count.json',
-    },
-    {http_method: 'get', operation: 'get', ids: [], path: 'collects.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'collects/<id>.json',
-    },
-    {http_method: 'post', operation: 'post', ids: [], path: 'collects.json'},
+      "singular": "collect",
+      "plural": "collects"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<Collect | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<Collect | null> {
     const result = await this.baseFind<Collect>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<Collect>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    limit = null,
-    since_id = null,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Collect>> {
+  public static async all(
+    {
+      session,
+      limit = null,
+      since_id = null,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Collect>> {
     const response = await this.baseFind<Collect>({
       session: session,
       urlIds: {},
-      params: {limit: limit, since_id: since_id, fields: fields, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<Collect>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
       params: {...otherArgs},

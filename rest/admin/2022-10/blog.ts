@@ -46,11 +46,11 @@ export class Blog extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "blogs.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "blogs/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "blog"
-  ];
-  protected static pluralNames: string[] = [
-    "blogs"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "blog",
+      "plural": "blogs"
+    }
   ];
 
   public static async find(

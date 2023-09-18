@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -15,18 +15,24 @@ interface AllArgs {
 export class Currency extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['currency'];
-  protected static pluralNames: string[] = ['currencies'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {http_method: 'get', operation: 'get', ids: [], path: 'currencies.json'},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "currencies.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "currency",
+      "plural": "currencies"
+    }
   ];
 
-  public static async all({
-    session,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Currency>> {
+  public static async all(
+    {
+      session,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Currency>> {
     const response = await this.baseFind<Currency>({
       session: session,
       urlIds: {},

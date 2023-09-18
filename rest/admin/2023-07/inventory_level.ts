@@ -55,11 +55,11 @@ export class InventoryLevel extends Base {
     {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
     {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
   ];
-  protected static resourceNames: string[] = [
-    "inventory_level"
-  ];
-  protected static pluralNames: string[] = [
-    "inventory_levels"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "inventory_level",
+      "plural": "inventory_levels"
+    }
   ];
 
   public static async delete(

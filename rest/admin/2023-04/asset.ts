@@ -32,11 +32,11 @@ export class Asset extends Base {
     {"http_method": "put", "operation": "put", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"}
   ];
   protected static primaryKey: string = "key";
-  protected static resourceNames: string[] = [
-    "asset"
-  ];
-  protected static pluralNames: string[] = [
-    "assets"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "asset",
+      "plural": "assets"
+    }
   ];
 
   public static async delete(

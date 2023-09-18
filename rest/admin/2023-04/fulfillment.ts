@@ -60,11 +60,11 @@ export class Fulfillment extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
     {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"}
   ];
-  protected static resourceNames: string[] = [
-    "fulfillment"
-  ];
-  protected static pluralNames: string[] = [
-    "fulfillments"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "fulfillment",
+      "plural": "fulfillments"
+    }
   ];
 
   public static async find(

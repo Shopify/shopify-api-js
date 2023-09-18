@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -21,56 +21,50 @@ interface AllArgs {
 export class GiftCardAdjustment extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['gift_card_adjustment'];
-  protected static pluralNames: string[] = ['gift_card_adjustments'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"},
+    {"http_method": "get", "operation": "get", "ids": ["gift_card_id", "id"], "path": "gift_cards/<gift_card_id>/adjustments/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": ["gift_card_id"], "path": "gift_cards/<gift_card_id>/adjustments.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['gift_card_id'],
-      path: 'gift_cards/<gift_card_id>/adjustments.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['gift_card_id', 'id'],
-      path: 'gift_cards/<gift_card_id>/adjustments/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: ['gift_card_id'],
-      path: 'gift_cards/<gift_card_id>/adjustments.json',
-    },
+      "singular": "gift_card_adjustment",
+      "plural": "gift_card_adjustments"
+    }
   ];
 
-  protected static getJsonBodyName(): string {
-    return 'adjustment';
+  protected static getJsonBodyName(): string
+  {
+    return "adjustment";
   }
 
-  public static async find({
-    session,
-    id,
-    gift_card_id = null,
-  }: FindArgs): Promise<GiftCardAdjustment | null> {
+  public static async find(
+    {
+      session,
+      id,
+      gift_card_id = null
+    }: FindArgs
+  ): Promise<GiftCardAdjustment | null> {
     const result = await this.baseFind<GiftCardAdjustment>({
       session: session,
-      urlIds: {id: id, gift_card_id: gift_card_id},
+      urlIds: {"id": id, "gift_card_id": gift_card_id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all({
-    session,
-    gift_card_id = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<GiftCardAdjustment>> {
+  public static async all(
+    {
+      session,
+      gift_card_id = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<GiftCardAdjustment>> {
     const response = await this.baseFind<GiftCardAdjustment>({
       session: session,
-      urlIds: {gift_card_id: gift_card_id},
+      urlIds: {"gift_card_id": gift_card_id},
       params: {...otherArgs},
     });
 

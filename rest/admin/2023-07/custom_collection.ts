@@ -57,11 +57,11 @@ export class CustomCollection extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "custom_collections.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "custom_collections/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "custom_collection"
-  ];
-  protected static pluralNames: string[] = [
-    "custom_collections"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "custom_collection",
+      "plural": "custom_collections"
+    }
   ];
 
   public static async find(

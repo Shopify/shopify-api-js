@@ -21,11 +21,11 @@ export class LocationsForMove extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/locations_for_move.json"}
   ];
-  protected static resourceNames: string[] = [
-    "locations_for_move"
-  ];
-  protected static pluralNames: string[] = [
-    "locations_for_moves"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "locations_for_move",
+      "plural": "locations_for_moves"
+    }
   ];
 
   public static async all(

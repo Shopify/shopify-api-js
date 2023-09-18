@@ -22,11 +22,11 @@ export class ProductResourceFeedback extends Base {
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": ["product_id"], "path": "products/<product_id>/resource_feedback.json"}
   ];
-  protected static resourceNames: string[] = [
-    "product_resource_feedback"
-  ];
-  protected static pluralNames: string[] = [
-    "product_resource_feedbacks"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "product_resource_feedback",
+      "plural": "product_resource_feedbacks"
+    }
   ];
 
   protected static getJsonBodyName(): string

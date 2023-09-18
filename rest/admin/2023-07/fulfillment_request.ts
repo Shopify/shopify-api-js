@@ -29,13 +29,15 @@ export class FulfillmentRequest extends Base {
     {"http_method": "post", "operation": "post", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request.json"},
     {"http_method": "post", "operation": "reject", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/fulfillment_request/reject.json"}
   ];
-  protected static resourceNames: string[] = [
-    "submitted_fulfillment_order",
-    "fulfillment_order"
-  ];
-  protected static pluralNames: string[] = [
-    "submitted_fulfillment_orders",
-    "fulfillment_orders"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "submitted_fulfillment_order",
+      "plural": "submitted_fulfillment_orders"
+    },
+    {
+      "singular": "fulfillment_order",
+      "plural": "fulfillment_orders"
+    }
   ];
 
   public async accept(

@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base} from '../../base';
 import {ResourcePath} from '../../types';
@@ -24,52 +24,50 @@ interface ProductsArgs {
 export class Collection extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['collection'];
-  protected static pluralNames: string[] = ['collections'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    image: Image,
+    "image": Image
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collections/<id>.json"},
+    {"http_method": "get", "operation": "products", "ids": ["id"], "path": "collections/<id>/products.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'collections/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'products',
-      ids: ['id'],
-      path: 'collections/<id>/products.json',
-    },
+      "singular": "collection",
+      "plural": "collections"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<Collection | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<Collection | null> {
     const result = await this.baseFind<Collection>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async products({
-    session,
-    id,
-    limit = null,
-    ...otherArgs
-  }: ProductsArgs): Promise<unknown> {
+  public static async products(
+    {
+      session,
+      id,
+      limit = null,
+      ...otherArgs
+    }: ProductsArgs
+  ): Promise<unknown> {
     const response = await this.request<Collection>({
-      http_method: 'get',
-      operation: 'products',
+      http_method: "get",
+      operation: "products",
       session: session,
-      urlIds: {id: id},
-      params: {limit: limit, ...otherArgs},
+      urlIds: {"id": id},
+      params: {"limit": limit, ...otherArgs},
       body: {},
       entity: null,
     });

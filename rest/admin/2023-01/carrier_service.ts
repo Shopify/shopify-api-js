@@ -32,11 +32,11 @@ export class CarrierService extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "carrier_services.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "carrier_services/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "carrier_service"
-  ];
-  protected static pluralNames: string[] = [
-    "carrier_services"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "carrier_service",
+      "plural": "carrier_services"
+    }
   ];
 
   public static async find(

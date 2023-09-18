@@ -34,11 +34,11 @@ export class Theme extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "themes.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "themes/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "theme"
-  ];
-  protected static pluralNames: string[] = [
-    "themes"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "theme",
+      "plural": "themes"
+    }
   ];
 
   public static async find(

@@ -31,11 +31,11 @@ export class Payout extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/payouts.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/payouts/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "payout"
-  ];
-  protected static pluralNames: string[] = [
-    "payouts"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "payout",
+      "plural": "payouts"
+    }
   ];
 
   public static async find(

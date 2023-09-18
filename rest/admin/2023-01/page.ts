@@ -62,11 +62,11 @@ export class Page extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "page"
-  ];
-  protected static pluralNames: string[] = [
-    "pages"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "page",
+      "plural": "pages"
+    }
   ];
 
   public static async find(

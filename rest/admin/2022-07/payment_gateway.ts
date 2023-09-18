@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -23,71 +23,59 @@ interface AllArgs {
 export class PaymentGateway extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['payment_gateway'];
-  protected static pluralNames: string[] = ['payment_gateways'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "payment_gateways/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "payment_gateways.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "payment_gateways/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "payment_gateways.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "payment_gateways/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'payment_gateways/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'payment_gateways.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'payment_gateways/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: [],
-      path: 'payment_gateways.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'payment_gateways/<id>.json',
-    },
+      "singular": "payment_gateway",
+      "plural": "payment_gateways"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-  }: FindArgs): Promise<PaymentGateway | null> {
+  public static async find(
+    {
+      session,
+      id
+    }: FindArgs
+  ): Promise<PaymentGateway | null> {
     const result = await this.baseFind<PaymentGateway>({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<PaymentGateway>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<PaymentGateway>> {
+  public static async all(
+    {
+      session,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<PaymentGateway>> {
     const response = await this.baseFind<PaymentGateway>({
       session: session,
       urlIds: {},

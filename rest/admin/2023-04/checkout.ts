@@ -43,11 +43,11 @@ export class Checkout extends Base {
     {"http_method": "put", "operation": "put", "ids": ["token"], "path": "checkouts/<token>.json"}
   ];
   protected static primaryKey: string = "token";
-  protected static resourceNames: string[] = [
-    "checkout"
-  ];
-  protected static pluralNames: string[] = [
-    "checkouts"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "checkout",
+      "plural": "checkouts"
+    }
   ];
 
   public static async find(

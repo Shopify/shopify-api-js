@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -47,91 +47,73 @@ interface DisableArgs {
 export class GiftCard extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['gift_card'];
-  protected static pluralNames: string[] = ['gift_cards'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    balance: Balance,
-    currency: Currency,
+    "balance": Balance,
+    "currency": Currency
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "gift_cards/<id>.json"},
+    {"http_method": "get", "operation": "search", "ids": [], "path": "gift_cards/search.json"},
+    {"http_method": "post", "operation": "disable", "ids": ["id"], "path": "gift_cards/<id>/disable.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'get',
-      operation: 'count',
-      ids: [],
-      path: 'gift_cards/count.json',
-    },
-    {http_method: 'get', operation: 'get', ids: [], path: 'gift_cards.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'gift_cards/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'search',
-      ids: [],
-      path: 'gift_cards/search.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'disable',
-      ids: ['id'],
-      path: 'gift_cards/<id>/disable.json',
-    },
-    {http_method: 'post', operation: 'post', ids: [], path: 'gift_cards.json'},
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'gift_cards/<id>.json',
-    },
+      "singular": "gift_card",
+      "plural": "gift_cards"
+    }
   ];
 
-  public static async find({session, id}: FindArgs): Promise<GiftCard | null> {
+  public static async find(
+    {
+      session,
+      id
+    }: FindArgs
+  ): Promise<GiftCard | null> {
     const result = await this.baseFind<GiftCard>({
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async all({
-    session,
-    status = null,
-    limit = null,
-    since_id = null,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<GiftCard>> {
+  public static async all(
+    {
+      session,
+      status = null,
+      limit = null,
+      since_id = null,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<GiftCard>> {
     const response = await this.baseFind<GiftCard>({
       session: session,
       urlIds: {},
-      params: {
-        status: status,
-        limit: limit,
-        since_id: since_id,
-        fields: fields,
-        ...otherArgs,
-      },
+      params: {"status": status, "limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    status = null,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      status = null,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<GiftCard>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
-      params: {status: status, ...otherArgs},
+      params: {"status": status, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -139,34 +121,26 @@ export class GiftCard extends Base {
     return response ? response.body : null;
   }
 
-  public static async search({
-    session,
-    order = null,
-    query = null,
-    limit = null,
-    fields = null,
-    created_at_min = null,
-    created_at_max = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    ...otherArgs
-  }: SearchArgs): Promise<unknown> {
+  public static async search(
+    {
+      session,
+      order = null,
+      query = null,
+      limit = null,
+      fields = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      ...otherArgs
+    }: SearchArgs
+  ): Promise<unknown> {
     const response = await this.request<GiftCard>({
-      http_method: 'get',
-      operation: 'search',
+      http_method: "get",
+      operation: "search",
       session: session,
       urlIds: {},
-      params: {
-        order: order,
-        query: query,
-        limit: limit,
-        fields: fields,
-        created_at_min: created_at_min,
-        created_at_max: created_at_max,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        ...otherArgs,
-      },
+      params: {"order": order, "query": query, "limit": limit, "fields": fields, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -174,15 +148,17 @@ export class GiftCard extends Base {
     return response ? response.body : null;
   }
 
-  public async disable({
-    body = null,
-    ...otherArgs
-  }: DisableArgs): Promise<unknown> {
+  public async disable(
+    {
+      body = null,
+      ...otherArgs
+    }: DisableArgs
+  ): Promise<unknown> {
     const response = await this.request<GiftCard>({
-      http_method: 'post',
-      operation: 'disable',
+      http_method: "post",
+      operation: "disable",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,

@@ -32,11 +32,11 @@ export class Collection extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collections/<id>.json"},
     {"http_method": "get", "operation": "products", "ids": ["id"], "path": "collections/<id>/products.json"}
   ];
-  protected static resourceNames: string[] = [
-    "collection"
-  ];
-  protected static pluralNames: string[] = [
-    "collections"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "collection",
+      "plural": "collections"
+    }
   ];
 
   public static async find(

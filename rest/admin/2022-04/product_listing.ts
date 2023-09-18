@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -40,112 +40,87 @@ interface ProductIdsArgs {
 export class ProductListing extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['product_listing'];
-  protected static pluralNames: string[] = ['product_listings'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
-    images: Image,
-    variants: Variant,
+    "images": Image,
+    "variants": Variant
   };
   protected static paths: ResourcePath[] = [
-    {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['product_id'],
-      path: 'product_listings/<product_id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'count',
-      ids: [],
-      path: 'product_listings/count.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: [],
-      path: 'product_listings.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['product_id'],
-      path: 'product_listings/<product_id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'product_ids',
-      ids: [],
-      path: 'product_listings/product_ids.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['product_id'],
-      path: 'product_listings/<product_id>.json',
-    },
+    {"http_method": "delete", "operation": "delete", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "product_listings/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "product_listings.json"},
+    {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "product_listings/<product_id>.json"},
+    {"http_method": "get", "operation": "product_ids", "ids": [], "path": "product_listings/product_ids.json"},
+    {"http_method": "put", "operation": "put", "ids": ["product_id"], "path": "product_listings/<product_id>.json"}
   ];
-  protected static primaryKey: string = 'product_id';
+  protected static primaryKey: string = "product_id";
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "product_listing",
+      "plural": "product_listings"
+    }
+  ];
 
-  public static async find({
-    session,
-    product_id,
-  }: FindArgs): Promise<ProductListing | null> {
+  public static async find(
+    {
+      session,
+      product_id
+    }: FindArgs
+  ): Promise<ProductListing | null> {
     const result = await this.baseFind<ProductListing>({
       session: session,
-      urlIds: {product_id: product_id},
+      urlIds: {"product_id": product_id},
       params: {},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({
-    session,
-    product_id,
-  }: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      product_id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<ProductListing>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {product_id: product_id},
+      urlIds: {"product_id": product_id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    product_ids = null,
-    limit = null,
-    collection_id = null,
-    updated_at_min = null,
-    handle = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<ProductListing>> {
+  public static async all(
+    {
+      session,
+      product_ids = null,
+      limit = null,
+      collection_id = null,
+      updated_at_min = null,
+      handle = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<ProductListing>> {
     const response = await this.baseFind<ProductListing>({
       session: session,
       urlIds: {},
-      params: {
-        product_ids: product_ids,
-        limit: limit,
-        collection_id: collection_id,
-        updated_at_min: updated_at_min,
-        handle: handle,
-        ...otherArgs,
-      },
+      params: {"product_ids": product_ids, "limit": limit, "collection_id": collection_id, "updated_at_min": updated_at_min, "handle": handle, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<ProductListing>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
       params: {...otherArgs},
@@ -156,17 +131,19 @@ export class ProductListing extends Base {
     return response ? response.body : null;
   }
 
-  public static async product_ids({
-    session,
-    limit = null,
-    ...otherArgs
-  }: ProductIdsArgs): Promise<unknown> {
+  public static async product_ids(
+    {
+      session,
+      limit = null,
+      ...otherArgs
+    }: ProductIdsArgs
+  ): Promise<unknown> {
     const response = await this.request<ProductListing>({
-      http_method: 'get',
-      operation: 'product_ids',
+      http_method: "get",
+      operation: "product_ids",
       session: session,
       urlIds: {},
-      params: {limit: limit, ...otherArgs},
+      params: {"limit": limit, ...otherArgs},
       body: {},
       entity: null,
     });

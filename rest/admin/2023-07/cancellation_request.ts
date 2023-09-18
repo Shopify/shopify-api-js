@@ -27,11 +27,11 @@ export class CancellationRequest extends Base {
     {"http_method": "post", "operation": "post", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request.json"},
     {"http_method": "post", "operation": "reject", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request/reject.json"}
   ];
-  protected static resourceNames: string[] = [
-    "cancellation_request"
-  ];
-  protected static pluralNames: string[] = [
-    "cancellation_requests"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "cancellation_request",
+      "plural": "cancellation_requests"
+    }
   ];
 
   public async accept(

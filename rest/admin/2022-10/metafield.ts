@@ -155,11 +155,11 @@ export class Metafield extends Base {
     {"http_method": "put", "operation": "put", "ids": ["product_id", "id"], "path": "products/<product_id>/metafields/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "metafield"
-  ];
-  protected static pluralNames: string[] = [
-    "metafields"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "metafield",
+      "plural": "metafields"
+    }
   ];
 
   public static async find(

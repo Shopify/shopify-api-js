@@ -26,11 +26,11 @@ export class AndroidPayKey extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "android_pay_keys.json"}
   ];
-  protected static resourceNames: string[] = [
-    "android_pay_key"
-  ];
-  protected static pluralNames: string[] = [
-    "android_pay_keys"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "android_pay_key",
+      "plural": "android_pay_keys"
+    }
   ];
 
   public static async find(

@@ -35,11 +35,11 @@ export class OrderRisk extends Base {
     {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/risks.json"},
     {"http_method": "put", "operation": "put", "ids": ["order_id", "id"], "path": "orders/<order_id>/risks/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "risk"
-  ];
-  protected static pluralNames: string[] = [
-    "risks"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "risk",
+      "plural": "risks"
+    }
   ];
 
   protected static getJsonBodyName(): string

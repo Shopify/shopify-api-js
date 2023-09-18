@@ -91,11 +91,11 @@ export class Order extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "orders.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "orders/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "order"
-  ];
-  protected static pluralNames: string[] = [
-    "orders"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "order",
+      "plural": "orders"
+    }
   ];
 
   public static async find(

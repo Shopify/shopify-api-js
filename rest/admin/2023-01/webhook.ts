@@ -49,11 +49,11 @@ export class Webhook extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "webhooks.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "webhooks/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "webhook"
-  ];
-  protected static pluralNames: string[] = [
-    "webhooks"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "webhook",
+      "plural": "webhooks"
+    }
   ];
 
   public static async find(

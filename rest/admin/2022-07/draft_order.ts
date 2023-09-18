@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -51,132 +51,97 @@ interface CompleteArgs {
 export class DraftOrder extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['draft_order'];
-  protected static pluralNames: string[] = ['draft_orders'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    customer: Customer,
+    "customer": Customer
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "draft_orders/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "draft_orders/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "draft_orders.json"},
+    {"http_method": "post", "operation": "send_invoice", "ids": ["id"], "path": "draft_orders/<id>/send_invoice.json"},
+    {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'draft_orders/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'count',
-      ids: [],
-      path: 'draft_orders/count.json',
-    },
-    {http_method: 'get', operation: 'get', ids: [], path: 'draft_orders.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'draft_orders/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: [],
-      path: 'draft_orders.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'send_invoice',
-      ids: ['id'],
-      path: 'draft_orders/<id>/send_invoice.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'complete',
-      ids: ['id'],
-      path: 'draft_orders/<id>/complete.json',
-    },
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'draft_orders/<id>.json',
-    },
+      "singular": "draft_order",
+      "plural": "draft_orders"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<DraftOrder | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<DraftOrder | null> {
     const result = await this.baseFind<DraftOrder>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<DraftOrder>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    fields = null,
-    limit = null,
-    since_id = null,
-    updated_at_min = null,
-    updated_at_max = null,
-    ids = null,
-    status = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<DraftOrder>> {
+  public static async all(
+    {
+      session,
+      fields = null,
+      limit = null,
+      since_id = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      ids = null,
+      status = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<DraftOrder>> {
     const response = await this.baseFind<DraftOrder>({
       session: session,
       urlIds: {},
-      params: {
-        fields: fields,
-        limit: limit,
-        since_id: since_id,
-        updated_at_min: updated_at_min,
-        updated_at_max: updated_at_max,
-        ids: ids,
-        status: status,
-        ...otherArgs,
-      },
+      params: {"fields": fields, "limit": limit, "since_id": since_id, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "ids": ids, "status": status, ...otherArgs},
     });
 
     return response;
   }
 
-  public static async count({
-    session,
-    since_id = null,
-    status = null,
-    updated_at_max = null,
-    updated_at_min = null,
-    ...otherArgs
-  }: CountArgs): Promise<unknown> {
+  public static async count(
+    {
+      session,
+      since_id = null,
+      status = null,
+      updated_at_max = null,
+      updated_at_min = null,
+      ...otherArgs
+    }: CountArgs
+  ): Promise<unknown> {
     const response = await this.request<DraftOrder>({
-      http_method: 'get',
-      operation: 'count',
+      http_method: "get",
+      operation: "count",
       session: session,
       urlIds: {},
-      params: {
-        since_id: since_id,
-        status: status,
-        updated_at_max: updated_at_max,
-        updated_at_min: updated_at_min,
-        ...otherArgs,
-      },
+      params: {"since_id": since_id, "status": status, "updated_at_max": updated_at_max, "updated_at_min": updated_at_min, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -184,15 +149,17 @@ export class DraftOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async send_invoice({
-    body = null,
-    ...otherArgs
-  }: SendInvoiceArgs): Promise<unknown> {
+  public async send_invoice(
+    {
+      body = null,
+      ...otherArgs
+    }: SendInvoiceArgs
+  ): Promise<unknown> {
     const response = await this.request<DraftOrder>({
-      http_method: 'post',
-      operation: 'send_invoice',
+      http_method: "post",
+      operation: "send_invoice",
       session: this.session,
-      urlIds: {id: this.id},
+      urlIds: {"id": this.id},
       params: {...otherArgs},
       body: body,
       entity: this,
@@ -201,22 +168,20 @@ export class DraftOrder extends Base {
     return response ? response.body : null;
   }
 
-  public async complete({
-    payment_gateway_id = null,
-    payment_pending = null,
-    body = null,
-    ...otherArgs
-  }: CompleteArgs): Promise<unknown> {
+  public async complete(
+    {
+      payment_gateway_id = null,
+      payment_pending = null,
+      body = null,
+      ...otherArgs
+    }: CompleteArgs
+  ): Promise<unknown> {
     const response = await this.request<DraftOrder>({
-      http_method: 'put',
-      operation: 'complete',
+      http_method: "put",
+      operation: "complete",
       session: this.session,
-      urlIds: {id: this.id},
-      params: {
-        payment_gateway_id: payment_gateway_id,
-        payment_pending: payment_pending,
-        ...otherArgs,
-      },
+      urlIds: {"id": this.id},
+      params: {"payment_gateway_id": payment_gateway_id, "payment_pending": payment_pending, ...otherArgs},
       body: body,
       entity: this,
     });

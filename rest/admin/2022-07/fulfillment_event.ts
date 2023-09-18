@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -33,85 +33,76 @@ interface AllArgs {
 export class FulfillmentEvent extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceNames: string[] = ['fulfillment_event'];
-  protected static pluralNames: string[] = ['fulfillment_events'];
   protected static hasOne: {[key: string]: typeof Base} = {
-    country: Country,
-    province: Province,
+    "country": Country,
+    "province": Province
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["order_id", "fulfillment_id", "id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"},
+    {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id", "id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['order_id', 'fulfillment_id', 'id'],
-      path: 'orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['order_id', 'fulfillment_id'],
-      path: 'orders/<order_id>/fulfillments/<fulfillment_id>/events.json',
-    },
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['order_id', 'fulfillment_id', 'id'],
-      path: 'orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json',
-    },
-    {
-      http_method: 'post',
-      operation: 'post',
-      ids: ['order_id', 'fulfillment_id'],
-      path: 'orders/<order_id>/fulfillments/<fulfillment_id>/events.json',
-    },
+      "singular": "fulfillment_event",
+      "plural": "fulfillment_events"
+    }
   ];
 
-  protected static getJsonBodyName(): string {
-    return 'event';
+  protected static getJsonBodyName(): string
+  {
+    return "event";
   }
 
-  public static async find({
-    session,
-    id,
-    order_id = null,
-    fulfillment_id = null,
-    event_id = null,
-  }: FindArgs): Promise<FulfillmentEvent | null> {
+  public static async find(
+    {
+      session,
+      id,
+      order_id = null,
+      fulfillment_id = null,
+      event_id = null
+    }: FindArgs
+  ): Promise<FulfillmentEvent | null> {
     const result = await this.baseFind<FulfillmentEvent>({
       session: session,
-      urlIds: {id: id, order_id: order_id, fulfillment_id: fulfillment_id},
-      params: {event_id: event_id},
+      urlIds: {"id": id, "order_id": order_id, "fulfillment_id": fulfillment_id},
+      params: {"event_id": event_id},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({
-    session,
-    id,
-    order_id = null,
-    fulfillment_id = null,
-  }: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id,
+      order_id = null,
+      fulfillment_id = null
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<FulfillmentEvent>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id, order_id: order_id, fulfillment_id: fulfillment_id},
+      urlIds: {"id": id, "order_id": order_id, "fulfillment_id": fulfillment_id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    order_id = null,
-    fulfillment_id = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<FulfillmentEvent>> {
+  public static async all(
+    {
+      session,
+      order_id = null,
+      fulfillment_id = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<FulfillmentEvent>> {
     const response = await this.baseFind<FulfillmentEvent>({
       session: session,
-      urlIds: {order_id: order_id, fulfillment_id: fulfillment_id},
+      urlIds: {"order_id": order_id, "fulfillment_id": fulfillment_id},
       params: {...otherArgs},
     });
 

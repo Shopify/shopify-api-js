@@ -65,11 +65,11 @@ export class DraftOrder extends Base {
     {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "draft_order"
-  ];
-  protected static pluralNames: string[] = [
-    "draft_orders"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "draft_order",
+      "plural": "draft_orders"
+    }
   ];
 
   public static async find(

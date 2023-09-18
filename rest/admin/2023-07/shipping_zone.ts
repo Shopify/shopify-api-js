@@ -27,11 +27,11 @@ export class ShippingZone extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shipping_zones.json"}
   ];
-  protected static resourceNames: string[] = [
-    "shipping_zone"
-  ];
-  protected static pluralNames: string[] = [
-    "shipping_zones"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "shipping_zone",
+      "plural": "shipping_zones"
+    }
   ];
 
   public static async all(

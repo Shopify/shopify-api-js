@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
- * This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
- ***********************************************************************************************************************/
+* This file is auto-generated. If you have an issue, please create a GitHub issue.                                     *
+***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
 import {ResourcePath} from '../../types';
@@ -25,67 +25,65 @@ interface AllArgs {
 export class Theme extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceNames: string[] = ['theme'];
-  protected static pluralNames: string[] = ['themes'];
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "themes/<id>.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "themes.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "themes/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "themes.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "themes/<id>.json"}
+  ];
+  protected static resourceNames: {[key: string]: string}[] = [
     {
-      http_method: 'delete',
-      operation: 'delete',
-      ids: ['id'],
-      path: 'themes/<id>.json',
-    },
-    {http_method: 'get', operation: 'get', ids: [], path: 'themes.json'},
-    {
-      http_method: 'get',
-      operation: 'get',
-      ids: ['id'],
-      path: 'themes/<id>.json',
-    },
-    {http_method: 'post', operation: 'post', ids: [], path: 'themes.json'},
-    {
-      http_method: 'put',
-      operation: 'put',
-      ids: ['id'],
-      path: 'themes/<id>.json',
-    },
+      "singular": "theme",
+      "plural": "themes"
+    }
   ];
 
-  public static async find({
-    session,
-    id,
-    fields = null,
-  }: FindArgs): Promise<Theme | null> {
+  public static async find(
+    {
+      session,
+      id,
+      fields = null
+    }: FindArgs
+  ): Promise<Theme | null> {
     const result = await this.baseFind<Theme>({
       session: session,
-      urlIds: {id: id},
-      params: {fields: fields},
+      urlIds: {"id": id},
+      params: {"fields": fields},
     });
     return result.data ? result.data[0] : null;
   }
 
-  public static async delete({session, id}: DeleteArgs): Promise<unknown> {
+  public static async delete(
+    {
+      session,
+      id
+    }: DeleteArgs
+  ): Promise<unknown> {
     const response = await this.request<Theme>({
-      http_method: 'delete',
-      operation: 'delete',
+      http_method: "delete",
+      operation: "delete",
       session: session,
-      urlIds: {id: id},
+      urlIds: {"id": id},
       params: {},
     });
 
     return response ? response.body : null;
   }
 
-  public static async all({
-    session,
-    fields = null,
-    ...otherArgs
-  }: AllArgs): Promise<FindAllResponse<Theme>> {
+  public static async all(
+    {
+      session,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<FindAllResponse<Theme>> {
     const response = await this.baseFind<Theme>({
       session: session,
       urlIds: {},
-      params: {fields: fields, ...otherArgs},
+      params: {"fields": fields, ...otherArgs},
     });
 
     return response;

@@ -21,11 +21,11 @@ export class ResourceFeedback extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"}
   ];
-  protected static resourceNames: string[] = [
-    "resource_feedback"
-  ];
-  protected static pluralNames: string[] = [
-    "resource_feedbacks"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "resource_feedback",
+      "plural": "resource_feedbacks"
+    }
   ];
 
   public static async all(

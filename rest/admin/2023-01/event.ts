@@ -44,11 +44,11 @@ export class Event extends Base {
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/events.json"},
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/events.json"}
   ];
-  protected static resourceNames: string[] = [
-    "event"
-  ];
-  protected static pluralNames: string[] = [
-    "events"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "event",
+      "plural": "events"
+    }
   ];
 
   public static async find(

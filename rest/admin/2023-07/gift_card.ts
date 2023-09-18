@@ -61,11 +61,11 @@ export class GiftCard extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "gift_cards.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "gift_cards/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "gift_card"
-  ];
-  protected static pluralNames: string[] = [
-    "gift_cards"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "gift_card",
+      "plural": "gift_cards"
+    }
   ];
 
   public static async find(

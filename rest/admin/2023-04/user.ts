@@ -32,11 +32,11 @@ export class User extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "users.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "users/<id>.json"}
   ];
-  protected static resourceNames: string[] = [
-    "user"
-  ];
-  protected static pluralNames: string[] = [
-    "users"
+  protected static resourceNames: {[key: string]: string}[] = [
+    {
+      "singular": "user",
+      "plural": "users"
+    }
   ];
 
   public static async find(
