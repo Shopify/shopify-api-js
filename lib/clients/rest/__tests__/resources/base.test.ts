@@ -153,6 +153,27 @@ describe('Base REST resource', () => {
     }).toMatchMadeHttpRequest();
   });
 
+  it('finds all resources with alternative name', async () => {
+    const body = {
+      fake_resource_alternative_names: [
+        {id: 1, attribute: 'attribute1'},
+        {id: 2, attribute: 'attribute2'},
+      ],
+    };
+    queueMockResponse(JSON.stringify(body));
+
+    const got = (await shopify.rest.FakeResource.all({session})).data;
+
+    expect([got[0].id, got[0].attribute]).toEqual([1, 'attribute1']);
+    expect([got[1].id, got[1].attribute]).toEqual([2, 'attribute2']);
+    expect({
+      method: 'GET',
+      domain,
+      path: `${prefix}/fake_resources.json`,
+      headers,
+    }).toMatchMadeHttpRequest();
+  });
+
   it('saves', async () => {
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};

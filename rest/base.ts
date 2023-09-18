@@ -57,8 +57,8 @@ export class Base {
   public static config: ConfigInterface;
 
   public static apiVersion: string;
-  protected static resourceNames: string[] = [];
-  protected static pluralNames: string[] = [];
+  protected static resourceNames: {[key: string]: string}[] = [];
+
   protected static primaryKey = 'id';
   protected static customPrefix: string | null = null;
   protected static readOnlyAttributes: string[] = [];
@@ -213,17 +213,19 @@ export class Base {
     data: Body,
   ): T[] {
     let instances: T[] = [];
-    this.resourceNames.forEach((resourceName, index) => {
-      if (data[this.pluralNames[index]] || Array.isArray(data[resourceName])) {
+    this.resourceNames.forEach((resourceName) => {
+      const singular = resourceName.singular;
+      const plural = resourceName.plural;
+      if (data[plural] || Array.isArray(data[singular])) {
         instances = instances.concat(
-          (data[this.pluralNames[index]] || data[resourceName]).reduce(
+          (data[plural] || data[singular]).reduce(
             (acc: T[], entry: Body) =>
               acc.concat(this.createInstance<T>(session, entry)),
             [],
           ),
         );
-      } else if (data[resourceName]) {
-        instances.push(this.createInstance<T>(session, data[resourceName]));
+      } else if (data[singular]) {
+        instances.push(this.createInstance<T>(session, data[singular]));
       }
     });
 
@@ -275,8 +277,15 @@ export class Base {
       entity: this,
     });
 
+    const flattenResourceNames: string[] = resourceNames.reduce<string[]>(
+      (acc, obj) => {
+        return acc.concat(Object.values(obj));
+      },
+      [],
+    );
+
     const matchResourceName = Object.keys(response.body as Body).filter(
-      (key: string) => resourceNames.includes(key),
+      (key: string) => flattenResourceNames.includes(key),
     );
 
     const body: Body | undefined = (response.body as Body)[
