@@ -1,5 +1,11 @@
-on: [push, pull_request]
-name: CI
+on:
+  push:
+    paths:
+    - 'packages/shopify-api'
+  pull_request:
+    paths:
+    - 'packages/shopify-api'
+name: shopify-api CI
 jobs:
   CI:
     name: CI_Node_${{ matrix.version }}
@@ -13,6 +19,8 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
       # TODO Remove the --ignore-engines flag when we drop support for Node 14
+      - name: Change directory
+        run: cd packages/shopify-api
       - name: Install
         run: yarn install --ignore-engines
       - name: Lint
