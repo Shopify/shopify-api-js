@@ -1,11 +1,19 @@
 name: Check Markdown links
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+    - 'packages/shopify-api'
+  pull_request:
+    paths:
+    - 'packages/shopify-api'
 
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
     steps:
+      - name: Change directory
+        run: cd packages/shopify-api
       - uses: actions/checkout@master
       - uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
