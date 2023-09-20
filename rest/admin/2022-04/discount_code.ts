@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -63,7 +63,7 @@ export class DiscountCode extends Base {
     {"http_method": "post", "operation": "post", "ids": ["price_rule_id"], "path": "price_rules/<price_rule_id>/discount_codes.json"},
     {"http_method": "put", "operation": "put", "ids": ["price_rule_id", "id"], "path": "price_rules/<price_rule_id>/discount_codes/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "discount_code",
       "plural": "discount_codes"

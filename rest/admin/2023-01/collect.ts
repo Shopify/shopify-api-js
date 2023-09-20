@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -40,7 +40,7 @@ export class Collect extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collects/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "collects.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "collect",
       "plural": "collects"

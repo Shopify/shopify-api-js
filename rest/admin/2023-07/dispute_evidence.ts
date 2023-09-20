@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -26,7 +26,7 @@ export class DisputeEvidence extends Base {
     {"http_method": "put", "operation": "put", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_evidences.json"}
   ];
   protected static primaryKey: string = "dispute_id";
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "dispute_evidence",
       "plural": "dispute_evidences"

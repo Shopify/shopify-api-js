@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -29,7 +29,7 @@ export class Dispute extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "shopify_payments/disputes.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "shopify_payments/disputes/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "dispute",
       "plural": "disputes"

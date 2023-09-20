@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -32,7 +32,7 @@ export class MobilePlatformApplication extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "mobile_platform_applications.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "mobile_platform_application",
       "plural": "mobile_platform_applications"

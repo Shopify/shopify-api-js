@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -71,7 +71,7 @@ export class FulfillmentOrder extends Base {
     {"http_method": "post", "operation": "reschedule", "ids": ["id"], "path": "fulfillment_orders/<id>/reschedule.json"},
     {"http_method": "post", "operation": "set_fulfillment_orders_deadline", "ids": [], "path": "fulfillment_orders/set_fulfillment_orders_deadline.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "fulfillment_order",
       "plural": "fulfillment_orders"

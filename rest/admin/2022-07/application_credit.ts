@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -32,7 +32,7 @@ export class ApplicationCredit extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_credits/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_credits.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "application_credit",
       "plural": "application_credits"

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -33,7 +33,7 @@ export class ApplicationCharge extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_charges/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_charges.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "application_charge",
       "plural": "application_charges"

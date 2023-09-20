@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -26,7 +26,7 @@ export class StorefrontAccessToken extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "storefront_access_tokens.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "storefront_access_tokens.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "storefront_access_token",
       "plural": "storefront_access_tokens"

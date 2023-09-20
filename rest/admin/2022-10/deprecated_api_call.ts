@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -20,7 +20,7 @@ export class DeprecatedApiCall extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "deprecated_api_calls.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "deprecated_api_call",
       "plural": "deprecated_api_calls"

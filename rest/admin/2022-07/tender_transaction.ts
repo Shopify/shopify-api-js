@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -26,7 +26,7 @@ export class TenderTransaction extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "tender_transactions.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "tender_transaction",
       "plural": "tender_transactions"

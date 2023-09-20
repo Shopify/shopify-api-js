@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -32,7 +32,7 @@ export class Asset extends Base {
     {"http_method": "put", "operation": "put", "ids": ["theme_id"], "path": "themes/<theme_id>/assets.json"}
   ];
   protected static primaryKey: string = "key";
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "asset",
       "plural": "assets"

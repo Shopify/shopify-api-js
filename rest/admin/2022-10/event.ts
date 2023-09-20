@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -44,7 +44,7 @@ export class Event extends Base {
     {"http_method": "get", "operation": "get", "ids": ["order_id"], "path": "orders/<order_id>/events.json"},
     {"http_method": "get", "operation": "get", "ids": ["product_id"], "path": "products/<product_id>/events.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "event",
       "plural": "events"

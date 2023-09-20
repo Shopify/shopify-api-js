@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -33,7 +33,7 @@ export class FulfillmentService extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillment_services.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "fulfillment_services/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "fulfillment_service",
       "plural": "fulfillment_services"

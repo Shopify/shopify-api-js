@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -27,7 +27,7 @@ export class ShippingZone extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "shipping_zones.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "shipping_zone",
       "plural": "shipping_zones"

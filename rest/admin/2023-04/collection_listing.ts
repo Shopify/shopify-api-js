@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -44,7 +44,7 @@ export class CollectionListing extends Base {
     {"http_method": "put", "operation": "put", "ids": ["collection_id"], "path": "collection_listings/<collection_id>.json"}
   ];
   protected static primaryKey: string = "collection_id";
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "collection_listing",
       "plural": "collection_listings"

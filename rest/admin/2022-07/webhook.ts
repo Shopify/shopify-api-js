@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -49,7 +49,7 @@ export class Webhook extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "webhooks.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "webhooks/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "webhook",
       "plural": "webhooks"

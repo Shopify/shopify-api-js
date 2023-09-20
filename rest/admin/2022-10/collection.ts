@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -32,7 +32,7 @@ export class Collection extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "collections/<id>.json"},
     {"http_method": "get", "operation": "products", "ids": ["id"], "path": "collections/<id>/products.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "collection",
       "plural": "collections"

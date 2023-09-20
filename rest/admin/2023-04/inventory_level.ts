@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -55,7 +55,7 @@ export class InventoryLevel extends Base {
     {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
     {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "inventory_level",
       "plural": "inventory_levels"

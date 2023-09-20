@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {ApiVersion} from '../../../lib/types';
 
 interface AcceptArgs {
@@ -27,7 +27,7 @@ export class CancellationRequest extends Base {
     {"http_method": "post", "operation": "post", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request.json"},
     {"http_method": "post", "operation": "reject", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request/reject.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "cancellation_request",
       "plural": "cancellation_requests"

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -51,7 +51,7 @@ export class CustomerSavedSearch extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "customer_saved_searches.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customer_saved_searches/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "customer_saved_search",
       "plural": "customer_saved_searches"

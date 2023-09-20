@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -33,7 +33,7 @@ export class ApplePayCertificate extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "apple_pay_certificates.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "apple_pay_certificates/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "apple_pay_certificate",
       "plural": "apple_pay_certificates"

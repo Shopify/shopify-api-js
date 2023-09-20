@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -77,7 +77,7 @@ export class Comment extends Base {
     {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "comment",
       "plural": "comments"

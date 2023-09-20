@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -26,7 +26,7 @@ export class AndroidPayKey extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "android_pay_keys/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "android_pay_keys.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "android_pay_key",
       "plural": "android_pay_keys"

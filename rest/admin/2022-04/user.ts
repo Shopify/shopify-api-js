@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -32,7 +32,7 @@ export class User extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "users.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "users/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "user",
       "plural": "users"

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -29,7 +29,7 @@ export class PaymentTransaction extends Base {
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "transactions", "ids": [], "path": "shopify_payments/balance/transactions.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "payment_transaction",
       "plural": "payment_transactions"

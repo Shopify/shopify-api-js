@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -62,7 +62,7 @@ export class Page extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "pages.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "pages/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "page",
       "plural": "pages"

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -37,7 +37,7 @@ export class AbandonedCheckout extends Base {
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"},
     {"http_method": "get", "operation": "checkouts", "ids": [], "path": "checkouts.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "abandoned_checkout",
       "plural": "abandoned_checkouts"

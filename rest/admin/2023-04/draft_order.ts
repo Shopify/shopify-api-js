@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -65,7 +65,7 @@ export class DraftOrder extends Base {
     {"http_method": "put", "operation": "complete", "ids": ["id"], "path": "draft_orders/<id>/complete.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "draft_orders/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "draft_order",
       "plural": "draft_orders"

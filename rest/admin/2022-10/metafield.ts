@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -155,7 +155,7 @@ export class Metafield extends Base {
     {"http_method": "put", "operation": "put", "ids": ["product_id", "id"], "path": "products/<product_id>/metafields/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["variant_id", "id"], "path": "variants/<variant_id>/metafields/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "metafield",
       "plural": "metafields"

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -21,7 +21,7 @@ export class ResourceFeedback extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "resource_feedback.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "resource_feedback.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "resource_feedback",
       "plural": "resource_feedbacks"

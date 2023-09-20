@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -48,7 +48,7 @@ export class PriceRule extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "price_rule",
       "plural": "price_rules"

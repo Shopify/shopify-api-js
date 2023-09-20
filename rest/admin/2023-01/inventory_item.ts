@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -28,7 +28,7 @@ export class InventoryItem extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "inventory_items/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "inventory_items/<id>.json"}
   ];
-  protected static resourceNames: {[key: string]: string}[] = [
+  protected static resourceNames: ResourceNames[] = [
     {
       "singular": "inventory_item",
       "plural": "inventory_items"
