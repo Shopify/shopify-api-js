@@ -1,5 +1,16 @@
 # Changelog
 
+## 7.7.0
+
+### Minor Changes
+
+- 5da6add9 / 3382a958: Allow overriding billing configurations when requesting payment, so that apps can use different values for different requests.
+- be262ba1: Allow using Session objects to create Storefront API clients that make requests using private access tokens.
+
+### Patch Changes
+
+- 8187031f: Fix CustomerAddress.all not returning anything
+
 ## 7.6.0
 
 ### Minor Changes
