@@ -2,7 +2,7 @@
 
 <!-- ![Build Status]() -->
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../../LICENSE.md)
 [![npm version](https://badge.fury.io/js/%40shopify%2Fshopify-api.svg)](https://badge.fury.io/js/%40shopify%2Fshopify-api)
 
 This library provides support for the backends of TypeScript/JavaScript [Shopify](https://www.shopify.com) apps to access the [Shopify Admin API](https://shopify.dev/docs/api/admin), by making it easier to perform the following actions:

@@ -1,11 +1,5 @@
-on:
-  push:
-    paths:
-    - 'packages/shopify-api'
-  pull_request:
-    paths:
-    - 'packages/shopify-api'
-name: shopify-api CI
+on: [push, pull_request]
+name: CI
 jobs:
   CI:
     name: CI_Node_${{ matrix.version }}
@@ -28,6 +22,6 @@ jobs:
       - name: Test
         run: yarn test
       - name: Test REST resources
-        run: yarn test:rest_resources
+        run: cd packages/shopify-api && yarn test:rest_resources
       - name: Run isomorphic adapter tests
-        run: yarn test:adapters
+        run: cd packages/shopify-api && yarn test:adapters
