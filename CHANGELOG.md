@@ -4,8 +4,7 @@
 
 ### Minor Changes
 
-- 5da6add9: Add new trialDays parameter to billing.request, so that apps can override the default config value.
-- 3382a958: Allow overriding all billing configurations when requesting payment
+- 5da6add9 / 3382a958: Allow overriding billing configurations when requesting payment, so that apps can use different values for different requests.
 - be262ba1: Allow using Session objects to create Storefront API clients that make requests using private access tokens.
 
 ### Patch Changes
