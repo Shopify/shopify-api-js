@@ -7,7 +7,7 @@ import {ApiVersion} from '../lib/types';
 import {ConfigInterface} from '../lib/base-types';
 import {Headers} from '../runtime/http';
 
-import {IdSet, Body, ResourcePath, ParamSet} from './types';
+import {IdSet, Body, ResourcePath, ParamSet, ResourceNames} from './types';
 
 interface BaseFindArgs {
   session: Session;
@@ -57,7 +57,7 @@ export class Base {
   public static config: ConfigInterface;
 
   public static apiVersion: string;
-  protected static resourceNames: {[key: string]: string}[] = [];
+  protected static resourceNames: ResourceNames[] = [];
 
   protected static primaryKey = 'id';
   protected static customPrefix: string | null = null;
