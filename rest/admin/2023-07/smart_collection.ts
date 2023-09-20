@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -53,8 +53,6 @@ interface OrderArgs {
 export class SmartCollection extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'smart_collection';
-  protected static pluralName = 'smart_collections';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -65,6 +63,12 @@ export class SmartCollection extends Base {
     {"http_method": "post", "operation": "post", "ids": [], "path": "smart_collections.json"},
     {"http_method": "put", "operation": "order", "ids": ["id"], "path": "smart_collections/<id>/order.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "smart_collections/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "smart_collection",
+      "plural": "smart_collections"
+    }
   ];
 
   public static async find(

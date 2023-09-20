@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -42,8 +42,6 @@ interface EngagementsArgs {
 export class MarketingEvent extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'marketing_event';
-  protected static pluralName = 'marketing_events';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -54,6 +52,12 @@ export class MarketingEvent extends Base {
     {"http_method": "post", "operation": "engagements", "ids": ["id"], "path": "marketing_events/<id>/engagements.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "marketing_events.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "marketing_events/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "marketing_event",
+      "plural": "marketing_events"
+    }
   ];
 
   public static async find(

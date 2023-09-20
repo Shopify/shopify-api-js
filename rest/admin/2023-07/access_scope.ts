@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -15,13 +15,17 @@ interface AllArgs {
 export class AccessScope extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'access_scope';
-  protected static pluralName = 'access_scopes';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static customPrefix: string | null = "/admin/oauth";
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "access_scopes.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "access_scope",
+      "plural": "access_scopes"
+    }
   ];
 
   public static async all(

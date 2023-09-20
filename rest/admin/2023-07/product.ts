@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -59,8 +59,6 @@ interface CountArgs {
 export class Product extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'product';
-  protected static pluralName = 'products';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
     "images": Image,
@@ -73,6 +71,12 @@ export class Product extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "products/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "products.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "products/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "product",
+      "plural": "products"
+    }
   ];
 
   public static async find(

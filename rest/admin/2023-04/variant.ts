@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -35,8 +35,6 @@ interface CountArgs {
 export class Variant extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'variant';
-  protected static pluralName = 'variants';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -48,8 +46,13 @@ export class Variant extends Base {
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "variants/<id>.json"}
   ];
   protected static readOnlyAttributes: string[] = [
-    "inventory_quantity",
-    "inventory_quantity_adjustment"
+    "inventory_quantity"
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "variant",
+      "plural": "variants"
+    }
   ];
 
   public static async find(
@@ -136,7 +139,6 @@ export class Variant extends Base {
   public inventory_management: string | null;
   public inventory_policy: string | null;
   public inventory_quantity: number | null;
-  public inventory_quantity_adjustment: number | null;
   public old_inventory_quantity: number | null;
   public option: {[key: string]: unknown} | null;
   public position: number | null;

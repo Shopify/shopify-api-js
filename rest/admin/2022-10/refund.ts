@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -35,8 +35,6 @@ interface CalculateArgs {
 export class Refund extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'refund';
-  protected static pluralName = 'refunds';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
     "transactions": Transaction
@@ -46,6 +44,12 @@ export class Refund extends Base {
     {"http_method": "get", "operation": "get", "ids": ["order_id", "id"], "path": "orders/<order_id>/refunds/<id>.json"},
     {"http_method": "post", "operation": "calculate", "ids": ["order_id"], "path": "orders/<order_id>/refunds/calculate.json"},
     {"http_method": "post", "operation": "post", "ids": ["order_id"], "path": "orders/<order_id>/refunds.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "refund",
+      "plural": "refunds"
+    }
   ];
 
   public static async find(

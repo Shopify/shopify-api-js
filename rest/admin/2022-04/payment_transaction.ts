@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -22,14 +22,18 @@ interface TransactionsArgs {
 export class PaymentTransaction extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'payment_transaction';
-  protected static pluralName = 'payment_transactions';
   protected static hasOne: {[key: string]: typeof Base} = {
     "currency": Currency
   };
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "transactions", "ids": [], "path": "shopify_payments/balance/transactions.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "payment_transaction",
+      "plural": "payment_transactions"
+    }
   ];
 
   public static async transactions(

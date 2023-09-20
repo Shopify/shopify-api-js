@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -30,8 +30,6 @@ interface AllArgs {
 export class Report extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'report';
-  protected static pluralName = 'reports';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -40,6 +38,12 @@ export class Report extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "reports/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "reports.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "reports/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "report",
+      "plural": "reports"
+    }
   ];
 
   public static async find(

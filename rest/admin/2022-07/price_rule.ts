@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -38,8 +38,6 @@ interface CountArgs {
 export class PriceRule extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'price_rule';
-  protected static pluralName = 'price_rules';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -49,6 +47,12 @@ export class PriceRule extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "price_rules/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "price_rules.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "price_rules/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "price_rule",
+      "plural": "price_rules"
+    }
   ];
 
   public static async find(

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -17,8 +17,6 @@ interface FindArgs {
 export class DisputeEvidence extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'dispute_evidence';
-  protected static pluralName = 'dispute_evidences';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
     "fulfillments": Fulfillment
@@ -28,6 +26,12 @@ export class DisputeEvidence extends Base {
     {"http_method": "put", "operation": "put", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_evidences.json"}
   ];
   protected static primaryKey: string = "dispute_id";
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "dispute_evidence",
+      "plural": "dispute_evidences"
+    }
+  ];
 
   public static async find(
     {

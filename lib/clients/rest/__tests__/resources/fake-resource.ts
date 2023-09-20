@@ -1,5 +1,5 @@
 import {Base, FindAllResponse} from '../../../../../rest/base';
-import {ResourcePath} from '../../../../../rest/types';
+import {ResourceNames, ResourcePath} from '../../../../../rest/types';
 import {Session} from '../../../../session/session';
 import {LATEST_API_VERSION} from '../../../../types';
 
@@ -23,8 +23,13 @@ interface FakeResourceCustomArgs {
 
 export class FakeResource extends Base {
   public static apiVersion = LATEST_API_VERSION;
-  protected static resourceName = 'fake_resource';
-  protected static pluralName = 'fake_resources';
+  protected static resourceNames: ResourceNames[] = [
+    {singular: 'fake_resource', plural: 'fake_resources'},
+    {
+      singular: 'fake_resource_alternative_name',
+      plural: 'fake_resource_alternative_names',
+    },
+  ];
 
   protected static readOnlyAttributes: string[] = ['unsaveable_attribute'];
 

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -17,12 +17,16 @@ interface AllArgs {
 export class AssignedFulfillmentOrder extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'fulfillment_order';
-  protected static pluralName = 'fulfillment_orders';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "assigned_fulfillment_orders.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "fulfillment_order",
+      "plural": "fulfillment_orders"
+    }
   ];
 
   public static async all(

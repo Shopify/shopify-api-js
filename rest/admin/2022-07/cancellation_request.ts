@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {ApiVersion} from '../../../lib/types';
 
 interface AcceptArgs {
@@ -20,14 +20,18 @@ interface RejectArgs {
 export class CancellationRequest extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'cancellation_request';
-  protected static pluralName = 'cancellation_requests';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "post", "operation": "accept", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request/accept.json"},
     {"http_method": "post", "operation": "post", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request.json"},
     {"http_method": "post", "operation": "reject", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/cancellation_request/reject.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "cancellation_request",
+      "plural": "cancellation_requests"
+    }
   ];
 
   public async accept(

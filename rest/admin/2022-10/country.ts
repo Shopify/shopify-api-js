@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -32,8 +32,6 @@ interface CountArgs {
 export class Country extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'country';
-  protected static pluralName = 'countries';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {
     "provinces": Province
@@ -45,6 +43,12 @@ export class Country extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "countries/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "countries.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "countries/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "country",
+      "plural": "countries"
+    }
   ];
 
   public static async find(

@@ -7,7 +7,7 @@ import {ApiVersion} from '../lib/types';
 import {ConfigInterface} from '../lib/base-types';
 import {Headers} from '../runtime/http';
 
-import {IdSet, Body, ResourcePath, ParamSet} from './types';
+import {IdSet, Body, ResourcePath, ParamSet, ResourceNames} from './types';
 
 interface BaseFindArgs {
   session: Session;
@@ -57,8 +57,8 @@ export class Base {
   public static config: ConfigInterface;
 
   public static apiVersion: string;
-  protected static resourceName = '';
-  protected static pluralName = '';
+  protected static resourceNames: ResourceNames[] = [];
+
   protected static primaryKey = 'id';
   protected static customPrefix: string | null = null;
   protected static readOnlyAttributes: string[] = [];
@@ -212,19 +212,24 @@ export class Base {
     session: Session,
     data: Body,
   ): T[] {
-    if (data[this.pluralName] || Array.isArray(data[this.resourceName])) {
-      return (data[this.pluralName] || data[this.resourceName]).reduce(
-        (acc: T[], entry: Body) =>
-          acc.concat(this.createInstance<T>(session, entry)),
-        [],
-      );
-    }
+    let instances: T[] = [];
+    this.resourceNames.forEach((resourceName) => {
+      const singular = resourceName.singular;
+      const plural = resourceName.plural;
+      if (data[plural] || Array.isArray(data[singular])) {
+        instances = instances.concat(
+          (data[plural] || data[singular]).reduce(
+            (acc: T[], entry: Body) =>
+              acc.concat(this.createInstance<T>(session, entry)),
+            [],
+          ),
+        );
+      } else if (data[singular]) {
+        instances.push(this.createInstance<T>(session, data[singular]));
+      }
+    });
 
-    if (data[this.resourceName]) {
-      return [this.createInstance<T>(session, data[this.resourceName])];
-    }
-
-    return [];
+    return instances;
   }
 
   protected static createInstance<T extends Base = Base>(
@@ -258,7 +263,7 @@ export class Base {
   }
 
   public async save({update = false}: SaveArgs = {}): Promise<void> {
-    const {primaryKey, resourceName} = this.resource();
+    const {primaryKey, resourceNames} = this.resource();
     const method = this[primaryKey] ? 'put' : 'post';
 
     const data = this.serialize(true);
@@ -272,7 +277,20 @@ export class Base {
       entity: this,
     });
 
-    const body: Body | undefined = (response.body as Body)[resourceName];
+    const flattenResourceNames: string[] = resourceNames.reduce<string[]>(
+      (acc, obj) => {
+        return acc.concat(Object.values(obj));
+      },
+      [],
+    );
+
+    const matchResourceName = Object.keys(response.body as Body).filter(
+      (key: string) => flattenResourceNames.includes(key),
+    );
+
+    const body: Body | undefined = (response.body as Body)[
+      matchResourceName[0]
+    ];
 
     if (update && body) {
       this.setData(body);

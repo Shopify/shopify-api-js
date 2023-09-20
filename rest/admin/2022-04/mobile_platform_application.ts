@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -23,8 +23,6 @@ interface AllArgs {
 export class MobilePlatformApplication extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'mobile_platform_application';
-  protected static pluralName = 'mobile_platform_applications';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -33,6 +31,12 @@ export class MobilePlatformApplication extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "mobile_platform_applications.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "mobile_platform_applications/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "mobile_platform_application",
+      "plural": "mobile_platform_applications"
+    }
   ];
 
   public static async find(

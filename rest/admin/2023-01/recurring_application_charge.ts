@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -32,8 +32,6 @@ interface CustomizeArgs {
 export class RecurringApplicationCharge extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'recurring_application_charge';
-  protected static pluralName = 'recurring_application_charges';
   protected static hasOne: {[key: string]: typeof Base} = {
     "currency": Currency
   };
@@ -44,6 +42,12 @@ export class RecurringApplicationCharge extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "recurring_application_charges.json"},
     {"http_method": "put", "operation": "customize", "ids": ["id"], "path": "recurring_application_charges/<id>/customize.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "recurring_application_charge",
+      "plural": "recurring_application_charges"
+    }
   ];
 
   public static async find(

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -35,8 +35,6 @@ interface CountArgs {
 export class Variant extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'variant';
-  protected static pluralName = 'variants';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -50,6 +48,12 @@ export class Variant extends Base {
   protected static readOnlyAttributes: string[] = [
     "inventory_quantity",
     "inventory_quantity_adjustment"
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "variant",
+      "plural": "variants"
+    }
   ];
 
   public static async find(

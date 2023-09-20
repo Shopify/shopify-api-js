@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -49,8 +49,6 @@ interface UpdateTrackingArgs {
 export class Fulfillment extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'fulfillment';
-  protected static pluralName = 'fulfillments';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -61,6 +59,12 @@ export class Fulfillment extends Base {
     {"http_method": "post", "operation": "cancel", "ids": ["id"], "path": "fulfillments/<id>/cancel.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "fulfillments.json"},
     {"http_method": "post", "operation": "update_tracking", "ids": ["id"], "path": "fulfillments/<id>/update_tracking.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "fulfillment",
+      "plural": "fulfillments"
+    }
   ];
 
   public static async find(

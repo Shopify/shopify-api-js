@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -37,8 +37,6 @@ interface CountArgs {
 export class ScriptTag extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static resourceName = 'script_tag';
-  protected static pluralName = 'script_tags';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -48,6 +46,12 @@ export class ScriptTag extends Base {
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "script_tags/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "script_tags.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "script_tags/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "script_tag",
+      "plural": "script_tags"
+    }
   ];
 
   public static async find(

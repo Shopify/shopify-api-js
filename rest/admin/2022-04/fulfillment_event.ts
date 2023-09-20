@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -33,8 +33,6 @@ interface AllArgs {
 export class FulfillmentEvent extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'fulfillment_event';
-  protected static pluralName = 'fulfillment_events';
   protected static hasOne: {[key: string]: typeof Base} = {
     "country": Country,
     "province": Province
@@ -45,6 +43,12 @@ export class FulfillmentEvent extends Base {
     {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"},
     {"http_method": "get", "operation": "get", "ids": ["order_id", "fulfillment_id", "id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["order_id", "fulfillment_id"], "path": "orders/<order_id>/fulfillments/<fulfillment_id>/events.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "fulfillment_event",
+      "plural": "fulfillment_events"
+    }
   ];
 
   protected static getJsonBodyName(): string

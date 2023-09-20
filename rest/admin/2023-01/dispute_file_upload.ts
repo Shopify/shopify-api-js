@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -16,13 +16,17 @@ interface DeleteArgs {
 export class DisputeFileUpload extends Base {
   public static apiVersion = ApiVersion.January23;
 
-  protected static resourceName = 'dispute_file_upload';
-  protected static pluralName = 'dispute_file_uploads';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["dispute_id", "id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_file_uploads/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["dispute_id"], "path": "shopify_payments/disputes/<dispute_id>/dispute_file_uploads.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "dispute_file_upload",
+      "plural": "dispute_file_uploads"
+    }
   ];
 
   public static async delete(

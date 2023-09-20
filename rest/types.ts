@@ -20,3 +20,8 @@ export interface ResourcePath {
 export interface ShopifyRestResources {
   [resource: string]: any;
 }
+
+export interface ResourceNames {
+  singular: string;
+  plural: string;
+}

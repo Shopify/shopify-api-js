@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -25,14 +25,18 @@ interface CurrentArgs {
 export class User extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'user';
-  protected static pluralName = 'users';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "current", "ids": [], "path": "users/current.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "users.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "users/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "user",
+      "plural": "users"
+    }
   ];
 
   public static async find(

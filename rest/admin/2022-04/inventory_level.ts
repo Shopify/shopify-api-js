@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -46,8 +46,6 @@ interface SetArgs {
 export class InventoryLevel extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'inventory_level';
-  protected static pluralName = 'inventory_levels';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -56,6 +54,12 @@ export class InventoryLevel extends Base {
     {"http_method": "post", "operation": "adjust", "ids": [], "path": "inventory_levels/adjust.json"},
     {"http_method": "post", "operation": "connect", "ids": [], "path": "inventory_levels/connect.json"},
     {"http_method": "post", "operation": "set", "ids": [], "path": "inventory_levels/set.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "inventory_level",
+      "plural": "inventory_levels"
+    }
   ];
 
   public static async delete(

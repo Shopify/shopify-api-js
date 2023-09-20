@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -23,8 +23,6 @@ interface AllArgs {
 export class ApplicationCredit extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'application_credit';
-  protected static pluralName = 'application_credits';
   protected static hasOne: {[key: string]: typeof Base} = {
     "currency": Currency
   };
@@ -33,6 +31,12 @@ export class ApplicationCredit extends Base {
     {"http_method": "get", "operation": "get", "ids": [], "path": "application_credits.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "application_credits/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "application_credits.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "application_credit",
+      "plural": "application_credits"
+    }
   ];
 
   public static async find(

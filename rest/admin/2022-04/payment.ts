@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -29,8 +29,6 @@ interface CountArgs {
 export class Payment extends Base {
   public static apiVersion = ApiVersion.April22;
 
-  protected static resourceName = 'payment';
-  protected static pluralName = 'payments';
   protected static hasOne: {[key: string]: typeof Base} = {
     "transaction": Transaction,
     "checkout": Checkout
@@ -41,6 +39,12 @@ export class Payment extends Base {
     {"http_method": "get", "operation": "get", "ids": ["checkout_id"], "path": "checkouts/<checkout_id>/payments.json"},
     {"http_method": "get", "operation": "get", "ids": ["checkout_id", "id"], "path": "checkouts/<checkout_id>/payments/<id>.json"},
     {"http_method": "post", "operation": "post", "ids": ["checkout_id"], "path": "checkouts/<checkout_id>/payments.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "payment",
+      "plural": "payments"
+    }
   ];
 
   public static async find(

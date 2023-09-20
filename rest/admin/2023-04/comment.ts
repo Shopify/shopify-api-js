@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -63,8 +63,6 @@ interface SpamArgs {
 export class Comment extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'comment';
-  protected static pluralName = 'comments';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
@@ -78,6 +76,12 @@ export class Comment extends Base {
     {"http_method": "post", "operation": "restore", "ids": ["id"], "path": "comments/<id>/restore.json"},
     {"http_method": "post", "operation": "spam", "ids": ["id"], "path": "comments/<id>/spam.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "comments/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "comment",
+      "plural": "comments"
+    }
   ];
 
   public static async find(

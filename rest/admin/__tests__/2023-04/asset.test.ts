@@ -49,7 +49,7 @@ describe('Asset resource', () => {
   });
 
   it('test_2', async () => {
-    queueMockResponse(JSON.stringify({"asset": {"key": "templates/index.liquid", "public_url": null, "created_at": "2010-07-12T15:31:50-04:00", "updated_at": "2023-07-05T18:50:56-04:00", "content_type": "application/x-liquid", "size": 110, "checksum": "cd71db2e14df976c8aa44b44c8dae77b", "theme_id": 828155753}}));
+    queueMockResponse(JSON.stringify({"asset": {"key": "templates/index.liquid", "public_url": null, "created_at": "2010-07-12T15:31:50-04:00", "updated_at": "2023-07-11T18:05:00-04:00", "content_type": "application/x-liquid", "size": 110, "checksum": "cd71db2e14df976c8aa44b44c8dae77b", "theme_id": 828155753}}));
 
     const asset = new shopify.rest.Asset({session: session});
     asset.theme_id = 828155753;
@@ -68,7 +68,7 @@ describe('Asset resource', () => {
   });
 
   it('test_3', async () => {
-    queueMockResponse(JSON.stringify({"asset": {"key": "assets/empty.gif", "public_url": "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/empty.gif?v=1688597455", "created_at": "2023-07-05T18:50:55-04:00", "updated_at": "2023-07-05T18:50:55-04:00", "content_type": "image/gif", "size": 43, "checksum": "45cf913e5d9d3c9b2058033056d3dd23", "theme_id": 828155753}}));
+    queueMockResponse(JSON.stringify({"asset": {"key": "assets/empty.gif", "public_url": "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/empty.gif?v=1689113108", "created_at": "2023-07-11T18:05:08-04:00", "updated_at": "2023-07-11T18:05:08-04:00", "content_type": "image/gif", "size": 43, "checksum": "45cf913e5d9d3c9b2058033056d3dd23", "theme_id": 828155753}}));
 
     const asset = new shopify.rest.Asset({session: session});
     asset.theme_id = 828155753;
@@ -87,7 +87,7 @@ describe('Asset resource', () => {
   });
 
   it('test_4', async () => {
-    queueMockResponse(JSON.stringify({"asset": {"key": "assets/bg-body.gif", "public_url": "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/bg-body.gif?v=1688597459", "created_at": "2010-07-12T15:31:50-04:00", "updated_at": "2023-07-05T18:50:59-04:00", "content_type": "image/gif", "size": 43, "checksum": "45cf913e5d9d3c9b2058033056d3dd23", "theme_id": 828155753}}));
+    queueMockResponse(JSON.stringify({"asset": {"key": "assets/bg-body.gif", "public_url": "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/bg-body.gif?v=1689113106", "created_at": "2010-07-12T15:31:50-04:00", "updated_at": "2023-07-11T18:05:06-04:00", "content_type": "image/gif", "size": 43, "checksum": "45cf913e5d9d3c9b2058033056d3dd23", "theme_id": 828155753}}));
 
     const asset = new shopify.rest.Asset({session: session});
     asset.theme_id = 828155753;
@@ -106,7 +106,7 @@ describe('Asset resource', () => {
   });
 
   it('test_5', async () => {
-    queueMockResponse(JSON.stringify({"asset": {"key": "layout/alternate.liquid", "public_url": null, "created_at": "2023-07-05T18:50:58-04:00", "updated_at": "2023-07-05T18:50:58-04:00", "content_type": "application/x-liquid", "size": 3049, "checksum": "1879a06996941b2ff1ff485a1fe60a97", "theme_id": 828155753}}));
+    queueMockResponse(JSON.stringify({"asset": {"key": "layout/alternate.liquid", "public_url": null, "created_at": "2023-07-11T18:05:03-04:00", "updated_at": "2023-07-11T18:05:03-04:00", "content_type": "application/x-liquid", "size": 3049, "checksum": "1879a06996941b2ff1ff485a1fe60a97", "theme_id": 828155753}}));
 
     const asset = new shopify.rest.Asset({session: session});
     asset.theme_id = 828155753;

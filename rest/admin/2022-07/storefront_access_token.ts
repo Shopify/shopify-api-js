@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -19,14 +19,18 @@ interface AllArgs {
 export class StorefrontAccessToken extends Base {
   public static apiVersion = ApiVersion.July22;
 
-  protected static resourceName = 'storefront_access_token';
-  protected static pluralName = 'storefront_access_tokens';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "storefront_access_tokens/<id>.json"},
     {"http_method": "get", "operation": "get", "ids": [], "path": "storefront_access_tokens.json"},
     {"http_method": "post", "operation": "post", "ids": [], "path": "storefront_access_tokens.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "storefront_access_token",
+      "plural": "storefront_access_tokens"
+    }
   ];
 
   public static async delete(

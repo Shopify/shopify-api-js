@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -21,14 +21,18 @@ interface AllArgs {
 export class InventoryItem extends Base {
   public static apiVersion = ApiVersion.July23;
 
-  protected static resourceName = 'inventory_item';
-  protected static pluralName = 'inventory_items';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": [], "path": "inventory_items.json"},
     {"http_method": "get", "operation": "get", "ids": ["id"], "path": "inventory_items/<id>.json"},
     {"http_method": "put", "operation": "put", "ids": ["id"], "path": "inventory_items/<id>.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "inventory_item",
+      "plural": "inventory_items"
+    }
   ];
 
   public static async find(

@@ -3,7 +3,7 @@
 ***********************************************************************************************************************/
 
 import {Base, FindAllResponse} from '../../base';
-import {ResourcePath} from '../../types';
+import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
@@ -16,12 +16,16 @@ interface AllArgs {
 export class LocationsForMove extends Base {
   public static apiVersion = ApiVersion.April23;
 
-  protected static resourceName = 'locations_for_move';
-  protected static pluralName = 'locations_for_moves';
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "get", "ids": ["fulfillment_order_id"], "path": "fulfillment_orders/<fulfillment_order_id>/locations_for_move.json"}
+  ];
+  protected static resourceNames: ResourceNames[] = [
+    {
+      "singular": "locations_for_move",
+      "plural": "locations_for_moves"
+    }
   ];
 
   public static async all(
