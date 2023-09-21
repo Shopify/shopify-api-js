@@ -86,9 +86,10 @@ export function begin(config: ConfigInterface) {
 
     await cookies.setAndSign(STATE_COOKIE_NAME, state, {
       expires: new Date(Date.now() + 60000),
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: true,
-      path: callbackPath,
+      path: '/',
+      domain: config.cookieDomain,
     });
 
     const query = {
@@ -197,9 +198,10 @@ export function callback(config: ConfigInterface) {
     if (!config.isEmbeddedApp) {
       await cookies.setAndSign(SESSION_COOKIE_NAME, session.id, {
         expires: session.expires,
-        sameSite: 'lax',
+        sameSite: 'none',
         secure: true,
         path: '/',
+        domain: config.cookieDomain,
       });
     }
 

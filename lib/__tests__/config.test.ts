@@ -17,6 +17,7 @@ describe('Config object', () => {
       apiVersion: ApiVersion.Unstable,
       isEmbeddedApp: true,
       isCustomStoreApp: false,
+      cookieDomain: '.example.com',
       logger: {
         log: jest.fn(),
         level: LogSeverity.Debug,
@@ -33,6 +34,7 @@ describe('Config object', () => {
     expect(config.apiSecretKey).toEqual(validParams.apiSecretKey);
     expect(config.scopes.equals(validParams.scopes)).toBeTruthy();
     expect(config.hostName).toEqual(validParams.hostName);
+    expect(config.cookieDomain).toEqual(validParams.cookieDomain);
   });
 
   it("can't initialize with empty values", () => {
