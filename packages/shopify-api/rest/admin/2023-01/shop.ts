@@ -48,7 +48,6 @@ export class Shop extends Base {
   public address2: string | null;
   public checkout_api_supported: boolean | null;
   public city: string | null;
-  public cookie_consent_level: string | null;
   public country: string | null;
   public country_code: string | null;
   public country_name: string | null;

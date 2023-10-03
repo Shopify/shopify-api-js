@@ -773,7 +773,7 @@ Pulling it all together!
 ```diff
 -  // Do not call app.use(express.json()) before processing webhooks with
 -  // Shopify.Webhooks.Registry.process().
--  // See https://github.com/Shopify/shopify-api-node/blob/main/docs/guides/webhooks.md#note-regarding-use-of-body-parsers
+-  // See https://github.com/Shopify/shopify-api-node/blob/main/packages/shopify-api/docs/guides/webhooks.md#note-regarding-use-of-body-parsers
 -  // for more details.
 -  app.post("/api/webhooks", async (req, res) => {
 +  app.post("/api/webhooks", express.text({ type: "*/*" }), async (req, res) => {

@@ -42,4 +42,5 @@ export class Balance extends Base {
     return response;
   }
 
+  public balance: {[key: string]: unknown}[] | null;
 }

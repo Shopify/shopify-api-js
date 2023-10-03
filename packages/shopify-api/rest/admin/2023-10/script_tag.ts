@@ -21,40 +21,36 @@ interface AllArgs {
   session: Session;
   limit?: unknown;
   since_id?: unknown;
+  created_at_min?: unknown;
+  created_at_max?: unknown;
+  updated_at_min?: unknown;
+  updated_at_max?: unknown;
+  src?: unknown;
   fields?: unknown;
 }
 interface CountArgs {
   [key: string]: unknown;
   session: Session;
-  since_id?: unknown;
-}
-interface CustomersArgs {
-  [key: string]: unknown;
-  session: Session;
-  id: number | string;
-  order?: unknown;
-  limit?: unknown;
-  fields?: unknown;
+  src?: unknown;
 }
 
-export class CustomerSavedSearch extends Base {
-  public static apiVersion = ApiVersion.October22;
+export class ScriptTag extends Base {
+  public static apiVersion = ApiVersion.October23;
 
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "customer_saved_searches/count.json"},
-    {"http_method": "get", "operation": "customers", "ids": ["id"], "path": "customer_saved_searches/<id>/customers.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "customer_saved_searches.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "customer_saved_searches.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customer_saved_searches/<id>.json"}
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "script_tags/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "script_tags/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "script_tags.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "script_tags/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "script_tags.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "script_tags/<id>.json"}
   ];
   protected static resourceNames: ResourceNames[] = [
     {
-      "singular": "customer_saved_search",
-      "plural": "customer_saved_searches"
+      "singular": "script_tag",
+      "plural": "script_tags"
     }
   ];
 
@@ -64,8 +60,8 @@ export class CustomerSavedSearch extends Base {
       id,
       fields = null
     }: FindArgs
-  ): Promise<CustomerSavedSearch | null> {
-    const result = await this.baseFind<CustomerSavedSearch>({
+  ): Promise<ScriptTag | null> {
+    const result = await this.baseFind<ScriptTag>({
       session: session,
       urlIds: {"id": id},
       params: {"fields": fields},
@@ -79,7 +75,7 @@ export class CustomerSavedSearch extends Base {
       id
     }: DeleteArgs
   ): Promise<unknown> {
-    const response = await this.request<CustomerSavedSearch>({
+    const response = await this.request<ScriptTag>({
       http_method: "delete",
       operation: "delete",
       session: session,
@@ -95,14 +91,19 @@ export class CustomerSavedSearch extends Base {
       session,
       limit = null,
       since_id = null,
+      created_at_min = null,
+      created_at_max = null,
+      updated_at_min = null,
+      updated_at_max = null,
+      src = null,
       fields = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<CustomerSavedSearch>> {
-    const response = await this.baseFind<CustomerSavedSearch>({
+  ): Promise<FindAllResponse<ScriptTag>> {
+    const response = await this.baseFind<ScriptTag>({
       session: session,
       urlIds: {},
-      params: {"limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
+      params: {"limit": limit, "since_id": since_id, "created_at_min": created_at_min, "created_at_max": created_at_max, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, "src": src, "fields": fields, ...otherArgs},
     });
 
     return response;
@@ -111,16 +112,16 @@ export class CustomerSavedSearch extends Base {
   public static async count(
     {
       session,
-      since_id = null,
+      src = null,
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
-    const response = await this.request<CustomerSavedSearch>({
+    const response = await this.request<ScriptTag>({
       http_method: "get",
       operation: "count",
       session: session,
       urlIds: {},
-      params: {"since_id": since_id, ...otherArgs},
+      params: {"src": src, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -128,32 +129,11 @@ export class CustomerSavedSearch extends Base {
     return response ? response.body : null;
   }
 
-  public static async customers(
-    {
-      session,
-      id,
-      order = null,
-      limit = null,
-      fields = null,
-      ...otherArgs
-    }: CustomersArgs
-  ): Promise<unknown> {
-    const response = await this.request<CustomerSavedSearch>({
-      http_method: "get",
-      operation: "customers",
-      session: session,
-      urlIds: {"id": id},
-      params: {"order": order, "limit": limit, "fields": fields, ...otherArgs},
-      body: {},
-      entity: null,
-    });
-
-    return response ? response.body : null;
-  }
-
+  public event: string | null;
+  public src: string | null;
+  public cache: boolean | null;
   public created_at: string | null;
+  public display_scope: string | null;
   public id: number | null;
-  public name: string | null;
-  public query: string | null;
   public updated_at: string | null;
 }

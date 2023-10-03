@@ -1,7 +1,7 @@
 ---
-name: '🐛 Bug Report'
+name: "🐛 Bug Report"
 about: Something isn't working
-labels: 'Type: Bug 🐛'
+labels: "Type: Bug 🐛"
 ---
 
 # Issue summary
@@ -17,7 +17,7 @@ To increase logging, change these settings when calling shopifyApi:
     httpRequests: true, // if the error seems to be related to requests
   }
 
-Learn more: https://github.com/Shopify/shopify-api-js/blob/main/docs/reference/shopifyApi.md#logger
+Learn more: https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/reference/shopifyApi.md#logger
 
 -->
 

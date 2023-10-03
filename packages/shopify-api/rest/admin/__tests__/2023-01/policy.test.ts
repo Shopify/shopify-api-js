@@ -31,7 +31,7 @@ describe('Policy resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
-    queueMockResponse(JSON.stringify({"policies": [{"body": "You have 30 days to get a refund", "created_at": "2023-07-11T18:14:30-04:00", "updated_at": "2023-07-11T18:14:30-04:00", "handle": "refund-policy", "title": "Refund policy", "url": "https://jsmith.myshopify.com/548380009/policies/878590289"}]}));
+    queueMockResponse(JSON.stringify({"policies": [{"body": "You have 30 days to get a refund", "created_at": "2023-10-03T13:18:49-04:00", "updated_at": "2023-10-03T13:18:49-04:00", "handle": "refund-policy", "title": "Refund policy", "url": "https://jsmith.myshopify.com/548380009/policies/878590288"}]}));
 
     await shopify.rest.Policy.all({
       session: session,

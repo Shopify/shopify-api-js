@@ -174,7 +174,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_9', async () => {
-    queueMockResponse(JSON.stringify({"redirect": {"id": 984542199, "path": "/ipod", "target": "/pages/itunes"}}));
+    queueMockResponse(JSON.stringify({"redirect": {"id": 984542200, "path": "/ipod", "target": "/pages/itunes"}}));
 
     const redirect = new shopify.rest.Redirect({session: session});
     redirect.path = "/ipod";
@@ -192,7 +192,7 @@ describe('Redirect resource', () => {
   });
 
   it('test_10', async () => {
-    queueMockResponse(JSON.stringify({"redirect": {"id": 984542200, "path": "/forums", "target": "http://forums.apple.com/"}}));
+    queueMockResponse(JSON.stringify({"redirect": {"id": 984542199, "path": "/forums", "target": "http://forums.apple.com/"}}));
 
     const redirect = new shopify.rest.Redirect({session: session});
     redirect.path = "http://www.apple.com/forums";
