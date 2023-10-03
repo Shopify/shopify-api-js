@@ -29,8 +29,10 @@ interface HttpResponseData {
 interface HttpResponseErrorParams extends HttpResponseData {
   message: string;
 }
-export class HttpResponseError extends ShopifyError {
-  readonly response: HttpResponseData;
+export class HttpResponseError<
+  ResponseType extends HttpResponseData = HttpResponseData,
+> extends ShopifyError {
+  readonly response: ResponseType;
 
   public constructor({
     message,
@@ -45,10 +47,12 @@ export class HttpResponseError extends ShopifyError {
       statusText,
       body,
       headers,
-    };
+    } as ResponseType;
   }
 }
-export class HttpRetriableError extends HttpResponseError {}
+export class HttpRetriableError<
+  ResponseType extends HttpResponseData = HttpResponseData,
+> extends HttpResponseError<ResponseType> {}
 export class HttpInternalError extends HttpRetriableError {}
 
 interface HttpThrottlingErrorData extends HttpResponseData {
@@ -57,9 +61,7 @@ interface HttpThrottlingErrorData extends HttpResponseData {
 interface HttpThrottlingErrorParams extends HttpThrottlingErrorData {
   message: string;
 }
-export class HttpThrottlingError extends HttpRetriableError {
-  readonly response: HttpThrottlingErrorData;
-
+export class HttpThrottlingError extends HttpRetriableError<HttpThrottlingErrorData> {
   public constructor({retryAfter, ...params}: HttpThrottlingErrorParams) {
     super(params);
     this.response.retryAfter = retryAfter;

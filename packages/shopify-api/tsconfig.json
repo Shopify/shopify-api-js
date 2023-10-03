@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "types": ["@cloudflare/workers-types", "node", "jest"],
+    "baseUrl": ".",
+    "rootDir": "."
+  },
+  "include": [
+    "lib/**/*.ts",
+    "adapters/**/*.ts",
+    "rest/**/*.ts",
+    "runtime/**/*.ts",
+  ],
+  "exclude": [
+    "**/*.test.ts", "**/test/*", "**/__tests__/*",
+  ],
+  "extends": "../../tsconfig.base.json",
+}

@@ -13,6 +13,8 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
       # TODO Remove the --ignore-engines flag when we drop support for Node 14
+      - name: Change directory
+        run: cd packages/shopify-api
       - name: Install
         run: yarn install --ignore-engines
       - name: Lint
@@ -20,6 +22,6 @@ jobs:
       - name: Test
         run: yarn test
       - name: Test REST resources
-        run: yarn test:rest_resources
+        run: cd packages/shopify-api && yarn test:rest_resources
       - name: Run isomorphic adapter tests
-        run: yarn test:adapters
+        run: cd packages/shopify-api && yarn test:adapters
