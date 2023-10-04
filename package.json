@@ -12,7 +12,8 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo build --filter=docs^... && changeset publish",
-    "test": "turbo run test --parallel"
+    "test": "turbo run test --parallel",
+    "test:ci": "turbo run test:ci --parallel"
   },
   "devDependencies": {
     "@changesets/cli": "^2.22.0",
