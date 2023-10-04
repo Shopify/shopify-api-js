@@ -66,7 +66,7 @@
   });
   ```
 
-  See [Billing Guide](https://github.com/shopify/shopify-api-js/blob/main/docs/guides/billing.md) for more details.
+  See [Billing Guide](docs/guides/billing.md) for more details.
 
 ### Patch Changes
 
@@ -85,7 +85,7 @@
 
 ### Minor Changes
 
-- 1a64d96c: Added `returnUrl` as optional parameter to billing `request` function, improved `returnUrl` logic. See [documentation](https://github.com/Shopify/shopify-api-js/blob/main/docs/reference/billing/request.md#returnurl) of `returnUrl` parameter for more details.
+- 1a64d96c: Added `returnUrl` as optional parameter to billing `request` function, improved `returnUrl` logic. See [documentation](docs/reference/billing/request.md#returnurl) of `returnUrl` parameter for more details.
 - 89cca000: Discount functionality for App Billing. Fixes [#731](https://github.com/Shopify/shopify-api-js/issues/731)
 
 ### Patch Changes
@@ -102,7 +102,7 @@
   - `adminApiAccessToken` will be mandatory for custom store apps and must be set to the Admin API access token
   - `apiSecretKey` will not be used for client authentication but must be set for HMAC validation of HTTP webhook events
 
-  See [setting up a custom store app](https://github.com/shopify/shopify-api-js/blob/main/docs/guides/custom-store-app.md) for more details.
+  See [setting up a custom store app](docs/guides/custom-store-app.md) for more details.
 
 - 450c9e7f: Add deprecation notice for removal of Node 14 support from next major release
 - 9c095d12: Bumps [jose](https://github.com/panva/jose) from 4.13.1 to 4.14.1. See jose's [changelog](https://github.com/panva/jose/blob/main/CHANGELOG.md) for more details.
