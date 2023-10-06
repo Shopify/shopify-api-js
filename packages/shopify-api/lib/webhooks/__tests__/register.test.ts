@@ -6,24 +6,26 @@ import {
   WebhookHandler,
   WebhookOperation,
 } from '../types';
-import {gdprTopics, ShopifyHeader} from '../../types';
+import {ApiVersion, gdprTopics, ShopifyHeader} from '../../types';
 import {DataType} from '../../clients/types';
 import {
   queueMockResponse,
   queueMockResponses,
-  shopify,
 } from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
 import {mockTestRequests} from '../../../adapters/mock/mock_test_requests';
 import {queryTemplate} from '../query-template';
 import {TEMPLATE_GET_HANDLERS, TEMPLATE_MUTATION} from '../register';
 import {Session} from '../../session/session';
 import {InvalidDeliveryMethodError} from '../../error';
+import {Shopify, shopifyApi} from '../..';
 
 import * as mockResponses from './responses';
 import {MockResponse} from './responses';
 import {EVENT_BRIDGE_HANDLER, HTTP_HANDLER, PUB_SUB_HANDLER} from './handlers';
 
 interface RegisterTestWebhook {
+  shopify: Shopify;
   topic: string;
   handler: WebhookHandler;
   checkMockResponse?: MockResponse;
@@ -52,13 +54,21 @@ const session = new Session({
 
 describe('shopify.webhooks.register', () => {
   it('sends a post request to the given shop domain with the webhook data as a GraphQL query in the body and the access token in the headers', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler = HTTP_HANDLER;
     const responses = [mockResponses.successResponse];
 
-    const registerReturn = await registerWebhook({topic, handler, responses});
+    const registerReturn = await registerWebhook({
+      shopify,
+      topic,
+      handler,
+      responses,
+    });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'webhookSubscriptionCreate',
       `topic: ${topic}`,
       {callbackUrl: `"https://test_host_name/webhooks"`},
@@ -67,13 +77,21 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('returns a result with success set to false, body set to empty object, when the server doesn’t return a webhookSubscriptionCreate field', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler = HTTP_HANDLER;
     const responses = [mockResponses.httpFailResponse];
 
-    const registerReturn = await registerWebhook({topic, handler, responses});
+    const registerReturn = await registerWebhook({
+      shopify,
+      topic,
+      handler,
+      responses,
+    });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'webhookSubscriptionCreate',
       `topic: ${topic}`,
       {callbackUrl: `"https://test_host_name/webhooks"`},
@@ -87,13 +105,21 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('sends an EventBridge registration GraphQL query for an EventBridge webhook registration', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler = EVENT_BRIDGE_HANDLER;
     const responses = [mockResponses.eventBridgeSuccessResponse];
 
-    const registerReturn = await registerWebhook({topic, handler, responses});
+    const registerReturn = await registerWebhook({
+      shopify,
+      topic,
+      handler,
+      responses,
+    });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'eventBridgeWebhookSubscriptionCreate',
       `topic: ${topic}`,
       {arn: '"arn:test"'},
@@ -102,13 +128,21 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('sends a PubSub registration GraphQL query for a PubSub webhook registration', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler = PUB_SUB_HANDLER;
     const responses = [mockResponses.pubSubSuccessResponse];
 
-    const registerReturn = await registerWebhook({topic, handler, responses});
+    const registerReturn = await registerWebhook({
+      shopify,
+      topic,
+      handler,
+      responses,
+    });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'pubSubWebhookSubscriptionCreate',
       `topic: ${topic}`,
       {pubSubProject: '"my-project-id"', pubSubTopic: '"my-topic-id"'},
@@ -117,6 +151,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('updates a pre-existing webhook if the address stays the same', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...HTTP_HANDLER,
@@ -125,6 +161,7 @@ describe('shopify.webhooks.register', () => {
     const responses = [mockResponses.successUpdateResponse];
 
     const registerReturn = await registerWebhook({
+      shopify,
       topic,
       handler,
       checkMockResponse: mockResponses.webhookCheckResponse,
@@ -132,6 +169,7 @@ describe('shopify.webhooks.register', () => {
     });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'webhookSubscriptionUpdate',
       `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
       {
@@ -143,6 +181,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('updates a pre-existing eventbridge webhook if the address stays the same', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...EVENT_BRIDGE_HANDLER,
@@ -151,6 +191,7 @@ describe('shopify.webhooks.register', () => {
     const responses = [mockResponses.eventBridgeSuccessUpdateResponse];
 
     const registerReturn = await registerWebhook({
+      shopify,
       topic,
       handler,
       checkMockResponse: mockResponses.eventBridgeWebhookCheckResponse,
@@ -158,6 +199,7 @@ describe('shopify.webhooks.register', () => {
     });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'eventBridgeWebhookSubscriptionUpdate',
       `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
       {
@@ -169,6 +211,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('updates a pre-existing pubsub webhook if the address stays the same', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...PUB_SUB_HANDLER,
@@ -177,6 +221,7 @@ describe('shopify.webhooks.register', () => {
     const responses = [mockResponses.pubSubSuccessUpdateResponse];
 
     const registerReturn = await registerWebhook({
+      shopify,
       topic,
       handler,
       checkMockResponse: mockResponses.pubSubWebhookCheckResponse,
@@ -184,6 +229,7 @@ describe('shopify.webhooks.register', () => {
     });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'pubSubWebhookSubscriptionUpdate',
       `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
       {
@@ -196,6 +242,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('creates a new webhook registration if the path changes, then deletes the old one', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...HTTP_HANDLER,
@@ -207,6 +255,7 @@ describe('shopify.webhooks.register', () => {
     ];
 
     const registerReturn = await registerWebhook({
+      shopify,
       topic,
       handler,
       checkMockResponse: mockResponses.webhookCheckResponse,
@@ -214,11 +263,13 @@ describe('shopify.webhooks.register', () => {
     });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'webhookSubscriptionCreate',
       `topic: ${topic}`,
       {callbackUrl: `"https://test_host_name/webhooks/new"`},
     );
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'webhookSubscriptionDelete',
       `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
     );
@@ -226,6 +277,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('creates a new EventBridge webhook registration if the address changes, then deletes the old one', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler: WebhookHandler = {
       ...EVENT_BRIDGE_HANDLER,
@@ -237,6 +290,7 @@ describe('shopify.webhooks.register', () => {
     ];
 
     const registerReturn = await registerWebhook({
+      shopify,
       topic,
       handler,
       checkMockResponse: mockResponses.eventBridgeWebhookCheckResponse,
@@ -244,11 +298,13 @@ describe('shopify.webhooks.register', () => {
     });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'eventBridgeWebhookSubscriptionCreate',
       `topic: ${topic}`,
       {arn: `"arn:test-new"`},
     );
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'webhookSubscriptionDelete',
       `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
     );
@@ -256,6 +312,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('creates a new PubSub webhook registration if the address changes, then deletes the old one', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler = {...PUB_SUB_HANDLER, pubSubTopic: 'my-new-topic-id'};
     const responses = [
@@ -264,6 +322,7 @@ describe('shopify.webhooks.register', () => {
     ];
 
     const registerReturn = await registerWebhook({
+      shopify,
       topic,
       handler,
       checkMockResponse: mockResponses.pubSubWebhookCheckResponse,
@@ -271,11 +330,13 @@ describe('shopify.webhooks.register', () => {
     });
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'pubSubWebhookSubscriptionCreate',
       `topic: ${topic}`,
       {pubSubProject: '"my-project-id"', pubSubTopic: '"my-new-topic-id"'},
     );
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'webhookSubscriptionDelete',
       `id: "${mockResponses.TEST_WEBHOOK_ID}"`,
     );
@@ -283,6 +344,7 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('fails if given an invalid DeliveryMethod', async () => {
+    const shopify = shopifyApi(testConfig());
     const topic = 'PRODUCTS_CREATE';
     const handler = {...HTTP_HANDLER, deliveryMethod: 'invalid' as any};
 
@@ -297,6 +359,7 @@ describe('shopify.webhooks.register', () => {
 
   gdprTopics.forEach((gdprTopic) => {
     it(`does not send a register for ${gdprTopic}`, async () => {
+      const shopify = shopifyApi(testConfig());
       const handler = HTTP_HANDLER;
 
       shopify.webhooks.addHandlers({[gdprTopic]: handler});
@@ -314,6 +377,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('deletes handlers not currently in the registry', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'NEW_TOPIC_TO_ADD';
     const handler = {...HTTP_HANDLER};
     const responses = [
@@ -322,6 +387,7 @@ describe('shopify.webhooks.register', () => {
     ];
 
     const registerReturn = await registerWebhook({
+      shopify,
       topic,
       handler,
       checkMockResponse: mockResponses.webhookCheckResponse,
@@ -335,6 +401,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('returns multiple results per topic for multiple webhooks per topic', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const httpHandler = HTTP_HANDLER;
     const ebHandler = EVENT_BRIDGE_HANDLER;
@@ -353,14 +421,16 @@ describe('shopify.webhooks.register', () => {
     const registerReturn = await shopify.webhooks.register({session});
 
     expect(mockTestRequests.requestList).toHaveLength(responses.length + 1);
-    assertWebhookCheckRequest({session});
+    assertWebhookCheckRequest(shopify.config.apiVersion, {session});
 
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'webhookSubscriptionCreate',
       `topic: ${topic}`,
       {callbackUrl: `"https://test_host_name/webhooks"`},
     );
     assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
       'eventBridgeWebhookSubscriptionCreate',
       `topic: ${topic}`,
       {arn: '"arn:test"'},
@@ -369,6 +439,8 @@ describe('shopify.webhooks.register', () => {
   });
 
   it('returns which operation was done for each handler', async () => {
+    const shopify = shopifyApi(testConfig());
+
     // We have a pre-existing webhook for PRODUCTS_CREATE, so we expect it to be deleted, whereas we expect a new one to
     // be created for PRODUCTS_DELETE
     shopify.webhooks.addHandlers({
@@ -398,6 +470,7 @@ describe('shopify.webhooks.register', () => {
 });
 
 async function registerWebhook({
+  shopify,
   topic,
   handler,
   checkMockResponse = mockResponses.webhookCheckEmptyResponse,
@@ -415,7 +488,11 @@ async function registerWebhook({
 
   expect(mockTestRequests.requestList).toHaveLength(responses.length + 1);
 
-  assertWebhookCheckRequest({session}, includePrivateMetafieldNamespaces);
+  assertWebhookCheckRequest(
+    shopify.config.apiVersion,
+    {session},
+    includePrivateMetafieldNamespaces,
+  );
 
   return result;
 }
@@ -435,6 +512,7 @@ function assertRegisterResponse({
 }
 
 function assertWebhookCheckRequest(
+  apiVersion: ApiVersion,
   {session}: RegisterParams,
   includePrivateMetafieldNamespaces = false,
 ) {
@@ -447,7 +525,7 @@ function assertWebhookCheckRequest(
   expect({
     method: Method.Post.toString(),
     domain: session.shop,
-    path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
+    path: `/admin/api/${apiVersion}/graphql.json`,
     headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: session.accessToken,
@@ -457,6 +535,7 @@ function assertWebhookCheckRequest(
 }
 
 function assertWebhookRegistrationRequest(
+  apiVersion: ApiVersion,
   mutationName: string,
   identifier: string,
   mutationParams: MutationParams = {},
@@ -476,7 +555,7 @@ function assertWebhookRegistrationRequest(
   expect({
     method: Method.Post.toString(),
     domain: session.shop,
-    path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
+    path: `/admin/api/${apiVersion}/graphql.json`,
     headers: {
       [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: session.accessToken,

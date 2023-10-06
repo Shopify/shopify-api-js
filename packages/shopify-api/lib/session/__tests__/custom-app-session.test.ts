@@ -1,4 +1,5 @@
-import {shopify} from '../../__tests__/test-helper';
+import {shopifyApi} from '../..';
+import {testConfig} from '../../__tests__/test-config';
 import * as ShopifyErrors from '../../error';
 import {customAppSession} from '../session-utils';
 
@@ -22,6 +23,8 @@ describe('customAppSession', () => {
   describe('returns a dummy session for valid shop strings', () => {
     valid_shop_urls.forEach((shop) => {
       it(`${shop}`, async () => {
+        const shopify = shopifyApi(testConfig());
+
         valid_session.shop = shop;
         const session = await customAppSession(shopify.config)(shop);
         expect(session).toEqual(valid_session);
@@ -32,6 +35,8 @@ describe('customAppSession', () => {
   describe('throws an error for invalid shop strings', () => {
     invalid_shop_urls.forEach((shop) => {
       it(`${shop}`, async () => {
+        const shopify = shopifyApi(testConfig());
+
         expect(() => customAppSession(shopify.config)(shop)).toThrowError(
           ShopifyErrors.InvalidShopError,
         );

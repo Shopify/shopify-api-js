@@ -1,4 +1,5 @@
-import {testConfig, queueMockResponses} from '../../__tests__/test-helper';
+import {queueMockResponses} from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
 import {Session} from '../../session/session';
 import {BillingError} from '../../error';
 import {
@@ -7,7 +8,7 @@ import {
   BillingReplacementBehavior,
 } from '../../types';
 import {BillingConfig} from '../types';
-import {shopifyApi, Shopify} from '../..';
+import {shopifyApi} from '../..';
 
 import * as Responses from './responses';
 
@@ -19,8 +20,6 @@ const GRAPHQL_BASE_REQUEST = {
   path: `/admin/api/${LATEST_API_VERSION}/graphql.json`,
   headers: {'X-Shopify-Access-Token': ACCESS_TOKEN},
 };
-
-let shopify: Shopify;
 
 interface TestConfigInterface {
   name: string;
@@ -191,14 +190,9 @@ describe('shopify.billing.request', () => {
   });
 
   describe('with no billing config', () => {
-    beforeEach(() => {
-      shopify = shopifyApi({
-        ...testConfig,
-        billing: undefined,
-      });
-    });
-
     test('throws error', async () => {
+      const shopify = shopifyApi(testConfig({billing: undefined}));
+
       expect(() =>
         shopify.billing.request({
           session,
@@ -215,15 +209,12 @@ describe('shopify.billing.request', () => {
     }`, () => {
       TEST_CONFIGS.forEach((config) => {
         describe(`with ${config.name}`, () => {
-          beforeEach(() => {
-            shopify = shopifyApi({
-              ...testConfig,
-              billing: config.billingConfig,
-            });
-          });
-
           [true, false].forEach((isTest) =>
             test(`can request payment (isTest: ${isTest})`, async () => {
+              const shopify = shopifyApi(
+                testConfig({billing: config.billingConfig}),
+              );
+
               queueMockResponses([config.paymentResponse]);
 
               const response = await shopify.billing.request({
@@ -252,6 +243,10 @@ describe('shopify.billing.request', () => {
           );
 
           test(`can request payment with returnUrl param`, async () => {
+            const shopify = shopifyApi(
+              testConfig({billing: config.billingConfig}),
+            );
+
             queueMockResponses([config.paymentResponse]);
 
             const response = await shopify.billing.request({
@@ -280,6 +275,10 @@ describe('shopify.billing.request', () => {
           });
 
           test('defaults to test purchases', async () => {
+            const shopify = shopifyApi(
+              testConfig({billing: config.billingConfig}),
+            );
+
             queueMockResponses([config.paymentResponse]);
 
             const response = await shopify.billing.request({
@@ -303,6 +302,10 @@ describe('shopify.billing.request', () => {
           });
 
           test('can request multiple plans', async () => {
+            const shopify = shopifyApi(
+              testConfig({billing: config.billingConfig}),
+            );
+
             queueMockResponses(
               [config.paymentResponse],
               [config.paymentResponse],
@@ -352,6 +355,10 @@ describe('shopify.billing.request', () => {
           });
 
           test('throws on userErrors', async () => {
+            const shopify = shopifyApi(
+              testConfig({billing: config.billingConfig}),
+            );
+
             queueMockResponses([config.errorResponse]);
 
             await expect(() =>
@@ -374,10 +381,9 @@ describe('shopify.billing.request', () => {
       SUBSCRIPTION_TEST_CONFIGS.forEach((config) => {
         describe(`subscription tests`, () => {
           test(`${config.name}`, async () => {
-            shopify = shopifyApi({
-              ...testConfig,
-              billing: config.billingConfig,
-            });
+            const shopify = shopifyApi(
+              testConfig({billing: config.billingConfig}),
+            );
 
             queueMockResponses([config.paymentResponse]);
 
@@ -431,29 +437,30 @@ describe('shopify.billing.request', () => {
           '"discount":{"durationLimitInIntervals":10,"value":{"amount":2}}',
       },
     ])('applies $field override when set', async ({field, value, expected}) => {
-      shopify = shopifyApi({
-        ...testConfig,
-        billing: {
-          [Responses.PLAN_1]: {
-            interval: BillingInterval.Every30Days,
-            amount: 5,
-            currencyCode: 'USD',
-            replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-            discount: {durationLimitInIntervals: 5, value: {amount: 2}},
-            trialDays: 10,
-            [field]: value,
+      const shopify = shopifyApi(
+        testConfig({
+          billing: {
+            [Responses.PLAN_1]: {
+              interval: BillingInterval.Every30Days,
+              amount: 5,
+              currencyCode: 'USD',
+              replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+              discount: {durationLimitInIntervals: 5, value: {amount: 2}},
+              trialDays: 10,
+              [field]: value,
+            },
+            [Responses.PLAN_2]: {
+              interval: BillingInterval.Usage,
+              amount: 5,
+              currencyCode: 'USD',
+              replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+              usageTerms: 'Usage terms',
+              trialDays: 10,
+              [field]: value,
+            },
           },
-          [Responses.PLAN_2]: {
-            interval: BillingInterval.Usage,
-            amount: 5,
-            currencyCode: 'USD',
-            replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-            usageTerms: 'Usage terms',
-            trialDays: 10,
-            [field]: value,
-          },
-        },
-      });
+        }),
+      );
 
       queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
 
@@ -471,18 +478,19 @@ describe('shopify.billing.request', () => {
     });
 
     it('applies a trialDays override of 0', async () => {
-      shopify = shopifyApi({
-        ...testConfig,
-        billing: {
-          [Responses.PLAN_1]: {
-            amount: 5,
-            currencyCode: 'USD',
-            interval: BillingInterval.Every30Days,
-            replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-            trialDays: 10,
+      const shopify = shopifyApi(
+        testConfig({
+          billing: {
+            [Responses.PLAN_1]: {
+              amount: 5,
+              currencyCode: 'USD',
+              interval: BillingInterval.Every30Days,
+              replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+              trialDays: 10,
+            },
           },
-        },
-      });
+        }),
+      );
 
       queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
 
@@ -505,18 +513,19 @@ describe('shopify.billing.request', () => {
     });
 
     it("ignores overrides if they're undefined", async () => {
-      shopify = shopifyApi({
-        ...testConfig,
-        billing: {
-          [Responses.PLAN_1]: {
-            amount: 5,
-            currencyCode: 'USD',
-            interval: BillingInterval.Every30Days,
-            replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-            trialDays: 10,
+      const shopify = shopifyApi(
+        testConfig({
+          billing: {
+            [Responses.PLAN_1]: {
+              amount: 5,
+              currencyCode: 'USD',
+              interval: BillingInterval.Every30Days,
+              replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+              trialDays: 10,
+            },
           },
-        },
-      });
+        }),
+      );
 
       queueMockResponses([Responses.PURCHASE_SUBSCRIPTION_RESPONSE]);
 

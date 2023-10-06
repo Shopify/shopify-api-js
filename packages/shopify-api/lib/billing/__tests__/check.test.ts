@@ -1,9 +1,10 @@
-import {testConfig, queueMockResponses} from '../../__tests__/test-helper';
+import {queueMockResponses} from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
 import {Session} from '../../session/session';
 import {LATEST_API_VERSION, BillingInterval} from '../../types';
 import {BillingError} from '../../error';
-import {shopifyApi, Shopify} from '../..';
-import {BillingCheckResponseObject} from '../types';
+import {shopifyApi} from '../..';
+import {BillingCheckResponseObject, BillingConfig} from '../types';
 
 import * as Responses from './responses';
 
@@ -16,7 +17,31 @@ const GRAPHQL_BASE_REQUEST = {
   headers: {'X-Shopify-Access-Token': ACCESS_TOKEN},
 };
 
-let shopify: Shopify;
+const NON_RECURRING_CONFIGS: BillingConfig = {
+  [Responses.PLAN_1]: {
+    amount: 5,
+    currencyCode: 'USD',
+    interval: BillingInterval.OneTime,
+  },
+  [Responses.PLAN_2]: {
+    amount: 10,
+    currencyCode: 'USD',
+    interval: BillingInterval.OneTime,
+  },
+};
+
+const RECURRING_CONFIGS: BillingConfig = {
+  [Responses.PLAN_1]: {
+    amount: 5,
+    currencyCode: 'USD',
+    interval: BillingInterval.Every30Days,
+  },
+  [Responses.PLAN_2]: {
+    amount: 10,
+    currencyCode: 'USD',
+    interval: BillingInterval.Annual,
+  },
+};
 
 describe('shopify.billing.check', () => {
   const session = new Session({
@@ -29,14 +54,9 @@ describe('shopify.billing.check', () => {
   });
 
   describe('with no billing config', () => {
-    beforeEach(() => {
-      shopify = shopifyApi({
-        ...testConfig,
-        billing: undefined,
-      });
-    });
-
     test('throws error', async () => {
+      const shopify = shopifyApi(testConfig({billing: undefined}));
+
       expect(() =>
         shopify.billing.check({
           session,
@@ -48,25 +68,9 @@ describe('shopify.billing.check', () => {
   });
 
   describe('with non-recurring configs', () => {
-    beforeEach(() => {
-      shopify = shopifyApi({
-        ...testConfig,
-        billing: {
-          [Responses.PLAN_1]: {
-            amount: 5,
-            currencyCode: 'USD',
-            interval: BillingInterval.OneTime,
-          },
-          [Responses.PLAN_2]: {
-            amount: 10,
-            currencyCode: 'USD',
-            interval: BillingInterval.OneTime,
-          },
-        },
-      });
-    });
-
     test(`handles empty responses`, async () => {
+      const shopify = shopifyApi(testConfig({billing: NON_RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EMPTY_SUBSCRIPTIONS]);
 
       const response = await shopify.billing.check({
@@ -83,6 +87,8 @@ describe('shopify.billing.check', () => {
     });
 
     test(`returns false if non-test and only test purchases are returned`, async () => {
+      const shopify = shopifyApi(testConfig({billing: NON_RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EXISTING_ONE_TIME_PAYMENT]);
 
       const response = await shopify.billing.check({
@@ -99,6 +105,8 @@ describe('shopify.billing.check', () => {
     });
 
     test(`returns false if purchase is for a different plan`, async () => {
+      const shopify = shopifyApi(testConfig({billing: NON_RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EXISTING_ONE_TIME_PAYMENT]);
 
       const response = await shopify.billing.check({
@@ -115,6 +123,8 @@ describe('shopify.billing.check', () => {
     });
 
     test('defaults to test purchases', async () => {
+      const shopify = shopifyApi(testConfig({billing: NON_RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EXISTING_ONE_TIME_PAYMENT]);
 
       const response = await shopify.billing.check({
@@ -130,6 +140,8 @@ describe('shopify.billing.check', () => {
     });
 
     test('ignores non-active payments', async () => {
+      const shopify = shopifyApi(testConfig({billing: NON_RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EXISTING_INACTIVE_ONE_TIME_PAYMENT]);
 
       const response = await shopify.billing.check({
@@ -146,6 +158,8 @@ describe('shopify.billing.check', () => {
     });
 
     test('paginates until a payment is found', async () => {
+      const shopify = shopifyApi(testConfig({billing: NON_RECURRING_CONFIGS}));
+
       queueMockResponses(
         [Responses.EXISTING_ONE_TIME_PAYMENT_WITH_PAGINATION[0]],
         [Responses.EXISTING_ONE_TIME_PAYMENT_WITH_PAGINATION[1]],
@@ -176,25 +190,9 @@ describe('shopify.billing.check', () => {
   });
 
   describe('with recurring config', () => {
-    beforeEach(() => {
-      shopify = shopifyApi({
-        ...testConfig,
-        billing: {
-          [Responses.PLAN_1]: {
-            amount: 5,
-            currencyCode: 'USD',
-            interval: BillingInterval.Every30Days,
-          },
-          [Responses.PLAN_2]: {
-            amount: 10,
-            currencyCode: 'USD',
-            interval: BillingInterval.Annual,
-          },
-        },
-      });
-    });
-
     test(`handles empty responses`, async () => {
+      const shopify = shopifyApi(testConfig({billing: RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EMPTY_SUBSCRIPTIONS]);
 
       const response = await shopify.billing.check({
@@ -211,6 +209,8 @@ describe('shopify.billing.check', () => {
     });
 
     test(`returns false if non-test and only test purchases are returned`, async () => {
+      const shopify = shopifyApi(testConfig({billing: RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EXISTING_SUBSCRIPTION]);
 
       const response = await shopify.billing.check({
@@ -227,6 +227,8 @@ describe('shopify.billing.check', () => {
     });
 
     test(`returns false if purchase is for a different plan`, async () => {
+      const shopify = shopifyApi(testConfig({billing: RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EXISTING_SUBSCRIPTION]);
 
       const response = await shopify.billing.check({
@@ -243,6 +245,8 @@ describe('shopify.billing.check', () => {
     });
 
     test('defaults to test purchases', async () => {
+      const shopify = shopifyApi(testConfig({billing: RECURRING_CONFIGS}));
+
       queueMockResponses([Responses.EXISTING_SUBSCRIPTION]);
 
       const response = await shopify.billing.check({
@@ -258,6 +262,8 @@ describe('shopify.billing.check', () => {
     });
 
     test('check returns valid response object', async () => {
+      const shopify = shopifyApi(testConfig({billing: RECURRING_CONFIGS}));
+
       queueMockResponses(
         [
           Responses

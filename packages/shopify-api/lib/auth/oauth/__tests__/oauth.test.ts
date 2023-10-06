@@ -12,12 +12,10 @@ import {
   NormalizedRequest,
   NormalizedResponse,
 } from '../../../../runtime/http';
-import {
-  queueMockResponse,
-  shopify,
-  signJWT,
-} from '../../../__tests__/test-helper';
+import {queueMockResponse, signJWT} from '../../../__tests__/test-helper';
+import {testConfig} from '../../../__tests__/test-config';
 import {getOfflineId} from '../../../session/session-utils';
+import {shopifyApi} from '../../..';
 
 const VALID_NONCE = 'noncenoncenonce';
 jest.mock('../nonce', () => ({nonce: jest.fn(() => VALID_NONCE)}));
@@ -52,6 +50,8 @@ describe('beginAuth', () => {
     {isOnline: false, type: 'offline'},
   ].forEach(({isOnline, type}) => {
     test(`sets cookie to state for ${type} access requests`, async () => {
+      const shopify = shopifyApi(testConfig());
+
       const response: NormalizedResponse = await shopify.auth.begin({
         shop,
         isOnline,
@@ -71,6 +71,8 @@ describe('beginAuth', () => {
   });
 
   test('returns the correct auth url for given info', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: false,
@@ -94,7 +96,7 @@ describe('beginAuth', () => {
   });
 
   test('returns the correct auth url when the host scheme is http', async () => {
-    shopify.config.hostScheme = 'http';
+    const shopify = shopifyApi(testConfig({hostScheme: 'http'}));
 
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
@@ -119,6 +121,8 @@ describe('beginAuth', () => {
   });
 
   test('appends per_user access mode to url when isOnline is set to true', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
@@ -142,6 +146,8 @@ describe('beginAuth', () => {
   });
 
   test('response with a 410 when the request is a bot', async () => {
+    const shopify = shopifyApi(testConfig());
+
     request.headers['User-Agent'] = 'Googlebot';
 
     const response: NormalizedResponse = await shopify.auth.begin({
@@ -155,7 +161,7 @@ describe('beginAuth', () => {
   });
 
   test('fails to start if the app is private', () => {
-    shopify.config.isCustomStoreApp = true;
+    const shopify = shopifyApi(testConfig({isCustomStoreApp: true}));
 
     expect(
       shopify.auth.begin({
@@ -180,7 +186,7 @@ describe('callback', () => {
   });
 
   test('fails to run if the app is private', () => {
-    shopify.config.isCustomStoreApp = true;
+    const shopify = shopifyApi(testConfig({isCustomStoreApp: true}));
 
     expect(shopify.auth.callback({rawRequest: request})).rejects.toThrow(
       ShopifyErrors.PrivateAppError,
@@ -188,6 +194,8 @@ describe('callback', () => {
   });
 
   test("throws an error when receiving a callback for a shop that doesn't have a state cookie", async () => {
+    const shopify = shopifyApi(testConfig());
+
     request.url += '?shop=I+do+not+exist';
 
     await expect(shopify.auth.callback({rawRequest: request})).rejects.toThrow(
@@ -196,13 +204,19 @@ describe('callback', () => {
   });
 
   test('throws error when callback includes invalid hmac', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
       callbackPath: '/some-callback',
       rawRequest: request,
     });
-    setCallbackCookieFromResponse(request, response);
+    setCallbackCookieFromResponse(
+      request,
+      response,
+      shopify.config.apiSecretKey,
+    );
 
     const testCallbackQuery: QueryMock = {
       shop,
@@ -219,13 +233,19 @@ describe('callback', () => {
   });
 
   test('throws error when callback includes invalid state', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const response: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
       callbackPath: '/some-callback',
       rawRequest: request,
     });
-    setCallbackCookieFromResponse(request, response);
+    setCallbackCookieFromResponse(
+      request,
+      response,
+      shopify.config.apiSecretKey,
+    );
 
     const testCallbackQuery: QueryMock = {
       shop,
@@ -245,13 +265,19 @@ describe('callback', () => {
   });
 
   test('requests access token for valid callbacks with offline access and creates session', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: false,
       callbackPath: '/some-callback',
       rawRequest: request,
     });
-    setCallbackCookieFromResponse(request, beginResponse);
+    setCallbackCookieFromResponse(
+      request,
+      beginResponse,
+      shopify.config.apiSecretKey,
+    );
 
     const testCallbackQuery: QueryMock = {
       shop,
@@ -287,13 +313,19 @@ describe('callback', () => {
   });
 
   test('requests access token for valid callbacks with online access and creates session with expiration and onlineAccessInfo', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
       isOnline: true,
       callbackPath: '/some-callback',
       rawRequest: request,
     });
-    setCallbackCookieFromResponse(request, beginResponse);
+    setCallbackCookieFromResponse(
+      request,
+      beginResponse,
+      shopify.config.apiSecretKey,
+    );
 
     const testCallbackQuery: QueryMock = {
       shop,
@@ -342,7 +374,7 @@ describe('callback', () => {
   });
 
   test('does not set an OAuth cookie for online, embedded apps', async () => {
-    shopify.config.isEmbeddedApp = true;
+    const shopify = shopifyApi(testConfig({isEmbeddedApp: true}));
 
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
@@ -350,7 +382,11 @@ describe('callback', () => {
       callbackPath: '/some-callback',
       rawRequest: request,
     });
-    setCallbackCookieFromResponse(request, beginResponse);
+    setCallbackCookieFromResponse(
+      request,
+      beginResponse,
+      shopify.config.apiSecretKey,
+    );
 
     const successResponse = {
       access_token: 'some access token',
@@ -423,7 +459,7 @@ describe('callback', () => {
   });
 
   test('properly updates the OAuth cookie for online, non-embedded apps', async () => {
-    shopify.config.isEmbeddedApp = false;
+    const shopify = shopifyApi(testConfig({isEmbeddedApp: false}));
 
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
@@ -431,7 +467,11 @@ describe('callback', () => {
       callbackPath: '/some-callback',
       rawRequest: request,
     });
-    setCallbackCookieFromResponse(request, beginResponse);
+    setCallbackCookieFromResponse(
+      request,
+      beginResponse,
+      shopify.config.apiSecretKey,
+    );
 
     const successResponse = {
       access_token: 'some access token',
@@ -493,7 +533,7 @@ describe('callback', () => {
   });
 
   test('does not set an OAuth cookie for offline, embedded apps', async () => {
-    shopify.config.isEmbeddedApp = true;
+    const shopify = shopifyApi(testConfig({isEmbeddedApp: true}));
 
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
@@ -501,7 +541,11 @@ describe('callback', () => {
       callbackPath: '/some-callback',
       rawRequest: request,
     });
-    setCallbackCookieFromResponse(request, beginResponse);
+    setCallbackCookieFromResponse(
+      request,
+      beginResponse,
+      shopify.config.apiSecretKey,
+    );
 
     const successResponse = {
       access_token: 'some access token',
@@ -537,6 +581,8 @@ describe('callback', () => {
   });
 
   test('callback throws an error when the request is done by a bot', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const botRequest = {
       method: 'GET',
       url: 'https://my-test-app.myshopify.io/totally-real-request',
@@ -553,7 +599,7 @@ describe('callback', () => {
   });
 
   test('properly updates the OAuth cookie for offline, non-embedded apps', async () => {
-    shopify.config.isEmbeddedApp = false;
+    const shopify = shopifyApi(testConfig({isEmbeddedApp: false}));
 
     const beginResponse: NormalizedResponse = await shopify.auth.begin({
       shop,
@@ -561,7 +607,11 @@ describe('callback', () => {
       callbackPath: '/some-callback',
       rawRequest: request,
     });
-    setCallbackCookieFromResponse(request, beginResponse);
+    setCallbackCookieFromResponse(
+      request,
+      beginResponse,
+      shopify.config.apiSecretKey,
+    );
 
     const successResponse = {
       access_token: 'some access token',
@@ -603,10 +653,11 @@ describe('callback', () => {
 function setCallbackCookieFromResponse(
   request: NormalizedRequest,
   response: NormalizedResponse,
+  apiSecretKey: string,
 ) {
   // Set the oauth begin state cookie as the request here
   const responseCookies = new Cookies({} as NormalizedRequest, response, {
-    keys: [shopify.config.apiSecretKey],
+    keys: [apiSecretKey],
   });
 
   request.headers.Cookie = [

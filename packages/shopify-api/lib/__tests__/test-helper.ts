@@ -1,9 +1,6 @@
 import * as jose from 'jose';
 import {compare} from 'compare-versions';
 
-import {shopifyApi, Shopify} from '..';
-import {LATEST_API_VERSION, LogSeverity} from '../types';
-import {ConfigParams} from '../base-types';
 import {JwtPayload} from '../session/types';
 import {getHMACKey} from '../utils/get-hmac-key';
 import {mockTestRequests} from '../../adapters/mock/mock_test_requests';
@@ -28,37 +25,6 @@ declare global {
   }
 }
 
-// eslint-disable-next-line import/no-mutable-exports
-let shopify: Shopify;
-// eslint-disable-next-line import/no-mutable-exports
-let testConfig: ConfigParams;
-
-export function getNewTestConfig(): ConfigParams {
-  return {
-    apiKey: 'test_key',
-    apiSecretKey: 'test_secret_key',
-    scopes: ['test_scope'],
-    hostName: 'test_host_name',
-    hostScheme: 'https',
-    apiVersion: LATEST_API_VERSION,
-    isEmbeddedApp: false,
-    isCustomStoreApp: false,
-    customShopDomains: undefined,
-    billing: undefined,
-    logger: {
-      log: jest.fn(),
-      level: LogSeverity.Debug,
-      httpRequests: false,
-      timestamps: false,
-    },
-  };
-}
-
-beforeEach(() => {
-  testConfig = getNewTestConfig();
-  shopify = shopifyApi(testConfig);
-});
-
 test('passes test deprecation checks', () => {
   expect('9999.0.0').toBeWithinDeprecationSchedule();
   expect(() => expect('1.0.0').toBeWithinDeprecationSchedule()).toThrow();
@@ -66,8 +32,6 @@ test('passes test deprecation checks', () => {
     expect(SHOPIFY_API_LIBRARY_VERSION).toBeWithinDeprecationSchedule(),
   ).toThrow();
 });
-
-export {shopify, testConfig};
 
 export async function signJWT(
   secret: string,
@@ -117,14 +81,16 @@ export function queueMockResponses(
 
 // Slightly hacky way to grab the Set-Cookie header from a response and use it as a request's Cookie header
 export async function setSignedSessionCookie({
+  apiSecretKey,
   request,
   cookieId,
 }: {
+  apiSecretKey: string;
   request: NormalizedRequest;
   cookieId: string;
 }) {
   const cookies = new Cookies(request, {} as NormalizedResponse, {
-    keys: [shopify.config.apiSecretKey],
+    keys: [apiSecretKey],
   });
   await cookies.setAndSign('shopify_app_session', cookieId, {
     secure: true,

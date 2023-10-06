@@ -1,6 +1,7 @@
 import {LogSeverity} from '../../types';
-import {shopify} from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
 import {HttpWebhookHandlerWithCallback} from '../types';
+import {shopifyApi} from '../..';
 
 import {EVENT_BRIDGE_HANDLER, HTTP_HANDLER, PUB_SUB_HANDLER} from './handlers';
 
@@ -19,6 +20,8 @@ describe('shopify.webhooks.addHandlers', () => {
   let handler2: HttpWebhookHandlerWithCallback;
 
   it('adds two handlers to the webhook registry', async () => {
+    const shopify = shopifyApi(testConfig());
+
     handler1 = {
       ...HTTP_HANDLER,
       callback: jest.fn().mockImplementation(genericWebhookHandler),
@@ -40,6 +43,8 @@ describe('shopify.webhooks.addHandlers', () => {
   });
 
   it('allows adding multiple of the same HTTP handler', async () => {
+    const shopify = shopifyApi(testConfig());
+
     handler1 = {...HTTP_HANDLER, callback: jest.fn()};
     handler2 = {...HTTP_HANDLER, callback: jest.fn()};
 
@@ -59,6 +64,8 @@ describe('shopify.webhooks.addHandlers', () => {
 
   it('fails if eventbridge handlers point to the same location', async () => {
     expect(() => {
+      const shopify = shopifyApi(testConfig());
+
       return shopify.webhooks.addHandlers({
         PRODUCTS_CREATE: [EVENT_BRIDGE_HANDLER, EVENT_BRIDGE_HANDLER],
       });
@@ -67,6 +74,8 @@ describe('shopify.webhooks.addHandlers', () => {
 
   it('fails if pubsub handlers point to the same location', async () => {
     expect(() => {
+      const shopify = shopifyApi(testConfig());
+
       return shopify.webhooks.addHandlers({
         PRODUCTS_CREATE: [PUB_SUB_HANDLER, PUB_SUB_HANDLER],
       });
@@ -74,6 +83,8 @@ describe('shopify.webhooks.addHandlers', () => {
   });
 
   it('adds handler with lowercase/slash-period format to the webhook registry', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const handler3: HttpWebhookHandlerWithCallback = {
       ...HTTP_HANDLER,
       callback: jest.fn().mockImplementation(genericWebhookHandler),
@@ -95,10 +106,14 @@ describe('shopify.webhooks.addHandlers', () => {
 
 describe('shopify.webhooks.getHandlers', () => {
   it('gets a nonexistent handler', async () => {
+    const shopify = shopifyApi(testConfig());
+
     expect(shopify.webhooks.getHandlers('PRODUCTS')).toEqual([]);
   });
 
   it('gets a handler', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const handler = HTTP_HANDLER;
 
     shopify.webhooks.addHandlers({PRODUCTS: handler});
@@ -106,6 +121,8 @@ describe('shopify.webhooks.getHandlers', () => {
   });
 
   it('gets a handler using lowercase and slash format', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const handler = HTTP_HANDLER;
 
     shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
@@ -115,6 +132,8 @@ describe('shopify.webhooks.getHandlers', () => {
   });
 
   it('gets a handler registered using lowercase and slash format using uppercase format', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const handler = HTTP_HANDLER;
 
     shopify.webhooks.addHandlers({'products/create': handler});
@@ -127,10 +146,14 @@ describe('shopify.webhooks.getHandlers', () => {
 
 describe('shopify.webhooks.getTopicsAdded', () => {
   it('gets an empty list of topics', async () => {
+    const shopify = shopifyApi(testConfig());
+
     expect(shopify.webhooks.getTopicsAdded()).toStrictEqual([]);
   });
 
   it('adds two handlers and gets them', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const handler1 = {...HTTP_HANDLER};
     const handler2 = {...HTTP_HANDLER};
 

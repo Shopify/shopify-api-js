@@ -1,7 +1,8 @@
-import {testConfig, queueMockResponses} from '../../__tests__/test-helper';
+import {queueMockResponses} from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
 import {Session} from '../../session/session';
 import {LATEST_API_VERSION} from '../../types';
-import {shopifyApi, Shopify, BillingInterval} from '../..';
+import {shopifyApi, BillingInterval} from '../..';
 
 import * as Responses from './responses';
 
@@ -24,21 +25,19 @@ describe('shopify.billing.subscriptions', () => {
     scope: 'read_returns',
   });
 
-  let shopify: Shopify;
-  beforeEach(() => {
-    shopify = shopifyApi({
-      ...testConfig,
-      billing: {
-        basic: {
-          amount: 5.0,
-          currencyCode: 'USD',
-          interval: BillingInterval.OneTime,
-        },
-      },
-    });
-  });
-
   test('Returns a list of subscriptions', async () => {
+    const shopify = shopifyApi(
+      testConfig({
+        billing: {
+          basic: {
+            amount: 5.0,
+            currencyCode: 'USD',
+            interval: BillingInterval.OneTime,
+          },
+        },
+      }),
+    );
+
     queueMockResponses([Responses.SUBSCRIPTIONS_RESPONSE]);
 
     const response = await shopify.billing.subscriptions({

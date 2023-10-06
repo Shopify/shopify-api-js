@@ -25,10 +25,17 @@ export * from './clients/types';
 export * from './session/types';
 export * from './webhooks/types';
 
+type DefaultedResources<Resources extends ShopifyRestResources | undefined> =
+  Resources extends undefined ? ShopifyRestResources : Resources;
+
 export interface Shopify<
-  T extends ShopifyRestResources = ShopifyRestResources,
+  Params extends ConfigParams = ConfigParams,
+  Resources extends DefaultedResources<
+    Params['restResources']
+  > = DefaultedResources<Params['restResources']>,
+  Config extends ConfigInterface<Params> = ConfigInterface<Params>,
 > {
-  config: ConfigInterface;
+  config: Config;
   clients: ShopifyClients;
   auth: ShopifyAuth;
   session: ShopifySession;
@@ -36,16 +43,19 @@ export interface Shopify<
   webhooks: ShopifyWebhooks;
   billing: ShopifyBilling;
   logger: ShopifyLogger;
-  rest: T;
+  rest: Resources;
 }
 
-export function shopifyApi<T extends ShopifyRestResources>(
-  config: ConfigParams<T>,
-): Shopify<T> {
+export function shopifyApi<
+  Params extends ConfigParams,
+  Resources extends DefaultedResources<Params['restResources']>,
+>(config: Params): Shopify<Params, Resources, ConfigInterface<Params>> {
   const {restResources, ...libConfig} = config;
-  const validatedConfig = validateConfig(libConfig);
+  const validatedConfig = validateConfig<Resources, typeof libConfig>(
+    libConfig,
+  );
 
-  const shopify: Shopify<T> = {
+  const shopify = {
     config: validatedConfig,
     clients: clientClasses(validatedConfig),
     auth: shopifyAuth(validatedConfig),
@@ -54,15 +64,15 @@ export function shopifyApi<T extends ShopifyRestResources>(
     webhooks: shopifyWebhooks(validatedConfig),
     billing: shopifyBilling(validatedConfig),
     logger: logger(validatedConfig),
-    rest: {} as T,
+    rest: {} as Resources,
   };
 
   if (restResources) {
-    shopify.rest = loadRestResources({
-      resources: restResources,
+    shopify.rest = loadRestResources<Resources>({
+      resources: restResources as Resources,
       config: validatedConfig,
       RestClient: shopify.clients.Rest,
-    }) as T;
+    });
   }
 
   shopify.logger
@@ -71,5 +81,5 @@ export function shopifyApi<T extends ShopifyRestResources>(
     )
     .catch((err) => console.log(err));
 
-  return shopify;
+  return shopify as Shopify<Params, Resources, ConfigInterface<Params>>;
 }

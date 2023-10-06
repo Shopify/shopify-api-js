@@ -38,4 +38,5 @@ export const config: ConfigInterface = {
     httpRequests: false,
     timestamps: false,
   },
+  future: {},
 };

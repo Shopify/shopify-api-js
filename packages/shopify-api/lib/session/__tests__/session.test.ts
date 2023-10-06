@@ -1,5 +1,6 @@
 import {Session} from '../session';
-import {shopify} from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
+import {shopifyApi} from '../..';
 
 describe('session', () => {
   it('can create a session from another session', () => {
@@ -43,6 +44,8 @@ describe('session', () => {
 
 describe('isActive', () => {
   it('returns true if session is active', () => {
+    const shopify = shopifyApi(testConfig());
+
     const session = new Session({
       id: 'active',
       shop: 'active-shop',
@@ -57,6 +60,8 @@ describe('isActive', () => {
   });
 
   it('returns false if session is not active', () => {
+    const shopify = shopifyApi(testConfig());
+
     const session = new Session({
       id: 'not_active',
       shop: 'inactive-shop',

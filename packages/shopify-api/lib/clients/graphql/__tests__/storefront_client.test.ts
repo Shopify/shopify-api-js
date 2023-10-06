@@ -1,4 +1,5 @@
-import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
+import {queueMockResponse} from '../../../__tests__/test-helper';
+import {testConfig} from '../../../__tests__/test-config';
 import {
   ApiVersion,
   LATEST_API_VERSION,
@@ -9,6 +10,7 @@ import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../../version';
 import {MissingRequiredArgument} from '../../../error';
+import {shopifyApi} from '../../../index';
 
 const domain = 'test-shop.myshopify.io';
 const QUERY = `
@@ -34,7 +36,7 @@ describe('Storefront GraphQL client', () => {
     const jwtPayload: JwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: shopify.config.apiKey,
+      aud: 'test_key',
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -53,6 +55,8 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('can return response from specific access token', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Storefront({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -73,8 +77,12 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('can return response from private access token in config setting', async () => {
-    shopify.config.isCustomStoreApp = true;
-    shopify.config.privateAppStorefrontAccessToken = 'private_token';
+    const shopify = shopifyApi(
+      testConfig({
+        isCustomStoreApp: true,
+        privateAppStorefrontAccessToken: 'private_token',
+      }),
+    );
 
     const customSession = shopify.session.customAppSession(session.shop);
     const client = new shopify.clients.Storefront({session: customSession});
@@ -96,8 +104,8 @@ describe('Storefront GraphQL client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('fails without privateAppStorefrontAccessToken if isCustomStoreApp is true', async () => {
-    shopify.config.isCustomStoreApp = true;
+  it('does not fail when missing privateAppStorefrontAccessToken, if isCustomStoreApp is true', async () => {
+    const shopify = shopifyApi(testConfig({isCustomStoreApp: true}));
 
     const customSession = shopify.session.customAppSession(session.shop);
     const client = new shopify.clients.Storefront({session: customSession});
@@ -108,6 +116,8 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('sets specific SF API headers', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Storefront({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -130,6 +140,8 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('allows overriding the API version', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Storefront({
       session,
       apiVersion: '2020-01' as any as ApiVersion,

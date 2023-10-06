@@ -1,6 +1,8 @@
-import {shopify, signJWT} from '../../__tests__/test-helper';
+import {signJWT} from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
 import * as ShopifyErrors from '../../error';
 import {JwtPayload} from '../types';
+import {shopifyApi} from '../..';
 
 let payload: JwtPayload;
 
@@ -12,7 +14,7 @@ describe('JWT session token', () => {
     payload = {
       iss: 'test-shop.myshopify.io/admin',
       dest: 'test-shop.myshopify.io',
-      aud: shopify.config.apiKey,
+      aud: 'test_key',
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -23,6 +25,7 @@ describe('JWT session token', () => {
   });
 
   test('can verify valid tokens', async () => {
+    const shopify = shopifyApi(testConfig());
     const token = await signJWT(shopify.config.apiSecretKey, payload);
 
     const actualPayload = await shopify.session.decodeSessionToken(token);
@@ -30,12 +33,16 @@ describe('JWT session token', () => {
   });
 
   test('fails with invalid tokens', async () => {
+    const shopify = shopifyApi(testConfig());
+
     await expect(
       shopify.session.decodeSessionToken('not_a_valid_token'),
     ).rejects.toThrow(ShopifyErrors.InvalidJwtError);
   });
 
   test('fails if the token is expired', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const invalidPayload = {...payload};
     invalidPayload.exp = new Date().getTime() / 1000 - 60;
 
@@ -46,6 +53,8 @@ describe('JWT session token', () => {
   });
 
   test('fails if the token is not activated yet', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const invalidPayload = {...payload};
     invalidPayload.nbf = new Date().getTime() / 1000 + 60;
 
@@ -56,7 +65,7 @@ describe('JWT session token', () => {
   });
 
   test('fails if the API key is wrong', async () => {
-    shopify.config.apiKey = 'something_else';
+    const shopify = shopifyApi(testConfig({apiKey: 'something_else'}));
 
     // The token is signed with a key that is not the current value
     const token = await signJWT(shopify.config.apiSecretKey, payload);
@@ -67,7 +76,7 @@ describe('JWT session token', () => {
   });
 
   test("doesn't fail on a mismatching API key when not checking the token's audience", async () => {
-    shopify.config.apiKey = 'something_else';
+    const shopify = shopifyApi(testConfig({apiKey: 'something_else'}));
 
     // The token is signed with a key that is not the current value
     const token = await signJWT(shopify.config.apiSecretKey, payload);
@@ -79,6 +88,8 @@ describe('JWT session token', () => {
   });
 
   test("doesn't fail on a missing aud field when not checking the token's audience", async () => {
+    const shopify = shopifyApi(testConfig());
+
     const payloadWithoutAud = {...payload};
     delete (payloadWithoutAud as any).aud;
 

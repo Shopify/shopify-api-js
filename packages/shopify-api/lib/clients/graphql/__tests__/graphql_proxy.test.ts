@@ -1,15 +1,13 @@
 import express, {Request, Response} from 'express';
 import request from 'supertest';
 
-import {
-  queueMockResponses,
-  shopify,
-  signJWT,
-} from '../../../__tests__/test-helper';
+import {queueMockResponses, signJWT} from '../../../__tests__/test-helper';
+import {testConfig} from '../../../__tests__/test-config';
 import {Session} from '../../../session/session';
 import {InvalidSession} from '../../../error';
 import {JwtPayload} from '../../../session/types';
 import {canonicalizeHeaders, NormalizedRequest} from '../../../../runtime/http';
+import {shopifyApi} from '../../..';
 
 const successResponse = {
   data: {
@@ -41,6 +39,8 @@ let session: Session;
 let token = '';
 
 describe('GraphQL proxy with session', () => {
+  const shopify = shopifyApi(testConfig());
+
   const app = express();
   app.use(express.text());
   app.use(express.json());
@@ -128,7 +128,7 @@ describe('GraphQL proxy with session', () => {
 
 describe('GraphQL proxy', () => {
   it('throws an error if no token', async () => {
-    shopify.config.isEmbeddedApp = true;
+    const shopify = shopifyApi(testConfig({isEmbeddedApp: true}));
 
     const jwtPayload: JwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
