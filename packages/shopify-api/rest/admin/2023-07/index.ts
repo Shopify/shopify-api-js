@@ -65,6 +65,7 @@ import {Province} from './province';
 import {RecurringApplicationCharge} from './recurring_application_charge';
 import {Redirect} from './redirect';
 import {Refund} from './refund';
+import {Report} from './report';
 import {ResourceFeedback} from './resource_feedback';
 import {ScriptTag} from './script_tag';
 import {ShippingZone} from './shipping_zone';
@@ -141,6 +142,7 @@ export interface RestResources extends ShopifyRestResources {
   RecurringApplicationCharge: typeof RecurringApplicationCharge;
   Redirect: typeof Redirect;
   Refund: typeof Refund;
+  Report: typeof Report;
   ResourceFeedback: typeof ResourceFeedback;
   ScriptTag: typeof ScriptTag;
   ShippingZone: typeof ShippingZone;
@@ -218,6 +220,7 @@ export const restResources: RestResources = {
   RecurringApplicationCharge,
   Redirect,
   Refund,
+  Report,
   ResourceFeedback,
   ScriptTag,
   ShippingZone,

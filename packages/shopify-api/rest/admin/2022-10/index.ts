@@ -27,7 +27,6 @@ import {Currency} from './currency';
 import {CustomCollection} from './custom_collection';
 import {Customer} from './customer';
 import {CustomerAddress} from './customer_address';
-import {CustomerSavedSearch} from './customer_saved_search';
 import {DeprecatedApiCall} from './deprecated_api_call';
 import {DiscountCode} from './discount_code';
 import {Dispute} from './dispute';
@@ -105,7 +104,6 @@ export interface RestResources extends ShopifyRestResources {
   CustomCollection: typeof CustomCollection;
   Customer: typeof Customer;
   CustomerAddress: typeof CustomerAddress;
-  CustomerSavedSearch: typeof CustomerSavedSearch;
   DeprecatedApiCall: typeof DeprecatedApiCall;
   DiscountCode: typeof DiscountCode;
   Dispute: typeof Dispute;
@@ -184,7 +182,6 @@ export const restResources: RestResources = {
   CustomCollection,
   Customer,
   CustomerAddress,
-  CustomerSavedSearch,
   DeprecatedApiCall,
   DiscountCode,
   Dispute,

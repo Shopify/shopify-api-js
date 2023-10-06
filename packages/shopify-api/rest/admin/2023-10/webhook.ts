@@ -19,42 +19,40 @@ interface DeleteArgs {
 interface AllArgs {
   [key: string]: unknown;
   session: Session;
+  address?: unknown;
+  created_at_max?: unknown;
+  created_at_min?: unknown;
+  fields?: unknown;
   limit?: unknown;
   since_id?: unknown;
-  fields?: unknown;
+  topic?: unknown;
+  updated_at_min?: unknown;
+  updated_at_max?: unknown;
 }
 interface CountArgs {
   [key: string]: unknown;
   session: Session;
-  since_id?: unknown;
-}
-interface CustomersArgs {
-  [key: string]: unknown;
-  session: Session;
-  id: number | string;
-  order?: unknown;
-  limit?: unknown;
-  fields?: unknown;
+  address?: unknown;
+  topic?: unknown;
 }
 
-export class CustomerSavedSearch extends Base {
-  public static apiVersion = ApiVersion.April22;
+export class Webhook extends Base {
+  public static apiVersion = ApiVersion.October23;
 
   protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
-    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
-    {"http_method": "get", "operation": "count", "ids": [], "path": "customer_saved_searches/count.json"},
-    {"http_method": "get", "operation": "customers", "ids": ["id"], "path": "customer_saved_searches/<id>/customers.json"},
-    {"http_method": "get", "operation": "get", "ids": [], "path": "customer_saved_searches.json"},
-    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "customer_saved_searches/<id>.json"},
-    {"http_method": "post", "operation": "post", "ids": [], "path": "customer_saved_searches.json"},
-    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "customer_saved_searches/<id>.json"}
+    {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "webhooks/<id>.json"},
+    {"http_method": "get", "operation": "count", "ids": [], "path": "webhooks/count.json"},
+    {"http_method": "get", "operation": "get", "ids": [], "path": "webhooks.json"},
+    {"http_method": "get", "operation": "get", "ids": ["id"], "path": "webhooks/<id>.json"},
+    {"http_method": "post", "operation": "post", "ids": [], "path": "webhooks.json"},
+    {"http_method": "put", "operation": "put", "ids": ["id"], "path": "webhooks/<id>.json"}
   ];
   protected static resourceNames: ResourceNames[] = [
     {
-      "singular": "customer_saved_search",
-      "plural": "customer_saved_searches"
+      "singular": "webhook",
+      "plural": "webhooks"
     }
   ];
 
@@ -64,8 +62,8 @@ export class CustomerSavedSearch extends Base {
       id,
       fields = null
     }: FindArgs
-  ): Promise<CustomerSavedSearch | null> {
-    const result = await this.baseFind<CustomerSavedSearch>({
+  ): Promise<Webhook | null> {
+    const result = await this.baseFind<Webhook>({
       session: session,
       urlIds: {"id": id},
       params: {"fields": fields},
@@ -79,7 +77,7 @@ export class CustomerSavedSearch extends Base {
       id
     }: DeleteArgs
   ): Promise<unknown> {
-    const response = await this.request<CustomerSavedSearch>({
+    const response = await this.request<Webhook>({
       http_method: "delete",
       operation: "delete",
       session: session,
@@ -93,16 +91,22 @@ export class CustomerSavedSearch extends Base {
   public static async all(
     {
       session,
+      address = null,
+      created_at_max = null,
+      created_at_min = null,
+      fields = null,
       limit = null,
       since_id = null,
-      fields = null,
+      topic = null,
+      updated_at_min = null,
+      updated_at_max = null,
       ...otherArgs
     }: AllArgs
-  ): Promise<FindAllResponse<CustomerSavedSearch>> {
-    const response = await this.baseFind<CustomerSavedSearch>({
+  ): Promise<FindAllResponse<Webhook>> {
+    const response = await this.baseFind<Webhook>({
       session: session,
       urlIds: {},
-      params: {"limit": limit, "since_id": since_id, "fields": fields, ...otherArgs},
+      params: {"address": address, "created_at_max": created_at_max, "created_at_min": created_at_min, "fields": fields, "limit": limit, "since_id": since_id, "topic": topic, "updated_at_min": updated_at_min, "updated_at_max": updated_at_max, ...otherArgs},
     });
 
     return response;
@@ -111,16 +115,17 @@ export class CustomerSavedSearch extends Base {
   public static async count(
     {
       session,
-      since_id = null,
+      address = null,
+      topic = null,
       ...otherArgs
     }: CountArgs
   ): Promise<unknown> {
-    const response = await this.request<CustomerSavedSearch>({
+    const response = await this.request<Webhook>({
       http_method: "get",
       operation: "count",
       session: session,
       urlIds: {},
-      params: {"since_id": since_id, ...otherArgs},
+      params: {"address": address, "topic": topic, ...otherArgs},
       body: {},
       entity: null,
     });
@@ -128,32 +133,14 @@ export class CustomerSavedSearch extends Base {
     return response ? response.body : null;
   }
 
-  public static async customers(
-    {
-      session,
-      id,
-      order = null,
-      limit = null,
-      fields = null,
-      ...otherArgs
-    }: CustomersArgs
-  ): Promise<unknown> {
-    const response = await this.request<CustomerSavedSearch>({
-      http_method: "get",
-      operation: "customers",
-      session: session,
-      urlIds: {"id": id},
-      params: {"order": order, "limit": limit, "fields": fields, ...otherArgs},
-      body: {},
-      entity: null,
-    });
-
-    return response ? response.body : null;
-  }
-
+  public address: string | null;
+  public topic: string | null;
+  public api_version: string | null;
   public created_at: string | null;
+  public fields: string[] | null;
+  public format: string | null;
   public id: number | null;
-  public name: string | null;
-  public query: string | null;
+  public metafield_namespaces: string[] | null;
+  public private_metafield_namespaces: string[] | null;
   public updated_at: string | null;
 }
