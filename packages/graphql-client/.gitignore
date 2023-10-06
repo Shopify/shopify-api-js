@@ -20,3 +20,4 @@ package-lock.json
 
 # ignore any locally packed packages
 *.tgz
+!*.d.ts

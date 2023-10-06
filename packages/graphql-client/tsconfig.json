@@ -9,11 +9,9 @@
     "rootDir": "src",
     "baseUrl": "src",
     "strict": true,
-    "module": "esnext",
     "pretty": true,
     "allowSyntheticDefaultImports": true,
-    "strictPropertyInitialization": true,
-    "typeRoots": ["node_modules/@types", "./src/types"],
-    "moduleResolution": "node"
-  }
+    "strictPropertyInitialization": true
+  },
+  "extends": "../../tsconfig.base.json",
 }

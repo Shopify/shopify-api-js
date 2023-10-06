@@ -31,8 +31,8 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js,.ts",
-    "build": "yarn run lint && yarn run rollup",
-    "build:umd": "yarn run lint && rollup -c rollup-umd.config.js --bundleConfigAsCjs",
+    "build": "yarn run rollup",
+    "build:umd": "rollup -c rollup-umd.config.js --bundleConfigAsCjs",
     "test": "jest",
     "rollup": "rollup -c --bundleConfigAsCjs",
     "clean": "rimraf dist/*",
@@ -88,7 +88,7 @@
     "@shopify/eslint-plugin": "^42.0.3",
     "@shopify/prettier-config": "^1.1.2",
     "@shopify/typescript-configs": "^5.1.0",
-    "@types/jest": "^29.4.2",
+    "@types/jest": "^29.5.0",
     "@types/regenerator-runtime": "^0.13.1",
     "@typescript-eslint/parser": "^6.7.3",
     "babel-jest": "^29.5.0",
@@ -100,7 +100,7 @@
     "rollup": "^3.19.1",
     "rollup-plugin-dts": "^5.2.0",
     "tslib": "^2.5.0",
-    "typescript": "5.2.0",
+    "typescript": "5.2.2",
     "web-streams-polyfill": "^3.2.1"
   },
   "bugs": {
