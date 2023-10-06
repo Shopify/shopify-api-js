@@ -12,8 +12,8 @@
         "^build"
       ]
     },
-    "test": {
-    },
+    "test": {},
+    "test:ci": {},
     "lint": {},
     "dev": {
       "cache": false,
