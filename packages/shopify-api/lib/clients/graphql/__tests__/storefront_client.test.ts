@@ -1,8 +1,4 @@
-import {
-  shopify,
-  queueMockResponse,
-  testIfLibraryVersionIsAtLeast,
-} from '../../../__tests__/test-helper';
+import {shopify, queueMockResponse} from '../../../__tests__/test-helper';
 import {
   ApiVersion,
   LATEST_API_VERSION,
@@ -31,8 +27,6 @@ const successResponse = {
   },
 };
 const accessToken = 'dangit';
-/** @deprecated This should no longer be used */
-const storefrontAccessToken = 'storefrontAccessToken-dangit';
 let session: Session;
 
 describe('Storefront GraphQL client', () => {
@@ -56,29 +50,6 @@ describe('Storefront GraphQL client', () => {
       isOnline: true,
       accessToken,
     });
-  });
-
-  it('can return response from specific access token, using the deprecated params', async () => {
-    const client = new shopify.clients.Storefront({
-      domain: session.shop,
-      storefrontAccessToken,
-    });
-
-    queueMockResponse(JSON.stringify(successResponse));
-
-    await expect(client.query({data: QUERY})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
-
-    expect({
-      method: 'POST',
-      domain,
-      path: `/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
-      headers: {
-        [ShopifyHeader.StorefrontAccessToken]: storefrontAccessToken,
-      },
-    }).toMatchMadeHttpRequest();
   });
 
   it('can return response from specific access token', async () => {
@@ -125,44 +96,15 @@ describe('Storefront GraphQL client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  testIfLibraryVersionIsAtLeast(
-    '8.0.0',
-    'fails without privateAppStorefrontAccessToken if isCustomStoreApp is true',
-    async () => {
-      shopify.config.isCustomStoreApp = true;
-
-      const customSession = shopify.session.customAppSession(session.shop);
-      const client = new shopify.clients.Storefront({session: customSession});
-
-      await expect(client.query({data: QUERY})).rejects.toThrow(
-        MissingRequiredArgument,
-      );
-    },
-  );
-
-  it('does not fail when missing privateAppStorefrontAccessToken, if isCustomStoreApp is true', async () => {
+  it('fails without privateAppStorefrontAccessToken if isCustomStoreApp is true', async () => {
     shopify.config.isCustomStoreApp = true;
 
-    const client = new shopify.clients.Storefront({
-      domain: session.shop,
-      storefrontAccessToken,
-    });
+    const customSession = shopify.session.customAppSession(session.shop);
+    const client = new shopify.clients.Storefront({session: customSession});
 
-    queueMockResponse(JSON.stringify(successResponse));
-
-    await expect(client.query({data: QUERY})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+    await expect(client.query({data: QUERY})).rejects.toThrow(
+      MissingRequiredArgument,
     );
-
-    expect({
-      method: 'POST',
-      domain,
-      path: `/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
-      headers: {
-        [ShopifyHeader.StorefrontAccessToken]: storefrontAccessToken,
-      },
-    }).toMatchMadeHttpRequest();
   });
 
   it('sets specific SF API headers', async () => {

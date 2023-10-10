@@ -2,7 +2,6 @@ import {StatusCode} from '@shopify/network';
 import request from 'supertest';
 
 import {InvalidWebhookError} from '../../error';
-import {LogSeverity} from '../../types';
 import {shopify} from '../../__tests__/test-helper';
 
 import {HTTP_HANDLER, HTTP_HANDLER_WITHOUT_CALLBACK} from './handlers';
@@ -203,23 +202,6 @@ describe('shopify.webhooks.process', () => {
       .expect(StatusCode.InternalServerError);
 
     expect(response.body.data.errorThrown).toBeTruthy();
-  });
-
-  it('logs a deprecation notice if isCustomStoreApp === true and hmac does not match', async () => {
-    const handler = {...HTTP_HANDLER, callback: blockingWebhookHandler};
-    shopify.webhooks.addHandlers({PRODUCTS_CREATE: handler});
-    shopify.config.isCustomStoreApp = true;
-
-    await request(app)
-      .post('/webhooks')
-      .set(headers({hmac: hmac('incorrect secret', rawBody)}))
-      .send(rawBody)
-      .expect(StatusCode.Unauthorized);
-
-    expect(shopify.config.logger.log).toHaveBeenCalledWith(
-      LogSeverity.Warning,
-      expect.stringContaining('apiSecretKey should be set to'),
-    );
   });
 
   it('throws if the handler does not have a callback', async () => {

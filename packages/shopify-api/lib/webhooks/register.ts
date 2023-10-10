@@ -1,11 +1,10 @@
-import {versionCompatible, versionPriorTo} from '../utils/version-compatible';
 import {
   graphqlClientClass,
   GraphqlClient,
 } from '../clients/graphql/graphql_client';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
 import {logger} from '../logger';
-import {ApiVersion, gdprTopics} from '../types';
+import {gdprTopics} from '../types';
 import {ConfigInterface} from '../base-types';
 import {Session} from '../session/session';
 
@@ -127,7 +126,7 @@ async function getExistingHandlers(
   let hasNextPage: boolean;
   let endCursor: string | null = null;
   do {
-    const query = buildCheckQuery(config, endCursor);
+    const query = buildCheckQuery(endCursor);
 
     const response = await client.query<WebhookCheckResponse>({
       data: query,
@@ -150,27 +149,10 @@ async function getExistingHandlers(
   return existingHandlers;
 }
 
-function buildCheckQuery(config: ConfigInterface, endCursor: string | null) {
-  return removeDeprecatedFields(
-    config,
-    queryTemplate(TEMPLATE_GET_HANDLERS, {
-      END_CURSOR: JSON.stringify(endCursor),
-    }),
-  );
-}
-
-function removeDeprecatedFields(
-  config: ConfigInterface,
-  query: string,
-): string {
-  let processedQuery = query;
-
-  // The privateMetafieldNamespaces field was deprecated in the July22 version, so we need to stop sending it
-  if (versionCompatible(config)(ApiVersion.July22)) {
-    processedQuery = processedQuery.replace('privateMetafieldNamespaces', '');
-  }
-
-  return processedQuery;
+function buildCheckQuery(endCursor: string | null) {
+  return queryTemplate(TEMPLATE_GET_HANDLERS, {
+    END_CURSOR: JSON.stringify(endCursor),
+  });
 }
 
 function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
@@ -182,14 +164,10 @@ function buildHandlerFromNode(edge: WebhookCheckResponseNode): WebhookHandler {
     case 'WebhookHttpEndpoint':
       handler = {
         deliveryMethod: DeliveryMethod.Http,
-        privateMetafieldNamespaces: edge.node.privateMetafieldNamespaces,
         callbackUrl: endpoint.callbackUrl,
         // This is a dummy for now because we don't really care about it
         callback: async () => {},
       };
-
-      // This field only applies to HTTP webhooks
-      handler.privateMetafieldNamespaces?.sort();
       break;
     case 'WebhookEventBridgeEndpoint':
       handler = {
@@ -318,19 +296,8 @@ function areHandlerFieldsEqual(
     arr1.metafieldNamespaces || [],
     arr2.metafieldNamespaces || [],
   );
-  const privateMetafieldNamespacesEqual =
-    arr1.deliveryMethod !== DeliveryMethod.Http ||
-    arr2.deliveryMethod !== DeliveryMethod.Http ||
-    arraysEqual(
-      arr1.privateMetafieldNamespaces || [],
-      arr2.privateMetafieldNamespaces || [],
-    );
 
-  return (
-    includeFieldsEqual &&
-    metafieldNamespacesEqual &&
-    privateMetafieldNamespacesEqual
-  );
+  return includeFieldsEqual && metafieldNamespacesEqual;
 }
 
 function arraysEqual(arr1: any[], arr2: any[]): boolean {
@@ -452,17 +419,6 @@ function buildMutation(
       params.metafieldNamespaces = JSON.stringify(handler.metafieldNamespaces);
     }
 
-    if (
-      handler.deliveryMethod === DeliveryMethod.Http &&
-      handler.privateMetafieldNamespaces &&
-      // This field was deprecated in the July22 version
-      versionPriorTo(config)(ApiVersion.July22)
-    ) {
-      params.privateMetafieldNamespaces = JSON.stringify(
-        handler.privateMetafieldNamespaces,
-      );
-    }
-
     const paramsString = Object.entries(params)
       .map(([key, value]) => `${key}: ${value}`)
       .join(', ');
@@ -529,7 +485,6 @@ export const TEMPLATE_GET_HANDLERS = `query shopifyApiReadWebhookSubscriptions {
         topic
         includeFields
         metafieldNamespaces
-        privateMetafieldNamespaces
         endpoint {
           __typename
           ... on WebhookHttpEndpoint {

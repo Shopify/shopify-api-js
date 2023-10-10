@@ -80,12 +80,6 @@ The path for this handler within your app. The app's host will be automatically 
 
 The `async` callback to call when a shop triggers a `topic` event.
 
-#### privateMetafieldNamespaces
-
-`string[]` | Defaults to `[]` | :warning: deprecated, will be removed in v8.0.0
-
-Namespaces to be included in the callback, defaulting to all of them.
-
 ### EventBridge
 
 #### arn

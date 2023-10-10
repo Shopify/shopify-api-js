@@ -1,44 +1,18 @@
 import {SHOPIFY_API_LIBRARY_VERSION} from '../../version';
 import {LIBRARY_NAME, ShopifyHeader} from '../../types';
 import {httpClientClass} from '../http_client/http_client';
-import {Session} from '../../session/session';
 import {HeaderParams} from '../http_client/types';
 import {logger} from '../../logger';
 import {MissingRequiredArgument} from '../../error';
-import {enableCodeAfterVersion} from '../../utils/versioned-codeblocks';
 
 import {GraphqlClient, GraphqlClientClassParams} from './graphql_client';
-import {DeprecatedStorefrontClientParams, GraphqlClientParams} from './types';
+import {GraphqlClientParams} from './types';
 
 export class StorefrontClient extends GraphqlClient {
   baseApiPath = '/api';
-  readonly session: Session;
-  /** @deprecated This package should not use public Storefront API tokens. Use `session` instead. */
-  readonly domain: string;
-  /** @deprecated This package should not use public Storefront API tokens. Use `session` instead. */
-  readonly storefrontAccessToken: string;
 
-  /** @deprecated This package should not use public Storefront API tokens */
-  private readonly tokenHeader:
-    | ShopifyHeader.StorefrontPrivateToken
-    | ShopifyHeader.StorefrontAccessToken =
-    ShopifyHeader.StorefrontPrivateToken;
-
-  constructor(params: GraphqlClientParams | DeprecatedStorefrontClientParams) {
-    let session: Session;
-    if (isDeprecatedParamsType(params)) {
-      session = new Session({
-        shop: params.domain,
-        id: '',
-        state: '',
-        isOnline: true,
-        accessToken: params.storefrontAccessToken,
-      });
-    } else {
-      session = params.session;
-    }
-
-    super({session, apiVersion: params.apiVersion});
+  constructor(params: GraphqlClientParams) {
+    super({session: params.session, apiVersion: params.apiVersion});
 
     const config = this.storefrontClass().config;
 
@@ -50,21 +24,6 @@ export class StorefrontClient extends GraphqlClient {
 
       logger(config).debug(message);
     }
-
-    if (isDeprecatedParamsType(params)) {
-      this.tokenHeader = ShopifyHeader.StorefrontAccessToken;
-      this.storefrontAccessToken = params.storefrontAccessToken;
-      logger(config).deprecated(
-        '8.0.0',
-        [
-          'The domain and storefrontAccessToken params are deprecated, because they assume public access tokens for the Storefront API.',
-          'Apps should not use public Storefront API tokens for backend requests. Pass the session param instead.',
-          'See https://shopify.dev/docs/api/usage/authentication#access-tokens-for-the-storefront-api for more information.',
-        ].join('\n'),
-      );
-    }
-
-    this.session = session;
   }
 
   protected getApiHeaders(): HeaderParams {
@@ -75,12 +34,9 @@ export class StorefrontClient extends GraphqlClient {
       accessToken = config.privateAppStorefrontAccessToken;
 
       if (!accessToken) {
-        enableCodeAfterVersion('8.0.0', () => {
-          throw new MissingRequiredArgument(
-            'Custom store apps must set the privateAppStorefrontAccessToken property to call the Storefront API.',
-          );
-        });
-        accessToken = this.session.accessToken || this.storefrontAccessToken;
+        throw new MissingRequiredArgument(
+          'Custom store apps must set the privateAppStorefrontAccessToken property to call the Storefront API.',
+        );
       }
     } else {
       accessToken = this.session.accessToken;
@@ -92,7 +48,7 @@ export class StorefrontClient extends GraphqlClient {
 
     const sdkVariant = LIBRARY_NAME.toLowerCase().split(' ').join('-');
     return {
-      [this.tokenHeader]: accessToken,
+      [ShopifyHeader.StorefrontPrivateToken]: accessToken,
       [ShopifyHeader.StorefrontSDKVariant]: sdkVariant,
       [ShopifyHeader.StorefrontSDKVersion]: SHOPIFY_API_LIBRARY_VERSION,
     };
@@ -119,10 +75,4 @@ export function storefrontClientClass(params: GraphqlClientClassParams) {
   });
 
   return NewStorefrontClient as typeof StorefrontClient;
-}
-
-function isDeprecatedParamsType(
-  params: GraphqlClientParams | DeprecatedStorefrontClientParams,
-): params is DeprecatedStorefrontClientParams {
-  return 'domain' in params;
 }

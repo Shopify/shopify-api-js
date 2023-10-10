@@ -6,8 +6,6 @@ export enum LogSeverity {
 }
 
 export enum ApiVersion {
-  April22 = '2022-04',
-  July22 = '2022-07',
   October22 = '2022-10',
   January23 = '2023-01',
   April23 = '2023-04',
@@ -27,8 +25,6 @@ export enum ShopifyHeader {
   Hmac = 'X-Shopify-Hmac-Sha256',
   Topic = 'X-Shopify-Topic',
   WebhookId = 'X-Shopify-Webhook-Id',
-  /** @deprecated This is a backend package and it should never call the SFAPI using public tokens */
-  StorefrontAccessToken = 'X-Shopify-Storefront-Access-Token',
   StorefrontPrivateToken = 'Shopify-Storefront-Private-Token',
   StorefrontSDKVariant = 'X-SDK-Variant',
   StorefrontSDKVersion = 'X-SDK-Version',
