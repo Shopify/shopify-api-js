@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-07';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.July23,
-    restResources,
-  });
-});
 
 describe('CarrierService resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('CarrierService resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"carrier_service": {"id": 1036894960, "name": "Shipping Rate Provider", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894960", "format": "json", "callback_url": "http://shipping.example.com/"}}));
 
     const carrier_service = new shopify.rest.CarrierService({session: session});
@@ -50,6 +45,10 @@ describe('CarrierService resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"carrier_services": [{"id": 1036894958, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894958", "format": "json", "callback_url": "http://example.com/"}, {"id": 260046840, "name": "ups_shipping", "active": true, "service_discovery": true, "carrier_service_type": "legacy", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/260046840"}]}));
 
     await shopify.rest.CarrierService.all({
@@ -67,6 +66,10 @@ describe('CarrierService resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"carrier_service": {"active": false, "id": 1036894957, "name": "Some new name", "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894957", "format": "json", "callback_url": "http://example.com/"}}));
 
     const carrier_service = new shopify.rest.CarrierService({session: session});
@@ -86,6 +89,10 @@ describe('CarrierService resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"carrier_service": {"id": 1036894956, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894956", "format": "json", "callback_url": "http://example.com/"}}));
 
     await shopify.rest.CarrierService.find({
@@ -104,6 +111,10 @@ describe('CarrierService resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.CarrierService.delete({

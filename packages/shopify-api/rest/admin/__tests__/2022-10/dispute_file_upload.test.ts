@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2022-10';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.October22,
-    restResources,
-  });
-});
 
 describe('DisputeFileUpload resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('DisputeFileUpload resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"dispute_file_upload": {"id": 1008998231, "shop_id": 220006451, "file_size": 34509, "file_type": "application/pdf", "original_filename": "test.pdf", "filename": "5b0fef8e-040f-420e-ad98-1959fbda7a45.pdf", "created_at": "2023-08-30T08:22:26-04:00", "updated_at": "2023-08-30T08:22:26-04:00", "dispute_evidence_id": 819974671, "dispute_evidence_type": "uncategorized_file", "url": "https://unittest.storage.googleapis.com/s/files/1/0002/2000/6451/payments_file_uploads/5b0fef8e-040f-420e-ad98-1959fbda7a45.pdf?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=shopify-core-gcs-test%40shopify-tiers.iam.gserviceaccount.com%2F20200912%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=2023-08-30T12:22:26Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&response-content-disposition=&X-Goog-Signature=87811646776a232917997f6a4595871d9123629da45d35b2b915e7210eececff55a58147e79ac636861617cc21b5a2f\n                    6e5ea6547d9a20e9503e64caca84c9043ecccbf27d20142118017c60d2418edb7896c53eb466335fca\n                    9153d8d73c15645962eace819a3588301d55bcbc5b4ecf2225561de914b104e2069daa400e741a59a\n                    306d094f7b147c0ae2215f8203e4ce20a907c983a2e4be074c584725bd1c9e399f633499531160dac25\n                    b34054527795ef5ea48a4ac1d392585d4bc0976d62cab57e18d33547c9110599f39368983e4c88275790\n                    0bac1eddcb41b87d4d26269bfe01b0161ef0a81088a0e4d6596380f4d3d37e4e72a8c5fefc6bc07551efb59"}}));
 
     const dispute_file_upload = new shopify.rest.DisputeFileUpload({session: session});
@@ -52,6 +47,10 @@ describe('DisputeFileUpload resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.DisputeFileUpload.delete({

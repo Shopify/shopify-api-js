@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-04';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.April23,
-    restResources,
-  });
-});
 
 describe('UsageCharge resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('UsageCharge resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.April23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618213, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2023-10-03T13:21:00-04:00", "currency": "USD", "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
 
     const usage_charge = new shopify.rest.UsageCharge({session: session});
@@ -50,6 +45,10 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.April23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"usage_charges": [{"id": 1034618208, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2023-10-03T13:20:57-04:00", "currency": "USD", "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
 
     await shopify.rest.UsageCharge.all({
@@ -68,6 +67,10 @@ describe('UsageCharge resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.April23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618209, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2023-10-03T13:20:58-04:00", "currency": "USD", "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
 
     await shopify.rest.UsageCharge.find({

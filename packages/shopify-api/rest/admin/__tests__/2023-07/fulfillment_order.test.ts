@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-07';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.July23,
-    restResources,
-  });
-});
 
 describe('FulfillmentOrder resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('FulfillmentOrder resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_orders": [{"id": 1046000789, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "submitted", "status": "open", "supported_actions": ["cancel_fulfillment_order"], "destination": {"id": 1046000785, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737491, "shop_id": 548380009, "fulfillment_order_id": 1046000789, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfillment_service_handle": "mars-fulfillment", "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}]}));
 
     await shopify.rest.FulfillmentOrder.all({
@@ -49,6 +44,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_order": {"id": 1046000786, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "submitted", "status": "open", "supported_actions": ["cancel_fulfillment_order"], "destination": {"id": 1046000782, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737488, "shop_id": 548380009, "fulfillment_order_id": 1046000786, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfillment_service_handle": "mars-fulfillment", "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}}));
 
     await shopify.rest.FulfillmentOrder.find({
@@ -67,6 +66,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_order": {"id": 1046000783, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "submitted", "status": "closed", "supported_actions": [], "destination": {"id": 1046000779, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [], "fulfillment_service_handle": "mars-fulfillment", "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}, "replacement_fulfillment_order": {"id": 1046000784, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "unsubmitted", "status": "open", "supported_actions": ["request_fulfillment", "create_fulfillment"], "destination": {"id": 1046000780, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737486, "shop_id": 548380009, "fulfillment_order_id": 1046000784, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfillment_service_handle": "mars-fulfillment", "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}}));
 
     const fulfillment_order = new shopify.rest.FulfillmentOrder({session: session});
@@ -84,6 +87,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_order": {"id": 1046000785, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "closed", "status": "incomplete", "supported_actions": ["request_fulfillment", "create_fulfillment"], "destination": {"id": 1046000781, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737487, "shop_id": 548380009, "fulfillment_order_id": 1046000785, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfillment_service_handle": "mars-fulfillment", "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}}));
 
     const fulfillment_order = new shopify.rest.FulfillmentOrder({session: session});
@@ -103,6 +110,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"original_fulfillment_order": {"id": 1046000787, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 487838322, "request_status": "submitted", "status": "closed", "supported_actions": [], "destination": {"id": 1046000783, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737489, "shop_id": 548380009, "fulfillment_order_id": 1046000787, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfillment_service_handle": "manual", "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}, "moved_fulfillment_order": {"id": 1046000788, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 655441491, "request_status": "unsubmitted", "status": "open", "supported_actions": ["create_fulfillment", "move"], "destination": {"id": 1046000784, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737490, "shop_id": 548380009, "fulfillment_order_id": 1046000788, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfillment_service_handle": "manual", "assigned_location": {"address1": "50 Rideau Street", "address2": null, "city": "Ottawa", "country_code": "CA", "location_id": 655441491, "name": "50 Rideau Street", "phone": null, "province": "Ontario", "zip": "K1N 9J7"}, "merchant_requests": []}, "remaining_fulfillment_order": null}));
 
     const fulfillment_order = new shopify.rest.FulfillmentOrder({session: session});
@@ -122,6 +133,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_order": {"id": 1046000793, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "unsubmitted", "status": "open", "supported_actions": ["request_fulfillment", "create_fulfillment"], "destination": {"id": 1046000789, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737495, "shop_id": 548380009, "fulfillment_order_id": 1046000793, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfillment_service_handle": "mars-fulfillment", "fulfill_at": null, "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}}));
 
     const fulfillment_order = new shopify.rest.FulfillmentOrder({session: session});
@@ -139,6 +154,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_7', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_order": {"id": 1046000794, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "unsubmitted", "status": "scheduled", "supported_actions": ["mark_as_open"], "destination": {"id": 1046000790, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737496, "shop_id": 548380009, "fulfillment_order_id": 1046000794, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfillment_service_handle": "mars-fulfillment", "fulfill_at": "2024-11-03T12:21:00-05:00", "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}}));
 
     const fulfillment_order = new shopify.rest.FulfillmentOrder({session: session});
@@ -158,6 +177,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_8', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_order": {"id": 1046000792, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "unsubmitted", "status": "on_hold", "supported_actions": ["release_hold"], "destination": {"id": 1046000788, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "line_items": [{"id": 1058737494, "shop_id": 548380009, "fulfillment_order_id": 1046000792, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "fulfill_at": null, "international_duties": {"incoterm": null}, "fulfillment_holds": [{"reason": "inventory_out_of_stock", "reason_notes": "Not enough inventory to complete this work."}], "delivery_method": null, "assigned_location": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "merchant_requests": []}}));
 
     const fulfillment_order = new shopify.rest.FulfillmentOrder({session: session});
@@ -177,6 +200,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_9', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     const fulfillment_order = new shopify.rest.FulfillmentOrder({session: session});
@@ -196,6 +223,10 @@ describe('FulfillmentOrder resource', () => {
   });
 
   it('test_10', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_order": {"id": 1046000795, "shop_id": 548380009, "order_id": 450789469, "assigned_location_id": 24826418, "request_status": "submitted", "status": "open", "supported_actions": ["cancel_fulfillment_order"], "destination": {"id": 1046000791, "address1": "Chestnut Street 92", "address2": "", "city": "Louisville", "company": null, "country": "United States", "email": "bob.norman@mail.example.com", "first_name": "Bob", "last_name": "Norman", "phone": "+1(502)-459-2181", "province": "Kentucky", "zip": "40202"}, "origin": {"address1": null, "address2": null, "city": null, "country_code": "DE", "location_id": 24826418, "name": "Apple Api Shipwire", "phone": null, "province": null, "zip": null}, "line_items": [{"id": 1058737497, "shop_id": 548380009, "fulfillment_order_id": 1046000795, "quantity": 1, "line_item_id": 518995019, "inventory_item_id": 49148385, "fulfillable_quantity": 1, "variant_id": 49148385}], "outgoing_requests": [], "fulfill_at": null, "international_duties": {"incoterm": null}, "fulfillment_holds": [], "delivery_method": null}}));
 
     const fulfillment_order = new shopify.rest.FulfillmentOrder({session: session});

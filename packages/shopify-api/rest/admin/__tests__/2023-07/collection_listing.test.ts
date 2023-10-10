@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-07';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.July23,
-    restResources,
-  });
-});
 
 describe('CollectionListing resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('CollectionListing resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"collection_listings": [{"collection_id": 482865238, "updated_at": "2023-10-03T13:19:52-04:00", "body_html": "<p>The best selling ipod ever</p>", "default_product_image": null, "handle": "smart-ipods", "image": {"created_at": "2023-10-03T13:19:52-04:00", "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1696353592"}, "title": "Smart iPods", "sort_order": "manual", "published_at": "2017-08-31T20:00:00-04:00"}, {"collection_id": 841564295, "updated_at": "2023-10-03T13:19:52-04:00", "body_html": "<p>The best selling ipod ever</p>", "default_product_image": null, "handle": "ipods", "image": {"created_at": "2023-10-03T13:19:52-04:00", "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1696353592"}, "title": "IPods", "sort_order": "manual", "published_at": "2017-08-31T20:00:00-04:00"}, {"collection_id": 395646240, "updated_at": "2023-10-03T13:19:52-04:00", "body_html": "<p>The best selling ipod ever. Again</p>", "default_product_image": {"id": 850703190, "created_at": "2023-10-03T13:19:52-04:00", "position": 1, "updated_at": "2023-10-03T13:19:52-04:00", "product_id": 632910392, "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1696353592", "variant_ids": [], "width": 123, "height": 456}, "handle": "ipods_two", "image": null, "title": "IPods Two", "sort_order": "manual", "published_at": "2017-08-31T20:00:00-04:00"}, {"collection_id": 691652237, "updated_at": "2023-10-03T13:19:52-04:00", "body_html": "<p>No ipods here</p>", "default_product_image": null, "handle": "non-ipods", "image": null, "title": "Non Ipods", "sort_order": "manual", "published_at": "2017-08-31T20:00:00-04:00"}]}));
 
     await shopify.rest.CollectionListing.all({
@@ -48,6 +43,10 @@ describe('CollectionListing resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"product_ids": [632910392]}));
 
     await shopify.rest.CollectionListing.product_ids({
@@ -66,6 +65,10 @@ describe('CollectionListing resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"collection_listing": {"collection_id": 482865238, "updated_at": "2023-10-03T13:19:52-04:00", "body_html": "<p>The best selling ipod ever</p>", "default_product_image": null, "handle": "smart-ipods", "image": {"created_at": "2023-10-03T13:19:52-04:00", "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1696353592"}, "title": "Smart iPods", "sort_order": "manual", "published_at": "2017-08-31T20:00:00-04:00"}}));
 
     await shopify.rest.CollectionListing.find({
@@ -84,6 +87,10 @@ describe('CollectionListing resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"collection_listing": {"collection_id": 482865238, "updated_at": "2023-10-03T13:19:52-04:00", "body_html": "<p>The best selling ipod ever</p>", "default_product_image": null, "handle": "smart-ipods", "image": {"created_at": "2023-10-03T13:19:52-04:00", "src": "https://cdn.shopify.com/s/files/1/0005/4838/0009/collections/ipod_nano_8gb.jpg?v=1696353592"}, "title": "Smart iPods", "sort_order": "manual", "published_at": "2017-08-31T20:00:00-04:00"}}));
 
     const collection_listing = new shopify.rest.CollectionListing({session: session});
@@ -101,6 +108,10 @@ describe('CollectionListing resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.CollectionListing.delete({

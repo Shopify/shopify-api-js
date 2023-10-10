@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-04';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.April23,
-    restResources,
-  });
-});
 
 describe('ApplePayCertificate resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('ApplePayCertificate resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.April23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"apple_pay_certificate": {"id": 1068938278, "status": "issuing", "merchant_id": null}}));
 
     const apple_pay_certificate = new shopify.rest.ApplePayCertificate({session: session});
@@ -48,6 +43,10 @@ describe('ApplePayCertificate resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.April23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"apple_pay_certificate": {"id": 1068938274, "status": "csr", "merchant_id": null}}));
 
     await shopify.rest.ApplePayCertificate.find({
@@ -66,6 +65,10 @@ describe('ApplePayCertificate resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.April23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"apple_pay_certificate": {"id": 1068938275, "status": "completed", "merchant_id": "merchant.something"}}));
 
     const apple_pay_certificate = new shopify.rest.ApplePayCertificate({session: session});
@@ -86,6 +89,10 @@ describe('ApplePayCertificate resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.April23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.ApplePayCertificate.delete({
@@ -104,6 +111,10 @@ describe('ApplePayCertificate resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.April23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"csr": {"key": "YXBwbGUtcGF5LWNzcg==\n"}}));
 
     await shopify.rest.ApplePayCertificate.csr({

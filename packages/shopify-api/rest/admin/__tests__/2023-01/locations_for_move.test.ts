@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-01';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.January23,
-    restResources,
-  });
-});
 
 describe('LocationsForMove resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('LocationsForMove resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.January23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"locations_for_move": [{"location": {"id": 1072404542, "name": "Alpha Location"}, "message": "Current location.", "movable": false}, {"location": {"id": 1072404543, "name": "Bravo Location"}, "message": "No items are stocked at this location.", "movable": false}]}));
 
     await shopify.rest.LocationsForMove.all({

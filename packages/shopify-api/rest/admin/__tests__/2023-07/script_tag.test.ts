@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-07';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.July23,
-    restResources,
-  });
-});
 
 describe('ScriptTag resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('ScriptTag resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"script_tags": [{"id": 421379493, "src": "https://js.example.org/bar.js", "event": "onload", "created_at": "2023-10-03T13:46:47-04:00", "updated_at": "2023-10-03T13:46:47-04:00", "display_scope": "all", "cache": false}, {"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2023-10-03T13:46:47-04:00", "updated_at": "2023-10-03T13:46:47-04:00", "display_scope": "all", "cache": false}]}));
 
     await shopify.rest.ScriptTag.all({
@@ -48,6 +43,10 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"script_tags": [{"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2023-10-03T13:46:47-04:00", "updated_at": "2023-10-03T13:46:47-04:00", "display_scope": "all", "cache": false}]}));
 
     await shopify.rest.ScriptTag.all({
@@ -66,6 +65,10 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"script_tags": [{"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2023-10-03T13:46:47-04:00", "updated_at": "2023-10-03T13:46:47-04:00", "display_scope": "all", "cache": false}]}));
 
     await shopify.rest.ScriptTag.all({
@@ -84,6 +87,10 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"script_tag": {"id": 870402688, "src": "https://example.com/my_script.js", "event": "onload", "created_at": "2023-10-03T13:47:39-04:00", "updated_at": "2023-10-03T13:47:39-04:00", "display_scope": "all", "cache": false}}));
 
     const script_tag = new shopify.rest.ScriptTag({session: session});
@@ -102,6 +109,10 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"count": 2}));
 
     await shopify.rest.ScriptTag.count({
@@ -119,6 +130,10 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"script_tag": {"id": 596726825, "src": "https://js.example.org/foo.js", "event": "onload", "created_at": "2023-10-03T13:46:47-04:00", "updated_at": "2023-10-03T13:46:47-04:00", "display_scope": "all", "cache": false}}));
 
     await shopify.rest.ScriptTag.find({
@@ -137,6 +152,10 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_7', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"script_tag": {"src": "https://somewhere-else.com/another.js", "cache": false, "id": 596726825, "event": "onload", "created_at": "2023-10-03T13:46:47-04:00", "updated_at": "2023-10-03T13:47:40-04:00", "display_scope": "all"}}));
 
     const script_tag = new shopify.rest.ScriptTag({session: session});
@@ -155,6 +174,10 @@ describe('ScriptTag resource', () => {
   });
 
   it('test_8', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.ScriptTag.delete({

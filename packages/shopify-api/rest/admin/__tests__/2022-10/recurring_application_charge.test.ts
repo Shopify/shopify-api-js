@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2022-10';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.October22,
-    restResources,
-  });
-});
 
 describe('RecurringApplicationCharge resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('RecurringApplicationCharge resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"recurring_application_charge": {"id": 1029266953, "name": "Super Duper Plan", "price": "10.00", "billing_on": null, "status": "pending", "created_at": "2023-10-03T13:19:22-04:00", "updated_at": "2023-10-03T13:19:22-04:00", "activated_on": null, "return_url": "http://super-duper.shopifyapps.com/", "test": null, "cancelled_on": null, "trial_days": 5, "trial_ends_on": null, "api_client_id": 755357713, "decorated_return_url": "http://super-duper.shopifyapps.com/?charge_id=1029266953", "confirmation_url": "https://jsmith.myshopify.com/admin/charges/755357713/1029266953/RecurringApplicationCharge/confirm_recurring_application_charge?signature=BAh7BzoHaWRpBAleWT06EmF1dG9fYWN0aXZhdGVU--f952cc89aeaf445af65fad62640dfaec2dedfd6c", "currency": "USD"}}));
 
     const recurring_application_charge = new shopify.rest.RecurringApplicationCharge({session: session});
@@ -51,6 +46,10 @@ describe('RecurringApplicationCharge resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"recurring_application_charge": {"id": 1029266950, "name": "Super Duper Plan", "price": "10.00", "billing_on": null, "status": "pending", "created_at": "2023-10-03T13:19:15-04:00", "updated_at": "2023-10-03T13:19:15-04:00", "activated_on": null, "return_url": "http://super-duper.shopifyapps.com/", "test": null, "cancelled_on": null, "trial_days": 0, "trial_ends_on": null, "api_client_id": 755357713, "decorated_return_url": "http://super-duper.shopifyapps.com/?charge_id=1029266950", "capped_amount": "100.00", "balance_used": 0.0, "balance_remaining": 100.0, "risk_level": 0, "confirmation_url": "https://jsmith.myshopify.com/admin/charges/755357713/1029266950/RecurringApplicationCharge/confirm_recurring_application_charge?signature=BAh7BzoHaWRpBAZeWT06EmF1dG9fYWN0aXZhdGVU--8f9a5315538aa752403c78ae37c7901038b51ddb", "currency": "USD"}}));
 
     const recurring_application_charge = new shopify.rest.RecurringApplicationCharge({session: session});
@@ -72,6 +71,10 @@ describe('RecurringApplicationCharge resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"recurring_application_charge": {"id": 1029266949, "name": "Super Duper Plan", "price": "10.00", "billing_on": null, "status": "pending", "created_at": "2023-10-03T13:19:10-04:00", "updated_at": "2023-10-03T13:19:10-04:00", "activated_on": null, "return_url": "http://super-duper.shopifyapps.com/", "test": null, "cancelled_on": null, "trial_days": 0, "trial_ends_on": null, "api_client_id": 755357713, "decorated_return_url": "http://super-duper.shopifyapps.com/?charge_id=1029266949", "confirmation_url": "https://jsmith.myshopify.com/admin/charges/755357713/1029266949/RecurringApplicationCharge/confirm_recurring_application_charge?signature=BAh7BzoHaWRpBAVeWT06EmF1dG9fYWN0aXZhdGVU--74d3c63d142982ea850e223587b7103142421fe6", "currency": "USD"}}));
 
     const recurring_application_charge = new shopify.rest.RecurringApplicationCharge({session: session});
@@ -91,6 +94,10 @@ describe('RecurringApplicationCharge resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"recurring_application_charge": {"id": 1029266952, "name": "Super Duper Plan", "price": "10.00", "billing_on": null, "status": "pending", "created_at": "2023-10-03T13:19:20-04:00", "updated_at": "2023-10-03T13:19:20-04:00", "activated_on": null, "return_url": "http://super-duper.shopifyapps.com/", "test": true, "cancelled_on": null, "trial_days": 0, "trial_ends_on": null, "api_client_id": 755357713, "decorated_return_url": "http://super-duper.shopifyapps.com/?charge_id=1029266952", "confirmation_url": "https://jsmith.myshopify.com/admin/charges/755357713/1029266952/RecurringApplicationCharge/confirm_recurring_application_charge?signature=BAh7BzoHaWRpBAheWT06EmF1dG9fYWN0aXZhdGVU--81b4fae10d89c3d6af238e85aa9aa81241585a55", "currency": "USD"}}));
 
     const recurring_application_charge = new shopify.rest.RecurringApplicationCharge({session: session});
@@ -111,6 +118,10 @@ describe('RecurringApplicationCharge resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"recurring_application_charges": [{"id": 455696195, "name": "Super Mega Plan", "price": "15.00", "billing_on": "2023-10-03", "status": "accepted", "created_at": "2023-10-03T13:17:01-04:00", "updated_at": "2023-10-03T13:19:19-04:00", "activated_on": null, "return_url": "http://yourapp.example.org", "test": null, "cancelled_on": null, "trial_days": 0, "trial_ends_on": null, "api_client_id": 755357713, "decorated_return_url": "http://yourapp.example.org?charge_id=455696195", "currency": "USD"}]}));
 
     await shopify.rest.RecurringApplicationCharge.all({
@@ -128,6 +139,10 @@ describe('RecurringApplicationCharge resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"recurring_application_charges": [{"id": 1029266951, "name": "Super Duper Plan", "price": "10.00", "billing_on": null, "status": "pending", "created_at": "2023-10-03T13:19:17-04:00", "updated_at": "2023-10-03T13:19:17-04:00", "activated_on": null, "return_url": "http://super-duper.shopifyapps.com/", "test": null, "cancelled_on": null, "trial_days": 0, "trial_ends_on": null, "api_client_id": 755357713, "decorated_return_url": "http://super-duper.shopifyapps.com/?charge_id=1029266951", "confirmation_url": "https://jsmith.myshopify.com/admin/charges/755357713/1029266951/RecurringApplicationCharge/confirm_recurring_application_charge?signature=BAh7BzoHaWRpBAdeWT06EmF1dG9fYWN0aXZhdGVU--08a47fed09b4a8a225201df64e66e918ba058974", "currency": "USD"}]}));
 
     await shopify.rest.RecurringApplicationCharge.all({
@@ -146,6 +161,10 @@ describe('RecurringApplicationCharge resource', () => {
   });
 
   it('test_7', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"recurring_application_charge": {"id": 455696195, "name": "Super Mega Plan", "price": "15.00", "billing_on": "2023-10-03", "status": "pending", "created_at": "2023-10-03T13:17:01-04:00", "updated_at": "2023-10-03T13:17:01-04:00", "activated_on": null, "return_url": "http://yourapp.example.org", "test": null, "cancelled_on": null, "trial_days": 0, "trial_ends_on": null, "api_client_id": 755357713, "decorated_return_url": "http://yourapp.example.org?charge_id=455696195", "confirmation_url": "https://jsmith.myshopify.com/admin/charges/755357713/455696195/RecurringApplicationCharge/confirm_recurring_application_charge?signature=BAh7BzoHaWRpBENfKRs6EmF1dG9fYWN0aXZhdGVU--b5f90d04779cc5242b396e4054f2e650c5dace1c", "currency": "USD"}}));
 
     await shopify.rest.RecurringApplicationCharge.find({
@@ -164,6 +183,10 @@ describe('RecurringApplicationCharge resource', () => {
   });
 
   it('test_8', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.RecurringApplicationCharge.delete({
@@ -182,6 +205,10 @@ describe('RecurringApplicationCharge resource', () => {
   });
 
   it('test_9', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"recurring_application_charge": {"id": 455696195, "name": "Super Mega Plan", "price": "15.00", "billing_on": null, "status": "active", "created_at": "2023-10-03T13:17:01-04:00", "updated_at": "2023-10-03T13:19:22-04:00", "activated_on": "2023-10-03", "return_url": "http://yourapp.example.org", "test": null, "cancelled_on": null, "trial_days": 0, "trial_ends_on": "2023-10-03", "api_client_id": 755357713, "decorated_return_url": "http://yourapp.example.org?charge_id=455696195", "capped_amount": "100.00", "balance_used": 0.0, "balance_remaining": 100.0, "risk_level": 0, "update_capped_amount_url": "https://jsmith.myshopify.com/admin/charges/755357713/455696195/RecurringApplicationCharge/confirm_update_capped_amount?signature=BAh7BzoHaWRpBENfKRs6EmF1dG9fYWN0aXZhdGVG--71343d634655552df57c5871b146155d64382822", "currency": "USD"}}));
 
     const recurring_application_charge = new shopify.rest.RecurringApplicationCharge({session: session});
