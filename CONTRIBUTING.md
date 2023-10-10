@@ -21,7 +21,7 @@ You can open a new issue on the GitHub issues and describe the feature you would
 
 Requirements:
 
-- [Node](https://nodejs.org/en/) v14 or above
+- [Node](https://nodejs.org/en/) v16 or above
 - [Yarn](https://yarnpkg.com/) v1.22 or above
 
 You can set up your development environment by running the following:

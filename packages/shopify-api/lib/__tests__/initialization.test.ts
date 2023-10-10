@@ -26,10 +26,6 @@ describe('shopifyApi', () => {
       deprecated: false,
     },
     {
-      version: 'Node v14.0.0',
-      deprecated: true,
-    },
-    {
       version: 'Node v16.0.0',
       deprecated: false,
     },
