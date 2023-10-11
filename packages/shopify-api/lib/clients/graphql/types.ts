@@ -9,12 +9,6 @@ export interface GraphqlClientParams {
   apiVersion?: ApiVersion;
 }
 
-export interface DeprecatedStorefrontClientParams {
-  domain: string;
-  storefrontAccessToken: string;
-  apiVersion?: ApiVersion;
-}
-
 export interface GraphqlProxyParams {
   session: Session;
   rawBody: string;

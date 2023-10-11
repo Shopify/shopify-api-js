@@ -13,35 +13,26 @@ export async function createSHA256HMAC(
       ? crypto
       : (crypto as any).webcrypto;
 
-  // eslint-disable-next-line no-warning-comments
-  // TODO Make the subtle implementation the default when dropping Node 14 support
-  if (cryptoLib?.subtle) {
-    const enc = new TextEncoder();
-    const key = await cryptoLib.subtle.importKey(
-      'raw',
-      enc.encode(secret),
-      {
-        name: 'HMAC',
-        hash: {name: 'SHA-256'},
-      },
-      false,
-      ['sign'],
-    );
+  const enc = new TextEncoder();
+  const key = await cryptoLib.subtle.importKey(
+    'raw',
+    enc.encode(secret),
+    {
+      name: 'HMAC',
+      hash: {name: 'SHA-256'},
+    },
+    false,
+    ['sign'],
+  );
 
-    const signature = await cryptoLib.subtle.sign(
-      'HMAC',
-      key,
-      enc.encode(payload),
-    );
-    return returnFormat === HashFormat.Base64
-      ? asBase64(signature)
-      : asHex(signature);
-  }
-
-  return (cryptoLib as any)
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest(returnFormat);
+  const signature = await cryptoLib.subtle.sign(
+    'HMAC',
+    key,
+    enc.encode(payload),
+  );
+  return returnFormat === HashFormat.Base64
+    ? asBase64(signature)
+    : asHex(signature);
 }
 
 export function asHex(buffer: ArrayBuffer): string {

@@ -1,10 +1,7 @@
-import {compare} from 'compare-versions';
-
 import {loadRestResources} from '../rest/load-rest-resources';
 import {ShopifyRestResources} from '../rest/types';
 import {abstractRuntimeString} from '../runtime/platform';
 
-import {DeprecatedV5Types} from './deprecated-v5-types';
 import {ConfigParams, ConfigInterface} from './base-types';
 import {validateConfig} from './config';
 import {clientClasses, ShopifyClients} from './clients';
@@ -27,10 +24,6 @@ export * from './billing/types';
 export * from './clients/types';
 export * from './session/types';
 export * from './webhooks/types';
-
-// Temporarily export the deprecated v5 types as a Shopify object (as opposed to the type above) to help folks find
-// the migration guide.
-export const Shopify: DeprecatedV5Types = {};
 
 export interface Shopify<
   T extends ShopifyRestResources = ShopifyRestResources,
@@ -77,18 +70,6 @@ export function shopifyApi<T extends ShopifyRestResources>(
       `version ${SHOPIFY_API_LIBRARY_VERSION}, environment ${abstractRuntimeString()}`,
     )
     .catch((err) => console.log(err));
-
-  const nodeVersionMatches = abstractRuntimeString().match(
-    /(Node) (v\d+\.\d+\.\d+)/,
-  );
-  const isNode = nodeVersionMatches && nodeVersionMatches[1] === 'Node';
-  const nodeVersion = nodeVersionMatches ? nodeVersionMatches[2] : '';
-  if (isNode && compare(nodeVersion, '16.0.0', '<')) {
-    shopify.logger.deprecated(
-      '8.0.0',
-      `Support for ${abstractRuntimeString()} will be removed - please upgrade to Node v16.0.0 or higher.`,
-    );
-  }
 
   return shopify;
 }

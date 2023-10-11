@@ -6,7 +6,7 @@ import {
   WebhookHandler,
   WebhookOperation,
 } from '../types';
-import {ApiVersion, gdprTopics, ShopifyHeader} from '../../types';
+import {gdprTopics, ShopifyHeader} from '../../types';
 import {DataType} from '../../clients/types';
 import {
   queueMockResponse,
@@ -394,56 +394,6 @@ describe('shopify.webhooks.register', () => {
     expect(registerReturn.PRODUCTS_UPDATE[0].operation).toEqual(
       WebhookOperation.Update,
     );
-  });
-
-  it('stops sending the privateMetafieldNamespaces field in versions after 2022-04', async () => {
-    shopify.config.apiVersion = ApiVersion.April23;
-
-    const topic = 'PRODUCTS_CREATE';
-    const handler = {...HTTP_HANDLER, privateMetafieldNamespaces: ['test']};
-    const responses = [mockResponses.successResponse];
-
-    const registerReturn = await registerWebhook({
-      topic,
-      handler,
-      responses,
-    });
-
-    assertWebhookRegistrationRequest(
-      'webhookSubscriptionCreate',
-      `topic: ${topic}`,
-      {callbackUrl: `"https://test_host_name/webhooks"`},
-    );
-    assertRegisterResponse({registerReturn, topic, responses});
-  });
-
-  // The test above this becomes moot when this API version is removed. Delete it as well
-  it('sends the privateMetafieldNamespaces field up until version 2022-04', async () => {
-    shopify.config.apiVersion = ApiVersion.April22;
-
-    const topic = 'PRODUCTS_CREATE';
-    const handler = {...HTTP_HANDLER, privateMetafieldNamespaces: ['test']};
-    const responses = [mockResponses.successResponse];
-
-    const registerReturn = await registerWebhook({
-      topic,
-      handler,
-      responses,
-      includePrivateMetafieldNamespaces: true,
-    });
-
-    assertWebhookRegistrationRequest(
-      'webhookSubscriptionCreate',
-      `topic: ${topic}`,
-      {
-        callbackUrl: `"https://test_host_name/webhooks", privateMetafieldNamespaces: ["test"]`,
-      },
-    );
-    assertRegisterResponse({
-      registerReturn,
-      topic,
-      responses,
-    });
   });
 });
 

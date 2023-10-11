@@ -89,16 +89,6 @@ function mergeOrAddHandler(
 
   handler.includeFields?.sort();
   handler.metafieldNamespaces?.sort();
-  if (handler.deliveryMethod === DeliveryMethod.Http) {
-    if (handler.privateMetafieldNamespaces) {
-      log.deprecated(
-        '8.0.0',
-        'The privateMetafieldNamespaces handler option is deprecated, and will be removed in v8.0.0. See https://shopify.dev/docs/apps/custom-data/metafields/migrate-private-metafields',
-      );
-    }
-
-    handler.privateMetafieldNamespaces?.sort();
-  }
 
   if (!(topic in webhookRegistry)) {
     webhookRegistry[topic] = [handler];

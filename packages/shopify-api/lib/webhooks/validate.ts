@@ -19,9 +19,7 @@ import {
 } from './types';
 import {topicForStorage} from './registry';
 
-const HANDLER_PROPERTIES: {
-  [property in keyof WebhookFields]: ShopifyHeader;
-} = {
+const HANDLER_PROPERTIES = {
   apiVersion: ShopifyHeader.ApiVersion,
   domain: ShopifyHeader.Domain,
   hmac: ShopifyHeader.Hmac,
@@ -54,12 +52,6 @@ export function validateFactory(config: ConfigInterface) {
       return webhookCheck;
     } else {
       await log.debug('Webhook validation failed', loggingContext);
-      if (config.isCustomStoreApp) {
-        log.deprecated(
-          '8.0.0',
-          "apiSecretKey should be set to the custom store app's API secret key, so that webhook validation succeeds. adminApiAccessToken should be set to the custom store app's Admin API access token",
-        );
-      }
       return {
         valid: false,
         reason: WebhookValidationErrorReason.InvalidHmac,
@@ -80,19 +72,20 @@ function checkWebhookRequest(
   }
 
   const missingHeaders: ShopifyHeader[] = [];
-  const headerValues: WebhookFields = Object.entries(HANDLER_PROPERTIES).reduce(
-    (acc, [property, headerName]: [keyof WebhookFields, ShopifyHeader]) => {
-      const headerValue = getHeader(headers, headerName);
-      if (headerValue) {
-        acc[property] = headerValue;
-      } else {
-        missingHeaders.push(headerName);
-      }
+  const entries = Object.entries(HANDLER_PROPERTIES) as [
+    keyof WebhookFields,
+    ShopifyHeader,
+  ][];
+  const headerValues = entries.reduce((acc, [property, headerName]) => {
+    const headerValue = getHeader(headers, headerName);
+    if (headerValue) {
+      acc[property] = headerValue;
+    } else {
+      missingHeaders.push(headerName);
+    }
 
-      return acc;
-    },
-    {} as WebhookFields,
-  );
+    return acc;
+  }, {} as WebhookFields);
 
   if (missingHeaders.length) {
     return {

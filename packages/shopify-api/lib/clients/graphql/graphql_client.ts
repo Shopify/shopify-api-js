@@ -99,8 +99,7 @@ export class GraphqlClient {
 
     let accessToken: string | undefined;
     if (config.isCustomStoreApp) {
-      // Deprecated: starting in v8, we should only get the token from adminApiAccessToken
-      accessToken = config.adminApiAccessToken ?? config.apiSecretKey;
+      accessToken = config.adminApiAccessToken!;
     } else {
       accessToken = this.session.accessToken;
 
