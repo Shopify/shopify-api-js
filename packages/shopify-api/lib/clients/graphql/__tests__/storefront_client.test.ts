@@ -80,6 +80,7 @@ describe('Storefront GraphQL client', () => {
     const shopify = shopifyApi(
       testConfig({
         isCustomStoreApp: true,
+        adminApiAccessToken: 'dummy_token',
         privateAppStorefrontAccessToken: 'private_token',
       }),
     );
@@ -105,7 +106,9 @@ describe('Storefront GraphQL client', () => {
   });
 
   it('does not fail when missing privateAppStorefrontAccessToken, if isCustomStoreApp is true', async () => {
-    const shopify = shopifyApi(testConfig({isCustomStoreApp: true}));
+    const shopify = shopifyApi(
+      testConfig({isCustomStoreApp: true, adminApiAccessToken: 'dummy_token'}),
+    );
 
     const customSession = shopify.session.customAppSession(session.shop);
     const client = new shopify.clients.Storefront({session: customSession});

@@ -161,7 +161,9 @@ describe('beginAuth', () => {
   });
 
   test('fails to start if the app is private', () => {
-    const shopify = shopifyApi(testConfig({isCustomStoreApp: true}));
+    const shopify = shopifyApi(
+      testConfig({isCustomStoreApp: true, adminApiAccessToken: 'dummy_token'}),
+    );
 
     expect(
       shopify.auth.begin({
@@ -186,7 +188,9 @@ describe('callback', () => {
   });
 
   test('fails to run if the app is private', () => {
-    const shopify = shopifyApi(testConfig({isCustomStoreApp: true}));
+    const shopify = shopifyApi(
+      testConfig({isCustomStoreApp: true, adminApiAccessToken: 'dummy_token'}),
+    );
 
     expect(shopify.auth.callback({rawRequest: request})).rejects.toThrow(
       ShopifyErrors.PrivateAppError,
