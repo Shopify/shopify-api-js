@@ -1,7 +1,13 @@
-import {testConfig, queueMockResponses} from '../../__tests__/test-helper';
+import {queueMockResponses} from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
 import {Session} from '../../session/session';
 import {LATEST_API_VERSION} from '../../types';
-import {shopifyApi, Shopify, BillingError, BillingInterval} from '../..';
+import {
+  shopifyApi,
+  BillingError,
+  BillingInterval,
+  BillingConfigOneTimePlan,
+} from '../..';
 
 import * as Responses from './responses';
 
@@ -24,21 +30,16 @@ describe('shopify.billing.cancel', () => {
     scope: 'read_returns',
   });
 
-  let shopify: Shopify;
-  beforeEach(() => {
-    shopify = shopifyApi({
-      ...testConfig,
-      billing: {
-        basic: {
-          amount: 5.0,
-          currencyCode: 'USD',
-          interval: BillingInterval.OneTime,
-        },
-      },
-    });
-  });
+  const billing = {
+    basic: {
+      amount: 5.0,
+      currencyCode: 'USD',
+      interval: BillingInterval.OneTime,
+    } as BillingConfigOneTimePlan,
+  };
 
   test('returns the details of the subscription successfully cancelled', async () => {
+    const shopify = shopifyApi(testConfig({billing}));
     queueMockResponses([Responses.CANCEL_RESPONSE]);
 
     const {
@@ -48,10 +49,7 @@ describe('shopify.billing.cancel', () => {
     } = Responses.EXISTING_SUBSCRIPTION_OBJECT;
 
     const subscriptionId = activeSubscriptions[0].id;
-    const response = await shopify.billing.cancel({
-      session,
-      subscriptionId,
-    });
+    const response = await shopify.billing.cancel({session, subscriptionId});
 
     expect(response).toEqual(
       JSON.parse(Responses.CANCEL_RESPONSE).data.appSubscriptionCancel
@@ -70,6 +68,7 @@ describe('shopify.billing.cancel', () => {
   });
 
   test('throws a BillingError when an error occurs', async () => {
+    const shopify = shopifyApi(testConfig({billing}));
     queueMockResponses([Responses.CANCEL_RESPONSE_WITH_USER_ERRORS]);
 
     const {
@@ -81,14 +80,12 @@ describe('shopify.billing.cancel', () => {
     const subscriptionId = activeSubscriptions[0].id;
 
     expect(() =>
-      shopify.billing.cancel({
-        session,
-        subscriptionId,
-      }),
+      shopify.billing.cancel({session, subscriptionId}),
     ).rejects.toThrowError(BillingError);
   });
 
   test('throws a BillingError when a user error occurs', async () => {
+    const shopify = shopifyApi(testConfig({billing}));
     queueMockResponses([Responses.CANCEL_RESPONSE_WITH_ERRORS]);
 
     const {
@@ -100,14 +97,12 @@ describe('shopify.billing.cancel', () => {
     const subscriptionId = activeSubscriptions[0].id;
 
     expect(() =>
-      shopify.billing.cancel({
-        session,
-        subscriptionId,
-      }),
+      shopify.billing.cancel({session, subscriptionId}),
     ).rejects.toThrowError(BillingError);
   });
 
   test('throws a BillingError when a user error occurs', async () => {
+    const shopify = shopifyApi(testConfig({billing}));
     queueMockResponses([Responses.CANCEL_RESPONSE_WITH_USER_ERRORS]);
 
     const {
@@ -119,14 +114,12 @@ describe('shopify.billing.cancel', () => {
     const subscriptionId = activeSubscriptions[0].id;
 
     expect(() =>
-      shopify.billing.cancel({
-        session,
-        subscriptionId,
-      }),
+      shopify.billing.cancel({session, subscriptionId}),
     ).rejects.toThrowError(BillingError);
   });
 
   test('throws a BillingError when an error occurs', async () => {
+    const shopify = shopifyApi(testConfig({billing}));
     queueMockResponses([Responses.CANCEL_RESPONSE_WITH_ERRORS]);
 
     const {
@@ -138,10 +131,7 @@ describe('shopify.billing.cancel', () => {
     const subscriptionId = activeSubscriptions[0].id;
 
     expect(() =>
-      shopify.billing.cancel({
-        session,
-        subscriptionId,
-      }),
+      shopify.billing.cancel({session, subscriptionId}),
     ).rejects.toThrowError(BillingError);
   });
 });

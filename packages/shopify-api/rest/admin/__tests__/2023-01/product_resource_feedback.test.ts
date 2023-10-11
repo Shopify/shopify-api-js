@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-01';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.January23,
-    restResources,
-  });
-});
 
 describe('ProductResourceFeedback resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('ProductResourceFeedback resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.January23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"resource_feedback": {"created_at": "2023-10-03T13:33:45-04:00", "updated_at": "2023-10-03T13:33:45-04:00", "resource_id": 632910392, "resource_type": "Product", "resource_updated_at": "2023-10-03T13:19:52-04:00", "messages": ["Needs at least one image."], "feedback_generated_at": "2023-10-03T13:33:45-04:00", "state": "requires_action"}}));
 
     const product_resource_feedback = new shopify.rest.ProductResourceFeedback({session: session});
@@ -54,6 +49,10 @@ describe('ProductResourceFeedback resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.January23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"resource_feedback": {"created_at": "2023-10-03T13:33:42-04:00", "updated_at": "2023-10-03T13:33:42-04:00", "resource_id": 632910392, "resource_type": "Product", "resource_updated_at": "2023-10-03T13:19:52-04:00", "messages": [], "feedback_generated_at": "2023-10-03T13:33:42-04:00", "state": "success"}}));
 
     const product_resource_feedback = new shopify.rest.ProductResourceFeedback({session: session});
@@ -74,6 +73,10 @@ describe('ProductResourceFeedback resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.January23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"resource_feedback": [{"created_at": "2023-10-03T13:33:42-04:00", "updated_at": "2023-10-03T13:33:42-04:00", "resource_id": 632910392, "resource_type": "Product", "resource_updated_at": "2023-10-03T13:19:52-04:00", "messages": ["Needs at least one image."], "feedback_generated_at": "2023-10-03T12:33:42-04:00", "state": "requires_action"}]}));
 
     await shopify.rest.ProductResourceFeedback.all({

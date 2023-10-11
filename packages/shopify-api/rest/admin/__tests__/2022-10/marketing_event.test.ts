@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2022-10';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.October22,
-    restResources,
-  });
-});
 
 describe('MarketingEvent resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('MarketingEvent resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"marketing_events": [{"id": 998730532, "event_type": "post", "remote_id": "12345678", "started_at": "2023-01-15T10:56:18-05:00", "ended_at": null, "scheduled_to_end_at": null, "budget": "10.11", "currency": "GBP", "manage_url": null, "preview_url": null, "utm_campaign": "1234567890", "utm_source": "facebook", "utm_medium": "facebook-post", "budget_type": "daily", "description": null, "marketing_channel": "social", "paid": false, "referring_domain": "facebook.com", "breadcrumb_id": null, "marketing_activity_id": null, "admin_graphql_api_id": "gid://shopify/MarketingEvent/998730532", "marketed_resources": []}]}));
 
     await shopify.rest.MarketingEvent.all({
@@ -48,6 +43,10 @@ describe('MarketingEvent resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"marketing_event": {"id": 1069063883, "event_type": "ad", "remote_id": null, "started_at": "2023-12-14T19:00:00-05:00", "ended_at": null, "scheduled_to_end_at": null, "budget": null, "currency": null, "manage_url": null, "preview_url": null, "utm_campaign": "Christmas2023", "utm_source": "facebook", "utm_medium": "cpc", "budget_type": null, "description": null, "marketing_channel": "social", "paid": true, "referring_domain": "facebook.com", "breadcrumb_id": null, "marketing_activity_id": 1063897333, "admin_graphql_api_id": "gid://shopify/MarketingEvent/1069063883", "marketed_resources": []}}));
 
     const marketing_event = new shopify.rest.MarketingEvent({session: session});
@@ -72,6 +71,10 @@ describe('MarketingEvent resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"count": 1}));
 
     await shopify.rest.MarketingEvent.count({
@@ -89,6 +92,10 @@ describe('MarketingEvent resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"marketing_event": {"id": 998730532, "event_type": "post", "remote_id": "12345678", "started_at": "2023-01-15T10:56:18-05:00", "ended_at": null, "scheduled_to_end_at": null, "budget": "10.11", "currency": "GBP", "manage_url": null, "preview_url": null, "utm_campaign": "1234567890", "utm_source": "facebook", "utm_medium": "facebook-post", "budget_type": "daily", "description": null, "marketing_channel": "social", "paid": false, "referring_domain": "facebook.com", "breadcrumb_id": null, "marketing_activity_id": null, "admin_graphql_api_id": "gid://shopify/MarketingEvent/998730532", "marketed_resources": []}}));
 
     await shopify.rest.MarketingEvent.find({
@@ -107,6 +114,10 @@ describe('MarketingEvent resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"marketing_event": {"started_at": "2023-02-01T19:00:00-05:00", "ended_at": "2023-02-02T19:00:00-05:00", "scheduled_to_end_at": "2023-02-03T19:00:00-05:00", "remote_id": "1000:2000", "currency": "CAD", "budget": "11.1", "budget_type": "daily", "id": 998730532, "event_type": "post", "manage_url": null, "preview_url": null, "utm_campaign": "1234567890", "utm_source": "facebook", "utm_medium": "facebook-post", "description": null, "marketing_channel": "social", "paid": false, "referring_domain": "facebook.com", "breadcrumb_id": null, "marketing_activity_id": null, "admin_graphql_api_id": "gid://shopify/MarketingEvent/998730532", "marketed_resources": []}}));
 
     const marketing_event = new shopify.rest.MarketingEvent({session: session});
@@ -136,6 +147,10 @@ describe('MarketingEvent resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.MarketingEvent.delete({
@@ -154,6 +169,10 @@ describe('MarketingEvent resource', () => {
   });
 
   it('test_7', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"engagements": [{"occurred_on": "2023-01-15", "fetched_at": null, "views_count": 0, "impressions_count": null, "clicks_count": 0, "favorites_count": 0, "comments_count": null, "shares_count": null, "ad_spend": "10.0", "currency_code": null, "is_cumulative": true, "unsubscribes_count": null, "complaints_count": null, "fails_count": null, "sends_count": null, "unique_views_count": null, "unique_clicks_count": null, "utc_offset": null}, {"occurred_on": "2023-01-16", "fetched_at": null, "views_count": 100, "impressions_count": null, "clicks_count": 50, "favorites_count": null, "comments_count": null, "shares_count": null, "ad_spend": null, "currency_code": null, "is_cumulative": true, "unsubscribes_count": null, "complaints_count": null, "fails_count": null, "sends_count": null, "unique_views_count": null, "unique_clicks_count": null, "utc_offset": null}, {"occurred_on": "2023-01-17", "fetched_at": null, "views_count": 200, "impressions_count": null, "clicks_count": 100, "favorites_count": null, "comments_count": null, "shares_count": null, "ad_spend": null, "currency_code": null, "is_cumulative": true, "unsubscribes_count": null, "complaints_count": null, "fails_count": null, "sends_count": null, "unique_views_count": null, "unique_clicks_count": null, "utc_offset": null}]}));
 
     const marketing_event = new shopify.rest.MarketingEvent({session: session});

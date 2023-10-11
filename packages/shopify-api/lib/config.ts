@@ -1,11 +1,16 @@
+import {ShopifyRestResources} from '../rest/types';
+
 import {ShopifyError} from './error';
 import {ConfigInterface, ConfigParams} from './base-types';
 import {LATEST_API_VERSION, LogSeverity} from './types';
 import {AuthScopes} from './auth/scopes';
 import {logger as createLogger} from './logger';
 
-export function validateConfig(params: ConfigParams<any>): ConfigInterface {
-  const config: ConfigInterface = {
+export function validateConfig<
+  Resources extends ShopifyRestResources,
+  Params extends ConfigParams<Resources>,
+>(params: Params): ConfigInterface<Params> {
+  const config = {
     apiKey: '',
     apiSecretKey: '',
     scopes: new AuthScopes([]),
@@ -20,7 +25,8 @@ export function validateConfig(params: ConfigParams<any>): ConfigInterface {
       httpRequests: false,
       timestamps: false,
     },
-  };
+    future: {},
+  } as ConfigInterface<Params>;
 
   // Make sure that the essential params actually have content in them
   const mandatory: (keyof ConfigParams)[] = ['apiSecretKey', 'hostName'];

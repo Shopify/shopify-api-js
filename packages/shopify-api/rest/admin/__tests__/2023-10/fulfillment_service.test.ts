@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-10';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.October23,
-    restResources,
-  });
-});
 
 describe('FulfillmentService resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('FulfillmentService resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_services": [{"id": 611870435, "name": "Venus Fulfillment", "email": null, "service_name": "Venus Fulfillment", "handle": "venus-fulfillment", "fulfillment_orders_opt_in": false, "include_pending_stock": false, "provider_id": null, "location_id": 611870435, "callback_url": null, "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/611870435"}, {"id": 755357713, "name": "Mars Fulfillment", "email": null, "service_name": "Mars Fulfillment", "handle": "mars-fulfillment", "fulfillment_orders_opt_in": true, "include_pending_stock": false, "provider_id": null, "location_id": 24826418, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/755357713"}]}));
 
     await shopify.rest.FulfillmentService.all({
@@ -49,6 +44,10 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_services": [{"id": 755357713, "name": "Mars Fulfillment", "email": null, "service_name": "Mars Fulfillment", "handle": "mars-fulfillment", "fulfillment_orders_opt_in": true, "include_pending_stock": false, "provider_id": null, "location_id": 24826418, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/755357713"}]}));
 
     await shopify.rest.FulfillmentService.all({
@@ -66,6 +65,10 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_service": {"id": 1061774488, "name": "Jupiter Fulfillment", "email": null, "service_name": "Jupiter Fulfillment", "handle": "jupiter-fulfillment", "fulfillment_orders_opt_in": true, "include_pending_stock": false, "provider_id": null, "location_id": 1072404545, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/1061774488", "permits_sku_sharing": true}}));
 
     const fulfillment_service = new shopify.rest.FulfillmentService({session: session});
@@ -90,6 +93,10 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_service": {"id": 755357713, "name": "Mars Fulfillment", "email": null, "service_name": "Mars Fulfillment", "handle": "mars-fulfillment", "fulfillment_orders_opt_in": true, "include_pending_stock": false, "provider_id": null, "location_id": 24826418, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/755357713"}}));
 
     await shopify.rest.FulfillmentService.find({
@@ -108,6 +115,10 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_service": {"id": 755357713, "name": "New Fulfillment Service Name", "email": null, "service_name": "New Fulfillment Service Name", "handle": "mars-fulfillment", "fulfillment_orders_opt_in": true, "include_pending_stock": false, "provider_id": null, "location_id": 24826418, "callback_url": "http://google.com/", "tracking_support": true, "inventory_management": true, "admin_graphql_api_id": "gid://shopify/ApiFulfillmentService/755357713"}}));
 
     const fulfillment_service = new shopify.rest.FulfillmentService({session: session});
@@ -126,6 +137,10 @@ describe('FulfillmentService resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.FulfillmentService.delete({

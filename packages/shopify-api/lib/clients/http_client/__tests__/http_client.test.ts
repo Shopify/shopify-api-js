@@ -4,21 +4,25 @@ import {
   queueError,
   queueMockResponse,
   queueMockResponses,
-  shopify,
 } from '../../../__tests__/test-helper';
+import {testConfig} from '../../../__tests__/test-config';
 import {httpClientClass} from '../http_client';
 import {DataType, HeaderParams} from '../../types';
 import * as ShopifyErrors from '../../../error';
 import {LogSeverity} from '../../../types';
+import {Shopify, shopifyApi} from '../../../index';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {message: 'Your HTTP request was successful!'};
 
 let HttpClient: ReturnType<typeof httpClientClass>;
 let originalRetryTime: number;
+let shopify: Shopify;
 
 describe('HTTP client', () => {
   beforeEach(() => {
+    shopify = shopifyApi(testConfig());
+
     HttpClient = httpClientClass(shopify.config);
     originalRetryTime = HttpClient.RETRY_WAIT_TIME;
   });

@@ -1,21 +1,24 @@
+import {ShopifyClients} from 'lib';
+
 import {ConfigInterface} from '../lib/base-types';
-import {RestClient} from '../lib/clients/rest/rest_client';
 import {logger} from '../lib/logger';
 
 import {Base} from './base';
 import {ShopifyRestResources} from './types';
 
-export interface LoadRestResourcesParams {
-  resources: ShopifyRestResources;
+export interface LoadRestResourcesParams<
+  Resources extends ShopifyRestResources,
+> {
+  resources: Resources;
   config: ConfigInterface;
-  RestClient: typeof RestClient;
+  RestClient: ShopifyClients['Rest'];
 }
 
-export function loadRestResources({
+export function loadRestResources<Resources extends ShopifyRestResources>({
   resources,
   config,
   RestClient,
-}: LoadRestResourcesParams): ShopifyRestResources {
+}: LoadRestResourcesParams<Resources>): Resources {
   const firstResource = Object.keys(resources)[0];
   if (config.apiVersion !== resources[firstResource].apiVersion) {
     logger(config).warning(
@@ -52,5 +55,5 @@ export function loadRestResources({
 
       return [name, NewResource];
     }),
-  );
+  ) as Resources;
 }

@@ -5,9 +5,11 @@ import {
   LogSeverity,
   ShopifyHeader,
 } from '../../../types';
-import {queueMockResponse, shopify} from '../../../__tests__/test-helper';
+import {queueMockResponse} from '../../../__tests__/test-helper';
+import {testConfig} from '../../../__tests__/test-config';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
+import {shopifyApi} from '../../..';
 
 const domain = 'test-shop.myshopify.io';
 const QUERY = `
@@ -35,7 +37,7 @@ describe('GraphQL client', () => {
     jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: shopify.config.apiKey,
+      aud: 'test_key',
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -54,6 +56,8 @@ describe('GraphQL client', () => {
   });
 
   it('can return response', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
 
@@ -69,6 +73,8 @@ describe('GraphQL client', () => {
   });
 
   it('merges custom headers with default', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Graphql({session});
     const customHeader: {[key: string]: string} = {
       'X-Glib-Glob': 'goobers',
@@ -91,8 +97,12 @@ describe('GraphQL client', () => {
   });
 
   it('adapts to private app requests', async () => {
-    shopify.config.isCustomStoreApp = true;
-    shopify.config.adminApiAccessToken = 'dangit-another-access-token';
+    const shopify = shopifyApi(
+      testConfig({
+        isCustomStoreApp: true,
+        adminApiAccessToken: 'dangit-another-access-token',
+      }),
+    );
 
     const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
@@ -112,11 +122,11 @@ describe('GraphQL client', () => {
       data: QUERY,
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
-
-    shopify.config.isCustomStoreApp = false;
   });
 
   it('fails to instantiate without access token', () => {
+    const shopify = shopifyApi(testConfig());
+
     const sessionWithoutAccessToken = new Session({
       id: `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop: domain,
@@ -130,6 +140,8 @@ describe('GraphQL client', () => {
   });
 
   it('can handle queries with variables', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Graphql({session});
     const queryWithVariables = {
       query: `query FirstTwo($first: Int) {
@@ -184,6 +196,8 @@ describe('GraphQL client', () => {
   });
 
   it('throws error when response contains an errors field', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Graphql({session});
     const query = {
       query: `query getProducts {
@@ -255,6 +269,8 @@ describe('GraphQL client', () => {
   });
 
   it('allows overriding the API version', async () => {
+    const shopify = shopifyApi(testConfig());
+
     expect(shopify.config.apiVersion).not.toBe('2020-01');
     const client = new shopify.clients.Graphql({
       session,

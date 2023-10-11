@@ -34,6 +34,9 @@ const shopify = shopifyApi({
     },
   },
   restResources,
+  future: {
+    // ...
+  },
 });
 ```
 
@@ -118,6 +121,12 @@ Billing configurations. [See documentation](../guides/billing.md) for full descr
 Mounts the given REST resources onto the object. Learn more about [using REST resources](../guides/rest-resources.md).
 
 > **Note**: _Must_ use the same version as `apiVersion`.
+
+### future
+
+`string: boolean`
+
+Apps can enable future flags to opt in to new functionality and breaking changes ahead of time.
 
 ### logger
 

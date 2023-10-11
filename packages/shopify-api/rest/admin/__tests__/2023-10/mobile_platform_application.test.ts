@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-10';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.October23,
-    restResources,
-  });
-});
 
 describe('MobilePlatformApplication resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('MobilePlatformApplication resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"mobile_platform_applications": [{"id": 1066175998, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2023-10-03T13:23:49-04:00", "updated_at": "2023-10-03T13:23:49-04:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true, "enabled_app_clips": false, "app_clip_application_id": null}, {"id": 1066175999, "application_id": "com.example", "platform": "android", "created_at": "2023-10-03T13:23:49-04:00", "updated_at": "2023-10-03T13:23:49-04:00", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false, "enabled_app_clips": false, "app_clip_application_id": null}]}));
 
     await shopify.rest.MobilePlatformApplication.all({
@@ -48,6 +43,10 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"mobile_platform_application": {"id": 1066175996, "application_id": "com.example", "platform": "android", "created_at": "2023-10-03T13:23:48-04:00", "updated_at": "2023-10-03T13:23:48-04:00", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false, "enabled_app_clips": false, "app_clip_application_id": null}}));
 
     const mobile_platform_application = new shopify.rest.MobilePlatformApplication({session: session});
@@ -70,6 +69,10 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"mobile_platform_application": {"id": 1066176002, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2023-10-03T13:23:51-04:00", "updated_at": "2023-10-03T13:23:51-04:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true, "enabled_app_clips": false, "app_clip_application_id": null}}));
 
     const mobile_platform_application = new shopify.rest.MobilePlatformApplication({session: session});
@@ -90,6 +93,10 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"mobile_platform_application": {"id": 1066176000, "application_id": "X1Y2.ca.domain.app", "platform": "ios", "created_at": "2023-10-03T13:23:49-04:00", "updated_at": "2023-10-03T13:23:49-04:00", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true, "enabled_app_clips": false, "app_clip_application_id": null}}));
 
     await shopify.rest.MobilePlatformApplication.find({
@@ -108,6 +115,10 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"mobile_platform_application": {"application_id": "com.example.news.app", "platform": "android", "sha256_cert_fingerprints": ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": false, "id": 1066176003, "created_at": "2023-10-03T13:23:52-04:00", "updated_at": "2023-10-03T13:23:52-04:00", "enabled_app_clips": false, "app_clip_application_id": null}}));
 
     const mobile_platform_application = new shopify.rest.MobilePlatformApplication({session: session});
@@ -136,6 +147,10 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"mobile_platform_application": {"application_id": "A1B2.ca.domain.app", "platform": "ios", "sha256_cert_fingerprints": [], "enabled_universal_or_app_links": true, "enabled_shared_webcredentials": true, "id": 1066175997, "created_at": "2023-10-03T13:23:48-04:00", "updated_at": "2023-10-03T13:23:49-04:00", "enabled_app_clips": false, "app_clip_application_id": null}}));
 
     const mobile_platform_application = new shopify.rest.MobilePlatformApplication({session: session});
@@ -162,6 +177,10 @@ describe('MobilePlatformApplication resource', () => {
   });
 
   it('test_7', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.MobilePlatformApplication.delete({

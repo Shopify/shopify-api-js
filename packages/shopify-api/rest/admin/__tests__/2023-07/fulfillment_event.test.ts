@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-07';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.July23,
-    restResources,
-  });
-});
 
 describe('FulfillmentEvent resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('FulfillmentEvent resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_events": [{"id": 944956393, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-10-03T13:33:36-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-10-03T13:33:36-04:00", "updated_at": "2023-10-03T13:33:36-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956393"}]}));
 
     await shopify.rest.FulfillmentEvent.all({
@@ -50,6 +45,10 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_event": {"id": 944956392, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-10-03T13:33:36-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-10-03T13:33:36-04:00", "updated_at": "2023-10-03T13:33:36-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956392"}}));
 
     const fulfillment_event = new shopify.rest.FulfillmentEvent({session: session});
@@ -69,6 +68,10 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"fulfillment_event": {"id": 944956394, "fulfillment_id": 255858046, "status": "in_transit", "message": null, "happened_at": "2023-10-03T13:33:36-04:00", "city": null, "province": null, "country": null, "zip": null, "address1": null, "latitude": null, "longitude": null, "shop_id": 548380009, "created_at": "2023-10-03T13:33:36-04:00", "updated_at": "2023-10-03T13:33:36-04:00", "estimated_delivery_at": null, "order_id": 450789469, "admin_graphql_api_id": "gid://shopify/FulfillmentEvent/944956394"}}));
 
     await shopify.rest.FulfillmentEvent.find({
@@ -89,6 +92,10 @@ describe('FulfillmentEvent resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.FulfillmentEvent.delete({

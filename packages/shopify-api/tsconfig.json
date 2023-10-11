@@ -6,6 +6,7 @@
   },
   "include": [
     "lib/**/*.ts",
+    "future/**/*.ts",
     "adapters/**/*.ts",
     "rest/**/*.ts",
     "runtime/**/*.ts",

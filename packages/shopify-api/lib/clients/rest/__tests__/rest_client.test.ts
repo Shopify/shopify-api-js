@@ -1,8 +1,8 @@
 import {
   queueMockResponse,
   queueMockResponses,
-  shopify,
 } from '../../../__tests__/test-helper';
+import {testConfig} from '../../../__tests__/test-config';
 import {DataType, GetRequestParams} from '../../http_client/types';
 import {RestRequestReturn, PageInfo} from '../types';
 import * as ShopifyErrors from '../../../error';
@@ -14,6 +14,7 @@ import {
 } from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
+import {shopifyApi} from '../../..';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {
@@ -34,7 +35,7 @@ describe('REST client', () => {
     jwtPayload = {
       iss: 'https://test-shop.myshopify.io/admin',
       dest: 'https://test-shop.myshopify.io',
-      aud: shopify.config.apiKey,
+      aud: 'test_key',
       sub: '1',
       exp: Date.now() / 1000 + 3600,
       nbf: 1234,
@@ -53,6 +54,8 @@ describe('REST client', () => {
   });
 
   it('can make GET request', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -68,6 +71,8 @@ describe('REST client', () => {
   });
 
   it('can make GET request with path in query', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -89,6 +94,8 @@ describe('REST client', () => {
   });
 
   it('can make POST request with JSON data', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -112,6 +119,8 @@ describe('REST client', () => {
   });
 
   it('can make POST request with form data', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -139,6 +148,8 @@ describe('REST client', () => {
   });
 
   it('can make PUT request with JSON data', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -162,6 +173,8 @@ describe('REST client', () => {
   });
 
   it('can make DELETE request', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -178,6 +191,8 @@ describe('REST client', () => {
   });
 
   it('merges custom headers with the default ones', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     const customHeaders: {[key: string]: string} = {
@@ -200,7 +215,9 @@ describe('REST client', () => {
   });
 
   it('includes pageInfo of type PageInfo in the returned object for calls with next or previous pages', async () => {
-    const params = getDefaultPageInfo();
+    const shopify = shopifyApi(testConfig());
+
+    const params = getDefaultPageInfo(shopify.config.apiVersion);
     const client = new shopify.clients.Rest({session});
     const linkHeaders = [
       `<${params.previousPageUrl}>; rel="previous"`,
@@ -223,7 +240,9 @@ describe('REST client', () => {
   });
 
   it('is able to make subsequent get requests to either pageInfo.nextPage or pageInfo.prevPage', async () => {
-    const params = getDefaultPageInfo();
+    const shopify = shopifyApi(testConfig());
+
+    const params = getDefaultPageInfo(shopify.config.apiVersion);
     const client = new shopify.clients.Rest({session});
     const linkHeaders = [
       `<${params.previousPageUrl}>; rel="previous"`,
@@ -265,7 +284,9 @@ describe('REST client', () => {
   });
 
   it('can request next pages until they run out', async () => {
-    const params = getDefaultPageInfo();
+    const shopify = shopifyApi(testConfig());
+
+    const params = getDefaultPageInfo(shopify.config.apiVersion);
     const client = new shopify.clients.Rest({session});
     const linkHeaders = [
       `<${params.previousPageUrl}>; rel="previous"`,
@@ -304,7 +325,9 @@ describe('REST client', () => {
   });
 
   it('can request previous pages until they run out', async () => {
-    const params = getDefaultPageInfo();
+    const shopify = shopifyApi(testConfig());
+
+    const params = getDefaultPageInfo(shopify.config.apiVersion);
     const client = new shopify.clients.Rest({session});
     const linkHeaders = [
       `<${params.previousPageUrl}>; rel="previous"`,
@@ -347,8 +370,12 @@ describe('REST client', () => {
   });
 
   it('adapts to private app requests', async () => {
-    shopify.config.isCustomStoreApp = true;
-    shopify.config.adminApiAccessToken = 'test-admin-api-access-token';
+    const shopify = shopifyApi(
+      testConfig({
+        isCustomStoreApp: true,
+        adminApiAccessToken: 'test-admin-api-access-token',
+      }),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -368,11 +395,11 @@ describe('REST client', () => {
       path: `/admin/api/${shopify.config.apiVersion}/products.json`,
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
-
-    shopify.config.isCustomStoreApp = false;
   });
 
   it('fails to instantiate without access token', () => {
+    const shopify = shopifyApi(testConfig());
+
     const sessionWithoutAccessToken = new Session({
       id: `test-shop.myshopify.io_${jwtPayload.sub}`,
       shop: domain,
@@ -386,6 +413,8 @@ describe('REST client', () => {
   });
 
   it('allows paths with .json', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -401,6 +430,8 @@ describe('REST client', () => {
   });
 
   it('allows full paths', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const client = new shopify.clients.Rest({session});
 
     queueMockResponse(JSON.stringify(successResponse));
@@ -416,6 +447,8 @@ describe('REST client', () => {
   });
 
   it('allows overriding the API version', async () => {
+    const shopify = shopifyApi(testConfig());
+
     expect(shopify.config.apiVersion).not.toBe('2020-01');
     const client = new shopify.clients.Rest({
       session,
@@ -442,17 +475,13 @@ describe('REST client', () => {
   });
 });
 
-function getDefaultPageInfo(): PageInfo {
+function getDefaultPageInfo(apiVersion: ApiVersion): PageInfo {
   const limit = '10';
   const fields = ['test1', 'test2'];
-  const previousUrl = `https://${domain}/admin/api/${
-    shopify.config.apiVersion
-  }/products.json?limit=${limit}&fields=${fields.join(
+  const previousUrl = `https://${domain}/admin/api/${apiVersion}/products.json?limit=${limit}&fields=${fields.join(
     ',',
   )}&page_info=previousToken`;
-  const nextUrl = `https://${domain}/admin/api/${
-    shopify.config.apiVersion
-  }/products.json?limit=${limit}&fields=${fields.join(
+  const nextUrl = `https://${domain}/admin/api/${apiVersion}/products.json?limit=${limit}&fields=${fields.join(
     ',',
   )}&page_info=nextToken`;
   const prevPage = {

@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2022-10';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.October22,
-    restResources,
-  });
-});
 
 describe('AndroidPayKey resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('AndroidPayKey resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"android_pay_key": {"id": 964811894, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv+TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM+616y8SrKwaVOSu4U8=\n"}}));
 
     const android_pay_key = new shopify.rest.AndroidPayKey({session: session});
@@ -48,6 +43,10 @@ describe('AndroidPayKey resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"android_pay_key": {"id": 964811895, "public_key": "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv+TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM+616y8SrKwaVOSu4U8=\n"}}));
 
     await shopify.rest.AndroidPayKey.find({
@@ -66,6 +65,10 @@ describe('AndroidPayKey resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.AndroidPayKey.delete({

@@ -1,6 +1,6 @@
 import {ApiVersion} from '../../types';
 import {Session} from '../../session/session';
-import {PostRequestParams} from '../http_client/types';
+import {PostRequestParams, RequestReturn} from '../http_client/types';
 
 export type GraphqlParams = Omit<PostRequestParams, 'path' | 'type'>;
 
@@ -13,3 +13,7 @@ export interface GraphqlProxyParams {
   session: Session;
   rawBody: string;
 }
+
+export type GraphqlProxy = (
+  params: GraphqlProxyParams,
+) => Promise<RequestReturn>;

@@ -1,15 +1,12 @@
 import request from 'supertest';
 import {StatusCode} from '@shopify/network';
 
-import {
-  getNewTestConfig,
-  queueMockResponse,
-  shopify,
-} from '../../__tests__/test-helper';
+import {queueMockResponse} from '../../__tests__/test-helper';
+import {testConfig} from '../../__tests__/test-config';
 import {HttpWebhookHandlerWithCallback} from '../types';
 import {InvalidDeliveryMethodError, InvalidWebhookError} from '../../error';
 import {LogSeverity} from '../../types';
-import {shopifyApi, Shopify} from '../..';
+import {Shopify, shopifyApi} from '../..';
 import {Session} from '../../session/session';
 
 import * as mockResponses from './responses';
@@ -26,6 +23,8 @@ const session = new Session({
 
 describe('webhooks', () => {
   it('HTTP handlers that point to the same location are merged', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler1: HttpWebhookHandlerWithCallback = {
       ...HTTP_HANDLER,
@@ -116,6 +115,8 @@ describe('webhooks', () => {
   });
 
   it('fires a single creation request for multiple HTTP handlers', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const topic = 'PRODUCTS_CREATE';
     const handler1 = HTTP_HANDLER;
     const handler2 = HTTP_HANDLER;
@@ -136,6 +137,8 @@ describe('webhooks', () => {
   });
 
   it('fails to register multiple EventBridge handlers for the same topic', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const handler1 = EVENT_BRIDGE_HANDLER;
     const handler2 = EVENT_BRIDGE_HANDLER;
 
@@ -147,6 +150,8 @@ describe('webhooks', () => {
   });
 
   it('fails to register multiple PubSub handlers for the same topic', async () => {
+    const shopify = shopifyApi(testConfig());
+
     const handler1 = PUB_SUB_HANDLER;
     const handler2 = PUB_SUB_HANDLER;
 
@@ -159,9 +164,11 @@ describe('webhooks', () => {
 });
 
 describe('dual webhook registry instances', () => {
-  let shopify2: Shopify;
   let handler1: HttpWebhookHandlerWithCallback;
   let handler2: HttpWebhookHandlerWithCallback;
+
+  let shopify: Shopify;
+  let shopify2: Shopify;
 
   beforeEach(async () => {
     handler1 = {...HTTP_HANDLER, callbackUrl: '/webhooks', callback: jest.fn()};
@@ -171,12 +178,12 @@ describe('dual webhook registry instances', () => {
       callback: jest.fn(),
     };
 
-    shopify.config.apiSecretKey = 'kitties are cute';
-    shopify.config.isEmbeddedApp = true;
-
-    shopify2 = shopifyApi(getNewTestConfig());
-    shopify2.config.apiSecretKey = 'dogs are cute too';
-    shopify2.config.isEmbeddedApp = true;
+    shopify = shopifyApi(
+      testConfig({apiSecretKey: 'kitties are cute', isEmbeddedApp: true}),
+    );
+    shopify2 = shopifyApi(
+      testConfig({apiSecretKey: 'dogs are cute too', isEmbeddedApp: true}),
+    );
   });
 
   it('adds different handlers for different topics to each registry', async () => {

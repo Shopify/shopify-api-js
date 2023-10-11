@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-07';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.July23,
-    restResources,
-  });
-});
 
 describe('Collect resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('Collect resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"collect": {"id": 1071559576, "collection_id": 841564295, "product_id": 921728736, "created_at": "2023-10-03T13:21:16-04:00", "updated_at": "2023-10-03T13:21:16-04:00", "position": 2, "sort_value": "0000000002"}}));
 
     const collect = new shopify.rest.Collect({session: session});
@@ -49,6 +44,10 @@ describe('Collect resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"collects": [{"id": 358268117, "collection_id": 482865238, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 773559378, "collection_id": 395646240, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 800915878, "collection_id": 482865238, "product_id": 921728736, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}]}));
 
     await shopify.rest.Collect.all({
@@ -66,6 +65,10 @@ describe('Collect resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"collects": [{"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 1071559575, "collection_id": 841564295, "product_id": 921728736, "created_at": "2023-10-03T13:21:10-04:00", "updated_at": "2023-10-03T13:21:10-04:00", "position": 2, "sort_value": "0000000002"}]}));
 
     await shopify.rest.Collect.all({
@@ -84,6 +87,10 @@ describe('Collect resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"collects": [{"id": 358268117, "collection_id": 482865238, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}, {"id": 773559378, "collection_id": 395646240, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}]}));
 
     await shopify.rest.Collect.all({
@@ -102,6 +109,10 @@ describe('Collect resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.Collect.delete({
@@ -120,6 +131,10 @@ describe('Collect resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"collect": {"id": 455204334, "collection_id": 841564295, "product_id": 632910392, "created_at": null, "updated_at": null, "position": 1, "sort_value": "0000000001"}}));
 
     await shopify.rest.Collect.find({
@@ -138,6 +153,10 @@ describe('Collect resource', () => {
   });
 
   it('test_7', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"count": 2}));
 
     await shopify.rest.Collect.count({
@@ -155,6 +174,10 @@ describe('Collect resource', () => {
   });
 
   it('test_8', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"count": 1}));
 
     await shopify.rest.Collect.count({
@@ -173,6 +196,10 @@ describe('Collect resource', () => {
   });
 
   it('test_9', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"count": 2}));
 
     await shopify.rest.Collect.count({

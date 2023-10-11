@@ -1,4 +1,5 @@
-import {shopify} from '../../__tests__/test-helper';
+import {shopifyApi} from '../..';
+import {testConfig} from '../../__tests__/test-config';
 import {InvalidShopError} from '../../error';
 
 const VALID_SHOP_URL_1 = 'someshop.myshopify.com';
@@ -48,6 +49,8 @@ const INVALID_HOSTS = [
 
 describe('sanitizeShop', () => {
   test('returns the shop for valid URLs', () => {
+    const shopify = shopifyApi(testConfig());
+
     expect(shopify.utils.sanitizeShop(VALID_SHOP_URL_1)).toEqual(
       VALID_SHOP_URL_1,
     );
@@ -63,11 +66,15 @@ describe('sanitizeShop', () => {
   });
 
   test('returns null for invalid URLs', () => {
+    const shopify = shopifyApi(testConfig());
+
     expect(shopify.utils.sanitizeShop(INVALID_SHOP_URL_1)).toBe(null);
     expect(shopify.utils.sanitizeShop(INVALID_SHOP_URL_2)).toBe(null);
   });
 
   test('throws for invalid URLs if set to', () => {
+    const shopify = shopifyApi(testConfig());
+
     expect(() =>
       shopify.utils.sanitizeShop(INVALID_SHOP_URL_1, true),
     ).toThrowError(InvalidShopError);
@@ -77,7 +84,11 @@ describe('sanitizeShop', () => {
   });
 
   test('returns the right values when using custom domains', () => {
-    shopify.config.customShopDomains = [CUSTOM_DOMAIN, CUSTOM_DOMAIN_REGEX];
+    const shopify = shopifyApi(
+      testConfig({
+        customShopDomains: [CUSTOM_DOMAIN, CUSTOM_DOMAIN_REGEX],
+      }),
+    );
 
     expect(shopify.utils.sanitizeShop(VALID_SHOP_WITH_CUSTOM_DOMAIN)).toEqual(
       VALID_SHOP_WITH_CUSTOM_DOMAIN,
@@ -98,12 +109,16 @@ describe('sanitizeShop', () => {
 describe('sanitizeHost', () => {
   VALID_HOSTS.forEach(({testhost, base64host}) => {
     test(`returns the host for ${testhost}`, () => {
+      const shopify = shopifyApi(testConfig());
+
       expect(shopify.utils.sanitizeHost(base64host)).toEqual(base64host);
     });
   });
 
   INVALID_HOSTS.forEach(({testhost, base64host}) => {
     test(`returns null for ${testhost}`, () => {
+      const shopify = shopifyApi(testConfig());
+
       expect(shopify.utils.sanitizeHost(base64host)).toBe(null);
     });
   });

@@ -1,27 +1,21 @@
 import {
-  testConfig,
   queueMockResponse,
   queueMockResponses,
 } from '../../../../__tests__/test-helper';
+import {testConfig} from '../../../../__tests__/test-config';
 import {Session} from '../../../../session/session';
 import {HttpResponseError} from '../../../../error';
 import {PageInfo} from '../../../types';
 import {ApiVersion, LATEST_API_VERSION} from '../../../../types';
-import {shopifyApi, Shopify} from '../../../../index';
+import {shopifyApi} from '../../../../index';
 
 import {restResources} from './test-resources';
 
 describe('Base REST resource', () => {
   let prefix: string;
-  let shopify: Shopify<typeof restResources>;
 
   beforeEach(() => {
-    shopify = shopifyApi({
-      ...testConfig,
-      restResources,
-    });
-
-    prefix = `/admin/api/${shopify.config.apiVersion}`;
+    prefix = `/admin/api/${LATEST_API_VERSION}`;
   });
 
   const domain = 'test-shop.myshopify.io';
@@ -35,6 +29,8 @@ describe('Base REST resource', () => {
   session.accessToken = 'access-token';
 
   it('finds resource by id', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
     queueMockResponse(JSON.stringify(body));
 
@@ -50,6 +46,8 @@ describe('Base REST resource', () => {
   });
 
   it('finds resource with param', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
     queueMockResponse(JSON.stringify(body));
 
@@ -69,6 +67,8 @@ describe('Base REST resource', () => {
   });
 
   it('finds resource and children by id', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {
       fake_resource: {
         id: 1,
@@ -104,6 +104,8 @@ describe('Base REST resource', () => {
   });
 
   it('fails on finding nonexistent resource by id', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {errors: 'Not Found'};
     queueMockResponse(JSON.stringify(body), {
       statusCode: 404,
@@ -133,6 +135,8 @@ describe('Base REST resource', () => {
   });
 
   it('finds all resources', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {
       fake_resources: [
         {id: 1, attribute: 'attribute1'},
@@ -154,6 +158,8 @@ describe('Base REST resource', () => {
   });
 
   it('finds all resources with alternative name', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {
       fake_resource_alternative_names: [
         {id: 1, attribute: 'attribute1'},
@@ -175,6 +181,8 @@ describe('Base REST resource', () => {
   });
 
   it('saves', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
     queueMockResponse(JSON.stringify(responseBody));
@@ -194,6 +202,8 @@ describe('Base REST resource', () => {
   });
 
   it('saves and updates', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
     queueMockResponse(JSON.stringify(responseBody));
@@ -213,6 +223,8 @@ describe('Base REST resource', () => {
   });
 
   it('saves and updates with another resource name', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {
       fake_resource_alternative_name: {id: 1, attribute: 'attribute'},
@@ -235,6 +247,8 @@ describe('Base REST resource', () => {
   });
 
   it('saves existing resource', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const expectedRequestBody = {
       fake_resource: {id: 1, attribute: 'attribute'},
     };
@@ -257,6 +271,8 @@ describe('Base REST resource', () => {
   });
 
   it('saves with children', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const expectedRequestBody = {
       fake_resource: {
         id: 1,
@@ -297,6 +313,8 @@ describe('Base REST resource', () => {
   });
 
   it('loads unknown attribute', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const responseBody = {
       fake_resource: {attribute: 'attribute', 'unknown?': 'some-value'},
     };
@@ -310,6 +328,8 @@ describe('Base REST resource', () => {
   });
 
   it('saves with unknown attribute', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const expectedRequestBody = {fake_resource: {unknown: 'some-value'}};
     queueMockResponse(JSON.stringify({}));
 
@@ -327,6 +347,8 @@ describe('Base REST resource', () => {
   });
 
   it('saves forced null attributes', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const expectedRequestBody = {
       fake_resource: {id: 1, has_one_attribute: null},
     };
@@ -347,6 +369,8 @@ describe('Base REST resource', () => {
   });
 
   it('ignores unsaveable attribute', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const expectedRequestBody = {fake_resource: {attribute: 'attribute'}};
     const responseBody = {fake_resource: {id: 1, attribute: 'attribute'}};
     queueMockResponse(JSON.stringify(responseBody));
@@ -367,6 +391,8 @@ describe('Base REST resource', () => {
   });
 
   it('deletes existing resource', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     queueMockResponse(JSON.stringify({}));
 
     const resource = new shopify.rest.FakeResource({session});
@@ -383,6 +409,8 @@ describe('Base REST resource', () => {
   });
 
   it('deletes with other resource', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     queueMockResponse(JSON.stringify({}));
 
     const resource = new shopify.rest.FakeResource({session});
@@ -400,6 +428,8 @@ describe('Base REST resource', () => {
   });
 
   it('fails to delete nonexistent resource', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {errors: 'Not Found'};
     queueMockResponse(JSON.stringify(body), {
       statusCode: 404,
@@ -420,6 +450,8 @@ describe('Base REST resource', () => {
   });
 
   it('makes custom request', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {fake_resource: {id: 1, attribute: 'attribute'}};
     queueMockResponse(JSON.stringify(body));
 
@@ -439,6 +471,8 @@ describe('Base REST resource', () => {
   });
 
   it('paginates requests', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const previousUrl = `https://${domain}/admin/api/${shopify.config.apiVersion}/fake_resources.json?page_info=previousToken`;
     const nextUrl = `https://${domain}/admin/api/${shopify.config.apiVersion}/fake_resources.json?page_info=nextToken`;
 
@@ -491,6 +525,8 @@ describe('Base REST resource', () => {
   });
 
   it('allows pagination within a loop', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const nextUrl = `https://${domain}/admin/api/${shopify.config.apiVersion}/fake_resources.json?page_info=nextToken`;
 
     const responseBodies = [
@@ -526,6 +562,8 @@ describe('Base REST resource', () => {
   });
 
   it('allows custom prefixes', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const body = {
       fake_resource_with_custom_prefix: {id: 1, attribute: 'attribute'},
     };
@@ -546,6 +584,8 @@ describe('Base REST resource', () => {
   });
 
   it('includes unsaveable attributes when default serialize called', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
     resource.unsaveable_attribute = 'unsaveable_attribute';
@@ -557,6 +597,8 @@ describe('Base REST resource', () => {
   });
 
   it('excludes session attribute when default serialize called', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const resource = new shopify.rest.FakeResource({session});
     const hash = resource.serialize();
 
@@ -565,6 +607,8 @@ describe('Base REST resource', () => {
   });
 
   it('excludes unsaveable attributes when serialize called for saving', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const resource = new shopify.rest.FakeResource({session});
     resource.attribute = 'attribute';
     resource.unsaveable_attribute = 'unsaveable_attribute';
@@ -579,6 +623,8 @@ describe('Base REST resource', () => {
   });
 
   it('excludes session attribute when serialize called for saving', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const resource = new shopify.rest.FakeResource({session});
     const hash = resource.serialize(true);
 
@@ -587,6 +633,8 @@ describe('Base REST resource', () => {
   });
 
   it('does not leak the session object', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
     const resource = new shopify.rest.FakeResource({session});
 
     expect(Object.keys(resource)).not.toContain(['session', '#session']);
@@ -606,11 +654,9 @@ describe('REST resources with a different API version', () => {
   session.accessToken = 'access-token';
 
   it('can load class an run requests', async () => {
-    const shopify = shopifyApi({
-      ...testConfig,
-      apiVersion: '2020-01' as any as ApiVersion,
-      restResources,
-    });
+    const shopify = shopifyApi(
+      testConfig({apiVersion: '2020-01' as any as ApiVersion, restResources}),
+    );
 
     // The shopify object is set to an older version, but the resources use the latest
     expect(shopify.rest.FakeResource.apiVersion).toBe(LATEST_API_VERSION);

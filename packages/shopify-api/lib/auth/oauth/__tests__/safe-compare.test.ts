@@ -1,7 +1,10 @@
-import {shopify} from '../../../__tests__/test-helper';
+import {shopifyApi} from '../../..';
+import {testConfig} from '../../../__tests__/test-config';
 import * as ShopifyErrors from '../../../error';
 
 test('safeCompare returns correct boolean value for comparisons', () => {
+  const shopify = shopifyApi(testConfig());
+
   const valueA = 'some value';
   const valueB = 'some value';
   const valueC = 'some other value';
@@ -11,6 +14,8 @@ test('safeCompare returns correct boolean value for comparisons', () => {
 });
 
 test('works on all appropriate data types (strings, arrays, objects)', () => {
+  const shopify = shopifyApi(testConfig());
+
   const string1 = 'string';
   const string2 = 'string';
   const stringResult = shopify.auth.safeCompare(string1, string2);
@@ -40,6 +45,8 @@ test('works on all appropriate data types (strings, arrays, objects)', () => {
 });
 
 test('appropriately returns false for mismatched values on all data types', () => {
+  const shopify = shopifyApi(testConfig());
+
   const string1 = 'a string';
   const string2 = 'a different string';
   const stringResult = shopify.auth.safeCompare(string1, string2);
@@ -58,6 +65,8 @@ test('appropriately returns false for mismatched values on all data types', () =
 });
 
 test('args of different types throw SafeCompareError', () => {
+  const shopify = shopifyApi(testConfig());
+
   const arg1 = 'hello';
   const arg2 = ['world'];
 

@@ -1,3 +1,4 @@
+import {FutureFlagOptions} from '../future/flags';
 import {ShopifyRestResources} from '../rest/types';
 
 import {AuthScopes} from './auth/scopes';
@@ -6,7 +7,9 @@ import {ApiVersion, LogSeverity} from './types';
 
 export type LogFunction = (severity: LogSeverity, msg: string) => void;
 
-export interface ConfigParams<T extends ShopifyRestResources = any> {
+export interface ConfigParams<
+  Resources extends ShopifyRestResources = ShopifyRestResources,
+> {
   apiKey?: string;
   apiSecretKey: string;
   scopes?: string[] | AuthScopes;
@@ -20,16 +23,20 @@ export interface ConfigParams<T extends ShopifyRestResources = any> {
   privateAppStorefrontAccessToken?: string;
   customShopDomains?: (RegExp | string)[];
   billing?: BillingConfig;
-  restResources?: T;
+  restResources?: Resources;
   logger?: {
     log?: LogFunction;
     level?: LogSeverity;
     httpRequests?: boolean;
     timestamps?: boolean;
   };
+  future?: FutureFlagOptions;
 }
 
-export interface ConfigInterface extends Omit<ConfigParams, 'restResources'> {
+export type ConfigInterface<Params extends ConfigParams = ConfigParams> = Omit<
+  Params,
+  'restResources'
+> & {
   apiKey: string;
   hostScheme: 'http' | 'https';
   scopes: AuthScopes;
@@ -40,4 +47,5 @@ export interface ConfigInterface extends Omit<ConfigParams, 'restResources'> {
     httpRequests: boolean;
     timestamps: boolean;
   };
-}
+  future: FutureFlagOptions;
+};

@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2022-10';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.October22,
-    restResources,
-  });
-});
 
 describe('OrderRisk resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('OrderRisk resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"risk": {"id": 1029151490, "order_id": 450789469, "checkout_id": 901414060, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order came from an anonymous proxy", "merchant_message": "This order came from an anonymous proxy"}}));
 
     const order_risk = new shopify.rest.OrderRisk({session: session});
@@ -54,6 +49,10 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"risks": [{"id": 284138680, "order_id": 450789469, "checkout_id": null, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order was placed from a proxy IP", "merchant_message": "This order was placed from a proxy IP"}, {"id": 1029151489, "order_id": 450789469, "checkout_id": 901414060, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order came from an anonymous proxy", "merchant_message": "This order came from an anonymous proxy"}]}));
 
     await shopify.rest.OrderRisk.all({
@@ -72,6 +71,10 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"risk": {"id": 284138680, "order_id": 450789469, "checkout_id": null, "source": "External", "score": "1.0", "recommendation": "cancel", "display": true, "cause_cancel": true, "message": "This order was placed from a proxy IP", "merchant_message": "This order was placed from a proxy IP"}}));
 
     await shopify.rest.OrderRisk.find({
@@ -91,6 +94,10 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"risk": {"order_id": 450789469, "cause_cancel": false, "message": "After further review, this is a legitimate order", "recommendation": "accept", "score": "0.0", "source": "External", "id": 284138680, "checkout_id": null, "display": true, "merchant_message": "After further review, this is a legitimate order"}}));
 
     const order_risk = new shopify.rest.OrderRisk({session: session});
@@ -114,6 +121,10 @@ describe('OrderRisk resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.OrderRisk.delete({

@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2022-10';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.October22,
-    restResources,
-  });
-});
 
 describe('Redirect resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('Redirect resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"redirects": [{"id": 950115854, "path": "/ibook", "target": "/products/macbook"}]}));
 
     await shopify.rest.Redirect.all({
@@ -49,6 +44,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"redirects": [{"id": 304339089, "path": "/products.php", "target": "/products"}, {"id": 668809255, "path": "/leopard", "target": "/pages/macosx"}, {"id": 950115854, "path": "/ibook", "target": "/products/macbook"}]}));
 
     await shopify.rest.Redirect.all({
@@ -66,6 +65,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"count": 3}));
 
     await shopify.rest.Redirect.count({
@@ -83,6 +86,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"redirect": {"id": 668809255, "path": "/leopard", "target": "/pages/macosx"}}));
 
     await shopify.rest.Redirect.find({
@@ -101,6 +108,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"redirect": {"path": "/powermac", "target": "/pages/macpro", "id": 950115854}}));
 
     const redirect = new shopify.rest.Redirect({session: session});
@@ -120,6 +131,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"redirect": {"path": "/tiger", "target": "/pages/macosx", "id": 668809255}}));
 
     const redirect = new shopify.rest.Redirect({session: session});
@@ -138,6 +153,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_7', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"redirect": {"target": "/pages/macpro", "path": "/leopard", "id": 668809255}}));
 
     const redirect = new shopify.rest.Redirect({session: session});
@@ -156,6 +175,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_8', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.Redirect.delete({
@@ -174,6 +197,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_9', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"redirect": {"id": 984542200, "path": "/ipod", "target": "/pages/itunes"}}));
 
     const redirect = new shopify.rest.Redirect({session: session});
@@ -192,6 +219,10 @@ describe('Redirect resource', () => {
   });
 
   it('test_10', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.October22, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"redirect": {"id": 984542199, "path": "/forums", "target": "http://forums.apple.com/"}}));
 
     const redirect = new shopify.rest.Redirect({session: session});

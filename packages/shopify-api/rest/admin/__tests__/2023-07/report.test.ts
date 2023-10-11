@@ -3,21 +3,12 @@
 ***********************************************************************************************************************/
 
 import {Session} from '../../../../lib/session/session';
-import {testConfig, queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {queueMockResponse} from '../../../../lib/__tests__/test-helper';
+import {testConfig} from '../../../../lib/__tests__/test-config';
 import {ApiVersion} from '../../../../lib/types';
-import {shopifyApi, Shopify} from '../../../../lib';
+import {shopifyApi} from '../../../../lib';
 
 import {restResources} from '../../2023-07';
-
-let shopify: Shopify<typeof restResources>;
-
-beforeEach(() => {
-  shopify = shopifyApi({
-    ...testConfig,
-    apiVersion: ApiVersion.July23,
-    restResources,
-  });
-});
 
 describe('Report resource', () => {
   const domain = 'test-shop.myshopify.io';
@@ -31,6 +22,10 @@ describe('Report resource', () => {
   session.accessToken = 'this_is_a_test_token';
 
   it('test_1', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}, {"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2023-10-03T13:19:52-04:00", "category": "custom_app_reports"}]}));
 
     await shopify.rest.Report.all({
@@ -49,6 +44,10 @@ describe('Report resource', () => {
   });
 
   it('test_2', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2023-10-03T13:19:52-04:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
 
     await shopify.rest.Report.all({
@@ -66,6 +65,10 @@ describe('Report resource', () => {
   });
 
   it('test_3', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"reports": [{"id": 752357116, "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales"}, {"id": 517154478, "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today"}]}));
 
     await shopify.rest.Report.all({
@@ -84,6 +87,10 @@ describe('Report resource', () => {
   });
 
   it('test_4', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"reports": [{"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
 
     await shopify.rest.Report.all({
@@ -102,6 +109,10 @@ describe('Report resource', () => {
   });
 
   it('test_5', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"reports": [{"id": 752357116, "name": "Custom App Report 2", "shopify_ql": "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at": "2023-10-03T13:19:52-04:00", "category": "custom_app_reports"}, {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}]}));
 
     await shopify.rest.Report.all({
@@ -120,6 +131,10 @@ describe('Report resource', () => {
   });
 
   it('test_6', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"report": {"id": 517154478, "name": "Wholesale Sales Report", "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at": "2017-04-10T16:33:22-04:00", "category": "custom_app_reports"}}));
 
     await shopify.rest.Report.find({
@@ -138,6 +153,10 @@ describe('Report resource', () => {
   });
 
   it('test_7', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"report": {"id": 517154478, "shopify_ql": "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today"}}));
 
     await shopify.rest.Report.find({
@@ -157,6 +176,10 @@ describe('Report resource', () => {
   });
 
   it('test_8', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"report": {"name": "Changed Report Name", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales", "id": 517154478, "updated_at": "2023-10-03T13:20:37-04:00", "category": "custom_app_reports"}}));
 
     const report = new shopify.rest.Report({session: session});
@@ -176,6 +199,10 @@ describe('Report resource', () => {
   });
 
   it('test_9', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({}));
 
     await shopify.rest.Report.delete({
@@ -194,6 +221,10 @@ describe('Report resource', () => {
   });
 
   it('test_10', async () => {
+    const shopify = shopifyApi(
+      testConfig({apiVersion: ApiVersion.July23, restResources}),
+    );
+
     queueMockResponse(JSON.stringify({"report": {"id": 1016888664, "name": "A new app report", "shopify_ql": "SHOW total_sales BY order_id FROM sales SINCE -1m UNTIL today ORDER BY total_sales", "updated_at": "2023-10-03T13:20:34-04:00", "category": "custom_app_reports"}}));
 
     const report = new shopify.rest.Report({session: session});
