@@ -7,16 +7,11 @@ yarn-error.log*
 
 node_modules/
 dist/
-dist-umd/
-
 
 package-lock.json
 .vscode/
 .DS_Store
 .rollup.cache/
-
-# temporary ignore release workflow.yml
-.github/workflows/release.yml
 
 # ignore any locally packed packages
 *.tgz

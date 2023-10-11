@@ -1,15 +1,6 @@
 rollup.config.js
 rollup-common.js
 rollup-umd.config.js
-.eslintrc.js
+.eslintrc.cjs
 node_modules/
 dist/
-dist-umd/
-schema.json
-
-graphql.schema.json
-src/types/apiTypes.ts
-**/*.d.ts
-src/clientPlus/graphql/operations.ts
-codegen.ts
-transform-graphql-jest-28-shim.js

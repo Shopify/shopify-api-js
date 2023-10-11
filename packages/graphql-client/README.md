@@ -21,7 +21,7 @@ const client = createGraphQLClient({
 | Property | Type                     | Description                        |
 | -------- | ------------------------ | ---------------------------------- |
 | url      | `string`                 | The Storefront API URL             |
-| headers  | `Record<string, string>` | Headers to be included in requests |
+| headers  | `Headers` | Headers to be included in requests |
 
 ## Client properties
 
@@ -35,7 +35,7 @@ const client = createGraphQLClient({
 
 | Name       | Type                  | Description                                                      |
 | ---------- | --------------------- | ---------------------------------------------------------------- |
-| variables? | `Record<string, any>` | Variable values needed in the graphQL operation                  |
+| variables? | `OperationVariables` | Variable values needed in the graphQL operation                  |
 | url?       | `string`              | Althernative request API URL                                     |
 | headers?   | `Headers`             | Additional and/or replacement headers to be used in the request. |
 
@@ -45,7 +45,7 @@ const client = createGraphQLClient({
 | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data?       | `TData \| any`        | Data returned from the GraphQL API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                             |
 | error?      | `ResponseError`       | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
-| extensions? | `Record<string, any>` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
+| extensions? | `GQLExtensions` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
 
 
 ## Usage examples

@@ -1,12 +1,12 @@
-import {createGraphQLClient} from '../graphql-client';
-import {GraphQLClient, RequestOptions} from '../types';
+import { createGraphQLClient } from "../graphql-client";
+import { GraphQLClient, RequestOptions } from "../types";
 
-describe('GraphQL Client', () => {
+describe("GraphQL Client", () => {
   const windowFetchMock = {
     status: 200,
     ok: true,
     json: () => {
-      return Promise.resolve({data: {}});
+      return Promise.resolve({ data: {} });
     },
   };
 
@@ -18,19 +18,19 @@ describe('GraphQL Client', () => {
     jest.restoreAllMocks();
   });
 
-  describe('createGraphQLClient()', () => {
-    describe('client initialization', () => {
-      it('returns a client object that contains a config object and request and fetch function', () => {
+  describe("createGraphQLClient()", () => {
+    describe("client initialization", () => {
+      it("returns a client object that contains a config object and request and fetch function", () => {
         const config = {
-          url: 'http://test-store.myshopify.com/api/2023-10/graphql.json',
+          url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
           headers: {
-            'Content-Type': 'application/json',
-            'X-Shopify-Storefront-Access-Token': 'public-token',
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": "public-token",
           },
         };
 
         const client = createGraphQLClient(config);
-        expect(client).toHaveProperty('config');
+        expect(client).toHaveProperty("config");
         expect(client).toMatchObject({
           request: expect.any(Function),
           fetch: expect.any(Function),
@@ -38,13 +38,13 @@ describe('GraphQL Client', () => {
       });
     });
 
-    describe('config object', () => {
-      it('returns a config object that includes the url', () => {
+    describe("config object", () => {
+      it("returns a config object that includes the url", () => {
         const config = {
-          url: 'http://test-store.myshopify.com/api/2023-10/graphql.json',
+          url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
           headers: {
-            'Content-Type': 'application/json',
-            'X-Shopify-Storefront-Access-Token': 'public-token',
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": "public-token",
           },
         };
 
@@ -52,12 +52,12 @@ describe('GraphQL Client', () => {
         expect(client.config.url).toBe(config.url);
       });
 
-      it('returns a config object that includes the headers', () => {
+      it("returns a config object that includes the headers", () => {
         const config = {
-          url: 'http://test-store.myshopify.com/api/2023-10/graphql.json',
+          url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
           headers: {
-            'Content-Type': 'application/json',
-            'X-Shopify-Storefront-Access-Token': 'public-token',
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": "public-token",
           },
         };
 
@@ -66,7 +66,7 @@ describe('GraphQL Client', () => {
       });
     });
 
-    describe('fetch()', () => {
+    describe("fetch()", () => {
       const operation = `
         query {
           shop {
@@ -78,14 +78,14 @@ describe('GraphQL Client', () => {
       const variables = {};
 
       const config = {
-        url: 'http://test-store.myshopify.com/api/2023-10/graphql.json',
+        url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
         headers: {
-          'Content-Type': 'application/json',
-          'X-Shopify-Storefront-Access-Token': 'public-token',
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": "public-token",
         },
       };
 
-      it('uses the window fetch when a custom fetch API is not provided at initialization ', () => {
+      it("uses the window fetch when a custom fetch API is not provided at initialization ", () => {
         const client = createGraphQLClient(config);
 
         const props: [string, RequestOptions] = [
@@ -97,7 +97,7 @@ describe('GraphQL Client', () => {
         client.fetch(...props);
 
         expect(window.fetch).toHaveBeenCalledWith(config.url, {
-          method: 'POST',
+          method: "POST",
           headers: config.headers,
           body: JSON.stringify({
             query: operation,
@@ -106,12 +106,12 @@ describe('GraphQL Client', () => {
         });
       });
 
-      it('uses the provided custom fetch when a custom fetch API is provided at initialization ', () => {
+      it("uses the provided custom fetch when a custom fetch API is provided at initialization ", () => {
         const customFetchAPI = jest.fn().mockResolvedValue({
           status: 200,
           ok: true,
           json: jest.fn().mockImplementation(() => {
-            return {data: {}};
+            return { data: {} };
           }),
         }) as any;
 
@@ -130,7 +130,7 @@ describe('GraphQL Client', () => {
         client.fetch(...props);
 
         expect(customFetchAPI).toHaveBeenCalledWith(config.url, {
-          method: 'POST',
+          method: "POST",
           headers: config.headers,
           body: JSON.stringify({
             query: operation,
@@ -140,7 +140,7 @@ describe('GraphQL Client', () => {
         expect(window.fetch).not.toHaveBeenCalled();
       });
 
-      describe('calling the function', () => {
+      describe("calling the function", () => {
         let client: GraphQLClient;
 
         beforeEach(() => {
@@ -153,11 +153,11 @@ describe('GraphQL Client', () => {
           jest.resetAllMocks();
         });
 
-        describe('parameters', () => {
-          it('calls fetch API with provided operation', async () => {
+        describe("parameters", () => {
+          it("calls fetch API with provided operation", async () => {
             await client.fetch(operation);
             expect(window.fetch).toHaveBeenCalledWith(config.url, {
-              method: 'POST',
+              method: "POST",
               headers: config.headers,
               body: JSON.stringify({
                 query: operation,
@@ -165,10 +165,10 @@ describe('GraphQL Client', () => {
             });
           });
 
-          it('calls fetch API with provided variables', async () => {
-            await client.fetch(operation, {variables});
+          it("calls fetch API with provided variables", async () => {
+            await client.fetch(operation, { variables });
             expect(window.fetch).toHaveBeenCalledWith(config.url, {
-              method: 'POST',
+              method: "POST",
               headers: config.headers,
               body: JSON.stringify({
                 query: operation,
@@ -177,12 +177,12 @@ describe('GraphQL Client', () => {
             });
           });
 
-          it('calls fetch API with provided url override', async () => {
+          it("calls fetch API with provided url override", async () => {
             const url =
-              'http://test-store.myshopify.com/api/2023-07/graphql.json';
-            await client.fetch(operation, {url});
+              "http://test-store.myshopify.com/api/2023-07/graphql.json";
+            await client.fetch(operation, { url });
             expect(window.fetch).toHaveBeenCalledWith(url, {
-              method: 'POST',
+              method: "POST",
               headers: config.headers,
               body: JSON.stringify({
                 query: operation,
@@ -190,16 +190,16 @@ describe('GraphQL Client', () => {
             });
           });
 
-          it('calls fetch API with provided headers override', async () => {
+          it("calls fetch API with provided headers override", async () => {
             const headers = {
-              'Content-Type': 'application/graphql',
-              'custom-header': 'custom-headers',
+              "Content-Type": "application/graphql",
+              "custom-header": "custom-headers",
             };
 
-            await client.fetch(operation, {headers});
+            await client.fetch(operation, { headers });
             expect(window.fetch).toHaveBeenCalledWith(config.url, {
-              method: 'POST',
-              headers: {...config.headers, ...headers},
+              method: "POST",
+              headers: { ...config.headers, ...headers },
               body: JSON.stringify({
                 query: operation,
               }),
@@ -207,14 +207,14 @@ describe('GraphQL Client', () => {
           });
         });
 
-        it('returns the graphql client request response', async () => {
-          const response = await client.fetch(operation, {variables});
+        it("returns the graphql client request response", async () => {
+          const response = await client.fetch(operation, { variables });
           expect(response).toBe(windowFetchMock);
         });
       });
     });
 
-    describe('request()', () => {
+    describe("request()", () => {
       const operation = `
         query {
           shop {
@@ -226,14 +226,14 @@ describe('GraphQL Client', () => {
       const variables = {};
 
       const config = {
-        url: 'http://test-store.myshopify.com/api/2023-10/graphql.json',
+        url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
         headers: {
-          'Content-Type': 'application/json',
-          'X-Shopify-Storefront-Access-Token': 'public-token',
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": "public-token",
         },
       };
 
-      it('uses the window fetch when a custom fetch API is not provided at initialization ', () => {
+      it("uses the window fetch when a custom fetch API is not provided at initialization ", () => {
         const client = createGraphQLClient(config);
 
         const props: [string, RequestOptions] = [
@@ -245,7 +245,7 @@ describe('GraphQL Client', () => {
         client.request(...props);
 
         expect(window.fetch).toHaveBeenCalledWith(config.url, {
-          method: 'POST',
+          method: "POST",
           headers: config.headers,
           body: JSON.stringify({
             query: operation,
@@ -254,12 +254,12 @@ describe('GraphQL Client', () => {
         });
       });
 
-      it('uses the provided custom fetch when a custom fetch API is provided at initialization ', () => {
+      it("uses the provided custom fetch when a custom fetch API is provided at initialization ", () => {
         const customFetchAPI = jest.fn().mockResolvedValue({
           status: 200,
           ok: true,
           json: jest.fn().mockImplementation(() => {
-            return {data: {}};
+            return { data: {} };
           }),
         }) as any;
 
@@ -278,7 +278,7 @@ describe('GraphQL Client', () => {
         client.request(...props);
 
         expect(customFetchAPI).toHaveBeenCalledWith(config.url, {
-          method: 'POST',
+          method: "POST",
           headers: config.headers,
           body: JSON.stringify({
             query: operation,
@@ -288,7 +288,7 @@ describe('GraphQL Client', () => {
         expect(window.fetch).not.toHaveBeenCalled();
       });
 
-      describe('calling the function', () => {
+      describe("calling the function", () => {
         let fetch: jest.Mock;
         let client: GraphQLClient;
 
@@ -304,11 +304,11 @@ describe('GraphQL Client', () => {
           jest.resetAllMocks();
         });
 
-        describe('parameters', () => {
-          it('calls fetch API with provided operation', async () => {
+        describe("parameters", () => {
+          it("calls fetch API with provided operation", async () => {
             await client.request(operation);
             expect(fetch).toHaveBeenCalledWith(config.url, {
-              method: 'POST',
+              method: "POST",
               headers: config.headers,
               body: JSON.stringify({
                 query: operation,
@@ -316,10 +316,10 @@ describe('GraphQL Client', () => {
             });
           });
 
-          it('calls fetch API with provided variables', async () => {
-            await client.request(operation, {variables});
+          it("calls fetch API with provided variables", async () => {
+            await client.request(operation, { variables });
             expect(fetch).toHaveBeenCalledWith(config.url, {
-              method: 'POST',
+              method: "POST",
               headers: config.headers,
               body: JSON.stringify({
                 query: operation,
@@ -328,12 +328,12 @@ describe('GraphQL Client', () => {
             });
           });
 
-          it('calls fetch API with provided url override', async () => {
+          it("calls fetch API with provided url override", async () => {
             const url =
-              'http://test-store.myshopify.com/api/2023-07/graphql.json';
-            await client.request(operation, {url});
+              "http://test-store.myshopify.com/api/2023-07/graphql.json";
+            await client.request(operation, { url });
             expect(fetch).toHaveBeenCalledWith(url, {
-              method: 'POST',
+              method: "POST",
               headers: config.headers,
               body: JSON.stringify({
                 query: operation,
@@ -341,16 +341,16 @@ describe('GraphQL Client', () => {
             });
           });
 
-          it('calls fetch API with provided headers override', async () => {
+          it("calls fetch API with provided headers override", async () => {
             const headers = {
-              'Content-Type': 'application/graphql',
-              'custom-header': 'custom-headers',
+              "Content-Type": "application/graphql",
+              "custom-header": "custom-headers",
             };
 
-            await client.request(operation, {headers});
+            await client.request(operation, { headers });
             expect(fetch).toHaveBeenCalledWith(config.url, {
-              method: 'POST',
-              headers: {...config.headers, ...headers},
+              method: "POST",
+              headers: { ...config.headers, ...headers },
               body: JSON.stringify({
                 query: operation,
               }),
@@ -358,29 +358,29 @@ describe('GraphQL Client', () => {
           });
         });
 
-        describe('returned object', () => {
-          it('includes a data object if the data object is included in the response', async () => {
-            const mockResponseData = {data: {shop: {name: 'Test shop'}}};
+        describe("returned object", () => {
+          it("includes a data object if the data object is included in the response", async () => {
+            const mockResponseData = { data: { shop: { name: "Test shop" } } };
             const mockedSuccessResponse: Partial<Response> = {
               status: 200,
               ok: true,
               headers: new Headers({
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               }),
               json: jest.fn().mockReturnValue(mockResponseData),
             };
 
             fetch.mockResolvedValue(mockedSuccessResponse);
 
-            const response = await client.request(operation, {variables});
-            expect(response).toHaveProperty('data', mockResponseData.data);
+            const response = await client.request(operation, { variables });
+            expect(response).toHaveProperty("data", mockResponseData.data);
           });
 
-          it('includes an API extensions object if it is included in the response', async () => {
+          it("includes an API extensions object if it is included in the response", async () => {
             const extensions = {
               context: {
-                country: 'JP',
-                language: 'ja',
+                country: "JP",
+                language: "ja",
               },
             };
 
@@ -388,74 +388,74 @@ describe('GraphQL Client', () => {
               status: 200,
               ok: true,
               headers: new Headers({
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               }),
-              json: jest.fn().mockReturnValue({data: {}, extensions}),
+              json: jest.fn().mockReturnValue({ data: {}, extensions }),
             };
 
             fetch.mockResolvedValue(mockedSuccessResponse);
-            const response = await client.request(operation, {variables});
-            expect(response).toHaveProperty('extensions', extensions);
+            const response = await client.request(operation, { variables });
+            expect(response).toHaveProperty("extensions", extensions);
           });
 
-          it('includes an error object if the response is not ok', async () => {
+          it("includes an error object if the response is not ok", async () => {
             const mockedErrorResponse: Partial<Response> = {
               status: 400,
-              statusText: 'Bad request',
+              statusText: "Bad request",
               ok: false,
               headers: new Headers({
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               }),
               json: jest.fn(),
             };
 
             fetch.mockResolvedValue(mockedErrorResponse);
 
-            const response = await client.request(operation, {variables});
-            expect(response).toHaveProperty('error', {
+            const response = await client.request(operation, { variables });
+            expect(response).toHaveProperty("error", {
               networkStatusCode: mockedErrorResponse.status,
               message: mockedErrorResponse.statusText,
             });
           });
 
-          it('includes an error object if the fetch promise fails', async () => {
-            const errorMessage = 'Async error message';
+          it("includes an error object if the fetch promise fails", async () => {
+            const errorMessage = "Async error message";
 
             fetch.mockRejectedValue(new Error(errorMessage));
 
-            const response = await client.request(operation, {variables});
-            expect(response).toHaveProperty('error', {
+            const response = await client.request(operation, { variables });
+            expect(response).toHaveProperty("error", {
               message: errorMessage,
             });
           });
 
-          it('includes an error object if the response content type is not application/json', async () => {
-            const contentType = 'multipart/mixed';
+          it("includes an error object if the response content type is not application/json", async () => {
+            const contentType = "multipart/mixed";
             const mockedErrorResponse: Partial<Response> = {
               status: 200,
               ok: true,
               headers: new Headers({
-                'Content-Type': contentType,
+                "Content-Type": contentType,
               }),
               json: jest.fn(),
             };
 
             fetch.mockResolvedValue(mockedErrorResponse);
 
-            const response = await client.request(operation, {variables});
-            expect(response).toHaveProperty('error', {
+            const response = await client.request(operation, { variables });
+            expect(response).toHaveProperty("error", {
               networkStatusCode: mockedErrorResponse.status,
               message: `GraphQL Client: Response returned unexpected Content-Type: ${contentType}`,
             });
           });
 
-          it('includes an error object if the API response contains errors', async () => {
-            const gqlError = ['GQL error'];
+          it("includes an error object if the API response contains errors", async () => {
+            const gqlError = ["GQL error"];
             const mockedErrorResponse: Partial<Response> = {
               status: 200,
               ok: true,
               headers: new Headers({
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               }),
               json: () =>
                 Promise.resolve({
@@ -465,8 +465,8 @@ describe('GraphQL Client', () => {
 
             fetch.mockResolvedValue(mockedErrorResponse);
 
-            const response = await client.request(operation, {variables});
-            expect(response).toHaveProperty('error', {
+            const response = await client.request(operation, { variables });
+            expect(response).toHaveProperty("error", {
               networkStatusCode: mockedErrorResponse.status,
               message:
                 "GraphQL Client: An error occurred while fetching from the API. Review 'graphQLErrors' for details.",
@@ -474,23 +474,23 @@ describe('GraphQL Client', () => {
             });
           });
 
-          it('includes an error object if the API does not throw or return an error and does not include a data object in its response', async () => {
+          it("includes an error object if the API does not throw or return an error and does not include a data object in its response", async () => {
             const mockedSuccessResponse: Partial<Response> = {
               status: 200,
               ok: true,
               headers: new Headers({
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               }),
               json: jest.fn().mockReturnValue({}),
             };
 
             fetch.mockResolvedValue(mockedSuccessResponse);
 
-            const response = await client.request(operation, {variables});
-            expect(response).toHaveProperty('error', {
+            const response = await client.request(operation, { variables });
+            expect(response).toHaveProperty("error", {
               networkStatusCode: mockedSuccessResponse.status,
               message:
-                'GraphQL Client: An unknown error has occurred. The API did not return a data object or any errors in its response.',
+                "GraphQL Client: An unknown error has occurred. The API did not return a data object or any errors in its response.",
             });
           });
         });

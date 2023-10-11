@@ -11,7 +11,9 @@ export interface OperationVariables {
   [key: string]: any;
 }
 
-export type Headers = Record<string, string>;
+export interface Headers {
+  [key: string]: string;
+}
 
 export interface ResponseError {
   networkStatusCode?: number;
@@ -19,10 +21,14 @@ export interface ResponseError {
   graphQLErrors?: any[];
 }
 
+export interface GQLExtensions {
+  [key: string]: any;
+}
+
 export interface ClientResponse<TData = unknown> {
   data?: TData;
   error?: ResponseError;
-  extensions?: Record<string, any>;
+  extensions?: GQLExtensions;
 }
 
 export interface ClientOptions {

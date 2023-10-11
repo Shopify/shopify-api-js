@@ -1,21 +1,21 @@
-import {ClientOptions, GraphQLClient, ClientResponse} from './types';
-import {getErrorMessage} from './utilities';
+import { ClientOptions, GraphQLClient, ClientResponse } from "./types";
+import { getErrorMessage } from "./utilities";
 
-const ERROR_PREFIX = 'GraphQL Client:';
+const ERROR_PREFIX = "GraphQL Client:";
 const GQL_API_ERROR = `${ERROR_PREFIX} An error occurred while fetching from the API. Review 'graphQLErrors' for details.`;
 const UNEXPECTED_CONTENT_TYPE_ERROR = `${ERROR_PREFIX} Response returned unexpected Content-Type:`;
 
 const CONTENT_TYPES = {
-  json: 'application/json',
-  multipart: 'multipart/mixed',
+  json: "application/json",
+  multipart: "multipart/mixed",
 };
 
 async function processJSONResponse<TData = any>(
   response: any
 ): Promise<ClientResponse<TData>> {
-  const {errors, data, extensions} = await response.json();
+  const { errors, data, extensions } = await response.json();
 
-  const responseExtensions = extensions ? {extensions} : {};
+  const responseExtensions = extensions ? { extensions } : {};
 
   if (errors || !data) {
     return {
@@ -24,7 +24,7 @@ async function processJSONResponse<TData = any>(
         message: errors
           ? GQL_API_ERROR
           : `${ERROR_PREFIX} An unknown error has occurred. The API did not return a data object or any errors in its response.`,
-        ...(errors ? {graphQLErrors: errors} : {}),
+        ...(errors ? { graphQLErrors: errors } : {}),
       },
       ...responseExtensions,
     };
@@ -46,8 +46,8 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
     url,
   };
 
-  const fetch: GraphQLClient['fetch'] = (operation, options = {}) => {
-    const {variables, headers: overrideHeaders, url: overrideUrl} = options;
+  const fetch: GraphQLClient["fetch"] = (operation, options = {}) => {
+    const { variables, headers: overrideHeaders, url: overrideUrl } = options;
 
     const body = JSON.stringify({
       query: operation,
@@ -55,7 +55,7 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
     });
 
     return fetchAPI(overrideUrl ?? url, {
-      method: 'POST',
+      method: "POST",
       headers: {
         ...headers,
         ...overrideHeaders,
@@ -64,11 +64,11 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
     });
   };
 
-  const request: GraphQLClient['request'] = async (...props) => {
+  const request: GraphQLClient["request"] = async (...props) => {
     try {
       const response = await fetch(...props);
-      const {status, statusText} = response;
-      const contentType = response.headers.get('content-type') || '';
+      const { status, statusText } = response;
+      const contentType = response.headers.get("content-type") || "";
 
       if (!response.ok) {
         return {
