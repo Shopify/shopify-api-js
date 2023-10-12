@@ -21,13 +21,13 @@ const client = createGraphQLClient({
 | Property | Type                     | Description                        |
 | -------- | ------------------------ | ---------------------------------- |
 | url      | `string`                 | The Storefront API URL             |
-| headers  | `Headers` | Headers to be included in requests |
+| headers  | `{[key: string]: string}` | Headers to be included in requests |
 
 ## Client properties
 
 | Property      | Type                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| config        | `ClientConfig`                                                                                                                                | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
+| config        | `{url: string, headers: {[key: string]: string}}`                                                                                                                                | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
 | fetch         | `<TData>(operation: string, options?: `[RequestOptions](#requestoptions-properties)`) => Promise<Response>`                                          | Fetches data from the GraphQL API using the provided GQL operation string and [RequestOptions](#requestoptions-properties) object and returns the network response.                                                                                                                                                                                                         |
 | request       | `<TData>(operation: string, options?: `[RequestOptions](#requestoptions-properties)`) => Promise<`[ClientResponse\<TData\>](#ClientResponsetdata)`>` | Fetches data from the GraphQL API using the provided GQL operation string and [RequestOptions](#requestoptions-properties) object and returns a [normalized response object](#clientresponsetdata).                                            |
 
@@ -37,15 +37,23 @@ const client = createGraphQLClient({
 | ---------- | --------------------- | ---------------------------------------------------------------- |
 | variables? | `OperationVariables` | Variable values needed in the graphQL operation                  |
 | url?       | `string`              | Althernative request API URL                                     |
-| headers?   | `Headers`             | Additional and/or replacement headers to be used in the request. |
+| headers?   | `{[key: string]: string}`             | Additional and/or replacement headers to be used in the request. |
 
 ## `ClientResponse<TData>`
 
 | Name        | Type                  | Description                                                                                                                                                                                         |
 | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data?       | `TData \| any`        | Data returned from the GraphQL API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                             |
-| error?      | `ResponseError`       | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
-| extensions? | `GQLExtensions` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
+| error?      | [ResponseError](#responseerror)       | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
+| extensions? | `{[key: string]: any}` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
+
+## `ResponseError`
+
+| Name        | Type                  | Description                                                                                                                                                                                         |
+| ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| networkStatusCode?       | `number`        | HTTP response status code                                                             |
+| message?      | `string`       | The provided error message                                                       |
+| graphQLErrors? | `any[]` | The GraphQL API errors returned by the server |
 
 
 ## Usage examples

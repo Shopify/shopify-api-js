@@ -1,35 +1,36 @@
+import fetchMock from "jest-fetch-mock";
+
 import { createGraphQLClient } from "../graphql-client";
 import { GraphQLClient, RequestOptions } from "../types";
 
 describe("GraphQL Client", () => {
-  const windowFetchMock = {
-    status: 200,
-    ok: true,
-    json: () => {
-      return Promise.resolve({ data: {} });
-    },
-  };
+  const windowFetchMock = JSON.stringify({ data: {} });
 
   beforeEach(() => {
-    window.fetch = jest.fn().mockResolvedValue(windowFetchMock);
+    fetchMock.mockResponse(() => Promise.resolve(windowFetchMock));
   });
 
   afterEach(() => {
+    fetchMock.resetMocks();
     jest.restoreAllMocks();
   });
+
+  const config = {
+    url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Shopify-Storefront-Access-Token": "public-token",
+    },
+  };
+
+  function getValidClient() {
+    return createGraphQLClient(config);
+  }
 
   describe("createGraphQLClient()", () => {
     describe("client initialization", () => {
       it("returns a client object that contains a config object and request and fetch function", () => {
-        const config = {
-          url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token": "public-token",
-          },
-        };
-
-        const client = createGraphQLClient(config);
+        const client = getValidClient();
         expect(client).toHaveProperty("config");
         expect(client).toMatchObject({
           request: expect.any(Function),
@@ -40,28 +41,12 @@ describe("GraphQL Client", () => {
 
     describe("config object", () => {
       it("returns a config object that includes the url", () => {
-        const config = {
-          url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token": "public-token",
-          },
-        };
-
-        const client = createGraphQLClient(config);
+        const client = getValidClient();
         expect(client.config.url).toBe(config.url);
       });
 
       it("returns a config object that includes the headers", () => {
-        const config = {
-          url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token": "public-token",
-          },
-        };
-
-        const client = createGraphQLClient(config);
+        const client = getValidClient();
         expect(client.config.headers).toBe(config.headers);
       });
     });
@@ -77,24 +62,12 @@ describe("GraphQL Client", () => {
 
       const variables = {};
 
-      const config = {
-        url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token": "public-token",
-        },
-      };
-
       it("uses the window fetch when a custom fetch API is not provided at initialization ", () => {
-        const client = createGraphQLClient(config);
+        const client = getValidClient();
 
-        const props: [string, RequestOptions] = [
-          operation,
-          {
-            variables,
-          },
-        ];
-        client.fetch(...props);
+        client.fetch(operation, {
+          variables,
+        });
 
         expect(window.fetch).toHaveBeenCalledWith(config.url, {
           method: "POST",
@@ -107,13 +80,9 @@ describe("GraphQL Client", () => {
       });
 
       it("uses the provided custom fetch when a custom fetch API is provided at initialization ", () => {
-        const customFetchAPI = jest.fn().mockResolvedValue({
-          status: 200,
-          ok: true,
-          json: jest.fn().mockImplementation(() => {
-            return { data: {} };
-          }),
-        }) as any;
+        const customFetchAPI = jest
+          .fn()
+          .mockResolvedValue(new Response(JSON.stringify({ data: {} }))) as any;
 
         const client = createGraphQLClient({
           ...config,
@@ -209,7 +178,7 @@ describe("GraphQL Client", () => {
 
         it("returns the graphql client request response", async () => {
           const response = await client.fetch(operation, { variables });
-          expect(response).toBe(windowFetchMock);
+          expect(response).toEqual(new Response(windowFetchMock));
         });
       });
     });
@@ -225,24 +194,12 @@ describe("GraphQL Client", () => {
 
       const variables = {};
 
-      const config = {
-        url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token": "public-token",
-        },
-      };
-
       it("uses the window fetch when a custom fetch API is not provided at initialization ", () => {
-        const client = createGraphQLClient(config);
+        const client = getValidClient();
 
-        const props: [string, RequestOptions] = [
-          operation,
-          {
-            variables,
-          },
-        ];
-        client.request(...props);
+        client.request(operation, {
+          variables,
+        });
 
         expect(window.fetch).toHaveBeenCalledWith(config.url, {
           method: "POST",
@@ -255,13 +212,9 @@ describe("GraphQL Client", () => {
       });
 
       it("uses the provided custom fetch when a custom fetch API is provided at initialization ", () => {
-        const customFetchAPI = jest.fn().mockResolvedValue({
-          status: 200,
-          ok: true,
-          json: jest.fn().mockImplementation(() => {
-            return { data: {} };
-          }),
-        }) as any;
+        const customFetchAPI = jest
+          .fn()
+          .mockResolvedValue(new Response(JSON.stringify({ data: {} }))) as any;
 
         const client = createGraphQLClient({
           ...config,
@@ -289,11 +242,9 @@ describe("GraphQL Client", () => {
       });
 
       describe("calling the function", () => {
-        let fetch: jest.Mock;
         let client: GraphQLClient;
 
         beforeEach(() => {
-          fetch = jest.fn();
           client = createGraphQLClient({
             ...config,
             fetchAPI: fetch,
@@ -301,6 +252,7 @@ describe("GraphQL Client", () => {
         });
 
         afterEach(() => {
+          fetchMock.resetMocks();
           jest.resetAllMocks();
         });
 
@@ -361,16 +313,17 @@ describe("GraphQL Client", () => {
         describe("returned object", () => {
           it("includes a data object if the data object is included in the response", async () => {
             const mockResponseData = { data: { shop: { name: "Test shop" } } };
-            const mockedSuccessResponse: Partial<Response> = {
-              status: 200,
-              ok: true,
-              headers: new Headers({
-                "Content-Type": "application/json",
-              }),
-              json: jest.fn().mockReturnValue(mockResponseData),
-            };
+            const mockedSuccessResponse = new Response(
+              JSON.stringify(mockResponseData),
+              {
+                status: 200,
+                headers: new Headers({
+                  "Content-Type": "application/json",
+                }),
+              }
+            );
 
-            fetch.mockResolvedValue(mockedSuccessResponse);
+            fetchMock.mockResolvedValue(mockedSuccessResponse);
 
             const response = await client.request(operation, { variables });
             expect(response).toHaveProperty("data", mockResponseData.data);
@@ -384,44 +337,51 @@ describe("GraphQL Client", () => {
               },
             };
 
-            const mockedSuccessResponse: Partial<Response> = {
-              status: 200,
-              ok: true,
-              headers: new Headers({
-                "Content-Type": "application/json",
-              }),
-              json: jest.fn().mockReturnValue({ data: {}, extensions }),
-            };
+            const mockedSuccessResponse = new Response(
+              JSON.stringify({ data: {}, extensions }),
+              {
+                status: 200,
+                headers: new Headers({
+                  "Content-Type": "application/json",
+                }),
+              }
+            );
 
-            fetch.mockResolvedValue(mockedSuccessResponse);
+            fetchMock.mockResolvedValue(mockedSuccessResponse);
+
             const response = await client.request(operation, { variables });
             expect(response).toHaveProperty("extensions", extensions);
+            expect(response).not.toHaveProperty("error");
           });
 
           it("includes an error object if the response is not ok", async () => {
-            const mockedErrorResponse: Partial<Response> = {
+            const responseConfig = {
               status: 400,
               statusText: "Bad request",
               ok: false,
               headers: new Headers({
                 "Content-Type": "application/json",
               }),
-              json: jest.fn(),
             };
 
-            fetch.mockResolvedValue(mockedErrorResponse);
+            const mockedSuccessResponse = new Response(
+              JSON.stringify({}),
+              responseConfig
+            );
+
+            fetchMock.mockResolvedValue(mockedSuccessResponse);
 
             const response = await client.request(operation, { variables });
             expect(response).toHaveProperty("error", {
-              networkStatusCode: mockedErrorResponse.status,
-              message: mockedErrorResponse.statusText,
+              networkStatusCode: responseConfig.status,
+              message: responseConfig.statusText,
             });
           });
 
           it("includes an error object if the fetch promise fails", async () => {
             const errorMessage = "Async error message";
 
-            fetch.mockRejectedValue(new Error(errorMessage));
+            fetchMock.mockRejectedValue(new Error(errorMessage));
 
             const response = await client.request(operation, { variables });
             expect(response).toHaveProperty("error", {
@@ -431,43 +391,46 @@ describe("GraphQL Client", () => {
 
           it("includes an error object if the response content type is not application/json", async () => {
             const contentType = "multipart/mixed";
-            const mockedErrorResponse: Partial<Response> = {
+            const responseConfig = {
               status: 200,
-              ok: true,
               headers: new Headers({
                 "Content-Type": contentType,
               }),
-              json: jest.fn(),
             };
 
-            fetch.mockResolvedValue(mockedErrorResponse);
+            const mockedSuccessResponse = new Response(
+              JSON.stringify({ data: {} }),
+              responseConfig
+            );
+
+            fetchMock.mockResolvedValue(mockedSuccessResponse);
 
             const response = await client.request(operation, { variables });
             expect(response).toHaveProperty("error", {
-              networkStatusCode: mockedErrorResponse.status,
+              networkStatusCode: responseConfig.status,
               message: `GraphQL Client: Response returned unexpected Content-Type: ${contentType}`,
             });
           });
 
           it("includes an error object if the API response contains errors", async () => {
             const gqlError = ["GQL error"];
-            const mockedErrorResponse: Partial<Response> = {
+            const responseConfig = {
               status: 200,
-              ok: true,
               headers: new Headers({
                 "Content-Type": "application/json",
               }),
-              json: () =>
-                Promise.resolve({
-                  errors: gqlError,
-                }),
             };
 
-            fetch.mockResolvedValue(mockedErrorResponse);
+            const mockedSuccessResponse = new Response(
+              JSON.stringify({ errors: gqlError }),
+              responseConfig
+            );
+
+            fetchMock.mockResolvedValue(mockedSuccessResponse);
 
             const response = await client.request(operation, { variables });
             expect(response).toHaveProperty("error", {
-              networkStatusCode: mockedErrorResponse.status,
+              networkStatusCode: responseConfig.status,
               message:
                 "GraphQL Client: An error occurred while fetching from the API. Review 'graphQLErrors' for details.",
               graphQLErrors: gqlError,
@@ -475,17 +438,19 @@ describe("GraphQL Client", () => {
           });
 
           it("includes an error object if the API does not throw or return an error and does not include a data object in its response", async () => {
-            const mockedSuccessResponse: Partial<Response> = {
+            const responseConfig = {
               status: 200,
-              ok: true,
               headers: new Headers({
                 "Content-Type": "application/json",
               }),
-              json: jest.fn().mockReturnValue({}),
             };
 
-            fetch.mockResolvedValue(mockedSuccessResponse);
+            const mockedSuccessResponse = new Response(
+              JSON.stringify({}),
+              responseConfig
+            );
 
+            fetchMock.mockResolvedValue(mockedSuccessResponse);
             const response = await client.request(operation, { variables });
             expect(response).toHaveProperty("error", {
               networkStatusCode: mockedSuccessResponse.status,
