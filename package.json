@@ -11,7 +11,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo build --filter=docs^... && changeset publish",
+    "release": "turbo build && changeset publish",
     "test": "turbo run test --parallel",
     "test:ci": "turbo run test:ci --parallel"
   },
