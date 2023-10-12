@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.1
+
+### Patch Changes
+
+- c8eebf30: Fixing publishing process to prevent empty packages
+
 ## 8.0.0
 
 ### Major Changes
@@ -339,7 +345,7 @@
   Before:
 
   ```js
-  app.post('/graphql', async (req, res) => {
+  app.post("/graphql", async (req, res) => {
     await Shopify.Utils.graphqlProxy(req, res);
   });
   ```
@@ -347,7 +353,7 @@
   After:
 
   ```js
-  app.post('/graphql', async (req, res) => {
+  app.post("/graphql", async (req, res) => {
     const response = await Shopify.Utils.graphqlProxy(req, res);
     res.status(200).send(response.body);
   });
