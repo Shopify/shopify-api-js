@@ -10,6 +10,7 @@ To make it easier to navigate this guide, here is an overview of the sections it
 
 - [Removing Node 14 support](#removing-node-14-support)
 - [Storefront client API](#storefront-client-api)
+- [Updates to the `Shopify` type](#updates-to-the-shopify-type)
 - [Removing deprecated code](#removing-deprecated-code)
 
 ---
@@ -101,6 +102,40 @@ app.get('/my-endpoint', async (req, res) => {
 
 > **Note**:
 > Going forward, changes like this will use future flags to allow for a longer grace period. We thank community members for your patience while we improve our tooling!
+
+## Updates to the `Shopify` type
+
+In previous versions, the `Shopify` type returned by `shopifyApi` only took into account the actual value of the `restResources` property.
+The `shopifyApi` function now returns the actual type it received in the `config` object, which makes types more reliables for apps.
+
+To achieve that, we changed the `Shopify` type to also receive the config as a generic type, and infer the `restResources` from the config.
+
+Most apps shouldn't need to make any changes because the `shopifyApi` function did this automatically both in previous versions and v8.
+If an app needed to explicitly use the `Shopify` type anywhere and set the resources generic, it'll need to pass in the `ConfigParams` type as the first generic.
+
+<details>
+<summary>See an example</summary>
+
+Before:
+
+```ts
+import {restResources} from '@shopify/shopify-api/rest/admin/2023-10';
+
+const myVariable: Shopify<typeof restResources>;
+```
+
+After:
+
+```ts
+import {
+  restResources,
+  ConfigParams,
+} from '@shopify/shopify-api/rest/admin/2023-10';
+
+const myVariable: Shopify<ConfigParams, typeof restResources>;
+```
+
+</details>
 
 ---
 
