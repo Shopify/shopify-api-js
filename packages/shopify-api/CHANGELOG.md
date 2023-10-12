@@ -1,5 +1,22 @@
 # Changelog
 
+## 8.0.0
+
+### Major Changes
+
+- 737838dd: Removed support for Node 14, and removed existing code deprecations.
+
+  <!-- markdown-link-check-disable -->
+
+  For details on what's changed in this version, please see the [V8 migration guide](/packages/shopify-api/docs/migrating-to-v8.md).
+
+  <!-- markdown-link-check-enable -->
+
+### Minor Changes
+
+- df5fb586: Added support for the `future` configuration option. This will allow apps to opt in to upcoming features without needing to install RC packages.
+- cf60b3d1: Added support for the 2023-10 API version.
+
 ## 7.7.0
 
 ### Minor Changes
