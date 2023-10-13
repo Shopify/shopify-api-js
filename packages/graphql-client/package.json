@@ -8,8 +8,8 @@
   },
   "author": "Shopify",
   "license": "MIT",
-  "main": "./dist/graphql-client.min.js",
-  "browser": "./dist/graphql-client.min.js",
+  "main": "./dist/umd/graphql-client.min.js",
+  "browser": "./dist/umd/graphql-client.min.js",
   "module": "./dist/index.mjs",
   "types": "./dist/graphql-client.d.ts",
   "exports": {
