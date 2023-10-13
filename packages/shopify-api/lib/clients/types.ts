@@ -8,6 +8,8 @@ import {RestClient} from './rest/rest_client';
 export * from './http_client/types';
 export * from './rest/types';
 export * from './graphql/types';
+export * from './graphql/admin_types';
+export * from './graphql/storefront_types';
 
 export interface ShopifyClients {
   Rest: typeof RestClient;

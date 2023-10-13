@@ -7,6 +7,10 @@ import {MissingRequiredArgument} from '../../error';
 
 import {GraphqlClient, GraphqlClientClassParams} from './graphql_client';
 import {GraphqlClientParams} from './types';
+import {
+  StorefrontGraphqlParams,
+  StorefrontGraphqlReturn,
+} from './storefront_types';
 
 export class StorefrontClient extends GraphqlClient {
   baseApiPath = '/api';
@@ -24,6 +28,12 @@ export class StorefrontClient extends GraphqlClient {
 
       logger(config).debug(message);
     }
+  }
+
+  public async query<T = any>(
+    params: StorefrontGraphqlParams<T>,
+  ): Promise<StorefrontGraphqlReturn<T>> {
+    return super.query<T>(params);
   }
 
   protected getApiHeaders(): HeaderParams {

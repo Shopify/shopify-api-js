@@ -51,7 +51,7 @@ export class RestClient extends HttpClient {
     this.apiVersion = params.apiVersion;
   }
 
-  protected async request<T = unknown>(
+  protected async request<T = any>(
     params: RequestParams,
   ): Promise<RestRequestReturn<T>> {
     const customStoreAppAccessToken =

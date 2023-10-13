@@ -132,7 +132,7 @@ async function getExistingHandlers(
       data: query,
     });
 
-    response.body.data.webhookSubscriptions.edges.forEach((edge) => {
+    response.body.data.webhookSubscriptions.edges.forEach((edge: any) => {
       const handler = buildHandlerFromNode(edge);
 
       if (!existingHandlers[edge.node.topic]) {

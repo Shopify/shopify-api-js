@@ -31,7 +31,7 @@ export interface GetRequestParams {
 }
 
 export type PostRequestParams = GetRequestParams & {
-  data: {[key: string]: unknown} | string;
+  data: NonNullable<GetRequestParams['data']>;
 };
 
 export type PutRequestParams = PostRequestParams;
@@ -42,7 +42,7 @@ export type RequestParams = (GetRequestParams | PostRequestParams) & {
   method: Method;
 };
 
-export interface RequestReturn<T = unknown> {
+export interface RequestReturn<T = any> {
   body: T;
   headers: Headers;
 }

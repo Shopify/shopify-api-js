@@ -149,13 +149,13 @@ describe('GraphQL client', () => {
           edges {
             node {
               id
+            }
           }
         }
-      }
-    }`,
-      variables: `{
-        'first': 2,
       }`,
+      variables: {
+        first: 2,
+      },
     };
     const expectedResponse = {
       data: {
@@ -187,7 +187,7 @@ describe('GraphQL client', () => {
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: {
-        'Content-Length': 219,
+        'Content-Length': 205,
         'Content-Type': 'application/json',
         'X-Shopify-Access-Token': accessToken,
       },

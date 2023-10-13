@@ -1,12 +1,13 @@
 import {ApiVersion, ShopifyHeader} from '../../types';
 import {ConfigInterface} from '../../base-types';
 import {httpClientClass, HttpClient} from '../http_client/http_client';
-import {DataType, HeaderParams, RequestReturn} from '../http_client/types';
+import {DataType, HeaderParams} from '../http_client/types';
 import {Session} from '../../session/session';
 import {logger} from '../../logger';
 import * as ShopifyErrors from '../../error';
 
-import {GraphqlParams, GraphqlClientParams} from './types';
+import {GraphqlClientParams} from './types';
+import {AdminGraphqlParams, AdminGraphqlReturn} from './admin_types';
 
 export interface GraphqlClientClassParams {
   config: ConfigInterface;
@@ -47,12 +48,13 @@ export class GraphqlClient {
     });
   }
 
-  public async query<T = unknown>(
-    params: GraphqlParams,
-  ): Promise<RequestReturn<T>> {
+  public async query<T = any>(
+    params: AdminGraphqlParams<T>,
+  ): Promise<AdminGraphqlReturn<T>> {
     if (
       (typeof params.data === 'string' && params.data.length === 0) ||
-      Object.entries(params.data).length === 0
+      (typeof params.data === 'object' &&
+        Object.entries(params.data!).length === 0)
     ) {
       throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
     }
@@ -91,7 +93,7 @@ export class GraphqlClient {
       });
     }
 
-    return result;
+    return result as AdminGraphqlReturn<T>;
   }
 
   protected getApiHeaders(): HeaderParams {
