@@ -640,6 +640,14 @@ describe('Base REST resource', () => {
     expect(Object.keys(resource)).not.toContain(['session', '#session']);
     expect(JSON.stringify(resource)).not.toMatch(/"[#]?session"/);
   });
+
+  it('It throws an error if required IDs are missing', async () => {
+    const shopify = shopifyApi(testConfig({restResources}));
+
+    const resource = new shopify.rest.FakeResource({session});
+
+    expect(async () => resource.delete()).rejects.toThrowError();
+  });
 });
 
 describe('REST resources with a different API version', () => {
