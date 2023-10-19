@@ -13,6 +13,7 @@ const client = createGraphQLClient({
     'Content-Type': 'application/json',
     'X-Shopify-Storefront-Access-Token': 'public-token',
   },
+  retries: 1
 });
 ```
 
@@ -22,12 +23,13 @@ const client = createGraphQLClient({
 | -------- | ------------------------ | ---------------------------------- |
 | url      | `string`                 | The Storefront API URL             |
 | headers  | `{[key: string]: string}` | Headers to be included in requests |
+| retries?  | `number` | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. |
 
 ## Client properties
 
 | Property      | Type                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| config        | `{url: string, headers: {[key: string]: string}}`                                                                                                                                | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
+| config        | `{url: string, headers: {[key: string]: string}, retries: number}`                                                                                                                                | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
 | fetch         | `<TData>(operation: string, options?: `[RequestOptions](#requestoptions-properties)`) => Promise<Response>`                                          | Fetches data from the GraphQL API using the provided GQL operation string and [RequestOptions](#requestoptions-properties) object and returns the network response                                                                                                                                                                                                         |
 | request       | `<TData>(operation: string, options?: `[RequestOptions](#requestoptions-properties)`) => Promise<`[ClientResponse\<TData\>](#ClientResponsetdata)`>` | Fetches data from the GraphQL API using the provided GQL operation string and [RequestOptions](#requestoptions-properties) object and returns a [normalized response object](#clientresponsetdata)                                            |
 
@@ -36,8 +38,9 @@ const client = createGraphQLClient({
 | Name       | Type                  | Description                                                      |
 | ---------- | --------------------- | ---------------------------------------------------------------- |
 | variables? | `OperationVariables` | Variable values needed in the graphQL operation                  |
-| url?       | `string`              | Althernative request API URL                                     |
+| url?       | `string`              | Alternative request API URL                                     |
 | headers?   | `{[key: string]: string}`             | Additional and/or replacement headers to be used in the request |
+| retries?   | `number`             | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. |
 
 ## `ClientResponse<TData>`
 
@@ -78,7 +81,7 @@ const {data, error, extensions} = await client.request(productQuery, {
 });
 ```
 
-### Add custom headers to API request
+### Add custom headers to the API request
 
 ```typescript
 const productQuery = `
@@ -101,7 +104,7 @@ const {data, error, extensions} = await client.request(productQuery, {
 });
 ```
 
-### Use an updated API URL in API request
+### Use an updated API URL in the API request
 
 ```typescript
 const productQuery = `
@@ -119,6 +122,24 @@ const {data, error, extensions} = await client.request(productQuery, {
     handle: 'sample-product',
   },
   url: 'http://your-shop-name.myshopify.com/api/unstable/graphql.json',
+});
+```
+
+### Set a custom retries value in the API request
+
+```typescript
+const shopQuery = `
+  query ShopQuery {
+    shop {
+      name
+      id
+    }
+  }
+`;
+
+// Will retry the HTTP request to the server 2 times if the requests were abandoned or the server responded with a 429 or 503 error
+const {data, error, extensions} = await client.request(shopQuery, {
+  retries: 2,
 });
 ```
 
