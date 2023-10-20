@@ -35,17 +35,20 @@ export interface ClientOptions {
   headers: Headers;
   url: string;
   fetchAPI?: CustomFetchAPI;
+  retries?: number;
 }
 
 export interface ClientConfig {
   readonly headers: Headers;
   readonly url: string;
+  readonly retries: number;
 }
 
 export interface RequestOptions {
   variables?: OperationVariables;
   url?: string;
   headers?: Headers;
+  retries?: number;
 }
 
 export type RequestParams = [operation: string, options?: RequestOptions];

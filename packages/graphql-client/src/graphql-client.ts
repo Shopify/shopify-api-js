@@ -1,4 +1,9 @@
-import { ClientOptions, GraphQLClient, ClientResponse } from "./types";
+import {
+  ClientOptions,
+  CustomFetchAPI,
+  GraphQLClient,
+  ClientResponse,
+} from "./types";
 import { getErrorMessage } from "./utilities";
 
 const ERROR_PREFIX = "GraphQL Client:";
@@ -9,6 +14,15 @@ const CONTENT_TYPES = {
   json: "application/json",
   multipart: "multipart/mixed",
 };
+
+const MIN_RETRIES = 0;
+const MAX_RETRIES = 3;
+const RETRY_WAIT_TIME = 1000;
+const RETRIABLE_STATUS_CODES = [429, 503];
+
+async function sleep(waitTime: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, waitTime));
+}
 
 async function processJSONResponse<TData = any>(
   response: any
@@ -36,32 +50,91 @@ async function processJSONResponse<TData = any>(
   };
 }
 
+function validateRetries(retries: number | undefined) {
+  if (
+    retries !== undefined &&
+    (retries < MIN_RETRIES || retries > MAX_RETRIES)
+  ) {
+    throw new Error(
+      `${ERROR_PREFIX} The provided "retries" value (${retries}) is invalid - it cannot be less than ${MIN_RETRIES} or greater than ${MAX_RETRIES}`
+    );
+  }
+}
+
 export function createGraphQLClient<TClientOptions extends ClientOptions>({
   headers,
   url,
   fetchAPI = fetch,
+  retries = 0,
 }: TClientOptions): GraphQLClient {
+  validateRetries(retries);
+
   const config = {
     headers,
     url,
+    retries,
   };
 
-  const fetch: GraphQLClient["fetch"] = (operation, options = {}) => {
-    const { variables, headers: overrideHeaders, url: overrideUrl } = options;
+  const httpFetch = async (
+    params: Parameters<CustomFetchAPI>,
+    count: number,
+    maxTries: number
+  ): ReturnType<GraphQLClient["fetch"]> => {
+    const nextCount = count + 1;
+    try {
+      const response = await fetchAPI(...params);
+      if (
+        !response.ok &&
+        RETRIABLE_STATUS_CODES.includes(response.status) &&
+        nextCount <= maxTries
+      ) {
+        throw new Error();
+      }
+
+      return response;
+    } catch (error) {
+      if (nextCount <= maxTries) {
+        await sleep(RETRY_WAIT_TIME);
+        return httpFetch(params, nextCount, maxTries);
+      }
+
+      throw new Error(
+        `${ERROR_PREFIX} Exceeded maximum number of ${maxTries} network tries. Last message - ${getErrorMessage(
+          error
+        )}`
+      );
+    }
+  };
+
+  const fetch: GraphQLClient["fetch"] = async (operation, options = {}) => {
+    const {
+      variables,
+      headers: overrideHeaders,
+      url: overrideUrl,
+      retries: overrideRetries,
+    } = options;
 
     const body = JSON.stringify({
       query: operation,
       variables,
     });
 
-    return fetchAPI(overrideUrl ?? url, {
-      method: "POST",
-      headers: {
-        ...headers,
-        ...overrideHeaders,
+    validateRetries(overrideRetries);
+
+    const fetchParams: Parameters<CustomFetchAPI> = [
+      overrideUrl ?? url,
+      {
+        method: "POST",
+        headers: {
+          ...headers,
+          ...overrideHeaders,
+        },
+        body,
       },
-      body,
-    });
+    ];
+    const maxTries = (overrideRetries ?? retries) + 1;
+
+    return httpFetch(fetchParams, 1, maxTries);
   };
 
   const request: GraphQLClient["request"] = async (...props) => {
