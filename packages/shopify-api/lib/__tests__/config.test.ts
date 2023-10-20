@@ -1,7 +1,7 @@
 import * as ShopifyErrors from '../error';
 import {validateConfig} from '../config';
 import {ConfigParams} from '../base-types';
-import {ApiVersion, LogSeverity} from '../types';
+import {ApiVersion, LATEST_API_VERSION, LogSeverity} from '../types';
 
 let validParams: ConfigParams;
 
@@ -162,5 +162,11 @@ describe('Config object', () => {
     const config = validateConfig(configWithSlash);
 
     expect(config.hostName).toEqual('my-host-name');
+  });
+
+  it('points LATEST_API_VERSION to the last non-unstable version in the enum', () => {
+    const enumVersions = Object.values(ApiVersion);
+
+    expect(LATEST_API_VERSION).toEqual(enumVersions[enumVersions.length - 2]);
   });
 });

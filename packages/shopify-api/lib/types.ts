@@ -15,7 +15,7 @@ export enum ApiVersion {
 }
 
 export const LIBRARY_NAME = 'Shopify API Library';
-export const LATEST_API_VERSION = ApiVersion.July23;
+export const LATEST_API_VERSION = ApiVersion.October23;
 
 /* eslint-disable @shopify/typescript/prefer-pascal-case-enums */
 export enum ShopifyHeader {
