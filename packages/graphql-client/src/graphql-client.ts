@@ -15,6 +15,8 @@ const CONTENT_TYPES = {
   multipart: "multipart/mixed",
 };
 
+const MIN_RETRIES = 0;
+const MAX_RETRIES = 3;
 const RETRY_WAIT_TIME = 1000;
 const RETRIABLE_STATUS_CODES = [429, 503];
 
@@ -49,9 +51,12 @@ async function processJSONResponse<TData = any>(
 }
 
 function validateRetries(retries: number | undefined) {
-  if (retries !== undefined && retries < 0) {
+  if (
+    retries !== undefined &&
+    (retries < MIN_RETRIES || retries > MAX_RETRIES)
+  ) {
     throw new Error(
-      `${ERROR_PREFIX}: The provided "retries" value (${retries}) is invalid - it cannot be less than zero.`
+      `${ERROR_PREFIX} The provided "retries" value (${retries}) is invalid - it cannot be less than ${MIN_RETRIES} or greater than ${MAX_RETRIES}`
     );
   }
 }
@@ -76,7 +81,6 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
     maxTries: number
   ): ReturnType<GraphQLClient["fetch"]> => {
     const nextCount = count + 1;
-    let resetTime = RETRY_WAIT_TIME;
     try {
       const response = await fetchAPI(...params);
       if (
@@ -84,17 +88,13 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
         RETRIABLE_STATUS_CODES.includes(response.status) &&
         nextCount <= maxTries
       ) {
-        const retryAfter = response.headers.get("Retry-After");
-        if (typeof retryAfter !== "undefined" && retryAfter !== null) {
-          resetTime = parseFloat(retryAfter) * 1000;
-        }
         throw new Error();
       }
 
       return response;
     } catch (error) {
       if (nextCount <= maxTries) {
-        await sleep(resetTime);
+        await sleep(RETRY_WAIT_TIME);
         return httpFetch(params, nextCount, maxTries);
       }
 

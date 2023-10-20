@@ -23,7 +23,7 @@ const client = createGraphQLClient({
 | -------- | ------------------------ | ---------------------------------- |
 | url      | `string`                 | The Storefront API URL             |
 | headers  | `{[key: string]: string}` | Headers to be included in requests |
-| retries?  | `number` | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. |
+| retries?  | `number` | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. Maximum value is `3`. |
 
 ## Client properties
 
@@ -40,7 +40,7 @@ const client = createGraphQLClient({
 | variables? | `OperationVariables` | Variable values needed in the graphQL operation                  |
 | url?       | `string`              | Alternative request API URL                                     |
 | headers?   | `{[key: string]: string}`             | Additional and/or replacement headers to be used in the request |
-| retries?   | `number`             | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. |
+| retries?   | `number`             | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3`.|
 
 ## `ClientResponse<TData>`
 

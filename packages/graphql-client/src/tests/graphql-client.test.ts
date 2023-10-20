@@ -44,6 +44,20 @@ describe("GraphQL Client", () => {
           fetch: expect.any(Function),
         });
       });
+
+      it("throws an error when the retries config value is less than 0", () => {
+        const retries = -1;
+        expect(() => getValidClient(retries)).toThrowError(
+          `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+        );
+      });
+
+      it("throws an error when the retries config value is greater than 3", () => {
+        const retries = 4;
+        expect(() => getValidClient(retries)).toThrowError(
+          `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+        );
+      });
     });
 
     describe("config object", () => {
@@ -238,7 +252,7 @@ describe("GraphQL Client", () => {
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
-            it("delays a retry by 1000ms when a retry occurs", async () => {
+            it("delays a retry by 1000ms", async () => {
               const client = getValidClient(1);
               fetchMock.mockAbort();
 
@@ -318,25 +332,16 @@ describe("GraphQL Client", () => {
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
-            it("delays a retry by retry-after header value when it's returned in the response, else it will delay the retry by 1000ms ", async () => {
-              fetchMock.mockResponses(
-                ["", { status, headers: { "Retry-After": "3" } }],
-                ["", { status }],
-                ["", { status }]
-              );
+            it("delays a retry by 1000ms", async () => {
+              const client = getValidClient(1);
+              fetchMock.mockResolvedValue(mockedFailedResponse);
 
-              const response = await client.fetch(operation, { retries: 2 });
+              const response = await client.request(operation);
 
-              expect(response.status).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
-              expect(setTimeout).toHaveBeenCalledTimes(2);
-              expect(setTimeout).toHaveBeenNthCalledWith(
-                1,
-                expect.any(Function),
-                3000
-              );
-              expect(setTimeout).toHaveBeenNthCalledWith(
-                2,
+              expect(response.error?.networkStatusCode).toBe(status);
+
+              expect(setTimeout).toHaveBeenCalledTimes(1);
+              expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
                 1000
               );
@@ -406,25 +411,16 @@ describe("GraphQL Client", () => {
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
-            it("delays a retry by the retry-after header value when it's returned in the response, else it will delay the retry by 1000ms ", async () => {
-              fetchMock.mockResponses(
-                ["", { status, headers: { "Retry-After": "3" } }],
-                ["", { status }],
-                ["", { status }]
-              );
+            it("delays a retry by 1000ms", async () => {
+              const client = getValidClient(1);
+              fetchMock.mockResolvedValue(mockedFailedResponse);
 
-              const response = await client.fetch(operation, { retries: 2 });
+              const response = await client.request(operation);
 
-              expect(response.status).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
-              expect(setTimeout).toHaveBeenCalledTimes(2);
-              expect(setTimeout).toHaveBeenNthCalledWith(
-                1,
-                expect.any(Function),
-                3000
-              );
-              expect(setTimeout).toHaveBeenNthCalledWith(
-                2,
+              expect(response.error?.networkStatusCode).toBe(status);
+
+              expect(setTimeout).toHaveBeenCalledTimes(1);
+              expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
                 1000
               );
@@ -465,6 +461,24 @@ describe("GraphQL Client", () => {
 
             expect(response.status).toBe(500);
             expect(fetchMock).toHaveBeenCalledTimes(1);
+          });
+
+          it("throws an error when the retries config value is less than 0", async () => {
+            const retries = -1;
+            await expect(async () => {
+              await client.fetch(operation, { retries });
+            }).rejects.toThrow(
+              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+            );
+          });
+
+          it("throws an error when the retries config value is greater than 3", async () => {
+            const retries = 4;
+            await expect(async () => {
+              await client.fetch(operation, { retries });
+            }).rejects.toThrow(
+              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+            );
           });
         });
       });
@@ -807,7 +821,7 @@ describe("GraphQL Client", () => {
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
-            it("delays a retry by 1000ms when a retry occurs", async () => {
+            it("delays a retry by 1000ms", async () => {
               const client = getValidClient(1);
               fetchMock.mockAbort();
 
@@ -892,25 +906,16 @@ describe("GraphQL Client", () => {
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
-            it("delays a retry by the retry-after header value when it's returned in the response, else it will delay the retry by 1000ms ", async () => {
-              fetchMock.mockResponses(
-                ["", { status, headers: { "Retry-After": "3" } }],
-                ["", { status }],
-                ["", { status }]
-              );
+            it("delays a retry by 1000ms", async () => {
+              const client = getValidClient(1);
+              fetchMock.mockResolvedValue(mockedFailedResponse);
 
-              const response = await client.request(operation, { retries: 2 });
+              const response = await client.request(operation);
 
               expect(response.error?.networkStatusCode).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
-              expect(setTimeout).toHaveBeenCalledTimes(2);
-              expect(setTimeout).toHaveBeenNthCalledWith(
-                1,
-                expect.any(Function),
-                3000
-              );
-              expect(setTimeout).toHaveBeenNthCalledWith(
-                2,
+
+              expect(setTimeout).toHaveBeenCalledTimes(1);
+              expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
                 1000
               );
@@ -984,25 +989,16 @@ describe("GraphQL Client", () => {
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
-            it("delays a retry by the retry-after header value when it's returned in the response, else it will delay the retry by 1000ms ", async () => {
-              fetchMock.mockResponses(
-                ["", { status, headers: { "Retry-After": "3" } }],
-                ["", { status }],
-                ["", { status }]
-              );
+            it("delays a retry by 1000ms", async () => {
+              const client = getValidClient(1);
+              fetchMock.mockResolvedValue(mockedFailedResponse);
 
-              const response = await client.request(operation, { retries: 2 });
+              const response = await client.request(operation);
 
               expect(response.error?.networkStatusCode).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
-              expect(setTimeout).toHaveBeenCalledTimes(2);
-              expect(setTimeout).toHaveBeenNthCalledWith(
-                1,
-                expect.any(Function),
-                3000
-              );
-              expect(setTimeout).toHaveBeenNthCalledWith(
-                2,
+
+              expect(setTimeout).toHaveBeenCalledTimes(1);
+              expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
                 1000
               );
@@ -1044,6 +1040,25 @@ describe("GraphQL Client", () => {
 
             expect(response.error?.networkStatusCode).toBe(500);
             expect(fetchMock).toHaveBeenCalledTimes(1);
+          });
+
+          it("returns a response object with an error when the retries config value is less than 0", async () => {
+            const retries = -1;
+
+            const response = await client.request(operation, { retries });
+
+            expect(response.error?.message).toEqual(
+              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+            );
+          });
+
+          it("returns a response object with an error when the retries config value is greater than 3", async () => {
+            const retries = 4;
+            const response = await client.request(operation, { retries });
+
+            expect(response.error?.message).toEqual(
+              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+            );
           });
         });
       });
