@@ -155,6 +155,7 @@ export class Base {
     let match: string | null = null;
     let specificity = -1;
 
+    const potentialPaths: ResourcePath[] = [];
     this.paths.forEach((path: ResourcePath) => {
       if (
         http_method !== path.http_method ||
@@ -163,6 +164,8 @@ export class Base {
       ) {
         return;
       }
+
+      potentialPaths.push(path);
 
       let pathUrlIds: IdSet = {...urlIds};
       path.ids.forEach((id) => {
@@ -198,7 +201,13 @@ export class Base {
     });
 
     if (!match) {
-      throw new RestResourceError('Could not find a path for request');
+      const pathOptions = potentialPaths.map((path) => path.path);
+
+      throw new RestResourceError(
+        `Could not find a path for request. If you are trying to make a request to one of the following paths, ensure all relevant IDs are set. :\n - ${pathOptions.join(
+          '\n - ',
+        )}`,
+      );
     }
 
     if (this.customPrefix) {
