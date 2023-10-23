@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.2
+
+### Patch Changes
+
+- 58a20daf: Changed LATEST_API_VERSION export to point to October23. Thanks @SeanMythen!
+
 ## 8.0.1
 
 ### Patch Changes
