@@ -31,17 +31,45 @@ export interface ClientResponse<TData = unknown> {
   extensions?: GQLExtensions;
 }
 
+export type LogType = "HTTP-Response" | "HTTP-Retry";
+
+export interface LogContent {
+  type: LogType;
+  content: any;
+}
+
+export interface HTTPResponseLog extends LogContent {
+  type: "HTTP-Response";
+  content: {
+    requestParams: Parameters<CustomFetchAPI>;
+    response: Response;
+  };
+}
+
+export interface HTTPRetryLog extends LogContent {
+  type: "HTTP-Retry";
+  content: {
+    requestParams: Parameters<CustomFetchAPI>;
+    lastResponse?: Response;
+    retryAttempt: number;
+    maxRetries: number;
+  };
+}
+
+export type LogContentTypes = HTTPResponseLog | HTTPRetryLog;
+
 export interface ClientOptions {
   headers: Headers;
   url: string;
   fetchAPI?: CustomFetchAPI;
   retries?: number;
+  logger?: (logContent: LogContentTypes) => void;
 }
 
 export interface ClientConfig {
-  readonly headers: Headers;
-  readonly url: string;
-  readonly retries: number;
+  readonly headers: ClientOptions["headers"];
+  readonly url: ClientOptions["url"];
+  readonly retries: ClientOptions["retries"];
 }
 
 export interface RequestOptions {

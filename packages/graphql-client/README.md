@@ -1,6 +1,6 @@
 # GraphQL Client
 
-The GraphQL Client is a generic GraphQL client that can be used directly to interact with a GraphQL API. Client users are expected to provide the full API URL and necessary headers.
+The GraphQL Client can be used to interact with any Shopify's GraphQL APIs. Client users are expected to provide the full API URL and necessary headers.
 
 ## Initialization
 
@@ -24,6 +24,8 @@ const client = createGraphQLClient({
 | url      | `string`                 | The Storefront API URL             |
 | headers  | `{[key: string]: string}` | Headers to be included in requests |
 | retries?  | `number` | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. Maximum value is `3`. |
+| fetchAPI?  | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
+| logger?  | `(logContent: `[HTTPResponseLog](#httpresponselog)`\|`[HTTPRetryLog](#httpretrylog)`) => void` | A logger function that accepts [log content objects](#log-content-types). This logger will be called in certain conditions with contextual information.  |
 
 ## Client properties
 
@@ -180,3 +182,30 @@ if (response.ok) {
   const {errors, data, extensions} = await response.json();
 }
 ```
+
+## Log Content Types
+
+### `HTTPResponseLog`
+
+This log content is sent to the logger whenever a HTTP response is received by the client.
+
+| Property | Type                     | Description                        |
+| -------- | ------------------------ | ---------------------------------- |
+| type      | `LogType['HTTP-Response']`                 | The type of log content. Is always set to `HTTP-Response`            |
+| content  | `{requestParams: `[RequestParams](#requestparams)`, response: Response}` | Contextual data regarding the received response |
+
+### `HTTPRetryLog`
+
+This log content is sent to the logger whenever the client attempts to retry HTTP requests.
+
+| Property | Type                     | Description                        |
+| -------- | ------------------------ | ---------------------------------- |
+| type      | `LogType['HTTP-Retry']`                 | The type of log content. Is always set to `HTTP-Retry`            |
+| content  | `{requestParams: `[RequestParams](#requestparams)`, lastResponse?: Response, retryAttempt: number, maxRetries: number}` | Contextual data regarding the upcoming retry attempt. <br /><br/>`lastResponse`: previous response <br/> `retryAttempt`: the current retry attempt count <br/> `maxRetries`: the maximum number of retries  |
+
+### `RequestParams`
+
+| Property | Type                     | Description                        |
+| -------- | ------------------------ | ---------------------------------- |
+| url      | `string`                 | Requested URL            |
+| init?  | `{method?: string, headers?: HeaderInit, body?: string}` | The request information  |
