@@ -192,7 +192,7 @@ This log content is sent to the logger whenever a HTTP response is received by t
 | Property | Type                     | Description                        |
 | -------- | ------------------------ | ---------------------------------- |
 | type      | `LogType['HTTP-Response']`                 | The type of log content. Is always set to `HTTP-Response`            |
-| content  | `{requestParams: `[RequestParams](#requestparams)`, response: Response}` | Contextual data regarding the received response |
+| content  | `{`[requestParams](#requestparams)`: [url, init?], response: Response}` | Contextual data regarding the request and received response |
 
 ### `HTTPRetryLog`
 
@@ -201,7 +201,7 @@ This log content is sent to the logger whenever the client attempts to retry HTT
 | Property | Type                     | Description                        |
 | -------- | ------------------------ | ---------------------------------- |
 | type      | `LogType['HTTP-Retry']`                 | The type of log content. Is always set to `HTTP-Retry`            |
-| content  | `{requestParams: `[RequestParams](#requestparams)`, lastResponse?: Response, retryAttempt: number, maxRetries: number}` | Contextual data regarding the upcoming retry attempt. <br /><br/>`lastResponse`: previous response <br/> `retryAttempt`: the current retry attempt count <br/> `maxRetries`: the maximum number of retries  |
+| content  | `{`[requestParams](#requestparams)`: [url, init?], lastResponse?: Response, retryAttempt: number, maxRetries: number}` | Contextual data regarding the upcoming retry attempt. <br /><br/>`requestParams`: [parameters](#requestparams) used in the request<br/>`lastResponse`: previous response <br/> `retryAttempt`: the current retry attempt count <br/> `maxRetries`: the maximum number of retries  |
 
 ### `RequestParams`
 
