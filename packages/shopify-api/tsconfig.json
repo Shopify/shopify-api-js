@@ -1,8 +1,20 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
     "types": ["@cloudflare/workers-types", "node", "jest"],
     "baseUrl": ".",
-    "rootDir": "."
+    "rootDir": ".",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2015",
+      "es2016",
+      "es2017",
+      "es2018",
+      "es2019",
+      "es2020",
+      "esnext.asynciterable"
+    ]
   },
   "include": [
     "lib/**/*.ts",
