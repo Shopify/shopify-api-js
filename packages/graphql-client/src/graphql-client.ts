@@ -3,6 +3,8 @@ import {
   CustomFetchAPI,
   GraphQLClient,
   ClientResponse,
+  LogContentTypes,
+  ClientConfig,
 } from "./types";
 import { getErrorMessage } from "./utilities";
 
@@ -66,23 +68,42 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
   url,
   fetchAPI = fetch,
   retries = 0,
+  logger,
 }: TClientOptions): GraphQLClient {
   validateRetries(retries);
 
-  const config = {
+  const config: ClientConfig = {
     headers,
     url,
     retries,
   };
 
+  const clientLogger = (logContent: LogContentTypes) => {
+    if (logger) {
+      logger(logContent);
+    }
+  };
+
   const httpFetch = async (
-    params: Parameters<CustomFetchAPI>,
+    requestParams: Parameters<CustomFetchAPI>,
     count: number,
-    maxTries: number
+    maxRetries: number
   ): ReturnType<GraphQLClient["fetch"]> => {
     const nextCount = count + 1;
+    const maxTries = maxRetries + 1;
+    let response: Response | undefined;
+
     try {
-      const response = await fetchAPI(...params);
+      response = await fetchAPI(...requestParams);
+
+      clientLogger({
+        type: "HTTP-Response",
+        content: {
+          requestParams,
+          response,
+        },
+      });
+
       if (
         !response.ok &&
         RETRIABLE_STATUS_CODES.includes(response.status) &&
@@ -95,13 +116,26 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
     } catch (error) {
       if (nextCount <= maxTries) {
         await sleep(RETRY_WAIT_TIME);
-        return httpFetch(params, nextCount, maxTries);
+
+        clientLogger({
+          type: "HTTP-Retry",
+          content: {
+            requestParams,
+            lastResponse: response,
+            retryAttempt: count,
+            maxRetries,
+          },
+        });
+
+        return httpFetch(requestParams, nextCount, maxRetries);
       }
 
       throw new Error(
-        `${ERROR_PREFIX} Exceeded maximum number of ${maxTries} network tries. Last message - ${getErrorMessage(
-          error
-        )}`
+        `${ERROR_PREFIX}${
+          maxRetries > 0
+            ? ` Attempted maximum number of ${maxRetries} network retries. Last message -`
+            : ""
+        } ${getErrorMessage(error)}`
       );
     }
   };
@@ -132,9 +166,8 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
         body,
       },
     ];
-    const maxTries = (overrideRetries ?? retries) + 1;
 
-    return httpFetch(fetchParams, 1, maxTries);
+    return httpFetch(fetchParams, 1, overrideRetries ?? retries);
   };
 
   const request: GraphQLClient["request"] = async (...props) => {
