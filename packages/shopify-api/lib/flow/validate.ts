@@ -23,7 +23,7 @@ export function validateFactory(config: ConfigInterface) {
       fail(FlowValidationErrorReason.MissingBody, config);
     }
 
-    const hmac = getHeader(request.headers, 'hmac');
+    const hmac = getHeader(request.headers, 'x-shopify-hmac-sha256');
 
     if (!hmac) {
       return fail(FlowValidationErrorReason.MissingHmac, config);
