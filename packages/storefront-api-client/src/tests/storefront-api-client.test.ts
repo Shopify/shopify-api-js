@@ -256,7 +256,7 @@ describe("Storefront API Client", () => {
         expect(client.config.storeDomain).toBe(config.storeDomain);
       });
 
-      it("returns a config object that includes the provided public access token, a null private access token and a header property for the public token", () => {
+      it("returns a config object that includes the provided public access token and a null private access token", () => {
         const client = createStorefrontAPIClient(config);
         expect(client.config.publicAccessToken).toBe(config.publicAccessToken);
         expect(client.config.privateAccessToken).toBeNull();
