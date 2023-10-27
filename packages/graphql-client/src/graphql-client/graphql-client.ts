@@ -63,27 +63,18 @@ function validateRetries(retries: number | undefined) {
   }
 }
 
-export function createGraphQLClient<TClientOptions extends ClientOptions>({
-  headers,
-  url,
-  fetchAPI = fetch,
-  retries = 0,
-  logger,
-}: TClientOptions): GraphQLClient {
-  validateRetries(retries);
-
-  const config: ClientConfig = {
-    headers,
-    url,
-    retries,
-  };
-
-  const clientLogger = (logContent: LogContentTypes) => {
+function generateClientLogger(logger: ClientOptions["logger"]) {
+  return (logContent: LogContentTypes) => {
     if (logger) {
       logger(logContent);
     }
   };
+}
 
+function generateHttpFetch(
+  fetchAPI: CustomFetchAPI,
+  clientLogger: (LogContent: LogContentTypes) => void
+) {
   const httpFetch = async (
     requestParams: Parameters<CustomFetchAPI>,
     count: number,
@@ -140,7 +131,14 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
     }
   };
 
-  const fetch: GraphQLClient["fetch"] = async (operation, options = {}) => {
+  return httpFetch;
+}
+
+function generateFetch(
+  httpFetch: ReturnType<typeof generateHttpFetch>,
+  { url, headers, retries }: ClientConfig
+): GraphQLClient["fetch"] {
+  return async (operation, options = {}) => {
     const {
       variables,
       headers: overrideHeaders,
@@ -169,8 +167,12 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
 
     return httpFetch(fetchParams, 1, overrideRetries ?? retries);
   };
+}
 
-  const request: GraphQLClient["request"] = async (...props) => {
+function generateRequest(
+  fetch: ReturnType<typeof generateFetch>
+): GraphQLClient["request"] {
+  return async (...props) => {
     try {
       const response = await fetch(...props);
       const { status, statusText } = response;
@@ -203,6 +205,27 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
       };
     }
   };
+}
+
+export function createGraphQLClient<TClientOptions extends ClientOptions>({
+  headers,
+  url,
+  fetchAPI = fetch,
+  retries = 0,
+  logger,
+}: TClientOptions): GraphQLClient {
+  validateRetries(retries);
+
+  const config: ClientConfig = {
+    headers,
+    url,
+    retries,
+  };
+
+  const clientLogger = generateClientLogger(logger);
+  const httpFetch = generateHttpFetch(fetchAPI, clientLogger);
+  const fetch = generateFetch(httpFetch, config);
+  const request = generateRequest(fetch);
 
   return {
     config,

@@ -69,7 +69,7 @@ export interface ClientOptions {
 export interface ClientConfig {
   readonly headers: ClientOptions["headers"];
   readonly url: ClientOptions["url"];
-  readonly retries: ClientOptions["retries"];
+  readonly retries: Required<ClientOptions>["retries"];
 }
 
 export interface RequestOptions {
