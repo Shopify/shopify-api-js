@@ -7,7 +7,8 @@ import replace from "@rollup/plugin-replace";
 
 import * as pkg from "./package.json";
 
-export const mainSrcInput = "src/index.ts";
+const mainSrcInput = "src/index.ts";
+const clientSrcInput = "src/graphql-client/index.ts";
 
 export function getPlugins({ tsconfig, minify } = {}) {
   return [
@@ -33,7 +34,7 @@ export const bannerConfig = {
 
 const config = [
   {
-    input: mainSrcInput,
+    input: clientSrcInput,
     plugins: getPlugins({
       minify: true,
       tsconfig: "./tsconfig.build.umd.json",
@@ -49,7 +50,7 @@ const config = [
     ],
   },
   {
-    input: mainSrcInput,
+    input: clientSrcInput,
     plugins: getPlugins({
       tsconfig: "./tsconfig.build.umd.json",
     }),

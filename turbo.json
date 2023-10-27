@@ -10,7 +10,8 @@
       ],
       "dependsOn": [
         "^build"
-      ]
+      ],
+      "cache": false
     },
     "test": {},
     "test:ci": {},

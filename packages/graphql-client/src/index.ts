@@ -1,2 +1,2 @@
-export { createGraphQLClient } from "./graphql-client/graphql-client";
-export type * from "./graphql-client/types";
+export * from "./graphql-client";
+export * from "./api-client-utilities";
