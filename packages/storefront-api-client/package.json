@@ -33,7 +33,7 @@
     "lint": "eslint . --ext .js,.ts",
     "build": "yarn run rollup",
     "test": "jest",
-    "test:ci": "yarn build && yarn test",
+    "test:ci": "yarn test",
     "rollup": "rollup -c --bundleConfigAsCjs",
     "clean": "rimraf dist/*",
     "changeset": "changeset",
