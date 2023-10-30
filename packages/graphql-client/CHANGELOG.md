@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.4.0
+
+### Minor Changes
+
+- a491295a: Add common API client specific utilities and types to the package.
+
 ## 0.3.0
 
 ### Minor Changes
