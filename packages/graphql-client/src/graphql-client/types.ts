@@ -31,10 +31,8 @@ export interface ClientResponse<TData = unknown> {
   extensions?: GQLExtensions;
 }
 
-export type LogType = "HTTP-Response" | "HTTP-Retry";
-
 export interface LogContent {
-  type: LogType;
+  type: string;
   content: any;
 }
 
@@ -58,18 +56,22 @@ export interface HTTPRetryLog extends LogContent {
 
 export type LogContentTypes = HTTPResponseLog | HTTPRetryLog;
 
+export type Logger<TLogContentTypes = LogContentTypes> = (
+  logContent: TLogContentTypes
+) => void;
+
 export interface ClientOptions {
   headers: Headers;
   url: string;
   fetchAPI?: CustomFetchAPI;
   retries?: number;
-  logger?: (logContent: LogContentTypes) => void;
+  logger?: Logger;
 }
 
 export interface ClientConfig {
   readonly headers: ClientOptions["headers"];
   readonly url: ClientOptions["url"];
-  readonly retries: ClientOptions["retries"];
+  readonly retries: Required<ClientOptions>["retries"];
 }
 
 export interface RequestOptions {

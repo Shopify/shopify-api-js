@@ -2,7 +2,16 @@
 
 The GraphQL Client can be used to interact with any Shopify's GraphQL APIs. Client users are expected to provide the full API URL and necessary headers.
 
-## Initialization
+
+## Getting Started
+
+To install this package, you can run this in your terminal:
+
+```typescript
+npm install @shopify/graphql-client
+```
+
+## Client initialization
 
 ```typescript
 import {createGraphQLClient} from '@shopify/graphql-client';
