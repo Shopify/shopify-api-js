@@ -1,39 +1,49 @@
 import { APIClientLogger } from "./types";
 
-export { validateRetries } from "../graphql-client/utilities";
+export function validateDomainAndGetStoreUrl({
+  client,
+  storeDomain,
+}: {
+  client: string;
+  storeDomain: string | undefined;
+}) {
+  try {
+    if (!storeDomain || typeof storeDomain !== "string") {
+      throw new Error();
+    }
 
-export function validateRequiredStoreDomain(
-  errorPrefix: string,
-  storeDomain: string | undefined
-) {
-  if (
-    !storeDomain ||
-    typeof storeDomain !== "string" ||
-    storeDomain.trim().length < 1
-  ) {
-    throw new Error(`${errorPrefix} a valid store domain must be provided`);
+    const trimmedDomain = storeDomain.trim();
+
+    const url = trimmedDomain.startsWith("http")
+      ? trimmedDomain
+      : `https://${trimmedDomain}`;
+
+    return new URL(url).origin;
+  } catch (_error) {
+    throw new Error(
+      `${client}: a valid store domain ("${storeDomain}") must be provided`
+    );
   }
 }
 
 export function validateApiVersion({
-  errorPrefix,
+  client,
   currentSupportedApiVersions,
   apiVersion,
   logger,
 }: {
-  errorPrefix: string;
+  client: string;
   currentSupportedApiVersions: string[];
   apiVersion: string;
   logger?: APIClientLogger;
 }) {
-  const supportedVerbage = `Current supported API versions: ${currentSupportedApiVersions.join(
+  const versionError = `${client}: the provided apiVersion ("${apiVersion}")`;
+  const supportedVersion = `Current supported API versions: ${currentSupportedApiVersions.join(
     ", "
   )}`;
 
   if (!apiVersion || typeof apiVersion !== "string") {
-    throw new Error(
-      `${errorPrefix} the provided \`apiVersion\` (\`${apiVersion}\`) is invalid. ${supportedVerbage}`
-    );
+    throw new Error(`${versionError} is invalid. ${supportedVersion}`);
   }
 
   const trimmedApiVersion = apiVersion.trim();
@@ -49,7 +59,7 @@ export function validateApiVersion({
       });
     } else {
       console.warn(
-        `${errorPrefix} the provided \`apiVersion\` (\`${apiVersion}\`) is deprecated or not supported. ${supportedVerbage}`
+        `${versionError} is deprecated or not supported. ${supportedVersion}`
       );
     }
   }

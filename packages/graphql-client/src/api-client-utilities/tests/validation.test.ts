@@ -1,16 +1,18 @@
 import {
-  validateRequiredStoreDomain,
+  validateDomainAndGetStoreUrl,
   validateApiVersion,
 } from "../validations";
 
-const errorPrefix = "Client:";
+const client = "Client:";
 
-describe("validateRequiredStoreDomain())", () => {
+describe("validateDomainAndGetStoreUrl())", () => {
   it("throws an error when store domain is undefined", () => {
     const storeDomain = undefined;
 
-    expect(() => validateRequiredStoreDomain(errorPrefix, storeDomain)).toThrow(
-      new Error(`${errorPrefix} a valid store domain must be provided`)
+    expect(() => validateDomainAndGetStoreUrl({ client, storeDomain })).toThrow(
+      new Error(
+        `${client}: a valid store domain ("${storeDomain}") must be provided`
+      )
     );
   });
 
@@ -18,9 +20,14 @@ describe("validateRequiredStoreDomain())", () => {
     const storeDomain = 123;
 
     expect(() =>
-      validateRequiredStoreDomain(errorPrefix, storeDomain as any)
+      validateDomainAndGetStoreUrl({
+        client,
+        storeDomain: storeDomain as any,
+      })
     ).toThrow(
-      new Error(`${errorPrefix} a valid store domain must be provided`)
+      new Error(
+        `${client}: a valid store domain ("${storeDomain}") must be provided`
+      )
     );
   });
 
@@ -28,18 +35,33 @@ describe("validateRequiredStoreDomain())", () => {
     const storeDomain = "       ";
 
     expect(() =>
-      validateRequiredStoreDomain(errorPrefix, storeDomain as any)
+      validateDomainAndGetStoreUrl({
+        client,
+        storeDomain: storeDomain as any,
+      })
     ).toThrow(
-      new Error(`${errorPrefix} a valid store domain must be provided`)
+      new Error(
+        `${client}: a valid store domain ("${storeDomain}") must be provided`
+      )
     );
   });
 
-  it("does not throw an error when store domain is defined", () => {
-    const storeDomain = "https://test-store.myshopify.com";
+  it("returns the store url when a valid store domain is provided", () => {
+    const domainOnly = "test-store.myshopify.io";
+    const storeDomain = `https://${domainOnly}`;
 
-    expect(() =>
-      validateRequiredStoreDomain(errorPrefix, storeDomain)
-    ).not.toThrow();
+    const domain = validateDomainAndGetStoreUrl({ client, storeDomain });
+    expect(domain).toEqual(storeDomain);
+  });
+
+  it("returns the store url when a protocol-less store domain is provided", () => {
+    const domainOnly = "test-store.myshopify.io";
+
+    const domain = validateDomainAndGetStoreUrl({
+      client,
+      storeDomain: domainOnly,
+    });
+    expect(domain).toEqual(`https://${domainOnly}`);
   });
 });
 
@@ -69,13 +91,13 @@ describe("validateRequiredApiVersion()", () => {
 
     expect(() =>
       validateApiVersion({
-        errorPrefix,
+        client,
         currentSupportedApiVersions: mockApiVersions,
         apiVersion: apiVersion as any,
       })
     ).toThrow(
       new Error(
-        `${errorPrefix} the provided \`apiVersion\` (\`${apiVersion}\`) is invalid. Current supported API versions: ${mockApiVersions.join(
+        `${client}: the provided apiVersion ("${apiVersion}") is invalid. Current supported API versions: ${mockApiVersions.join(
           ", "
         )}`
       )
@@ -87,13 +109,13 @@ describe("validateRequiredApiVersion()", () => {
 
     expect(() =>
       validateApiVersion({
-        errorPrefix,
+        client,
         currentSupportedApiVersions: mockApiVersions,
         apiVersion: apiVersion as any,
       })
     ).toThrow(
       new Error(
-        `${errorPrefix} the provided \`apiVersion\` (\`${apiVersion}\`) is invalid. Current supported API versions: ${mockApiVersions.join(
+        `${client}: the provided apiVersion ("${apiVersion}") is invalid. Current supported API versions: ${mockApiVersions.join(
           ", "
         )}`
       )
@@ -104,13 +126,13 @@ describe("validateRequiredApiVersion()", () => {
     const apiVersion = "   ";
 
     validateApiVersion({
-      errorPrefix,
+      client,
       currentSupportedApiVersions: mockApiVersions,
       apiVersion: apiVersion as any,
     });
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      `${errorPrefix} the provided \`apiVersion\` (\`${apiVersion}\`) is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
+      `${client}: the provided apiVersion ("${apiVersion}") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
         ", "
       )}`
     );
@@ -121,7 +143,7 @@ describe("validateRequiredApiVersion()", () => {
     const logger = jest.fn();
 
     validateApiVersion({
-      errorPrefix,
+      client,
       currentSupportedApiVersions: mockApiVersions,
       apiVersion: apiVersion as any,
       logger,
@@ -143,7 +165,7 @@ describe("validateRequiredApiVersion()", () => {
 
     expect(() =>
       validateApiVersion({
-        errorPrefix,
+        client,
         currentSupportedApiVersions: mockApiVersions,
         apiVersion: apiVersion as any,
       })
