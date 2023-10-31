@@ -1,0 +1,17 @@
+{
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./node_modules"],
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "target": "ES2022",
+    "lib": ["ESNext"],
+    "rootDir": "src",
+    "baseUrl": "src",
+    "strict": true,
+    "pretty": true,
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": true
+  },
+  "extends": "../../tsconfig.base.json",
+}

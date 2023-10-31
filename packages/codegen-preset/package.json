@@ -1,17 +1,16 @@
 {
-  "name": "@shopify/graphql-client",
-  "version": "0.3.0",
-  "description": "Shopify GraphQL Client - A lightweight generic GraphQL JS client to interact with Shopify GraphQL APIs",
+  "name": "@shopify/codegen-preset",
+  "version": "0.0.1",
+  "description": "Preset for graphql-codegen to parse and type queries to Shopify APIs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Shopify/shopify-api-js.git"
   },
   "author": "Shopify",
   "license": "MIT",
-  "main": "./dist/umd/graphql-client.min.js",
-  "browser": "./dist/umd/graphql-client.min.js",
+  "main": "./dist/index.js",
   "module": "./dist/index.mjs",
-  "types": "./dist/graphql-client.d.ts",
+  "types": "./dist/ts/index.d.ts",
   "exports": {
     ".": {
       "module": {
@@ -41,7 +40,6 @@
     "release": "yarn build && changeset publish"
   },
   "jest": {
-    "testEnvironment": "jsdom",
     "setupFilesAfterEnv": [
       "./src/tests/setupTests.ts"
     ],
@@ -54,27 +52,29 @@
   },
   "keywords": [
     "shopify",
-    "node",
+    "codegen",
     "graphql",
     "Admin API",
     "Storefront API"
   ],
   "files": [
-    "**/*.d.ts",
-    "**/*.d.ts.map",
-    "**/*.js",
-    "**/*.js.map",
-    "**/*.mjs",
-    "**/*.mjs.map",
+    "dist",
+    "!dist/tsconfig.build.tsbuildinfo",
     "!node_modules"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/introspection": "^4.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@parcel/watcher": "^2.3.0",
+    "@shopify/hydrogen-codegen": "^0.1.0",
+    "graphql": "^16.8.1"
+  },
   "devDependencies": {
-    "jest-environment-jsdom": "^29.5.0",
-    "web-streams-polyfill": "^3.2.1"
+    "regenerator-runtime": "^0.14.0"
   },
   "bugs": {
     "url": "https://github.com/Shopify/shopify-api-js/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify-api-js/packages/graphql-client#readme"
+  "homepage": "https://github.com/Shopify/shopify-api-js/packages/codegen-preset#readme"
 }
