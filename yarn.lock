@@ -2084,10 +2084,10 @@
     pkg-dir "^5.0.0"
     pluralize "^8.0.0"
 
-"@shopify/graphql-client@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/@shopify/graphql-client/-/graphql-client-0.3.0.tgz#1789ceb92f15aee49aa7ff27b1eae6396c4dd1aa"
-  integrity sha512-xkSx9ahiGW3bf40SrN9wANBVV4IiBhH9RIKGoni8YY/iMXxZh2jkg7TX1Y6Qpqsxg/9te+F1WBKjc0OF8pcA5w==
+"@shopify/graphql-client@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.npmjs.org/@shopify/graphql-client/-/graphql-client-0.4.0.tgz#7892dc6131971e2bc6c79c8400472aed0b476791"
+  integrity sha512-Pr/IcwuI/Vt9Z7bGt8ufqYnnuyVJYKLwbrI+bvJJs9ooC18kjTu3cZ203/KewnZ3m5fdQGXJmvPl8A/2RuEoTw==
 
 "@shopify/network@^3.2.1":
   version "3.2.1"

@@ -68,7 +68,7 @@
     "!node_modules"
   ],
   "dependencies": {
-    "@shopify/graphql-client": "^0.3.0"
+    "@shopify/graphql-client": "^0.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",

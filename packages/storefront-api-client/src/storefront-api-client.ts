@@ -2,6 +2,10 @@ import {
   createGraphQLClient,
   CustomFetchAPI,
   RequestParams as GQLClientRequestParams,
+  getCurrentSupportedAPIVersions,
+  validateRequiredStoreDomain,
+  validateApiVersion,
+  getDomain,
 } from "@shopify/graphql-client";
 
 import {
@@ -18,16 +22,12 @@ import {
   DEFAULT_CONTENT_TYPE,
   PUBLIC_ACCESS_TOKEN_HEADER,
   PRIVATE_ACCESS_TOKEN_HEADER,
+  ERROR_PREFIX,
 } from "./constants";
 import {
-  getCurrentSupportedAPIVersions,
-  validateRequiredStoreDomain,
   validateRequiredAccessTokens,
   validatePrivateAccessTokenUsage,
-  validateApiVersion,
-} from "./utilities";
-
-const httpRegEx = new RegExp("^(https?:)?//");
+} from "./validations";
 
 export function createStorefrontAPIClient({
   storeDomain,
@@ -51,32 +51,35 @@ export function createStorefrontAPIClient({
       privateAccessToken?: never;
     }
 )): StorefrontAPIClient {
-  const currentSupportedAPIVersions = getCurrentSupportedAPIVersions();
+  const currentSupportedApiVersions = getCurrentSupportedAPIVersions();
 
-  validateRequiredStoreDomain(storeDomain);
-  validateApiVersion(currentSupportedAPIVersions, apiVersion);
+  validateRequiredStoreDomain(ERROR_PREFIX, storeDomain);
+  validateApiVersion({
+    errorPrefix: ERROR_PREFIX,
+    currentSupportedApiVersions,
+    apiVersion,
+  });
   validateRequiredAccessTokens(publicAccessToken, privateAccessToken);
   validatePrivateAccessTokenUsage(privateAccessToken);
 
-  const trimmedStoreDomain = storeDomain.trim();
-  const cleanedStoreDomain = httpRegEx.test(trimmedStoreDomain)
-    ? trimmedStoreDomain.substring(trimmedStoreDomain.indexOf("//") + 2)
-    : trimmedStoreDomain;
+  const cleanedStoreDomain = getDomain(storeDomain);
 
   const generateApiUrl = (version?: string) => {
     if (version) {
-      validateApiVersion(currentSupportedAPIVersions, version);
+      validateApiVersion({
+        errorPrefix: ERROR_PREFIX,
+        currentSupportedApiVersions,
+        apiVersion: version,
+      });
     }
 
     const urlApiVersion = (version ?? apiVersion).trim();
 
-    return `https://${cleanedStoreDomain}${
-      cleanedStoreDomain.endsWith("/") ? "" : "/"
-    }api/${urlApiVersion}/graphql.json`;
+    return `https://${cleanedStoreDomain}/api/${urlApiVersion}/graphql.json`;
   };
 
   const config: SFAPIClientConfig = {
-    storeDomain: trimmedStoreDomain,
+    storeDomain: cleanedStoreDomain,
     apiVersion,
     publicAccessToken: publicAccessToken ?? null,
     privateAccessToken: privateAccessToken ?? null,
