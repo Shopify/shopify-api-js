@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.5.0
+
+### Minor Changes
+
+- 326520ce: Consolidated and standardized the common API client domain and validation utility functions.
+
 ## 0.4.0
 
 ### Minor Changes
