@@ -7,11 +7,11 @@ import {
   Logger,
   LogContentTypes,
 } from "./types";
-import { ERROR_PREFIX } from "./constants";
+import { CLIENT } from "./constants";
 import { getErrorMessage, validateRetries } from "./utilities";
 
-const GQL_API_ERROR = `${ERROR_PREFIX} An error occurred while fetching from the API. Review 'graphQLErrors' for details.`;
-const UNEXPECTED_CONTENT_TYPE_ERROR = `${ERROR_PREFIX} Response returned unexpected Content-Type:`;
+const GQL_API_ERROR = `${CLIENT}: An error occurred while fetching from the API. Review 'graphQLErrors' for details.`;
+const UNEXPECTED_CONTENT_TYPE_ERROR = `${CLIENT}: Response returned unexpected Content-Type:`;
 
 const CONTENT_TYPES = {
   json: "application/json",
@@ -28,7 +28,7 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
   retries = 0,
   logger,
 }: TClientOptions): GraphQLClient {
-  validateRetries(retries);
+  validateRetries({ client: CLIENT, retries });
 
   const config: ClientConfig = {
     headers,
@@ -65,7 +65,7 @@ async function processJSONResponse<TData = any>(
         networkStatusCode: response.status,
         message: errors
           ? GQL_API_ERROR
-          : `${ERROR_PREFIX} An unknown error has occurred. The API did not return a data object or any errors in its response.`,
+          : `${CLIENT}: An unknown error has occurred. The API did not return a data object or any errors in its response.`,
         ...(errors ? { graphQLErrors: errors } : {}),
       },
       ...responseExtensions,
@@ -133,7 +133,7 @@ function generateHttpFetch(fetchAPI: CustomFetchAPI, clientLogger: Logger) {
       }
 
       throw new Error(
-        `${ERROR_PREFIX}${
+        `${CLIENT}:${
           maxRetries > 0
             ? ` Attempted maximum number of ${maxRetries} network retries. Last message -`
             : ""
@@ -162,7 +162,7 @@ function generateFetch(
       variables,
     });
 
-    validateRetries(overrideRetries);
+    validateRetries({ client: CLIENT, retries: overrideRetries });
 
     const fetchParams: Parameters<CustomFetchAPI> = [
       overrideUrl ?? url,
