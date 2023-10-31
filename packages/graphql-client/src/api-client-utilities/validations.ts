@@ -18,9 +18,7 @@ export function validateDomainAndGetStoreUrl({
       ? trimmedDomain
       : `https://${trimmedDomain}`;
 
-    const { host: domain } = new URL(url);
-
-    return `https://${domain}`;
+    return new URL(url).origin;
   } catch (_error) {
     throw new Error(
       `${client}: a valid store domain ("${storeDomain}") must be provided`
