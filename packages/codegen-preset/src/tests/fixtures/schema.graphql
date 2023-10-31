@@ -1,0 +1,16 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  testQuery: QueryResponse
+}
+
+type Mutation {
+  testMutation(input: Int!): QueryResponse
+}
+
+type QueryResponse {
+  test: String
+}
