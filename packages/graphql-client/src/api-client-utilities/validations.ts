@@ -14,11 +14,14 @@ export function validateDomainAndGetStoreUrl({
 
     const trimmedDomain = storeDomain.trim();
 
-    const url = trimmedDomain.startsWith("http")
+    const protocolUrl = trimmedDomain.startsWith("http")
       ? trimmedDomain
       : `https://${trimmedDomain}`;
 
-    return new URL(url).origin;
+    const url = new URL(protocolUrl);
+    url.protocol = "https";
+
+    return url.origin;
   } catch (_error) {
     throw new Error(
       `${client}: a valid store domain ("${storeDomain}") must be provided`
