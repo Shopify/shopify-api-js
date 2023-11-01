@@ -63,6 +63,16 @@ describe("validateDomainAndGetStoreUrl())", () => {
     });
     expect(domain).toEqual(`https://${domainOnly}`);
   });
+
+  it("returns a secure store url when a http protocol store domain is provided", () => {
+    const domainOnly = "test-store.myshopify.io";
+
+    const domain = validateDomainAndGetStoreUrl({
+      client,
+      storeDomain: `http://${domainOnly}`,
+    });
+    expect(domain).toEqual(`https://${domainOnly}`);
+  });
 });
 
 describe("validateRequiredApiVersion()", () => {
