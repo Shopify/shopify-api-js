@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.5.1
+
+### Patch Changes
+
+- e28c2663: Fixed "validateDomainAndGetStoreUrl()" to always return a secure (i.e. "https") store URL
+
 ## 0.5.0
 
 ### Minor Changes
