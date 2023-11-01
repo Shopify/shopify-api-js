@@ -2084,11 +2084,6 @@
     pkg-dir "^5.0.0"
     pluralize "^8.0.0"
 
-"@shopify/graphql-client@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/@shopify/graphql-client/-/graphql-client-0.4.0.tgz#7892dc6131971e2bc6c79c8400472aed0b476791"
-  integrity sha512-Pr/IcwuI/Vt9Z7bGt8ufqYnnuyVJYKLwbrI+bvJJs9ooC18kjTu3cZ203/KewnZ3m5fdQGXJmvPl8A/2RuEoTw==
-
 "@shopify/network@^3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@shopify/network/-/network-3.2.1.tgz#c51590bb9ccd177bb7a35c2bad482233198d215b"

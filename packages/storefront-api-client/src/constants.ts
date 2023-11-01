@@ -9,4 +9,4 @@ export const SDK_VARIANT_HEADER = "X-SDK-Variant";
 export const SDK_VERSION_HEADER = "X-SDK-Version";
 export const SDK_VARIANT_SOURCE_HEADER = "X-SDK-Variant-Source";
 
-export const ERROR_PREFIX = "Storefront API Client:";
+export const CLIENT = "Storefront API Client";

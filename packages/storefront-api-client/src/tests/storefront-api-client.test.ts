@@ -1,7 +1,7 @@
 import { createGraphQLClient, GraphQLClient } from "@shopify/graphql-client";
-import { StorefrontAPIClient } from "types";
 
 import { createStorefrontAPIClient } from "../storefront-api-client";
+import { StorefrontAPIClient } from "../types";
 import {
   SDK_VARIANT_HEADER,
   DEFAULT_SDK_VARIANT,
@@ -107,12 +107,11 @@ describe("Storefront API Client", () => {
           expect(() =>
             createStorefrontAPIClient({
               ...config,
-              // @ts-ignore
-              storeDomain: undefined,
+              storeDomain: undefined as any,
             })
           ).toThrow(
             new Error(
-              "Storefront API Client: a valid store domain must be provided"
+              'Storefront API Client: a valid store domain ("undefined") must be provided'
             )
           );
         });
@@ -121,12 +120,11 @@ describe("Storefront API Client", () => {
           expect(() =>
             createStorefrontAPIClient({
               ...config,
-              // @ts-ignore
               storeDomain: "   ",
             })
           ).toThrow(
             new Error(
-              "Storefront API Client: a valid store domain must be provided"
+              'Storefront API Client: a valid store domain ("   ") must be provided'
             )
           );
         });
@@ -135,12 +133,11 @@ describe("Storefront API Client", () => {
           expect(() =>
             createStorefrontAPIClient({
               ...config,
-              // @ts-ignore
-              storeDomain: 123,
+              storeDomain: 123 as any,
             })
           ).toThrow(
             new Error(
-              "Storefront API Client: a valid store domain must be provided"
+              'Storefront API Client: a valid store domain ("123") must be provided'
             )
           );
         });
@@ -153,7 +150,7 @@ describe("Storefront API Client", () => {
             })
           ).toThrow(
             new Error(
-              `Storefront API Client: the provided \`apiVersion\` (\`undefined\`) is invalid. Current supported API versions: ${mockApiVersions.join(
+              `Storefront API Client: the provided apiVersion ("undefined") is invalid. Current supported API versions: ${mockApiVersions.join(
                 ", "
               )}`
             )
@@ -164,12 +161,11 @@ describe("Storefront API Client", () => {
           expect(() =>
             createStorefrontAPIClient({
               ...config,
-              // @ts-ignore
-              apiVersion: { year: 2022, month: 1 },
+              apiVersion: { year: 2022, month: 1 } as any,
             })
           ).toThrow(
             new Error(
-              `Storefront API Client: the provided \`apiVersion\` (\`[object Object]\`) is invalid. Current supported API versions: ${mockApiVersions.join(
+              `Storefront API Client: the provided apiVersion ("[object Object]") is invalid. Current supported API versions: ${mockApiVersions.join(
                 ", "
               )}`
             )
@@ -187,7 +183,7 @@ describe("Storefront API Client", () => {
           });
 
           expect(consoleWarnSpy).toHaveBeenCalledWith(
-            `Storefront API Client: the provided \`apiVersion\` (\`2022-07\`) is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
+            `Storefront API Client: the provided apiVersion ("2022-07") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
               ", "
             )}`
           );
@@ -195,10 +191,9 @@ describe("Storefront API Client", () => {
 
         it("throws an error when neither public and private access tokens are provided", () => {
           expect(() =>
-            // @ts-ignore
             createStorefrontAPIClient({
               ...config,
-              publicAccessToken: undefined,
+              publicAccessToken: undefined as any,
             })
           ).toThrow(
             new Error(
@@ -209,10 +204,9 @@ describe("Storefront API Client", () => {
 
         it("throws an error when a private access token is provided in a browser environment (window is defined)", () => {
           expect(() =>
-            // @ts-ignore
             createStorefrontAPIClient({
               ...config,
-              publicAccessToken: undefined,
+              publicAccessToken: undefined as any,
               privateAccessToken: "private-access-token",
             })
           ).toThrow(
@@ -228,11 +222,10 @@ describe("Storefront API Client", () => {
             .mockImplementation(() => undefined as any);
 
           expect(() =>
-            // @ts-ignore
             createStorefrontAPIClient({
               ...config,
               privateAccessToken: "private-token",
-            })
+            } as any)
           ).toThrow(
             new Error(
               `Storefront API Client: only provide either a public or private access token`
@@ -247,7 +240,7 @@ describe("Storefront API Client", () => {
     describe("client config", () => {
       it("returns a config object that includes the provided store domain", () => {
         const client = createStorefrontAPIClient(config);
-        expect(client.config.storeDomain).toBe(domain);
+        expect(client.config.storeDomain).toBe(`https://${domain}`);
       });
 
       it("returns a config object that includes the provided public access token and a null private access token", () => {
@@ -301,22 +294,22 @@ describe("Storefront API Client", () => {
           expect(client.config.apiUrl).toBe(expectedAPIUrl);
         });
 
-        // it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that does not include a protocol", () => {
-        //   const client = createStorefrontAPIClient({
-        //     ...config,
-        //     storeDomain: cleanedStoreDomain,
-        //   });
-        //   expect(client.config.apiUrl).toBe(expectedAPIUrl);
-        // });
+        it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that does not include a protocol", () => {
+          const client = createStorefrontAPIClient({
+            ...config,
+            storeDomain: cleanedStoreDomain,
+          });
+          expect(client.config.apiUrl).toBe(expectedAPIUrl);
+        });
 
-        // it("returns a config object that includes a valid API url constructed with the provided spaced out API version and a store domain", () => {
-        //   const client = createStorefrontAPIClient({
-        //     ...config,
-        //     storeDomain: ` ${cleanedStoreDomain}   `,
-        //     apiVersion: ` ${config.apiVersion}   `,
-        //   });
-        //   expect(client.config.apiUrl).toBe(expectedAPIUrl);
-        // });
+        it("returns a config object that includes a valid API url constructed with the provided spaced out API version and a store domain", () => {
+          const client = createStorefrontAPIClient({
+            ...config,
+            storeDomain: ` ${cleanedStoreDomain}   `,
+            apiVersion: ` ${config.apiVersion}   `,
+          });
+          expect(client.config.apiUrl).toBe(expectedAPIUrl);
+        });
       });
 
       describe("config headers", () => {
@@ -434,12 +427,9 @@ describe("Storefront API Client", () => {
 
       it("throws an error when the api version is not a string", () => {
         const version = 123;
-        expect(() =>
-          // @ts-ignore
-          client.getApiUrl(version)
-        ).toThrow(
+        expect(() => client.getApiUrl(version as any)).toThrow(
           new Error(
-            `Storefront API Client: the provided \`apiVersion\` (\`123\`) is invalid. Current supported API versions: ${mockApiVersions.join(
+            `Storefront API Client: the provided apiVersion ("123") is invalid. Current supported API versions: ${mockApiVersions.join(
               ", "
             )}`
           )
@@ -455,7 +445,7 @@ describe("Storefront API Client", () => {
         client.getApiUrl(version);
 
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          `Storefront API Client: the provided \`apiVersion\` (\`2021-01\`) is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
+          `Storefront API Client: the provided apiVersion ("2021-01") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
             ", "
           )}`
         );

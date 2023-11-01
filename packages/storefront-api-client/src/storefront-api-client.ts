@@ -3,9 +3,8 @@ import {
   CustomFetchAPI,
   RequestParams as GQLClientRequestParams,
   getCurrentSupportedAPIVersions,
-  validateRequiredStoreDomain,
+  validateDomainAndGetStoreUrl,
   validateApiVersion,
-  getDomain,
 } from "@shopify/graphql-client";
 
 import {
@@ -22,7 +21,7 @@ import {
   DEFAULT_CONTENT_TYPE,
   PUBLIC_ACCESS_TOKEN_HEADER,
   PRIVATE_ACCESS_TOKEN_HEADER,
-  ERROR_PREFIX,
+  CLIENT,
 } from "./constants";
 import {
   validateRequiredAccessTokens,
@@ -53,21 +52,22 @@ export function createStorefrontAPIClient({
 )): StorefrontAPIClient {
   const currentSupportedApiVersions = getCurrentSupportedAPIVersions();
 
-  validateRequiredStoreDomain(ERROR_PREFIX, storeDomain);
+  const storeUrl = validateDomainAndGetStoreUrl({
+    client: CLIENT,
+    storeDomain,
+  });
   validateApiVersion({
-    errorPrefix: ERROR_PREFIX,
+    client: CLIENT,
     currentSupportedApiVersions,
     apiVersion,
   });
   validateRequiredAccessTokens(publicAccessToken, privateAccessToken);
   validatePrivateAccessTokenUsage(privateAccessToken);
 
-  const cleanedStoreDomain = getDomain(storeDomain);
-
   const generateApiUrl = (version?: string) => {
     if (version) {
       validateApiVersion({
-        errorPrefix: ERROR_PREFIX,
+        client: CLIENT,
         currentSupportedApiVersions,
         apiVersion: version,
       });
@@ -75,11 +75,11 @@ export function createStorefrontAPIClient({
 
     const urlApiVersion = (version ?? apiVersion).trim();
 
-    return `https://${cleanedStoreDomain}/api/${urlApiVersion}/graphql.json`;
+    return `${storeUrl}/api/${urlApiVersion}/graphql.json`;
   };
 
   const config: SFAPIClientConfig = {
-    storeDomain: cleanedStoreDomain,
+    storeDomain: storeUrl,
     apiVersion,
     publicAccessToken: publicAccessToken ?? null,
     privateAccessToken: privateAccessToken ?? null,
