@@ -21,13 +21,13 @@ const CONTENT_TYPES = {
 const RETRY_WAIT_TIME = 1000;
 const RETRIABLE_STATUS_CODES = [429, 503];
 
-export function createGraphQLClient<TClientOptions extends ClientOptions>({
+export function createGraphQLClient({
   headers,
   url,
   fetchApi = fetch,
   retries = 0,
   logger,
-}: TClientOptions): GraphQLClient {
+}: ClientOptions): GraphQLClient {
   validateRetries({ client: CLIENT, retries });
 
   const config: ClientConfig = {
