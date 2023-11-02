@@ -1,4 +1,4 @@
-export type CustomFetchAPI = (
+export type CustomFetchApi = (
   url: string,
   init?: {
     method?: string;
@@ -15,7 +15,7 @@ export interface Headers {
   [key: string]: string;
 }
 
-export interface ResponseError {
+export interface ResponseErrors {
   networkStatusCode?: number;
   message?: string;
   graphQLErrors?: any[];
@@ -27,7 +27,7 @@ export interface GQLExtensions {
 
 export interface ClientResponse<TData = unknown> {
   data?: TData;
-  error?: ResponseError;
+  errors?: ResponseErrors;
   extensions?: GQLExtensions;
 }
 
@@ -39,7 +39,7 @@ export interface LogContent {
 export interface HTTPResponseLog extends LogContent {
   type: "HTTP-Response";
   content: {
-    requestParams: Parameters<CustomFetchAPI>;
+    requestParams: Parameters<CustomFetchApi>;
     response: Response;
   };
 }
@@ -47,7 +47,7 @@ export interface HTTPResponseLog extends LogContent {
 export interface HTTPRetryLog extends LogContent {
   type: "HTTP-Retry";
   content: {
-    requestParams: Parameters<CustomFetchAPI>;
+    requestParams: Parameters<CustomFetchApi>;
     lastResponse?: Response;
     retryAttempt: number;
     maxRetries: number;
@@ -63,7 +63,7 @@ export type Logger<TLogContentTypes = LogContentTypes> = (
 export interface ClientOptions {
   headers: Headers;
   url: string;
-  fetchAPI?: CustomFetchAPI;
+  fetchApi?: CustomFetchApi;
   retries?: number;
   logger?: Logger;
 }

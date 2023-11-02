@@ -1,4 +1,4 @@
-import { APIClientLogger } from "./types";
+import { ApiClientLogger } from "./types";
 
 export function validateDomainAndGetStoreUrl({
   client,
@@ -38,7 +38,7 @@ export function validateApiVersion({
   client: string;
   currentSupportedApiVersions: string[];
   apiVersion: string;
-  logger?: APIClientLogger;
+  logger?: ApiClientLogger;
 }) {
   const versionError = `${client}: the provided apiVersion ("${apiVersion}")`;
   const supportedVersion = `Current supported API versions: ${currentSupportedApiVersions.join(

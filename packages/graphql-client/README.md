@@ -30,10 +30,10 @@ const client = createGraphQLClient({
 
 | Property | Type                     | Description                        |
 | -------- | ------------------------ | ---------------------------------- |
-| url      | `string`                 | The Storefront API URL             |
+| url      | `string`                 | The GraphQL API URL             |
 | headers  | `{[key: string]: string}` | Headers to be included in requests |
 | retries?  | `number` | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. Maximum value is `3`. |
-| fetchAPI?  | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
+| fetchApi?  | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
 | logger?  | `(logContent: `[HTTPResponseLog](#httpresponselog)`\|`[HTTPRetryLog](#httpretrylog)`) => void` | A logger function that accepts [log content objects](#log-content-types). This logger will be called in certain conditions with contextual information.  |
 
 ## Client properties
@@ -58,10 +58,10 @@ const client = createGraphQLClient({
 | Name        | Type                  | Description                                                                                                                                                                                         |
 | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data?       | `TData \| any`        | Data returned from the GraphQL API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                             |
-| error?      | [ResponseError](#responseerror)       | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
+| errors?      | [ResponseErrors](#responseerrors)       | Errors object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
 | extensions? | `{[key: string]: any}` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the context settings used to generate the returned API response. |
 
-## `ResponseError`
+## `ResponseErrors`
 
 | Name        | Type                  | Description                                                                                                                                                                                         |
 | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -85,14 +85,14 @@ const productQuery = `
   }
 `;
 
-const {data, error, extensions} = await client.request(productQuery, {
+const {data, errors, extensions} = await client.request(productQuery, {
   variables: {
     handle: 'sample-product',
   },
 });
 ```
 
-### Add custom headers to the API request
+### Add additional custom headers to the API request
 
 ```typescript
 const productQuery = `
@@ -105,7 +105,7 @@ const productQuery = `
   }
 `;
 
-const {data, error, extensions} = await client.request(productQuery, {
+const {data, errors, extensions} = await client.request(productQuery, {
   variables: {
     handle: 'sample-product',
   },
@@ -128,7 +128,7 @@ const productQuery = `
   }
 `;
 
-const {data, error, extensions} = await client.request(productQuery, {
+const {data, errors, extensions} = await client.request(productQuery, {
   variables: {
     handle: 'sample-product',
   },
@@ -149,7 +149,7 @@ const shopQuery = `
 `;
 
 // Will retry the HTTP request to the server 2 times if the requests were abandoned or the server responded with a 429 or 503 error
-const {data, error, extensions} = await client.request(shopQuery, {
+const {data, errors, extensions} = await client.request(shopQuery, {
   retries: 2,
 });
 ```
@@ -163,7 +163,7 @@ import {print} from 'graphql/language';
 import {CollectionQuery} from 'types/appTypes';
 import collectionQuery from './collectionQuery.graphql';
 
-const {data, error, extensions} = await client.request<CollectionQuery>(
+const {data, errors, extensions} = await client.request<CollectionQuery>(
   print(collectionQuery),
   {
     variables: {
