@@ -3,7 +3,6 @@ import {
   CustomFetchAPI,
   RequestParams as GQLClientRequestParams,
   getCurrentSupportedAPIVersions,
-  validateDomainAndGetStoreUrl,
   validateApiVersion,
 } from "@shopify/graphql-client";
 
