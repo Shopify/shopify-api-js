@@ -9,15 +9,7 @@ import {
   AdminAPIClientConfig,
   AdminAPIClientRequestOptions,
 } from "./types";
-import {
-  DEFAULT_SDK_VARIANT,
-  DEFAULT_CLIENT_VERSION,
-  SDK_VARIANT_HEADER,
-  SDK_VARIANT_SOURCE_HEADER,
-  SDK_VERSION_HEADER,
-  DEFAULT_CONTENT_TYPE,
-  ACCESS_TOKEN_HEADER,
-} from "./constants";
+import { DEFAULT_CONTENT_TYPE, ACCESS_TOKEN_HEADER } from "./constants";
 import {
   getCurrentSupportedAPIVersions,
   validateRequiredStoreDomain,
@@ -72,9 +64,6 @@ export function createAdminAPIClient({
     headers: {
       "Content-Type": DEFAULT_CONTENT_TYPE,
       Accept: DEFAULT_CONTENT_TYPE,
-      [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-      [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-      ...(clientName ? { [SDK_VARIANT_SOURCE_HEADER]: clientName } : {}),
       [ACCESS_TOKEN_HEADER]: accessToken,
     },
     apiUrl: generateApiUrl(),
