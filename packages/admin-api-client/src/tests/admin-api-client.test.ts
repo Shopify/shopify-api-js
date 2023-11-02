@@ -2,15 +2,7 @@ import { createGraphQLClient, GraphQLClient } from "@shopify/graphql-client";
 import { AdminAPIClient } from "types";
 
 import { createAdminAPIClient } from "../admin-api-client";
-import {
-  SDK_VARIANT_HEADER,
-  DEFAULT_SDK_VARIANT,
-  SDK_VERSION_HEADER,
-  DEFAULT_CLIENT_VERSION,
-  SDK_VARIANT_SOURCE_HEADER,
-  ACCESS_TOKEN_HEADER,
-  DEFAULT_CONTENT_TYPE,
-} from "../constants";
+import { ACCESS_TOKEN_HEADER, DEFAULT_CONTENT_TYPE } from "../constants";
 
 const mockApiVersions = [
   "2023-01",
@@ -74,9 +66,6 @@ describe("Admin API Client", () => {
           "Content-Type": "application/json",
           Accept: "application/json",
           "X-Shopify-Access-Token": "access-token",
-          [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-          [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-          [SDK_VARIANT_SOURCE_HEADER]: clientName,
         });
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
@@ -295,41 +284,11 @@ describe("Admin API Client", () => {
           expect(client.config.headers.Accept).toBe(DEFAULT_CONTENT_TYPE);
         });
 
-        it("returns a header object that includes the SDK variant header", () => {
-          const client = createAdminAPIClient(config);
-          expect(client.config.headers[SDK_VARIANT_HEADER]).toBe(
-            DEFAULT_SDK_VARIANT
-          );
-        });
-
-        it("returns a header object that includes the SDK version header", () => {
-          const client = createAdminAPIClient(config);
-          expect(client.config.headers[SDK_VERSION_HEADER]).toBe(
-            DEFAULT_CLIENT_VERSION
-          );
-        });
-
         it("returns a header object that includes the access token headers when an access token is provided", () => {
           const client = createAdminAPIClient(config);
           expect(client.config.headers[ACCESS_TOKEN_HEADER]).toEqual(
             config.accessToken
           );
-        });
-
-        it("returns a header object that includes the SDK variant source header when client name is provided", () => {
-          const clientName = "test-client";
-
-          const client = createAdminAPIClient({ ...config, clientName });
-          expect(client.config.headers[SDK_VARIANT_SOURCE_HEADER]).toEqual(
-            clientName
-          );
-        });
-
-        it("returns a header object that does not include the SDK variant source header when client name is not provided", () => {
-          const client = createAdminAPIClient(config);
-          expect(
-            client.config.headers[SDK_VARIANT_SOURCE_HEADER]
-          ).toBeUndefined();
         });
       });
     });
