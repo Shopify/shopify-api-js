@@ -2,6 +2,9 @@ import {
   createGraphQLClient,
   CustomFetchAPI,
   RequestParams as GQLClientRequestParams,
+  getCurrentSupportedAPIVersions,
+  validateDomainAndGetStoreUrl,
+  validateApiVersion,
 } from "@shopify/graphql-client";
 
 import {
@@ -9,14 +12,12 @@ import {
   AdminAPIClientConfig,
   AdminAPIClientRequestOptions,
 } from "./types";
-import { DEFAULT_CONTENT_TYPE, ACCESS_TOKEN_HEADER } from "./constants";
+import { DEFAULT_CONTENT_TYPE, ACCESS_TOKEN_HEADER, CLIENT } from "./constants";
 import {
-  getCurrentSupportedAPIVersions,
   validateRequiredStoreDomain,
   validateRequiredAccessToken,
-  validateApiVersion,
   validateServerSideUsage,
-} from "./utilities";
+} from "./validations";
 
 const httpRegEx = new RegExp("^(https?:)?//");
 
@@ -33,11 +34,15 @@ export function createAdminAPIClient({
   clientName?: string;
   customFetchAPI?: CustomFetchAPI;
 }): AdminAPIClient {
-  const currentSupportedAPIVersions = getCurrentSupportedAPIVersions();
+  const currentSupportedApiVersions = getCurrentSupportedAPIVersions();
 
   validateServerSideUsage();
   validateRequiredStoreDomain(storeDomain);
-  validateApiVersion(currentSupportedAPIVersions, apiVersion);
+  validateApiVersion({
+    client: CLIENT,
+    currentSupportedApiVersions,
+    apiVersion,
+  });
   validateRequiredAccessToken(accessToken);
 
   const trimmedStoreDomain = storeDomain.trim();
@@ -47,7 +52,11 @@ export function createAdminAPIClient({
 
   const generateApiUrl = (version?: string) => {
     if (version) {
-      validateApiVersion(currentSupportedAPIVersions, version);
+      validateApiVersion({
+        client: CLIENT,
+        currentSupportedApiVersions,
+        apiVersion: version,
+      });
     }
 
     const urlApiVersion = (version ?? apiVersion).trim();
