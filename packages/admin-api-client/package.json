@@ -9,7 +9,6 @@
   "author": "Shopify",
   "license": "MIT",
   "main": "./dist/umd/admin-api-client.min.js",
-  "browser": "./dist/umd/admin-api-client.min.js",
   "module": "./dist/index.mjs",
   "types": "./dist/admin-api-client.d.ts",
   "exports": {
