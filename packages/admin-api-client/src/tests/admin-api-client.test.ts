@@ -13,13 +13,6 @@ const mockApiVersions = [
   "unstable",
 ];
 
-jest.mock("../utilities/api-versions", () => {
-  return {
-    ...jest.requireActual("../utilities/api-versions"),
-    getCurrentSupportedAPIVersions: () => mockApiVersions,
-  };
-});
-
 jest.mock("@shopify/graphql-client", () => {
   return {
     ...jest.requireActual("@shopify/graphql-client"),
