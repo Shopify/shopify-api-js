@@ -50,15 +50,32 @@ describe("Admin API Client", () => {
 
     describe("client initialization", () => {
       it("calls the graphql client with headers and API URL", () => {
-        const clientName = "test-client";
-
-        createAdminAPIClient({ ...config, clientName });
+        createAdminAPIClient({ ...config });
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
         ).toHaveProperty("headers", {
           "Content-Type": "application/json",
           Accept: "application/json",
           "X-Shopify-Access-Token": "access-token",
+          "User-Agent": "Admin API Client vROLLUP_REPLACE_CLIENT_VERSION",
+        });
+        expect(
+          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+        ).toHaveProperty("url", mockApiUrl);
+      });
+
+      it("Prepends user agent prefix if supplied", () => {
+        const userAgentPrefix = "test-UAP";
+
+        createAdminAPIClient({ ...config, userAgentPrefix });
+        expect(
+          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+        ).toHaveProperty("headers", {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Shopify-Access-Token": "access-token",
+          "User-Agent":
+            "test-UAP | Admin API Client vROLLUP_REPLACE_CLIENT_VERSION",
         });
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
@@ -196,11 +213,11 @@ describe("Admin API Client", () => {
         expect(client.config.accessToken).toBe(config.accessToken);
       });
 
-      it("returns a config object that includes the provided client name", () => {
-        const clientName = "test-client";
+      it("returns a config object that includes the provided user agent prefix", () => {
+        const userAgentPrefix = "test-UAP";
 
-        const client = createAdminAPIClient({ ...config, clientName });
-        expect(client.config.clientName).toBe(clientName);
+        const client = createAdminAPIClient({ ...config, userAgentPrefix });
+        expect(client.config.userAgentPrefix).toBe(userAgentPrefix);
       });
 
       describe("API url", () => {

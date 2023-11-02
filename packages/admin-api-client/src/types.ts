@@ -11,7 +11,7 @@ export interface AdminAPIClientConfig {
   readonly accessToken: string;
   readonly headers: Headers;
   readonly apiUrl: string;
-  readonly clientName?: string;
+  readonly userAgentPrefix?: string;
   readonly retries?: number;
 }
 
