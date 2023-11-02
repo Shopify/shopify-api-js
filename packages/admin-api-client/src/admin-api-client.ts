@@ -11,7 +11,12 @@ import {
   AdminAPIClientConfig,
   AdminAPIClientRequestOptions,
 } from "./types";
-import { DEFAULT_CONTENT_TYPE, ACCESS_TOKEN_HEADER, CLIENT } from "./constants";
+import {
+  DEFAULT_CONTENT_TYPE,
+  ACCESS_TOKEN_HEADER,
+  CLIENT,
+  DEFAULT_CLIENT_VERSION,
+} from "./constants";
 import {
   validateRequiredStoreDomain,
   validateRequiredAccessToken,
@@ -24,13 +29,13 @@ export function createAdminAPIClient({
   storeDomain,
   apiVersion,
   accessToken,
-  clientName,
+  userAgentPrefix,
   customFetchAPI: clientFetchAPI,
 }: {
   storeDomain: string;
   apiVersion: string;
   accessToken: string;
-  clientName?: string;
+  userAgentPrefix?: string;
   customFetchAPI?: CustomFetchAPI;
 }): AdminAPIClient {
   const currentSupportedApiVersions = getCurrentSupportedAPIVersions();
@@ -73,9 +78,12 @@ export function createAdminAPIClient({
       "Content-Type": DEFAULT_CONTENT_TYPE,
       Accept: DEFAULT_CONTENT_TYPE,
       [ACCESS_TOKEN_HEADER]: accessToken,
+      "User-Agent": `${
+        userAgentPrefix ? `${userAgentPrefix} | ` : ""
+      }${CLIENT} v${DEFAULT_CLIENT_VERSION}`,
     },
     apiUrl: generateApiUrl(),
-    clientName,
+    userAgentPrefix,
   };
 
   const graphqlClient = createGraphQLClient({
