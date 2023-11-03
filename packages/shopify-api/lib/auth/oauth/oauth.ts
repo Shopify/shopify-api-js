@@ -1,4 +1,3 @@
-import {v4 as uuidv4} from 'uuid';
 import isbot from 'isbot';
 
 import ProcessedQuery from '../../utils/processed-query';
@@ -7,9 +6,8 @@ import * as ShopifyErrors from '../../error';
 import {validateHmac} from '../../utils/hmac-validator';
 import {sanitizeShop} from '../../utils/shop-validator';
 import {Session} from '../../session/session';
-import {getJwtSessionId, getOfflineId} from '../../session/session-utils';
 import {httpClientClass} from '../../clients/http_client/http_client';
-import {DataType, RequestReturn} from '../../clients/http_client/types';
+import {DataType} from '../../clients/http_client/types';
 import {
   abstractConvertRequest,
   abstractConvertIncomingResponse,
@@ -29,12 +27,10 @@ import {
   BeginParams,
   CallbackParams,
   AuthQuery,
-  AccessTokenResponse,
-  OnlineAccessResponse,
-  OnlineAccessInfo,
 } from './types';
 import {nonce} from './nonce';
 import {safeCompare} from './safe-compare';
+import {createSession} from './create-session';
 
 export interface CallbackResponse<T = AdapterHeaders> {
   headers: T;
@@ -190,7 +186,7 @@ export function callback(config: ConfigInterface) {
     const session: Session = createSession({
       postResponse,
       shop: cleanShop,
-      stateFromCookie,
+      state: stateFromCookie,
       config,
     });
 
@@ -226,63 +222,6 @@ async function validQuery({
     (await validateHmac(config)(query)) &&
     safeCompare(query.state!, stateFromCookie)
   );
-}
-
-function createSession({
-  config,
-  postResponse,
-  shop,
-  stateFromCookie,
-}: {
-  config: ConfigInterface;
-  postResponse: RequestReturn;
-  shop: string;
-  stateFromCookie: string;
-}): Session {
-  const associatedUser = (postResponse.body as OnlineAccessResponse)
-    .associated_user;
-  const isOnline = Boolean(associatedUser);
-
-  logger(config).info('Creating new session', {shop, isOnline});
-
-  if (isOnline) {
-    let sessionId: string;
-    const responseBody = postResponse.body as OnlineAccessResponse;
-    const {access_token, scope, ...rest} = responseBody;
-    const sessionExpiration = new Date(
-      Date.now() + responseBody.expires_in * 1000,
-    );
-
-    if (config.isEmbeddedApp) {
-      sessionId = getJwtSessionId(config)(
-        shop,
-        `${(rest as OnlineAccessInfo).associated_user.id}`,
-      );
-    } else {
-      sessionId = uuidv4();
-    }
-
-    return new Session({
-      id: sessionId,
-      shop,
-      state: stateFromCookie,
-      isOnline,
-      accessToken: access_token,
-      scope,
-      expires: sessionExpiration,
-      onlineAccessInfo: rest,
-    });
-  } else {
-    const responseBody = postResponse.body as AccessTokenResponse;
-    return new Session({
-      id: getOfflineId(config)(shop),
-      shop,
-      state: stateFromCookie,
-      isOnline,
-      accessToken: responseBody.access_token,
-      scope: responseBody.scope,
-    });
-  }
 }
 
 function throwIfCustomStoreApp(
