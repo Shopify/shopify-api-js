@@ -1,1 +1,1 @@
-export { createStorefrontAPIClient } from "./storefront-api-client";
+export { createStorefrontApiClient } from "./storefront-api-client";

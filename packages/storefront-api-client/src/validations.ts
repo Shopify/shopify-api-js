@@ -5,7 +5,7 @@ export function validatePrivateAccessTokenUsage(
 ) {
   if (privateAccessToken && window) {
     throw new Error(
-      `${CLIENT}: private access tokens and headers should only be used in a server-to-server implementation. Use the API public access token in nonserver environments.`
+      `${CLIENT}: private access tokens and headers should only be used in a server-to-server implementation. Use the public API access token in nonserver environments.`
     );
   }
 }

@@ -1,11 +1,12 @@
 import {
-  OperationVariables,
   Headers,
-  ClientResponse,
-  GraphQLClient,
+  ApiClient,
+  ApiClientLogContentTypes,
 } from "@shopify/graphql-client";
 
-export interface SFAPIClientConfig {
+export type StorefrontApiClientLogContentTypes = ApiClientLogContentTypes;
+
+export interface StorefrontApiClientConfig {
   readonly storeDomain: string;
   readonly apiVersion: string;
   readonly publicAccessToken: string | null;
@@ -16,26 +17,4 @@ export interface SFAPIClientConfig {
   readonly retries?: number;
 }
 
-export interface SFAPIClientRequestOptions {
-  variables?: OperationVariables;
-  apiVersion?: string;
-  customHeaders?: Headers;
-  retries?: number;
-}
-
-export type SFAPIClientRequestParams = [
-  operation: string,
-  options?: SFAPIClientRequestOptions
-];
-
-export interface StorefrontAPIClient {
-  readonly config: SFAPIClientConfig;
-  getHeaders: (customHeaders?: Headers) => Headers;
-  getApiUrl: (apiVersion?: string) => string;
-  fetch: (
-    ...props: SFAPIClientRequestParams
-  ) => ReturnType<GraphQLClient["fetch"]>;
-  request: <TData = unknown>(
-    ...props: SFAPIClientRequestParams
-  ) => Promise<ClientResponse<TData>>;
-}
+export type StorefrontApiClient = ApiClient<StorefrontApiClientConfig>;

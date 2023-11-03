@@ -1,16 +1,19 @@
 import {
   createGraphQLClient,
-  CustomFetchAPI,
+  CustomFetchApi,
   RequestParams as GQLClientRequestParams,
-  getCurrentSupportedAPIVersions,
+  getCurrentSupportedApiVersions,
   validateDomainAndGetStoreUrl,
   validateApiVersion,
+  ApiClientLogger,
+  ApiClientRequestParams,
+  ApiClientRequestOptions,
 } from "@shopify/graphql-client";
 
 import {
-  StorefrontAPIClient,
-  SFAPIClientConfig,
-  SFAPIClientRequestOptions,
+  StorefrontApiClient,
+  StorefrontApiClientConfig,
+  StorefrontApiClientLogContentTypes,
 } from "./types";
 import {
   DEFAULT_SDK_VARIANT,
@@ -28,18 +31,22 @@ import {
   validatePrivateAccessTokenUsage,
 } from "./validations";
 
-export function createStorefrontAPIClient({
+export function createStorefrontApiClient({
   storeDomain,
   apiVersion,
   publicAccessToken,
   privateAccessToken,
   clientName,
-  customFetchAPI: clientFetchAPI,
+  retries = 0,
+  customFetchApi: clientFetchApi,
+  logger,
 }: {
   storeDomain: string;
   apiVersion: string;
   clientName?: string;
-  customFetchAPI?: CustomFetchAPI;
+  retries?: number;
+  customFetchApi?: CustomFetchApi;
+  logger?: ApiClientLogger<StorefrontApiClientLogContentTypes>;
 } & (
   | {
       publicAccessToken?: never;
@@ -49,36 +56,31 @@ export function createStorefrontAPIClient({
       publicAccessToken: string;
       privateAccessToken?: never;
     }
-)): StorefrontAPIClient {
-  const currentSupportedApiVersions = getCurrentSupportedAPIVersions();
+)): StorefrontApiClient {
+  const currentSupportedApiVersions = getCurrentSupportedApiVersions();
 
   const storeUrl = validateDomainAndGetStoreUrl({
     client: CLIENT,
     storeDomain,
   });
-  validateApiVersion({
+
+  const baseApiVersionValidationParams = {
     client: CLIENT,
     currentSupportedApiVersions,
-    apiVersion,
-  });
+    logger,
+  };
+
+  validateApiVersion({ ...baseApiVersionValidationParams, apiVersion });
   validateRequiredAccessTokens(publicAccessToken, privateAccessToken);
   validatePrivateAccessTokenUsage(privateAccessToken);
 
-  const generateApiUrl = (version?: string) => {
-    if (version) {
-      validateApiVersion({
-        client: CLIENT,
-        currentSupportedApiVersions,
-        apiVersion: version,
-      });
-    }
+  const apiUrlFormatter = generateApiUrlFormatter(
+    storeUrl,
+    apiVersion,
+    baseApiVersionValidationParams
+  );
 
-    const urlApiVersion = (version ?? apiVersion).trim();
-
-    return `${storeUrl}/api/${urlApiVersion}/graphql.json`;
-  };
-
-  const config: SFAPIClientConfig = {
+  const config: StorefrontApiClientConfig = {
     storeDomain: storeUrl,
     apiVersion,
     publicAccessToken: publicAccessToken ?? null,
@@ -93,58 +95,37 @@ export function createStorefrontAPIClient({
         ? { [PUBLIC_ACCESS_TOKEN_HEADER]: publicAccessToken }
         : { [PRIVATE_ACCESS_TOKEN_HEADER]: privateAccessToken! }),
     },
-    apiUrl: generateApiUrl(),
+    apiUrl: apiUrlFormatter(),
     clientName,
   };
 
   const graphqlClient = createGraphQLClient({
     headers: config.headers,
     url: config.apiUrl,
-    fetchAPI: clientFetchAPI,
+    retries,
+    fetchApi: clientFetchApi,
+    logger,
   });
 
-  const getHeaders: StorefrontAPIClient["getHeaders"] = (customHeaders) => {
-    return customHeaders
-      ? { ...customHeaders, ...config.headers }
-      : config.headers;
-  };
+  const getHeaders = generateGetHeader(config);
+  const getApiUrl = generateGetApiUrl(config, apiUrlFormatter);
 
-  const getApiUrl: StorefrontAPIClient["getApiUrl"] = (
-    propApiVersion?: string
-  ) => {
-    return propApiVersion ? generateApiUrl(propApiVersion) : config.apiUrl;
-  };
+  const getGQLClientRequestProps = generateGetGQLClientProps({
+    getHeaders,
+    getApiUrl,
+  });
 
-  const getGQLClientRequestProps = (
-    operation: string,
-    options?: SFAPIClientRequestOptions
-  ): GQLClientRequestParams => {
-    const props: GQLClientRequestParams = [operation];
-
-    if (options) {
-      const { variables, apiVersion: propApiVersion, customHeaders } = options;
-
-      props.push({
-        variables,
-        headers: customHeaders ? getHeaders(customHeaders) : undefined,
-        url: propApiVersion ? getApiUrl(propApiVersion) : undefined,
-      });
-    }
-
-    return props;
-  };
-
-  const fetch: StorefrontAPIClient["fetch"] = (...props) => {
+  const fetch = (...props: ApiClientRequestParams) => {
     const requestProps = getGQLClientRequestProps(...props);
     return graphqlClient.fetch(...requestProps);
   };
 
-  const request: StorefrontAPIClient["request"] = (...props) => {
+  const request = <TData>(...props: ApiClientRequestParams) => {
     const requestProps = getGQLClientRequestProps(...props);
-    return graphqlClient.request(...requestProps);
+    return graphqlClient.request<TData>(...requestProps);
   };
 
-  const client: StorefrontAPIClient = {
+  const client: StorefrontApiClient = {
     config,
     getHeaders,
     getApiUrl,
@@ -153,4 +134,78 @@ export function createStorefrontAPIClient({
   };
 
   return Object.freeze(client);
+}
+
+function generateApiUrlFormatter(
+  storeUrl: string,
+  defaultApiVersion: string,
+  baseApiVersionValidationParams: Omit<
+    Parameters<typeof validateApiVersion>[0],
+    "apiVersion"
+  >
+) {
+  return (apiVersion?: string) => {
+    if (apiVersion) {
+      validateApiVersion({
+        ...baseApiVersionValidationParams,
+        apiVersion,
+      });
+    }
+
+    const urlApiVersion = (apiVersion ?? defaultApiVersion).trim();
+
+    return `${storeUrl}/api/${urlApiVersion}/graphql.json`;
+  };
+}
+
+function generateGetHeader(
+  config: StorefrontApiClientConfig
+): StorefrontApiClient["getHeaders"] {
+  return (customHeaders) => {
+    return customHeaders
+      ? { ...customHeaders, ...config.headers }
+      : config.headers;
+  };
+}
+
+function generateGetApiUrl(
+  config: StorefrontApiClientConfig,
+  apiUrlFormatter: (version?: string) => string
+): StorefrontApiClient["getApiUrl"] {
+  return (propApiVersion?: string) => {
+    return propApiVersion ? apiUrlFormatter(propApiVersion) : config.apiUrl;
+  };
+}
+
+function generateGetGQLClientProps({
+  getHeaders,
+  getApiUrl,
+}: {
+  getHeaders: StorefrontApiClient["getHeaders"];
+  getApiUrl: StorefrontApiClient["getApiUrl"];
+}) {
+  return (
+    operation: string,
+    options?: ApiClientRequestOptions
+  ): GQLClientRequestParams => {
+    const props: GQLClientRequestParams = [operation];
+
+    if (options) {
+      const {
+        variables,
+        apiVersion: propApiVersion,
+        customHeaders,
+        retries,
+      } = options;
+
+      props.push({
+        variables,
+        headers: customHeaders ? getHeaders(customHeaders) : undefined,
+        url: propApiVersion ? getApiUrl(propApiVersion) : undefined,
+        retries,
+      });
+    }
+
+    return props;
+  };
 }

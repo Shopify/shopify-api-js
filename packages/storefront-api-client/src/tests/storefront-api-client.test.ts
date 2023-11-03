@@ -1,7 +1,7 @@
 import { createGraphQLClient, GraphQLClient } from "@shopify/graphql-client";
 
-import { createStorefrontAPIClient } from "../storefront-api-client";
-import { StorefrontAPIClient } from "../types";
+import { createStorefrontApiClient } from "../storefront-api-client";
+import { StorefrontApiClient } from "../types";
 import {
   SDK_VARIANT_HEADER,
   DEFAULT_SDK_VARIANT,
@@ -31,7 +31,7 @@ jest.mock("@shopify/graphql-client", () => {
 });
 
 describe("Storefront API Client", () => {
-  describe("createStorefrontAPIClient()", () => {
+  describe("createStorefrontApiClient()", () => {
     const domain = "test-store.myshopify.io";
     const config = {
       storeDomain: `https://${domain}`,
@@ -39,6 +39,11 @@ describe("Storefront API Client", () => {
       publicAccessToken: "public-token",
     };
     const mockApiUrl = `${config.storeDomain}/api/2023-10/graphql.json`;
+
+    const mockFetchResponse = { status: 200 };
+    const mockRequestResponse = {
+      data: {},
+    };
 
     const graphqlClientMock: GraphQLClient = {
       config: {
@@ -63,7 +68,7 @@ describe("Storefront API Client", () => {
       it("calls the graphql client with headers and API URL", () => {
         const clientName = "test-client";
 
-        createStorefrontAPIClient({ ...config, clientName });
+        createStorefrontApiClient({ ...config, clientName });
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
         ).toHaveProperty("headers", {
@@ -79,19 +84,50 @@ describe("Storefront API Client", () => {
         ).toHaveProperty("url", mockApiUrl);
       });
 
-      it("calls the graphql client with the provided customFetchAPI", () => {
-        const customFetchAPI = jest.fn();
-
-        createStorefrontAPIClient({ ...config, customFetchAPI });
+      it("calls the graphql client with the default retries", () => {
+        createStorefrontApiClient({ ...config });
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
-        ).toHaveProperty("fetchAPI", customFetchAPI);
+        ).toHaveProperty("retries", 0);
+      });
+
+      it("calls the graphql client with the provided retries", () => {
+        const retries = 1;
+
+        createStorefrontApiClient({ ...config, retries });
+
+        expect(createGraphQLClient).toHaveBeenCalled();
+        expect(
+          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+        ).toHaveProperty("retries", retries);
+      });
+
+      it("calls the graphql client with the provided customFetchAPI", () => {
+        const customFetchApi = jest.fn();
+
+        createStorefrontApiClient({ ...config, customFetchApi });
+
+        expect(createGraphQLClient).toHaveBeenCalled();
+        expect(
+          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+        ).toHaveProperty("fetchApi", customFetchApi);
+      });
+
+      it("calls the graphql client with the provided logger", () => {
+        const logger = jest.fn();
+
+        createStorefrontApiClient({ ...config, logger });
+
+        expect(createGraphQLClient).toHaveBeenCalled();
+        expect(
+          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+        ).toHaveProperty("logger", logger);
       });
 
       it("returns a client object that contains a config object, getters for header and API URL and request and fetch functions", () => {
-        const client = createStorefrontAPIClient(config);
+        const client = createStorefrontApiClient(config);
 
         expect(client).toHaveProperty("config");
         expect(client).toMatchObject({
@@ -105,7 +141,7 @@ describe("Storefront API Client", () => {
       describe("validations", () => {
         it("throws an error when a store domain is not provided", () => {
           expect(() =>
-            createStorefrontAPIClient({
+            createStorefrontApiClient({
               ...config,
               storeDomain: undefined as any,
             })
@@ -118,7 +154,7 @@ describe("Storefront API Client", () => {
 
         it("throws an error when an empty string is provided as the store domain", () => {
           expect(() =>
-            createStorefrontAPIClient({
+            createStorefrontApiClient({
               ...config,
               storeDomain: "   ",
             })
@@ -131,7 +167,7 @@ describe("Storefront API Client", () => {
 
         it("throws an error when the provided store domain is not a string", () => {
           expect(() =>
-            createStorefrontAPIClient({
+            createStorefrontApiClient({
               ...config,
               storeDomain: 123 as any,
             })
@@ -144,7 +180,7 @@ describe("Storefront API Client", () => {
 
         it("throws an error when the api version is not provided", () => {
           expect(() =>
-            createStorefrontAPIClient({
+            createStorefrontApiClient({
               ...config,
               apiVersion: undefined as any,
             })
@@ -159,7 +195,7 @@ describe("Storefront API Client", () => {
 
         it("throws an error when the api version is not a string", () => {
           expect(() =>
-            createStorefrontAPIClient({
+            createStorefrontApiClient({
               ...config,
               apiVersion: { year: 2022, month: 1 } as any,
             })
@@ -177,7 +213,7 @@ describe("Storefront API Client", () => {
             .spyOn(window.console, "warn")
             .mockImplementation(jest.fn());
 
-          createStorefrontAPIClient({
+          createStorefrontApiClient({
             ...config,
             apiVersion: "2022-07",
           });
@@ -191,7 +227,7 @@ describe("Storefront API Client", () => {
 
         it("throws an error when neither public and private access tokens are provided", () => {
           expect(() =>
-            createStorefrontAPIClient({
+            createStorefrontApiClient({
               ...config,
               publicAccessToken: undefined as any,
             })
@@ -204,14 +240,14 @@ describe("Storefront API Client", () => {
 
         it("throws an error when a private access token is provided in a browser environment (window is defined)", () => {
           expect(() =>
-            createStorefrontAPIClient({
+            createStorefrontApiClient({
               ...config,
               publicAccessToken: undefined as any,
               privateAccessToken: "private-access-token",
             })
           ).toThrow(
             new Error(
-              "Storefront API Client: private access tokens and headers should only be used in a server-to-server implementation. Use the API public access token in nonserver environments."
+              "Storefront API Client: private access tokens and headers should only be used in a server-to-server implementation. Use the public API access token in nonserver environments."
             )
           );
         });
@@ -222,7 +258,7 @@ describe("Storefront API Client", () => {
             .mockImplementation(() => undefined as any);
 
           expect(() =>
-            createStorefrontAPIClient({
+            createStorefrontApiClient({
               ...config,
               privateAccessToken: "private-token",
             } as any)
@@ -239,12 +275,12 @@ describe("Storefront API Client", () => {
 
     describe("client config", () => {
       it("returns a config object that includes the provided store domain", () => {
-        const client = createStorefrontAPIClient(config);
+        const client = createStorefrontApiClient(config);
         expect(client.config.storeDomain).toBe(`https://${domain}`);
       });
 
       it("returns a config object that includes the provided public access token and a null private access token", () => {
-        const client = createStorefrontAPIClient(config);
+        const client = createStorefrontApiClient(config);
         expect(client.config.publicAccessToken).toBe(config.publicAccessToken);
         expect(client.config.privateAccessToken).toBeNull();
       });
@@ -256,7 +292,7 @@ describe("Storefront API Client", () => {
 
         const privateAccessToken = "private-token";
 
-        const client = createStorefrontAPIClient({
+        const client = createStorefrontApiClient({
           ...config,
           publicAccessToken: undefined,
           privateAccessToken,
@@ -270,7 +306,7 @@ describe("Storefront API Client", () => {
       it("returns a config object that includes the provided client name", () => {
         const clientName = "test-client";
 
-        const client = createStorefrontAPIClient({ ...config, clientName });
+        const client = createStorefrontApiClient({ ...config, clientName });
         expect(client.config.clientName).toBe(clientName);
       });
 
@@ -279,15 +315,15 @@ describe("Storefront API Client", () => {
         const expectedAPIUrl = `https://${cleanedStoreDomain}/api/${config.apiVersion}/graphql.json`;
 
         it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that includes 'https'", () => {
-          const client = createStorefrontAPIClient({
+          const client = createStorefrontApiClient({
             ...config,
             storeDomain: `https://${cleanedStoreDomain}`,
           });
           expect(client.config.apiUrl).toBe(expectedAPIUrl);
         });
 
-        it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that includes 'http'", () => {
-          const client = createStorefrontAPIClient({
+        it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that includes a non-secure protocol", () => {
+          const client = createStorefrontApiClient({
             ...config,
             storeDomain: `http://${cleanedStoreDomain}`,
           });
@@ -295,7 +331,7 @@ describe("Storefront API Client", () => {
         });
 
         it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that does not include a protocol", () => {
-          const client = createStorefrontAPIClient({
+          const client = createStorefrontApiClient({
             ...config,
             storeDomain: cleanedStoreDomain,
           });
@@ -303,7 +339,7 @@ describe("Storefront API Client", () => {
         });
 
         it("returns a config object that includes a valid API url constructed with the provided spaced out API version and a store domain", () => {
-          const client = createStorefrontAPIClient({
+          const client = createStorefrontApiClient({
             ...config,
             storeDomain: ` ${cleanedStoreDomain}   `,
             apiVersion: ` ${config.apiVersion}   `,
@@ -314,33 +350,33 @@ describe("Storefront API Client", () => {
 
       describe("config headers", () => {
         it("returns a header object that includes the content-type header", () => {
-          const client = createStorefrontAPIClient(config);
+          const client = createStorefrontApiClient(config);
           expect(client.config.headers["Content-Type"]).toBe(
             DEFAULT_CONTENT_TYPE
           );
         });
 
         it("returns a header object that includes the accept header", () => {
-          const client = createStorefrontAPIClient(config);
+          const client = createStorefrontApiClient(config);
           expect(client.config.headers.Accept).toBe(DEFAULT_CONTENT_TYPE);
         });
 
         it("returns a header object that includes the SDK variant header", () => {
-          const client = createStorefrontAPIClient(config);
+          const client = createStorefrontApiClient(config);
           expect(client.config.headers[SDK_VARIANT_HEADER]).toBe(
             DEFAULT_SDK_VARIANT
           );
         });
 
         it("returns a header object that includes the SDK version header", () => {
-          const client = createStorefrontAPIClient(config);
+          const client = createStorefrontApiClient(config);
           expect(client.config.headers[SDK_VERSION_HEADER]).toBe(
             DEFAULT_CLIENT_VERSION
           );
         });
 
         it("returns a header object that includes the public headers when a public access token is provided", () => {
-          const client = createStorefrontAPIClient(config);
+          const client = createStorefrontApiClient(config);
           expect(client.config.headers[PUBLIC_ACCESS_TOKEN_HEADER]).toEqual(
             config.publicAccessToken
           );
@@ -353,7 +389,7 @@ describe("Storefront API Client", () => {
 
           const privateAccessToken = "private-token";
 
-          const client = createStorefrontAPIClient({
+          const client = createStorefrontApiClient({
             ...config,
             publicAccessToken: undefined,
             privateAccessToken,
@@ -369,14 +405,14 @@ describe("Storefront API Client", () => {
         it("returns a header object that includes the SDK variant source header when client name is provided", () => {
           const clientName = "test-client";
 
-          const client = createStorefrontAPIClient({ ...config, clientName });
+          const client = createStorefrontApiClient({ ...config, clientName });
           expect(client.config.headers[SDK_VARIANT_SOURCE_HEADER]).toEqual(
             clientName
           );
         });
 
         it("returns a header object that does not include the SDK variant source header when client name is not provided", () => {
-          const client = createStorefrontAPIClient(config);
+          const client = createStorefrontApiClient(config);
           expect(
             client.config.headers[SDK_VARIANT_SOURCE_HEADER]
           ).toBeUndefined();
@@ -385,10 +421,10 @@ describe("Storefront API Client", () => {
     });
 
     describe("getHeaders()", () => {
-      let client: StorefrontAPIClient;
+      let client: StorefrontApiClient;
 
       beforeEach(() => {
-        client = createStorefrontAPIClient(config);
+        client = createStorefrontApiClient(config);
       });
 
       it("returns the client's default headers if no custom headers are provided", () => {
@@ -406,10 +442,10 @@ describe("Storefront API Client", () => {
     });
 
     describe("getApiUrl()", () => {
-      let client: StorefrontAPIClient;
+      let client: StorefrontApiClient;
 
       beforeEach(() => {
-        client = createStorefrontAPIClient(config);
+        client = createStorefrontApiClient(config);
       });
 
       it("returns the client's default API url if no API version was provided", () => {
@@ -449,6 +485,174 @@ describe("Storefront API Client", () => {
             ", "
           )}`
         );
+      });
+    });
+
+    describe("fetch()", () => {
+      let client: StorefrontApiClient;
+      const operation = `
+        query products{
+          products(first: 1) {
+            nodes {
+              id
+              title
+            }
+          }
+        }
+      `;
+
+      beforeEach(() => {
+        (graphqlClientMock.fetch as jest.Mock).mockResolvedValue(
+          mockFetchResponse
+        );
+
+        client = createStorefrontApiClient(config);
+      });
+
+      afterEach(() => {
+        jest.resetAllMocks();
+      });
+
+      describe("parameters", () => {
+        it("calls the graphql client fetch() with just the operation string when there is no provided options", async () => {
+          const test = await client.fetch(operation);
+
+          expect(graphqlClientMock.fetch).toHaveBeenCalledWith(operation);
+        });
+
+        it("calls the graphql client fetch() with provided variables", async () => {
+          const variables = { first: 1 };
+
+          await client.fetch(operation, { variables });
+          expect((graphqlClientMock.fetch as jest.Mock).mock.calls[0][0]).toBe(
+            operation
+          );
+          expect(
+            (graphqlClientMock.fetch as jest.Mock).mock.calls[0][1]
+          ).toEqual({ variables });
+        });
+
+        it("calls the graphql client fetch() with customized headers", async () => {
+          const customHeaders = { "custom-header": "custom" };
+
+          await client.fetch(operation, { customHeaders });
+          expect(
+            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1]
+          ).toEqual({
+            headers: client.getHeaders(customHeaders),
+          });
+        });
+
+        it("calls the graphql client fetch() with provided api version URL", async () => {
+          const apiVersion = "unstable";
+
+          await client.fetch(operation, { apiVersion });
+          expect(
+            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1]
+          ).toEqual({
+            url: client.getApiUrl(apiVersion),
+          });
+        });
+
+        it("calls the graphql client fetch() with provided retries", async () => {
+          const retries = 2;
+
+          await client.fetch(operation, { retries });
+          expect(
+            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1]
+          ).toEqual({
+            retries,
+          });
+        });
+      });
+
+      it("returns the graphql client fetch response", async () => {
+        const response = await client.fetch(operation);
+        expect(response).toBe(mockFetchResponse);
+      });
+    });
+
+    describe("request()", () => {
+      let client: StorefrontApiClient;
+      const operation = `
+        query products{
+          products(first: 1) {
+            nodes {
+              id
+              title
+            }
+          }
+        }
+      `;
+
+      beforeEach(() => {
+        (graphqlClientMock.request as jest.Mock).mockResolvedValue(
+          mockRequestResponse
+        );
+
+        client = createStorefrontApiClient(config);
+      });
+
+      afterEach(() => {
+        jest.resetAllMocks();
+      });
+
+      describe("parameters", () => {
+        it("calls the graphql client request() with just the operation string when there is no provided options", async () => {
+          const test = await client.request(operation);
+
+          expect(graphqlClientMock.request).toHaveBeenCalledWith(operation);
+        });
+
+        it("calls the graphql client request() with provided variables", async () => {
+          const variables = { first: 1 };
+
+          await client.request(operation, { variables });
+          expect(
+            (graphqlClientMock.request as jest.Mock).mock.calls[0][0]
+          ).toBe(operation);
+          expect(
+            (graphqlClientMock.request as jest.Mock).mock.calls[0][1]
+          ).toEqual({ variables });
+        });
+
+        it("calls the graphql client request() with customized headers", async () => {
+          const customHeaders = { "custom-header": "custom" };
+
+          await client.request(operation, { customHeaders });
+          expect(
+            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1]
+          ).toEqual({
+            headers: client.getHeaders(customHeaders),
+          });
+        });
+
+        it("calls the graphql client request() with provided api version URL", async () => {
+          const apiVersion = "unstable";
+
+          await client.request(operation, { apiVersion });
+          expect(
+            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1]
+          ).toEqual({
+            url: client.getApiUrl(apiVersion),
+          });
+        });
+
+        it("calls the graphql client request() with provided retries", async () => {
+          const retries = 2;
+
+          await client.request(operation, { retries });
+          expect(
+            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1]
+          ).toEqual({
+            retries,
+          });
+        });
+      });
+
+      it("returns the graphql client request response", async () => {
+        const response = await client.request(operation);
+        expect(response).toBe(mockRequestResponse);
       });
     });
   });
