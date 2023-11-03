@@ -16,14 +16,14 @@ export interface UnsupportedApiVersionLog extends LogContent {
   };
 }
 
-export type APIClientLogContentTypes =
+export type ApiClientLogContentTypes =
   | LogContentTypes
   | UnsupportedApiVersionLog;
 
-export type APIClientLogger<TLogContentTypes = APIClientLogContentTypes> =
+export type ApiClientLogger<TLogContentTypes = ApiClientLogContentTypes> =
   BaseLogger<TLogContentTypes>;
 
-export interface APIClientConfig {
+export interface ApiClientConfig {
   readonly storeDomain: string;
   readonly apiVersion: string;
   readonly headers: Headers;
@@ -31,26 +31,26 @@ export interface APIClientConfig {
   readonly retries?: number;
 }
 
-export interface APIClientRequestOptions {
+export interface ApiClientRequestOptions {
   variables?: OperationVariables;
   apiVersion?: string;
   customHeaders?: Headers;
   retries?: number;
 }
 
-export type APIClientRequestParams = [
+export type ApiClientRequestParams = [
   operation: string,
-  options?: APIClientRequestOptions
+  options?: ApiClientRequestOptions
 ];
 
-export interface APIClient<TClientConfig extends APIClientConfig> {
+export interface ApiClient<TClientConfig extends ApiClientConfig> {
   readonly config: TClientConfig;
   getHeaders: (customHeaders?: Headers) => Headers;
   getApiUrl: (apiVersion?: string) => string;
   fetch: (
-    ...props: APIClientRequestParams
+    ...props: ApiClientRequestParams
   ) => ReturnType<GraphQLClient["fetch"]>;
   request: <TData = unknown>(
-    ...props: APIClientRequestParams
+    ...props: ApiClientRequestParams
   ) => Promise<ClientResponse<TData>>;
 }

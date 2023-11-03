@@ -131,13 +131,13 @@ describe("GraphQL Client", () => {
       });
 
       it("uses the provided custom fetch when a custom fetch API is provided at initialization ", () => {
-        const customFetchAPI = jest
+        const customFetchApi = jest
           .fn()
           .mockResolvedValue(new Response(JSON.stringify({ data: {} }))) as any;
 
         const client = createGraphQLClient({
           ...config,
-          fetchAPI: customFetchAPI,
+          fetchApi: customFetchApi,
         });
 
         const props: [string, RequestOptions] = [
@@ -149,7 +149,7 @@ describe("GraphQL Client", () => {
 
         client.fetch(...props);
 
-        expect(customFetchAPI).toHaveBeenCalledWith(config.url, {
+        expect(customFetchApi).toHaveBeenCalledWith(config.url, {
           method: "POST",
           headers: config.headers,
           body: JSON.stringify({
@@ -422,7 +422,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.networkStatusCode).toBe(status);
 
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
@@ -534,7 +534,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.networkStatusCode).toBe(status);
 
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
@@ -663,13 +663,13 @@ describe("GraphQL Client", () => {
       });
 
       it("uses the provided custom fetch when a custom fetch API is provided at initialization", () => {
-        const customFetchAPI = jest
+        const customFetchApi = jest
           .fn()
           .mockResolvedValue(new Response(JSON.stringify({ data: {} }))) as any;
 
         const client = createGraphQLClient({
           ...config,
-          fetchAPI: customFetchAPI,
+          fetchApi: customFetchApi,
         });
 
         const props: [string, RequestOptions] = [
@@ -681,7 +681,7 @@ describe("GraphQL Client", () => {
 
         client.request(...props);
 
-        expect(customFetchAPI).toHaveBeenCalledWith(config.url, {
+        expect(customFetchApi).toHaveBeenCalledWith(config.url, {
           method: "POST",
           headers: config.headers,
           body: JSON.stringify({
@@ -698,7 +698,7 @@ describe("GraphQL Client", () => {
         beforeEach(() => {
           client = createGraphQLClient({
             ...config,
-            fetchAPI: fetch,
+            fetchApi: fetch,
           });
         });
 
@@ -820,7 +820,7 @@ describe("GraphQL Client", () => {
             fetchMock.mockResolvedValue(mockedSuccessResponse);
 
             const response = await client.request(operation, { variables });
-            expect(response).toHaveProperty("error", {
+            expect(response).toHaveProperty("errors", {
               networkStatusCode: responseConfig.status,
               message: responseConfig.statusText,
             });
@@ -832,7 +832,7 @@ describe("GraphQL Client", () => {
             fetchMock.mockRejectedValue(new Error(errorMessage));
 
             const response = await client.request(operation, { variables });
-            expect(response).toHaveProperty("error", {
+            expect(response).toHaveProperty("errors", {
               message: `GraphQL Client: ${errorMessage}`,
             });
           });
@@ -854,7 +854,7 @@ describe("GraphQL Client", () => {
             fetchMock.mockResolvedValue(mockedSuccessResponse);
 
             const response = await client.request(operation, { variables });
-            expect(response).toHaveProperty("error", {
+            expect(response).toHaveProperty("errors", {
               networkStatusCode: responseConfig.status,
               message: `GraphQL Client: Response returned unexpected Content-Type: ${contentType}`,
             });
@@ -877,7 +877,7 @@ describe("GraphQL Client", () => {
             fetchMock.mockResolvedValue(mockedSuccessResponse);
 
             const response = await client.request(operation, { variables });
-            expect(response).toHaveProperty("error", {
+            expect(response).toHaveProperty("errors", {
               networkStatusCode: responseConfig.status,
               message:
                 "GraphQL Client: An error occurred while fetching from the API. Review 'graphQLErrors' for details.",
@@ -900,10 +900,38 @@ describe("GraphQL Client", () => {
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
             const response = await client.request(operation, { variables });
-            expect(response).toHaveProperty("error", {
+            expect(response).toHaveProperty("errors", {
               networkStatusCode: mockedSuccessResponse.status,
               message:
                 "GraphQL Client: An unknown error has occurred. The API did not return a data object or any errors in its response.",
+            });
+          });
+
+          it("includes an error object and a data object if the API returns both errors and data in the response", async () => {
+            const gqlError = ["GQL error"];
+            const data = { product: { title: "product title" } };
+
+            const responseConfig = {
+              status: 200,
+              headers: new Headers({
+                "Content-Type": "application/json",
+              }),
+            };
+
+            const mockedSuccessResponse = new Response(
+              JSON.stringify({ errors: gqlError, data }),
+              responseConfig
+            );
+
+            fetchMock.mockResolvedValue(mockedSuccessResponse);
+            const response = await client.request(operation, { variables });
+
+            expect(response).toHaveProperty("data", data);
+            expect(response).toHaveProperty("errors", {
+              networkStatusCode: responseConfig.status,
+              message:
+                "GraphQL Client: An error occurred while fetching from the API. Review 'graphQLErrors' for details.",
+              graphQLErrors: gqlError,
             });
           });
         });
@@ -915,7 +943,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.message).toBe(
+              expect(response.errors?.message).toBe(
                 "GraphQL Client: The operation was aborted. "
               );
 
@@ -928,7 +956,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.message).toBe(
+              expect(response.errors?.message).toBe(
                 "GraphQL Client: Attempted maximum number of 1 network retries. Last message - The operation was aborted. "
               );
 
@@ -940,7 +968,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation, { retries: 2 });
 
-              expect(response.error?.message).toBe(
+              expect(response.errors?.message).toBe(
                 "GraphQL Client: Attempted maximum number of 2 network retries. Last message - The operation was aborted. "
               );
 
@@ -966,7 +994,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation, { retries: 2 });
 
-              expect(response.error).toBeUndefined();
+              expect(response.errors).toBeUndefined();
               expect(response.data).toEqual(mockResponseData.data);
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
@@ -977,7 +1005,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.message).toBe(
+              expect(response.errors?.message).toBe(
                 "GraphQL Client: Attempted maximum number of 1 network retries. Last message - The operation was aborted. "
               );
 
@@ -1039,8 +1067,8 @@ describe("GraphQL Client", () => {
               fetchMock.mockResolvedValue(mockedFailedResponse);
               const response = await client.request(operation);
 
-              expect(response.error?.message).toBe("Too Many Requests");
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.message).toBe("Too Many Requests");
+              expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetchMock).toHaveBeenCalledTimes(1);
             });
 
@@ -1050,8 +1078,8 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.message).toBe("Too Many Requests");
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.message).toBe("Too Many Requests");
+              expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
@@ -1059,8 +1087,8 @@ describe("GraphQL Client", () => {
               fetchMock.mockResolvedValue(mockedFailedResponse);
               const response = await client.request(operation, { retries: 2 });
 
-              expect(response.error?.message).toBe("Too Many Requests");
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.message).toBe("Too Many Requests");
+              expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetchMock).toHaveBeenCalledTimes(3);
             });
 
@@ -1088,8 +1116,8 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation, { retries: 2 });
 
-              expect(response.error?.networkStatusCode).toBe(500);
-              expect(response.error?.message).toEqual("Internal Server Error");
+              expect(response.errors?.networkStatusCode).toBe(500);
+              expect(response.errors?.message).toEqual("Internal Server Error");
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
@@ -1099,7 +1127,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.networkStatusCode).toBe(status);
 
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
@@ -1155,8 +1183,8 @@ describe("GraphQL Client", () => {
               fetchMock.mockResolvedValue(mockedFailedResponse);
               const response = await client.request(operation);
 
-              expect(response.error?.message).toBe("Service Unavailable");
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.message).toBe("Service Unavailable");
+              expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetchMock).toHaveBeenCalledTimes(1);
             });
 
@@ -1166,8 +1194,8 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.message).toBe("Service Unavailable");
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.message).toBe("Service Unavailable");
+              expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
@@ -1175,8 +1203,8 @@ describe("GraphQL Client", () => {
               fetchMock.mockResolvedValue(mockedFailedResponse);
               const response = await client.request(operation, { retries: 2 });
 
-              expect(response.error?.message).toBe("Service Unavailable");
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.message).toBe("Service Unavailable");
+              expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetchMock).toHaveBeenCalledTimes(3);
             });
 
@@ -1204,8 +1232,8 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation, { retries: 2 });
 
-              expect(response.error?.networkStatusCode).toBe(500);
-              expect(response.error?.message).toEqual("Internal Server Error");
+              expect(response.errors?.networkStatusCode).toBe(500);
+              expect(response.errors?.message).toEqual("Internal Server Error");
               expect(fetchMock).toHaveBeenCalledTimes(2);
             });
 
@@ -1215,7 +1243,7 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.error?.networkStatusCode).toBe(status);
+              expect(response.errors?.networkStatusCode).toBe(status);
 
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
@@ -1291,7 +1319,7 @@ describe("GraphQL Client", () => {
             fetchMock.mockResolvedValue(mockedFailedResponse);
             const response = await client.request(operation);
 
-            expect(response.error?.networkStatusCode).toBe(500);
+            expect(response.errors?.networkStatusCode).toBe(500);
             expect(fetchMock).toHaveBeenCalledTimes(1);
           });
 
@@ -1300,7 +1328,7 @@ describe("GraphQL Client", () => {
 
             const response = await client.request(operation, { retries });
 
-            expect(response.error?.message).toEqual(
+            expect(response.errors?.message).toEqual(
               `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
             );
           });
@@ -1309,7 +1337,7 @@ describe("GraphQL Client", () => {
             const retries = 4;
             const response = await client.request(operation, { retries });
 
-            expect(response.error?.message).toEqual(
+            expect(response.errors?.message).toEqual(
               `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
             );
           });

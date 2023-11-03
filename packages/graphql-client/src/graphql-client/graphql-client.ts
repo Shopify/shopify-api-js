@@ -1,6 +1,6 @@
 import {
   ClientOptions,
-  CustomFetchAPI,
+  CustomFetchApi,
   GraphQLClient,
   ClientResponse,
   ClientConfig,
@@ -21,13 +21,13 @@ const CONTENT_TYPES = {
 const RETRY_WAIT_TIME = 1000;
 const RETRIABLE_STATUS_CODES = [429, 503];
 
-export function createGraphQLClient<TClientOptions extends ClientOptions>({
+export function createGraphQLClient({
   headers,
   url,
-  fetchAPI = fetch,
+  fetchApi = fetch,
   retries = 0,
   logger,
-}: TClientOptions): GraphQLClient {
+}: ClientOptions): GraphQLClient {
   validateRetries({ client: CLIENT, retries });
 
   const config: ClientConfig = {
@@ -37,7 +37,7 @@ export function createGraphQLClient<TClientOptions extends ClientOptions>({
   };
 
   const clientLogger = generateClientLogger(logger);
-  const httpFetch = generateHttpFetch(fetchAPI, clientLogger);
+  const httpFetch = generateHttpFetch(fetchApi, clientLogger);
   const fetch = generateFetch(httpFetch, config);
   const request = generateRequest(fetch);
 
@@ -57,26 +57,23 @@ async function processJSONResponse<TData = any>(
 ): Promise<ClientResponse<TData>> {
   const { errors, data, extensions } = await response.json();
 
-  const responseExtensions = extensions ? { extensions } : {};
-
-  if (errors || !data) {
-    return {
-      error: {
-        networkStatusCode: response.status,
-        message: errors
-          ? GQL_API_ERROR
-          : `${CLIENT}: An unknown error has occurred. The API did not return a data object or any errors in its response.`,
-        ...(errors ? { graphQLErrors: errors } : {}),
-      },
-      ...responseExtensions,
-    };
-  }
-
   return {
-    data,
-    ...responseExtensions,
+    ...(data ? { data } : {}),
+    ...(extensions ? { extensions } : {}),
+    ...(errors || !data
+      ? {
+          errors: {
+            networkStatusCode: response.status,
+            message: errors
+              ? GQL_API_ERROR
+              : `${CLIENT}: An unknown error has occurred. The API did not return a data object or any errors in its response.`,
+            ...(errors ? { graphQLErrors: errors } : {}),
+          },
+        }
+      : {}),
   };
 }
+
 export function generateClientLogger(logger?: Logger): Logger {
   return (logContent: LogContentTypes) => {
     if (logger) {
@@ -85,9 +82,9 @@ export function generateClientLogger(logger?: Logger): Logger {
   };
 }
 
-function generateHttpFetch(fetchAPI: CustomFetchAPI, clientLogger: Logger) {
+function generateHttpFetch(fetchApi: CustomFetchApi, clientLogger: Logger) {
   const httpFetch = async (
-    requestParams: Parameters<CustomFetchAPI>,
+    requestParams: Parameters<CustomFetchApi>,
     count: number,
     maxRetries: number
   ): ReturnType<GraphQLClient["fetch"]> => {
@@ -96,7 +93,7 @@ function generateHttpFetch(fetchAPI: CustomFetchAPI, clientLogger: Logger) {
     let response: Response | undefined;
 
     try {
-      response = await fetchAPI(...requestParams);
+      response = await fetchApi(...requestParams);
 
       clientLogger({
         type: "HTTP-Response",
@@ -164,7 +161,7 @@ function generateFetch(
 
     validateRetries({ client: CLIENT, retries: overrideRetries });
 
-    const fetchParams: Parameters<CustomFetchAPI> = [
+    const fetchParams: Parameters<CustomFetchApi> = [
       overrideUrl ?? url,
       {
         method: "POST",
@@ -191,7 +188,7 @@ function generateRequest(
 
       if (!response.ok) {
         return {
-          error: {
+          errors: {
             networkStatusCode: status,
             message: statusText,
           },
@@ -200,7 +197,7 @@ function generateRequest(
 
       if (!contentType.includes(CONTENT_TYPES.json)) {
         return {
-          error: {
+          errors: {
             networkStatusCode: status,
             message: `${UNEXPECTED_CONTENT_TYPE_ERROR} ${contentType}`,
           },
@@ -210,7 +207,7 @@ function generateRequest(
       return processJSONResponse(response);
     } catch (error) {
       return {
-        error: {
+        errors: {
           message: getErrorMessage(error),
         },
       };
