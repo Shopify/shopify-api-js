@@ -3,7 +3,6 @@ import {sanitizeShop} from '../../utils/shop-validator';
 import {ConfigInterface} from '../../base-types';
 import {DataType} from '../../clients/http_client/types';
 import {httpClientClass} from '../../clients/http_client/http_client';
-import * as ShopifyErrors from '../../error';
 
 import {createSession} from './create-session';
 
@@ -28,17 +27,7 @@ export function tokenExchange(config: ConfigInterface) {
     sessionToken,
     requestedTokenType,
   }: TokenExchangeParams) => {
-    const sessionTokenPayload = await decodeSessionToken(config)(sessionToken);
-
-    const cleanShop = sanitizeShop(config)(shop, true)!;
-    const cleanDestFromToken = sanitizeShop(config)(
-      sessionTokenPayload.dest,
-      true,
-    )!;
-
-    if (cleanShop !== cleanDestFromToken) {
-      throw new ShopifyErrors.InvalidShopError();
-    }
+    await decodeSessionToken(config)(sessionToken);
 
     const body = {
       client_id: config.apiKey,
@@ -58,6 +47,7 @@ export function tokenExchange(config: ConfigInterface) {
       },
     };
 
+    const cleanShop = sanitizeShop(config)(shop, true)!;
     const HttpClient = httpClientClass(config);
     const client = new HttpClient({domain: cleanShop});
     const postResponse = await client.post(postParams);

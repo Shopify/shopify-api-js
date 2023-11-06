@@ -194,28 +194,6 @@ describe('tokenExchange', () => {
         ).rejects.toThrow(ShopifyErrors.InvalidShopError);
       });
     });
-
-    describe('session token does not belong to shop', () => {
-      beforeEach(() => {
-        shop = 'differentshop.myshopify.io';
-      });
-
-      test('throws ?', async () => {
-        const shopify = shopifyApi(testConfig());
-        const sessionToken = await signJWT(
-          shopify.config.apiSecretKey,
-          sessionTokenPayload,
-        );
-
-        await expect(
-          shopify.auth.tokenExchange({
-            shop,
-            sessionToken,
-            requestedTokenType: RequestedTokenType.OnlineAccessToken,
-          }),
-        ).rejects.toThrow(ShopifyErrors.InvalidShopError);
-      });
-    });
   });
 
   describe('with invalid session token', () => {
