@@ -38,5 +38,7 @@ export const config: ConfigInterface = {
     httpRequests: false,
     timestamps: false,
   },
-  future: {},
+  future: {
+    unstable_tokenExchange: true,
+  },
 };

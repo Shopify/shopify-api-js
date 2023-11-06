@@ -3,6 +3,7 @@ import {sanitizeShop} from '../../utils/shop-validator';
 import {ConfigInterface} from '../../base-types';
 import {DataType} from '../../clients/http_client/types';
 import {httpClientClass} from '../../clients/http_client/http_client';
+import {Session} from '../../session/session';
 
 import {createSession} from './create-session';
 
@@ -21,7 +22,11 @@ export interface TokenExchangeParams {
   requestedTokenType: RequestedTokenType;
 }
 
-export function tokenExchange(config: ConfigInterface) {
+export type TokenExchange = (
+  params: TokenExchangeParams,
+) => Promise<{session: Session}>;
+
+export function tokenExchange(config: ConfigInterface): TokenExchange {
   return async ({
     shop,
     sessionToken,
