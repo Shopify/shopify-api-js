@@ -59,12 +59,7 @@
     "Storefront API"
   ],
   "files": [
-    "**/*.d.ts",
-    "**/*.d.ts.map",
-    "**/*.js",
-    "**/*.js.map",
-    "**/*.mjs",
-    "**/*.mjs.map",
+    "dist/**/*.*",
     "!node_modules"
   ],
   "dependencies": {

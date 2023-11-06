@@ -1,19 +1,17 @@
 import {
   createGraphQLClient,
-  CustomFetchApi,
   RequestParams as GQLClientRequestParams,
   getCurrentSupportedApiVersions,
   validateDomainAndGetStoreUrl,
   validateApiVersion,
-  ApiClientLogger,
   ApiClientRequestParams,
   ApiClientRequestOptions,
 } from "@shopify/graphql-client";
 
 import {
+  StorefrontApiClientOptions,
   StorefrontApiClient,
   StorefrontApiClientConfig,
-  StorefrontApiClientLogContentTypes,
 } from "./types";
 import {
   DEFAULT_SDK_VARIANT,
@@ -40,23 +38,7 @@ export function createStorefrontApiClient({
   retries = 0,
   customFetchApi: clientFetchApi,
   logger,
-}: {
-  storeDomain: string;
-  apiVersion: string;
-  clientName?: string;
-  retries?: number;
-  customFetchApi?: CustomFetchApi;
-  logger?: ApiClientLogger<StorefrontApiClientLogContentTypes>;
-} & (
-  | {
-      publicAccessToken?: never;
-      privateAccessToken: string;
-    }
-  | {
-      publicAccessToken: string;
-      privateAccessToken?: never;
-    }
-)): StorefrontApiClient {
+}: StorefrontApiClientOptions): StorefrontApiClient {
   const currentSupportedApiVersions = getCurrentSupportedApiVersions();
 
   const storeUrl = validateDomainAndGetStoreUrl({
@@ -83,8 +65,11 @@ export function createStorefrontApiClient({
   const config: StorefrontApiClientConfig = {
     storeDomain: storeUrl,
     apiVersion,
-    publicAccessToken: publicAccessToken ?? null,
-    privateAccessToken: privateAccessToken ?? null,
+    ...(publicAccessToken
+      ? { publicAccessToken }
+      : {
+          privateAccessToken: privateAccessToken!,
+        }),
     headers: {
       "Content-Type": DEFAULT_CONTENT_TYPE,
       Accept: DEFAULT_CONTENT_TYPE,
@@ -162,9 +147,7 @@ function generateGetHeader(
   config: StorefrontApiClientConfig
 ): StorefrontApiClient["getHeaders"] {
   return (customHeaders) => {
-    return customHeaders
-      ? { ...customHeaders, ...config.headers }
-      : config.headers;
+    return { ...(customHeaders ?? {}), ...config.headers };
   };
 }
 

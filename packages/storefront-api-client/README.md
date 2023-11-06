@@ -18,7 +18,7 @@ const client = createStorefrontApiClient({
 
 ### Create a server enabled client using a private access token and a custom Fetch API
 
-> **Warning** <br/>
+> [!WARNING]
 > Private Storefront API delegate access tokens should only be used in server-to-server implementations and not within a browser environment.
 
 In order to use the client within a server, a server enabled JS Fetch API will need to be provided to the client at initialization.

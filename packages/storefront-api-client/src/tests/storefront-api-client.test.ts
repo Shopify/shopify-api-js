@@ -279,13 +279,13 @@ describe("Storefront API Client", () => {
         expect(client.config.storeDomain).toBe(`https://${domain}`);
       });
 
-      it("returns a config object that includes the provided public access token and a null private access token", () => {
+      it("returns a config object that includes the provided public access token and not a private access token", () => {
         const client = createStorefrontApiClient(config);
         expect(client.config.publicAccessToken).toBe(config.publicAccessToken);
-        expect(client.config.privateAccessToken).toBeNull();
+        expect(client.config.privateAccessToken).toBeUndefined();
       });
 
-      it("returns a config object that includes the provided private access token and a null public access token when in a server environment (window is undefined)", () => {
+      it("returns a config object that includes the provided private access token and not a public access token when in a server environment (window is undefined)", () => {
         const windowSpy = jest
           .spyOn(window, "window", "get")
           .mockImplementation(() => undefined as any);
@@ -298,7 +298,7 @@ describe("Storefront API Client", () => {
           privateAccessToken,
         });
         expect(client.config.privateAccessToken).toBe(privateAccessToken);
-        expect(client.config.publicAccessToken).toBeNull();
+        expect(client.config.publicAccessToken).toBeUndefined();
 
         windowSpy.mockRestore();
       });
@@ -429,7 +429,7 @@ describe("Storefront API Client", () => {
 
       it("returns the client's default headers if no custom headers are provided", () => {
         const headers = client.getHeaders();
-        expect(headers).toBe(client.config.headers);
+        expect(headers).toEqual(client.config.headers);
       });
 
       it("returns a headers object that contains both the client default headers and the provided custom headers", () => {
