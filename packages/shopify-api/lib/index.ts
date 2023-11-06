@@ -37,7 +37,7 @@ export interface Shopify<
 > {
   config: Config;
   clients: ShopifyClients;
-  auth: ShopifyAuth;
+  auth: ShopifyAuth<Params['future']>;
   session: ShopifySession;
   utils: ShopifyUtils;
   webhooks: ShopifyWebhooks;

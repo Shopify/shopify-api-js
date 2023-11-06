@@ -1,20 +1,24 @@
 import type {ConfigParams} from '../base-types';
-// import type {FutureFlags} from '../../future/flags';
+import type {FutureFlags} from '../../future/flags';
 import {LATEST_API_VERSION, LogSeverity} from '../types';
 
 // Uncomment this when we add a flag
-// type DefaultedFutureFlag<
-//   Overrides extends Partial<ConfigParams>,
-//   Flag extends keyof FutureFlags,
-// > = Overrides['future'] extends FutureFlags ? Overrides['future'][Flag] : true;
+type DefaultedFutureFlag<
+  Overrides extends Partial<ConfigParams>,
+  Flag extends keyof FutureFlags,
+> = Overrides['future'] extends FutureFlags ? Overrides['future'][Flag] : true;
 
 type TestConfig<Overrides extends Partial<ConfigParams>> = ConfigParams &
   Overrides & {
     // Create an object with all future flags defaulted to active to ensure our tests are updated when we introduce new flags
-    // future: {
-    //   // e.g.
-    //   // v8_newHttpClients: DefaultedFutureFlag<Overrides, 'v8_newHttpClients'>;
-    // };
+    future: {
+      // e.g.
+      // v8_newHttpClients: DefaultedFutureFlag<Overrides, 'v8_newHttpClients'>;
+      unstable_tokenExchange: DefaultedFutureFlag<
+        Overrides,
+        'unstable_tokenExchange'
+      >;
+    };
   };
 
 export function testConfig<Overrides extends Partial<ConfigParams>>(
@@ -39,9 +43,9 @@ export function testConfig<Overrides extends Partial<ConfigParams>>(
       timestamps: false,
       ...overrides.logger,
     },
-    // future: {
-    //   v8_newHttpClients: true,
-    //   ...(overrides.future as Overrides['future']),
-    // },
+    future: {
+      unstable_tokenExchange: true,
+      ...(overrides.future as Overrides['future']),
+    },
   };
 }
