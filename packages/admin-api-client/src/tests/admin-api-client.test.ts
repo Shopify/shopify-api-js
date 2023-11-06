@@ -233,7 +233,7 @@ describe("Admin API Client", () => {
             )
           );
 
-          delete global.window;
+          delete (global as any).window;
         });
       });
     });
@@ -330,7 +330,7 @@ describe("Admin API Client", () => {
 
       it("returns a headers object that contains both the client default headers and the provided custom headers", () => {
         const headers = {
-          "X-GraphQL-Cost-Include-Fields": true,
+          "X-GraphQL-Cost-Include-Fields": "1",
         };
         const updatedHeaders = client.getHeaders(headers);
         expect(updatedHeaders).toEqual({
@@ -361,7 +361,7 @@ describe("Admin API Client", () => {
       });
 
       it("throws an error when the api version is not a string", () => {
-        const version = 123;
+        const version: any = 123;
         expect(() => client.getApiUrl(version)).toThrow(
           new Error(
             `Admin API Client: the provided apiVersion ("123") is invalid. Current supported API versions: ${mockApiVersions.join(

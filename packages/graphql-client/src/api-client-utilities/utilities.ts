@@ -1,6 +1,11 @@
 import { RequestParams } from "../graphql-client/types";
 
-import { ApiClient, ApiClientConfig, ApiClientRequestOptions } from "./types";
+import {
+  AllOperations,
+  ApiClient,
+  ApiClientConfig,
+  ApiClientRequestOptions,
+} from "./types";
 
 export function generateGetHeaders(
   config: ApiClientConfig
@@ -10,18 +15,20 @@ export function generateGetHeaders(
   };
 }
 
-export function generateGetGQLClientParams({
+export function generateGetGQLClientParams<
+  Operations extends AllOperations = AllOperations
+>({
   getHeaders,
   getApiUrl,
 }: {
   getHeaders: ApiClient["getHeaders"];
   getApiUrl: ApiClient["getApiUrl"];
 }) {
-  return (
-    operation: string,
-    options?: ApiClientRequestOptions
+  return <Operation extends keyof Operations>(
+    operation: Operation,
+    options?: ApiClientRequestOptions<Operation, Operations>
   ): RequestParams => {
-    const props: RequestParams = [operation];
+    const props: RequestParams = [operation as string];
 
     if (options && Object.keys(options).length > 0) {
       const {

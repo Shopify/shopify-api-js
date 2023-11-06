@@ -22,4 +22,12 @@ export type AdminApiClientOptions = Omit<
   logger?: ApiClientLogger<AdminApiClientLogContentTypes>;
 };
 
-export type AdminApiClient = ApiClient<AdminApiClientConfig>;
+export interface AdminQueries {
+  [key: string]: { variables: any; return: any };
+}
+export interface AdminMutations {
+  [key: string]: { variables: any; return: any };
+}
+export type AdminOperations = AdminQueries & AdminMutations;
+
+export type AdminApiClient = ApiClient<AdminApiClientConfig, AdminOperations>;

@@ -5,13 +5,15 @@ import {
   validateDomainAndGetStoreUrl,
   generateGetGQLClientParams,
   generateGetHeaders,
-  ApiClientRequestParams,
+  ApiClientFetch,
+  ApiClientRequest,
 } from "@shopify/graphql-client";
 
 import {
   AdminApiClientOptions,
   AdminApiClient,
   AdminApiClientConfig,
+  AdminOperations,
 } from "./types";
 import {
   DEFAULT_CONTENT_TYPE,
@@ -88,17 +90,17 @@ export function createAdminApiClient({
   const getHeaders = generateGetHeaders(config);
   const getApiUrl = generateGetApiUrl(config, apiUrlFormatter);
 
-  const getGQLClientParams = generateGetGQLClientParams({
+  const getGQLClientParams = generateGetGQLClientParams<AdminOperations>({
     getHeaders,
     getApiUrl,
   });
 
-  const fetch = (...props: ApiClientRequestParams) => {
+  const fetch: ApiClientFetch<AdminOperations> = (...props) => {
     return graphqlClient.fetch(...getGQLClientParams(...props));
   };
 
-  const request = <TData>(...props: ApiClientRequestParams) => {
-    return graphqlClient.request<TData>(...getGQLClientParams(...props));
+  const request: ApiClientRequest<AdminOperations> = (...props) => {
+    return graphqlClient.request(...getGQLClientParams(...props));
   };
 
   const client: AdminApiClient = {

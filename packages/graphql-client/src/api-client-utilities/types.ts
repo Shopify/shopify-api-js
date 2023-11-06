@@ -3,10 +3,21 @@ import {
   LogContent,
   Logger as BaseLogger,
   Headers,
-  OperationVariables,
   ClientResponse,
-  GraphQLClient,
 } from "../graphql-client/types";
+
+import {
+  AllOperations,
+  OperationVariables,
+  ResponseWithType,
+  ReturnData,
+} from "./operation-types";
+
+export {
+  AllOperations,
+  InputMaybe,
+  OperationVariables,
+} from "./operation-types";
 
 export interface UnsupportedApiVersionLog extends LogContent {
   type: "UNSUPPORTED_API_VERSION";
@@ -31,28 +42,47 @@ export interface ApiClientConfig {
   retries?: number;
 }
 
-export interface ApiClientRequestOptions {
-  variables?: OperationVariables;
+export type ApiClientRequestOptions<
+  Operation extends keyof Operations = string,
+  Operations extends AllOperations = AllOperations
+> = {
   apiVersion?: string;
   headers?: Headers;
   retries?: number;
-}
+} & (Operation extends keyof Operations
+  ? OperationVariables<Operation, Operations>
+  : { variables?: { [key: string]: any } });
 
-export type ApiClientRequestParams = [
-  operation: string,
-  options?: ApiClientRequestOptions
+export type ApiClientRequestParams<
+  Operation extends keyof Operations,
+  Operations extends AllOperations
+> = [
+  operation: Operation,
+  options?: ApiClientRequestOptions<Operation, Operations>
 ];
 
+export type ApiClientFetch<Operations extends AllOperations = AllOperations> = <
+  Operation extends keyof Operations = string
+>(
+  ...params: ApiClientRequestParams<Operation, Operations>
+) => Promise<ResponseWithType<{ data?: ReturnData<Operation, Operations> }>>;
+
+export type ApiClientRequest<Operations extends AllOperations = AllOperations> =
+  <TData = undefined, Operation extends keyof Operations = string>(
+    ...params: ApiClientRequestParams<Operation, Operations>
+  ) => Promise<
+    ClientResponse<
+      TData extends undefined ? ReturnData<Operation, Operations> : TData
+    >
+  >;
+
 export interface ApiClient<
-  TClientConfig extends ApiClientConfig = ApiClientConfig
+  TClientConfig extends ApiClientConfig = ApiClientConfig,
+  Operations extends AllOperations = AllOperations
 > {
   readonly config: Readonly<TClientConfig>;
   getHeaders: (headers?: Headers) => Headers;
   getApiUrl: (apiVersion?: string) => string;
-  fetch: (
-    ...props: ApiClientRequestParams
-  ) => ReturnType<GraphQLClient["fetch"]>;
-  request: <TData = unknown>(
-    ...props: ApiClientRequestParams
-  ) => Promise<ClientResponse<TData>>;
+  fetch: ApiClientFetch<Operations>;
+  request: ApiClientRequest<Operations>;
 }
