@@ -7,7 +7,7 @@ export type CustomFetchApi = (
   }
 ) => Promise<Response>;
 
-export interface OperationVariables {
+interface OperationVariables {
   [key: string]: any;
 }
 
