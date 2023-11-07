@@ -1,15 +1,15 @@
 import {
   createGraphQLClient,
-  CustomFetchAPI,
+  CustomFetchApi,
   RequestParams as GQLClientRequestParams,
-  getCurrentSupportedAPIVersions,
+  getCurrentSupportedApiVersions,
   validateApiVersion,
 } from "@shopify/graphql-client";
 
 import {
-  AdminAPIClient,
-  AdminAPIClientConfig,
-  AdminAPIClientRequestOptions,
+  AdminApiClient,
+  AdminApiClientConfig,
+  AdminApiClientRequestOptions,
 } from "./types";
 import {
   DEFAULT_CONTENT_TYPE,
@@ -25,20 +25,20 @@ import {
 
 const httpRegEx = new RegExp("^(https?:)?//");
 
-export function createAdminAPIClient({
+export function createAdminApiClient({
   storeDomain,
   apiVersion,
   accessToken,
   userAgentPrefix,
-  customFetchAPI: clientFetchAPI,
+  customFetchApi: clientFetchApi,
 }: {
   storeDomain: string;
   apiVersion: string;
   accessToken: string;
   userAgentPrefix?: string;
-  customFetchAPI?: CustomFetchAPI;
-}): AdminAPIClient {
-  const currentSupportedApiVersions = getCurrentSupportedAPIVersions();
+  customFetchApi?: CustomFetchApi;
+}): AdminApiClient {
+  const currentSupportedApiVersions = getCurrentSupportedApiVersions();
 
   validateServerSideUsage();
   validateRequiredStoreDomain(storeDomain);
@@ -70,7 +70,7 @@ export function createAdminAPIClient({
     }admin/api/${urlApiVersion}/graphql.json`;
   };
 
-  const config: AdminAPIClientConfig = {
+  const config: AdminApiClientConfig = {
     storeDomain: trimmedStoreDomain,
     apiVersion,
     accessToken,
@@ -89,22 +89,22 @@ export function createAdminAPIClient({
   const graphqlClient = createGraphQLClient({
     headers: config.headers,
     url: config.apiUrl,
-    fetchAPI: clientFetchAPI,
+    fetchApi: clientFetchApi,
   });
 
-  const getHeaders: AdminAPIClient["getHeaders"] = (customHeaders) => {
+  const getHeaders: AdminApiClient["getHeaders"] = (customHeaders) => {
     return customHeaders
       ? { ...customHeaders, ...config.headers }
       : config.headers;
   };
 
-  const getApiUrl: AdminAPIClient["getApiUrl"] = (propApiVersion?: string) => {
+  const getApiUrl: AdminApiClient["getApiUrl"] = (propApiVersion?: string) => {
     return propApiVersion ? generateApiUrl(propApiVersion) : config.apiUrl;
   };
 
   const getGQLClientRequestProps = (
     operation: string,
-    options?: AdminAPIClientRequestOptions
+    options?: AdminApiClientRequestOptions
   ): GQLClientRequestParams => {
     const props: GQLClientRequestParams = [operation];
 
@@ -121,17 +121,17 @@ export function createAdminAPIClient({
     return props;
   };
 
-  const fetch: AdminAPIClient["fetch"] = (...props) => {
+  const fetch: AdminApiClient["fetch"] = (...props) => {
     const requestProps = getGQLClientRequestProps(...props);
     return graphqlClient.fetch(...requestProps);
   };
 
-  const request: AdminAPIClient["request"] = (...props) => {
+  const request: AdminApiClient["request"] = (...props) => {
     const requestProps = getGQLClientRequestProps(...props);
     return graphqlClient.request(...requestProps);
   };
 
-  const client: AdminAPIClient = {
+  const client: AdminApiClient = {
     config,
     getHeaders,
     getApiUrl,

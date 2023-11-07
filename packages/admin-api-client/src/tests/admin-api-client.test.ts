@@ -1,7 +1,7 @@
 import { createGraphQLClient, GraphQLClient } from "@shopify/graphql-client";
-import { AdminAPIClient } from "types";
+import { AdminApiClient } from "types";
 
-import { createAdminAPIClient } from "../admin-api-client";
+import { createAdminApiClient } from "../admin-api-client";
 import { ACCESS_TOKEN_HEADER, DEFAULT_CONTENT_TYPE } from "../constants";
 
 const mockApiVersions = [
@@ -21,7 +21,7 @@ jest.mock("@shopify/graphql-client", () => {
 });
 
 describe("Admin API Client", () => {
-  describe("createAdminAPIClient()", () => {
+  describe("createAdminApiClient()", () => {
     const config = {
       storeDomain: "https://test-store.myshopify.io",
       apiVersion: "2023-10",
@@ -50,7 +50,7 @@ describe("Admin API Client", () => {
 
     describe("client initialization", () => {
       it("calls the graphql client with headers and API URL", () => {
-        createAdminAPIClient({ ...config });
+        createAdminApiClient({ ...config });
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
         ).toHaveProperty("headers", {
@@ -67,7 +67,7 @@ describe("Admin API Client", () => {
       it("Prepends user agent prefix if supplied", () => {
         const userAgentPrefix = "test-UAP";
 
-        createAdminAPIClient({ ...config, userAgentPrefix });
+        createAdminApiClient({ ...config, userAgentPrefix });
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
         ).toHaveProperty("headers", {
@@ -82,19 +82,19 @@ describe("Admin API Client", () => {
         ).toHaveProperty("url", mockApiUrl);
       });
 
-      it("calls the graphql client with the provided customFetchAPI", () => {
-        const customFetchAPI = jest.fn();
+      it("calls the graphql client with the provided customFetchApi", () => {
+        const customFetchApi = jest.fn();
 
-        createAdminAPIClient({ ...config, customFetchAPI });
+        createAdminApiClient({ ...config, customFetchApi });
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
-        ).toHaveProperty("fetchAPI", customFetchAPI);
+        ).toHaveProperty("fetchApi", customFetchApi);
       });
 
       it("returns a client object that contains a config object, getters for header and API URL and request and fetch functions", () => {
-        const client = createAdminAPIClient(config);
+        const client = createAdminApiClient(config);
 
         expect(client).toHaveProperty("config");
         expect(client).toMatchObject({
@@ -108,7 +108,7 @@ describe("Admin API Client", () => {
       describe("validations", () => {
         it("throws an error when a store domain is not provided", () => {
           expect(() =>
-            createAdminAPIClient({
+            createAdminApiClient({
               ...config,
               storeDomain: undefined as any,
             })
@@ -119,7 +119,7 @@ describe("Admin API Client", () => {
 
         it("throws an error when an empty string is provided as the store domain", () => {
           expect(() =>
-            createAdminAPIClient({
+            createAdminApiClient({
               ...config,
               storeDomain: "   " as any,
             })
@@ -130,7 +130,7 @@ describe("Admin API Client", () => {
 
         it("throws an error when the provided store domain is not a string", () => {
           expect(() =>
-            createAdminAPIClient({
+            createAdminApiClient({
               ...config,
               storeDomain: 123 as any,
             })
@@ -141,7 +141,7 @@ describe("Admin API Client", () => {
 
         it("throws an error when the api version is not provided", () => {
           expect(() =>
-            createAdminAPIClient({
+            createAdminApiClient({
               ...config,
               apiVersion: undefined as any,
             })
@@ -159,7 +159,7 @@ describe("Admin API Client", () => {
             .spyOn(global.console, "warn")
             .mockImplementation(jest.fn());
 
-          createAdminAPIClient({
+          createAdminApiClient({
             ...config,
             apiVersion: "2022-07",
           });
@@ -173,7 +173,7 @@ describe("Admin API Client", () => {
 
         it("throws an error when an access token isn't provided", () => {
           expect(() =>
-            createAdminAPIClient({
+            createAdminApiClient({
               ...config,
               accessToken: undefined as any,
             })
@@ -186,7 +186,7 @@ describe("Admin API Client", () => {
           global.window = {} as any;
 
           expect(() =>
-            createAdminAPIClient({
+            createAdminApiClient({
               ...config,
               accessToken: "access-token",
             })
@@ -204,19 +204,19 @@ describe("Admin API Client", () => {
 
     describe("client config", () => {
       it("returns a config object that includes the provided store domain", () => {
-        const client = createAdminAPIClient(config);
+        const client = createAdminApiClient(config);
         expect(client.config.storeDomain).toBe(config.storeDomain);
       });
 
       it("returns a config object that includes the provided access token", () => {
-        const client = createAdminAPIClient(config);
+        const client = createAdminApiClient(config);
         expect(client.config.accessToken).toBe(config.accessToken);
       });
 
       it("returns a config object that includes the provided user agent prefix", () => {
         const userAgentPrefix = "test-UAP";
 
-        const client = createAdminAPIClient({ ...config, userAgentPrefix });
+        const client = createAdminApiClient({ ...config, userAgentPrefix });
         expect(client.config.userAgentPrefix).toBe(userAgentPrefix);
       });
 
@@ -225,7 +225,7 @@ describe("Admin API Client", () => {
         const expectedAPIUrl = `https://${cleanedStoreDomain}/admin/api/${config.apiVersion}/graphql.json`;
 
         it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that includes 'https'", () => {
-          const client = createAdminAPIClient({
+          const client = createAdminApiClient({
             ...config,
             storeDomain: `https://${cleanedStoreDomain}`,
           });
@@ -233,7 +233,7 @@ describe("Admin API Client", () => {
         });
 
         it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that includes 'http'", () => {
-          const client = createAdminAPIClient({
+          const client = createAdminApiClient({
             ...config,
             storeDomain: `http://${cleanedStoreDomain}`,
           });
@@ -241,7 +241,7 @@ describe("Admin API Client", () => {
         });
 
         it("returns a config object that includes the secure API url constructed with the provided API version and a store domain that does not include a protocol", () => {
-          const client = createAdminAPIClient({
+          const client = createAdminApiClient({
             ...config,
             storeDomain: cleanedStoreDomain,
           });
@@ -249,7 +249,7 @@ describe("Admin API Client", () => {
         });
 
         it("returns a config object that includes a valid API url constructed with the provided spaced out API version and a store domain", () => {
-          const client = createAdminAPIClient({
+          const client = createAdminApiClient({
             ...config,
             storeDomain: ` ${cleanedStoreDomain}   `,
             apiVersion: ` ${config.apiVersion}   `,
@@ -260,19 +260,19 @@ describe("Admin API Client", () => {
 
       describe("config headers", () => {
         it("returns a header object that includes the content-type header", () => {
-          const client = createAdminAPIClient(config);
+          const client = createAdminApiClient(config);
           expect(client.config.headers["Content-Type"]).toBe(
             DEFAULT_CONTENT_TYPE
           );
         });
 
         it("returns a header object that includes the accept header", () => {
-          const client = createAdminAPIClient(config);
+          const client = createAdminApiClient(config);
           expect(client.config.headers.Accept).toBe(DEFAULT_CONTENT_TYPE);
         });
 
         it("returns a header object that includes the access token headers when an access token is provided", () => {
-          const client = createAdminAPIClient(config);
+          const client = createAdminApiClient(config);
           expect(client.config.headers[ACCESS_TOKEN_HEADER]).toEqual(
             config.accessToken
           );
@@ -281,10 +281,10 @@ describe("Admin API Client", () => {
     });
 
     describe("getHeaders()", () => {
-      let client: AdminAPIClient;
+      let client: AdminApiClient;
 
       beforeEach(() => {
-        client = createAdminAPIClient(config);
+        client = createAdminApiClient(config);
       });
 
       it("returns the client's default headers if no custom headers are provided", () => {
@@ -302,10 +302,10 @@ describe("Admin API Client", () => {
     });
 
     describe("getApiUrl()", () => {
-      let client: AdminAPIClient;
+      let client: AdminApiClient;
 
       beforeEach(() => {
-        client = createAdminAPIClient(config);
+        client = createAdminApiClient(config);
       });
 
       it("returns the client's default API url if no API version was provided", () => {

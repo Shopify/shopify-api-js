@@ -5,7 +5,7 @@ import {
   GraphQLClient,
 } from "@shopify/graphql-client";
 
-export interface AdminAPIClientConfig {
+export interface AdminApiClientConfig {
   readonly storeDomain: string;
   readonly apiVersion: string;
   readonly accessToken: string;
@@ -15,26 +15,26 @@ export interface AdminAPIClientConfig {
   readonly retries?: number;
 }
 
-export interface AdminAPIClientRequestOptions {
+export interface AdminApiClientRequestOptions {
   variables?: OperationVariables;
   apiVersion?: string;
   customHeaders?: Headers;
   retries?: number;
 }
 
-export type AdminAPIClientRequestParams = [
+export type AdminApiClientRequestParams = [
   operation: string,
-  options?: AdminAPIClientRequestOptions
+  options?: AdminApiClientRequestOptions
 ];
 
-export interface AdminAPIClient {
-  readonly config: AdminAPIClientConfig;
+export interface AdminApiClient {
+  readonly config: AdminApiClientConfig;
   getHeaders: (customHeaders?: Headers) => Headers;
   getApiUrl: (apiVersion?: string) => string;
   fetch: (
-    ...props: AdminAPIClientRequestParams
+    ...props: AdminApiClientRequestParams
   ) => ReturnType<GraphQLClient["fetch"]>;
   request: <TData = unknown>(
-    ...props: AdminAPIClientRequestParams
+    ...props: AdminApiClientRequestParams
   ) => Promise<ClientResponse<TData>>;
 }
