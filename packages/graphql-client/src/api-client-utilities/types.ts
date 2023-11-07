@@ -24,11 +24,11 @@ export type ApiClientLogger<TLogContentTypes = ApiClientLogContentTypes> =
   BaseLogger<TLogContentTypes>;
 
 export interface ApiClientConfig {
-  readonly storeDomain: string;
-  readonly apiVersion: string;
-  readonly headers: Headers;
-  readonly apiUrl: string;
-  readonly retries?: number;
+  storeDomain: string;
+  apiVersion: string;
+  headers: Headers;
+  apiUrl: string;
+  retries?: number;
 }
 
 export interface ApiClientRequestOptions {
@@ -43,8 +43,10 @@ export type ApiClientRequestParams = [
   options?: ApiClientRequestOptions
 ];
 
-export interface ApiClient<TClientConfig extends ApiClientConfig> {
-  readonly config: TClientConfig;
+export interface ApiClient<
+  TClientConfig extends ApiClientConfig = ApiClientConfig
+> {
+  readonly config: Readonly<TClientConfig>;
   getHeaders: (customHeaders?: Headers) => Headers;
   getApiUrl: (apiVersion?: string) => string;
   fetch: (
