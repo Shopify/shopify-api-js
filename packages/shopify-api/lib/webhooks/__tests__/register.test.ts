@@ -6,7 +6,7 @@ import {
   WebhookHandler,
   WebhookOperation,
 } from '../types';
-import {ApiVersion, gdprTopics, ShopifyHeader} from '../../types';
+import {ApiVersion, privacyTopics, ShopifyHeader} from '../../types';
 import {DataType} from '../../clients/types';
 import {
   queueMockResponse,
@@ -357,12 +357,12 @@ describe('shopify.webhooks.register', () => {
     );
   });
 
-  gdprTopics.forEach((gdprTopic) => {
-    it(`does not send a register for ${gdprTopic}`, async () => {
+  privacyTopics.forEach((privacyTopic) => {
+    it(`does not send a register for ${privacyTopic}`, async () => {
       const shopify = shopifyApi(testConfig());
       const handler = HTTP_HANDLER;
 
-      shopify.webhooks.addHandlers({[gdprTopic]: handler});
+      shopify.webhooks.addHandlers({[privacyTopic]: handler});
 
       queueMockResponse(
         JSON.stringify(mockResponses.webhookCheckEmptyResponse),
@@ -371,8 +371,8 @@ describe('shopify.webhooks.register', () => {
       const response = await shopify.webhooks.register({session});
 
       expect(mockTestRequests.requestList).toHaveLength(1);
-      expect(response[gdprTopic]).toHaveLength(0);
-      expect(shopify.webhooks.getTopicsAdded()).toContain(gdprTopic);
+      expect(response[privacyTopic]).toHaveLength(0);
+      expect(shopify.webhooks.getTopicsAdded()).toContain(privacyTopic);
     });
   });
 
