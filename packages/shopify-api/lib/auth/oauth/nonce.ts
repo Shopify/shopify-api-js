@@ -1,5 +1,7 @@
 import {crypto} from '../../../runtime/crypto';
 
+export type Nonce = () => string;
+
 export function nonce(): string {
   const length = 15;
 

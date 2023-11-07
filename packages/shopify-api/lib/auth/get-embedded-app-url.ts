@@ -6,7 +6,13 @@ import {sanitizeHost} from '../utils/shop-validator';
 import {decodeHost} from './decode-host';
 import {GetEmbeddedAppUrlParams} from './types';
 
-export function getEmbeddedAppUrl(config: ConfigInterface) {
+export type GetEmbeddedAppUrl = (
+  params: GetEmbeddedAppUrlParams,
+) => Promise<string>;
+
+export type BuildEmbeddedAppUrl = (host: string) => string;
+
+export function getEmbeddedAppUrl(config: ConfigInterface): GetEmbeddedAppUrl {
   return async ({...adapterArgs}: GetEmbeddedAppUrlParams): Promise<string> => {
     const request = await abstractConvertRequest(adapterArgs);
 
@@ -35,7 +41,9 @@ export function getEmbeddedAppUrl(config: ConfigInterface) {
   };
 }
 
-export function buildEmbeddedAppUrl(config: ConfigInterface) {
+export function buildEmbeddedAppUrl(
+  config: ConfigInterface,
+): BuildEmbeddedAppUrl {
   return (host: string): string => {
     sanitizeHost()(host, true);
     const decodedHost = decodeHost(host);

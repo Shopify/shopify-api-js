@@ -30,12 +30,18 @@ import {
 } from './types';
 import {nonce} from './nonce';
 import {safeCompare} from './safe-compare';
-import {createSession} from './create-session';
+import {accessTokenResponse, createSession} from './create-session';
+
+export type OAuthBegin = (beginParams: BeginParams) => Promise<AdapterResponse>;
 
 export interface CallbackResponse<T = AdapterHeaders> {
   headers: T;
   session: Session;
 }
+
+export type OAuthCallback = <T = AdapterHeaders>(
+  callbackParams: CallbackParams,
+) => Promise<CallbackResponse<T>>;
 
 interface BotLog {
   request: NormalizedRequest;
@@ -49,7 +55,7 @@ const logForBot = ({request, log, func}: BotLog) => {
   });
 };
 
-export function begin(config: ConfigInterface) {
+export function begin(config: ConfigInterface): OAuthBegin {
   return async ({
     shop,
     callbackPath,
@@ -113,7 +119,7 @@ export function begin(config: ConfigInterface) {
   };
 }
 
-export function callback(config: ConfigInterface) {
+export function callback(config: ConfigInterface): OAuthCallback {
   return async function callback<T = AdapterHeaders>({
     ...adapterArgs
   }: CallbackParams): Promise<CallbackResponse<T>> {
@@ -184,7 +190,7 @@ export function callback(config: ConfigInterface) {
     const postResponse = await client.post(postParams);
 
     const session: Session = createSession({
-      postResponse,
+      accessTokenResponse: accessTokenResponse(postResponse),
       shop: cleanShop,
       state: stateFromCookie,
       config,
