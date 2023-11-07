@@ -23,6 +23,7 @@
   },
   "references": [
     {"path": "./packages/shopify-api"},
-    {"path": "./packages/graphql-client"}
+    {"path": "./packages/graphql-client"},
+    {"path": "./packages/storefront-api-client"}
   ]
 }
