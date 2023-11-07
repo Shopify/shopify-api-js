@@ -14,16 +14,16 @@ import {
 
 export function createSession({
   config,
-  postResponse,
+  accessTokenResponse,
   shop,
   state,
 }: {
   config: ConfigInterface;
-  postResponse: RequestReturn;
+  accessTokenResponse: AccessTokenResponse;
   shop: string;
   state: string;
 }): Session {
-  const associatedUser = (postResponse.body as OnlineAccessResponse)
+  const associatedUser = (accessTokenResponse as OnlineAccessResponse)
     .associated_user;
   const isOnline = Boolean(associatedUser);
 
@@ -31,7 +31,7 @@ export function createSession({
 
   if (isOnline) {
     let sessionId: string;
-    const responseBody = postResponse.body as OnlineAccessResponse;
+    const responseBody = accessTokenResponse as OnlineAccessResponse;
     const {access_token, scope, ...rest} = responseBody;
     const sessionExpiration = new Date(
       Date.now() + responseBody.expires_in * 1000,
@@ -57,14 +57,27 @@ export function createSession({
       onlineAccessInfo: rest,
     });
   } else {
-    const responseBody = postResponse.body as AccessTokenResponse;
     return new Session({
       id: getOfflineId(config)(shop),
       shop,
       state,
       isOnline,
-      accessToken: responseBody.access_token,
-      scope: responseBody.scope,
+      accessToken: accessTokenResponse.access_token,
+      scope: accessTokenResponse.scope,
     });
   }
+}
+
+export function accessTokenResponse(
+  postResponse: RequestReturn,
+): AccessTokenResponse {
+  const associatedUser = (postResponse.body as OnlineAccessResponse)
+    .associated_user;
+  const isOnline = Boolean(associatedUser);
+
+  if (isOnline) {
+    return postResponse.body as OnlineAccessResponse;
+  }
+
+  return postResponse.body as AccessTokenResponse;
 }

@@ -1,9 +1,11 @@
 import * as ShopifyErrors from '../../error';
 
-export function safeCompare(
+export type SafeCompare = (
   strA: string | {[key: string]: string} | string[] | number[],
   strB: string | {[key: string]: string} | string[] | number[],
-): boolean {
+) => boolean;
+
+export const safeCompare: SafeCompare = (strA, strB) => {
   if (typeof strA === typeof strB) {
     const enc = new TextEncoder();
     const buffA = enc.encode(JSON.stringify(strA));
@@ -18,7 +20,7 @@ export function safeCompare(
     );
   }
   return false;
-}
+};
 
 // Buffer must be same length for this function to be secure.
 function timingSafeEqual(bufA: ArrayBuffer, bufB: ArrayBuffer): boolean {

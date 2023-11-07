@@ -16,39 +16,33 @@ beforeEach(() => {
 
 describe('createSession', () => {
   describe('when receiving an offline token', () => {
-    [{isEmbeddedApp: true}, {isEmbeddedApp: false}].forEach(
-      ({isEmbeddedApp}) => {
-        test(`creates a new offline session when embedded is ${isEmbeddedApp}`, () => {
-          const shopify = shopifyApi(testConfig({isEmbeddedApp}));
+    test.each([true, false])(
+      `creates a new offline session when embedded is %s`,
+      (isEmbeddedApp) => {
+        const shopify = shopifyApi(testConfig({isEmbeddedApp}));
 
-          const accessTokenResponse = {
-            statusCode: 200,
-            statusText: 'OK',
-            headers: {},
-            body: {
-              access_token: 'some access token string',
-              scope: shopify.config.scopes.toString(),
-            },
-          };
+        const accessTokenResponse = {
+          access_token: 'some access token string',
+          scope: shopify.config.scopes.toString(),
+        };
 
-          const session = createSession({
-            config: shopify.config,
-            postResponse: accessTokenResponse,
-            shop,
-            state: 'test-state',
-          });
-
-          expect(session).toEqual(
-            new Session({
-              id: `offline_${shop}`,
-              shop,
-              isOnline: false,
-              state: 'test-state',
-              accessToken: accessTokenResponse.body.access_token,
-              scope: accessTokenResponse.body.scope,
-            }),
-          );
+        const session = createSession({
+          config: shopify.config,
+          accessTokenResponse,
+          shop,
+          state: 'test-state',
         });
+
+        expect(session).toEqual(
+          new Session({
+            id: `offline_${shop}`,
+            shop,
+            isOnline: false,
+            state: 'test-state',
+            accessToken: accessTokenResponse.access_token,
+            scope: accessTokenResponse.scope,
+          }),
+        );
       },
     );
   });
@@ -73,19 +67,14 @@ describe('createSession', () => {
       };
 
       const accessTokenResponse = {
-        statusCode: 200,
-        statusText: 'OK',
-        headers: {},
-        body: {
-          access_token: 'some access token',
-          scope: 'pet_kitties, walk_dogs',
-          ...onlineAccessInfo,
-        },
+        access_token: 'some access token',
+        scope: 'pet_kitties, walk_dogs',
+        ...onlineAccessInfo,
       };
 
       const session = createSession({
         config: shopify.config,
-        postResponse: accessTokenResponse,
+        accessTokenResponse,
         shop,
         state: 'test-state',
       });
@@ -96,8 +85,8 @@ describe('createSession', () => {
           shop,
           isOnline: true,
           state: 'test-state',
-          accessToken: accessTokenResponse.body.access_token,
-          scope: accessTokenResponse.body.scope,
+          accessToken: accessTokenResponse.access_token,
+          scope: accessTokenResponse.scope,
           expires: new Date(Date.now() + onlineAccessInfo.expires_in * 1000),
           onlineAccessInfo,
         }),
@@ -123,19 +112,14 @@ describe('createSession', () => {
       };
 
       const accessTokenResponse = {
-        statusCode: 200,
-        statusText: 'OK',
-        headers: {},
-        body: {
-          access_token: 'some access token',
-          scope: 'pet_kitties, walk_dogs',
-          ...onlineAccessInfo,
-        },
+        access_token: 'some access token',
+        scope: 'pet_kitties, walk_dogs',
+        ...onlineAccessInfo,
       };
 
       const session = createSession({
         config: shopify.config,
-        postResponse: accessTokenResponse,
+        accessTokenResponse,
         shop,
         state: 'test-state',
       });
@@ -146,8 +130,8 @@ describe('createSession', () => {
           shop,
           isOnline: true,
           state: 'test-state',
-          accessToken: accessTokenResponse.body.access_token,
-          scope: accessTokenResponse.body.scope,
+          accessToken: accessTokenResponse.access_token,
+          scope: accessTokenResponse.scope,
           expires: new Date(Date.now() + onlineAccessInfo.expires_in * 1000),
           onlineAccessInfo,
         }),
