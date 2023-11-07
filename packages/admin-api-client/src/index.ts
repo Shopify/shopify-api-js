@@ -1,1 +1,1 @@
-export { createAdminAPIClient } from "./admin-api-client";
+export { createAdminApiClient } from "./admin-api-client";
