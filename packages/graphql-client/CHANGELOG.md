@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.7.0
+
+### Minor Changes
+
+- b830e575: Add API client utility factories for generating the `getHeaders()` and `getGQLClientParams()` functions
+
 ## 0.6.0
 
 ### Minor Changes
