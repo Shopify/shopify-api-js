@@ -41,7 +41,21 @@
     "release": "yarn build && changeset publish"
   },
   "jest": {
-    "testEnvironment": "jsdom",
+    "projects": [
+      {
+        "displayName": {
+          "name": "test:browser",
+          "color": "blue"
+        },
+        "testEnvironment": "jsdom"
+      },
+      {
+        "displayName": {
+          "name": "test:server",
+          "color": "yellow"
+        }
+      }
+    ],
     "setupFilesAfterEnv": [
       "./src/tests/setupTests.ts"
     ],

@@ -1,11 +1,11 @@
 import {
   createGraphQLClient,
-  RequestParams as GQLClientRequestParams,
   getCurrentSupportedApiVersions,
   validateDomainAndGetStoreUrl,
   validateApiVersion,
+  generateGetGQLClientParams,
+  generateGetHeaders,
   ApiClientRequestParams,
-  ApiClientRequestOptions,
 } from "@shopify/graphql-client";
 
 import {
@@ -92,22 +92,20 @@ export function createStorefrontApiClient({
     logger,
   });
 
-  const getHeaders = generateGetHeader(config);
+  const getHeaders = generateGetHeaders(config);
   const getApiUrl = generateGetApiUrl(config, apiUrlFormatter);
 
-  const getGQLClientRequestProps = generateGetGQLClientProps({
+  const getGQLClientParams = generateGetGQLClientParams({
     getHeaders,
     getApiUrl,
   });
 
   const fetch = (...props: ApiClientRequestParams) => {
-    const requestProps = getGQLClientRequestProps(...props);
-    return graphqlClient.fetch(...requestProps);
+    return graphqlClient.fetch(...getGQLClientParams(...props));
   };
 
   const request = <TData>(...props: ApiClientRequestParams) => {
-    const requestProps = getGQLClientRequestProps(...props);
-    return graphqlClient.request<TData>(...requestProps);
+    return graphqlClient.request<TData>(...getGQLClientParams(...props));
   };
 
   const client: StorefrontApiClient = {
@@ -143,52 +141,11 @@ function generateApiUrlFormatter(
   };
 }
 
-function generateGetHeader(
-  config: StorefrontApiClientConfig
-): StorefrontApiClient["getHeaders"] {
-  return (customHeaders) => {
-    return { ...(customHeaders ?? {}), ...config.headers };
-  };
-}
-
 function generateGetApiUrl(
   config: StorefrontApiClientConfig,
   apiUrlFormatter: (version?: string) => string
 ): StorefrontApiClient["getApiUrl"] {
   return (propApiVersion?: string) => {
     return propApiVersion ? apiUrlFormatter(propApiVersion) : config.apiUrl;
-  };
-}
-
-function generateGetGQLClientProps({
-  getHeaders,
-  getApiUrl,
-}: {
-  getHeaders: StorefrontApiClient["getHeaders"];
-  getApiUrl: StorefrontApiClient["getApiUrl"];
-}) {
-  return (
-    operation: string,
-    options?: ApiClientRequestOptions
-  ): GQLClientRequestParams => {
-    const props: GQLClientRequestParams = [operation];
-
-    if (options) {
-      const {
-        variables,
-        apiVersion: propApiVersion,
-        customHeaders,
-        retries,
-      } = options;
-
-      props.push({
-        variables,
-        headers: customHeaders ? getHeaders(customHeaders) : undefined,
-        url: propApiVersion ? getApiUrl(propApiVersion) : undefined,
-        retries,
-      });
-    }
-
-    return props;
   };
 }
