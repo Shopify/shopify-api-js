@@ -1,5 +1,5 @@
 {
-  "name": "@shopify/codegen-preset",
+  "name": "@shopify/api-codegen-preset",
   "version": "0.0.1",
   "description": "Preset for graphql-codegen to parse and type queries to Shopify APIs",
   "repository": {
@@ -76,5 +76,5 @@
   "bugs": {
     "url": "https://github.com/Shopify/shopify-api-js/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify-api-js/packages/codegen-preset#readme"
+  "homepage": "https://github.com/Shopify/shopify-api-js/packages/api-codegen-preset#readme"
 }

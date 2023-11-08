@@ -1,9 +1,9 @@
-# `@shopify/codegen-preset`
+# `@shopify/api-codegen-preset`
 
 <!-- ![Build Status]() -->
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../../LICENSE.md)
-[![npm version](https://badge.fury.io/js/%40shopify%codegen-preset.svg)](https://badge.fury.io/js/%40shopify%codegen-preset)
+[![npm version](https://badge.fury.io/js/%40shopify%api-codegen-preset.svg)](https://badge.fury.io/js/%40shopify%api-codegen-preset)
 
 This package enables JavaScript / TypeScript apps to use a `#graphql` tag to parse queries with [`graphql-codegen`](https://the-guild.dev/graphql/codegen).
 
@@ -12,18 +12,18 @@ Shopify's clients are then able to use those types to automatically type your op
 
 ## Getting started
 
-The first step is to install the `@shopify/codegen-preset` package, using your preferred package manager:
+The first step is to install the `@shopify/api-codegen-preset` package, using your preferred package manager:
 
 ```sh
-yarn add --dev @shopify/codegen-preset
+yarn add --dev @shopify/api-codegen-preset
 ```
 
 ```sh
-npm add --save-dev @shopify/codegen-preset
+npm add --save-dev @shopify/api-codegen-preset
 ```
 
 ```sh
-pnpm add -D @shopify/codegen-preset
+pnpm add -D @shopify/api-codegen-preset
 ```
 
 ## Configuration
@@ -75,7 +75,7 @@ The quickest way to set this package up is to use `shopifyApiProject`.
 To do that, create a `.graphqlrc.ts` file in your app's root folder, and add the following content to it:
 
 ```js
-import { shopifyApiProject, ApiType } from "@shopify/codegen-preset";
+import { shopifyApiProject, ApiType } from "@shopify/api-codegen-preset";
 
 export default {
   // For syntax highlighting / auto-complete when writing operations
