@@ -47,13 +47,21 @@
           "name": "test:browser",
           "color": "blue"
         },
-        "testEnvironment": "jsdom"
+        "testEnvironment": "jsdom",
+        "testPathIgnorePatterns": [
+          ".rollup.cache/",
+          "(/__tests__/.*|(\\.|/)server(\\.|/)(test|spec))\\.[jt]sx?$"
+        ]
       },
       {
         "displayName": {
           "name": "test:server",
           "color": "yellow"
-        }
+        },
+        "testPathIgnorePatterns": [
+          ".rollup.cache/",
+          "(/__tests__/.*|(\\.|/)browser(\\.|/)(test|spec))\\.[jt]sx?$"
+        ]
       }
     ],
     "setupFilesAfterEnv": [
