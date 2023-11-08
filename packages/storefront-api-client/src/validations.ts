@@ -3,7 +3,7 @@ import { CLIENT } from "./constants";
 export function validatePrivateAccessTokenUsage(
   privateAccessToken: string | undefined
 ) {
-  if (privateAccessToken && window) {
+  if (privateAccessToken && typeof window !== "undefined") {
     throw new Error(
       `${CLIENT}: private access tokens and headers should only be used in a server-to-server implementation. Use the public API access token in nonserver environments.`
     );
