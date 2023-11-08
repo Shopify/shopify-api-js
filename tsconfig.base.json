@@ -26,6 +26,6 @@
     {"path": "./packages/graphql-client"},
     {"path": "./packages/storefront-api-client"},
     {"path": "./packages/admin-api-client"},
-    {"path": "./packages/codegen-preset"}
+    {"path": "./packages/api-codegen-preset"}
   ]
 }
