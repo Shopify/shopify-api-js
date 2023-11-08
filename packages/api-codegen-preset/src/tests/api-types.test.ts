@@ -104,7 +104,7 @@ describe("shopifyApiTypes", () => {
         });
       });
 
-      it("defaults missing configs to files when file is  present", () => {
+      it("defaults missing configs to files when file is present", () => {
         // GIVEN
         const config: ShopifyApiProjectOptions = { apiType };
 

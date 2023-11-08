@@ -1,4 +1,5 @@
+export * from "./types";
+export * from "./preset";
 export * from "./api-types";
 export * from "./api-project";
-export * from "./preset";
-export * from "./types";
+export { pluckConfig } from "@shopify/hydrogen-codegen";
