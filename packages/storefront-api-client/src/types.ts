@@ -1,30 +1,25 @@
 import {
   ApiClient,
-  Headers,
   CustomFetchApi,
   ApiClientLogger,
   ApiClientLogContentTypes,
+  ApiClientConfig,
 } from "@shopify/graphql-client";
 
 export type StorefrontApiClientLogContentTypes = ApiClientLogContentTypes;
 
-export type StorefrontApiClientConfig = {
-  storeDomain: string;
-  apiVersion: string;
-  headers: Headers;
-  apiUrl: string;
-  retries?: number;
+export type StorefrontApiClientConfig = ApiClientConfig & {
   clientName?: string;
 } & (
-  | {
-      publicAccessToken?: never;
-      privateAccessToken: string;
-    }
-  | {
-      publicAccessToken: string;
-      privateAccessToken?: never;
-    }
-);
+    | {
+        publicAccessToken?: never;
+        privateAccessToken: string;
+      }
+    | {
+        publicAccessToken: string;
+        privateAccessToken?: never;
+      }
+  );
 
 export type StorefrontApiClientOptions = Omit<
   StorefrontApiClientConfig,
@@ -34,6 +29,4 @@ export type StorefrontApiClientOptions = Omit<
   logger?: ApiClientLogger<StorefrontApiClientLogContentTypes>;
 };
 
-export type StorefrontApiClient = ApiClient<
-  Readonly<StorefrontApiClientConfig>
->;
+export type StorefrontApiClient = ApiClient<StorefrontApiClientConfig>;

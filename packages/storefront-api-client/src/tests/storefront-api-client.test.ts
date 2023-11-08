@@ -210,7 +210,7 @@ describe("Storefront API Client", () => {
 
         it("console warns when a unsupported api version is provided", () => {
           const consoleWarnSpy = jest
-            .spyOn(window.console, "warn")
+            .spyOn(global.console, "warn")
             .mockImplementation(jest.fn());
 
           createStorefrontApiClient({
@@ -238,38 +238,40 @@ describe("Storefront API Client", () => {
           );
         });
 
-        it("throws an error when a private access token is provided in a browser environment (window is defined)", () => {
-          expect(() =>
-            createStorefrontApiClient({
-              ...config,
-              publicAccessToken: undefined as any,
-              privateAccessToken: "private-access-token",
-            })
-          ).toThrow(
-            new Error(
-              "Storefront API Client: private access tokens and headers should only be used in a server-to-server implementation. Use the public API access token in nonserver environments."
-            )
-          );
-        });
+        if (typeof window === "object") {
+          describe("browser environment", () => {
+            it("throws an error when a private access token is provided in a browser environment", () => {
+              expect(() =>
+                createStorefrontApiClient({
+                  ...config,
+                  publicAccessToken: undefined as any,
+                  privateAccessToken: "private-access-token",
+                })
+              ).toThrow(
+                new Error(
+                  "Storefront API Client: private access tokens and headers should only be used in a server-to-server implementation. Use the public API access token in nonserver environments."
+                )
+              );
+            });
+          });
+        }
 
-        it("throws an error when both public and private access tokens are provided in a server environment (window is undefined)", () => {
-          const windowSpy = jest
-            .spyOn(window, "window", "get")
-            .mockImplementation(() => undefined as any);
-
-          expect(() =>
-            createStorefrontApiClient({
-              ...config,
-              privateAccessToken: "private-token",
-            } as any)
-          ).toThrow(
-            new Error(
-              `Storefront API Client: only provide either a public or private access token`
-            )
-          );
-
-          windowSpy.mockRestore();
-        });
+        if (typeof window === "undefined") {
+          describe("server enviornment", () => {
+            it("throws an error when both public and private access tokens are provided in a server environment", () => {
+              expect(() =>
+                createStorefrontApiClient({
+                  ...config,
+                  privateAccessToken: "private-token",
+                } as any)
+              ).toThrow(
+                new Error(
+                  `Storefront API Client: only provide either a public or private access token`
+                )
+              );
+            });
+          });
+        }
       });
     });
 
@@ -285,23 +287,21 @@ describe("Storefront API Client", () => {
         expect(client.config.privateAccessToken).toBeUndefined();
       });
 
-      it("returns a config object that includes the provided private access token and not a public access token when in a server environment (window is undefined)", () => {
-        const windowSpy = jest
-          .spyOn(window, "window", "get")
-          .mockImplementation(() => undefined as any);
+      if (typeof window === "undefined") {
+        describe("server environment", () => {
+          it("returns a config object that includes the provided private access token and not a public access token when in a server environment", () => {
+            const privateAccessToken = "private-token";
 
-        const privateAccessToken = "private-token";
-
-        const client = createStorefrontApiClient({
-          ...config,
-          publicAccessToken: undefined,
-          privateAccessToken,
+            const client = createStorefrontApiClient({
+              ...config,
+              publicAccessToken: undefined,
+              privateAccessToken,
+            });
+            expect(client.config.privateAccessToken).toBe(privateAccessToken);
+            expect(client.config.publicAccessToken).toBeUndefined();
+          });
         });
-        expect(client.config.privateAccessToken).toBe(privateAccessToken);
-        expect(client.config.publicAccessToken).toBeUndefined();
-
-        windowSpy.mockRestore();
-      });
+      }
 
       it("returns a config object that includes the provided client name", () => {
         const clientName = "test-client";
@@ -382,25 +382,23 @@ describe("Storefront API Client", () => {
           );
         });
 
-        it("returns a header object that includes the private headers when a private access token is provided", () => {
-          const windowSpy = jest
-            .spyOn(window, "window", "get")
-            .mockImplementation(() => undefined as any);
+        if (typeof window === "undefined") {
+          describe("server environment", () => {
+            it("returns a header object that includes the private headers when a private access token is provided", () => {
+              const privateAccessToken = "private-token";
 
-          const privateAccessToken = "private-token";
+              const client = createStorefrontApiClient({
+                ...config,
+                publicAccessToken: undefined,
+                privateAccessToken,
+              });
 
-          const client = createStorefrontApiClient({
-            ...config,
-            publicAccessToken: undefined,
-            privateAccessToken,
+              expect(
+                client.config.headers[PRIVATE_ACCESS_TOKEN_HEADER]
+              ).toEqual(privateAccessToken);
+            });
           });
-
-          expect(client.config.headers[PRIVATE_ACCESS_TOKEN_HEADER]).toEqual(
-            privateAccessToken
-          );
-
-          windowSpy.mockRestore();
-        });
+        }
 
         it("returns a header object that includes the SDK variant source header when client name is provided", () => {
           const clientName = "test-client";
@@ -474,7 +472,7 @@ describe("Storefront API Client", () => {
 
       it("console warns when a unsupported api version is provided", () => {
         const consoleWarnSpy = jest
-          .spyOn(window.console, "warn")
+          .spyOn(global.console, "warn")
           .mockImplementation(jest.fn());
 
         const version = "2021-01";
@@ -514,8 +512,8 @@ describe("Storefront API Client", () => {
       });
 
       describe("parameters", () => {
-        it("calls the graphql client fetch() with just the operation string when there is no provided options", async () => {
-          const test = await client.fetch(operation);
+        it("calls the graphql client fetch() with just the operation string when there are no options provided", async () => {
+          await client.fetch(operation);
 
           expect(graphqlClientMock.fetch).toHaveBeenCalledWith(operation);
         });
@@ -598,8 +596,8 @@ describe("Storefront API Client", () => {
       });
 
       describe("parameters", () => {
-        it("calls the graphql client request() with just the operation string when there is no provided options", async () => {
-          const test = await client.request(operation);
+        it("calls the graphql client request() with just the operation string when there are no options provided", async () => {
+          await client.request(operation);
 
           expect(graphqlClientMock.request).toHaveBeenCalledWith(operation);
         });
