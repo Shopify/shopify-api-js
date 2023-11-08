@@ -28,51 +28,121 @@ pnpm add -D @shopify/api-codegen-preset
 
 ## Configuration
 
-This package provides 3 key exports:
+This package provides 3 key exports, that make it increasingly easier to set up a project:
 
-1. `shopifyApiProject`: one-stop-shop setup for an entire codegen project.
-1. `shopifyApiTypes`: provides all the [`generates`](https://the-guild.dev/graphql/codegen/docs/config-reference/codegen-config#configuration-options) steps needed for a project.
 1. `preset`: provides the low-level implementation that converts the schema into types. Include this in a `generates` step.
-
-### `shopifyApiProject`
-
-This function creates a fully-functional project configuration.
-
-| Option     | Type       | Required | Default              | Description                                                                                                                          |
-| ---------- | ---------- | -------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| apiType    | `ApiType`  | Yes      |                      | The API to pull schemas from.                                                                                                        |
-| apiVersion | `string`   |          | Latest               | Pull schemas for a specific version.                                                                                                 |
-| outputDir  | `string`   |          | `.`                  | Where to output the types files.                                                                                                     |
-| documents  | `string[]` |          | `./**/*.{ts,tsx}`    | Glob pattern for files to parse.                                                                                                     |
-| module     | `string`   |          | Depends on `ApiType` | Change the module whose types will be overridden. Use this to override the types for any package, as long as it uses the same names. |
-
-### `shopifyApiTypes`
-
-This function creates the appropriate `generates` steps for a project.
-Use this function if you want to configure a custom project, or add your own `generates` steps.
-
-| Option     | Type       | Required | Default              | Description                                                                                                                          |
-| ---------- | ---------- | -------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| apiType    | `ApiType`  | Yes      |                      | The API to pull schemas from.                                                                                                        |
-| apiVersion | `string`   |          | Latest               | Pull schemas for a specific version.                                                                                                 |
-| outputDir  | `string`   |          | `.`                  | Where to output the types files.                                                                                                     |
-| documents  | `string[]` |          | `./**/*.{ts,tsx}`    | Glob pattern for files to parse.                                                                                                     |
-| module     | `string`   |          | Depends on `ApiType` | Change the module whose types will be overridden. Use this to override the types for any package, as long as it uses the same names. |
+1. `shopifyApiTypes`: provides all the [`generates`](https://the-guild.dev/graphql/codegen/docs/config-reference/codegen-config#configuration-options) steps needed for a project.
+1. `shopifyApiProject`: one-stop-shop setup for an entire codegen project.
 
 ### `preset`
 
 Use this as [a Codegen preset](https://the-guild.dev/graphql/codegen/docs/config-reference/codegen-config#configuration-options) inside a `generates` step.
 This gives you complete control over your configuration if you want to set up a fully custom scenario.
 
-| Option  | Type      | Required | Default              | Description                                                                                                                          |
-| ------- | --------- | -------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| apiType | `ApiType` | Yes      |                      | The API to pull schemas from.                                                                                                        |
-| module  | `string`  |          | Depends on `ApiType` | Change the module whose types will be overridden. Use this to override the types for any package, as long as it uses the same names. |
+| Option  | Type      | Default              | Description                                                                                                                          |
+| ------- | --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| apiType | `ApiType` |                      | The API to pull schemas from.                                                                                                        |
+| module  | `string?` | Depends on `ApiType` | Change the module whose types will be overridden. Use this to override the types for any package, as long as it uses the same names. |
 
-## .graphqlrc file
+#### Example `.graphqlrc.ts` file
 
-The quickest way to set this package up is to use `shopifyApiProject`.
-To do that, create a `.graphqlrc.ts` file in your app's root folder, and add the following content to it:
+```ts
+import { ApiType, pluckConfig, preset } from "@shopify/api-codegen-preset";
+
+export default {
+  // For syntax highlighting / auto-complete when writing operations
+  schema: "https://shopify.dev/admin-graphql-direct-proxy",
+  documents: ["*.{js,ts,jsx,tsx}"],
+  projects: {
+    default: {
+      schema: "https://shopify.dev/admin-graphql-direct-proxy",
+      documents: ["*.{js,ts,jsx,tsx}"],
+      extensions: {
+        codegen: {
+          schema: "https://shopify.dev/admin-graphql-direct-proxy",
+          documents: ["*.{js,ts,jsx,tsx}"],
+          // Enables support for `#graphql` tags, as well as `/* GraphQL */`
+          pluckConfig,
+          generates: {
+            "./types/admin.schema.json": {
+              plugins: ["introspection"],
+              config: { minify: true },
+            },
+            "./types/admin.types.d.ts": {
+              plugins: ["typescript"],
+            },
+            "./types/admin.generated.d.ts": {
+              preset,
+              presetConfig: {
+                apiType: ApiType.Admin,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};
+```
+
+### `shopifyApiTypes`
+
+This function creates the appropriate `generates` steps for a project.
+Use this function if you want to configure a custom project, or add your own `generates` steps.
+
+| Option     | Type        | Default              | Description                                                                                                                          |
+| ---------- | ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| apiType    | `ApiType`   |                      | The API to pull schemas from.                                                                                                        |
+| apiVersion | `string?`   | Latest               | Pull schemas for a specific version.                                                                                                 |
+| outputDir  | `string?`   | `.`                  | Where to output the types files.                                                                                                     |
+| documents  | `string[]?` | `./**/*.{ts,tsx}`    | Glob pattern for files to parse.                                                                                                     |
+| module     | `string?`   | Depends on `ApiType` | Change the module whose types will be overridden. Use this to override the types for any package, as long as it uses the same names. |
+
+#### Example `.graphqlrc.ts` file
+
+```js
+import {
+  ApiType,
+  pluckConfig,
+  shopifyApiTypes,
+} from "@shopify/api-codegen-preset";
+
+export default {
+  // For syntax highlighting / auto-complete when writing operations
+  schema: "https://shopify.dev/admin-graphql-direct-proxy/2023-10",
+  documents: ["./app/**/*.{js,ts,jsx,tsx}"],
+  projects: {
+    // To produce variable / return types for Admin API operations
+    schema: "https://shopify.dev/admin-graphql-direct-proxy/2023-10",
+    documents: ["./app/**/*.{js,ts,jsx,tsx}"],
+    extensions: {
+      codegen: {
+        pluckConfig,
+        generates: shopifyApiTypes({
+          apiType: ApiType.Admin,
+          apiVersion: "2023-10",
+          documents: ["./app/**/*.{js,ts,jsx,tsx}"],
+          outputDir: "./app/types",
+        }),
+      },
+    },
+  },
+};
+```
+
+### `shopifyApiProject`
+
+This function creates a fully-functional project configuration.
+
+| Option     | Type        | Default              | Description                                                                                                                          |
+| ---------- | ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| apiType    | `ApiType`   |                      | The API to pull schemas from.                                                                                                        |
+| apiVersion | `string?`   | Latest               | Pull schemas for a specific version.                                                                                                 |
+| outputDir  | `string?`   | `.`                  | Where to output the types files.                                                                                                     |
+| documents  | `string[]?` | `./**/*.{ts,tsx}`    | Glob pattern for files to parse.                                                                                                     |
+| module     | `string?`   | Depends on `ApiType` | Change the module whose types will be overridden. Use this to override the types for any package, as long as it uses the same names. |
+
+#### Example `.graphqlrc.ts` file
 
 ```js
 import { shopifyApiProject, ApiType } from "@shopify/api-codegen-preset";
@@ -92,9 +162,6 @@ export default {
   },
 };
 ```
-
-> [!NOTE]
-> You can use the other exports to fine-tune your configuration if you want to run other steps, or use a different configuration.
 
 ## Generating types
 
