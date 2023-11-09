@@ -27,13 +27,13 @@ export function generateGetGQLClientParams({
       const {
         variables,
         apiVersion: propApiVersion,
-        customHeaders,
+        headers,
         retries,
       } = options;
 
       props.push({
         ...(variables ? { variables } : {}),
-        ...(customHeaders ? { headers: getHeaders(customHeaders) } : {}),
+        ...(headers ? { headers: getHeaders(headers) } : {}),
         ...(propApiVersion ? { url: getApiUrl(propApiVersion) } : {}),
         ...(retries ? { retries } : {}),
       });
