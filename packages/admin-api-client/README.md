@@ -21,9 +21,9 @@ npm install @shopify/admin-api-client -s
 ### Initialize the Admin API Client
 
 ```typescript
-import {createAdminAPIClient} from '@shopify/admin-api-client';
+import {createAdminApiClient} from '@shopify/admin-api-client';
 
-const client = createAdminAPIClient({
+const client = createAdminApiClient({
   storeDomain: 'your-shop-name.myshopify.com',
   apiVersion: '2023-04',
   accessToken: 'your-admin-api-access-token',
@@ -43,14 +43,14 @@ const operation = `
   }
 `;
 
-const {data, error, extensions} = await client.request(operation, {
+const {data, errors, extensions} = await client.request(operation, {
   variables: {
     id: 'gid://shopify/Product/7608002183224',
   },
 });
 ```
 
-### `createAdminAPIClient()` parameters
+### `createAdminApiClient()` parameters
 
 | Property            | Type             | Description                                                                                                                                                                                                                                          |
 | ------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -65,7 +65,7 @@ const {data, error, extensions} = await client.request(operation, {
 | Property      | Type                                                                                                                                                                       | Description                                                                                                                                                                                                                                                                                                                                                                |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | config        | `ClientConfig`                                                                                                                                                             | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
-| getHeaders    | `(customHeaders?: Record<string, string>) => Record<string, string>`                                                                                                       | Returns Admin API specific headers needed to interact with the API. If `customHeaders` is provided, the custom headers will be included in the returned headers object.                                                                                                                                                                                               |
+| getHeaders    | `(customHeaders?: {[key: string]: string}) => {[key: string]: string`                                                                                                       | Returns Admin API specific headers needed to interact with the API. If `customHeaders` is provided, the custom headers will be included in the returned headers object.                                                                                                                                                                                               |
 | getApiUrl     | `(apiVersion?: string) => string`                                                                                                                                          | Returns the shop specific API url. If an API version is provided, the returned URL will include the provided version, else the URL will include the API version set at client initialization.                                                                                                                                                                              |
 | fetch         | `<TData>(operation: string, options?:`[AdminAPIClientRequestOptions](#adminapiclientrequestoptions-properties)`) => Promise<Response>`                                          | Fetches data from Admin API using the provided GQL `operation` string and [AdminAPIClientRequestOptions](#adminapiclientrequestoptions-properties) object and returns the network response.                                                                                                                                                                                 |
 | request       | `<TData>(operation: string, options?:`[AdminAPIClientRequestOptions](#adminapiclientrequestoptions-properties)`) => Promise<`[ClientResponse\<TData\>](#clientresponsetdata)`>` | Requests data from Admin API using the provided GQL `operation` string and [AdminAPIClientRequestOptions](#adminapiclientrequestoptions-properties) object and returns a normalized response object.                                                                                                                                                                        |
@@ -76,14 +76,14 @@ const {data, error, extensions} = await client.request(operation, {
 | -------------- | ------------------------ | ---------------------------------------------------- |
 | variables?     | `Record<string, any>`    | Variable values needed in the graphQL operation      |
 | apiVersion?    | `string`                 | The Admin API version to use in the API request      |
-| customHeaders? | `Record<string, string>` | Customized headers to be included in the API request |
+| customHeaders? | `{[key: string]: string}` | Customized headers to be included in the API request |
 
 ## `ClientResponse<TData>`
 
 | Name        | Type                      | Description                                                                                                                                                                                         |
 | ----------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data?       | `TData \| any`            | Data returned from the Admin API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                                  |
-| error?      | `ClientResponse['error']` | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
+| errors?     | `ClientResponse['error']` | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
 | extensions? | `Record<string, any>`     | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
 
 ### Client `request()` response examples
@@ -173,7 +173,7 @@ const productQuery = `
   }
 `;
 
-const {data, error, extensions} = await client.request(productQuery, {
+const {data, errors, extensions} = await client.request(productQuery, {
   variables: {
     id: 'gid://shopify/Product/7608002183224',
   },
@@ -193,7 +193,7 @@ const productQuery = `
   }
 `;
 
-const {data, error, extensions} = await client.request(productQuery, {
+const {data, errors, extensions} = await client.request(productQuery, {
   variables: {
     id: 'gid://shopify/Product/7608002183224',
   },
@@ -214,7 +214,7 @@ const productQuery = `
   }
 `;
 
-const {data, error, extensions} = await client.request(productQuery, {
+const {data, errors, extensions} = await client.request(productQuery, {
   variables: {
     id: 'gid://shopify/Product/7608002183224',
   },

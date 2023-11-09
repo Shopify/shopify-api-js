@@ -113,7 +113,9 @@ describe("Admin API Client", () => {
               storeDomain: undefined as any,
             })
           ).toThrow(
-            new Error("Admin API Client: a valid store domain must be provided")
+            new Error(
+              'Admin API Client: a valid store domain ("undefined") must be provided'
+            )
           );
         });
 
@@ -124,7 +126,9 @@ describe("Admin API Client", () => {
               storeDomain: "   " as any,
             })
           ).toThrow(
-            new Error("Admin API Client: a valid store domain must be provided")
+            new Error(
+              'Admin API Client: a valid store domain ("   ") must be provided'
+            )
           );
         });
 
@@ -135,7 +139,9 @@ describe("Admin API Client", () => {
               storeDomain: 123 as any,
             })
           ).toThrow(
-            new Error("Admin API Client: a valid store domain must be provided")
+            new Error(
+              'Admin API Client: a valid store domain ("123") must be provided'
+            )
           );
         });
 
@@ -289,7 +295,7 @@ describe("Admin API Client", () => {
 
       it("returns the client's default headers if no custom headers are provided", () => {
         const headers = client.getHeaders();
-        expect(headers).toBe(client.config.headers);
+        expect(headers).toEqual(client.config.headers);
       });
 
       it("returns a headers object that contains both the client default headers and the provided custom headers", () => {

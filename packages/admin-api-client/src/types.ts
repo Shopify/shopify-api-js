@@ -1,40 +1,25 @@
 import {
-  OperationVariables,
-  Headers,
-  ClientResponse,
-  GraphQLClient,
+  ApiClient,
+  CustomFetchApi,
+  ApiClientLogger,
+  ApiClientLogContentTypes,
+  ApiClientConfig,
 } from "@shopify/graphql-client";
 
-export interface AdminApiClientConfig {
-  readonly storeDomain: string;
-  readonly apiVersion: string;
-  readonly accessToken: string;
-  readonly headers: Headers;
-  readonly apiUrl: string;
-  readonly userAgentPrefix?: string;
-  readonly retries?: number;
-}
+export type AdminApiClientLogContentTypes = ApiClientLogContentTypes;
 
-export interface AdminApiClientRequestOptions {
-  variables?: OperationVariables;
-  apiVersion?: string;
-  customHeaders?: Headers;
-  retries?: number;
-}
+export type AdminApiClientConfig = ApiClientConfig & {
+  accessToken: string;
+  clientName?: string;
+  userAgentPrefix?: string;
+};
 
-export type AdminApiClientRequestParams = [
-  operation: string,
-  options?: AdminApiClientRequestOptions
-];
+export type AdminApiClientOptions = Omit<
+  AdminApiClientConfig,
+  "headers" | "apiUrl"
+> & {
+  customFetchApi?: CustomFetchApi;
+  logger?: ApiClientLogger<AdminApiClientLogContentTypes>;
+};
 
-export interface AdminApiClient {
-  readonly config: AdminApiClientConfig;
-  getHeaders: (customHeaders?: Headers) => Headers;
-  getApiUrl: (apiVersion?: string) => string;
-  fetch: (
-    ...props: AdminApiClientRequestParams
-  ) => ReturnType<GraphQLClient["fetch"]>;
-  request: <TData = unknown>(
-    ...props: AdminApiClientRequestParams
-  ) => Promise<ClientResponse<TData>>;
-}
+export type AdminApiClient = ApiClient<AdminApiClientConfig>;
