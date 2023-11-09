@@ -64,6 +64,26 @@ describe("Admin API Client", () => {
         ).toHaveProperty("url", mockApiUrl);
       });
 
+      it("calls the graphql client with the default retries", () => {
+        createAdminApiClient({ ...config });
+
+        expect(createGraphQLClient).toHaveBeenCalled();
+        expect(
+          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+        ).toHaveProperty("retries", 0);
+      });
+
+      it("calls the graphql client with the provided retries", () => {
+        const retries = 1;
+
+        createAdminApiClient({ ...config, retries });
+
+        expect(createGraphQLClient).toHaveBeenCalled();
+        expect(
+          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+        ).toHaveProperty("retries", retries);
+      });
+
       it("Prepends user agent prefix if supplied", () => {
         const userAgentPrefix = "test-UAP";
 
@@ -91,6 +111,17 @@ describe("Admin API Client", () => {
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0]
         ).toHaveProperty("fetchApi", customFetchApi);
+      });
+
+      it("calls the graphql client with the provided logger", () => {
+        const logger = jest.fn();
+
+        createAdminApiClient({ ...config, logger });
+
+        expect(createGraphQLClient).toHaveBeenCalled();
+        expect(
+          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+        ).toHaveProperty("logger", logger);
       });
 
       it("returns a client object that contains a config object, getters for header and API URL and request and fetch functions", () => {
