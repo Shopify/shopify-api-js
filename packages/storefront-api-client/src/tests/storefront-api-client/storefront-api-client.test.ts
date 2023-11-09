@@ -1,7 +1,7 @@
-import { createGraphQLClient, GraphQLClient } from "@shopify/graphql-client";
+import { createGraphQLClient } from "@shopify/graphql-client";
 
-import { createStorefrontApiClient } from "../storefront-api-client";
-import { StorefrontApiClient } from "../types";
+import { createStorefrontApiClient } from "../../storefront-api-client";
+import { StorefrontApiClient } from "../../types";
 import {
   SDK_VARIANT_HEADER,
   DEFAULT_SDK_VARIANT,
@@ -9,18 +9,16 @@ import {
   DEFAULT_CLIENT_VERSION,
   SDK_VARIANT_SOURCE_HEADER,
   PUBLIC_ACCESS_TOKEN_HEADER,
-  PRIVATE_ACCESS_TOKEN_HEADER,
   DEFAULT_CONTENT_TYPE,
-} from "../constants";
+} from "../../constants";
 
-const mockApiVersions = [
-  "2023-01",
-  "2023-04",
-  "2023-07",
-  "2023-10",
-  "2024-01",
-  "unstable",
-];
+import {
+  mockApiVersions,
+  graphqlClientMock,
+  config,
+  domain,
+  mockApiUrl,
+} from "./fixtures";
 
 jest.mock("@shopify/graphql-client", () => {
   return {
@@ -32,27 +30,9 @@ jest.mock("@shopify/graphql-client", () => {
 
 describe("Storefront API Client", () => {
   describe("createStorefrontApiClient()", () => {
-    const domain = "test-store.myshopify.io";
-    const config = {
-      storeDomain: `https://${domain}`,
-      apiVersion: "2023-10",
-      publicAccessToken: "public-token",
-    };
-    const mockApiUrl = `${config.storeDomain}/api/2023-10/graphql.json`;
-
     const mockFetchResponse = { status: 200 };
     const mockRequestResponse = {
       data: {},
-    };
-
-    const graphqlClientMock: GraphQLClient = {
-      config: {
-        url: mockApiUrl,
-        headers: {},
-        retries: 0,
-      },
-      fetch: jest.fn(),
-      request: jest.fn(),
     };
 
     beforeEach(() => {
@@ -237,41 +217,6 @@ describe("Storefront API Client", () => {
             )
           );
         });
-
-        if (typeof window === "object") {
-          describe("browser environment", () => {
-            it("throws an error when a private access token is provided in a browser environment", () => {
-              expect(() =>
-                createStorefrontApiClient({
-                  ...config,
-                  publicAccessToken: undefined as any,
-                  privateAccessToken: "private-access-token",
-                })
-              ).toThrow(
-                new Error(
-                  "Storefront API Client: private access tokens and headers should only be used in a server-to-server implementation. Use the public API access token in nonserver environments."
-                )
-              );
-            });
-          });
-        }
-
-        if (typeof window === "undefined") {
-          describe("server enviornment", () => {
-            it("throws an error when both public and private access tokens are provided in a server environment", () => {
-              expect(() =>
-                createStorefrontApiClient({
-                  ...config,
-                  privateAccessToken: "private-token",
-                } as any)
-              ).toThrow(
-                new Error(
-                  `Storefront API Client: only provide either a public or private access token`
-                )
-              );
-            });
-          });
-        }
       });
     });
 
@@ -286,22 +231,6 @@ describe("Storefront API Client", () => {
         expect(client.config.publicAccessToken).toBe(config.publicAccessToken);
         expect(client.config.privateAccessToken).toBeUndefined();
       });
-
-      if (typeof window === "undefined") {
-        describe("server environment", () => {
-          it("returns a config object that includes the provided private access token and not a public access token when in a server environment", () => {
-            const privateAccessToken = "private-token";
-
-            const client = createStorefrontApiClient({
-              ...config,
-              publicAccessToken: undefined,
-              privateAccessToken,
-            });
-            expect(client.config.privateAccessToken).toBe(privateAccessToken);
-            expect(client.config.publicAccessToken).toBeUndefined();
-          });
-        });
-      }
 
       it("returns a config object that includes the provided client name", () => {
         const clientName = "test-client";
@@ -381,24 +310,6 @@ describe("Storefront API Client", () => {
             config.publicAccessToken
           );
         });
-
-        if (typeof window === "undefined") {
-          describe("server environment", () => {
-            it("returns a header object that includes the private headers when a private access token is provided", () => {
-              const privateAccessToken = "private-token";
-
-              const client = createStorefrontApiClient({
-                ...config,
-                publicAccessToken: undefined,
-                privateAccessToken,
-              });
-
-              expect(
-                client.config.headers[PRIVATE_ACCESS_TOKEN_HEADER]
-              ).toEqual(privateAccessToken);
-            });
-          });
-        }
 
         it("returns a header object that includes the SDK variant source header when client name is provided", () => {
           const clientName = "test-client";

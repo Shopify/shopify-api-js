@@ -78,9 +78,9 @@ const client = createStorefrontApiClient({
 
 | Name           | Type                     | Description                                          |
 | -------------- | ------------------------ | ---------------------------------------------------- |
-| variables?     | `Record<string, any>`    | Variable values needed in the graphQL operation      |
+| variables?     | `{[key: string]: string}`    | Variable values needed in the graphQL operation      |
 | apiVersion?    | `string`                 | The Storefront API version to use in the API request |
-| customHeaders? | `Record<string, string>` | Customized headers to be included in the API request |
+| customHeaders? | `{[key: string]: string}` | Customized headers to be included in the API request |
 | retries?   | `number`             | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3`.|
 
 ## `ClientResponse<TData>`
