@@ -25,9 +25,6 @@ export function getPlugins({ tsconfig, minify } = {}) {
   ];
 }
 
-const packageName = pkg.name.substring(1);
-const repositoryName = pkg.repository.url.split(":")[1].split(".")[0];
-
 const config = [
   {
     input: mainSrcInput,
