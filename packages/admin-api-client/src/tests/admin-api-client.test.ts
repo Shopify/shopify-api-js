@@ -202,7 +202,6 @@ describe("Admin API Client", () => {
             )
           );
 
-          // @ts-ignore
           delete global.window;
         });
       });
@@ -329,10 +328,7 @@ describe("Admin API Client", () => {
 
       it("throws an error when the api version is not a string", () => {
         const version = 123;
-        expect(() =>
-          // @ts-ignore
-          client.getApiUrl(version)
-        ).toThrow(
+        expect(() => client.getApiUrl(version)).toThrow(
           new Error(
             `Admin API Client: the provided apiVersion ("123") is invalid. Current supported API versions: ${mockApiVersions.join(
               ", "
