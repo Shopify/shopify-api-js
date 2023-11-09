@@ -1,15 +1,18 @@
 import {
   createGraphQLClient,
   CustomFetchApi,
-  RequestParams as GQLClientRequestParams,
   getCurrentSupportedApiVersions,
   validateApiVersion,
+  validateDomainAndGetStoreUrl,
+  generateGetGQLClientParams,
+  generateGetHeaders,
+  ApiClientRequestParams,
 } from "@shopify/graphql-client";
 
 import {
+  AdminApiClientOptions,
   AdminApiClient,
   AdminApiClientConfig,
-  AdminApiClientRequestOptions,
 } from "./types";
 import {
   DEFAULT_CONTENT_TYPE,
@@ -18,60 +21,49 @@ import {
   DEFAULT_CLIENT_VERSION,
 } from "./constants";
 import {
-  validateRequiredStoreDomain,
   validateRequiredAccessToken,
   validateServerSideUsage,
 } from "./validations";
-
-const httpRegEx = new RegExp("^(https?:)?//");
 
 export function createAdminApiClient({
   storeDomain,
   apiVersion,
   accessToken,
   userAgentPrefix,
+  retries = 0,
   customFetchApi: clientFetchApi,
-}: {
-  storeDomain: string;
-  apiVersion: string;
-  accessToken: string;
-  userAgentPrefix?: string;
-  customFetchApi?: CustomFetchApi;
-}): AdminApiClient {
+  logger,
+}: AdminApiClientOptions): AdminApiClient {
   const currentSupportedApiVersions = getCurrentSupportedApiVersions();
 
+  const storeUrl = validateDomainAndGetStoreUrl({
+    client: CLIENT,
+    storeDomain,
+  });
+
+  const baseApiVersionValidationParams = {
+    client: CLIENT,
+    currentSupportedApiVersions,
+    logger,
+  };
+
   validateServerSideUsage();
-  validateRequiredStoreDomain(storeDomain);
   validateApiVersion({
     client: CLIENT,
     currentSupportedApiVersions,
     apiVersion,
+    logger,
   });
   validateRequiredAccessToken(accessToken);
 
-  const trimmedStoreDomain = storeDomain.trim();
-  const cleanedStoreDomain = httpRegEx.test(trimmedStoreDomain)
-    ? trimmedStoreDomain.substring(trimmedStoreDomain.indexOf("//") + 2)
-    : trimmedStoreDomain;
-
-  const generateApiUrl = (version?: string) => {
-    if (version) {
-      validateApiVersion({
-        client: CLIENT,
-        currentSupportedApiVersions,
-        apiVersion: version,
-      });
-    }
-
-    const urlApiVersion = (version ?? apiVersion).trim();
-
-    return `https://${cleanedStoreDomain}${
-      cleanedStoreDomain.endsWith("/") ? "" : "/"
-    }admin/api/${urlApiVersion}/graphql.json`;
-  };
+  const apiUrlFormatter = generateApiUrlFormatter(
+    storeUrl,
+    apiVersion,
+    baseApiVersionValidationParams
+  );
 
   const config: AdminApiClientConfig = {
-    storeDomain: trimmedStoreDomain,
+    storeDomain: storeUrl,
     apiVersion,
     accessToken,
     headers: {
@@ -82,53 +74,32 @@ export function createAdminApiClient({
         userAgentPrefix ? `${userAgentPrefix} | ` : ""
       }${CLIENT} v${DEFAULT_CLIENT_VERSION}`,
     },
-    apiUrl: generateApiUrl(),
+    apiUrl: apiUrlFormatter(),
     userAgentPrefix,
   };
 
   const graphqlClient = createGraphQLClient({
     headers: config.headers,
     url: config.apiUrl,
+    retries,
     fetchApi: clientFetchApi,
+    logger,
   });
 
-  const getHeaders: AdminApiClient["getHeaders"] = (customHeaders) => {
-    return customHeaders
-      ? { ...customHeaders, ...config.headers }
-      : config.headers;
+  const getHeaders = generateGetHeaders(config);
+  const getApiUrl = generateGetApiUrl(config, apiUrlFormatter);
+
+  const getGQLClientParams = generateGetGQLClientParams({
+    getHeaders,
+    getApiUrl,
+  });
+
+  const fetch = (...props: ApiClientRequestParams) => {
+    return graphqlClient.fetch(...getGQLClientParams(...props));
   };
 
-  const getApiUrl: AdminApiClient["getApiUrl"] = (propApiVersion?: string) => {
-    return propApiVersion ? generateApiUrl(propApiVersion) : config.apiUrl;
-  };
-
-  const getGQLClientRequestProps = (
-    operation: string,
-    options?: AdminApiClientRequestOptions
-  ): GQLClientRequestParams => {
-    const props: GQLClientRequestParams = [operation];
-
-    if (options) {
-      const { variables, apiVersion: propApiVersion, customHeaders } = options;
-
-      props.push({
-        variables,
-        headers: customHeaders ? getHeaders(customHeaders) : undefined,
-        url: propApiVersion ? getApiUrl(propApiVersion) : undefined,
-      });
-    }
-
-    return props;
-  };
-
-  const fetch: AdminApiClient["fetch"] = (...props) => {
-    const requestProps = getGQLClientRequestProps(...props);
-    return graphqlClient.fetch(...requestProps);
-  };
-
-  const request: AdminApiClient["request"] = (...props) => {
-    const requestProps = getGQLClientRequestProps(...props);
-    return graphqlClient.request(...requestProps);
+  const request = <TData>(...props: ApiClientRequestParams) => {
+    return graphqlClient.request<TData>(...getGQLClientParams(...props));
   };
 
   const client: AdminApiClient = {
@@ -140,4 +111,35 @@ export function createAdminApiClient({
   };
 
   return Object.freeze(client);
+}
+
+function generateApiUrlFormatter(
+  storeUrl: string,
+  defaultApiVersion: string,
+  baseApiVersionValidationParams: Omit<
+    Parameters<typeof validateApiVersion>[0],
+    "apiVersion"
+  >
+) {
+  return (apiVersion?: string) => {
+    if (apiVersion) {
+      validateApiVersion({
+        ...baseApiVersionValidationParams,
+        apiVersion,
+      });
+    }
+
+    const urlApiVersion = (apiVersion ?? defaultApiVersion).trim();
+
+    return `${storeUrl}/admin/api/${urlApiVersion}/graphql.json`;
+  };
+}
+
+function generateGetApiUrl(
+  config: AdminApiClientConfig,
+  apiUrlFormatter: (version?: string) => string
+): AdminApiClient["getApiUrl"] {
+  return (propApiVersion?: string) => {
+    return propApiVersion ? apiUrlFormatter(propApiVersion) : config.apiUrl;
+  };
 }

@@ -28,7 +28,7 @@ export function getPlugins({ tsconfig, minify } = {}) {
 const packageName = pkg.name.substring(1);
 const repositoryName = pkg.repository.url.split(":")[1].split(".")[0];
 export const bannerConfig = {
-  banner: `/*! ${packageName} -- Copyright (c) 2023-present, Shopify Inc. -- license (MIT): https://github.com/${repositoryName}/blob/main/LICENSE */`,
+  banner: `/*! ${packageName}@${pkg.version} -- Copyright (c) 2023-present, Shopify Inc. -- license (MIT): https://github.com/Shopify/shopify-api-js/blob/main/LICENSE.md */`,
 };
 
 const config = [
@@ -40,10 +40,10 @@ const config = [
     }),
     output: [
       {
-        file: "./dist/umd/storefront-api-client.min.js",
+        file: "./dist/umd/admin-api-client.min.js",
         format: "umd",
         sourcemap: true,
-        name: "ShopifyStorefrontAPIClient",
+        name: "ShopifyAdminApiClient",
         ...bannerConfig,
       },
     ],
@@ -55,10 +55,10 @@ const config = [
     }),
     output: [
       {
-        file: "./dist/umd/storefront-api-client.js",
+        file: "./dist/umd/admin-api-client.js",
         format: "umd",
         sourcemap: true,
-        name: "ShopifyStorefrontAPIClient",
+        name: "ShopifyAdminApiClient",
         ...bannerConfig,
       },
     ],
@@ -93,7 +93,7 @@ const config = [
   },
   {
     input: "./dist/ts/index.d.ts",
-    output: [{ file: "dist/storefront-api-client.d.ts", format: "es" }],
+    output: [{ file: "dist/admin-api-client.d.ts", format: "es" }],
     plugins: [dts.default()],
   },
 ];

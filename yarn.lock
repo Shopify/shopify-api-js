@@ -2086,7 +2086,11 @@
 
 "@shopify/graphql-client@^0.7.0":
   version "0.7.0"
+<<<<<<< HEAD
   resolved "https://registry.npmjs.org/@shopify/graphql-client/-/graphql-client-0.7.0.tgz#e0b187fa5186e3122e9b602eedcfb1eb7f6d830f"
+=======
+  resolved "https://registry.yarnpkg.com/@shopify/graphql-client/-/graphql-client-0.7.0.tgz#e0b187fa5186e3122e9b602eedcfb1eb7f6d830f"
+>>>>>>> 556a05e4 (Logger, retries, updated graphql-client: new types and validations)
   integrity sha512-hseOvgjcFHaQy0HnZma5oUqt+u5qkCfUAoAjKPm60YeBIZOQTowELUzauQTm6vR/jLIEwaWWn1tfdcZ02BG8Qw==
 
 "@shopify/network@^3.2.1":
