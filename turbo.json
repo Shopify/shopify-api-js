@@ -13,7 +13,12 @@
       ],
       "cache": false
     },
-    "test": {},
+    "test": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
     "test:ci": {},
     "lint": {},
     "dev": {
