@@ -113,13 +113,13 @@ describe("generateGetGQLClientParams()", () => {
     });
 
     it("returns an array with the operation string and an option with headers when custom headers were provided", () => {
-      const customHeaders = { "Shopify-Storefront-Id": "shop-id" };
-      const params = getGQLClientParams(operation, { customHeaders });
+      const headers = { "Shopify-Storefront-Id": "shop-id" };
+      const params = getGQLClientParams(operation, { headers });
 
       expect(params).toHaveLength(2);
 
       expect(params[0]).toBe(operation);
-      expect(getHeaderMock).toHaveBeenCalledWith(customHeaders);
+      expect(getHeaderMock).toHaveBeenCalledWith(headers);
       expect(params[1]).toEqual({ headers: mockHeaders });
     });
 

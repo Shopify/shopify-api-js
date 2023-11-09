@@ -34,7 +34,7 @@ export interface ApiClientConfig {
 export interface ApiClientRequestOptions {
   variables?: OperationVariables;
   apiVersion?: string;
-  customHeaders?: Headers;
+  headers?: Headers;
   retries?: number;
 }
 
@@ -47,7 +47,7 @@ export interface ApiClient<
   TClientConfig extends ApiClientConfig = ApiClientConfig
 > {
   readonly config: Readonly<TClientConfig>;
-  getHeaders: (customHeaders?: Headers) => Headers;
+  getHeaders: (headers?: Headers) => Headers;
   getApiUrl: (apiVersion?: string) => string;
   fetch: (
     ...props: ApiClientRequestParams
