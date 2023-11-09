@@ -1,24 +1,16 @@
-# @shopify/admin-api-client
-
-<!-- ![Build Status]() -->
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../../LICENSE.md)
-
-<!-- [![npm version](https://badge.fury.io/js/%40shopify%2Fadmin-api-client.svg)](https://badge.fury.io/js/%40shopify%2Fadmin-api-client) -->
+# Admin API Client
 
 The Admin API Client library is for developers who want to interact with Shopify's GraphQL `Admin API`. The features of this library are designed to be lightweight and minimally opinionated.
 
 ## Getting Started
 
-To install this package, you can run this in your terminal:
+Install the package:
 
-```typescript
+```
 npm install @shopify/admin-api-client -s
 ```
 
-## Admin API Client Examples
-
-### Initialize the Admin API Client
+Initialize the client:
 
 ```typescript
 import {createAdminApiClient} from '@shopify/admin-api-client';
@@ -30,7 +22,7 @@ const client = createAdminApiClient({
 });
 ```
 
-### Query for a product using the client
+Query for a product:
 
 ```typescript
 const operation = `
@@ -54,37 +46,59 @@ const {data, errors, extensions} = await client.request(operation, {
 
 | Property            | Type             | Description                                                                                                                                                                                                                                          |
 | ------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| storeDomain         | `string`         | The domain of the store. It can be the Shopify `myshopify.com` domain or a custom store domain.                                                                                                                                                      |
-| apiVersion          | `string`         | The requested Admin API version.                                                                                                                                                                                                                     |
-| accessToken         | `string`         | Admin API access token.                                                                                                                                                                                                                              |
-| userAgentPrefix?    | `string`         | Any prefix you wish to include in the User-Agent for requests made by the library.                                                                                                                                                                                                                                  |
-| customFetchAPI?     | `CustomFetchAPI` | A custom fetch function that will be used by the client when it interacts with the API. Defaults to the [browser's Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                                           |
+| storeDomain         | `string`         | The `myshopify.com` domain |
+| apiVersion          | `string`         | The requested Admin API version |
+| accessToken         | `string`         | The Admin API access token |
+| userAgentPrefix?    | `string`         | Any prefix you wish to include in the User-Agent for requests made by the library. |
+| retries?            | `number`         | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. Maximum value is `3`. |
+| customFetchAPI?     | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
+| logger?             | `(logContent:`[UnsupportedApiVersionLog](#unsupportedapiversionlog) ` \| `[HTTPResponseLog](#httpresponselog)`\|`[HTTPRetryLog](#httpretrylog)`) => void` | A logger function that accepts [log content objects](#log-content-types). This logger will be called in certain conditions with contextual information. |
 
 ## Client properties
 
 | Property      | Type                                                                                                                                                                       | Description                                                                                                                                                                                                                                                                                                                                                                |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| config        | `ClientConfig`                                                                                                                                                             | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
+| config        | [AdminApiClientConfig](#adminapiclientconfig-properties)                                                                                                                                                             | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
 | getHeaders    | `(customHeaders?: {[key: string]: string}) => {[key: string]: string`                                                                                                       | Returns Admin API specific headers needed to interact with the API. If `customHeaders` is provided, the custom headers will be included in the returned headers object.                                                                                                                                                                                               |
 | getApiUrl     | `(apiVersion?: string) => string`                                                                                                                                          | Returns the shop specific API url. If an API version is provided, the returned URL will include the provided version, else the URL will include the API version set at client initialization.                                                                                                                                                                              |
 | fetch         | `<TData>(operation: string, options?:`[AdminAPIClientRequestOptions](#adminapiclientrequestoptions-properties)`) => Promise<Response>`                                          | Fetches data from Admin API using the provided GQL `operation` string and [AdminAPIClientRequestOptions](#adminapiclientrequestoptions-properties) object and returns the network response.                                                                                                                                                                                 |
 | request       | `<TData>(operation: string, options?:`[AdminAPIClientRequestOptions](#adminapiclientrequestoptions-properties)`) => Promise<`[ClientResponse\<TData\>](#clientresponsetdata)`>` | Requests data from Admin API using the provided GQL `operation` string and [AdminAPIClientRequestOptions](#adminapiclientrequestoptions-properties) object and returns a normalized response object.                                                                                                                                                                        |
 
-## `AdminAPIClientRequestOptions` properties
+## `AdminApiClientConfig` properties
+
+| Name           | Type                     | Description                                          |
+| -------------- | ------------------------ | ---------------------------------------------------- |
+| storeDomain     | `string`    | The `myshopify.com` domain      |
+| apiVersion    | `string`                 | The Admin API version to use in the API request |
+| accessToken | `string` | The provided public access token. If `privateAccessToken` was provided, `publicAccessToken` will not be available. |
+| headers | `{[key: string]: string}` | The headers generated by the client during initialization |
+| apiUrl | `string` | The API URL generated from the provided store domain and api version |
+| retries? | `number` | The number of retries the client will attempt when the API responds with a `Too Many Requests (429)` or `Service Unavailable (503)` response |
+
+## `ApiClientRequestOptions` properties
 
 | Name           | Type                     | Description                                          |
 | -------------- | ------------------------ | ---------------------------------------------------- |
 | variables?     | `Record<string, any>`    | Variable values needed in the graphQL operation      |
 | apiVersion?    | `string`                 | The Admin API version to use in the API request      |
-| customHeaders? | `{[key: string]: string}` | Customized headers to be included in the API request |
+| customHeaders? | `{[key: string]: string}`| Customized headers to be included in the API request |
+| retries?       | `number`                 | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3`. |
 
 ## `ClientResponse<TData>`
 
 | Name        | Type                      | Description                                                                                                                                                                                         |
 | ----------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data?       | `TData \| any`            | Data returned from the Admin API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                                  |
-| errors?     | `ClientResponse['error']` | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
-| extensions? | `Record<string, any>`     | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
+| errors?     | [ResponseErrors](#responseerrors) | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
+| extensions? | `{[key: string]: any}`    | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
+
+## `ResponseErrors`
+
+| Name        | Type                  | Description                                                                                                                                                                                         |
+| ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| networkStatusCode?       | `number`        | HTTP response status code                                                             |
+| message?      | `string`       | The provided error message                                                       |
+| graphQLErrors? | `any[]` | The GraphQL API errors returned by the server |
 
 ### Client `request()` response examples
 
@@ -241,3 +255,60 @@ if (response.ok) {
   const {errors, data, extensions} = await response.json();
 }
 ```
+
+### Dynamically set the number of retries per request
+
+```typescript
+const productQuery = `
+  query ProductQuery($handle: String) {
+    product(handle: $handle) {
+      id
+      title
+      handle
+    }
+  }
+`;
+
+const {data, errors, extensions} = await client.request(productQuery, {
+  variables: {
+    handle: 'sample-product',
+  },
+  retries: 2,
+});
+```
+
+## Log Content Types
+
+### `UnsupportedApiVersionLog`
+
+This log content is sent to the logger whenever an unsupported API version is provided to the client.
+
+| Property | Type                     | Description                        |
+| -------- | ------------------------ | ---------------------------------- |
+| type      | `LogType['UNSUPPORTED_API_VERSION']`                 | The type of log content. Is always set to `UNSUPPORTED_API_VERSION`            |
+| content  | `{apiVersion: string, supportedApiVersions: string[]}` | Contextual info including the provided API version and the list of currently supported API versions. |
+
+### `HTTPResponseLog`
+
+This log content is sent to the logger whenever a HTTP response is received by the client.
+
+| Property | Type                     | Description                        |
+| -------- | ------------------------ | ---------------------------------- |
+| type      | `LogType['HTTP-Response']`                 | The type of log content. Is always set to `HTTP-Response`            |
+| content  | `{`[requestParams](#requestparams)`: [url, init?], response: Response}` | Contextual data regarding the request and received response |
+
+### `HTTPRetryLog`
+
+This log content is sent to the logger whenever the client attempts to retry HTTP requests.
+
+| Property | Type                     | Description                        |
+| -------- | ------------------------ | ---------------------------------- |
+| type      | `LogType['HTTP-Retry']`                 | The type of log content. Is always set to `HTTP-Retry`            |
+| content  | `{`[requestParams](#requestparams)`: [url, init?], lastResponse?: Response, retryAttempt: number, maxRetries: number}` | Contextual data regarding the upcoming retry attempt. <br /><br/>`requestParams`: [parameters](#requestparams) used in the request<br/>`lastResponse`: previous response <br/> `retryAttempt`: the current retry attempt count <br/> `maxRetries`: the maximum number of retries  |
+
+### `RequestParams`
+
+| Property | Type                     | Description                        |
+| -------- | ------------------------ | ---------------------------------- |
+| url      | `string`                 | Requested URL            |
+| init?  | `{method?: string, headers?: HeaderInit, body?: string}` | The request information  |
