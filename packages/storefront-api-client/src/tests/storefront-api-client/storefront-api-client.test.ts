@@ -342,11 +342,14 @@ describe("Storefront API Client", () => {
       });
 
       it("returns a headers object that contains both the client default headers and the provided custom headers", () => {
-        const customHeaders = {
+        const headers = {
           "Shopify-Storefront-Id": "test-id",
         };
-        const headers = client.getHeaders(customHeaders);
-        expect(headers).toEqual({ ...customHeaders, ...client.config.headers });
+        const updatedHeaders = client.getHeaders(headers);
+        expect(updatedHeaders).toEqual({
+          ...headers,
+          ...client.config.headers,
+        });
       });
     });
 
@@ -442,13 +445,13 @@ describe("Storefront API Client", () => {
         });
 
         it("calls the graphql client fetch() with customized headers", async () => {
-          const customHeaders = { "custom-header": "custom" };
+          const headers = { "custom-header": "custom" };
 
-          await client.fetch(operation, { customHeaders });
+          await client.fetch(operation, { headers });
           expect(
             (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1]
           ).toEqual({
-            headers: client.getHeaders(customHeaders),
+            headers: client.getHeaders(headers),
           });
         });
 
@@ -526,13 +529,13 @@ describe("Storefront API Client", () => {
         });
 
         it("calls the graphql client request() with customized headers", async () => {
-          const customHeaders = { "custom-header": "custom" };
+          const headers = { "custom-header": "custom" };
 
-          await client.request(operation, { customHeaders });
+          await client.request(operation, { headers });
           expect(
             (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1]
           ).toEqual({
-            headers: client.getHeaders(customHeaders),
+            headers: client.getHeaders(headers),
           });
         });
 
