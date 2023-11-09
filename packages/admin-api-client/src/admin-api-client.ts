@@ -1,6 +1,5 @@
 import {
   createGraphQLClient,
-  CustomFetchApi,
   getCurrentSupportedApiVersions,
   validateApiVersion,
   validateDomainAndGetStoreUrl,

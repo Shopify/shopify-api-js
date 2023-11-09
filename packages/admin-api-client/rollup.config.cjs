@@ -27,42 +27,8 @@ export function getPlugins({ tsconfig, minify } = {}) {
 
 const packageName = pkg.name.substring(1);
 const repositoryName = pkg.repository.url.split(":")[1].split(".")[0];
-export const bannerConfig = {
-  banner: `/*! ${packageName}@${pkg.version} -- Copyright (c) 2023-present, Shopify Inc. -- license (MIT): https://github.com/Shopify/shopify-api-js/blob/main/LICENSE.md */`,
-};
 
 const config = [
-  {
-    input: mainSrcInput,
-    plugins: getPlugins({
-      minify: true,
-      tsconfig: "./tsconfig.build.umd.json",
-    }),
-    output: [
-      {
-        file: "./dist/umd/admin-api-client.min.js",
-        format: "umd",
-        sourcemap: true,
-        name: "ShopifyAdminApiClient",
-        ...bannerConfig,
-      },
-    ],
-  },
-  {
-    input: mainSrcInput,
-    plugins: getPlugins({
-      tsconfig: "./tsconfig.build.umd.json",
-    }),
-    output: [
-      {
-        file: "./dist/umd/admin-api-client.js",
-        format: "umd",
-        sourcemap: true,
-        name: "ShopifyAdminApiClient",
-        ...bannerConfig,
-      },
-    ],
-  },
   {
     input: mainSrcInput,
     plugins: getPlugins(),
