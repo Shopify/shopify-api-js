@@ -7,7 +7,7 @@ const mockDate = new Date("2023-10-15");
 
 describe("getCurrentApiVersion()", () => {
   beforeEach(() => {
-    jest.spyOn(window, "Date").mockImplementation(() => mockDate);
+    jest.spyOn(global, "Date").mockImplementation(() => mockDate);
   });
 
   afterEach(() => {
@@ -27,7 +27,7 @@ describe("getCurrentApiVersion()", () => {
 
 describe("getCurrentSupportedApiVersions()", () => {
   beforeEach(() => {
-    jest.spyOn(window, "Date").mockImplementation(() => mockDate);
+    jest.spyOn(global, "Date").mockImplementation(() => mockDate);
   });
 
   afterEach(() => {
