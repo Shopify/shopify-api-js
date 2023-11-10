@@ -123,7 +123,7 @@ describe("GraphQL Client", () => {
           variables,
         });
 
-        expect(global.fetch).toHaveBeenCalledWith(config.url, {
+        expect(fetch).toHaveBeenCalledWith(config.url, {
           method: "POST",
           headers: config.headers,
           body: JSON.stringify({
@@ -160,7 +160,7 @@ describe("GraphQL Client", () => {
             variables,
           }),
         });
-        expect(global.fetch).not.toHaveBeenCalled();
+        expect(fetch).not.toHaveBeenCalled();
       });
 
       describe("calling the function", () => {
@@ -199,7 +199,7 @@ describe("GraphQL Client", () => {
         describe("fetch parameters", () => {
           it("calls fetch API with provided operation", async () => {
             await client.fetch(operation);
-            expect(global.fetch).toHaveBeenCalledWith(config.url, {
+            expect(fetch).toHaveBeenCalledWith(config.url, {
               method: "POST",
               headers: config.headers,
               body: JSON.stringify({
@@ -210,7 +210,7 @@ describe("GraphQL Client", () => {
 
           it("calls fetch API with provided variables", async () => {
             await client.fetch(operation, { variables });
-            expect(global.fetch).toHaveBeenCalledWith(config.url, {
+            expect(fetch).toHaveBeenCalledWith(config.url, {
               method: "POST",
               headers: config.headers,
               body: JSON.stringify({
@@ -224,7 +224,7 @@ describe("GraphQL Client", () => {
             const url =
               "http://test-store.myshopify.com/api/2023-07/graphql.json";
             await client.fetch(operation, { url });
-            expect(global.fetch).toHaveBeenCalledWith(url, {
+            expect(fetch).toHaveBeenCalledWith(url, {
               method: "POST",
               headers: config.headers,
               body: JSON.stringify({
@@ -240,7 +240,7 @@ describe("GraphQL Client", () => {
             };
 
             await client.fetch(operation, { headers });
-            expect(global.fetch).toHaveBeenCalledWith(config.url, {
+            expect(fetch).toHaveBeenCalledWith(config.url, {
               method: "POST",
               headers: { ...config.headers, ...headers },
               body: JSON.stringify({
@@ -258,7 +258,7 @@ describe("GraphQL Client", () => {
               await expect(async () => {
                 await client.fetch(operation);
               }).rejects.toThrow(new RegExp(/^GraphQL Client: /));
-              expect(fetchMock).toHaveBeenCalledTimes(1);
+              expect(fetch).toHaveBeenCalledTimes(1);
             });
 
             it("calls the global fetch 2 times and throws a retry error when the client was initialized with 1 retries and all fetches were aborted", async () => {
@@ -273,7 +273,7 @@ describe("GraphQL Client", () => {
                   /^GraphQL Client: Attempted maximum number of 1 network retries. Last message - /
                 )
               );
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("calls the global fetch 3 times and throws a retry error when the function is provided with 2 retries and all fetches were aborted", async () => {
@@ -287,7 +287,7 @@ describe("GraphQL Client", () => {
                 )
               );
 
-              expect(fetchMock).toHaveBeenCalledTimes(3);
+              expect(fetch).toHaveBeenCalledTimes(3);
             });
 
             it("returns a valid http response after an aborted fetch and the next response is valid", async () => {
@@ -296,7 +296,7 @@ describe("GraphQL Client", () => {
               const response = await client.fetch(operation, { retries: 2 });
 
               expect(response.status).toBe(200);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("delays a retry by 1000ms", async () => {
@@ -368,7 +368,7 @@ describe("GraphQL Client", () => {
               const response = await client.fetch(operation);
 
               expect(response.status).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(1);
+              expect(fetch).toHaveBeenCalledTimes(1);
             });
 
             it("calls the global fetch 2 times and returns the failed http response when the client was initialized with 1 retries and all fetches returned 429 responses", async () => {
@@ -378,7 +378,7 @@ describe("GraphQL Client", () => {
               const response = await client.fetch(operation);
 
               expect(response.status).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("calls the global fetch 3 times and returns the failed http response when the function is provided with 2 retries and all fetches returned 429 responses", async () => {
@@ -386,7 +386,7 @@ describe("GraphQL Client", () => {
               const response = await client.fetch(operation, { retries: 2 });
 
               expect(response.status).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
+              expect(fetch).toHaveBeenCalledTimes(3);
             });
 
             it("returns a valid response after an a failed 429 fetch response and the next response is valid", async () => {
@@ -400,7 +400,7 @@ describe("GraphQL Client", () => {
 
               expect(response.status).toBe(200);
               expect(await response.json()).toEqual(mockedSuccessData);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("returns a failed non 429/503 response after an a failed 429 fetch response and the next response has failed", async () => {
@@ -414,7 +414,7 @@ describe("GraphQL Client", () => {
 
               expect(response.status).toBe(500);
               expect(await response.json()).toEqual(mockedSuccessData);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("delays a retry by 1000ms", async () => {
@@ -480,7 +480,7 @@ describe("GraphQL Client", () => {
               const response = await client.fetch(operation);
 
               expect(response.status).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(1);
+              expect(fetch).toHaveBeenCalledTimes(1);
             });
 
             it("calls the global fetch 2 times and returns the failed http response when the client was initialized with 1 retries and all fetch responses were 503 ", async () => {
@@ -490,7 +490,7 @@ describe("GraphQL Client", () => {
               const response = await client.fetch(operation);
 
               expect(response.status).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("calls the global fetch 3 times and returns the failed http response when the function is provided with 2 retries and all fetch responses were 503", async () => {
@@ -498,7 +498,7 @@ describe("GraphQL Client", () => {
               const response = await client.fetch(operation, { retries: 2 });
 
               expect(response.status).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
+              expect(fetch).toHaveBeenCalledTimes(3);
             });
 
             it("returns a valid response after a failed 503 fetch response and the next response is valid", async () => {
@@ -512,7 +512,7 @@ describe("GraphQL Client", () => {
 
               expect(response.status).toBe(200);
               expect(await response.json()).toEqual(mockedSuccessData);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("returns a failed non 429/503 response after a failed 503 fetch response and the next response has failed", async () => {
@@ -526,7 +526,7 @@ describe("GraphQL Client", () => {
 
               expect(response.status).toBe(500);
               expect(await response.json()).toEqual(mockedSuccessData);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("delays a retry by 1000ms", async () => {
@@ -593,7 +593,7 @@ describe("GraphQL Client", () => {
             const response = await client.fetch(operation);
 
             expect(response.status).toBe(200);
-            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(fetch).toHaveBeenCalledTimes(1);
           });
 
           it("does not retry additional network requests on a failed response that is not a 429 or 503", async () => {
@@ -611,7 +611,7 @@ describe("GraphQL Client", () => {
             const response = await client.fetch(operation);
 
             expect(response.status).toBe(500);
-            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(fetch).toHaveBeenCalledTimes(1);
           });
 
           it("throws an error when the retries config value is less than 0", async () => {
@@ -643,7 +643,7 @@ describe("GraphQL Client", () => {
           variables,
         });
 
-        expect(global.fetch).toHaveBeenCalledWith(config.url, {
+        expect(fetch).toHaveBeenCalledWith(config.url, {
           method: "POST",
           headers: config.headers,
           body: JSON.stringify({
@@ -680,7 +680,7 @@ describe("GraphQL Client", () => {
             variables,
           }),
         });
-        expect(global.fetch).not.toHaveBeenCalled();
+        expect(fetch).not.toHaveBeenCalled();
       });
 
       describe("calling the function", () => {
@@ -929,7 +929,7 @@ describe("GraphQL Client", () => {
               expect(errors?.message?.startsWith("GraphQL Client: ")).toBe(
                 true
               );
-              expect(fetchMock).toHaveBeenCalledTimes(1);
+              expect(fetch).toHaveBeenCalledTimes(1);
             });
 
             it("calls the global fetch 2 times and returns a response object with an error when the client was initialized with 1 retries and all fetches were aborted", async () => {
@@ -944,7 +944,7 @@ describe("GraphQL Client", () => {
                   "GraphQL Client: Attempted maximum number of 1 network retries. Last message - "
                 )
               ).toBe(true);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("calls the global fetch 3 times and returns a response object with an error when the function is provided with 2 retries and all fetches were aborted", async () => {
@@ -959,7 +959,7 @@ describe("GraphQL Client", () => {
                   "GraphQL Client: Attempted maximum number of 2 network retries. Last message - "
                 )
               ).toBe(true);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
+              expect(fetch).toHaveBeenCalledTimes(3);
             });
 
             it("returns a valid response object without an error property after an aborted fetch and the next response is valid", async () => {
@@ -983,7 +983,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors).toBeUndefined();
               expect(response.data).toEqual(mockResponseData.data);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("delays a retry by 1000ms", async () => {
@@ -1052,7 +1052,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors?.message).toBe("Too Many Requests");
               expect(response.errors?.networkStatusCode).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(1);
+              expect(fetch).toHaveBeenCalledTimes(1);
             });
 
             it("calls the global fetch 2 times and returns a response object with an error when the client was initialized with 1 retries and all fetches returned 429 responses", async () => {
@@ -1063,7 +1063,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors?.message).toBe("Too Many Requests");
               expect(response.errors?.networkStatusCode).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("calls the global fetch 3 times and returns a response object with an error when the function is provided with 2 retries and all fetches returned 429 responses", async () => {
@@ -1072,7 +1072,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors?.message).toBe("Too Many Requests");
               expect(response.errors?.networkStatusCode).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
+              expect(fetch).toHaveBeenCalledTimes(3);
             });
 
             it("returns a valid response after an a failed 429 fetch response and the next response is valid", async () => {
@@ -1091,7 +1091,7 @@ describe("GraphQL Client", () => {
               const response = await client.request(operation, { retries: 2 });
 
               expect(response.data).toEqual(mockedSuccessData.data);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("returns a failed non 429/503 response after an a failed 429 fetch response and the next response has failed", async () => {
@@ -1101,7 +1101,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors?.networkStatusCode).toBe(500);
               expect(response.errors?.message).toEqual("Internal Server Error");
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("delays a retry by 1000ms", async () => {
@@ -1168,7 +1168,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors?.message).toBe("Service Unavailable");
               expect(response.errors?.networkStatusCode).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(1);
+              expect(fetch).toHaveBeenCalledTimes(1);
             });
 
             it("calls the global fetch 2 times and returns a response object with an error when the client was initialized with 1 retries and all fetches returned 503 responses", async () => {
@@ -1179,7 +1179,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors?.message).toBe("Service Unavailable");
               expect(response.errors?.networkStatusCode).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("calls the global fetch 3 times and returns a response object with an error when the function is provided with 2 retries and all fetches returned 503 responses", async () => {
@@ -1188,7 +1188,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors?.message).toBe("Service Unavailable");
               expect(response.errors?.networkStatusCode).toBe(status);
-              expect(fetchMock).toHaveBeenCalledTimes(3);
+              expect(fetch).toHaveBeenCalledTimes(3);
             });
 
             it("returns a valid response after an a failed 503 fetch response and the next response is valid", async () => {
@@ -1207,7 +1207,7 @@ describe("GraphQL Client", () => {
               const response = await client.request(operation, { retries: 2 });
 
               expect(response.data).toEqual(mockedSuccessData.data);
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("returns a failed non 429/503 response after an a failed 503 fetch response and the next response has failed", async () => {
@@ -1217,7 +1217,7 @@ describe("GraphQL Client", () => {
 
               expect(response.errors?.networkStatusCode).toBe(500);
               expect(response.errors?.message).toEqual("Internal Server Error");
-              expect(fetchMock).toHaveBeenCalledTimes(2);
+              expect(fetch).toHaveBeenCalledTimes(2);
             });
 
             it("delays a retry by 1000ms", async () => {
@@ -1285,7 +1285,7 @@ describe("GraphQL Client", () => {
             const response = await client.request(operation);
 
             expect(response.data).toEqual(mockedSuccessData.data);
-            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(fetch).toHaveBeenCalledTimes(1);
           });
 
           it("does not retry additional network requests on a failed response that is not a 429 or 503", async () => {
@@ -1303,7 +1303,7 @@ describe("GraphQL Client", () => {
             const response = await client.request(operation);
 
             expect(response.errors?.networkStatusCode).toBe(500);
-            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(fetch).toHaveBeenCalledTimes(1);
           });
 
           it("returns a response object with an error when the retries config value is less than 0", async () => {
