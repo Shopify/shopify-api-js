@@ -25,6 +25,7 @@
     {"path": "./packages/shopify-api"},
     {"path": "./packages/graphql-client"},
     {"path": "./packages/storefront-api-client"},
-    {"path": "./packages/admin-api-client"}
+    {"path": "./packages/admin-api-client"},
+    {"path": "./packages/api-codegen-preset"}
   ]
 }
