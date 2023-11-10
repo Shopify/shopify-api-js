@@ -329,11 +329,14 @@ describe("Admin API Client", () => {
       });
 
       it("returns a headers object that contains both the client default headers and the provided custom headers", () => {
-        const customHeaders = {
+        const headers = {
           "X-GraphQL-Cost-Include-Fields": true,
         };
-        const headers = client.getHeaders(customHeaders);
-        expect(headers).toEqual({ ...customHeaders, ...client.config.headers });
+        const updatedHeaders = client.getHeaders(headers);
+        expect(updatedHeaders).toEqual({
+          ...headers,
+          ...client.config.headers,
+        });
       });
     });
 
