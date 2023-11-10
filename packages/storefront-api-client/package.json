@@ -49,7 +49,6 @@
         },
         "testEnvironment": "jsdom",
         "testPathIgnorePatterns": [
-          ".rollup.cache/",
           "(/__tests__/.*|(\\.|/)server(\\.|/)(test|spec))\\.[jt]sx?$"
         ]
       },
@@ -59,7 +58,6 @@
           "color": "yellow"
         },
         "testPathIgnorePatterns": [
-          ".rollup.cache/",
           "(/__tests__/.*|(\\.|/)browser(\\.|/)(test|spec))\\.[jt]sx?$"
         ]
       }

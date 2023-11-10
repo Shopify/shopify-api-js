@@ -41,7 +41,27 @@
     "release": "yarn build && changeset publish"
   },
   "jest": {
-    "testEnvironment": "jsdom",
+    "projects": [
+      {
+        "displayName": {
+          "name": "test:browser",
+          "color": "blue"
+        },
+        "testEnvironment": "jsdom",
+        "testPathIgnorePatterns": [
+          "(/__tests__/.*|(\\.|/)server(\\.|/)(test|spec))\\.[jt]sx?$"
+        ]
+      },
+      {
+        "displayName": {
+          "name": "test:server",
+          "color": "yellow"
+        },
+        "testPathIgnorePatterns": [
+          "(/__tests__/.*|(\\.|/)browser(\\.|/)(test|spec))\\.[jt]sx?$"
+        ]
+      }
+    ],
     "setupFilesAfterEnv": [
       "./src/tests/setupTests.ts"
     ],
@@ -60,12 +80,7 @@
     "Storefront API"
   ],
   "files": [
-    "**/*.d.ts",
-    "**/*.d.ts.map",
-    "**/*.js",
-    "**/*.js.map",
-    "**/*.mjs",
-    "**/*.mjs.map",
+    "dist/**/*.*",
     "!node_modules"
   ],
   "dependencies": {},
