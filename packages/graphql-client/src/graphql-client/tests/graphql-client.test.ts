@@ -1,15 +1,52 @@
 import fetchMock from "jest-fetch-mock";
 
-import { createGraphQLClient } from "../../graphql-client";
-import { GraphQLClient, RequestOptions } from "../../types";
-
+import { createGraphQLClient } from "../graphql-client";
 import {
-  config,
-  getValidClient,
-  operation,
-  variables,
-  globalFetchMock,
-} from "./fixtures";
+  GraphQLClient,
+  RequestOptions,
+  LogContentTypes,
+  ClientOptions,
+} from "../types";
+
+export const globalFetchMock = JSON.stringify({ data: {} });
+
+export const config = {
+  url: "http://test-store.myshopify.com/api/2023-10/graphql.json",
+  headers: {
+    "Content-Type": "application/json",
+    "X-Shopify-Storefront-Access-Token": "public-token",
+  },
+};
+
+export function getValidClient({
+  retries,
+  logger,
+}: {
+  retries?: number;
+  logger?: (logContent: LogContentTypes) => void;
+} = {}) {
+  const updatedConfig: ClientOptions = { ...config };
+
+  if (typeof retries === "number") {
+    updatedConfig.retries = retries;
+  }
+
+  if (logger !== undefined) {
+    updatedConfig.logger = logger;
+  }
+
+  return createGraphQLClient(updatedConfig);
+}
+
+export const operation = `
+query {
+  shop {
+    name
+  }
+}
+`;
+
+export const variables = {};
 
 describe("GraphQL Client", () => {
   let mockLogger: jest.Mock;
@@ -215,6 +252,44 @@ describe("GraphQL Client", () => {
 
         describe("retries", () => {
           describe("Aborted fetch responses", () => {
+            it("calls the global fetch 1 time and throws a plain error when the client retries value is 0", async () => {
+              fetchMock.mockAbort();
+
+              await expect(async () => {
+                await client.fetch(operation);
+              }).rejects.toThrow(new RegExp(/^GraphQL Client: /));
+              expect(fetchMock).toHaveBeenCalledTimes(1);
+            });
+
+            it("calls the global fetch 2 times and throws a retry error when the client was initialized with 1 retries and all fetches were aborted", async () => {
+              fetchMock.mockAbort();
+
+              const client = getValidClient({ retries: 1 });
+
+              await expect(async () => {
+                await client.fetch(operation);
+              }).rejects.toThrow(
+                new RegExp(
+                  /^GraphQL Client: Attempted maximum number of 1 network retries. Last message - /
+                )
+              );
+              expect(fetchMock).toHaveBeenCalledTimes(2);
+            });
+
+            it("calls the global fetch 3 times and throws a retry error when the function is provided with 2 retries and all fetches were aborted", async () => {
+              fetchMock.mockAbort();
+
+              await expect(async () => {
+                await client.fetch(operation, { retries: 2 });
+              }).rejects.toThrow(
+                new RegExp(
+                  /^GraphQL Client: Attempted maximum number of 2 network retries. Last message - /
+                )
+              );
+
+              expect(fetchMock).toHaveBeenCalledTimes(3);
+            });
+
             it("returns a valid http response after an aborted fetch and the next response is valid", async () => {
               fetchMock.mockAbortOnce();
 
@@ -846,6 +921,47 @@ describe("GraphQL Client", () => {
 
         describe("retries", () => {
           describe("Aborted fetch responses", () => {
+            it("calls the global fetch 1 time and returns a response object with a plain error when the client default retries value is 0 ", async () => {
+              fetchMock.mockAbort();
+
+              const { errors } = await client.request(operation);
+
+              expect(errors?.message?.startsWith("GraphQL Client: ")).toBe(
+                true
+              );
+              expect(fetchMock).toHaveBeenCalledTimes(1);
+            });
+
+            it("calls the global fetch 2 times and returns a response object with an error when the client was initialized with 1 retries and all fetches were aborted", async () => {
+              fetchMock.mockAbort();
+
+              const client = getValidClient({ retries: 1 });
+
+              const { errors } = await client.request(operation);
+
+              expect(
+                errors?.message?.startsWith(
+                  "GraphQL Client: Attempted maximum number of 1 network retries. Last message - "
+                )
+              ).toBe(true);
+              expect(fetchMock).toHaveBeenCalledTimes(2);
+            });
+
+            it("calls the global fetch 3 times and returns a response object with an error when the function is provided with 2 retries and all fetches were aborted", async () => {
+              fetchMock.mockAbort();
+
+              const { errors } = await client.request(operation, {
+                retries: 2,
+              });
+
+              expect(
+                errors?.message?.startsWith(
+                  "GraphQL Client: Attempted maximum number of 2 network retries. Last message - "
+                )
+              ).toBe(true);
+              expect(fetchMock).toHaveBeenCalledTimes(3);
+            });
+
             it("returns a valid response object without an error property after an aborted fetch and the next response is valid", async () => {
               const mockResponseData = {
                 data: { shop: { name: "Test shop" } },
