@@ -1,0 +1,103 @@
+{
+  "name": "@shopify/admin-api-client",
+  "version": "0.0.1",
+  "description": "Shopify Admin API Client - A lightweight JS client to interact with Shopify's Admin API",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shopify/shopify-api-js.git"
+  },
+  "author": "Shopify",
+  "license": "MIT",
+  "main": "./dist/admin-api-client.min.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/admin-api-client.d.ts",
+  "exports": {
+    ".": {
+      "module": {
+        "types": "./dist/ts/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "import": {
+        "types": "./dist/ts/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/ts/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "default": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "lint": "eslint . --ext .js,.ts",
+    "build": "yarn run rollup",
+    "test": "jest",
+    "test:ci": "yarn test",
+    "rollup": "rollup -c --bundleConfigAsCjs",
+    "clean": "rimraf dist/*",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "yarn build && changeset publish"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./src/tests/setupTests.ts"
+    ],
+    "transform": {
+      ".*": "babel-jest"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "shopify",
+    "node",
+    "graphql",
+    "admin API"
+  ],
+  "files": [
+    "dist/**/*.*"
+  ],
+  "dependencies": {
+    "@shopify/graphql-client": "^0.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.3",
+    "@babel/plugin-transform-async-to-generator": "^7.20.7",
+    "@babel/plugin-transform-runtime": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.21.0",
+    "@changesets/changelog-github": "^0.4.8",
+    "@changesets/cli": "^2.26.1",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-eslint": "^9.0.3",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@shopify/babel-preset": "^25.0.0",
+    "@shopify/eslint-plugin": "^42.0.3",
+    "@shopify/prettier-config": "^1.1.2",
+    "@shopify/typescript-configs": "^5.1.0",
+    "@types/jest": "^29.5.0",
+    "@types/regenerator-runtime": "^0.13.1",
+    "@typescript-eslint/parser": "^6.7.5",
+    "babel-jest": "^29.5.0",
+    "eslint": "^8.51.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "jest-fetch-mock": "^3.0.3",
+    "prettier": "^2.5.1",
+    "regenerator-runtime": "^0.13.11",
+    "rollup": "^3.19.1",
+    "rollup-plugin-dts": "^5.2.0",
+    "tslib": "^2.5.0",
+    "typescript": "^5.2.0"
+  },
+  "bugs": {
+    "url": "https://github.com/Shopify/shopify-api-js/issues"
+  },
+  "homepage": "https://github.com/Shopify/shopify-api-js/packages/admin-api-client#readme"
+}
