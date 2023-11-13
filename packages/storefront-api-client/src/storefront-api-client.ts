@@ -13,6 +13,7 @@ import {
   StorefrontApiClientOptions,
   StorefrontApiClient,
   StorefrontApiClientConfig,
+  StorefrontOperations,
 } from "./types";
 import {
   DEFAULT_SDK_VARIANT,
@@ -96,16 +97,16 @@ export function createStorefrontApiClient({
   const getHeaders = generateGetHeaders(config);
   const getApiUrl = generateGetApiUrl(config, apiUrlFormatter);
 
-  const getGQLClientParams = generateGetGQLClientParams({
+  const getGQLClientParams = generateGetGQLClientParams<StorefrontOperations>({
     getHeaders,
     getApiUrl,
   });
 
-  const fetch: ApiClientFetch = (...props) => {
+  const fetch: ApiClientFetch<StorefrontOperations> = (...props) => {
     return graphqlClient.fetch(...getGQLClientParams(...props));
   };
 
-  const request: ApiClientRequest = (...props) => {
+  const request: ApiClientRequest<StorefrontOperations> = (...props) => {
     return graphqlClient.request(...getGQLClientParams(...props));
   };
 
