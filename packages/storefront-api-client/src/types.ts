@@ -29,4 +29,15 @@ export type StorefrontApiClientOptions = Omit<
   logger?: ApiClientLogger<StorefrontApiClientLogContentTypes>;
 };
 
-export type StorefrontApiClient = ApiClient<StorefrontApiClientConfig>;
+export interface StorefrontQueries {
+  [key: string]: { variables: any; return: any };
+}
+export interface StorefrontMutations {
+  [key: string]: { variables: any; return: any };
+}
+export type StorefrontOperations = StorefrontQueries & StorefrontMutations;
+
+export type StorefrontApiClient = ApiClient<
+  StorefrontApiClientConfig,
+  StorefrontOperations
+>;
