@@ -1,4 +1,6 @@
-export interface FutureFlags {}
+export interface FutureFlags {
+  unstable_tokenExchange?: boolean;
+}
 
 export type FutureFlagOptions = FutureFlags | undefined;
 
