@@ -88,7 +88,7 @@ describe("validateRequiredApiVersion()", () => {
 
   beforeEach(() => {
     consoleWarnSpy = jest
-      .spyOn(window.console, "warn")
+      .spyOn(global.console, "warn")
       .mockImplementation(jest.fn());
   });
 

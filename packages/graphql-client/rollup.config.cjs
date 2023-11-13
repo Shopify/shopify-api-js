@@ -19,7 +19,7 @@ export function getPlugins({ tsconfig, minify } = {}) {
     resolve(),
     commonjs(),
     typescript({
-      tsconfig: tsconfig ? tsconfig : "./tsconfig.build.json",
+      tsconfig: tsconfig ? tsconfig : "./tsconfig.json",
       outDir: "./dist/ts",
     }),
     ...(minify === true ? [terser({ keep_fnames: new RegExp("fetch") })] : []),
@@ -36,7 +36,7 @@ const config = [
     input: clientSrcInput,
     plugins: getPlugins({
       minify: true,
-      tsconfig: "./tsconfig.build.umd.json",
+      tsconfig: "./tsconfig.umd.json",
     }),
     output: [
       {
@@ -51,7 +51,7 @@ const config = [
   {
     input: clientSrcInput,
     plugins: getPlugins({
-      tsconfig: "./tsconfig.build.umd.json",
+      tsconfig: "./tsconfig.umd.json",
     }),
     output: [
       {
