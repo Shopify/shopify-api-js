@@ -1,4 +1,4 @@
-import {ConfigInterface} from '../base-types';
+import {ConfigInterface, ConfigParams} from '../base-types';
 import {BillingInterval} from '../types';
 import {BillingError} from '../error';
 import {buildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
@@ -8,6 +8,7 @@ import {
 } from '../clients/graphql/graphql_client';
 import {hashString} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
+import {FutureFlagOptions} from '../../future/flags';
 
 import {
   BillingConfigSubscriptionPlan,
@@ -18,7 +19,6 @@ import {
   RecurringPaymentResponse,
   RequestResponseData,
   SinglePaymentResponse,
-  BillingConfigItem,
   BillingConfigSubscriptionLineItemPlan,
   RequestConfigLineItemOverrides,
 } from './types';
@@ -46,7 +46,11 @@ interface RequestSubscriptionParams extends RequestInternalParams {
   billingConfig: BillingConfigSubscriptionLineItemPlan;
 }
 
-export function request(config: ConfigInterface) {
+export function request<
+  Config extends ConfigInterface<Params>,
+  Params extends ConfigParams<any, Future>,
+  Future extends FutureFlagOptions,
+>(config: Config) {
   return async function <Params extends BillingRequestParams>({
     session,
     plan,
@@ -62,7 +66,9 @@ export function request(config: ConfigInterface) {
       });
     }
 
-    const billingConfig: BillingConfigItem = {...config.billing[plan]};
+    const billingConfig = {
+      ...config.billing[plan],
+    };
     const filteredOverrides = Object.fromEntries(
       Object.entries(overrides).filter(([_key, value]) => value !== undefined),
     );
@@ -81,10 +87,22 @@ export function request(config: ConfigInterface) {
     const GraphqlClient = graphqlClientClass({config});
     const client = new GraphqlClient({session});
 
-    // We are using the new lineItems format in the billing config
-    if ('lineItems' in billingConfig) {
+    function isLineItemPlan(
+      billingConfig: any,
+    ): billingConfig is BillingConfigSubscriptionLineItemPlan {
+      return 'lineItems' in billingConfig;
+    }
+
+    function isOneTimePlan(
+      billingConfig: any,
+    ): billingConfig is BillingConfigOneTimePlan {
+      return billingConfig.interval === BillingInterval.OneTime;
+    }
+
+    let data: RequestResponseData;
+    if (isLineItemPlan(billingConfig)) {
       const mergedBillingConfigs = mergeBillingConfigs(
-        billingConfig as BillingConfigSubscriptionLineItemPlan,
+        billingConfig,
         filteredOverrides,
       );
       const mutationRecurringResponse = await requestSubscriptionPayment({
@@ -95,37 +113,19 @@ export function request(config: ConfigInterface) {
         isTest,
       });
 
-      const data = mutationRecurringResponse.data.appSubscriptionCreate;
-
-      if (data.userErrors?.length) {
-        throw new BillingError({
-          message: 'Error while billing the store',
-          errorData: data.userErrors,
-        });
-      }
-
-      if (returnObject) {
-        return data as Omit<
-          RequestResponseData,
-          'userErrors'
-        > as BillingRequestResponse<Params>;
-      } else {
-        return data.confirmationUrl as BillingRequestResponse<Params>;
-      }
+      data = mutationRecurringResponse.data.appSubscriptionCreate;
+    } else if (isOneTimePlan(billingConfig)) {
+      console.log(billingConfig.interval);
+      const mutationOneTimeResponse = await requestSinglePayment({
+        billingConfig: {...billingConfig, ...filteredOverrides},
+        plan,
+        client,
+        returnUrl,
+        isTest,
+      });
+      data = mutationOneTimeResponse.data.appPurchaseOneTimeCreate;
     } else {
-      let data: RequestResponseData;
       switch (billingConfig.interval) {
-        case BillingInterval.OneTime: {
-          const mutationOneTimeResponse = await requestSinglePayment({
-            billingConfig: {...billingConfig, ...filteredOverrides},
-            plan,
-            client,
-            returnUrl,
-            isTest,
-          });
-          data = mutationOneTimeResponse.data.appPurchaseOneTimeCreate;
-          break;
-        }
         case BillingInterval.Usage: {
           const mutationUsageResponse = await requestUsagePayment({
             billingConfig: {...billingConfig, ...filteredOverrides},
@@ -148,12 +148,14 @@ export function request(config: ConfigInterface) {
           data = mutationRecurringResponse.data.appSubscriptionCreate;
         }
       }
-      if (data.userErrors?.length) {
-        throw new BillingError({
-          message: 'Error while billing the store',
-          errorData: data.userErrors,
-        });
-      }
+    }
+
+    if (data.userErrors?.length) {
+      throw new BillingError({
+        message: 'Error while billing the store',
+        errorData: data.userErrors,
+      });
+    }
 
       if (returnObject) {
         return data as Omit<
@@ -165,6 +167,87 @@ export function request(config: ConfigInterface) {
       }
     }
   };
+}
+
+async function requestSubscriptionPayment({
+  billingConfig,
+  plan,
+  client,
+  returnUrl,
+  isTest,
+}: RequestSubscriptionParams): Promise<RecurringPaymentResponse> {
+  const lineItems = billingConfig.lineItems.map((item) => {
+    if (
+      item.interval === BillingInterval.Every30Days ||
+      item.interval === BillingInterval.Annual
+    ) {
+      const appRecurringPricingDetails: any = {
+        interval: item.interval,
+        price: {
+          amount: item.amount,
+          currencyCode: item.currencyCode,
+        },
+      };
+
+      if (item.discount) {
+        appRecurringPricingDetails.discount = {
+          durationLimitInIntervals: item.discount.durationLimitInIntervals,
+          value: {
+            amount: item.discount.value.amount,
+            percentage: item.discount.value.percentage,
+          },
+        };
+      }
+
+      return {
+        plan: {
+          appRecurringPricingDetails,
+        },
+      };
+    } else if (item.interval === BillingInterval.Usage) {
+      const appUsagePricingDetails = {
+        terms: item.terms,
+        cappedAmount: {
+          amount: item.amount,
+          currencyCode: item.currencyCode,
+        },
+      };
+
+      return {
+        plan: {
+          appUsagePricingDetails,
+        },
+      };
+    } else {
+      throw new BillingError({
+        message: 'Invalid interval provided',
+        errorData: [],
+      });
+    }
+  });
+
+  const mutationResponse = await client.query<RecurringPaymentResponse>({
+    data: {
+      query: RECURRING_PURCHASE_MUTATION,
+      variables: {
+        name: plan,
+        trialDays: billingConfig.trialDays,
+        replacementBehavior: billingConfig.replacementBehavior,
+        returnUrl,
+        test: isTest,
+        lineItems,
+      },
+    },
+  });
+
+  if (mutationResponse.body.errors?.length) {
+    throw new BillingError({
+      message: 'Error while billing the store',
+      errorData: mutationResponse.body.errors,
+    });
+  }
+
+  return mutationResponse.body;
 }
 
 async function requestSubscriptionPayment({
@@ -374,6 +457,44 @@ async function requestSinglePayment({
   return mutationResponse.body;
 }
 
+function mergeBillingConfigs(
+  billingConfig: BillingConfigSubscriptionLineItemPlan,
+  overrides: RequestConfigLineItemOverrides,
+) {
+  const mergedConfig = {...billingConfig, ...overrides};
+  const mergedLineItems = [];
+
+  if (billingConfig.lineItems && overrides.lineItems) {
+    for (const i of billingConfig.lineItems) {
+      let found = false;
+
+      for (const j of overrides.lineItems) {
+        if (i.interval === j.interval) {
+          mergedLineItems.push({...i, ...j});
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        mergedLineItems.push(i);
+      }
+    }
+
+    // Add lineItems from overrides that are not in billingConfig
+    for (const lineItem of overrides.lineItems) {
+      if (
+        !mergedLineItems.some((item) => item.interval === lineItem.interval)
+      ) {
+        mergedLineItems.push(lineItem);
+      }
+    }
+
+    mergedConfig.lineItems = mergedLineItems;
+  }
+
+  return mergedConfig;
+}
 function mergeBillingConfigs(
   billingConfig: BillingConfigSubscriptionLineItemPlan,
   overrides: RequestConfigLineItemOverrides,

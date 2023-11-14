@@ -23,7 +23,9 @@ const GRAPHQL_BASE_REQUEST = {
 
 interface TestConfigInterface {
   name: string;
-  billingConfig: BillingConfig | BillingConfig<{unstable_billingUpdates: true}>;
+  billingConfig:
+    | BillingConfig
+    | BillingConfig<{unstable_billingUpdates: false}>;
   paymentResponse: string;
   responseObject: any;
   errorResponse: string;
@@ -55,22 +57,14 @@ const TEST_CONFIGS: TestConfigInterface[] = [
     name: 'recurring config',
     billingConfig: {
       [Responses.PLAN_1]: {
-        lineItems: [
-          {
-            amount: 5,
-            currencyCode: 'USD',
-            interval: BillingInterval.Every30Days,
-          },
-        ],
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Every30Days,
       },
       [Responses.PLAN_2]: {
-        lineItems: [
-          {
-            amount: 10,
-            currencyCode: 'USD',
-            interval: BillingInterval.Every30Days,
-          },
-        ],
+        amount: 10,
+        currencyCode: 'USD',
+        interval: BillingInterval.Annual,
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
@@ -83,124 +77,16 @@ const TEST_CONFIGS: TestConfigInterface[] = [
     name: 'usage config',
     billingConfig: {
       [Responses.PLAN_1]: {
-        lineItems: [
-          {
-            amount: 5,
-            currencyCode: 'USD',
-            terms: '1 dollar per click',
-            interval: BillingInterval.Usage,
-          },
-        ],
+        amount: 5,
+        currencyCode: 'USD',
+        usageTerms: '1 dollar per click',
+        interval: BillingInterval.Usage,
       },
       [Responses.PLAN_2]: {
-        lineItems: [
-          {
-            amount: 10,
-            currencyCode: 'USD',
-            terms: '1 dollar per email',
-            interval: BillingInterval.Usage,
-          },
-        ],
-      },
-    },
-    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
-    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
-      .appSubscriptionCreate,
-    errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
-    mutationName: 'appSubscriptionCreate',
-  },
-  {
-    name: 'subscription with line items',
-    billingConfig: {
-      [Responses.PLAN_1]: {
-        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        trialDays: 7,
-        lineItems: [
-          {
-            interval: BillingInterval.Every30Days,
-            amount: 30,
-            currencyCode: 'USD',
-            discount: {
-              durationLimitInIntervals: 3,
-              value: {
-                amount: 10,
-              },
-            },
-          },
-          {
-            interval: BillingInterval.Usage,
-            amount: 30,
-            currencyCode: 'USD',
-            terms: 'per 1000 emails',
-          },
-        ],
-      },
-      [Responses.PLAN_2]: {
-        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        trialDays: 7,
-        lineItems: [
-          {
-            interval: BillingInterval.Every30Days,
-            amount: 40,
-            currencyCode: 'USD',
-          },
-          {
-            interval: BillingInterval.Usage,
-            amount: 30,
-            currencyCode: 'USD',
-            terms: 'per 1000 emails',
-          },
-        ],
-      },
-    },
-    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
-    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
-      .appSubscriptionCreate,
-    errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
-    mutationName: 'appSubscriptionCreate',
-  },
-  {
-    name: 'subscription with line items',
-    billingConfig: {
-      [Responses.PLAN_1]: {
-        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        trialDays: 7,
-        lineItems: [
-          {
-            interval: BillingInterval.Every30Days,
-            amount: 30,
-            currencyCode: 'USD',
-            discount: {
-              durationLimitInIntervals: 3,
-              value: {
-                amount: 10,
-              },
-            },
-          },
-          {
-            interval: BillingInterval.Usage,
-            amount: 30,
-            currencyCode: 'USD',
-            terms: 'per 1000 emails',
-          },
-        ],
-      },
-      [Responses.PLAN_2]: {
-        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        trialDays: 7,
-        lineItems: [
-          {
-            interval: BillingInterval.Every30Days,
-            amount: 40,
-            currencyCode: 'USD',
-          },
-          {
-            interval: BillingInterval.Usage,
-            amount: 30,
-            currencyCode: 'USD',
-            terms: 'per 1000 emails',
-          },
-        ],
+        amount: 10,
+        currencyCode: 'USD',
+        usageTerms: '1 dollar per email',
+        interval: BillingInterval.Usage,
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
@@ -213,46 +99,14 @@ const TEST_CONFIGS: TestConfigInterface[] = [
 
 const SUBSCRIPTION_TEST_CONFIGS: TestConfigInterface[] = [
   {
-    name: 'can request subscription with extra fields',
+    name: 'Legacy - can request subscription with extra fields',
     billingConfig: {
       [Responses.PLAN_1]: {
-        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        trialDays: 10,
-        lineItems: [
-          {
-            interval: BillingInterval.Every30Days,
-            amount: 5,
-            currencyCode: 'USD',
-          },
-        ],
-      },
-    },
-    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
-    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
-      .appSubscriptionCreate,
-    errorResponse: '',
-    mutationName: 'appSubscriptionCreate',
-  },
-  {
-    name: 'can request subscription with discount amount fields',
-    billingConfig: {
-      [Responses.PLAN_1]: {
-        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
-        trialDays: 10,
         amount: 5,
-        lineItems: [
-          {
-            interval: BillingInterval.Every30Days,
-            amount: 5,
-            currencyCode: 'USD',
-            discount: {
-              durationLimitInIntervals: 5,
-              value: {
-                amount: 2,
-              },
-            },
-          },
-        ],
+        currencyCode: 'USD',
+        interval: BillingInterval.Every30Days,
+        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        trialDays: 10,
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
@@ -262,24 +116,20 @@ const SUBSCRIPTION_TEST_CONFIGS: TestConfigInterface[] = [
     mutationName: 'appSubscriptionCreate',
   },
   {
-    name: 'can request subscription with discount percentage fields',
+    name: 'Legacy - can request subscription with discount amount fields',
     billingConfig: {
       [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Every30Days,
         replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
         trialDays: 10,
-        lineItems: [
-          {
-            amount: 5,
-            currencyCode: 'USD',
-            interval: BillingInterval.Every30Days,
-            discount: {
-              durationLimitInIntervals: 5,
-              value: {
-                percentage: 0.2,
-              },
-            },
+        discount: {
+          durationLimitInIntervals: 5,
+          value: {
+            amount: 2,
           },
-        ],
+        },
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
@@ -289,19 +139,38 @@ const SUBSCRIPTION_TEST_CONFIGS: TestConfigInterface[] = [
     mutationName: 'appSubscriptionCreate',
   },
   {
-    name: 'can request usage subscription with extra fields',
+    name: 'Legacy - can request subscription with discount percentage fields',
     billingConfig: {
       [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Every30Days,
         replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
         trialDays: 10,
-        lineItems: [
-          {
-            amount: 5,
-            currencyCode: 'USD',
-            interval: BillingInterval.Usage,
-            terms: '1 dollar per click',
+        discount: {
+          durationLimitInIntervals: 5,
+          value: {
+            percentage: 0.2,
           },
-        ],
+        },
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
+    errorResponse: '',
+    mutationName: 'appSubscriptionCreate',
+  },
+  {
+    name: 'Legacy - can request usage subscription with extra fields',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        amount: 5,
+        currencyCode: 'USD',
+        interval: BillingInterval.Usage,
+        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        trialDays: 10,
+        usageTerms: '1 dollar per click',
       },
     },
     paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
@@ -324,7 +193,14 @@ describe('shopify.billing.request', () => {
 
   describe('with no billing config', () => {
     test('throws error', async () => {
-      const shopify = shopifyApi(testConfig({billing: undefined}));
+      const shopify = shopifyApi(
+        testConfig({
+          billing: undefined,
+          future: {
+            unstable_billingUpdates: false,
+          },
+        }),
+      );
 
       expect(() =>
         shopify.billing.request({
@@ -343,10 +219,13 @@ describe('shopify.billing.request', () => {
       TEST_CONFIGS.forEach((config) => {
         describe(`with ${config.name}`, () => {
           [true, false].forEach((isTest) =>
-            test(`can request payment (isTest: ${isTest})`, async () => {
+            test(`Legacy - can request payment (isTest: ${isTest})`, async () => {
               const shopify = shopifyApi(
                 testConfig({
                   billing: config.billingConfig,
+                  future: {
+                    unstable_billingUpdates: false,
+                  },
                 }),
               );
 
@@ -377,9 +256,14 @@ describe('shopify.billing.request', () => {
             }),
           );
 
-          test(`can request payment with returnUrl param`, async () => {
+          test(`Legacy - can request payment with returnUrl param`, async () => {
             const shopify = shopifyApi(
-              testConfig({billing: config.billingConfig}),
+              testConfig({
+                billing: config.billingConfig,
+                future: {
+                  unstable_billingUpdates: false,
+                },
+              }),
             );
 
             queueMockResponses([config.paymentResponse]);
@@ -409,9 +293,14 @@ describe('shopify.billing.request', () => {
             }).toMatchMadeHttpRequest();
           });
 
-          test('defaults to test purchases', async () => {
+          test('Legacy - defaults to test purchases', async () => {
             const shopify = shopifyApi(
-              testConfig({billing: config.billingConfig}),
+              testConfig({
+                billing: config.billingConfig,
+                future: {
+                  unstable_billingUpdates: false,
+                },
+              }),
             );
 
             queueMockResponses([config.paymentResponse]);
@@ -436,9 +325,14 @@ describe('shopify.billing.request', () => {
             }).toMatchMadeHttpRequest();
           });
 
-          test('can request multiple plans', async () => {
+          test('Legacy - can request multiple plans', async () => {
             const shopify = shopifyApi(
-              testConfig({billing: config.billingConfig}),
+              testConfig({
+                billing: config.billingConfig,
+                future: {
+                  unstable_billingUpdates: false,
+                },
+              }),
             );
 
             queueMockResponses(
@@ -489,9 +383,14 @@ describe('shopify.billing.request', () => {
             }).toMatchMadeHttpRequest();
           });
 
-          test('throws on userErrors', async () => {
+          test('Legacy - throws on userErrors', async () => {
             const shopify = shopifyApi(
-              testConfig({billing: config.billingConfig}),
+              testConfig({
+                billing: config.billingConfig,
+                future: {
+                  unstable_billingUpdates: false,
+                },
+              }),
             );
 
             queueMockResponses([config.errorResponse]);
@@ -514,10 +413,15 @@ describe('shopify.billing.request', () => {
       });
 
       SUBSCRIPTION_TEST_CONFIGS.forEach((config) => {
-        describe(`subscription tests`, () => {
+        describe(`Legacy - subscription tests`, () => {
           test(`${config.name}`, async () => {
             const shopify = shopifyApi(
-              testConfig({billing: config.billingConfig}),
+              testConfig({
+                billing: config.billingConfig,
+                future: {
+                  unstable_billingUpdates: false,
+                },
+              }),
             );
 
             queueMockResponses([config.paymentResponse]);
@@ -550,42 +454,24 @@ describe('shopify.billing.request', () => {
     });
   });
 
-  describe('billing config overrides', () => {
+  describe('Legacy - billing config overrides', () => {
     it.each([
       {field: 'trialDays', value: 20, expected: '"trialDays":20'},
-      {
-        field: 'lineItems',
-        value: [{interval: BillingInterval.Every30Days, amount: 10}],
-        expected: '"amount":10',
-      },
-      {
-        field: 'lineItems',
-        value: [{interval: BillingInterval.Every30Days, currencyCode: 'CAD'}],
-        expected: '"currencyCode":"CAD"',
-      },
+      {field: 'amount', value: 10, expected: '"amount":10'},
+      {field: 'currencyCode', value: 'CAD', expected: '"currencyCode":"CAD"'},
       {
         field: 'replacementBehavior',
         value: BillingReplacementBehavior.ApplyImmediately,
         expected: '"replacementBehavior":"APPLY_IMMEDIATELY"',
       },
       {
-        field: 'lineItems',
-        value: [
-          {
-            interval: BillingInterval.Usage,
-            terms: 'Different usage terms',
-          },
-        ],
+        field: 'usageTerms',
+        value: 'Different usage terms',
         expected: '"terms":"Different usage terms"',
       },
       {
-        field: 'lineItems',
-        value: [
-          {
-            interval: BillingInterval.Every30Days,
-            discount: {durationLimitInIntervals: 10, value: {amount: 2}},
-          },
-        ],
+        field: 'discount',
+        value: {durationLimitInIntervals: 10, value: {amount: 2}},
         expected:
           '"discount":{"durationLimitInIntervals":10,"value":{"amount":2}}',
       },
@@ -594,31 +480,26 @@ describe('shopify.billing.request', () => {
         testConfig({
           billing: {
             [Responses.PLAN_1]: {
+              interval: BillingInterval.Every30Days,
+              amount: 5,
+              currencyCode: 'USD',
               replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+              discount: {durationLimitInIntervals: 5, value: {amount: 2}},
               trialDays: 10,
-              lineItems: [
-                {
-                  interval: BillingInterval.Every30Days,
-                  amount: 5,
-                  currencyCode: 'USD',
-                  discount: {durationLimitInIntervals: 5, value: {amount: 2}},
-                },
-              ],
               [field]: value,
             },
             [Responses.PLAN_2]: {
+              interval: BillingInterval.Usage,
+              amount: 5,
+              currencyCode: 'USD',
               replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+              usageTerms: 'Usage terms',
               trialDays: 10,
-              lineItems: [
-                {
-                  interval: BillingInterval.Usage,
-                  amount: 5,
-                  currencyCode: 'USD',
-                  terms: 'Usage terms',
-                },
-              ],
               [field]: value,
             },
+          },
+          future: {
+            unstable_billingUpdates: false,
           },
         }),
       );
@@ -643,16 +524,15 @@ describe('shopify.billing.request', () => {
         testConfig({
           billing: {
             [Responses.PLAN_1]: {
+              amount: 5,
+              currencyCode: 'USD',
+              interval: BillingInterval.Every30Days,
               replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
               trialDays: 10,
-              lineItems: [
-                {
-                  amount: 5,
-                  currencyCode: 'USD',
-                  interval: BillingInterval.Every30Days,
-                },
-              ],
             },
+          },
+          future: {
+            unstable_billingUpdates: false,
           },
         }),
       );
@@ -682,16 +562,15 @@ describe('shopify.billing.request', () => {
         testConfig({
           billing: {
             [Responses.PLAN_1]: {
+              amount: 5,
+              currencyCode: 'USD',
+              interval: BillingInterval.Every30Days,
               replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
               trialDays: 10,
-              lineItems: [
-                {
-                  amount: 5,
-                  currencyCode: 'USD',
-                  interval: BillingInterval.Every30Days,
-                },
-              ],
             },
+          },
+          future: {
+            unstable_billingUpdates: false,
           },
         }),
       );

@@ -4,6 +4,7 @@ import {
   RecurringBillingIntervals,
 } from '../types';
 import {Session} from '../session/session';
+import {FeatureEnabled, FutureFlagOptions} from '../../future/flags';
 
 export interface BillingConfigPlan {
   amount: number;
@@ -45,20 +46,52 @@ export interface BillingConfigUsagePlan extends BillingConfigPlan {
   replacementBehavior?: BillingReplacementBehavior;
 }
 
-export type BillingConfigItem =
+export type BillingConfigLegacyItem =
   | BillingConfigOneTimePlan
   | BillingConfigSubscriptionPlan
   | BillingConfigUsagePlan
   | BillingConfigSubscriptionLineItemPlan;
 
-export interface BillingConfig {
-  [plan: string]: BillingConfigItem | BillingConfigSubscriptionLineItemPlan;
+export type BillingConfigItem<
+  Future extends FutureFlagOptions = FutureFlagOptions,
+> = FeatureEnabled<Future, 'unstable_billingUpdates'> extends true
+  ? BillingConfigOneTimePlan | BillingConfigSubscriptionLineItemPlan
+  : BillingConfigLegacyItem;
+
+export interface BillingConfig<
+  Future extends FutureFlagOptions = FutureFlagOptions,
+> {
+  [plan: string]: BillingConfigItem<Future>;
 }
 
 export type RequestConfigOverrides =
   | Partial<BillingConfigOneTimePlan>
   | Partial<BillingConfigSubscriptionPlan>
   | Partial<BillingConfigUsagePlan>;
+
+export interface BillingConfigLineItem {
+  amount: number;
+  currencyCode: string;
+}
+
+export interface BillingConfigRecurringLineItem extends BillingConfigLineItem {
+  interval: BillingInterval.Every30Days | BillingInterval.Annual;
+  discount?: BillingConfigSubscriptionPlanDiscount;
+}
+
+export interface BillingConfigUsageLineItem extends BillingConfigLineItem {
+  interval: BillingInterval.Usage;
+  terms: string;
+}
+
+export interface BillingConfigSubscriptionLineItemPlan {
+  replacementBehavior?: BillingReplacementBehavior;
+  trialDays?: number;
+  lineItems: (BillingConfigRecurringLineItem | BillingConfigUsageLineItem)[];
+}
+
+export type RequestConfigLineItemOverrides =
+  Partial<BillingConfigSubscriptionLineItemPlan>;
 
 export interface BillingConfigLineItem {
   amount: number;

@@ -4,8 +4,7 @@ import {ApiVersion} from '../../types';
 
 describe('versionCompatible', () => {
   it('returns true if version is Unstable', () => {
-    const shopify = shopifyApi(testConfig());
-    shopify.config.apiVersion = ApiVersion.Unstable;
+    const shopify = shopifyApi(testConfig({apiVersion: ApiVersion.Unstable}));
 
     const result = shopify.utils.versionCompatible(ApiVersion.April23);
 

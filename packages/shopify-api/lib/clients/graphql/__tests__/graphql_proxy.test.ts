@@ -39,7 +39,7 @@ let session: Session;
 let token = '';
 
 describe('GraphQL proxy with session', () => {
-  const shopify = shopifyApi(testConfig());
+  const shopify = shopifyApi(testConfig({isEmbeddedApp: true}));
 
   const app = express();
   app.use(express.text());
@@ -67,8 +67,6 @@ describe('GraphQL proxy with session', () => {
   });
 
   beforeEach(async () => {
-    shopify.config.isEmbeddedApp = true;
-
     const jwtPayload: JwtPayload = {
       iss: 'https://shop.myshopify.com/admin',
       dest: 'https://shop.myshopify.com',
