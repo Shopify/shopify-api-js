@@ -48,16 +48,41 @@ export interface BillingConfigUsagePlan extends BillingConfigPlan {
 export type BillingConfigItem =
   | BillingConfigOneTimePlan
   | BillingConfigSubscriptionPlan
-  | BillingConfigUsagePlan;
+  | BillingConfigUsagePlan
+  | BillingConfigSubscriptionLineItemPlan;
 
 export interface BillingConfig {
-  [plan: string]: BillingConfigItem;
+  [plan: string]: BillingConfigItem | BillingConfigSubscriptionLineItemPlan;
 }
 
 export type RequestConfigOverrides =
   | Partial<BillingConfigOneTimePlan>
   | Partial<BillingConfigSubscriptionPlan>
   | Partial<BillingConfigUsagePlan>;
+
+export interface BillingConfigLineItem {
+  amount: number;
+  currencyCode: string;
+}
+
+export interface BillingConfigRecurringLineItem extends BillingConfigLineItem {
+  interval: BillingInterval.Every30Days | BillingInterval.Annual;
+  discount?: BillingConfigSubscriptionPlanDiscount;
+}
+
+export interface BillingConfigUsageLineItem extends BillingConfigLineItem {
+  interval: BillingInterval.Usage;
+  terms: string;
+}
+
+export interface BillingConfigSubscriptionLineItemPlan {
+  replacementBehavior?: BillingReplacementBehavior;
+  trialDays?: number;
+  lineItems: (BillingConfigRecurringLineItem | BillingConfigUsageLineItem)[];
+}
+
+export type RequestConfigLineItemOverrides =
+  Partial<BillingConfigSubscriptionLineItemPlan>;
 
 export interface BillingCheckParams {
   session: Session;

@@ -33,7 +33,114 @@ const shopify = shopifyApi({
 });
 ```
 
-This setting is a collection of billing plans. Each billing plan allows the following properties:
+## Configuring LineItem billing
+
+As of version [the version], the billing configuration can now specify the the AppSubscriptionLineItems. This will allow you to create app subscription plans with both recurring and usage based charges.
+
+Subscription plans can have 1 or 2 line items. There can be a maximum of 1 of each type of plan Usage and Recurring. Usage line items can only be used in conjunction with recurring line items when the recurring line item interval is `BillingInterval.Every30Days`.
+
+### Configuring a Subscription Plan with a Single LineItem
+```ts
+import {
+  shopifyApi,
+  BillingInterval,
+  BillingReplacementBehavior,
+} from '@shopify/shopify-api';
+
+const shopify = shopifyApi({
+  // ...
+  billing: {
+    {
+    "Single LineItem Plan": {
+      replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+      trialDays: 7,
+      lineItems: [
+        {
+          interval: BillingInterval.Every30Days,
+          amount: 30,
+          currencyCode: "USD",
+          discount: {
+            durationLimitInIntervals: 3,
+            value: {
+              amount: 10,
+            },
+          },
+        }
+      ],
+    },
+  },
+});
+```
+
+### Configuring a Subscription Plan with Multiple LineItems
+```ts
+import {
+  shopifyApi,
+  BillingInterval,
+  BillingReplacementBehavior,
+} from '@shopify/shopify-api';
+
+const shopify = shopifyApi({
+  // ...
+  billing: {
+    {
+    "Multiple LineItems Plan": {
+      replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+      trialDays: 7,
+      lineItems: [
+        {
+          interval: BillingInterval.Every30Days,
+          amount: 30,
+          currencyCode: "USD",
+          discount: {
+            durationLimitInIntervals: 3,
+            value: {
+              amount: 10,
+            },
+          },
+        },
+        {
+          interval: BillingInterval.Usage,
+          amount: 30,
+          currencyCode: "USD",
+          terms: "per 1000 emails",
+        },
+      ],
+    },
+  },
+});
+```
+
+### Subscription Plan with LineItems
+
+| Parameter                           | Type                         | Required? | Default Value | Notes                                                                                                                                                                                  |
+| ----------------------------------- | ---------------------------- | :-------: | :-----------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `trialDays`                         | `number`                     |    No     |       -       | Give merchants this many days before charging                                                                                                                                          |
+| `replacementBehavior`               | `BillingReplacementBehavior` |    No     |       -       | `BillingReplacementBehavior` value, see [the reference](https://shopify.dev/docs/api/admin-graphql/latest/mutations/appSubscriptionCreate) for more information.                       |
+| `LineItems`                         | `LineItems[]`                |    Yes    |       -       | An array of LineItems to be included in the subscription plan.                                                                                                                         |
+
+
+### Recurring Charge LineItem
+
+| Parameter                           | Type                         | Required? | Default Value | Notes                                                                                                                                                                                  |
+| ----------------------------------- | ---------------------------- | :-------: | :-----------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `interval`                          | `EVERY_30_DAYS`, `ANNUAL`    |    Yes    |       -       | `BillingInterval.Every30Days`, `BillingInterval.Annual` value                                                                                                                          |
+| `amount`                            | `number`                     |    Yes    |       -       | The amount to charge                                                                                                                                                                   |
+| `currencyCode`                      | `string`                     |    Yes    |       -       | The currency to charge, USD or merchant's shop currency<sup>1<sup>                                                                                                                    |
+| `discount.durationLimitInIntervals` | `number`                     |    No     |       -       | The number of billing intervals to apply the discount for. See [the reference](https://shopify.dev/docs/apps/billing/purchase-adjustments/subscription-discounts) for more information |
+| `discount.value.amount`             | `number`                     |    No     |       -       | The amount of the discount in the currency that the merchant is being billed in.                                                                                                       |
+| `discount.value.percentage`         | `number`                     |    No     |       -       | The percentage value of the discount.                                                                                                                                                  |
+
+### Usage Charge LineItem
+
+| Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                            |
+| --------------------- | ---------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `interval`            | `USAGE`                      |    Yes    |       -       | `BillingInterval.Usage`                                                                                                                                          |
+| `amount`              | `number`                     |    Yes    |       -       | The maximum amount the merchant will be charged                                                                                                                  |
+| `currencyCode`        | `string`                     |    Yes    |       -       | The currency to charge, USD or merchant's shop currency<sup>1</sup>                                                                                              |
+| `usageTerms`          | `string`                     |    Yes    |       -       | These terms stipulate the pricing model for the charges that an app creates.                                                                                     |
+
+
 
 ### One Time Billing Plans
 
@@ -59,6 +166,7 @@ This setting is a collection of billing plans. Each billing plan allows the foll
 > **Note** `discount.value` can only include either `amount` or `percentage` but not both.
 
 ### Usage Billing Plans
+
 
 | Parameter             | Type                         | Required? | Default Value | Notes                                                                                                                                                            |
 | --------------------- | ---------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |

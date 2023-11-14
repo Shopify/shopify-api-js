@@ -93,6 +93,56 @@ const TEST_CONFIGS: TestConfigInterface[] = [
     errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
     mutationName: 'appSubscriptionCreate',
   },
+  {
+    name: 'subscription with line items',
+    billingConfig: {
+      [Responses.PLAN_1]: {
+        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        trialDays: 7,
+        lineItems: [
+          {
+            interval: BillingInterval.Every30Days,
+            amount: 30,
+            currencyCode: 'USD',
+            discount: {
+              durationLimitInIntervals: 3,
+              value: {
+                amount: 10,
+              },
+            },
+          },
+          {
+            interval: BillingInterval.Usage,
+            amount: 30,
+            currencyCode: 'USD',
+            terms: 'per 1000 emails',
+          },
+        ],
+      },
+      [Responses.PLAN_2]: {
+        replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
+        trialDays: 7,
+        lineItems: [
+          {
+            interval: BillingInterval.Every30Days,
+            amount: 40,
+            currencyCode: 'USD',
+          },
+          {
+            interval: BillingInterval.Usage,
+            amount: 30,
+            currencyCode: 'USD',
+            terms: 'per 1000 emails',
+          },
+        ],
+      },
+    },
+    paymentResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE,
+    responseObject: JSON.parse(Responses.PURCHASE_SUBSCRIPTION_RESPONSE).data
+      .appSubscriptionCreate,
+    errorResponse: Responses.PURCHASE_SUBSCRIPTION_RESPONSE_WITH_USER_ERRORS,
+    mutationName: 'appSubscriptionCreate',
+  },
 ];
 
 const SUBSCRIPTION_TEST_CONFIGS: TestConfigInterface[] = [
