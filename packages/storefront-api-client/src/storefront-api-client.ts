@@ -5,7 +5,8 @@ import {
   validateApiVersion,
   generateGetGQLClientParams,
   generateGetHeaders,
-  ApiClientRequestParams,
+  ApiClientFetch,
+  ApiClientRequest,
 } from "@shopify/graphql-client";
 
 import {
@@ -100,12 +101,12 @@ export function createStorefrontApiClient({
     getApiUrl,
   });
 
-  const fetch = (...props: ApiClientRequestParams) => {
+  const fetch: ApiClientFetch = (...props) => {
     return graphqlClient.fetch(...getGQLClientParams(...props));
   };
 
-  const request = <TData>(...props: ApiClientRequestParams) => {
-    return graphqlClient.request<TData>(...getGQLClientParams(...props));
+  const request: ApiClientRequest = (...props) => {
+    return graphqlClient.request(...getGQLClientParams(...props));
   };
 
   const client: StorefrontApiClient = {
