@@ -81,38 +81,14 @@ export function request(config: ConfigInterface) {
     const GraphqlClient = graphqlClientClass({config});
     const client = new GraphqlClient({session});
 
+    function isLegacyBillingConfig(
+      _billingConfig: BillingConfigItem,
+    ): _billingConfig is BillingConfigItem {
+      return config.future?.unstable_billingUpdates ?? false;
+    }
+
     // We are using the new lineItems format in the billing config
-    if ('lineItems' in billingConfig) {
-      const mergedBillingConfigs = mergeBillingConfigs(
-        billingConfig as BillingConfigSubscriptionLineItemPlan,
-        filteredOverrides,
-      );
-      const mutationRecurringResponse = await requestSubscriptionPayment({
-        billingConfig: mergedBillingConfigs,
-        plan,
-        client,
-        returnUrl,
-        isTest,
-      });
-
-      const data = mutationRecurringResponse.data.appSubscriptionCreate;
-
-      if (data.userErrors?.length) {
-        throw new BillingError({
-          message: 'Error while billing the store',
-          errorData: data.userErrors,
-        });
-      }
-
-      if (returnObject) {
-        return data as Omit<
-          RequestResponseData,
-          'userErrors'
-        > as BillingRequestResponse<Params>;
-      } else {
-        return data.confirmationUrl as BillingRequestResponse<Params>;
-      }
-    } else {
+    if (isLegacyBillingConfig(billingConfig)) {
       let data: RequestResponseData;
       switch (billingConfig.interval) {
         case BillingInterval.OneTime: {
@@ -148,6 +124,36 @@ export function request(config: ConfigInterface) {
           data = mutationRecurringResponse.data.appSubscriptionCreate;
         }
       }
+      if (data.userErrors?.length) {
+        throw new BillingError({
+          message: 'Error while billing the store',
+          errorData: data.userErrors,
+        });
+      }
+
+      if (returnObject) {
+        return data as Omit<
+          RequestResponseData,
+          'userErrors'
+        > as BillingRequestResponse<Params>;
+      } else {
+        return data.confirmationUrl as BillingRequestResponse<Params>;
+      }
+    } else {
+      const mergedBillingConfigs = mergeBillingConfigs(
+        billingConfig,
+        filteredOverrides,
+      );
+      const mutationRecurringResponse = await requestSubscriptionPayment({
+        billingConfig: mergedBillingConfigs,
+        plan,
+        client,
+        returnUrl,
+        isTest,
+      });
+
+      const data = mutationRecurringResponse.data.appSubscriptionCreate;
+
       if (data.userErrors?.length) {
         throw new BillingError({
           message: 'Error while billing the store',

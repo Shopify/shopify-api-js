@@ -4,6 +4,7 @@ import {
   RecurringBillingIntervals,
 } from '../types';
 import {Session} from '../session/session';
+import {FeatureEnabled, FutureFlagOptions} from '../../future/flags';
 
 export interface BillingConfigPlan {
   amount: number;
@@ -45,14 +46,21 @@ export interface BillingConfigUsagePlan extends BillingConfigPlan {
   replacementBehavior?: BillingReplacementBehavior;
 }
 
-export type BillingConfigItem =
+export type BillingConfigLegacyItem =
   | BillingConfigOneTimePlan
   | BillingConfigSubscriptionPlan
-  | BillingConfigUsagePlan
-  | BillingConfigSubscriptionLineItemPlan;
+  | BillingConfigUsagePlan;
 
-export interface BillingConfig {
-  [plan: string]: BillingConfigItem | BillingConfigSubscriptionLineItemPlan;
+export type BillingConfigItem<
+  Future extends FutureFlagOptions = FutureFlagOptions,
+> = FeatureEnabled<Future, 'unstable_billingUpdates'> extends true
+  ? BillingConfigOneTimePlan | BillingConfigSubscriptionLineItemPlan
+  : BillingConfigLegacyItem;
+
+export interface BillingConfig<
+  Future extends FutureFlagOptions = FutureFlagOptions,
+> {
+  [plan: string]: BillingConfigItem<Future>;
 }
 
 export type RequestConfigOverrides =

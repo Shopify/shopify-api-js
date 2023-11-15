@@ -23,7 +23,7 @@ const GRAPHQL_BASE_REQUEST = {
 
 interface TestConfigInterface {
   name: string;
-  billingConfig: BillingConfig;
+  billingConfig: BillingConfig | BillingConfig<{unstable_billingUpdates: true}>;
   paymentResponse: string;
   responseObject: any;
   errorResponse: string;
@@ -262,7 +262,14 @@ describe('shopify.billing.request', () => {
           [true, false].forEach((isTest) =>
             test(`can request payment (isTest: ${isTest})`, async () => {
               const shopify = shopifyApi(
-                testConfig({billing: config.billingConfig}),
+                testConfig({
+                  billing: {
+                    test: {},
+                  },
+                  future: {
+                    unstable_billingUpdates: true,
+                  },
+                }),
               );
 
               queueMockResponses([config.paymentResponse]);

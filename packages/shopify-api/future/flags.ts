@@ -1,4 +1,6 @@
-export interface FutureFlags {}
+export interface FutureFlags {
+  unstable_billingUpdates?: boolean;
+}
 
 export type FutureFlagOptions = FutureFlags | undefined;
 
