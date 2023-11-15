@@ -7,7 +7,7 @@
     "build": "turbo build",
     "dev": "turbo dev --no-cache --continue",
     "lint": "turbo lint",
-    "clean": "turbo clean && rm -rf node_modules",
+    "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "version-packages": "changeset version",
