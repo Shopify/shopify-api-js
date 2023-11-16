@@ -264,7 +264,9 @@ describe('shopify.billing.request', () => {
               const shopify = shopifyApi(
                 testConfig({
                   billing: {
-                    test: {},
+                    test: {
+                      lineItems: [],
+                    },
                   },
                   future: {
                     unstable_billingUpdates: true,

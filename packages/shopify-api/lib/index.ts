@@ -54,7 +54,7 @@ export function shopifyApi<
 >({
   future,
   ...config
-}: {future: Future} & Params): Shopify<
+}: {future?: Future} & Params): Shopify<
   Params,
   Resources,
   ConfigInterface<Params>
