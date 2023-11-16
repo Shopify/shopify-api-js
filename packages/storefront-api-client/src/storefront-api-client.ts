@@ -5,14 +5,13 @@ import {
   validateApiVersion,
   generateGetGQLClientParams,
   generateGetHeaders,
-  ApiClientFetch,
-  ApiClientRequest,
 } from "@shopify/graphql-client";
 
 import {
   StorefrontApiClientOptions,
   StorefrontApiClient,
   StorefrontApiClientConfig,
+  StorefrontOperations,
 } from "./types";
 import {
   DEFAULT_SDK_VARIANT,
@@ -96,25 +95,21 @@ export function createStorefrontApiClient({
   const getHeaders = generateGetHeaders(config);
   const getApiUrl = generateGetApiUrl(config, apiUrlFormatter);
 
-  const getGQLClientParams = generateGetGQLClientParams({
+  const getGQLClientParams = generateGetGQLClientParams<StorefrontOperations>({
     getHeaders,
     getApiUrl,
   });
-
-  const fetch: ApiClientFetch = (...props) => {
-    return graphqlClient.fetch(...getGQLClientParams(...props));
-  };
-
-  const request: ApiClientRequest = (...props) => {
-    return graphqlClient.request(...getGQLClientParams(...props));
-  };
 
   const client: StorefrontApiClient = {
     config,
     getHeaders,
     getApiUrl,
-    fetch,
-    request,
+    fetch: (...props) => {
+      return graphqlClient.fetch(...getGQLClientParams(...props));
+    },
+    request: (...props) => {
+      return graphqlClient.request(...getGQLClientParams(...props));
+    },
   };
 
   return Object.freeze(client);

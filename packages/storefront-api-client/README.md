@@ -338,6 +338,54 @@ if (response.ok) {
 }
 ```
 
+## Typing variables and return objects
+
+This client is compatible with the `@shopify/api-codegen-preset` package.
+You can use that package to create types from your operations with the [Codegen CLI](https://www.graphql-cli.com/codegen/).
+
+There are different ways to [configure codegen](https://github.com/Shopify/shopify-api-js/tree/main/packages/api-codegen-preset#configuration) with it, but the simplest way is to:
+
+1. Add the preset package as a dev dependency to your project, for example:
+    ```bash
+    npm install --save-dev @shopify/api-codegen-preset
+    ```
+1. Create a `.graphqlrc.ts` file in your root containing:
+    ```ts
+    import { ApiType, shopifyApiProject } from "@shopify/api-codegen-preset";
+
+    export default {
+      schema: "https://shopify.dev/storefront-graphql-direct-proxy",
+      documents: ["*.ts", "!node_modules"],
+      projects: {
+        default: shopifyApiProject({
+          apiType: ApiType.Storefront,
+          apiVersion: "2023-10",
+          outputDir: "./types",
+        }),
+      },
+    };
+    ```
+1. Add `"graphql-codegen": "graphql-codegen"` to your `scripts` section in `package.json`.
+1. Tag your operations with `#graphql`, for example:
+    ```ts
+    const {data, errors, extensions} = await client.request(
+      `#graphql
+      query Shop {
+        shop {
+          name
+        }
+      }`
+    );
+    console.log(data?.shop.name);
+    ```
+1. Run `npm run graphql-codegen` to parse the types from your operations.
+
+> [!NOTE]
+> Remember to ensure that your tsconfig includes the files under `./types`!
+
+Once the script runs, it'll create the file `./types/storefront.generated.d.ts`.
+When TS includes that file, it'll automatically cause the client to detect the types for each query.
+
 ## Log Content Types
 
 ### `UnsupportedApiVersionLog`
