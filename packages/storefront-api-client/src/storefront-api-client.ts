@@ -110,6 +110,9 @@ export function createStorefrontApiClient({
     request: (...props) => {
       return graphqlClient.request(...getGQLClientParams(...props));
     },
+    requestStream: (...props) => {
+      return graphqlClient.requestStream(...getGQLClientParams(...props));
+    },
   };
 
   return Object.freeze(client);

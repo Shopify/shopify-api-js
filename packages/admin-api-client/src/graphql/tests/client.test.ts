@@ -38,6 +38,7 @@ describe("Admin API Client", () => {
       },
       fetch: jest.fn(),
       request: jest.fn(),
+      requestStream: jest.fn(),
     };
 
     beforeEach(() => {
