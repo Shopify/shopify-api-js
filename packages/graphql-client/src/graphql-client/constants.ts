@@ -16,3 +16,7 @@ export const CONTENT_TYPES = {
 
 export const RETRY_WAIT_TIME = 1000;
 export const RETRIABLE_STATUS_CODES = [429, 503];
+export const DEFER_OPERATION_REGEX = /@(defer)\b/i;
+export const NEWLINE_SEPARATOR = "\r\n";
+export const BOUNDARY_HEADER_REGEX = /boundary="?([^=";]+)"?/i;
+export const HEADER_SEPARATOR = NEWLINE_SEPARATOR + NEWLINE_SEPARATOR;

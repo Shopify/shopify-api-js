@@ -4,6 +4,7 @@ import {
   ApiClientLogger,
   ApiClientLogContentTypes,
   ApiClientConfig,
+  ApiClientRequestStream,
 } from "@shopify/graphql-client";
 
 export type StorefrontApiClientLogContentTypes = ApiClientLogContentTypes;
@@ -42,4 +43,6 @@ export type StorefrontOperations = StorefrontQueries & StorefrontMutations;
 export type StorefrontApiClient = ApiClient<
   StorefrontApiClientConfig,
   StorefrontOperations
->;
+> & {
+  requestStream: ApiClientRequestStream<StorefrontOperations>;
+};
