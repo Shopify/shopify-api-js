@@ -1,6 +1,7 @@
 import {loadRestResources} from '../rest/load-rest-resources';
 import {ShopifyRestResources} from '../rest/types';
 import {abstractRuntimeString} from '../runtime/platform';
+import {FutureFlagOptions} from '../future/flags';
 
 import {ConfigParams, ConfigInterface} from './base-types';
 import {validateConfig} from './config';
@@ -47,10 +48,19 @@ export interface Shopify<
 }
 
 export function shopifyApi<
-  Params extends ConfigParams,
+  Params extends ConfigParams<any, Future>,
   Resources extends DefaultedResources<Params['restResources']>,
->(config: Params): Shopify<Params, Resources, ConfigInterface<Params>> {
-  const {restResources, ...libConfig} = config;
+  Future extends FutureFlagOptions,
+>({
+  future,
+  ...config
+}: {future?: Future} & Params): Shopify<
+  Params,
+  Resources,
+  ConfigInterface<Params>
+> {
+  const {restResources, ...otherConfigs} = config;
+  const libConfig = {...otherConfigs, future};
   const validatedConfig = validateConfig<Resources, typeof libConfig>(
     libConfig,
   );

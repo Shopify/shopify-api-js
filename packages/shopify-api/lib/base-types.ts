@@ -9,6 +9,7 @@ export type LogFunction = (severity: LogSeverity, msg: string) => void;
 
 export interface ConfigParams<
   Resources extends ShopifyRestResources = ShopifyRestResources,
+  Future extends FutureFlagOptions = FutureFlagOptions,
 > {
   apiKey?: string;
   apiSecretKey: string;
@@ -22,7 +23,7 @@ export interface ConfigParams<
   userAgentPrefix?: string;
   privateAppStorefrontAccessToken?: string;
   customShopDomains?: (RegExp | string)[];
-  billing?: BillingConfig;
+  billing?: BillingConfig<Future>;
   restResources?: Resources;
   logger?: {
     log?: LogFunction;
@@ -30,7 +31,7 @@ export interface ConfigParams<
     httpRequests?: boolean;
     timestamps?: boolean;
   };
-  future?: FutureFlagOptions;
+  future?: Future;
 }
 
 export type ConfigInterface<Params extends ConfigParams = ConfigParams> = Omit<
@@ -41,6 +42,7 @@ export type ConfigInterface<Params extends ConfigParams = ConfigParams> = Omit<
   hostScheme: 'http' | 'https';
   scopes: AuthScopes;
   isCustomStoreApp: boolean;
+  billing?: BillingConfig<Params['future']>;
   logger: {
     log: LogFunction;
     level: LogSeverity;
