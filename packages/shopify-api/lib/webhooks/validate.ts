@@ -51,7 +51,10 @@ export function validateFactory(config: ConfigInterface) {
       await log.debug('Webhook request is valid', loggingContext);
       return webhookCheck;
     } else {
-      await log.debug('Webhook validation failed', loggingContext);
+      await log.debug('Webhook HMAC validation failed.', loggingContext);
+      await log.debug(
+        'Webhook subscriptions created in the Shopify admin will fail HMAC validation. Create webhook subscriptions using the API',
+      );
       return {
         valid: false,
         reason: WebhookValidationErrorReason.InvalidHmac,
