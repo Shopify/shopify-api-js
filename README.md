@@ -19,7 +19,3 @@ A library to interact with Shopify's GraphQL Storefront API. For use on the clie
 ## [`@shopify/graphql-client`](./packages/graphql-client)
 
 A client to interact with any of Shopify's GraphQL APIs.
-
-## [`@shopify/api-codegen-preset`](./packages/api-codegen-preset)
-
-Enables JavaScript / TypeScript apps to use a `#graphql` tag to parse queries with [graphql-codegen](https://the-guild.dev/graphql/codegen).
