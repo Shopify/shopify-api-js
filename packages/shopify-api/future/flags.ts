@@ -1,5 +1,6 @@
 export interface FutureFlags {
   unstable_tokenExchange?: boolean;
+  unstable_lineItemBilling?: boolean;
 }
 
 export type FutureFlagOptions = FutureFlags | undefined;
