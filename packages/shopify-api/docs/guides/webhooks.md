@@ -136,3 +136,13 @@ await shopify.webhooks.process({
 ```
 
 [Back to guide index](../../README.md#guides)
+
+## Gotchas
+
+### Admin created webhook failing HMAC validation
+
+Webhooks subscriptions created in the [Shopify admin](https://help.shopify.com/en/manual/orders/notifications/webhooks) will fail HMAC validation. This is because the webhook payload is not signed with your app's secret key.
+
+Create webhook subscriptions using the `shopify.webhooks.register` method instead.
+
+Test your webhooks with the [Shopify CLI](https://shopify.dev/docs/apps/tools/cli/commands#webhook-trigger) or by triggering events manually in the Shopify admin(e.g. Updating the product title to trigger a `PRODUCTS_UPDATE`).
