@@ -2,9 +2,7 @@
 
 This mono-repo is a collection of Shopify's JavaScript API client libraries and utilities.
 
-## Frameworks
-
-### [`@shopify/shopify-api`](./packages/shopify-api)
+## [`@shopify/shopify-api`](./packages/shopify-api)
 
 A library supporting Shopify apps to access Shopify's APIs, by making it easier to perform the following actions:
 
@@ -14,17 +12,13 @@ A library supporting Shopify apps to access Shopify's APIs, by making it easier 
 
 For use on the server.
 
-## API Clients
-
-### [`@shopify/storefront-api-client`](./packages/storefront-api-client)
+## [`@shopify/storefront-api-client`](./packages/storefront-api-client)
 
 A library to interact with Shopify's GraphQL Storefront API. For use on the client or server.
 
-### [`@shopify/graphql-client`](./packages/graphql-client)
+## [`@shopify/graphql-client`](./packages/graphql-client)
 
 A client to interact with any of Shopify's GraphQL APIs.
-
-## Utilities
 
 ### [`@shopify/api-codegen-preset`](./packages/api-codegen-preset)
 
