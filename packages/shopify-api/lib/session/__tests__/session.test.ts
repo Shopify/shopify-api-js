@@ -74,6 +74,47 @@ describe('isActive', () => {
   });
 });
 
+describe('isExpired', () => {
+  it('returns true if session is expired', () => {
+    const session = new Session({
+      id: 'not_active',
+      shop: 'inactive-shop',
+      state: 'not_same',
+      isOnline: true,
+      scope: 'test_scope',
+      expires: new Date(Date.now() - 1),
+    });
+    expect(session.isExpired()).toBeTruthy();
+  });
+
+  it('returns false if session is expired', () => {
+    const session = new Session({
+      id: 'active',
+      shop: 'active-shop',
+      state: 'test_state',
+      isOnline: true,
+      scope: 'test_scope',
+      accessToken: 'indeed',
+      expires: new Date(Date.now() + 86400),
+    });
+
+    expect(session.isExpired()).toBeFalsy();
+  });
+
+  it('returns false if session does not have expiry', () => {
+    const session = new Session({
+      id: 'active',
+      shop: 'active-shop',
+      state: 'test_state',
+      isOnline: true,
+      scope: 'test_scope',
+      accessToken: 'indeed',
+    });
+
+    expect(session.isExpired()).toBeFalsy();
+  });
+});
+
 const expiresDate = new Date(Date.now() + 86400);
 const expiresNumber = expiresDate.getTime();
 
