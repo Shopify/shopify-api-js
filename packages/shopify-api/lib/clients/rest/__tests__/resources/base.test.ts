@@ -113,11 +113,11 @@ describe('Base REST resource', () => {
       headers: {'X-Test-Header': 'value'},
     });
 
-    const expectedError = await expect(
+    const expectedError = expect(
       shopify.rest.FakeResource.find({id: 1, session}),
     ).rejects;
-    expectedError.toThrowError(HttpResponseError);
-    expectedError.toMatchObject({
+    await expectedError.toThrowError(HttpResponseError);
+    await expectedError.toMatchObject({
       response: {
         body: {errors: 'Not Found'},
         code: 404,
