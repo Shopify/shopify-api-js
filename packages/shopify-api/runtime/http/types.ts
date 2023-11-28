@@ -24,9 +24,7 @@ export interface AdapterArgs {
   rawResponse?: AdapterResponse;
 }
 
-export type AbstractFetchFunc = (
-  req: NormalizedRequest,
-) => Promise<NormalizedResponse>;
+export type AbstractFetchFunc = typeof fetch;
 
 export type AbstractConvertRequestFunc = (
   adapterArgs: AdapterArgs,
