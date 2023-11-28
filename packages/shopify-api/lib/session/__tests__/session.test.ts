@@ -115,6 +115,38 @@ describe('isExpired', () => {
   });
 });
 
+describe('isScopeChanged', () => {
+  it('returns true if scopes requested have changed', () => {
+    const shopify = shopifyApi(testConfig());
+
+    const session = new Session({
+      id: 'not_active',
+      shop: 'inactive-shop',
+      state: 'not_same',
+      isOnline: true,
+      scope: shopify.config.scopes.toString(),
+      expires: new Date(Date.now() - 1),
+    });
+    expect(
+      session.isScopeChanged(`${shopify.config.scopes}, new_scope`),
+    ).toBeTruthy();
+  });
+
+  it('returns false if scopes requested are unchanged', () => {
+    const shopify = shopifyApi(testConfig());
+
+    const session = new Session({
+      id: 'not_active',
+      shop: 'inactive-shop',
+      state: 'not_same',
+      isOnline: true,
+      scope: shopify.config.scopes.toString(),
+      expires: new Date(Date.now() - 1),
+    });
+    expect(session.isScopeChanged(shopify.config.scopes)).toBeFalsy();
+  });
+});
+
 const expiresDate = new Date(Date.now() + 86400);
 const expiresNumber = expiresDate.getTime();
 
