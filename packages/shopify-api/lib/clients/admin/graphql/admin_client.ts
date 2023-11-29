@@ -2,14 +2,14 @@ import {createAdminApiClient} from '@shopify/admin-api-client';
 
 import {logger} from '../../../logger';
 import {ConfigInterface} from '../../../base-types';
-import {AdminClientFactory} from '../types';
+import {AdminGraphqlClientFactory} from '../types';
 import {abstractFetch} from '../../../../runtime';
 import {clientLoggerFactory, getUserAgent} from '../../common';
 import {GraphqlQueryError} from '../../../error';
 
 export function adminGraphqlClientFactory(
   config: ConfigInterface,
-): AdminClientFactory {
+): AdminGraphqlClientFactory {
   return ({session, apiVersion, retries}) => {
     if (apiVersion && apiVersion !== config.apiVersion) {
       logger(config).debug(

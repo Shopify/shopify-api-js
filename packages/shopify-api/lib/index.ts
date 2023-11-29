@@ -13,7 +13,6 @@ import {shopifyWebhooks, ShopifyWebhooks} from './webhooks';
 import {shopifyBilling, ShopifyBilling} from './billing';
 import {logger, ShopifyLogger} from './logger';
 import {SHOPIFY_API_LIBRARY_VERSION} from './version';
-import {restClientClass} from './clients/admin/rest/rest_client';
 
 export * from './error';
 export * from './session/classes';
@@ -72,11 +71,11 @@ export function shopifyApi<
   };
 
   if (restResources) {
-    shopify.rest = loadRestResources({
-      resources: restResources,
-      config: validatedConfig,
-      RestClient: restClientClass({config: validatedConfig}),
-    });
+    shopify.rest = loadRestResources(
+      validatedConfig,
+      shopify.clients,
+      restResources,
+    );
   }
 
   shopify.logger

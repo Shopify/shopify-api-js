@@ -1,8 +1,12 @@
-import {RestResourceError} from '../lib/error';
+import {RestResourceError, ShopifyError} from '../lib/error';
 import {Session} from '../lib/session/session';
-import {PageInfo, RestRequestReturn} from '../lib/clients/admin/types';
+import {
+  PageInfo,
+  RestRequestReturn,
+  AdminRestClientFactory,
+} from '../lib/clients/admin/types';
 import {DataType} from '../lib/clients/http_client/types';
-import {RestClient} from '../lib/clients/admin/rest/rest_client';
+import {RestClient as RestClientClass} from '../lib/clients/admin/rest/rest_client';
 import {ApiVersion} from '../lib/types';
 import {ConfigInterface} from '../lib/base-types';
 import {Headers} from '../runtime/http';
@@ -39,8 +43,9 @@ interface GetPathArgs {
 }
 
 interface SetClassPropertiesArgs {
-  Client: typeof RestClient;
   config: ConfigInterface;
+  Client?: typeof RestClientClass;
+  client?: AdminRestClientFactory;
 }
 
 export interface FindAllResponse<T = Base> {
@@ -53,7 +58,8 @@ export class Base {
   // For instance attributes
   [key: string]: any;
 
-  public static Client: typeof RestClient;
+  public static Client: typeof RestClientClass | undefined;
+  public static client: AdminRestClientFactory | undefined;
   public static config: ConfigInterface;
 
   public static apiVersion: string;
@@ -68,9 +74,20 @@ export class Base {
 
   protected static paths: ResourcePath[] = [];
 
-  public static setClassProperties({Client, config}: SetClassPropertiesArgs) {
-    this.Client = Client;
+  public static setClassProperties({
+    config,
+    Client,
+    client,
+  }: SetClassPropertiesArgs) {
+    if (!Client && !client) {
+      throw new ShopifyError(
+        'Either Client or client must be provided when creating a REST resource class',
+      );
+    }
+
     this.config = config;
+    this.Client = Client;
+    this.client = client;
   }
 
   protected static async baseFind<T extends Base = Base>({
@@ -102,10 +119,7 @@ export class Base {
     body,
     entity,
   }: RequestArgs): Promise<RestRequestReturn<T>> {
-    const client = new this.Client({
-      session,
-      apiVersion: this.apiVersion as ApiVersion,
-    });
+    const config = this.config;
 
     const path = this.getPath({http_method, operation, urlIds, entity});
 
@@ -118,27 +132,58 @@ export class Base {
       }
     }
 
-    switch (http_method) {
-      case 'get':
-        return client.get<T>({path, query: cleanParams});
-      case 'post':
-        return client.post<T>({
-          path,
-          query: cleanParams,
-          data: body!,
-          type: DataType.JSON,
-        });
-      case 'put':
-        return client.put<T>({
-          path,
-          query: cleanParams,
-          data: body!,
-          type: DataType.JSON,
-        });
-      case 'delete':
-        return client.delete<T>({path, query: cleanParams});
-      default:
-        throw new Error(`Unrecognized HTTP method "${http_method}"`);
+    if (config.future?.unstable_newApiClients) {
+      const client = this.client!({
+        session,
+        apiVersion: this.apiVersion as ApiVersion,
+      });
+
+      switch (http_method) {
+        case 'get':
+          return client.get<T>(path, {query: cleanParams});
+        case 'post':
+          return client.post<T>(path, {
+            query: cleanParams,
+            data: body!,
+          });
+        case 'put':
+          return client.put<T>(path, {
+            query: cleanParams,
+            data: body!,
+          });
+        case 'delete':
+          return client.delete<T>(path, {query: cleanParams});
+        default:
+          throw new Error(`Unrecognized HTTP method "${http_method}"`);
+      }
+    } else {
+      const client = new this.Client!({
+        session,
+        apiVersion: this.apiVersion as ApiVersion,
+      });
+
+      switch (http_method) {
+        case 'get':
+          return client.get<T>({path, query: cleanParams});
+        case 'post':
+          return client.post<T>({
+            path,
+            query: cleanParams,
+            data: body!,
+            type: DataType.JSON,
+          });
+        case 'put':
+          return client.put<T>({
+            path,
+            query: cleanParams,
+            data: body!,
+            type: DataType.JSON,
+          });
+        case 'delete':
+          return client.delete<T>({path, query: cleanParams});
+        default:
+          throw new Error(`Unrecognized HTTP method "${http_method}"`);
+      }
     }
   }
 

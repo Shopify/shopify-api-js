@@ -1,7 +1,10 @@
 import {ConfigInterface} from '../base-types';
 
 import {httpClientClass} from './http_client/http_client';
-import {restClientClass} from './admin/rest/rest_client';
+import {
+  adminRestClientFactory,
+  restClientClass,
+} from './admin/rest/rest_client';
 import {graphqlClientClass} from './legacy_graphql/legacy_admin_client';
 import {storefrontClientClass} from './legacy_graphql/legacy_storefront_client';
 import {graphqlProxy} from './graphql_proxy/graphql_proxy';
@@ -17,6 +20,7 @@ export function clientClasses<Config extends ConfigInterface>(
   if (config.future?.unstable_newApiClients) {
     return {
       admin: {
+        rest: adminRestClientFactory(config),
         graphql: adminGraphqlClientFactory(config),
       },
       storefront: storefrontGraphqlClientFactory(config),

@@ -1,7 +1,7 @@
 import {getHeader} from '../../../../runtime/http';
 import {ApiVersion, ShopifyHeader} from '../../../types';
 import {ConfigInterface} from '../../../base-types';
-import {RequestParams} from '../../http_client/types';
+import {DataType, RequestParams} from '../../http_client/types';
 import * as ShopifyErrors from '../../../error';
 import {HttpClient} from '../../http_client/http_client';
 import {Session} from '../../../session/session';
@@ -11,6 +11,7 @@ import {
   PageInfo,
   RestClientParams,
   PageInfoParams,
+  RestClient as RestClientFunction,
 } from '../types';
 
 export interface RestClientClassParams {
@@ -154,4 +155,51 @@ export function restClientClass(
   });
 
   return NewRestClient as typeof RestClient;
+}
+
+export function adminRestClientFactory(config: ConfigInterface) {
+  const RestClientClass = restClientClass({config});
+
+  return (params: RestClientParams): RestClientFunction => {
+    const client = new RestClientClass(params);
+
+    return {
+      get: (path, options) =>
+        client.get({
+          path,
+          type: DataType.JSON,
+          data: options?.data,
+          extraHeaders: options?.headers,
+          query: options?.query,
+          tries: options?.tries,
+        }),
+      post: (path, options) =>
+        client.post({
+          path,
+          type: DataType.JSON,
+          data: options?.data,
+          extraHeaders: options?.headers,
+          query: options?.query,
+          tries: options?.tries,
+        }),
+      put: (path, options) =>
+        client.put({
+          path,
+          type: DataType.JSON,
+          data: options?.data,
+          extraHeaders: options?.headers,
+          query: options?.query,
+          tries: options?.tries,
+        }),
+      delete: (path, options) =>
+        client.delete({
+          path,
+          type: DataType.JSON,
+          data: options?.data,
+          extraHeaders: options?.headers,
+          query: options?.query,
+          tries: options?.tries,
+        }),
+    };
+  };
 }

@@ -6,7 +6,7 @@ import {GraphqlClient} from './legacy_graphql/legacy_admin_client';
 import {StorefrontClient} from './legacy_graphql/legacy_storefront_client';
 import {GraphqlProxy} from './graphql_proxy/types';
 import {RestClient as RestClientClass} from './admin/rest/rest_client';
-import {AdminClientFactory} from './admin/types';
+import {AdminGraphqlClientFactory, AdminRestClientFactory} from './admin/types';
 import {StorefrontClientFactory} from './storefront/types';
 
 export * from './http_client/types';
@@ -25,7 +25,8 @@ export type ShopifyClients<
 > = FeatureEnabled<Future, 'unstable_newApiClients'> extends true
   ? {
       admin: {
-        graphql: AdminClientFactory;
+        rest: AdminRestClientFactory;
+        graphql: AdminGraphqlClientFactory;
       };
       storefront: StorefrontClientFactory;
       graphqlProxy: GraphqlProxy;
