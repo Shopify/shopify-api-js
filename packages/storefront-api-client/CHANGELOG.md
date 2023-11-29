@@ -1,5 +1,11 @@
 # @shopify/storefront-api-client
 
+## 0.1.1
+
+### Patch Changes
+
+- 6d906888: Fixing an issue in the validations we run before creating the Storefront API client.
+
 ## 0.1.0
 
 ### Minor Changes
