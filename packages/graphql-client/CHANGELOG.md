@@ -1,5 +1,13 @@
 # @shopify/graphql-client
 
+## 0.8.0
+
+### Minor Changes
+
+- ca89ef06: Added the ability to automatically type GraphQL queries to the Storefront API when the files created by @shopify/api-codegen-preset are loaded for the app.
+- ef053fa5: Added the ability to automatically type GraphQL queries when the files created by @shopify/api-codegen-preset are loaded for the app.
+- 49d5966e: Rename `customHeaders` to `headers` in Api Client utils and types for readibility
+
 ## 0.7.0
 
 ### Minor Changes
