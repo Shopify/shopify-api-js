@@ -1,14 +1,14 @@
-# shopify.clients.storefront
+# shopify.clients.admin.graphql
 
 > [!NOTE]
 > If you're not using the `unstable_newApiClients` future flag, your app will use the [legacy client](./legacy_Graphql.md).
 
-This function creates an instance of client from [`@shopify/storefront-api-client`](https://github.com/Shopify/shopify-api-js/tree/main/packages/storefront-api-client), which you can use to `fetch` or `request` data.
+This function creates an instance of client from [`@shopify/admin-api-client`](https://github.com/Shopify/shopify-api-js/tree/main/packages/admin-api-client), which you can use to `fetch` or `request` data.
 
 ## Example
 
 ```ts
-const client = shopify.clients.storefront({session});
+const client = shopify.clients.admin.graphql({session});
 const response = await client.fetch(`#graphql
   query {
     shop {
@@ -43,16 +43,16 @@ The default number of retries for all requests made with this client.
 
 ## Return type
 
-`StorefrontApiClient`
+`AdminApiClient`
 
 ### fetch
 
-Makes a request to the Storefront API and returns the raw `Response` object.
+Makes a request to the Admin API and returns the raw `Response` object.
 
 #### Examples
 
 ```ts
-const client = shopify.clients.storefront({session});
+const client = shopify.clients.admin.graphql({session});
 const response = await client.fetch(
   `#graphql
   query firstProducts {
@@ -78,12 +78,12 @@ console.log(await response.json());
 
 ### request
 
-Makes a request to the Storefront API and returns a parsed response.
+Makes a request to the Admin API and returns a parsed response.
 
 #### Examples
 
 ```ts
-const client = shopify.clients.storefront({session});
+const client = shopify.clients.admin.graphql({session});
 const response = await client.request(
   `#graphql
   query firstProducts {

@@ -1,4 +1,4 @@
-# shopify.clients.Graphql
+# shopify.clients.Graphql (legacy)
 
 Instances of this class can make requests to the Shopify Admin GraphQL API.
 
