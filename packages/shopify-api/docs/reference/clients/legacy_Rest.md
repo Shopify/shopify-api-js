@@ -1,9 +1,6 @@
-# shopify.clients.admin.rest
+# shopify.clients.Rest (legacy)
 
-> [!NOTE]
-> If you're not using the `unstable_newApiClients` future flag, your app will use the [legacy client](./legacy_Rest.md).
-
-This function creates a client that can make requests to the Shopify Admin REST API.
+Instances of this class can make requests to the Shopify Admin REST API.
 
 ## Constructor
 
@@ -22,7 +19,7 @@ app.get('/my-endpoint', async (req, res) => {
   // getSessionFromStorage() must be provided by application
   const session = await getSessionFromStorage(sessionId);
 
-  const client = shopify.clients.admin.rest({
+  const client = new shopify.clients.Rest({
     session,
     apiVersion: ApiVersion.January23,
   });
@@ -53,7 +50,9 @@ Sends a GET request to the Admin API.
 ### Example
 
 ```ts
-const getResponse = await client.get('products');
+const getResponse = await client.get({
+  path: 'products',
+});
 console.log(getResponse.headers, getResponse.body);
 ```
 
@@ -66,7 +65,9 @@ interface MyResponseBodyType {
   };
 }
 
-const response = await client.get<MyResponseBodyType>('products');
+const response = await client.get<MyResponseBodyType>({
+  path: 'products',
+});
 
 // response.body will be of type MyResponseBodyType
 console.log(response.body.products);
@@ -83,19 +84,25 @@ The requested API endpoint path. This can be one of two formats:
 - The path starting after the `/admin/api/{version}/` prefix, such as `'products'`, which executes `/admin/api/{version}/products.json`, where `{version}` is obtained from the library configuration (see [`shopifyApi`](../shopifyApi.md).
 - The full path, such as `/admin/oauth/access_scopes.json`
 
-#### options.query
+#### query
 
 `{[key: string]: string | number}`
 
 An optional query argument object to append to the request URL.
 
-#### options.headers
+#### extraHeaders
 
 `{[key: string]: string | number}`
 
 Add custom headers to the request.
 
-#### options.tries
+#### type
+
+`DataType` | Defaults to `DataType.JSON`
+
+The `Content-Type` for the request (`JSON`, `GraphQL`, `URLEncoded`).
+
+#### tries
 
 `number` | Defaults to `1`, _must be >= 0_
 
@@ -126,7 +133,9 @@ Sends a DELETE request to the Admin API.
 ### Example
 
 ```ts
-const deleteResponse = await client.delete('products/123456');
+const deleteResponse = await client.delete({
+  path: 'products/123456',
+});
 console.log(deleteResponse.headers, deleteResponse.body);
 ```
 
@@ -147,14 +156,12 @@ Sends a POST request to the Admin API.
 ### Example
 
 ```ts
-const postResponse = await client.post(
-  'products',
-  {
-    data: {
-      title: 'My product title',
-    },
-  }
-);
+const postResponse = await client.post({
+  path: 'products',
+  data: {
+    title: 'My product title',
+  },
+});
 console.log(postResponse.headers, postResponse.body);
 ```
 
@@ -162,7 +169,7 @@ console.log(postResponse.headers, postResponse.body);
 
 Takes the same parameters as the [`get`](#get) method, with the addition of:
 
-#### options.data
+#### data
 
 `{[key: string]: unknown} | string`
 
@@ -181,14 +188,12 @@ Sends a PUT request to the Admin API.
 ### Example
 
 ```ts
-const putResponse = await client.put(
-  'products/123456',
-  {
-    data: {
-      title: 'My product title',
-    },
-  }
-);
+const putResponse = await client.put({
+  path: 'products/123456',
+  data: {
+    title: 'My product title',
+  },
+});
 console.log(putResponse.headers, putResponse.body);
 ```
 

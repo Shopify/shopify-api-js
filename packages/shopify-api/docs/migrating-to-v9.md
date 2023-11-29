@@ -24,6 +24,7 @@ To make it easier to navigate this guide, here is an overview of the sections it
   - [Changes to runtime adapters](#changes-to-runtime-adapters)
   - [Using the new clients](#using-the-new-clients)
     - [GraphQL](#graphql)
+    - [REST](#rest)
 
 ---
 
@@ -140,3 +141,35 @@ console.log(response.data, response.errors, response.extensions);
 > [!NOTE]
 > The `request` function returns a similar response to the previous iteration of `query`, but it no longer returns the response headers it received.
 > That also applies to `GraphqlResponseError`s thrown when the response contains an `errors` field.
+
+### REST
+
+For your REST calls, the client is essentially unchanged, but the `path` option is now a separate attribute to simplify GET calls, and make the API more consistent with GraphQL.
+
+Before:
+
+```ts
+const client = new shopify.clients.Rest({session});
+const response = await client.post({
+  path: 'products',
+  data: {
+    myData: { /* ... */ }
+  },
+});
+console.log(response.body, response.headers);
+```
+After:
+
+```ts
+const client = shopify.clients.admin.rest({session});
+const response = await client.post(
+  'products',
+  {
+    data: {
+      myData: { /* ... */ }
+    },
+  }
+);
+
+console.log(response.body, response.headers);
+```
