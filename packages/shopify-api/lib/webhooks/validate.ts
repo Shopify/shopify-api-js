@@ -51,7 +51,9 @@ export function validateFactory(config: ConfigInterface) {
       await log.debug('Webhook request is valid', loggingContext);
       return webhookCheck;
     } else {
-      await log.debug('Webhook validation failed', loggingContext);
+      await log.debug(
+        "Webhook HMAC validation failed. Please note that events manually triggered from a store's Notifications settings will fail this validation. To test this, please use the CLI or trigger the actual event in a development store.",
+      );
       return {
         valid: false,
         reason: WebhookValidationErrorReason.InvalidHmac,
