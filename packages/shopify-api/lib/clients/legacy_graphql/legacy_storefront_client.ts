@@ -5,7 +5,7 @@ import {HeaderParams} from '../http_client/types';
 import {logger} from '../../logger';
 import {MissingRequiredArgument} from '../../error';
 
-import {GraphqlClient, GraphqlClientClassParams} from './graphql_client';
+import {GraphqlClient, GraphqlClientClassParams} from './legacy_admin_client';
 import {GraphqlClientParams} from './types';
 
 export class StorefrontClient extends GraphqlClient {

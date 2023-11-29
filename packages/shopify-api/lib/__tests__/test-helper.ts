@@ -13,6 +13,7 @@ import {
 import {Session} from '../session/session';
 import {RequestReturn} from '../clients/http_client/types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../version';
+import type {ExpectResponseParams} from '../__test-helpers__/to-match-response';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -20,10 +21,28 @@ declare global {
     interface Matchers<R> {
       toBeWithinSecondsOf(compareDate: number, seconds: number): R;
       toMatchMadeHttpRequest(): R;
+      toMatchResponse(params: ExpectResponseParams): R;
       toBeWithinDeprecationSchedule(): R;
     }
   }
 }
+
+beforeEach(() => {
+  mockTestRequests.reset();
+});
+
+afterEach(() => {
+  const remainingResponses = mockTestRequests.getResponses();
+  if (remainingResponses.length) {
+    throw new Error(
+      `Test did not check all expected responses, responses: ${JSON.stringify(
+        remainingResponses,
+        undefined,
+        2,
+      )}`,
+    );
+  }
+});
 
 test('passes test deprecation checks', () => {
   expect('9999.0.0').toBeWithinDeprecationSchedule();
@@ -62,7 +81,10 @@ export function queueMockResponse(
   mockTestRequests.queueResponse({
     statusCode: partial.statusCode ?? 200,
     statusText: partial.statusText ?? 'OK',
-    headers: canonicalizeHeaders(partial.headers ?? {}),
+    headers: canonicalizeHeaders({
+      'Content-Type': 'application/json',
+      ...partial.headers,
+    }),
     body,
   });
 }

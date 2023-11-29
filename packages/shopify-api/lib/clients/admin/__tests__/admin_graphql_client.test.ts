@@ -55,27 +55,42 @@ describe('GraphQL client', () => {
     });
   });
 
-  it('can return response', async () => {
+  it('can return response with fetch', async () => {
     const shopify = shopifyApi(testConfig());
 
-    const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
+    const client = shopify.clients.admin.graphql({session});
+    const response = await client.fetch(QUERY);
 
-    const response = await client.query({data: QUERY});
-
-    expect(response).toEqual(buildExpectedResponse(successResponse));
+    expect(response).toMatchResponse({body: successResponse});
     expect({
       method: 'POST',
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('can return response with request', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    queueMockResponse(JSON.stringify(successResponse));
+    const client = shopify.clients.admin.graphql({session});
+    const response = await client.request(QUERY);
+
+    expect(response).toMatchObject(successResponse);
+    expect({
+      method: 'POST',
+      domain,
+      path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
+      data: {query: QUERY},
     }).toMatchMadeHttpRequest();
   });
 
   it('merges custom headers with default', async () => {
     const shopify = shopifyApi(testConfig());
 
-    const client = new shopify.clients.Graphql({session});
+    const client = shopify.clients.admin.graphql({session});
     const customHeader: {[key: string]: string} = {
       'X-Glib-Glob': 'goobers',
     };
@@ -83,8 +98,8 @@ describe('GraphQL client', () => {
     queueMockResponse(JSON.stringify(successResponse));
 
     await expect(
-      client.query({extraHeaders: customHeader, data: QUERY}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+      client.fetch(QUERY, {headers: customHeader}),
+    ).resolves.toMatchResponse({body: successResponse});
 
     customHeader[ShopifyHeader.AccessToken] = accessToken;
     expect({
@@ -92,7 +107,7 @@ describe('GraphQL client', () => {
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: customHeader,
-      data: QUERY,
+      data: {query: QUERY},
     }).toMatchMadeHttpRequest();
   });
 
@@ -104,12 +119,12 @@ describe('GraphQL client', () => {
       }),
     );
 
-    const client = new shopify.clients.Graphql({session});
+    const client = shopify.clients.admin.graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(
-      buildExpectedResponse(successResponse),
-    );
+    await expect(client.fetch(QUERY)).resolves.toMatchResponse({
+      body: successResponse,
+    });
 
     const customHeaders: {[key: string]: string} = {};
     customHeaders[ShopifyHeader.AccessToken] =
@@ -119,7 +134,7 @@ describe('GraphQL client', () => {
       method: 'POST',
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
   });
@@ -134,73 +149,54 @@ describe('GraphQL client', () => {
       isOnline: true,
     });
 
-    expect(
-      () => new shopify.clients.Graphql({session: sessionWithoutAccessToken}),
-    ).toThrow(ShopifyErrors.MissingRequiredArgument);
+    expect(() =>
+      shopify.clients.admin.graphql({session: sessionWithoutAccessToken}),
+    ).toThrow('Admin API Client: an access token must be provided');
   });
 
   it('can handle queries with variables', async () => {
     const shopify = shopifyApi(testConfig());
 
-    const client = new shopify.clients.Graphql({session});
-    const queryWithVariables = {
-      query: `query FirstTwo($first: Int) {
+    const client = shopify.clients.admin.graphql({session});
+    const query = `#graphql
+      query FirstTwo($first: Int) {
         products(first: $first) {
           edges {
             node {
               id
+            }
           }
         }
-      }
-    }`,
-      variables: `{
-        'first': 2,
-      }`,
-    };
+      }`;
+    const variables = {first: 2};
     const expectedResponse = {
-      data: {
-        products: {
-          edges: [
-            {
-              node: {
-                id: 'foo',
-              },
-            },
-            {
-              node: {
-                id: 'bar',
-              },
-            },
-          ],
-        },
-      },
+      data: {products: {edges: [{node: {id: 'foo'}}, {node: {id: 'bar'}}]}},
     };
 
     queueMockResponse(JSON.stringify(expectedResponse));
 
-    await expect(client.query({data: queryWithVariables})).resolves.toEqual(
-      buildExpectedResponse(expectedResponse),
-    );
+    await expect(client.fetch(query, {variables})).resolves.toMatchResponse({
+      body: expectedResponse,
+    });
 
     expect({
       method: 'POST',
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: {
-        'Content-Length': 219,
         'Content-Type': 'application/json',
         'X-Shopify-Access-Token': accessToken,
       },
-      data: JSON.stringify(queryWithVariables),
+      data: {query, variables},
     }).toMatchMadeHttpRequest();
   });
 
   it('throws error when response contains an errors field', async () => {
     const shopify = shopifyApi(testConfig());
 
-    const client = new shopify.clients.Graphql({session});
-    const query = {
-      query: `query getProducts {
+    const client = shopify.clients.admin.graphql({session});
+    const query = `#graphql
+      query getProducts {
         products {
           edges {
             node {
@@ -208,9 +204,7 @@ describe('GraphQL client', () => {
             }
           }
         }
-      }`,
-    };
-
+      }`;
     const expectedHeaders = {
       'Content-Type': 'application/graphql',
       'X-Shopify-Access-Token': 'any_access_token',
@@ -246,7 +240,7 @@ describe('GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(errorResponse));
 
-    await expect(() => client.query({data: query})).rejects.toThrow(
+    await expect(() => client.request(query)).rejects.toThrow(
       new ShopifyErrors.GraphqlQueryError({
         // Expect to throw the original error message
         message: 'you must provide one of first or last',
@@ -260,11 +254,10 @@ describe('GraphQL client', () => {
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: {
-        'Content-Length': 156,
         'Content-Type': 'application/json',
         'X-Shopify-Access-Token': accessToken,
       },
-      data: JSON.stringify(query),
+      data: {query},
     }).toMatchMadeHttpRequest();
   });
 
@@ -272,36 +265,28 @@ describe('GraphQL client', () => {
     const shopify = shopifyApi(testConfig());
 
     expect(shopify.config.apiVersion).not.toBe('2020-01');
-    const client = new shopify.clients.Graphql({
+    const client = shopify.clients.admin.graphql({
       session,
       apiVersion: '2020-01' as any as ApiVersion,
     });
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const response = await client.query({data: QUERY});
+    const response = await client.fetch(QUERY);
 
-    expect(response).toEqual(buildExpectedResponse(successResponse));
+    expect(response).toMatchResponse({body: successResponse});
     expect({
       method: 'POST',
       domain,
       path: `/admin/api/2020-01/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
     }).toMatchMadeHttpRequest();
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
       expect.stringContaining(
-        `GraphQL client overriding default API version ${LATEST_API_VERSION} with 2020-01`,
+        `Admin client overriding default API version ${LATEST_API_VERSION} with 2020-01`,
       ),
     );
   });
 });
-
-function buildExpectedResponse(obj: unknown) {
-  const expectedResponse = {
-    body: obj,
-    headers: expect.objectContaining({}),
-  };
-  return expect.objectContaining(expectedResponse);
-}

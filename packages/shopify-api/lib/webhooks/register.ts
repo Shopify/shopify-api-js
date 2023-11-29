@@ -1,7 +1,7 @@
 import {
   graphqlClientClass,
   GraphqlClient,
-} from '../clients/graphql/graphql_client';
+} from '../clients/legacy_graphql/legacy_admin_client';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
 import {logger} from '../logger';
 import {gdprTopics} from '../types';

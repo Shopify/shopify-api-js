@@ -1,8 +1,8 @@
 import {ConfigInterface} from '../../base-types';
 import * as ShopifyErrors from '../../error';
+import {graphqlClientClass} from '../legacy_graphql/legacy_admin_client';
 
 import {GraphqlProxy} from './types';
-import {graphqlClientClass} from './graphql_client';
 
 export function graphqlProxy(config: ConfigInterface): GraphqlProxy {
   return async ({session, rawBody}) => {

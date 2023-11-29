@@ -1,6 +1,6 @@
 import {BillingError} from '../error';
 import {ConfigInterface} from '../base-types';
-import {graphqlClientClass} from '../clients/graphql/graphql_client';
+import {graphqlClientClass} from '../clients/legacy_graphql/legacy_admin_client';
 
 import {
   ActiveSubscriptions,

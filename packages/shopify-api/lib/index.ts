@@ -13,6 +13,7 @@ import {shopifyWebhooks, ShopifyWebhooks} from './webhooks';
 import {shopifyBilling, ShopifyBilling} from './billing';
 import {logger, ShopifyLogger} from './logger';
 import {SHOPIFY_API_LIBRARY_VERSION} from './version';
+import {restClientClass} from './clients/admin/rest/rest_client';
 
 export * from './error';
 export * from './session/classes';
@@ -26,19 +27,14 @@ export * from './clients/types';
 export * from './session/types';
 export * from './webhooks/types';
 
-type DefaultedResources<Resources extends ShopifyRestResources | undefined> =
-  Resources extends undefined ? ShopifyRestResources : Resources;
-
 export interface Shopify<
   Params extends ConfigParams = ConfigParams,
-  Resources extends DefaultedResources<
-    Params['restResources']
-  > = DefaultedResources<Params['restResources']>,
-  Config extends ConfigInterface<Params> = ConfigInterface<Params>,
+  Resources extends ShopifyRestResources = ShopifyRestResources,
+  Future extends FutureFlagOptions = FutureFlagOptions,
 > {
-  config: Config;
-  clients: ShopifyClients;
-  auth: ShopifyAuth<Params['future']>;
+  config: ConfigInterface<Params>;
+  clients: ShopifyClients<Future>;
+  auth: ShopifyAuth<Future>;
   session: ShopifySession;
   utils: ShopifyUtils;
   webhooks: ShopifyWebhooks;
@@ -48,22 +44,20 @@ export interface Shopify<
 }
 
 export function shopifyApi<
-  Params extends ConfigParams<any, Future>,
-  Resources extends DefaultedResources<Params['restResources']>,
+  Params extends ConfigParams<Resources, Future>,
+  Resources extends ShopifyRestResources,
   Future extends FutureFlagOptions,
 >({
   future,
+  restResources,
   ...config
-}: {future?: Future} & Params): Shopify<
+}: {future?: Future; restResources?: Resources} & Params): Shopify<
   Params,
   Resources,
-  ConfigInterface<Params>
+  Future
 > {
-  const {restResources, ...otherConfigs} = config;
-  const libConfig = {...otherConfigs, future};
-  const validatedConfig = validateConfig<Resources, typeof libConfig>(
-    libConfig,
-  );
+  const libConfig = {...config, future, restResources};
+  const validatedConfig = validateConfig(libConfig);
 
   const shopify = {
     config: validatedConfig,
@@ -78,10 +72,10 @@ export function shopifyApi<
   };
 
   if (restResources) {
-    shopify.rest = loadRestResources<Resources>({
-      resources: restResources as Resources,
+    shopify.rest = loadRestResources({
+      resources: restResources,
       config: validatedConfig,
-      RestClient: shopify.clients.Rest,
+      RestClient: restClientClass({config: validatedConfig}),
     });
   }
 
@@ -91,5 +85,5 @@ export function shopifyApi<
     )
     .catch((err) => console.log(err));
 
-  return shopify as Shopify<Params, Resources, ConfigInterface<Params>>;
+  return shopify as Shopify<Params, Resources, Future>;
 }

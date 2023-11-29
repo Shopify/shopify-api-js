@@ -1,3 +1,6 @@
+import {createAdminApiClient} from '@shopify/admin-api-client';
+
+import type {ClientArgs} from '../types';
 import {ApiVersion} from '../../types';
 import {Session} from '../../session/session';
 import {RequestReturn, QueryParams} from '../http_client/types';
@@ -24,3 +27,7 @@ export interface RestClientParams {
   session: Session;
   apiVersion?: ApiVersion;
 }
+
+export type AdminClientFactory = (
+  args: ClientArgs,
+) => ReturnType<typeof createAdminApiClient>;

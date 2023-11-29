@@ -4,10 +4,26 @@ This document covers the changes apps will need to make to be able to upgrade to
 
 In this major version, our focus has been to integrate the `@shopify/shopify-api` package with our new GraphQL API clients, also contained in this repository.
 
+The new clients provide the same level of functionality as the current ones, plus some other advantages:
+- You can combine them with the `@shopify/api-codegen-preset` package to automatically add types for the variables and return objects
+- Better support for the Storefront API
+- An API that is closer to common GraphQL clients (e.g. Apollo) to make them feel more familiar:
+    ```ts
+    const client = shopify.clients.admin.graphql({ ... });
+    const response: Response = await client.fetch(
+      `query { ... }`,
+      { variables: { ... } }
+    );
+    ```
+- The new clients can return either the raw `Response` or a parsed response, as before
+- Support for more API clients in the future
+
 To make it easier to navigate this guide, here is an overview of the sections it contains:
 
 - [Migrating to v9](#migrating-to-v9)
   - [Changes to runtime adapters](#changes-to-runtime-adapters)
+  - [Using the new clients](#using-the-new-clients)
+    - [GraphQL](#graphql)
 
 ---
 
@@ -69,3 +85,58 @@ const convertFetch: AbstractFetchFunc = (url, init) => {
 
 setAbstractFetchFunc(convertFetch);
 ```
+
+## Using the new clients
+
+While not a breaking change yet, we're deprecating the previous clients and replacing them with the new ones.
+
+You can opt in to the new clients before the next major release by enabling the `unstable_newApiClients` future flag when calling `shopifyApi`:
+
+```ts
+const shopify = shopifyApi({
+  // ...
+  future: {
+    unstable_newApiClients: true,
+  },
+});
+```
+
+### GraphQL
+
+For your GraphQL calls, you'll be able to use either a `fetch` or a `request` function to return different levels of abstraction.
+
+Before:
+
+```ts
+const client = new shopify.clients.Graphql({session});
+const response = await client.query({
+  data: {
+    query: QUERY,
+    variables: {/* ... */},
+  },
+});
+console.log(response.body, response.headers);
+```
+
+After, using `fetch` to return a `Response` object:
+
+```ts
+const client = shopify.clients.admin.graphql({session});
+const response = client.fetch(QUERY);
+const body = await response.json();
+
+console.log(body, response.headers);
+```
+
+or using `request` to return the parsed response:
+
+```ts
+const client = shopify.clients.admin.graphql({session});
+const response = client.request(QUERY);
+
+console.log(response.data, response.errors, response.extensions);
+```
+
+> [!NOTE]
+> The `request` function returns a similar response to the previous iteration of `query`, but it no longer returns the response headers it received.
+> That also applies to `GraphqlResponseError`s thrown when the response contains an `errors` field.

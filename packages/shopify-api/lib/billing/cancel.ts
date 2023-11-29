@@ -1,5 +1,5 @@
 import {ConfigInterface} from '../base-types';
-import {graphqlClientClass} from '../clients/graphql/graphql_client';
+import {graphqlClientClass} from '../clients/legacy_graphql/legacy_admin_client';
 import {BillingError, GraphqlQueryError} from '../error';
 
 import {AppSubscription, BillingCancelParams, CancelResponse} from './types';

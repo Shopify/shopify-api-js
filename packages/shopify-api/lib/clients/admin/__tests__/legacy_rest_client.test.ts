@@ -54,7 +54,9 @@ describe('REST client', () => {
   });
 
   it('can make GET request', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -71,7 +73,9 @@ describe('REST client', () => {
   });
 
   it('can make GET request with path in query', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -94,7 +98,9 @@ describe('REST client', () => {
   });
 
   it('can make POST request with JSON data', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -119,7 +125,9 @@ describe('REST client', () => {
   });
 
   it('can make POST request with form data', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -148,7 +156,9 @@ describe('REST client', () => {
   });
 
   it('can make PUT request with JSON data', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -173,7 +183,9 @@ describe('REST client', () => {
   });
 
   it('can make DELETE request', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -191,7 +203,9 @@ describe('REST client', () => {
   });
 
   it('merges custom headers with the default ones', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -215,7 +229,9 @@ describe('REST client', () => {
   });
 
   it('includes pageInfo of type PageInfo in the returned object for calls with next or previous pages', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const params = getDefaultPageInfo(shopify.config.apiVersion);
     const client = new shopify.clients.Rest({session});
@@ -240,7 +256,9 @@ describe('REST client', () => {
   });
 
   it('is able to make subsequent get requests to either pageInfo.nextPage or pageInfo.prevPage', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const params = getDefaultPageInfo(shopify.config.apiVersion);
     const client = new shopify.clients.Rest({session});
@@ -284,7 +302,9 @@ describe('REST client', () => {
   });
 
   it('can request next pages until they run out', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const params = getDefaultPageInfo(shopify.config.apiVersion);
     const client = new shopify.clients.Rest({session});
@@ -325,7 +345,9 @@ describe('REST client', () => {
   });
 
   it('can request previous pages until they run out', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const params = getDefaultPageInfo(shopify.config.apiVersion);
     const client = new shopify.clients.Rest({session});
@@ -374,6 +396,9 @@ describe('REST client', () => {
       testConfig({
         isCustomStoreApp: true,
         adminApiAccessToken: 'test-admin-api-access-token',
+        future: {
+          unstable_newApiClients: false,
+        },
       }),
     );
 
@@ -398,7 +423,9 @@ describe('REST client', () => {
   });
 
   it('fails to instantiate without access token', () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const sessionWithoutAccessToken = new Session({
       id: `test-shop.myshopify.io_${jwtPayload.sub}`,
@@ -413,7 +440,9 @@ describe('REST client', () => {
   });
 
   it('allows paths with .json', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -430,7 +459,9 @@ describe('REST client', () => {
   });
 
   it('allows full paths', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     const client = new shopify.clients.Rest({session});
 
@@ -447,7 +478,9 @@ describe('REST client', () => {
   });
 
   it('allows overriding the API version', async () => {
-    const shopify = shopifyApi(testConfig());
+    const shopify = shopifyApi(
+      testConfig({future: {unstable_newApiClients: false}}),
+    );
 
     expect(shopify.config.apiVersion).not.toBe('2020-01');
     const client = new shopify.clients.Rest({

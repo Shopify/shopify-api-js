@@ -5,7 +5,7 @@ import {buildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
 import {
   GraphqlClient,
   graphqlClientClass,
-} from '../clients/graphql/graphql_client';
+} from '../clients/legacy_graphql/legacy_admin_client';
 import {hashString} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
 import {FutureFlagOptions} from '../../future/flags';

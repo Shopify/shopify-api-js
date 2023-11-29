@@ -1,18 +1,17 @@
-import {getHeader} from '../../../runtime/http';
-import {ApiVersion, ShopifyHeader} from '../../types';
-import {ConfigInterface} from '../../base-types';
-import {RequestParams} from '../http_client/types';
-import * as ShopifyErrors from '../../error';
-import {HttpClient} from '../http_client/http_client';
-import {Session} from '../../session/session';
-import {logger} from '../../logger';
-
+import {getHeader} from '../../../../runtime/http';
+import {ApiVersion, ShopifyHeader} from '../../../types';
+import {ConfigInterface} from '../../../base-types';
+import {RequestParams} from '../../http_client/types';
+import * as ShopifyErrors from '../../../error';
+import {HttpClient} from '../../http_client/http_client';
+import {Session} from '../../../session/session';
+import {logger} from '../../../logger';
 import {
   RestRequestReturn,
   PageInfo,
   RestClientParams,
   PageInfoParams,
-} from './types';
+} from '../types';
 
 export interface RestClientClassParams {
   config: ConfigInterface;

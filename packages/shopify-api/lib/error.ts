@@ -71,6 +71,7 @@ export class HttpThrottlingError extends HttpRetriableError<HttpThrottlingErrorD
 export class RestResourceError extends ShopifyError {}
 export class GraphqlQueryError extends ShopifyError {
   readonly response: {[key: string]: unknown};
+  /** @deprecated Headers are no longer included in errors thrown from GraphQL responses */
   headers?: {[key: string]: unknown};
 
   public constructor({

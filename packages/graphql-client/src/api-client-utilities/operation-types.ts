@@ -1,5 +1,3 @@
-import { GraphQLClient } from "../graphql-client/types";
-
 export type InputMaybe<_R = never> = never;
 
 export interface AllOperations {
@@ -27,7 +25,7 @@ export type OperationVariables<
       };
     };
 
-export type ResponseWithType<T = any> = Omit<GraphQLClient["fetch"], "json"> & {
+export type ResponseWithType<T = any> = Response & {
   json: () => Promise<T>;
 };
 
