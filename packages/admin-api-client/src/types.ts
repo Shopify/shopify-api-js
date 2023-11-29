@@ -10,7 +10,6 @@ export type AdminApiClientLogContentTypes = ApiClientLogContentTypes;
 
 export type AdminApiClientConfig = ApiClientConfig & {
   accessToken: string;
-  clientName?: string;
   userAgentPrefix?: string;
 };
 
