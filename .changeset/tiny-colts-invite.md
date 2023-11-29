@@ -1,5 +1,5 @@
 ---
-"@shopify/shopify-api": minor
+"@shopify/shopify-api": patch
 ---
 
 Add isExpired() and isScopeChanged() functions to Session class
