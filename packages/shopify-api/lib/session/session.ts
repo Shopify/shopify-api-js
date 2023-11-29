@@ -89,18 +89,22 @@ export class Session {
   }
 
   public isActive(scopes: AuthScopes | string | string[]): boolean {
+    return (
+      !this.isScopeChanged(scopes) &&
+      Boolean(this.accessToken) &&
+      !this.isExpired()
+    );
+  }
+
+  public isScopeChanged(scopes: AuthScopes | string | string[]): boolean {
     const scopesObject =
       scopes instanceof AuthScopes ? scopes : new AuthScopes(scopes);
 
-    const scopesUnchanged = scopesObject.equals(this.scope);
-    if (
-      scopesUnchanged &&
-      this.accessToken &&
-      (!this.expires || this.expires >= new Date())
-    ) {
-      return true;
-    }
-    return false;
+    return !scopesObject.equals(this.scope);
+  }
+
+  public isExpired(): boolean {
+    return Boolean(this.expires && this.expires < new Date());
   }
 
   public toObject(): SessionParams {
