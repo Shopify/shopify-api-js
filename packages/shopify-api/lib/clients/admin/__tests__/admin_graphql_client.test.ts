@@ -9,7 +9,7 @@ import {queueMockResponse} from '../../../__tests__/test-helper';
 import {testConfig} from '../../../__tests__/test-config';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
-import {shopifyApi} from '../../..';
+import {DataType, shopifyApi} from '../../..';
 
 const domain = 'test-shop.myshopify.io';
 const QUERY = `
@@ -31,6 +31,12 @@ const successResponse = {
 const accessToken = 'dangit';
 let session: Session;
 let jwtPayload: JwtPayload;
+
+declare module '@shopify/admin-api-client' {
+  interface AdminQueries {
+    a: {variables: {a: string}; return: string};
+  }
+}
 
 describe('GraphQL client', () => {
   beforeEach(() => {
@@ -61,14 +67,14 @@ describe('GraphQL client', () => {
     const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
 
-    const response = await client.query({data: QUERY});
+    const response = await client.query(QUERY);
 
     expect(response).toEqual(buildExpectedResponse(successResponse));
     expect({
       method: 'POST',
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
     }).toMatchMadeHttpRequest();
   });
 
@@ -83,7 +89,7 @@ describe('GraphQL client', () => {
     queueMockResponse(JSON.stringify(successResponse));
 
     await expect(
-      client.query({extraHeaders: customHeader, data: QUERY}),
+      client.query(QUERY, {extraHeaders: customHeader}),
     ).resolves.toEqual(buildExpectedResponse(successResponse));
 
     customHeader[ShopifyHeader.AccessToken] = accessToken;
@@ -92,7 +98,7 @@ describe('GraphQL client', () => {
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: customHeader,
-      data: QUERY,
+      data: {query: QUERY},
     }).toMatchMadeHttpRequest();
   });
 
@@ -107,7 +113,7 @@ describe('GraphQL client', () => {
     const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(
+    await expect(client.query(QUERY)).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
 
@@ -119,7 +125,7 @@ describe('GraphQL client', () => {
       method: 'POST',
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
       headers: customHeaders,
     }).toMatchMadeHttpRequest();
   });
@@ -143,42 +149,31 @@ describe('GraphQL client', () => {
     const shopify = shopifyApi(testConfig());
 
     const client = new shopify.clients.Graphql({session});
-    const queryWithVariables = {
-      query: `query FirstTwo($first: Int) {
-        products(first: $first) {
-          edges {
-            node {
-              id
+    const query = `query FirstTwo($first: Int) {
+      products(first: $first) {
+        edges {
+          node {
+            id
           }
         }
       }
-    }`,
-      variables: `{
-        'first': 2,
-      }`,
+    }`;
+
+    const variables = {
+      first: 2,
     };
+
     const expectedResponse = {
       data: {
         products: {
-          edges: [
-            {
-              node: {
-                id: 'foo',
-              },
-            },
-            {
-              node: {
-                id: 'bar',
-              },
-            },
-          ],
+          edges: [{node: {id: 'foo'}}, {node: {id: 'bar'}}],
         },
       },
     };
 
     queueMockResponse(JSON.stringify(expectedResponse));
 
-    await expect(client.query({data: queryWithVariables})).resolves.toEqual(
+    await expect(client.query(query, {variables})).resolves.toEqual(
       buildExpectedResponse(expectedResponse),
     );
 
@@ -187,11 +182,10 @@ describe('GraphQL client', () => {
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: {
-        'Content-Length': 219,
         'Content-Type': 'application/json',
         'X-Shopify-Access-Token': accessToken,
       },
-      data: JSON.stringify(queryWithVariables),
+      data: {query, variables},
     }).toMatchMadeHttpRequest();
   });
 
@@ -199,20 +193,18 @@ describe('GraphQL client', () => {
     const shopify = shopifyApi(testConfig());
 
     const client = new shopify.clients.Graphql({session});
-    const query = {
-      query: `query getProducts {
-        products {
-          edges {
-            node {
-              id
-            }
+    const query = `query getProducts {
+      products {
+        edges {
+          node {
+            id
           }
         }
-      }`,
-    };
+      }
+    }`;
 
     const expectedHeaders = {
-      'Content-Type': 'application/graphql',
+      'Content-Type': DataType.JSON.toString(),
       'X-Shopify-Access-Token': 'any_access_token',
     };
 
@@ -246,7 +238,7 @@ describe('GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(errorResponse));
 
-    await expect(() => client.query({data: query})).rejects.toThrow(
+    await expect(() => client.query(query)).rejects.toThrow(
       new ShopifyErrors.GraphqlQueryError({
         // Expect to throw the original error message
         message: 'you must provide one of first or last',
@@ -260,11 +252,10 @@ describe('GraphQL client', () => {
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/graphql.json`,
       headers: {
-        'Content-Length': 156,
         'Content-Type': 'application/json',
         'X-Shopify-Access-Token': accessToken,
       },
-      data: JSON.stringify(query),
+      data: {query},
     }).toMatchMadeHttpRequest();
   });
 
@@ -279,26 +270,26 @@ describe('GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const response = await client.query({data: QUERY});
+    const response = await client.query(QUERY);
 
     expect(response).toEqual(buildExpectedResponse(successResponse));
     expect({
       method: 'POST',
       domain,
       path: `/admin/api/2020-01/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
     }).toMatchMadeHttpRequest();
 
     expect(shopify.config.logger.log).toHaveBeenCalledWith(
       LogSeverity.Debug,
       expect.stringContaining(
-        `GraphQL client overriding default API version ${LATEST_API_VERSION} with 2020-01`,
+        `Admin client overriding default API version ${LATEST_API_VERSION} with 2020-01`,
       ),
     );
   });
 });
 
-function buildExpectedResponse(obj: unknown) {
+function buildExpectedResponse(obj: any) {
   const expectedResponse = {
     body: obj,
     headers: expect.objectContaining({}),

@@ -4,6 +4,7 @@ import {
   Logger as BaseLogger,
   Headers,
   ClientResponse,
+  FetchResponseBody,
 } from "../graphql-client/types";
 
 import {
@@ -17,6 +18,8 @@ export {
   AllOperations,
   InputMaybe,
   OperationVariables,
+  ReturnData,
+  ResponseWithType,
 } from "./operation-types";
 
 export interface UnsupportedApiVersionLog extends LogContent {
@@ -65,7 +68,9 @@ export type ApiClientFetch<Operations extends AllOperations = AllOperations> = <
   Operation extends keyof Operations = string,
 >(
   ...params: ApiClientRequestParams<Operation, Operations>
-) => Promise<ResponseWithType<{ data?: ReturnData<Operation, Operations> }>>;
+) => Promise<
+  ResponseWithType<FetchResponseBody<ReturnData<Operation, Operations>>>
+>;
 
 export type ApiClientRequest<Operations extends AllOperations = AllOperations> =
   <TData = undefined, Operation extends keyof Operations = string>(

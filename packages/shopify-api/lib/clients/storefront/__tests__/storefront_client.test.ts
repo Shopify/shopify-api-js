@@ -8,7 +8,6 @@ import {
 } from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
-import {SHOPIFY_API_LIBRARY_VERSION} from '../../../version';
 import {MissingRequiredArgument} from '../../../error';
 import {shopifyApi} from '../../../index';
 
@@ -61,7 +60,7 @@ describe('Storefront GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(
+    await expect(client.query(QUERY)).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
 
@@ -69,7 +68,7 @@ describe('Storefront GraphQL client', () => {
       method: 'POST',
       domain,
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
       headers: {
         [ShopifyHeader.StorefrontPrivateToken]: session.accessToken,
       },
@@ -90,7 +89,7 @@ describe('Storefront GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(
+    await expect(client.query(QUERY)).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
 
@@ -98,24 +97,22 @@ describe('Storefront GraphQL client', () => {
       method: 'POST',
       domain,
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
       headers: {
         [ShopifyHeader.StorefrontPrivateToken]: 'private_token',
       },
     }).toMatchMadeHttpRequest();
   });
 
-  it('does not fail when missing privateAppStorefrontAccessToken, if isCustomStoreApp is true', async () => {
+  it('fails when missing privateAppStorefrontAccessToken, if isCustomStoreApp is true', async () => {
     const shopify = shopifyApi(
       testConfig({isCustomStoreApp: true, adminApiAccessToken: 'dummy_token'}),
     );
 
     const customSession = shopify.session.customAppSession(session.shop);
-    const client = new shopify.clients.Storefront({session: customSession});
-
-    await expect(client.query({data: QUERY})).rejects.toThrow(
-      MissingRequiredArgument,
-    );
+    expect(
+      () => new shopify.clients.Storefront({session: customSession}),
+    ).toThrow(MissingRequiredArgument);
   });
 
   it('sets specific SF API headers', async () => {
@@ -125,7 +122,7 @@ describe('Storefront GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(
+    await expect(client.query(QUERY)).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
 
@@ -133,11 +130,11 @@ describe('Storefront GraphQL client', () => {
       method: 'POST',
       domain,
       path: `/api/${shopify.config.apiVersion}/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
       headers: {
         [ShopifyHeader.StorefrontPrivateToken]: session.accessToken,
-        [ShopifyHeader.StorefrontSDKVariant]: 'shopify-api-library',
-        [ShopifyHeader.StorefrontSDKVersion]: SHOPIFY_API_LIBRARY_VERSION,
+        [ShopifyHeader.StorefrontSDKVariant]: 'storefront-api-client',
+        [ShopifyHeader.StorefrontSDKVersion]: expect.any(String),
       },
     }).toMatchMadeHttpRequest();
   });
@@ -152,7 +149,7 @@ describe('Storefront GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query({data: QUERY})).resolves.toEqual(
+    await expect(client.query(QUERY)).resolves.toEqual(
       buildExpectedResponse(successResponse),
     );
 
@@ -160,7 +157,7 @@ describe('Storefront GraphQL client', () => {
       method: 'POST',
       domain,
       path: `/api/2020-01/graphql.json`,
-      data: QUERY,
+      data: {query: QUERY},
       headers: {
         [ShopifyHeader.StorefrontPrivateToken]: session.accessToken,
       },

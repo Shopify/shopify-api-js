@@ -1,2 +1,7 @@
 export { createStorefrontApiClient } from "./storefront-api-client";
-export { StorefrontQueries, StorefrontMutations } from "./types";
+export {
+  StorefrontQueries,
+  StorefrontMutations,
+  StorefrontOperations,
+  StorefrontApiClient,
+} from "./types";

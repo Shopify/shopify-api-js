@@ -2,10 +2,7 @@ import {ConfigInterface, ConfigParams} from '../base-types';
 import {BillingInterval} from '../types';
 import {BillingError} from '../error';
 import {buildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
-import {
-  GraphqlClient,
-  graphqlClientClass,
-} from '../clients/graphql/graphql_client';
+import {GraphqlClient, graphqlClientClass} from '../clients/admin';
 import {hashString} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
 import {FutureFlagOptions} from '../../future/flags';

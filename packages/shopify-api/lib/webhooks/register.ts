@@ -1,7 +1,4 @@
-import {
-  graphqlClientClass,
-  GraphqlClient,
-} from '../clients/graphql/graphql_client';
+import {graphqlClientClass, GraphqlClient} from '../clients/admin';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
 import {logger} from '../logger';
 import {gdprTopics} from '../types';
@@ -346,7 +343,7 @@ async function runMutation({
   try {
     const query = buildMutation(config, topic, handler, operation);
 
-    const result = await client.query({data: query});
+    const result = await client.query(query);
 
     registerResult = {
       deliveryMethod: handler.deliveryMethod,

@@ -1,15 +1,12 @@
-import {ShopifyRestResources} from '../rest/types';
-
 import {ShopifyError} from './error';
 import {ConfigInterface, ConfigParams} from './base-types';
 import {LATEST_API_VERSION, LogSeverity} from './types';
 import {AuthScopes} from './auth/scopes';
 import {logger as createLogger} from './logger';
 
-export function validateConfig<
-  Resources extends ShopifyRestResources,
-  Params extends ConfigParams<Resources>,
->(params: Params): ConfigInterface<Params> {
+export function validateConfig<Params extends ConfigParams>(
+  params: Params,
+): ConfigInterface<Params> {
   const config = {
     apiKey: '',
     apiSecretKey: '',
@@ -29,7 +26,7 @@ export function validateConfig<
   } as ConfigInterface<Params>;
 
   // Make sure that the essential params actually have content in them
-  const mandatory: (keyof ConfigParams)[] = ['apiSecretKey', 'hostName'];
+  const mandatory: (keyof Params)[] = ['apiSecretKey', 'hostName'];
   if (!('isCustomStoreApp' in params) || !params.isCustomStoreApp) {
     mandatory.push('apiKey');
     mandatory.push('scopes');
@@ -43,7 +40,7 @@ export function validateConfig<
     }
   }
 
-  const missing: (keyof ConfigParams)[] = [];
+  const missing: (keyof Params)[] = [];
   mandatory.forEach((key) => {
     if (!notEmpty(params[key])) {
       missing.push(key);

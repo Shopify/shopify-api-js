@@ -1,8 +1,8 @@
 import {RestResourceError} from '../lib/error';
 import {Session} from '../lib/session/session';
-import {PageInfo, RestRequestReturn} from '../lib/clients/rest/types';
+import {PageInfo, RestRequestReturn} from '../lib/clients/admin/types';
 import {DataType} from '../lib/clients/http_client/types';
-import {RestClient} from '../lib/clients/rest/rest_client';
+import {RestClient} from '../lib/clients/admin/rest/client';
 import {ApiVersion} from '../lib/types';
 import {ConfigInterface} from '../lib/base-types';
 import {Headers} from '../runtime/http';
