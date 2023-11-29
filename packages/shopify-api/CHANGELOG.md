@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.1.1
+
+### Patch Changes
+
+- 880c9ddf: Add isExpired() and isScopeChanged() functions to Session class
+
 ## 8.1.0
 
 ### Minor Changes
