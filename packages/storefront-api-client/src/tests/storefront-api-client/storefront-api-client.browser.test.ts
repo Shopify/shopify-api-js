@@ -31,11 +31,11 @@ describe("Storefront API Client: Browser", () => {
               ...config,
               publicAccessToken: undefined as any,
               privateAccessToken: "private-access-token",
-            })
+            }),
           ).toThrow(
             new Error(
-              "Storefront API Client: private access tokens and headers should only be used in a server-to-server implementation. Use the public API access token in nonserver environments."
-            )
+              "Storefront API Client: private access tokens and headers should only be used in a server-to-server implementation. Use the public API access token in nonserver environments.",
+            ),
           );
         });
       });

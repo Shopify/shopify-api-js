@@ -52,7 +52,7 @@ describe("Admin API Client", () => {
       it("calls the graphql client with headers and API URL", () => {
         createAdminApiClient({ ...config });
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("headers", {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -60,7 +60,7 @@ describe("Admin API Client", () => {
           "User-Agent": "Admin API Client vROLLUP_REPLACE_CLIENT_VERSION",
         });
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("url", mockApiUrl);
       });
 
@@ -69,7 +69,7 @@ describe("Admin API Client", () => {
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("retries", 0);
       });
 
@@ -80,7 +80,7 @@ describe("Admin API Client", () => {
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("retries", retries);
       });
 
@@ -89,7 +89,7 @@ describe("Admin API Client", () => {
 
         createAdminApiClient({ ...config, userAgentPrefix });
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("headers", {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -98,7 +98,7 @@ describe("Admin API Client", () => {
             "test-UAP | Admin API Client vROLLUP_REPLACE_CLIENT_VERSION",
         });
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("url", mockApiUrl);
       });
 
@@ -109,7 +109,7 @@ describe("Admin API Client", () => {
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("fetchApi", customFetchApi);
       });
 
@@ -120,7 +120,7 @@ describe("Admin API Client", () => {
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("logger", logger);
       });
 
@@ -142,11 +142,11 @@ describe("Admin API Client", () => {
             createAdminApiClient({
               ...config,
               storeDomain: undefined as any,
-            })
+            }),
           ).toThrow(
             new Error(
-              'Admin API Client: a valid store domain ("undefined") must be provided'
-            )
+              'Admin API Client: a valid store domain ("undefined") must be provided',
+            ),
           );
         });
 
@@ -155,11 +155,11 @@ describe("Admin API Client", () => {
             createAdminApiClient({
               ...config,
               storeDomain: "   " as any,
-            })
+            }),
           ).toThrow(
             new Error(
-              'Admin API Client: a valid store domain ("   ") must be provided'
-            )
+              'Admin API Client: a valid store domain ("   ") must be provided',
+            ),
           );
         });
 
@@ -168,11 +168,11 @@ describe("Admin API Client", () => {
             createAdminApiClient({
               ...config,
               storeDomain: 123 as any,
-            })
+            }),
           ).toThrow(
             new Error(
-              'Admin API Client: a valid store domain ("123") must be provided'
-            )
+              'Admin API Client: a valid store domain ("123") must be provided',
+            ),
           );
         });
 
@@ -181,13 +181,13 @@ describe("Admin API Client", () => {
             createAdminApiClient({
               ...config,
               apiVersion: undefined as any,
-            })
+            }),
           ).toThrow(
             new Error(
               `Admin API Client: the provided apiVersion ("undefined") is invalid. Current supported API versions: ${mockApiVersions.join(
-                ", "
-              )}`
-            )
+                ", ",
+              )}`,
+            ),
           );
         });
 
@@ -203,8 +203,8 @@ describe("Admin API Client", () => {
 
           expect(consoleWarnSpy).toHaveBeenCalledWith(
             `Admin API Client: the provided apiVersion ("2022-07") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
-              ", "
-            )}`
+              ", ",
+            )}`,
           );
         });
 
@@ -213,9 +213,9 @@ describe("Admin API Client", () => {
             createAdminApiClient({
               ...config,
               accessToken: undefined as any,
-            })
+            }),
           ).toThrow(
-            new Error(`Admin API Client: an access token must be provided`)
+            new Error(`Admin API Client: an access token must be provided`),
           );
         });
 
@@ -226,11 +226,11 @@ describe("Admin API Client", () => {
             createAdminApiClient({
               ...config,
               accessToken: "access-token",
-            })
+            }),
           ).toThrow(
             new Error(
-              "Admin API Client: this client should not be used in the browser"
-            )
+              "Admin API Client: this client should not be used in the browser",
+            ),
           );
 
           delete (global as any).window;
@@ -298,7 +298,7 @@ describe("Admin API Client", () => {
         it("returns a header object that includes the content-type header", () => {
           const client = createAdminApiClient(config);
           expect(client.config.headers["Content-Type"]).toBe(
-            DEFAULT_CONTENT_TYPE
+            DEFAULT_CONTENT_TYPE,
           );
         });
 
@@ -310,7 +310,7 @@ describe("Admin API Client", () => {
         it("returns a header object that includes the access token headers when an access token is provided", () => {
           const client = createAdminApiClient(config);
           expect(client.config.headers[ACCESS_TOKEN_HEADER]).toEqual(
-            config.accessToken
+            config.accessToken,
           );
         });
       });
@@ -356,7 +356,7 @@ describe("Admin API Client", () => {
         const version = "unstable";
         const url = client.getApiUrl(version);
         expect(url).toEqual(
-          `${config.storeDomain}/admin/api/${version}/graphql.json`
+          `${config.storeDomain}/admin/api/${version}/graphql.json`,
         );
       });
 
@@ -365,9 +365,9 @@ describe("Admin API Client", () => {
         expect(() => client.getApiUrl(version)).toThrow(
           new Error(
             `Admin API Client: the provided apiVersion ("123") is invalid. Current supported API versions: ${mockApiVersions.join(
-              ", "
-            )}`
-          )
+              ", ",
+            )}`,
+          ),
         );
       });
 
@@ -381,8 +381,8 @@ describe("Admin API Client", () => {
 
         expect(consoleWarnSpy).toHaveBeenCalledWith(
           `Admin API Client: the provided apiVersion ("2021-01") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
-            ", "
-          )}`
+            ", ",
+          )}`,
         );
       });
     });

@@ -18,7 +18,7 @@ export function validateRetries({
       retries > MAX_RETRIES)
   ) {
     throw new Error(
-      `${client}: The provided "retries" value (${retries}) is invalid - it cannot be less than ${MIN_RETRIES} or greater than ${MAX_RETRIES}`
+      `${client}: The provided "retries" value (${retries}) is invalid - it cannot be less than ${MIN_RETRIES} or greater than ${MAX_RETRIES}`,
     );
   }
 }

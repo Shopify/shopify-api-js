@@ -14,7 +14,7 @@ type UnpackedInputMaybe<InputType> = InputType extends InputMaybe<infer R>
 
 export type OperationVariables<
   Operation extends keyof Operations,
-  Operations extends AllOperations
+  Operations extends AllOperations,
 > = Operations[Operation]["variables"] extends { [key: string]: never }
   ? { [key: string]: never }
   : {
@@ -31,5 +31,5 @@ export type ResponseWithType<T = any> = Omit<Response, "json"> & {
 
 export type ReturnData<
   Operation extends keyof Operations,
-  Operations extends AllOperations
+  Operations extends AllOperations,
 > = Operation extends keyof Operations ? Operations[Operation]["return"] : any;

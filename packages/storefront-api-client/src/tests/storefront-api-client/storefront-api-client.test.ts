@@ -50,7 +50,7 @@ describe("Storefront API Client", () => {
 
         createStorefrontApiClient({ ...config, clientName });
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("headers", {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -60,7 +60,7 @@ describe("Storefront API Client", () => {
           [SDK_VARIANT_SOURCE_HEADER]: clientName,
         });
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("url", mockApiUrl);
       });
 
@@ -69,7 +69,7 @@ describe("Storefront API Client", () => {
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("retries", 0);
       });
 
@@ -80,7 +80,7 @@ describe("Storefront API Client", () => {
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("retries", retries);
       });
 
@@ -91,7 +91,7 @@ describe("Storefront API Client", () => {
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("fetchApi", customFetchApi);
       });
 
@@ -102,7 +102,7 @@ describe("Storefront API Client", () => {
 
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
-          (createGraphQLClient as jest.Mock).mock.calls[0][0]
+          (createGraphQLClient as jest.Mock).mock.calls[0][0],
         ).toHaveProperty("logger", logger);
       });
 
@@ -124,11 +124,11 @@ describe("Storefront API Client", () => {
             createStorefrontApiClient({
               ...config,
               storeDomain: undefined as any,
-            })
+            }),
           ).toThrow(
             new Error(
-              'Storefront API Client: a valid store domain ("undefined") must be provided'
-            )
+              'Storefront API Client: a valid store domain ("undefined") must be provided',
+            ),
           );
         });
 
@@ -137,11 +137,11 @@ describe("Storefront API Client", () => {
             createStorefrontApiClient({
               ...config,
               storeDomain: "   ",
-            })
+            }),
           ).toThrow(
             new Error(
-              'Storefront API Client: a valid store domain ("   ") must be provided'
-            )
+              'Storefront API Client: a valid store domain ("   ") must be provided',
+            ),
           );
         });
 
@@ -150,11 +150,11 @@ describe("Storefront API Client", () => {
             createStorefrontApiClient({
               ...config,
               storeDomain: 123 as any,
-            })
+            }),
           ).toThrow(
             new Error(
-              'Storefront API Client: a valid store domain ("123") must be provided'
-            )
+              'Storefront API Client: a valid store domain ("123") must be provided',
+            ),
           );
         });
 
@@ -163,13 +163,13 @@ describe("Storefront API Client", () => {
             createStorefrontApiClient({
               ...config,
               apiVersion: undefined as any,
-            })
+            }),
           ).toThrow(
             new Error(
               `Storefront API Client: the provided apiVersion ("undefined") is invalid. Current supported API versions: ${mockApiVersions.join(
-                ", "
-              )}`
-            )
+                ", ",
+              )}`,
+            ),
           );
         });
 
@@ -178,13 +178,13 @@ describe("Storefront API Client", () => {
             createStorefrontApiClient({
               ...config,
               apiVersion: { year: 2022, month: 1 } as any,
-            })
+            }),
           ).toThrow(
             new Error(
               `Storefront API Client: the provided apiVersion ("[object Object]") is invalid. Current supported API versions: ${mockApiVersions.join(
-                ", "
-              )}`
-            )
+                ", ",
+              )}`,
+            ),
           );
         });
 
@@ -200,8 +200,8 @@ describe("Storefront API Client", () => {
 
           expect(consoleWarnSpy).toHaveBeenCalledWith(
             `Storefront API Client: the provided apiVersion ("2022-07") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
-              ", "
-            )}`
+              ", ",
+            )}`,
           );
         });
 
@@ -210,11 +210,11 @@ describe("Storefront API Client", () => {
             createStorefrontApiClient({
               ...config,
               publicAccessToken: undefined as any,
-            })
+            }),
           ).toThrow(
             new Error(
-              `Storefront API Client: a public or private access token must be provided`
-            )
+              `Storefront API Client: a public or private access token must be provided`,
+            ),
           );
         });
       });
@@ -281,7 +281,7 @@ describe("Storefront API Client", () => {
         it("returns a header object that includes the content-type header", () => {
           const client = createStorefrontApiClient(config);
           expect(client.config.headers["Content-Type"]).toBe(
-            DEFAULT_CONTENT_TYPE
+            DEFAULT_CONTENT_TYPE,
           );
         });
 
@@ -293,21 +293,21 @@ describe("Storefront API Client", () => {
         it("returns a header object that includes the SDK variant header", () => {
           const client = createStorefrontApiClient(config);
           expect(client.config.headers[SDK_VARIANT_HEADER]).toBe(
-            DEFAULT_SDK_VARIANT
+            DEFAULT_SDK_VARIANT,
           );
         });
 
         it("returns a header object that includes the SDK version header", () => {
           const client = createStorefrontApiClient(config);
           expect(client.config.headers[SDK_VERSION_HEADER]).toBe(
-            DEFAULT_CLIENT_VERSION
+            DEFAULT_CLIENT_VERSION,
           );
         });
 
         it("returns a header object that includes the public headers when a public access token is provided", () => {
           const client = createStorefrontApiClient(config);
           expect(client.config.headers[PUBLIC_ACCESS_TOKEN_HEADER]).toEqual(
-            config.publicAccessToken
+            config.publicAccessToken,
           );
         });
 
@@ -316,14 +316,14 @@ describe("Storefront API Client", () => {
 
           const client = createStorefrontApiClient({ ...config, clientName });
           expect(client.config.headers[SDK_VARIANT_SOURCE_HEADER]).toEqual(
-            clientName
+            clientName,
           );
         });
 
         it("returns a header object that does not include the SDK variant source header when client name is not provided", () => {
           const client = createStorefrontApiClient(config);
           expect(
-            client.config.headers[SDK_VARIANT_SOURCE_HEADER]
+            client.config.headers[SDK_VARIANT_SOURCE_HEADER],
           ).toBeUndefined();
         });
       });
@@ -369,7 +369,7 @@ describe("Storefront API Client", () => {
         const version = "unstable";
         const url = client.getApiUrl(version);
         expect(url).toEqual(
-          `${config.storeDomain}/api/${version}/graphql.json`
+          `${config.storeDomain}/api/${version}/graphql.json`,
         );
       });
 
@@ -378,9 +378,9 @@ describe("Storefront API Client", () => {
         expect(() => client.getApiUrl(version as any)).toThrow(
           new Error(
             `Storefront API Client: the provided apiVersion ("123") is invalid. Current supported API versions: ${mockApiVersions.join(
-              ", "
-            )}`
-          )
+              ", ",
+            )}`,
+          ),
         );
       });
 
@@ -394,8 +394,8 @@ describe("Storefront API Client", () => {
 
         expect(consoleWarnSpy).toHaveBeenCalledWith(
           `Storefront API Client: the provided apiVersion ("2021-01") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
-            ", "
-          )}`
+            ", ",
+          )}`,
         );
       });
     });
@@ -415,7 +415,7 @@ describe("Storefront API Client", () => {
 
       beforeEach(() => {
         (graphqlClientMock.fetch as jest.Mock).mockResolvedValue(
-          mockFetchResponse
+          mockFetchResponse,
         );
 
         client = createStorefrontApiClient(config);
@@ -437,10 +437,10 @@ describe("Storefront API Client", () => {
 
           await client.fetch(operation, { variables });
           expect((graphqlClientMock.fetch as jest.Mock).mock.calls[0][0]).toBe(
-            operation
+            operation,
           );
           expect(
-            (graphqlClientMock.fetch as jest.Mock).mock.calls[0][1]
+            (graphqlClientMock.fetch as jest.Mock).mock.calls[0][1],
           ).toEqual({ variables });
         });
 
@@ -449,7 +449,7 @@ describe("Storefront API Client", () => {
 
           await client.fetch(operation, { headers });
           expect(
-            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1]
+            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1],
           ).toEqual({
             headers: client.getHeaders(headers),
           });
@@ -460,7 +460,7 @@ describe("Storefront API Client", () => {
 
           await client.fetch(operation, { apiVersion });
           expect(
-            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1]
+            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1],
           ).toEqual({
             url: client.getApiUrl(apiVersion),
           });
@@ -471,7 +471,7 @@ describe("Storefront API Client", () => {
 
           await client.fetch(operation, { retries });
           expect(
-            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1]
+            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1],
           ).toEqual({
             retries,
           });
@@ -499,7 +499,7 @@ describe("Storefront API Client", () => {
 
       beforeEach(() => {
         (graphqlClientMock.request as jest.Mock).mockResolvedValue(
-          mockRequestResponse
+          mockRequestResponse,
         );
 
         client = createStorefrontApiClient(config);
@@ -521,10 +521,10 @@ describe("Storefront API Client", () => {
 
           await client.request(operation, { variables });
           expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls[0][0]
+            (graphqlClientMock.request as jest.Mock).mock.calls[0][0],
           ).toBe(operation);
           expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls[0][1]
+            (graphqlClientMock.request as jest.Mock).mock.calls[0][1],
           ).toEqual({ variables });
         });
 
@@ -533,7 +533,7 @@ describe("Storefront API Client", () => {
 
           await client.request(operation, { headers });
           expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1]
+            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1],
           ).toEqual({
             headers: client.getHeaders(headers),
           });
@@ -544,7 +544,7 @@ describe("Storefront API Client", () => {
 
           await client.request(operation, { apiVersion });
           expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1]
+            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1],
           ).toEqual({
             url: client.getApiUrl(apiVersion),
           });
@@ -555,7 +555,7 @@ describe("Storefront API Client", () => {
 
           await client.request(operation, { retries });
           expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1]
+            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1],
           ).toEqual({
             retries,
           });

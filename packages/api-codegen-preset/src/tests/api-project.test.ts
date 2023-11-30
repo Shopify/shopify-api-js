@@ -83,6 +83,6 @@ describe("shopifyApiProject", () => {
           },
         });
       });
-    }
+    },
   );
 });

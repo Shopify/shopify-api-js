@@ -26,7 +26,7 @@ describe("Preset", () => {
     expect(result).toHaveLength(1);
 
     const generatedCode = result.find(
-      (file) => file.filename === "out.d.ts"
+      (file) => file.filename === "out.d.ts",
     )!.content;
 
     // Disables ESLint
@@ -34,7 +34,7 @@ describe("Preset", () => {
 
     // Imports Admin API
     expect(generatedCode).toMatch(
-      `import * as AdminTypes from './admin.types.d.ts';`
+      `import * as AdminTypes from './admin.types.d.ts';`,
     );
 
     // Uses Pick<...>
@@ -42,10 +42,10 @@ describe("Preset", () => {
 
     // Generates query and mutation types
     expect(generatedCode).toMatch(
-      /interface GeneratedQueryTypes \{\s+"#graphql/
+      /interface GeneratedQueryTypes \{\s+"#graphql/,
     );
     expect(generatedCode).toMatch(
-      /interface GeneratedMutationTypes \{\s+"#graphql/
+      /interface GeneratedMutationTypes \{\s+"#graphql/,
     );
 
     // Augments query/mutation types

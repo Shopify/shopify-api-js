@@ -5,7 +5,7 @@ describe("validatePrivateAccessTokenUsage(): Server", () => {
     const privateAccessToken = "private-token";
 
     expect(() =>
-      validatePrivateAccessTokenUsage(privateAccessToken)
+      validatePrivateAccessTokenUsage(privateAccessToken),
     ).not.toThrow();
   });
 });

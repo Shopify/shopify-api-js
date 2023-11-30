@@ -31,11 +31,11 @@ describe("Storefront API Client: Server", () => {
             createStorefrontApiClient({
               ...config,
               privateAccessToken: "private-token",
-            } as any)
+            } as any),
           ).toThrow(
             new Error(
-              `Storefront API Client: only provide either a public or private access token`
-            )
+              `Storefront API Client: only provide either a public or private access token`,
+            ),
           );
         });
       });
@@ -65,7 +65,7 @@ describe("Storefront API Client: Server", () => {
           });
 
           expect(client.config.headers[PRIVATE_ACCESS_TOKEN_HEADER]).toEqual(
-            privateAccessToken
+            privateAccessToken,
           );
         });
       });

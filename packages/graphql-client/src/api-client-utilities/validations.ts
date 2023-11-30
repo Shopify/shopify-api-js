@@ -24,7 +24,7 @@ export function validateDomainAndGetStoreUrl({
     return url.origin;
   } catch (_error) {
     throw new Error(
-      `${client}: a valid store domain ("${storeDomain}") must be provided`
+      `${client}: a valid store domain ("${storeDomain}") must be provided`,
     );
   }
 }
@@ -42,7 +42,7 @@ export function validateApiVersion({
 }) {
   const versionError = `${client}: the provided apiVersion ("${apiVersion}")`;
   const supportedVersion = `Current supported API versions: ${currentSupportedApiVersions.join(
-    ", "
+    ", ",
   )}`;
 
   if (!apiVersion || typeof apiVersion !== "string") {
@@ -62,7 +62,7 @@ export function validateApiVersion({
       });
     } else {
       console.warn(
-        `${versionError} is deprecated or not supported. ${supportedVersion}`
+        `${versionError} is deprecated or not supported. ${supportedVersion}`,
       );
     }
   }
