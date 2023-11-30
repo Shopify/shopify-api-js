@@ -25,7 +25,7 @@ export type OperationVariables<
       };
     };
 
-export type ResponseWithType<T = any> = Response & {
+export type ResponseWithType<T = any> = Omit<Response, "json"> & {
   json: () => Promise<T>;
 };
 
