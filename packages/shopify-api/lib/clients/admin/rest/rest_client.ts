@@ -11,7 +11,7 @@ import {
   PageInfo,
   RestClientParams,
   PageInfoParams,
-  RestClient as RestClientFunction,
+  AdminRestClient as RestClientFunction,
 } from '../types';
 
 export interface RestClientClassParams {

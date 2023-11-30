@@ -28,9 +28,11 @@ export interface RestClientParams {
   apiVersion?: ApiVersion;
 }
 
+export type AdminGraphqlClient = ReturnType<typeof createAdminApiClient>;
+
 export type AdminGraphqlClientFactory = (
   args: ClientArgs,
-) => ReturnType<typeof createAdminApiClient>;
+) => AdminGraphqlClient;
 
 interface RestRequestOptions {
   data?: {[key: string]: unknown} | string;
@@ -42,7 +44,7 @@ interface RestRequestOptionsWithData extends RestRequestOptions {
   data: NonNullable<RestRequestOptions['data']>;
 }
 
-export interface RestClient {
+export interface AdminRestClient {
   get: <T = unknown>(
     path: string,
     params?: RestRequestOptions,
@@ -61,4 +63,6 @@ export interface RestClient {
   ) => Promise<RestRequestReturn<T>>;
 }
 
-export type AdminRestClientFactory = (params: RestClientParams) => RestClient;
+export type AdminRestClientFactory = (
+  params: RestClientParams,
+) => AdminRestClient;

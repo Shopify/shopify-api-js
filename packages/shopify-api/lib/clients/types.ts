@@ -4,7 +4,7 @@ import {ApiVersion} from '../types';
 
 import {GraphqlClient} from './legacy_graphql/legacy_admin_client';
 import {StorefrontClient} from './legacy_graphql/legacy_storefront_client';
-import {GraphqlProxy} from './graphql_proxy/types';
+import type {GraphqlProxy} from './graphql_proxy/types';
 import {RestClient as RestClientClass} from './admin/rest/rest_client';
 import {AdminGraphqlClientFactory, AdminRestClientFactory} from './admin/types';
 import {StorefrontClientFactory} from './storefront/types';
@@ -29,11 +29,11 @@ export type ShopifyClients<
         graphql: AdminGraphqlClientFactory;
       };
       storefront: StorefrontClientFactory;
-      graphqlProxy: GraphqlProxy;
+      graphqlProxy: GraphqlProxy<{unstable_newApiClients: true}>;
     }
   : {
       Rest: typeof RestClientClass;
       Graphql: typeof GraphqlClient;
       Storefront: typeof StorefrontClient;
-      graphqlProxy: GraphqlProxy;
+      graphqlProxy: GraphqlProxy<{unstable_newApiClients: false}>;
     };

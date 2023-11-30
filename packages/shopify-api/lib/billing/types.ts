@@ -169,9 +169,7 @@ export type CurrentAppInstallation = OneTimePurchases & ActiveSubscriptions;
 
 export interface CurrentAppInstallations {
   userErrors: string[];
-  data: {
-    currentAppInstallation: CurrentAppInstallation;
-  };
+  currentAppInstallation: CurrentAppInstallation;
 }
 
 export interface RequestResponse {
@@ -180,44 +178,32 @@ export interface RequestResponse {
 }
 
 export interface RecurringPaymentResponse {
-  data: {
-    appSubscriptionCreate: {
-      userErrors: string[];
-      confirmationUrl: string;
-      appSubscription: AppSubscription;
-    };
+  appSubscriptionCreate: {
+    userErrors: string[];
+    confirmationUrl: string;
+    appSubscription: AppSubscription;
   };
-  errors?: string[];
 }
 
 export interface SinglePaymentResponse {
-  data: {
-    appPurchaseOneTimeCreate: {
-      userErrors: string[];
-      confirmationUrl: string;
-      oneTimePurchase: OneTimePurchase;
-    };
+  appPurchaseOneTimeCreate: {
+    userErrors: string[];
+    confirmationUrl: string;
+    oneTimePurchase: OneTimePurchase;
   };
-  errors?: string[];
 }
 
 export type RequestResponseData =
-  | RecurringPaymentResponse['data']['appSubscriptionCreate']
-  | SinglePaymentResponse['data']['appPurchaseOneTimeCreate'];
+  | RecurringPaymentResponse['appSubscriptionCreate']
+  | SinglePaymentResponse['appPurchaseOneTimeCreate'];
 
 export interface SubscriptionResponse {
-  data: {
-    currentAppInstallation: ActiveSubscriptions;
-  };
-  errors?: string[];
+  currentAppInstallation: ActiveSubscriptions;
 }
 
 export interface CancelResponse {
-  data: {
-    appSubscriptionCancel: {
-      appSubscription: AppSubscription;
-      userErrors: string[];
-    };
+  appSubscriptionCancel: {
+    appSubscription: AppSubscription;
+    userErrors: string[];
   };
-  errors?: string[];
 }

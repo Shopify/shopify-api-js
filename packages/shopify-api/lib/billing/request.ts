@@ -1,14 +1,11 @@
 import {ConfigInterface, ConfigParams} from '../base-types';
 import {BillingInterval} from '../types';
-import {BillingError} from '../error';
+import {BillingError, GraphqlQueryError} from '../error';
 import {buildEmbeddedAppUrl} from '../auth/get-embedded-app-url';
-import {
-  GraphqlClient,
-  graphqlClientClass,
-} from '../clients/legacy_graphql/legacy_admin_client';
 import {hashString} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
 import {FutureFlagOptions} from '../../future/flags';
+import {adminGraphqlClientFactory, AdminGraphqlClient} from '../clients/admin';
 
 import {
   BillingConfigSubscriptionPlan,
@@ -24,7 +21,7 @@ import {
 } from './types';
 
 interface RequestInternalParams {
-  client: GraphqlClient;
+  client: AdminGraphqlClient;
   plan: string;
   returnUrl: string;
   isTest: boolean;
@@ -84,8 +81,7 @@ export function request<
     const returnUrl =
       returnUrlParam || (config.isEmbeddedApp ? embeddedAppUrl : appUrl);
 
-    const GraphqlClient = graphqlClientClass({config});
-    const client = new GraphqlClient({session});
+    const client = adminGraphqlClientFactory(config)({session});
 
     function isLineItemPlan(
       billingConfig: any,
@@ -113,7 +109,7 @@ export function request<
         isTest,
       });
 
-      data = mutationRecurringResponse.data.appSubscriptionCreate;
+      data = mutationRecurringResponse.appSubscriptionCreate;
     } else if (isOneTimePlan(billingConfig)) {
       const mutationOneTimeResponse = await requestSinglePayment({
         billingConfig: {...billingConfig, ...filteredOverrides},
@@ -122,7 +118,7 @@ export function request<
         returnUrl,
         isTest,
       });
-      data = mutationOneTimeResponse.data.appPurchaseOneTimeCreate;
+      data = mutationOneTimeResponse.appPurchaseOneTimeCreate;
     } else {
       switch (billingConfig.interval) {
         case BillingInterval.Usage: {
@@ -133,7 +129,7 @@ export function request<
             returnUrl,
             isTest,
           });
-          data = mutationUsageResponse.data.appSubscriptionCreate;
+          data = mutationUsageResponse.appSubscriptionCreate;
           break;
         }
         default: {
@@ -144,7 +140,7 @@ export function request<
             returnUrl,
             isTest,
           });
-          data = mutationRecurringResponse.data.appSubscriptionCreate;
+          data = mutationRecurringResponse.appSubscriptionCreate;
         }
       }
     }
@@ -224,28 +220,25 @@ async function requestSubscriptionPayment({
     }
   });
 
-  const mutationResponse = await client.query<RecurringPaymentResponse>({
-    data: {
-      query: RECURRING_PURCHASE_MUTATION,
-      variables: {
-        name: plan,
-        trialDays: billingConfig.trialDays,
-        replacementBehavior: billingConfig.replacementBehavior,
-        returnUrl,
-        test: isTest,
-        lineItems,
+  try {
+    const mutationResponse = await client.request<RecurringPaymentResponse>(
+      RECURRING_PURCHASE_MUTATION,
+      {
+        variables: {
+          name: plan,
+          trialDays: billingConfig.trialDays,
+          replacementBehavior: billingConfig.replacementBehavior,
+          returnUrl,
+          test: isTest,
+          lineItems,
+        },
       },
-    },
-  });
+    );
 
-  if (mutationResponse.body.errors?.length) {
-    throw new BillingError({
-      message: 'Error while billing the store',
-      errorData: mutationResponse.body.errors,
-    });
+    return mutationResponse.data!;
+  } catch (error) {
+    throw rethrowGraphqlError(error);
   }
-
-  return mutationResponse.body;
 }
 async function requestRecurringPayment({
   billingConfig,
@@ -254,48 +247,45 @@ async function requestRecurringPayment({
   returnUrl,
   isTest,
 }: RequestSubscriptionInternalParams): Promise<RecurringPaymentResponse> {
-  const mutationResponse = await client.query<RecurringPaymentResponse>({
-    data: {
-      query: RECURRING_PURCHASE_MUTATION,
-      variables: {
-        name: plan,
-        trialDays: billingConfig.trialDays,
-        replacementBehavior: billingConfig.replacementBehavior,
-        returnUrl,
-        test: isTest,
-        lineItems: [
-          {
-            plan: {
-              appRecurringPricingDetails: {
-                interval: billingConfig.interval,
-                price: {
-                  amount: billingConfig.amount,
-                  currencyCode: billingConfig.currencyCode,
-                },
-                discount: {
-                  durationLimitInIntervals:
-                    billingConfig.discount?.durationLimitInIntervals,
-                  value: {
-                    amount: billingConfig.discount?.value?.amount,
-                    percentage: billingConfig.discount?.value?.percentage,
+  try {
+    const mutationResponse = await client.request<RecurringPaymentResponse>(
+      RECURRING_PURCHASE_MUTATION,
+      {
+        variables: {
+          name: plan,
+          trialDays: billingConfig.trialDays,
+          replacementBehavior: billingConfig.replacementBehavior,
+          returnUrl,
+          test: isTest,
+          lineItems: [
+            {
+              plan: {
+                appRecurringPricingDetails: {
+                  interval: billingConfig.interval,
+                  price: {
+                    amount: billingConfig.amount,
+                    currencyCode: billingConfig.currencyCode,
+                  },
+                  discount: {
+                    durationLimitInIntervals:
+                      billingConfig.discount?.durationLimitInIntervals,
+                    value: {
+                      amount: billingConfig.discount?.value?.amount,
+                      percentage: billingConfig.discount?.value?.percentage,
+                    },
                   },
                 },
               },
             },
-          },
-        ],
+          ],
+        },
       },
-    },
-  });
+    );
 
-  if (mutationResponse.body.errors?.length) {
-    throw new BillingError({
-      message: 'Error while billing the store',
-      errorData: mutationResponse.body.errors,
-    });
+    return mutationResponse.data!;
+  } catch (error) {
+    throw rethrowGraphqlError(error);
   }
-
-  return mutationResponse.body;
 }
 
 async function requestUsagePayment({
@@ -305,40 +295,37 @@ async function requestUsagePayment({
   returnUrl,
   isTest,
 }: RequestUsageSubscriptionInternalParams): Promise<RecurringPaymentResponse> {
-  const mutationResponse = await client.query<RecurringPaymentResponse>({
-    data: {
-      query: RECURRING_PURCHASE_MUTATION,
-      variables: {
-        name: plan,
-        returnUrl,
-        test: isTest,
-        trialDays: billingConfig.trialDays,
-        replacementBehavior: billingConfig.replacementBehavior,
-        lineItems: [
-          {
-            plan: {
-              appUsagePricingDetails: {
-                terms: billingConfig.usageTerms,
-                cappedAmount: {
-                  amount: billingConfig.amount,
-                  currencyCode: billingConfig.currencyCode,
+  try {
+    const mutationResponse = await client.request<RecurringPaymentResponse>(
+      RECURRING_PURCHASE_MUTATION,
+      {
+        variables: {
+          name: plan,
+          returnUrl,
+          test: isTest,
+          trialDays: billingConfig.trialDays,
+          replacementBehavior: billingConfig.replacementBehavior,
+          lineItems: [
+            {
+              plan: {
+                appUsagePricingDetails: {
+                  terms: billingConfig.usageTerms,
+                  cappedAmount: {
+                    amount: billingConfig.amount,
+                    currencyCode: billingConfig.currencyCode,
+                  },
                 },
               },
             },
-          },
-        ],
+          ],
+        },
       },
-    },
-  });
+    );
 
-  if (mutationResponse.body.errors?.length) {
-    throw new BillingError({
-      message: `Error while billing the store:: ${mutationResponse.body.errors}`,
-      errorData: mutationResponse.body.errors,
-    });
+    return mutationResponse.data!;
+  } catch (error) {
+    throw rethrowGraphqlError(error);
   }
-
-  return mutationResponse.body;
 }
 
 async function requestSinglePayment({
@@ -348,29 +335,26 @@ async function requestSinglePayment({
   returnUrl,
   isTest,
 }: RequestOneTimePaymentInternalParams): Promise<SinglePaymentResponse> {
-  const mutationResponse = await client.query<SinglePaymentResponse>({
-    data: {
-      query: ONE_TIME_PURCHASE_MUTATION,
-      variables: {
-        name: plan,
-        returnUrl,
-        test: isTest,
-        price: {
-          amount: billingConfig.amount,
-          currencyCode: billingConfig.currencyCode,
+  try {
+    const mutationResponse = await client.request<SinglePaymentResponse>(
+      ONE_TIME_PURCHASE_MUTATION,
+      {
+        variables: {
+          name: plan,
+          returnUrl,
+          test: isTest,
+          price: {
+            amount: billingConfig.amount,
+            currencyCode: billingConfig.currencyCode,
+          },
         },
       },
-    },
-  });
+    );
 
-  if (mutationResponse.body.errors?.length) {
-    throw new BillingError({
-      message: 'Error while billing the store',
-      errorData: mutationResponse.body.errors,
-    });
+    return mutationResponse.data!;
+  } catch (error) {
+    throw rethrowGraphqlError(error);
   }
-
-  return mutationResponse.body;
 }
 
 function mergeBillingConfigs(
@@ -402,6 +386,18 @@ function mergeBillingConfigs(
 
   return mergedConfig;
 }
+
+function rethrowGraphqlError(error: Error): Error {
+  if (error instanceof GraphqlQueryError) {
+    return new BillingError({
+      message: 'Error while billing the store',
+      errorData: error.response.errors,
+    });
+  }
+
+  return error;
+}
+
 const RECURRING_PURCHASE_MUTATION = `
   mutation test(
     $name: String!

@@ -24,6 +24,7 @@ To make it easier to navigate this guide, here is an overview of the sections it
   - [Changes to runtime adapters](#changes-to-runtime-adapters)
   - [Using the new clients](#using-the-new-clients)
     - [GraphQL](#graphql)
+    - [GraphQL proxy](#graphql-proxy)
     - [REST](#rest)
 
 ---
@@ -141,6 +142,10 @@ console.log(response.data, response.errors, response.extensions);
 > [!NOTE]
 > The `request` function returns a similar response to the previous iteration of `query`, but it no longer returns the response headers it received.
 > That also applies to `GraphqlResponseError`s thrown when the response contains an `errors` field.
+
+### GraphQL proxy
+
+When using the future flag, the GraphQL proxy will no longer return a `RequestReturn`, but the same shape as `client.request` above.
 
 ### REST
 

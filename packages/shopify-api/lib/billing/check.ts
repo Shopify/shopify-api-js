@@ -1,8 +1,5 @@
+import {adminGraphqlClientFactory, AdminGraphqlClient} from '../clients/admin';
 import {ConfigInterface} from '../base-types';
-import {
-  graphqlClientClass,
-  GraphqlClient,
-} from '../clients/legacy_graphql/legacy_admin_client';
 import {BillingError} from '../error';
 
 import {
@@ -17,7 +14,7 @@ import {
 
 interface CheckInternalParams {
   plans: string[];
-  client: GraphqlClient;
+  client: AdminGraphqlClient;
   isTest: boolean;
   returnObject: boolean;
 }
@@ -57,8 +54,7 @@ export function check(config: ConfigInterface) {
       });
     }
 
-    const GraphqlClient = graphqlClientClass({config});
-    const client = new GraphqlClient({session});
+    const client = adminGraphqlClientFactory(config)({session});
 
     const plansArray = Array.isArray(plans) ? plans : [plans];
     return assessPayments({
@@ -87,14 +83,14 @@ async function assessPayments<Params extends CheckInternalParams>({
   let installation: CurrentAppInstallation;
   let endCursor: string | null = null;
   do {
-    const currentInstallations = await client.query<CurrentAppInstallations>({
-      data: {
-        query: HAS_PAYMENTS_QUERY,
+    const response = await client.request<CurrentAppInstallations>(
+      HAS_PAYMENTS_QUERY,
+      {
         variables: {endCursor},
       },
-    });
+    );
 
-    installation = currentInstallations.body.data.currentAppInstallation;
+    installation = response.data!.currentAppInstallation;
     if (returnObject) {
       installation.activeSubscriptions.map((subscription) => {
         if (subscriptionMeetsCriteria({plans, isTest, subscription})) {

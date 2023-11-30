@@ -1,7 +1,4 @@
-import {
-  graphqlClientClass,
-  GraphqlClient,
-} from '../clients/legacy_graphql/legacy_admin_client';
+import {adminGraphqlClientFactory, AdminGraphqlClient} from '../clients/admin';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
 import {logger} from '../logger';
 import {gdprTopics} from '../types';
@@ -32,7 +29,7 @@ interface RegisterTopicParams {
 
 interface RunMutationsParams {
   config: ConfigInterface;
-  client: GraphqlClient;
+  client: AdminGraphqlClient;
   topic: string;
   handlers: WebhookHandler[];
   operation: WebhookOperation;
@@ -40,7 +37,7 @@ interface RunMutationsParams {
 
 interface RunMutationParams {
   config: ConfigInterface;
-  client: GraphqlClient;
+  client: AdminGraphqlClient;
   topic: string;
   handler: WebhookHandler;
   operation: WebhookOperation;
@@ -98,8 +95,7 @@ export function register(
         continue;
       }
 
-      const GraphqlClient = graphqlClientClass({config});
-      const client = new GraphqlClient({session});
+      const client = adminGraphqlClientFactory(config)({session});
 
       registerReturn[topic] = await runMutations({
         config,
@@ -118,8 +114,7 @@ async function getExistingHandlers(
   config: ConfigInterface,
   session: Session,
 ): Promise<WebhookRegistry> {
-  const GraphqlClient = graphqlClientClass({config});
-  const client = new GraphqlClient({session});
+  const client = adminGraphqlClientFactory(config)({session});
 
   const existingHandlers: WebhookRegistry = {};
 
@@ -128,11 +123,9 @@ async function getExistingHandlers(
   do {
     const query = buildCheckQuery(endCursor);
 
-    const response = await client.query<WebhookCheckResponse>({
-      data: query,
-    });
+    const response = await client.request<WebhookCheckResponse>(query);
 
-    response.body.data.webhookSubscriptions.edges.forEach((edge) => {
+    response.data!.webhookSubscriptions.edges.forEach((edge) => {
       const handler = buildHandlerFromNode(edge);
 
       if (!existingHandlers[edge.node.topic]) {
@@ -142,8 +135,8 @@ async function getExistingHandlers(
       existingHandlers[edge.node.topic].push(handler);
     });
 
-    endCursor = response.body.data.webhookSubscriptions.pageInfo.endCursor;
-    hasNextPage = response.body.data.webhookSubscriptions.pageInfo.hasNextPage;
+    endCursor = response.data!.webhookSubscriptions.pageInfo.endCursor;
+    hasNextPage = response.data!.webhookSubscriptions.pageInfo.hasNextPage;
   } while (hasNextPage);
 
   return existingHandlers;
@@ -211,8 +204,7 @@ async function registerTopic({
     handlers,
   );
 
-  const GraphqlClient = graphqlClientClass({config});
-  const client = new GraphqlClient({session});
+  const client = adminGraphqlClientFactory(config)({session});
 
   let operation = WebhookOperation.Create;
   registerResults = registerResults.concat(
@@ -346,12 +338,13 @@ async function runMutation({
   try {
     const query = buildMutation(config, topic, handler, operation);
 
-    const result = await client.query({data: query});
+    const response = await client.fetch(query);
+    const result = await response.json();
 
     registerResult = {
       deliveryMethod: handler.deliveryMethod,
-      success: isSuccess(result.body, handler, operation),
-      result: result.body,
+      success: isSuccess(result, handler, operation),
+      result,
       operation,
     };
   } catch (error) {

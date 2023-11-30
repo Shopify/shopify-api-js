@@ -104,13 +104,11 @@ export interface WebhookCheckResponseNode<
 }
 
 export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
-  data: {
-    webhookSubscriptions: {
-      edges: T[];
-      pageInfo: {
-        endCursor: string;
-        hasNextPage: boolean;
-      };
+  webhookSubscriptions: {
+    edges: T[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
     };
   };
 }

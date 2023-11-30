@@ -1,6 +1,6 @@
 import {BillingError} from '../error';
 import {ConfigInterface} from '../base-types';
-import {graphqlClientClass} from '../clients/legacy_graphql/legacy_admin_client';
+import {adminGraphqlClientFactory} from '../clients/admin';
 
 import {
   ActiveSubscriptions,
@@ -31,15 +31,12 @@ export function subscriptions(config: ConfigInterface) {
       });
     }
 
-    const GraphqlClient = graphqlClientClass({config});
-    const client = new GraphqlClient({session});
+    const client = adminGraphqlClientFactory(config)({session});
 
-    const response = await client.query<SubscriptionResponse>({
-      data: {
-        query: SUBSCRIPTION_QUERY,
-      },
-    });
+    const response = await client.request<SubscriptionResponse>(
+      SUBSCRIPTION_QUERY,
+    );
 
-    return response.body.data.currentAppInstallation;
+    return response.data!.currentAppInstallation;
   };
 }

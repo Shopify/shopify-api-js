@@ -39,88 +39,183 @@ let session: Session;
 let token = '';
 
 describe('GraphQL proxy with session', () => {
-  const shopify = shopifyApi(testConfig({isEmbeddedApp: true}));
+  describe('using new clients', () => {
+    const shopify = shopifyApi(testConfig({isEmbeddedApp: true}));
 
-  const app = express();
-  app.use(express.text());
-  app.use(express.json());
-  app.post('/proxy', async (req: Request, res: Response) => {
-    try {
-      // Convert the request to a normalized request here because we're using the mock adapter, rather than the node one
-      const request: NormalizedRequest = {
-        headers: canonicalizeHeaders({...req.headers} as any),
-        method: req.method ?? 'GET',
-        url: req.url!,
-        body: req.body,
+    const app = express();
+    app.use(express.text());
+    app.use(express.json());
+    app.post('/proxy', async (req: Request, res: Response) => {
+      try {
+        // Convert the request to a normalized request here because we're using the mock adapter, rather than the node one
+        const request: NormalizedRequest = {
+          headers: canonicalizeHeaders({...req.headers} as any),
+          method: req.method ?? 'GET',
+          url: req.url!,
+          body: req.body,
+        };
+
+        const testResponse = await shopify.clients.graphqlProxy({
+          rawBody: request.body!,
+          session,
+        });
+
+        res.send(testResponse.data);
+      } catch (err) {
+        res.status(400);
+        res.send(JSON.stringify(err.message));
+      }
+    });
+
+    beforeEach(async () => {
+      const jwtPayload: JwtPayload = {
+        iss: 'https://shop.myshopify.com/admin',
+        dest: 'https://shop.myshopify.com',
+        aud: shopify.config.apiKey,
+        sub: '1',
+        exp: Date.now() / 1000 + 3600,
+        nbf: 1234,
+        iat: 1234,
+        jti: '4321',
+        sid: 'abc123',
       };
 
-      const testResponse = await shopify.clients.graphqlProxy({
-        rawBody: request.body!,
-        session,
+      session = new Session({
+        id: `shop.myshopify.com_${jwtPayload.sub}`,
+        shop,
+        state: 'state',
+        isOnline: true,
+        accessToken,
       });
-
-      res.send(testResponse.body);
-    } catch (err) {
-      res.status(400);
-      res.send(JSON.stringify(err.message));
-    }
-  });
-
-  beforeEach(async () => {
-    const jwtPayload: JwtPayload = {
-      iss: 'https://shop.myshopify.com/admin',
-      dest: 'https://shop.myshopify.com',
-      aud: shopify.config.apiKey,
-      sub: '1',
-      exp: Date.now() / 1000 + 3600,
-      nbf: 1234,
-      iat: 1234,
-      jti: '4321',
-      sid: 'abc123',
-    };
-
-    session = new Session({
-      id: `shop.myshopify.com_${jwtPayload.sub}`,
-      shop,
-      state: 'state',
-      isOnline: true,
-      accessToken,
+      token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
     });
-    token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
+
+    it('can forward query and return response', async () => {
+      queueMockResponses(
+        [JSON.stringify(successResponse)],
+        [JSON.stringify(successResponse)],
+      );
+
+      const firstResponse = await request(app)
+        .post('/proxy')
+        .set('content-type', 'text/plain')
+        .set('authorization', `Bearer ${token}`)
+        .send(shopQuery)
+        .expect(200);
+
+      expect(JSON.parse(firstResponse.text)).toEqual(successResponse.data);
+
+      const nextResponse = await request(app)
+        .post('/proxy')
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${token}`)
+        .send(objectQuery)
+        .expect(200);
+
+      expect(JSON.parse(nextResponse.text)).toEqual(successResponse.data);
+    });
+
+    it('rejects if no query', async () => {
+      const response = await request(app)
+        .post('/proxy')
+        .set('authorization', `Bearer ${token}`)
+        .expect(400);
+
+      expect(JSON.parse(response.text)).toEqual(
+        'GraphQL query returned errors',
+      );
+    });
   });
 
-  it('can forward query and return response', async () => {
-    queueMockResponses(
-      [JSON.stringify(successResponse)],
-      [JSON.stringify(successResponse)],
+  describe('using old clients', () => {
+    const shopify = shopifyApi(
+      testConfig({
+        isEmbeddedApp: true,
+        future: {unstable_newApiClients: false},
+      }),
     );
 
-    const firstResponse = await request(app)
-      .post('/proxy')
-      .set('content-type', 'text/plain')
-      .set('authorization', `Bearer ${token}`)
-      .send(shopQuery)
-      .expect(200);
+    const app = express();
+    app.use(express.text());
+    app.use(express.json());
+    app.post('/proxy', async (req: Request, res: Response) => {
+      try {
+        // Convert the request to a normalized request here because we're using the mock adapter, rather than the node one
+        const request: NormalizedRequest = {
+          headers: canonicalizeHeaders({...req.headers} as any),
+          method: req.method ?? 'GET',
+          url: req.url!,
+          body: req.body,
+        };
 
-    expect(JSON.parse(firstResponse.text)).toEqual(successResponse);
+        const testResponse = await shopify.clients.graphqlProxy({
+          rawBody: request.body!,
+          session,
+        });
 
-    const nextResponse = await request(app)
-      .post('/proxy')
-      .set('content-type', 'application/json')
-      .set('authorization', `Bearer ${token}`)
-      .send(objectQuery)
-      .expect(200);
+        res.send(testResponse.body);
+      } catch (err) {
+        res.status(400);
+        res.send(JSON.stringify(err.message));
+      }
+    });
 
-    expect(JSON.parse(nextResponse.text)).toEqual(successResponse);
-  });
+    beforeEach(async () => {
+      const jwtPayload: JwtPayload = {
+        iss: 'https://shop.myshopify.com/admin',
+        dest: 'https://shop.myshopify.com',
+        aud: shopify.config.apiKey,
+        sub: '1',
+        exp: Date.now() / 1000 + 3600,
+        nbf: 1234,
+        iat: 1234,
+        jti: '4321',
+        sid: 'abc123',
+      };
 
-  it('rejects if no query', async () => {
-    const response = await request(app)
-      .post('/proxy')
-      .set('authorization', `Bearer ${token}`)
-      .expect(400);
+      session = new Session({
+        id: `shop.myshopify.com_${jwtPayload.sub}`,
+        shop,
+        state: 'state',
+        isOnline: true,
+        accessToken,
+      });
+      token = await signJWT(shopify.config.apiSecretKey, jwtPayload);
+    });
 
-    expect(JSON.parse(response.text)).toEqual('Query missing.');
+    it('can forward query and return response', async () => {
+      queueMockResponses(
+        [JSON.stringify(successResponse)],
+        [JSON.stringify(successResponse)],
+      );
+
+      const firstResponse = await request(app)
+        .post('/proxy')
+        .set('content-type', 'text/plain')
+        .set('authorization', `Bearer ${token}`)
+        .send(shopQuery)
+        .expect(200);
+
+      expect(JSON.parse(firstResponse.text)).toEqual(successResponse);
+
+      const nextResponse = await request(app)
+        .post('/proxy')
+        .set('content-type', 'application/json')
+        .set('authorization', `Bearer ${token}`)
+        .send(objectQuery)
+        .expect(200);
+
+      expect(JSON.parse(nextResponse.text)).toEqual(successResponse);
+    });
+
+    it('rejects if no query', async () => {
+      const response = await request(app)
+        .post('/proxy')
+        .set('authorization', `Bearer ${token}`)
+        .expect(400);
+
+      expect(JSON.parse(response.text)).toEqual('Query missing.');
+    });
   });
 });
 

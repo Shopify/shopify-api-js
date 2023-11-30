@@ -1,4 +1,4 @@
-import {Method, Header} from '@shopify/network';
+import {Method} from '@shopify/network';
 
 import {
   RegisterParams,
@@ -7,7 +7,6 @@ import {
   WebhookOperation,
 } from '../types';
 import {ApiVersion, gdprTopics, ShopifyHeader} from '../../types';
-import {DataType} from '../../clients/types';
 import {
   queueMockResponse,
   queueMockResponses,
@@ -527,10 +526,9 @@ function assertWebhookCheckRequest(
     domain: session.shop,
     path: `/admin/api/${apiVersion}/graphql.json`,
     headers: {
-      [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: session.accessToken,
     },
-    data: query,
+    data: {query},
   }).toMatchMadeHttpRequest();
 }
 
@@ -557,9 +555,8 @@ function assertWebhookRegistrationRequest(
     domain: session.shop,
     path: `/admin/api/${apiVersion}/graphql.json`,
     headers: {
-      [Header.ContentType]: DataType.GraphQL.toString(),
       [ShopifyHeader.AccessToken]: session.accessToken,
     },
-    data: webhookQuery,
+    data: {query: webhookQuery},
   }).toMatchMadeHttpRequest();
 }
