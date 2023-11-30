@@ -59,7 +59,7 @@ export function createStorefrontApiClient({
   const apiUrlFormatter = generateApiUrlFormatter(
     storeUrl,
     apiVersion,
-    baseApiVersionValidationParams
+    baseApiVersionValidationParams,
   );
 
   const config: StorefrontApiClientConfig = {
@@ -121,7 +121,7 @@ function generateApiUrlFormatter(
   baseApiVersionValidationParams: Omit<
     Parameters<typeof validateApiVersion>[0],
     "apiVersion"
-  >
+  >,
 ) {
   return (apiVersion?: string) => {
     if (apiVersion) {
@@ -139,7 +139,7 @@ function generateApiUrlFormatter(
 
 function generateGetApiUrl(
   config: StorefrontApiClientConfig,
-  apiUrlFormatter: (version?: string) => string
+  apiUrlFormatter: (version?: string) => string,
 ): StorefrontApiClient["getApiUrl"] {
   return (propApiVersion?: string) => {
     return propApiVersion ? apiUrlFormatter(propApiVersion) : config.apiUrl;

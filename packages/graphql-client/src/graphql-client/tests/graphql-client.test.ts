@@ -80,14 +80,14 @@ describe("GraphQL Client", () => {
       it("throws an error when the retries config value is less than 0", () => {
         const retries = -1;
         expect(() => getValidClient({ retries })).toThrowError(
-          `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+          `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
         );
       });
 
       it("throws an error when the retries config value is greater than 3", () => {
         const retries = 4;
         expect(() => getValidClient({ retries })).toThrowError(
-          `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+          `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
         );
       });
     });
@@ -270,8 +270,8 @@ describe("GraphQL Client", () => {
                 await client.fetch(operation);
               }).rejects.toThrow(
                 new RegExp(
-                  /^GraphQL Client: Attempted maximum number of 1 network retries. Last message - /
-                )
+                  /^GraphQL Client: Attempted maximum number of 1 network retries. Last message - /,
+                ),
               );
               expect(fetch).toHaveBeenCalledTimes(2);
             });
@@ -283,8 +283,8 @@ describe("GraphQL Client", () => {
                 await client.fetch(operation, { retries: 2 });
               }).rejects.toThrow(
                 new RegExp(
-                  /^GraphQL Client: Attempted maximum number of 2 network retries. Last message - /
-                )
+                  /^GraphQL Client: Attempted maximum number of 2 network retries. Last message - /,
+                ),
               );
 
               expect(fetch).toHaveBeenCalledTimes(3);
@@ -310,7 +310,7 @@ describe("GraphQL Client", () => {
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
-                1000
+                1000,
               );
             });
 
@@ -393,7 +393,7 @@ describe("GraphQL Client", () => {
               const mockedSuccessData = { data: {} };
               fetchMock.mockResponses(
                 ["", { status }],
-                [JSON.stringify(mockedSuccessData), { status: 200 }]
+                [JSON.stringify(mockedSuccessData), { status: 200 }],
               );
 
               const response = await client.fetch(operation, { retries: 2 });
@@ -407,7 +407,7 @@ describe("GraphQL Client", () => {
               const mockedSuccessData = { data: {} };
               fetchMock.mockResponses(
                 ["", { status }],
-                [JSON.stringify(mockedSuccessData), { status: 500 }]
+                [JSON.stringify(mockedSuccessData), { status: 500 }],
               );
 
               const response = await client.fetch(operation, { retries: 2 });
@@ -428,7 +428,7 @@ describe("GraphQL Client", () => {
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
-                1000
+                1000,
               );
             });
 
@@ -438,7 +438,7 @@ describe("GraphQL Client", () => {
               await client.fetch(operation);
 
               const retryLogs = mockLogger.mock.calls.filter(
-                (args) => args[0].type === "HTTP-Retry"
+                (args) => args[0].type === "HTTP-Retry",
               );
 
               expect(retryLogs.length).toBe(2);
@@ -505,7 +505,7 @@ describe("GraphQL Client", () => {
               const mockedSuccessData = { data: {} };
               fetchMock.mockResponses(
                 ["", { status }],
-                [JSON.stringify(mockedSuccessData), { status: 200 }]
+                [JSON.stringify(mockedSuccessData), { status: 200 }],
               );
 
               const response = await client.fetch(operation, { retries: 2 });
@@ -519,7 +519,7 @@ describe("GraphQL Client", () => {
               const mockedSuccessData = { data: {} };
               fetchMock.mockResponses(
                 ["", { status }],
-                [JSON.stringify(mockedSuccessData), { status: 500 }]
+                [JSON.stringify(mockedSuccessData), { status: 500 }],
               );
 
               const response = await client.fetch(operation, { retries: 2 });
@@ -540,7 +540,7 @@ describe("GraphQL Client", () => {
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
-                1000
+                1000,
               );
             });
 
@@ -550,7 +550,7 @@ describe("GraphQL Client", () => {
               await client.fetch(operation);
 
               const retryLogs = mockLogger.mock.calls.filter(
-                (args) => args[0].type === "HTTP-Retry"
+                (args) => args[0].type === "HTTP-Retry",
               );
 
               expect(retryLogs.length).toBe(2);
@@ -586,7 +586,7 @@ describe("GraphQL Client", () => {
                 headers: new Headers({
                   "Content-Type": "application/json",
                 }),
-              }
+              },
             );
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
@@ -604,7 +604,7 @@ describe("GraphQL Client", () => {
                 headers: new Headers({
                   "Content-Type": "application/json",
                 }),
-              }
+              },
             );
 
             fetchMock.mockResolvedValue(mockedFailedResponse);
@@ -619,7 +619,7 @@ describe("GraphQL Client", () => {
             await expect(async () => {
               await client.fetch(operation, { retries });
             }).rejects.toThrow(
-              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
             );
           });
 
@@ -628,7 +628,7 @@ describe("GraphQL Client", () => {
             await expect(async () => {
               await client.fetch(operation, { retries });
             }).rejects.toThrow(
-              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
             );
           });
         });
@@ -754,7 +754,7 @@ describe("GraphQL Client", () => {
                 headers: new Headers({
                   "Content-Type": "application/json",
                 }),
-              }
+              },
             );
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
@@ -778,7 +778,7 @@ describe("GraphQL Client", () => {
                 headers: new Headers({
                   "Content-Type": "application/json",
                 }),
-              }
+              },
             );
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
@@ -831,7 +831,7 @@ describe("GraphQL Client", () => {
 
             const mockedSuccessResponse = new Response(
               JSON.stringify({ data: {} }),
-              responseConfig
+              responseConfig,
             );
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
@@ -854,7 +854,7 @@ describe("GraphQL Client", () => {
 
             const mockedSuccessResponse = new Response(
               JSON.stringify({ errors: gqlError }),
-              responseConfig
+              responseConfig,
             );
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
@@ -878,7 +878,7 @@ describe("GraphQL Client", () => {
 
             const mockedSuccessResponse = new Response(
               JSON.stringify({}),
-              responseConfig
+              responseConfig,
             );
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
@@ -903,7 +903,7 @@ describe("GraphQL Client", () => {
 
             const mockedSuccessResponse = new Response(
               JSON.stringify({ errors: gqlError, data }),
-              responseConfig
+              responseConfig,
             );
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
@@ -927,7 +927,7 @@ describe("GraphQL Client", () => {
               const { errors } = await client.request(operation);
 
               expect(errors?.message?.startsWith("GraphQL Client: ")).toBe(
-                true
+                true,
               );
               expect(fetch).toHaveBeenCalledTimes(1);
             });
@@ -941,8 +941,8 @@ describe("GraphQL Client", () => {
 
               expect(
                 errors?.message?.startsWith(
-                  "GraphQL Client: Attempted maximum number of 1 network retries. Last message - "
-                )
+                  "GraphQL Client: Attempted maximum number of 1 network retries. Last message - ",
+                ),
               ).toBe(true);
               expect(fetch).toHaveBeenCalledTimes(2);
             });
@@ -956,8 +956,8 @@ describe("GraphQL Client", () => {
 
               expect(
                 errors?.message?.startsWith(
-                  "GraphQL Client: Attempted maximum number of 2 network retries. Last message - "
-                )
+                  "GraphQL Client: Attempted maximum number of 2 network retries. Last message - ",
+                ),
               ).toBe(true);
               expect(fetch).toHaveBeenCalledTimes(3);
             });
@@ -973,7 +973,7 @@ describe("GraphQL Client", () => {
                   headers: new Headers({
                     "Content-Type": "application/json",
                   }),
-                }
+                },
               );
 
               fetchMock.mockAbortOnce();
@@ -995,7 +995,7 @@ describe("GraphQL Client", () => {
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
-                1000
+                1000,
               );
             });
 
@@ -1085,7 +1085,7 @@ describe("GraphQL Client", () => {
                     status: 200,
                     headers: { "Content-Type": "application/json" },
                   },
-                ]
+                ],
               );
 
               const response = await client.request(operation, { retries: 2 });
@@ -1115,7 +1115,7 @@ describe("GraphQL Client", () => {
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
-                1000
+                1000,
               );
             });
 
@@ -1125,7 +1125,7 @@ describe("GraphQL Client", () => {
               await client.request(operation);
 
               const retryLogs = mockLogger.mock.calls.filter(
-                (args) => args[0].type === "HTTP-Retry"
+                (args) => args[0].type === "HTTP-Retry",
               );
 
               expect(retryLogs.length).toBe(2);
@@ -1201,7 +1201,7 @@ describe("GraphQL Client", () => {
                     status: 200,
                     headers: { "Content-Type": "application/json" },
                   },
-                ]
+                ],
               );
 
               const response = await client.request(operation, { retries: 2 });
@@ -1231,7 +1231,7 @@ describe("GraphQL Client", () => {
               expect(setTimeout).toHaveBeenCalledTimes(1);
               expect(setTimeout).toHaveBeenCalledWith(
                 expect.any(Function),
-                1000
+                1000,
               );
             });
 
@@ -1241,7 +1241,7 @@ describe("GraphQL Client", () => {
               await client.request(operation);
 
               const retryLogs = mockLogger.mock.calls.filter(
-                (args) => args[0].type === "HTTP-Retry"
+                (args) => args[0].type === "HTTP-Retry",
               );
 
               expect(retryLogs.length).toBe(2);
@@ -1278,7 +1278,7 @@ describe("GraphQL Client", () => {
                 headers: new Headers({
                   "Content-Type": "application/json",
                 }),
-              }
+              },
             );
 
             fetchMock.mockResolvedValue(mockedSuccessResponse);
@@ -1296,7 +1296,7 @@ describe("GraphQL Client", () => {
                 headers: new Headers({
                   "Content-Type": "application/json",
                 }),
-              }
+              },
             );
 
             fetchMock.mockResolvedValue(mockedFailedResponse);
@@ -1312,7 +1312,7 @@ describe("GraphQL Client", () => {
             const response = await client.request(operation, { retries });
 
             expect(response.errors?.message).toEqual(
-              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
             );
           });
 
@@ -1321,7 +1321,7 @@ describe("GraphQL Client", () => {
             const response = await client.request(operation, { retries });
 
             expect(response.errors?.message).toEqual(
-              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+              `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
             );
           });
         });
@@ -1335,7 +1335,7 @@ describe("GraphQL Client", () => {
               headers: new Headers({
                 "Content-Type": "application/json",
               }),
-            }
+            },
           );
 
           fetchMock.mockResolvedValue(mockedSuccessResponse);

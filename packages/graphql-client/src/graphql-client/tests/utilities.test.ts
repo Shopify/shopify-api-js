@@ -20,7 +20,7 @@ describe("validateRetries()", () => {
 
   it("does not throw an error when retries is undefined", () => {
     expect(() =>
-      validateRetries({ client, retries: undefined })
+      validateRetries({ client, retries: undefined }),
     ).not.toThrowError();
   });
 
@@ -34,23 +34,23 @@ describe("validateRetries()", () => {
   it("throws an error when retries is not a number", () => {
     const retries = "1";
     expect(() =>
-      validateRetries({ client, retries: retries as any })
+      validateRetries({ client, retries: retries as any }),
     ).toThrowError(
-      `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+      `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
     );
   });
 
   it("throws an error when retries is less than 0", () => {
     const retries = -1;
     expect(() => validateRetries({ client, retries })).toThrowError(
-      `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+      `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
     );
   });
 
   it("throws an error when retries is greater than 3", () => {
     const retries = 4;
     expect(() => validateRetries({ client, retries })).toThrowError(
-      `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`
+      `GraphQL Client: The provided "retries" value (${retries}) is invalid - it cannot be less than 0 or greater than 3`,
     );
   });
 });

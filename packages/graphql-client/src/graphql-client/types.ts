@@ -4,7 +4,7 @@ export type CustomFetchApi = (
     method?: string;
     headers?: HeadersInit;
     body?: string;
-  }
+  },
 ) => Promise<Response>;
 
 interface OperationVariables {
@@ -57,7 +57,7 @@ export interface HTTPRetryLog extends LogContent {
 export type LogContentTypes = HTTPResponseLog | HTTPRetryLog;
 
 export type Logger<TLogContentTypes = LogContentTypes> = (
-  logContent: TLogContentTypes
+  logContent: TLogContentTypes,
 ) => void;
 
 export interface ClientOptions {

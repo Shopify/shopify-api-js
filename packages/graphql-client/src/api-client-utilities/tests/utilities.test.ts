@@ -44,7 +44,7 @@ describe("generateGetHeaders()", () => {
 
       const headers = getHeader(customHeaders);
       expect(headers["X-Shopify-Storefront-Access-Token"]).toEqual(
-        config.headers["X-Shopify-Storefront-Access-Token"]
+        config.headers["X-Shopify-Storefront-Access-Token"],
       );
     });
   });

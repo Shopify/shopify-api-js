@@ -6,11 +6,11 @@ describe("validateRequiredAccessToken()", () => {
     const privateAccessToken = undefined;
 
     expect(() =>
-      validateRequiredAccessTokens(publicAccessToken, privateAccessToken)
+      validateRequiredAccessTokens(publicAccessToken, privateAccessToken),
     ).toThrow(
       new Error(
-        "Storefront API Client: a public or private access token must be provided"
-      )
+        "Storefront API Client: a public or private access token must be provided",
+      ),
     );
   });
 });

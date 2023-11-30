@@ -53,7 +53,7 @@ async function sleep(waitTime: number): Promise<void> {
 }
 
 async function processJSONResponse<TData = any>(
-  response: any
+  response: any,
 ): Promise<ClientResponse<TData>> {
   const { errors, data, extensions } = await response.json();
 
@@ -86,7 +86,7 @@ function generateHttpFetch(fetchApi: CustomFetchApi, clientLogger: Logger) {
   const httpFetch = async (
     requestParams: Parameters<CustomFetchApi>,
     count: number,
-    maxRetries: number
+    maxRetries: number,
   ): ReturnType<GraphQLClient["fetch"]> => {
     const nextCount = count + 1;
     const maxTries = maxRetries + 1;
@@ -134,7 +134,7 @@ function generateHttpFetch(fetchApi: CustomFetchApi, clientLogger: Logger) {
           maxRetries > 0
             ? ` Attempted maximum number of ${maxRetries} network retries. Last message -`
             : ""
-        } ${getErrorMessage(error)}`
+        } ${getErrorMessage(error)}`,
       );
     }
   };
@@ -144,7 +144,7 @@ function generateHttpFetch(fetchApi: CustomFetchApi, clientLogger: Logger) {
 
 function generateFetch(
   httpFetch: ReturnType<typeof generateHttpFetch>,
-  { url, headers, retries }: ClientConfig
+  { url, headers, retries }: ClientConfig,
 ): GraphQLClient["fetch"] {
   return async (operation, options = {}) => {
     const {
@@ -178,7 +178,7 @@ function generateFetch(
 }
 
 function generateRequest(
-  fetch: ReturnType<typeof generateFetch>
+  fetch: ReturnType<typeof generateFetch>,
 ): GraphQLClient["request"] {
   return async (...props) => {
     try {

@@ -32,9 +32,8 @@ export function validateFactory(config: ConfigInterface) {
     rawBody,
     ...adapterArgs
   }: WebhookValidateParams): Promise<WebhookValidation> {
-    const request: NormalizedRequest = await abstractConvertRequest(
-      adapterArgs,
-    );
+    const request: NormalizedRequest =
+      await abstractConvertRequest(adapterArgs);
 
     const log = logger(config);
 

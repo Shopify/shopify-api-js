@@ -44,7 +44,7 @@ export interface ApiClientConfig {
 
 export type ApiClientRequestOptions<
   Operation extends keyof Operations = string,
-  Operations extends AllOperations = AllOperations
+  Operations extends AllOperations = AllOperations,
 > = {
   apiVersion?: string;
   headers?: Headers;
@@ -55,14 +55,14 @@ export type ApiClientRequestOptions<
 
 export type ApiClientRequestParams<
   Operation extends keyof Operations,
-  Operations extends AllOperations
+  Operations extends AllOperations,
 > = [
   operation: Operation,
-  options?: ApiClientRequestOptions<Operation, Operations>
+  options?: ApiClientRequestOptions<Operation, Operations>,
 ];
 
 export type ApiClientFetch<Operations extends AllOperations = AllOperations> = <
-  Operation extends keyof Operations = string
+  Operation extends keyof Operations = string,
 >(
   ...params: ApiClientRequestParams<Operation, Operations>
 ) => Promise<ResponseWithType<{ data?: ReturnData<Operation, Operations> }>>;
@@ -78,7 +78,7 @@ export type ApiClientRequest<Operations extends AllOperations = AllOperations> =
 
 export interface ApiClient<
   TClientConfig extends ApiClientConfig = ApiClientConfig,
-  Operations extends AllOperations = AllOperations
+  Operations extends AllOperations = AllOperations,
 > {
   readonly config: Readonly<TClientConfig>;
   getHeaders: (headers?: Headers) => Headers;

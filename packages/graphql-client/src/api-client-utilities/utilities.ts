@@ -8,7 +8,7 @@ import {
 } from "./types";
 
 export function generateGetHeaders(
-  config: ApiClientConfig
+  config: ApiClientConfig,
 ): ApiClient["getHeaders"] {
   return (customHeaders) => {
     return { ...(customHeaders ?? {}), ...config.headers };
@@ -16,7 +16,7 @@ export function generateGetHeaders(
 }
 
 export function generateGetGQLClientParams<
-  Operations extends AllOperations = AllOperations
+  Operations extends AllOperations = AllOperations,
 >({
   getHeaders,
   getApiUrl,
@@ -26,7 +26,7 @@ export function generateGetGQLClientParams<
 }) {
   return <Operation extends keyof Operations>(
     operation: Operation,
-    options?: ApiClientRequestOptions<Operation, Operations>
+    options?: ApiClientRequestOptions<Operation, Operations>,
   ): RequestParams => {
     const props: RequestParams = [operation as string];
 

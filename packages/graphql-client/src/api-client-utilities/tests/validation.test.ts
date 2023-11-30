@@ -11,8 +11,8 @@ describe("validateDomainAndGetStoreUrl())", () => {
 
     expect(() => validateDomainAndGetStoreUrl({ client, storeDomain })).toThrow(
       new Error(
-        `${client}: a valid store domain ("${storeDomain}") must be provided`
-      )
+        `${client}: a valid store domain ("${storeDomain}") must be provided`,
+      ),
     );
   });
 
@@ -23,11 +23,11 @@ describe("validateDomainAndGetStoreUrl())", () => {
       validateDomainAndGetStoreUrl({
         client,
         storeDomain: storeDomain as any,
-      })
+      }),
     ).toThrow(
       new Error(
-        `${client}: a valid store domain ("${storeDomain}") must be provided`
-      )
+        `${client}: a valid store domain ("${storeDomain}") must be provided`,
+      ),
     );
   });
 
@@ -38,11 +38,11 @@ describe("validateDomainAndGetStoreUrl())", () => {
       validateDomainAndGetStoreUrl({
         client,
         storeDomain: storeDomain as any,
-      })
+      }),
     ).toThrow(
       new Error(
-        `${client}: a valid store domain ("${storeDomain}") must be provided`
-      )
+        `${client}: a valid store domain ("${storeDomain}") must be provided`,
+      ),
     );
   });
 
@@ -104,13 +104,13 @@ describe("validateRequiredApiVersion()", () => {
         client,
         currentSupportedApiVersions: mockApiVersions,
         apiVersion: apiVersion as any,
-      })
+      }),
     ).toThrow(
       new Error(
         `${client}: the provided apiVersion ("${apiVersion}") is invalid. Current supported API versions: ${mockApiVersions.join(
-          ", "
-        )}`
-      )
+          ", ",
+        )}`,
+      ),
     );
   });
 
@@ -122,13 +122,13 @@ describe("validateRequiredApiVersion()", () => {
         client,
         currentSupportedApiVersions: mockApiVersions,
         apiVersion: apiVersion as any,
-      })
+      }),
     ).toThrow(
       new Error(
         `${client}: the provided apiVersion ("${apiVersion}") is invalid. Current supported API versions: ${mockApiVersions.join(
-          ", "
-        )}`
-      )
+          ", ",
+        )}`,
+      ),
     );
   });
 
@@ -143,8 +143,8 @@ describe("validateRequiredApiVersion()", () => {
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       `${client}: the provided apiVersion ("${apiVersion}") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
-        ", "
-      )}`
+        ", ",
+      )}`,
     );
   });
 
@@ -178,7 +178,7 @@ describe("validateRequiredApiVersion()", () => {
         client,
         currentSupportedApiVersions: mockApiVersions,
         apiVersion: apiVersion as any,
-      })
+      }),
     ).not.toThrow();
   });
 });
