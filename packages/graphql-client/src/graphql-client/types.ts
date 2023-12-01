@@ -19,6 +19,7 @@ export interface ResponseErrors {
   networkStatusCode?: number;
   message?: string;
   graphQLErrors?: any[];
+  response?: Response;
 }
 
 export interface GQLExtensions {

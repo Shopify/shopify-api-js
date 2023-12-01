@@ -68,6 +68,7 @@ const client = createGraphQLClient({
 | networkStatusCode?       | `number`        | HTTP response status code                                                             |
 | message?      | `string`       | The provided error message                                                       |
 | graphQLErrors? | `any[]` | The GraphQL API errors returned by the server |
+| response? | `Response` | The raw response object from the network fetch call |
 
 
 ## Usage examples

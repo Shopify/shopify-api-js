@@ -68,6 +68,7 @@ async function processJSONResponse<TData = any>(
               ? GQL_API_ERROR
               : `${CLIENT}: An unknown error has occurred. The API did not return a data object or any errors in its response.`,
             ...(errors ? { graphQLErrors: errors } : {}),
+            response,
           },
         }
       : {}),
@@ -191,6 +192,7 @@ function generateRequest(
           errors: {
             networkStatusCode: status,
             message: statusText,
+            response,
           },
         };
       }
@@ -200,6 +202,7 @@ function generateRequest(
           errors: {
             networkStatusCode: status,
             message: `${UNEXPECTED_CONTENT_TYPE_ERROR} ${contentType}`,
+            response,
           },
         };
       }

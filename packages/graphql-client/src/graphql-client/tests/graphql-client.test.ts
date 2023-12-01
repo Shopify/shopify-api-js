@@ -806,6 +806,7 @@ describe("GraphQL Client", () => {
             expect(response).toHaveProperty("errors", {
               networkStatusCode: responseConfig.status,
               message: responseConfig.statusText,
+              response: mockedSuccessResponse,
             });
           });
 
@@ -840,6 +841,7 @@ describe("GraphQL Client", () => {
             expect(response).toHaveProperty("errors", {
               networkStatusCode: responseConfig.status,
               message: `GraphQL Client: Response returned unexpected Content-Type: ${contentType}`,
+              response: mockedSuccessResponse,
             });
           });
 
@@ -865,6 +867,7 @@ describe("GraphQL Client", () => {
               message:
                 "GraphQL Client: An error occurred while fetching from the API. Review 'graphQLErrors' for details.",
               graphQLErrors: gqlError,
+              response: mockedSuccessResponse,
             });
           });
 
@@ -887,6 +890,7 @@ describe("GraphQL Client", () => {
               networkStatusCode: mockedSuccessResponse.status,
               message:
                 "GraphQL Client: An unknown error has occurred. The API did not return a data object or any errors in its response.",
+              response: mockedSuccessResponse,
             });
           });
 
@@ -915,6 +919,7 @@ describe("GraphQL Client", () => {
               message:
                 "GraphQL Client: An error occurred while fetching from the API. Review 'graphQLErrors' for details.",
               graphQLErrors: gqlError,
+              response: mockedSuccessResponse,
             });
           });
         });
