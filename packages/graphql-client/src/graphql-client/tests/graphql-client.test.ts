@@ -805,7 +805,7 @@ describe("GraphQL Client", () => {
             const response = await client.request(operation, { variables });
             expect(response).toHaveProperty("errors", {
               networkStatusCode: responseConfig.status,
-              message: responseConfig.statusText,
+              message: `GraphQL Client: ${responseConfig.statusText}`,
               response: mockedSuccessResponse,
             });
           });
@@ -1055,7 +1055,9 @@ describe("GraphQL Client", () => {
               fetchMock.mockResolvedValue(mockedFailedResponse);
               const response = await client.request(operation);
 
-              expect(response.errors?.message).toBe("Too Many Requests");
+              expect(response.errors?.message).toBe(
+                "GraphQL Client: Too Many Requests",
+              );
               expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetch).toHaveBeenCalledTimes(1);
             });
@@ -1066,7 +1068,9 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.errors?.message).toBe("Too Many Requests");
+              expect(response.errors?.message).toBe(
+                "GraphQL Client: Too Many Requests",
+              );
               expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetch).toHaveBeenCalledTimes(2);
             });
@@ -1075,7 +1079,9 @@ describe("GraphQL Client", () => {
               fetchMock.mockResolvedValue(mockedFailedResponse);
               const response = await client.request(operation, { retries: 2 });
 
-              expect(response.errors?.message).toBe("Too Many Requests");
+              expect(response.errors?.message).toBe(
+                "GraphQL Client: Too Many Requests",
+              );
               expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetch).toHaveBeenCalledTimes(3);
             });
@@ -1105,7 +1111,9 @@ describe("GraphQL Client", () => {
               const response = await client.request(operation, { retries: 2 });
 
               expect(response.errors?.networkStatusCode).toBe(500);
-              expect(response.errors?.message).toEqual("Internal Server Error");
+              expect(response.errors?.message).toEqual(
+                "GraphQL Client: Internal Server Error",
+              );
               expect(fetch).toHaveBeenCalledTimes(2);
             });
 
@@ -1171,7 +1179,9 @@ describe("GraphQL Client", () => {
               fetchMock.mockResolvedValue(mockedFailedResponse);
               const response = await client.request(operation);
 
-              expect(response.errors?.message).toBe("Service Unavailable");
+              expect(response.errors?.message).toBe(
+                "GraphQL Client: Service Unavailable",
+              );
               expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetch).toHaveBeenCalledTimes(1);
             });
@@ -1182,7 +1192,9 @@ describe("GraphQL Client", () => {
 
               const response = await client.request(operation);
 
-              expect(response.errors?.message).toBe("Service Unavailable");
+              expect(response.errors?.message).toBe(
+                "GraphQL Client: Service Unavailable",
+              );
               expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetch).toHaveBeenCalledTimes(2);
             });
@@ -1191,7 +1203,9 @@ describe("GraphQL Client", () => {
               fetchMock.mockResolvedValue(mockedFailedResponse);
               const response = await client.request(operation, { retries: 2 });
 
-              expect(response.errors?.message).toBe("Service Unavailable");
+              expect(response.errors?.message).toBe(
+                "GraphQL Client: Service Unavailable",
+              );
               expect(response.errors?.networkStatusCode).toBe(status);
               expect(fetch).toHaveBeenCalledTimes(3);
             });
@@ -1221,7 +1235,9 @@ describe("GraphQL Client", () => {
               const response = await client.request(operation, { retries: 2 });
 
               expect(response.errors?.networkStatusCode).toBe(500);
-              expect(response.errors?.message).toEqual("Internal Server Error");
+              expect(response.errors?.message).toEqual(
+                "GraphQL Client: Internal Server Error",
+              );
               expect(fetch).toHaveBeenCalledTimes(2);
             });
 
