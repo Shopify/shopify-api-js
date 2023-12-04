@@ -8,9 +8,9 @@
   },
   "author": "Shopify",
   "license": "MIT",
-  "main": "./dist/admin-api-client.min.js",
+  "main": "./dist/index.js",
   "module": "./dist/index.mjs",
-  "types": "./dist/admin-api-client.d.ts",
+  "types": "./dist/ts/index.d.ts",
   "exports": {
     ".": {
       "module": {
