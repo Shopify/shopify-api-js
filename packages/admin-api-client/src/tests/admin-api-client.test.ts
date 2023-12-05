@@ -184,7 +184,7 @@ describe("Admin API Client", () => {
             }),
           ).toThrow(
             new Error(
-              `Admin API Client: the provided apiVersion ("undefined") is invalid. Current supported API versions: ${mockApiVersions.join(
+              `Admin API Client: the provided apiVersion ("undefined") is invalid. Currently supported API versions: ${mockApiVersions.join(
                 ", ",
               )}`,
             ),
@@ -202,7 +202,7 @@ describe("Admin API Client", () => {
           });
 
           expect(consoleWarnSpy).toHaveBeenCalledWith(
-            `Admin API Client: the provided apiVersion ("2022-07") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
+            `Admin API Client: the provided apiVersion ("2022-07") is likely deprecated or not supported. Currently supported API versions: ${mockApiVersions.join(
               ", ",
             )}`,
           );
@@ -364,7 +364,7 @@ describe("Admin API Client", () => {
         const version: any = 123;
         expect(() => client.getApiUrl(version)).toThrow(
           new Error(
-            `Admin API Client: the provided apiVersion ("123") is invalid. Current supported API versions: ${mockApiVersions.join(
+            `Admin API Client: the provided apiVersion ("123") is invalid. Currently supported API versions: ${mockApiVersions.join(
               ", ",
             )}`,
           ),
@@ -380,7 +380,7 @@ describe("Admin API Client", () => {
         client.getApiUrl(version);
 
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          `Admin API Client: the provided apiVersion ("2021-01") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
+          `Admin API Client: the provided apiVersion ("2021-01") is likely deprecated or not supported. Currently supported API versions: ${mockApiVersions.join(
             ", ",
           )}`,
         );

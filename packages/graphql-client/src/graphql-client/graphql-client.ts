@@ -7,19 +7,21 @@ import {
   Logger,
   LogContentTypes,
 } from "./types";
-import { CLIENT } from "./constants";
-import { getErrorMessage, validateRetries } from "./utilities";
-
-const GQL_API_ERROR = `${CLIENT}: An error occurred while fetching from the API. Review 'graphQLErrors' for details.`;
-const UNEXPECTED_CONTENT_TYPE_ERROR = `${CLIENT}: Response returned unexpected Content-Type:`;
-
-const CONTENT_TYPES = {
-  json: "application/json",
-  multipart: "multipart/mixed",
-};
-
-const RETRY_WAIT_TIME = 1000;
-const RETRIABLE_STATUS_CODES = [429, 503];
+import {
+  CLIENT,
+  GQL_API_ERROR,
+  UNEXPECTED_CONTENT_TYPE_ERROR,
+  NO_DATA_OR_ERRORS_ERROR,
+  CONTENT_TYPES,
+  RETRIABLE_STATUS_CODES,
+  RETRY_WAIT_TIME,
+} from "./constants";
+import {
+  getErrorMessage,
+  validateRetries,
+  getKeyValueIfValid,
+  formatErrorMessage,
+} from "./utilities";
 
 export function createGraphQLClient({
   headers,
@@ -52,34 +54,34 @@ async function sleep(waitTime: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, waitTime));
 }
 
+export function generateClientLogger(logger?: Logger): Logger {
+  return (logContent: LogContentTypes) => {
+    if (logger) {
+      logger(logContent);
+    }
+  };
+}
+
 async function processJSONResponse<TData = any>(
   response: any,
 ): Promise<ClientResponse<TData>> {
   const { errors, data, extensions } = await response.json();
 
   return {
-    ...(data ? { data } : {}),
-    ...(extensions ? { extensions } : {}),
+    ...getKeyValueIfValid("data", data),
+    ...getKeyValueIfValid("extensions", extensions),
     ...(errors || !data
       ? {
           errors: {
             networkStatusCode: response.status,
-            message: errors
-              ? GQL_API_ERROR
-              : `${CLIENT}: An unknown error has occurred. The API did not return a data object or any errors in its response.`,
-            ...(errors ? { graphQLErrors: errors } : {}),
+            message: formatErrorMessage(
+              errors ? GQL_API_ERROR : NO_DATA_OR_ERRORS_ERROR,
+            ),
+            ...getKeyValueIfValid("graphQLErrors", errors),
             response,
           },
         }
       : {}),
-  };
-}
-
-export function generateClientLogger(logger?: Logger): Logger {
-  return (logContent: LogContentTypes) => {
-    if (logger) {
-      logger(logContent);
-    }
   };
 }
 
@@ -131,11 +133,13 @@ function generateHttpFetch(fetchApi: CustomFetchApi, clientLogger: Logger) {
       }
 
       throw new Error(
-        `${CLIENT}:${
-          maxRetries > 0
-            ? ` Attempted maximum number of ${maxRetries} network retries. Last message -`
-            : ""
-        } ${getErrorMessage(error)}`,
+        formatErrorMessage(
+          `${
+            maxRetries > 0
+              ? `Attempted maximum number of ${maxRetries} network retries. Last message - `
+              : ""
+          }${getErrorMessage(error)}`,
+        ),
       );
     }
   };
@@ -191,7 +195,7 @@ function generateRequest(
         return {
           errors: {
             networkStatusCode: status,
-            message: statusText,
+            message: formatErrorMessage(statusText),
             response,
           },
         };
@@ -201,7 +205,9 @@ function generateRequest(
         return {
           errors: {
             networkStatusCode: status,
-            message: `${UNEXPECTED_CONTENT_TYPE_ERROR} ${contentType}`,
+            message: formatErrorMessage(
+              `${UNEXPECTED_CONTENT_TYPE_ERROR} ${contentType}`,
+            ),
             response,
           },
         };

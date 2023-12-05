@@ -41,7 +41,7 @@ export function validateApiVersion({
   logger?: ApiClientLogger;
 }) {
   const versionError = `${client}: the provided apiVersion ("${apiVersion}")`;
-  const supportedVersion = `Current supported API versions: ${currentSupportedApiVersions.join(
+  const supportedVersion = `Currently supported API versions: ${currentSupportedApiVersions.join(
     ", ",
   )}`;
 
@@ -62,7 +62,7 @@ export function validateApiVersion({
       });
     } else {
       console.warn(
-        `${versionError} is deprecated or not supported. ${supportedVersion}`,
+        `${versionError} is likely deprecated or not supported. ${supportedVersion}`,
       );
     }
   }

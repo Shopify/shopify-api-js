@@ -26,8 +26,8 @@ export interface GQLExtensions {
   [key: string]: any;
 }
 
-export interface ClientResponse<TData = unknown> {
-  data?: TData;
+export interface ClientResponse<TData = any> {
+  data?: Partial<TData>;
   errors?: ResponseErrors;
   extensions?: GQLExtensions;
 }
@@ -87,7 +87,7 @@ export type RequestParams = [operation: string, options?: RequestOptions];
 export interface GraphQLClient {
   readonly config: ClientConfig;
   fetch: (...props: RequestParams) => Promise<Response>;
-  request: <TData = unknown>(
+  request: <TData = any>(
     ...props: RequestParams
   ) => Promise<ClientResponse<TData>>;
 }
