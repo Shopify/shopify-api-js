@@ -107,7 +107,7 @@ describe("validateRequiredApiVersion()", () => {
       }),
     ).toThrow(
       new Error(
-        `${client}: the provided apiVersion ("${apiVersion}") is invalid. Current supported API versions: ${mockApiVersions.join(
+        `${client}: the provided apiVersion ("${apiVersion}") is invalid. Currently supported API versions: ${mockApiVersions.join(
           ", ",
         )}`,
       ),
@@ -125,7 +125,7 @@ describe("validateRequiredApiVersion()", () => {
       }),
     ).toThrow(
       new Error(
-        `${client}: the provided apiVersion ("${apiVersion}") is invalid. Current supported API versions: ${mockApiVersions.join(
+        `${client}: the provided apiVersion ("${apiVersion}") is invalid. Currently supported API versions: ${mockApiVersions.join(
           ", ",
         )}`,
       ),
@@ -142,7 +142,7 @@ describe("validateRequiredApiVersion()", () => {
     });
 
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      `${client}: the provided apiVersion ("${apiVersion}") is deprecated or not supported. Current supported API versions: ${mockApiVersions.join(
+      `${client}: the provided apiVersion ("${apiVersion}") is likely deprecated or not supported. Currently supported API versions: ${mockApiVersions.join(
         ", ",
       )}`,
     );

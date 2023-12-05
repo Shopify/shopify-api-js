@@ -17,13 +17,7 @@ export function generateGetHeaders(
 
 export function generateGetGQLClientParams<
   Operations extends AllOperations = AllOperations,
->({
-  getHeaders,
-  getApiUrl,
-}: {
-  getHeaders: ApiClient["getHeaders"];
-  getApiUrl: ApiClient["getApiUrl"];
-}) {
+>({ getHeaders, getApiUrl }: Pick<ApiClient, "getHeaders" | "getApiUrl">) {
   return <Operation extends keyof Operations>(
     operation: Operation,
     options?: ApiClientRequestOptions<Operation, Operations>,
