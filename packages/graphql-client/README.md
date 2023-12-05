@@ -48,7 +48,7 @@ const client = createGraphQLClient({
 
 | Name       | Type                  | Description                                                      |
 | ---------- | --------------------- | ---------------------------------------------------------------- |
-| variables? | `OperationVariables` | Variable values needed in the graphQL operation                  |
+| variables? | `{[key: string]: any}` | Variable values needed in the graphQL operation                  |
 | url?       | `string`              | Alternative request API URL                                     |
 | headers?   | `{[key: string]: string}`             | Additional and/or replacement headers to be used in the request |
 | retries?   | `number`             | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3`.|
