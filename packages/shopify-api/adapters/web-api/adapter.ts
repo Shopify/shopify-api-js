@@ -4,7 +4,7 @@ import type {
   NormalizedResponse,
   NormalizedRequest,
 } from '../../runtime';
-import {addHeader, canonicalizeHeaders, flatHeaders} from '../../runtime';
+import {addHeader, flatHeaders} from '../../runtime';
 
 interface WebApiAdapterArgs extends AdapterArgs {
   rawRequest: Request;
@@ -46,26 +46,6 @@ export async function webApiConvertResponse(
     statusText: resp.statusText,
     headers: await webApiConvertHeaders(resp.headers ?? {}, adapterArgs),
   });
-}
-
-export async function webApiFetch({
-  headers,
-  method,
-  url,
-  body,
-}: NormalizedRequest): Promise<NormalizedResponse> {
-  const resp = await fetch(url, {
-    method,
-    headers: flatHeaders(headers),
-    body,
-  });
-  const respBody = await resp.text();
-  return {
-    statusCode: resp.status,
-    statusText: resp.statusText,
-    body: respBody,
-    headers: canonicalizeHeaders(Object.fromEntries(resp.headers.entries())),
-  };
 }
 
 export function webApiRuntimeString(): string {

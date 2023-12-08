@@ -10,6 +10,7 @@ import {HashFormat} from '../../../runtime/crypto/types';
 import {
   abstractFetch,
   canonicalizeHeaders,
+  flatHeaders,
   getHeader,
   isOK,
   NormalizedRequest,
@@ -272,7 +273,7 @@ export class HttpClient {
   ): Promise<RequestReturn<T>> {
     const log = logger(this.httpClass().config);
 
-    const response: NormalizedResponse = await abstractFetch(request);
+    const response: NormalizedResponse = await normalizedFetch(request);
 
     if (this.httpClass().config.logger.httpRequests) {
       log.debug(
@@ -351,4 +352,24 @@ export function httpClientClass(
   });
 
   return NewHttpClient as typeof HttpClient;
+}
+
+export async function normalizedFetch({
+  headers,
+  method,
+  url,
+  body,
+}: NormalizedRequest): Promise<NormalizedResponse> {
+  const resp = await abstractFetch(url, {
+    method,
+    headers: flatHeaders(headers),
+    body,
+  });
+  const respBody = await resp.text();
+  return {
+    statusCode: resp.status,
+    statusText: resp.statusText,
+    body: respBody,
+    headers: canonicalizeHeaders(Object.fromEntries(resp.headers.entries())),
+  };
 }

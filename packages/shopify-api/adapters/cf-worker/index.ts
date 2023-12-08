@@ -9,12 +9,11 @@ import {
   webApiConvertHeaders,
   webApiConvertRequest,
   webApiConvertResponse,
-  webApiFetch,
 } from '../web-api/adapter';
 
 import {workerRuntimeString} from './adapter';
 
-setAbstractFetchFunc(webApiFetch);
+setAbstractFetchFunc(fetch);
 setAbstractConvertRequestFunc(webApiConvertRequest);
 setAbstractConvertResponseFunc(webApiConvertResponse);
 setAbstractConvertHeadersFunc(webApiConvertHeaders);

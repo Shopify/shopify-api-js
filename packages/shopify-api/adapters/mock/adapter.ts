@@ -1,4 +1,12 @@
 import {
+  Headers as FetchHeaders,
+  Request,
+  RequestInit,
+  Response,
+} from 'node-fetch';
+
+import {
+  AbstractFetchFunc,
   AdapterArgs,
   AdapterHeaders,
   canonicalizeHeaders,
@@ -33,30 +41,45 @@ export async function mockConvertHeaders(
   return Promise.resolve(headers);
 }
 
-export async function mockFetch({
-  url,
-  method,
-  headers = {},
-  body,
-}: NormalizedRequest): Promise<NormalizedResponse> {
+export const mockFetch: AbstractFetchFunc = async (url, init) => {
+  const mockInit = init as RequestInit;
+
+  const request = new Request(url as string, mockInit);
+  const headers = Object.fromEntries(
+    new FetchHeaders(mockInit?.headers).entries(),
+  );
+
   mockTestRequests.requestList.push({
-    url,
-    method,
+    url: request.url,
+    method: request.method,
     headers: canonicalizeHeaders(headers),
-    body,
+    body: await request.text(),
   });
 
   const next = mockTestRequests.responseList.shift()!;
   if (!next) {
     throw new Error(
-      `Missing mock for ${method} to ${url}, have you queued all required responses?`,
+      `Missing mock for ${request.method} to ${url}, have you queued all required responses?`,
     );
   }
   if (next instanceof Error) {
     throw next;
   }
-  return next;
-}
+
+  const responseHeaders = new FetchHeaders();
+  Object.entries(next.headers ?? {}).forEach(([key, value]) => {
+    responseHeaders.set(
+      key,
+      typeof value === 'string' ? value : value.join(', '),
+    );
+  });
+
+  return new Response(next.body, {
+    status: next.statusCode,
+    statusText: next.statusText,
+    headers: responseHeaders as any,
+  }) as any;
+};
 
 export function mockRuntimeString() {
   return 'Mock adapter';
