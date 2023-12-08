@@ -74,7 +74,7 @@ export const toMatchMadeHttpRequest: MatcherFunction = ({
   }
 
   return {
-    message: () => `expected to have seen the right HTTP requests`,
+    message: () => '',
     pass: true,
   };
 };

@@ -13,14 +13,15 @@ The new clients provide the same level of functionality as the current ones, plu
 - Better support for the Storefront API
 - We've refactored the `query` method API so that it's closer to common GraphQL clients (e.g. Apollo) to make them feel more familiar:
     ```ts
-    const client = shopify.clients.admin.graphql({ ... });
+    const client = new shopify.clients.Graphql({session});
     const response: Response = await client.query(
       `query { ... }`,
       { variables: { ... } }
     );
     ```
     > [!NOTE]
-    > The previous method API still works, but you'll get deprecation notices until we release v9.
+    > The previous method API still works, but you'll get deprecation notices until we release v10.
+    > We encourage using the new format because of the typing improvements we made.
 - Support for more API clients in the future
 
 To make it easier to navigate this guide, here is an overview of the sections it contains:
