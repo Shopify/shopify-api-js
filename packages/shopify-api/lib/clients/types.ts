@@ -1,4 +1,7 @@
-import {AllOperations, ApiClientRequestOptions} from '@shopify/graphql-client';
+import {
+  AllOperations,
+  ApiClientRequestOptions,
+} from '@shopify/admin-api-client';
 
 import {Session} from '../session/session';
 import {ApiVersion} from '../types';

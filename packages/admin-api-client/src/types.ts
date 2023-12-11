@@ -23,9 +23,11 @@ export type AdminApiClientOptions = Omit<
 
 export interface AdminQueries {
   [key: string]: { variables: any; return: any };
+  [key: number | symbol]: never;
 }
 export interface AdminMutations {
   [key: string]: { variables: any; return: any };
+  [key: number | symbol]: never;
 }
 export type AdminOperations = AdminQueries & AdminMutations;
 

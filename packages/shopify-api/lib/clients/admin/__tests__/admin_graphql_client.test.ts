@@ -32,12 +32,6 @@ const accessToken = 'dangit';
 let session: Session;
 let jwtPayload: JwtPayload;
 
-declare module '@shopify/admin-api-client' {
-  interface AdminQueries {
-    a: {variables: {a: string}; return: string};
-  }
-}
-
 describe('GraphQL client', () => {
   beforeEach(() => {
     jwtPayload = {

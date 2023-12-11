@@ -2,6 +2,7 @@ export type InputMaybe<_R = never> = never;
 
 export interface AllOperations {
   [key: string]: { variables: any; return: any };
+  [key: number | symbol]: never;
 }
 
 type UnpackedInput<InputType> = "input" extends keyof InputType

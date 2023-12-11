@@ -31,9 +31,11 @@ export type StorefrontApiClientOptions = Omit<
 
 export interface StorefrontQueries {
   [key: string]: { variables: any; return: any };
+  [key: number | symbol]: never;
 }
 export interface StorefrontMutations {
   [key: string]: { variables: any; return: any };
+  [key: number | symbol]: never;
 }
 export type StorefrontOperations = StorefrontQueries & StorefrontMutations;
 

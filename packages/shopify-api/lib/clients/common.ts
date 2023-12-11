@@ -2,7 +2,7 @@ import {
   HTTPResponseLog,
   HTTPRetryLog,
   LogContent,
-} from '@shopify/graphql-client';
+} from '@shopify/admin-api-client';
 import {StatusCode} from '@shopify/network';
 
 import * as ShopifyErrors from '../error';
