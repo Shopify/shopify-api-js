@@ -6,7 +6,7 @@ The main advantage those clients bring are the ability to use [Codegen](https://
 
 Here is an example of the experience you can get after going through this process:
 
-![](https://shopify.dev/assets/client-libraries/graphql-types-demo.webm)
+[typing-graphql-operations.webm](https://github.com/Shopify/shopify-api-js/assets/64600052/a0fed145-b9e1-40b6-9fe0-9d19d9d4c2db)
 
 In this page we'll go over the process of integrating `@shopify/api-codegen-preset` into your app to get all its benefits.
 
