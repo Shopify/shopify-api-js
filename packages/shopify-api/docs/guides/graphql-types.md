@@ -12,11 +12,21 @@ In this page we'll go over the process of integrating `@shopify/api-codegen-pres
 
 ## Set up
 
-The first step is to install the packages:
+The first step is to install the packages using your preferred package manager:
 
 ```bash
 yarn add --dev @shopify/api-codegen-preset
 yarn add @shopify/admin-api-client @shopify/storefront-api-client
+```
+
+```bash
+npm add --save-dev @shopify/api-codegen-preset
+npm add @shopify/admin-api-client @shopify/storefront-api-client
+```
+
+```bash
+pnpm add --save-dev @shopify/api-codegen-preset
+pnpm add @shopify/admin-api-client @shopify/storefront-api-client
 ```
 
 > [!NOTE]
