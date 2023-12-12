@@ -3,12 +3,23 @@ import {ChildProcess} from 'child_process';
 import {NormalizedRequest, NormalizedResponse} from '../../runtime/http';
 import {DataType} from '../../lib/clients/http_client/types';
 
-export interface TestRequest extends NormalizedRequest {
+export enum TestType {
+  Rest = 'rest',
+  Graphql = 'graphql',
+}
+export interface RestTestRequest extends NormalizedRequest {
+  type: TestType.Rest;
   bodyType?: DataType;
   tries?: number;
   query?: string;
   retryTimeoutTimer?: number;
 }
+export interface GraphqlTestRequest extends NormalizedRequest {
+  type: TestType.Graphql;
+  method: 'post';
+  retries?: number;
+}
+export type TestRequest = RestTestRequest | GraphqlTestRequest;
 export interface TestResponse extends NormalizedResponse {
   errorType?: string;
   errorMessage?: string;
@@ -21,21 +32,30 @@ export interface TestConfig {
 }
 
 export function initTestRequest(options?: Partial<TestRequest>): TestRequest {
-  const defaults = {
-    method: 'get',
-    url: '/url/path',
-    headers: {},
-  };
-  return {
-    ...defaults,
-    ...options,
-  };
+  if (options?.type === TestType.Graphql) {
+    return {
+      headers: {},
+      url: '/admin/api/graphql.json',
+      method: 'post',
+      body: 'testOperation',
+      ...options,
+      type: TestType.Graphql,
+    };
+  } else {
+    return {
+      method: 'get',
+      url: '/url/path',
+      headers: {},
+      ...options,
+      type: TestType.Rest,
+    };
+  }
 }
 
 export function initTestResponse(
   options?: Partial<TestResponse>,
 ): TestResponse {
-  const defaults = {
+  const defaults: TestResponse = {
     statusCode: 200,
     statusText: 'OK',
     headers: {},
