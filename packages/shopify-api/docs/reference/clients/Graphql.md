@@ -54,8 +54,8 @@ Sends a request to the Admin API.
 #### Using a query string
 
 ```ts
-const response = await client.query({
-  data: `{
+const response = await client.query(
+  `{
     products (first: 10) {
       edges {
         node {
@@ -66,31 +66,31 @@ const response = await client.query({
       }
     }
   }`,
-});
+);
 console.log(response.headers, response.body);
 ```
 
 #### Using variables
 
 ```ts
-const response = await client.query({
-  data: {
-    query: `query GetProducts($first: Int!) {
-      products (first: $first) {
-        edges {
-          node {
-            id
-            title
-            descriptionHtml
-          }
+const response = await client.query(
+  `query GetProducts($first: Int!) {
+    products (first: $first) {
+      edges {
+        node {
+          id
+          title
+          descriptionHtml
         }
       }
-    }`,
+    }
+  }`,
+  {
     variables: {
       first: 10,
     },
   },
-});
+);
 console.log(response.headers, response.body);
 ```
 
@@ -104,9 +104,7 @@ interface MyResponseBodyType {
   };
 }
 
-const response = await client.query<MyResponseBodyType>({
-  /* ... */
-});
+const response = await client.query<MyResponseBodyType>(/* ... */);
 
 // response.body will be of type MyResponseBodyType
 console.log(response.body.data);
@@ -118,9 +116,7 @@ console.log(response.body.data);
 import {GraphqlQueryError} from '@shopify/shopify-api';
 
 try {
-  const products = await client.query({
-    /* ... */
-  });
+  const products = await client.query(/* ... */);
 
   // No errors, proceed with logic
 } catch (error) {
@@ -136,25 +132,25 @@ try {
 
 ### Parameters
 
-#### data
+#### operation
 
-`{[key: string]: unknown} | string` | :exclamation: required
+`string` | :exclamation: required
 
-Either a string, or an object with a `query` and `variables`.
+The query or mutation string.
 
-#### query
+#### options.variables
 
-`{[key: string]: string | number}`
+`{[key: string]: any}`
 
-An optional query argument object to append to the request URL.
+The variables for the operation.
 
-#### extraHeaders
+#### options.extraHeaders
 
 `{[key: string]: string | number}`
 
 Add custom headers to the request.
 
-#### tries
+#### options.tries
 
 `number` | Defaults to `1`, _must be >= 0_
 

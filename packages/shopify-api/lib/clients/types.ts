@@ -1,13 +1,39 @@
-import {} from '../../future/flags';
+import {AllOperations, ApiClientRequestOptions} from '@shopify/graphql-client';
 
-import {GraphqlClient} from './graphql/graphql_client';
-import {StorefrontClient} from './graphql/storefront_client';
-import {GraphqlProxy} from './graphql/types';
-import {RestClient} from './rest/rest_client';
+import {Session} from '../session/session';
+import {ApiVersion} from '../types';
+
+import {GraphqlClient} from './admin/graphql/client';
+import {StorefrontClient} from './storefront/client';
+import {GraphqlProxy} from './graphql_proxy/types';
+import {RestClient} from './admin/rest/client';
+import {PostRequestParams} from './http_client/types';
 
 export * from './http_client/types';
-export * from './rest/types';
-export * from './graphql/types';
+export * from './admin/types';
+export * from './graphql_proxy/types';
+
+export interface ClientArgs {
+  session: Session;
+  apiVersion?: ApiVersion;
+  retries?: number;
+}
+
+export type GraphqlParams = Omit<PostRequestParams, 'path' | 'type'>;
+
+export interface GraphqlClientParams {
+  session: Session;
+  apiVersion?: ApiVersion;
+}
+
+export interface GraphqlQueryOptions<
+  Operation extends keyof Operations,
+  Operations extends AllOperations,
+> {
+  variables?: ApiClientRequestOptions<Operation, Operations>['variables'];
+  extraHeaders?: {[key: string]: string | number};
+  tries?: number;
+}
 
 export interface ShopifyClients {
   Rest: typeof RestClient;

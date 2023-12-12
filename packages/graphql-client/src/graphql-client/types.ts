@@ -26,10 +26,13 @@ export interface GQLExtensions {
   [key: string]: any;
 }
 
-export interface ClientResponse<TData = any> {
+export interface FetchResponseBody<TData = any> {
   data?: Partial<TData>;
-  errors?: ResponseErrors;
   extensions?: GQLExtensions;
+}
+
+export interface ClientResponse<TData = any> extends FetchResponseBody<TData> {
+  errors?: ResponseErrors;
 }
 
 export interface LogContent {

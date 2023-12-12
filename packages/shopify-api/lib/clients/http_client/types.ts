@@ -42,7 +42,7 @@ export type RequestParams = (GetRequestParams | PostRequestParams) & {
   method: Method;
 };
 
-export interface RequestReturn<T = unknown> {
+export interface RequestReturn<T = any> {
   body: T;
   headers: Headers;
 }
