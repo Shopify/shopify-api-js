@@ -2,8 +2,9 @@ import {
   AdminApiClient,
   AdminOperations,
   createAdminApiClient,
+  FetchResponseBody,
+  ReturnData,
 } from '@shopify/admin-api-client';
-import {FetchResponseBody, ReturnData} from '@shopify/graphql-client';
 
 import {ApiVersion} from '../../../types';
 import {ConfigInterface} from '../../../base-types';
@@ -84,7 +85,8 @@ export class GraphqlClient {
     if (typeof params === 'object') {
       logger(this.graphqlClass().config).deprecated(
         '10.0.0',
-        'The query method with a single object argument is deprecated. Please use the method with two arguments instead.',
+        'The query method with a single object argument is deprecated.\n' +
+          'See the migration guide: https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#using-the-new-clients.',
       );
 
       if (

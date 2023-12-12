@@ -5,3 +5,14 @@ export {
   AdminMutations,
   AdminOperations,
 } from "./types";
+
+export type {
+  AllOperations,
+  ApiClientRequestOptions,
+  FetchResponseBody,
+  HTTPResponseLog,
+  HTTPRetryLog,
+  LogContent,
+  ResponseWithType,
+  ReturnData,
+} from "@shopify/graphql-client";
