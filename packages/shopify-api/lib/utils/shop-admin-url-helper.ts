@@ -1,22 +1,19 @@
-// This class assumes the legacy url has been sanitized already
+// This class assumes the legacy url has protocol stripped already
 // Converts admin.shopify.com/store/my-shop to my-shop.myshopify.com
-export function unifiedAdminUrlToLegacyUrl() {
-  return (unifiedAdminUrl: string): string | null => {
-    const isUnifiedAdminUrl = unifiedAdminUrl.split('.')[0] === 'admin';
+export function shopAdminUrlToLegacyUrl() {
+  return (shopAdminUrl: string): string | null => {
+    const isShopAdminUrl = shopAdminUrl.split('.')[0] === 'admin';
 
-    if (!isUnifiedAdminUrl) {
+    if (!isShopAdminUrl) {
       return null;
     }
 
-    const urlComponents = unifiedAdminUrl.split('/');
+    const urlComponents = shopAdminUrl.split('/');
     const shopName = urlComponents[urlComponents.length - 1];
 
-    const isSpinUrl = unifiedAdminUrl.includes('spin.dev/store/');
+    const isSpinUrl = shopAdminUrl.includes('spin.dev/store/');
     if (isSpinUrl) {
-      const spinUrlComponents = unifiedAdminUrl
-        .split('.')
-        .slice(2, 5)
-        .join('.');
+      const spinUrlComponents = shopAdminUrl.split('.').slice(2, 5).join('.');
 
       return `${shopName}.shopify.${spinUrlComponents}.spin.dev`;
     } else {
@@ -26,7 +23,7 @@ export function unifiedAdminUrlToLegacyUrl() {
 }
 
 // Converts my-shop.myshopify.com to admin.shopify.com/store/my-shop
-export function legacyUrlToUnifiedAdminUrl() {
+export function legacyUrlToShopAdminUrl() {
   return (legacyAdminUrl: string): string | null => {
     const shopName = legacyAdminUrl.split('.')[0];
 

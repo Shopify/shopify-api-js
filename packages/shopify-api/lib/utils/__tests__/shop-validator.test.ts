@@ -9,7 +9,7 @@ const VALID_SHOP_URL_4 = 'dev-shop-.myshopify.io';
 
 const INVALID_SHOP_URL_1 = 'notshopify.com';
 const INVALID_SHOP_URL_2 = '-invalid.myshopify.io';
-const VALID_SHOPIFY_HOST_BUT_NOT_VALID_UNIFIED_ADMIN =
+const VALID_SHOPIFY_HOST_BUT_NOT_VALID_ADMIN_URL =
   'not-admin.shopify.com/store/my-shop';
 
 const CUSTOM_DOMAIN = 'my-custom-domain.com';
@@ -30,9 +30,9 @@ const VALID_HOSTS = [
   return {testhost, base64host: Buffer.from(testhost).toString('base64')};
 });
 
-const VALID_UNIFIED_ADMIN_URLS = [
+const VALID_SHOP_ADMIN_URLS = [
   {
-    unifiedAdminUrl: 'admin.shopify.com/store/my-shop',
+    adminUrl: 'admin.shopify.com/store/my-shop',
     legacyAdminUrl: 'my-shop.myshopify.com',
   },
 ];
@@ -77,7 +77,7 @@ describe('sanitizeShop', () => {
   [
     INVALID_SHOP_URL_1,
     INVALID_SHOP_URL_2,
-    VALID_SHOPIFY_HOST_BUT_NOT_VALID_UNIFIED_ADMIN,
+    VALID_SHOPIFY_HOST_BUT_NOT_VALID_ADMIN_URL,
   ].forEach((invalidUrl) => {
     test('returns null for invalid URLs', () => {
       const shopify = shopifyApi(testConfig());
@@ -119,10 +119,10 @@ describe('sanitizeShop', () => {
     ).toBe(null);
   });
 
-  VALID_UNIFIED_ADMIN_URLS.forEach(({unifiedAdminUrl, legacyAdminUrl}) => {
-    test('accepts unified admin URLs and converts to legacy admin URLs', () => {
+  VALID_SHOP_ADMIN_URLS.forEach(({adminUrl, legacyAdminUrl}) => {
+    test('accepts new format of shop admin URLs and converts to legacy admin URLs', () => {
       const shopify = shopifyApi(testConfig());
-      const actual = shopify.utils.sanitizeShop(unifiedAdminUrl);
+      const actual = shopify.utils.sanitizeShop(adminUrl);
 
       expect(actual).toEqual(legacyAdminUrl);
     });

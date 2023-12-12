@@ -2,7 +2,7 @@ import {ConfigInterface} from '../base-types';
 import {InvalidHostError, InvalidShopError} from '../error';
 import {decodeHost} from '../auth/decode-host';
 
-import {unifiedAdminUrlToLegacyUrl} from './unified-admin-url-helper';
+import {shopAdminUrlToLegacyUrl} from './shop-admin-url-helper';
 
 export function sanitizeShop(config: ConfigInterface) {
   return (shop: string, throwOnInvalid = false): string | null => {
@@ -20,14 +20,14 @@ export function sanitizeShop(config: ConfigInterface) {
       `^[a-zA-Z0-9][a-zA-Z0-9-_]*\\.(${domainsRegex.join('|')})[/]*$`,
     );
 
-    const unifiedAdminRegex = new RegExp(
+    const shopAdminRegex = new RegExp(
       `^admin.shopify.com/store/([a-zA-Z0-9][a-zA-Z0-9-_]*)$`,
     );
 
-    const isUnifiedAdminUrl = unifiedAdminRegex.test(shopUrl);
-    if (isUnifiedAdminUrl) {
-      const unifiedAdminUrlToLegacyUrlUtil = unifiedAdminUrlToLegacyUrl();
-      shopUrl = unifiedAdminUrlToLegacyUrlUtil(shopUrl) || '';
+    const isShopAdminUrl = shopAdminRegex.test(shopUrl);
+    if (isShopAdminUrl) {
+      const shopAdminUrlToLegacyUrlUtil = shopAdminUrlToLegacyUrl();
+      shopUrl = shopAdminUrlToLegacyUrlUtil(shopUrl) || '';
     }
 
     const sanitizedShop = shopUrlRegex.test(shopUrl) ? shopUrl : null;
