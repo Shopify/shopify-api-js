@@ -13,7 +13,7 @@ function getPrevousVersion(year: number, quarter: number, nQuarter: number) {
   return `${year}-${getQuarterMonth(versionQuarter)}`;
 }
 
-export function getCurrentAPIVersion() {
+export function getCurrentApiVersion() {
   const date = new Date();
   const month = date.getUTCMonth();
   const year = date.getUTCFullYear();
@@ -27,8 +27,8 @@ export function getCurrentAPIVersion() {
   };
 }
 
-export function getCurrentSupportedAPIVersions() {
-  const { year, quarter, version: currentVersion } = getCurrentAPIVersion();
+export function getCurrentSupportedApiVersions() {
+  const { year, quarter, version: currentVersion } = getCurrentApiVersion();
 
   const nextVersion =
     quarter === 4

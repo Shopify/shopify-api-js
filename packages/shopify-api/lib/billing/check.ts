@@ -1,8 +1,5 @@
 import {ConfigInterface} from '../base-types';
-import {
-  graphqlClientClass,
-  GraphqlClient,
-} from '../clients/graphql/graphql_client';
+import {graphqlClientClass, GraphqlClient} from '../clients/admin';
 import {BillingError} from '../error';
 
 import {

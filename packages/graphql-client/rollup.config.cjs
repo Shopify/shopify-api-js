@@ -19,7 +19,7 @@ export function getPlugins({ tsconfig, minify } = {}) {
     resolve(),
     commonjs(),
     typescript({
-      tsconfig: tsconfig ? tsconfig : "./tsconfig.build.json",
+      tsconfig: tsconfig ? tsconfig : "./tsconfig.json",
       outDir: "./dist/ts",
     }),
     ...(minify === true ? [terser({ keep_fnames: new RegExp("fetch") })] : []),
@@ -27,9 +27,8 @@ export function getPlugins({ tsconfig, minify } = {}) {
 }
 
 const packageName = pkg.name.substring(1);
-const repositoryName = pkg.repository.url.split(":")[1].split(".")[0];
 export const bannerConfig = {
-  banner: `/*! ${packageName} -- Copyright (c) 2023-present, Shopify Inc. -- license (MIT): https://github.com/${repositoryName}/blob/main/LICENSE */`,
+  banner: `/*! ${packageName}@${pkg.version} -- Copyright (c) 2023-present, Shopify Inc. -- license (MIT): https://github.com/Shopify/shopify-api-js/blob/main/LICENSE.md */`,
 };
 
 const config = [
@@ -37,7 +36,7 @@ const config = [
     input: clientSrcInput,
     plugins: getPlugins({
       minify: true,
-      tsconfig: "./tsconfig.build.umd.json",
+      tsconfig: "./tsconfig.umd.json",
     }),
     output: [
       {
@@ -52,7 +51,7 @@ const config = [
   {
     input: clientSrcInput,
     plugins: getPlugins({
-      tsconfig: "./tsconfig.build.umd.json",
+      tsconfig: "./tsconfig.umd.json",
     }),
     output: [
       {

@@ -72,6 +72,15 @@ const tests: {[key: string | number]: Test} = {
       }),
     }),
   },
+  400: {
+    expectedRequest: initTestRequest(),
+    testResponse: initTestResponse({
+      statusCode: 400,
+      statusText: errorStatusText,
+      headers: {'x-request-id': requestId},
+      body: JSON.stringify({errors: 'Something went wrong!'}),
+    }),
+  },
   403: {
     expectedRequest: initTestRequest(),
     testResponse: initTestResponse({

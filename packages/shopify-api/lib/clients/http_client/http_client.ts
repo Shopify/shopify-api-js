@@ -1,4 +1,4 @@
-import {Method, StatusCode} from '@shopify/network';
+import {Method} from '@shopify/network';
 
 import * as ShopifyErrors from '../../error';
 import {LIBRARY_NAME} from '../../types';
@@ -10,6 +10,7 @@ import {HashFormat} from '../../../runtime/crypto/types';
 import {
   abstractFetch,
   canonicalizeHeaders,
+  flatHeaders,
   getHeader,
   isOK,
   NormalizedRequest,
@@ -17,6 +18,7 @@ import {
 } from '../../../runtime/http';
 import {abstractRuntimeString} from '../../../runtime/platform';
 import {logger} from '../../logger';
+import {throwFailedRequest} from '../common';
 
 import {
   DataType,
@@ -217,62 +219,12 @@ export class HttpClient {
     return this.constructor as typeof HttpClient;
   }
 
-  private throwFailedRequest(body: any, response: NormalizedResponse): never {
-    const errorMessages: string[] = [];
-    if (body.errors) {
-      errorMessages.push(JSON.stringify(body.errors, null, 2));
-    }
-    const xRequestId = getHeader(response.headers, 'x-request-id');
-    if (xRequestId) {
-      errorMessages.push(
-        `If you report this error, please include this id: ${xRequestId}`,
-      );
-    }
-
-    const errorMessage = errorMessages.length
-      ? `:\n${errorMessages.join('\n')}`
-      : '';
-    const headers = response.headers ? response.headers : {};
-    const code = response.statusCode;
-    const statusText = response.statusText;
-
-    switch (true) {
-      case response.statusCode === StatusCode.TooManyRequests: {
-        const retryAfter = getHeader(response.headers, 'Retry-After');
-        throw new ShopifyErrors.HttpThrottlingError({
-          message: `Shopify is throttling requests${errorMessage}`,
-          code,
-          statusText,
-          body,
-          headers,
-          retryAfter: retryAfter ? parseFloat(retryAfter) : undefined,
-        });
-      }
-      case response.statusCode >= StatusCode.InternalServerError:
-        throw new ShopifyErrors.HttpInternalError({
-          message: `Shopify internal error${errorMessage}`,
-          code,
-          statusText,
-          body,
-          headers,
-        });
-      default:
-        throw new ShopifyErrors.HttpResponseError({
-          message: `Received an error response (${response.statusCode} ${response.statusText}) from Shopify${errorMessage}`,
-          code,
-          statusText,
-          body,
-          headers,
-        });
-    }
-  }
-
   private async doRequest<T = unknown>(
     request: NormalizedRequest,
   ): Promise<RequestReturn<T>> {
     const log = logger(this.httpClass().config);
 
-    const response: NormalizedResponse = await abstractFetch(request);
+    const response: NormalizedResponse = await normalizedFetch(request);
 
     if (this.httpClass().config.logger.httpRequests) {
       log.debug(
@@ -291,7 +243,7 @@ export class HttpClient {
     }
 
     if (!isOK(response)) {
-      this.throwFailedRequest(body, response);
+      throwFailedRequest(body, response);
     }
 
     const deprecationReason = getHeader(
@@ -351,4 +303,24 @@ export function httpClientClass(
   });
 
   return NewHttpClient as typeof HttpClient;
+}
+
+export async function normalizedFetch({
+  headers,
+  method,
+  url,
+  body,
+}: NormalizedRequest): Promise<NormalizedResponse> {
+  const resp = await abstractFetch(url, {
+    method,
+    headers: flatHeaders(headers),
+    body,
+  });
+  const respBody = await resp.text();
+  return {
+    statusCode: resp.status,
+    statusText: resp.statusText,
+    body: respBody,
+    headers: canonicalizeHeaders(Object.fromEntries(resp.headers.entries())),
+  };
 }

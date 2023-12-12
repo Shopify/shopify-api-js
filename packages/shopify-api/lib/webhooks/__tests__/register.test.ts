@@ -527,10 +527,10 @@ function assertWebhookCheckRequest(
     domain: session.shop,
     path: `/admin/api/${apiVersion}/graphql.json`,
     headers: {
-      [Header.ContentType]: DataType.GraphQL.toString(),
+      [Header.ContentType]: DataType.JSON.toString(),
       [ShopifyHeader.AccessToken]: session.accessToken,
     },
-    data: query,
+    data: {query},
   }).toMatchMadeHttpRequest();
 }
 
@@ -557,9 +557,9 @@ function assertWebhookRegistrationRequest(
     domain: session.shop,
     path: `/admin/api/${apiVersion}/graphql.json`,
     headers: {
-      [Header.ContentType]: DataType.GraphQL.toString(),
+      [Header.ContentType]: DataType.JSON.toString(),
       [ShopifyHeader.AccessToken]: session.accessToken,
     },
-    data: webhookQuery,
+    data: {query: webhookQuery},
   }).toMatchMadeHttpRequest();
 }

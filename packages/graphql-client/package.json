@@ -1,6 +1,6 @@
 {
   "name": "@shopify/graphql-client",
-  "version": "0.5.1",
+  "version": "0.8.0",
   "description": "Shopify GraphQL Client - A lightweight generic GraphQL JS client to interact with Shopify GraphQL APIs",
   "repository": {
     "type": "git",
@@ -41,7 +41,27 @@
     "release": "yarn build && changeset publish"
   },
   "jest": {
-    "testEnvironment": "jsdom",
+    "projects": [
+      {
+        "displayName": {
+          "name": "test:browser",
+          "color": "blue"
+        },
+        "testEnvironment": "jsdom",
+        "testPathIgnorePatterns": [
+          "(/__tests__/.*|(\\.|/)server(\\.|/)(test|spec))\\.[jt]sx?$"
+        ]
+      },
+      {
+        "displayName": {
+          "name": "test:server",
+          "color": "yellow"
+        },
+        "testPathIgnorePatterns": [
+          "(/__tests__/.*|(\\.|/)browser(\\.|/)(test|spec))\\.[jt]sx?$"
+        ]
+      }
+    ],
     "setupFilesAfterEnv": [
       "./src/tests/setupTests.ts"
     ],
@@ -60,48 +80,14 @@
     "Storefront API"
   ],
   "files": [
-    "**/*.d.ts",
-    "**/*.d.ts.map",
-    "**/*.js",
-    "**/*.js.map",
-    "**/*.mjs",
-    "**/*.mjs.map",
+    "dist/**/*.*",
     "!node_modules"
   ],
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.21.3",
-    "@babel/plugin-transform-async-to-generator": "^7.20.7",
-    "@babel/plugin-transform-runtime": "^7.21.0",
-    "@babel/preset-env": "^7.20.2",
-    "@babel/preset-typescript": "^7.21.0",
-    "@changesets/changelog-github": "^0.4.8",
-    "@changesets/cli": "^2.26.1",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-eslint": "^9.0.3",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-replace": "^5.0.2",
-    "@rollup/plugin-terser": "^0.4.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@shopify/babel-preset": "^25.0.0",
-    "@shopify/eslint-plugin": "^42.0.3",
-    "@shopify/prettier-config": "^1.1.2",
-    "@shopify/typescript-configs": "^5.1.0",
-    "@types/jest": "^29.5.0",
-    "@types/regenerator-runtime": "^0.13.1",
-    "@typescript-eslint/parser": "^6.7.5",
-    "babel-jest": "^29.5.0",
-    "eslint": "^8.51.0",
-    "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
-    "prettier": "^2.5.1",
-    "regenerator-runtime": "^0.13.11",
-    "rollup": "^3.19.1",
-    "rollup-plugin-dts": "^5.2.0",
-    "tslib": "^2.5.0",
-    "typescript": "^5.2.0",
+    "regenerator-runtime": "^0.14.0",
     "web-streams-polyfill": "^3.2.1"
   },
   "bugs": {

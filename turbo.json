@@ -13,9 +13,21 @@
       ],
       "cache": false
     },
-    "test": {},
-    "test:ci": {},
-    "lint": {},
+    "test": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:ci": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "lint": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true

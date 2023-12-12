@@ -1,7 +1,7 @@
 import {DataType} from '../../lib/clients/http_client/types';
 import ProcessedQuery from '../../lib/utils/processed-query';
 
-import {initTestRequest, initTestResponse} from './test_config_types';
+import {TestType, initTestRequest, initTestResponse} from './test_config_types';
 
 const postData = {
   title: 'Test product',
@@ -27,6 +27,29 @@ const graphqlQuery = `
   `;
 
 export const testSuite = [
+  {
+    name: 'can make GraphQL request',
+    config: {
+      testRequest: initTestRequest({
+        type: TestType.Graphql,
+      }),
+      expectedResponse: initTestResponse(),
+    },
+  },
+  {
+    name: 'can make GraphQL request with errors',
+    config: {
+      testRequest: initTestRequest({
+        type: TestType.Graphql,
+        url: '/url/path/400',
+      }),
+      expectedResponse: initTestResponse({
+        statusCode: 400,
+        statusText: 'Did not work',
+        errorType: 'HttpBadRequestError',
+      }),
+    },
+  },
   {
     name: 'can make GET request',
     config: {

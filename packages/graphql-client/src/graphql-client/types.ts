@@ -1,13 +1,13 @@
-export type CustomFetchAPI = (
+export type CustomFetchApi = (
   url: string,
   init?: {
     method?: string;
     headers?: HeadersInit;
     body?: string;
-  }
+  },
 ) => Promise<Response>;
 
-export interface OperationVariables {
+interface OperationVariables {
   [key: string]: any;
 }
 
@@ -15,20 +15,24 @@ export interface Headers {
   [key: string]: string;
 }
 
-export interface ResponseError {
+export interface ResponseErrors {
   networkStatusCode?: number;
   message?: string;
   graphQLErrors?: any[];
+  response?: Response;
 }
 
 export interface GQLExtensions {
   [key: string]: any;
 }
 
-export interface ClientResponse<TData = unknown> {
-  data?: TData;
-  error?: ResponseError;
+export interface FetchResponseBody<TData = any> {
+  data?: Partial<TData>;
   extensions?: GQLExtensions;
+}
+
+export interface ClientResponse<TData = any> extends FetchResponseBody<TData> {
+  errors?: ResponseErrors;
 }
 
 export interface LogContent {
@@ -39,7 +43,7 @@ export interface LogContent {
 export interface HTTPResponseLog extends LogContent {
   type: "HTTP-Response";
   content: {
-    requestParams: Parameters<CustomFetchAPI>;
+    requestParams: Parameters<CustomFetchApi>;
     response: Response;
   };
 }
@@ -47,7 +51,7 @@ export interface HTTPResponseLog extends LogContent {
 export interface HTTPRetryLog extends LogContent {
   type: "HTTP-Retry";
   content: {
-    requestParams: Parameters<CustomFetchAPI>;
+    requestParams: Parameters<CustomFetchApi>;
     lastResponse?: Response;
     retryAttempt: number;
     maxRetries: number;
@@ -57,13 +61,13 @@ export interface HTTPRetryLog extends LogContent {
 export type LogContentTypes = HTTPResponseLog | HTTPRetryLog;
 
 export type Logger<TLogContentTypes = LogContentTypes> = (
-  logContent: TLogContentTypes
+  logContent: TLogContentTypes,
 ) => void;
 
 export interface ClientOptions {
   headers: Headers;
   url: string;
-  fetchAPI?: CustomFetchAPI;
+  fetchApi?: CustomFetchApi;
   retries?: number;
   logger?: Logger;
 }
@@ -86,7 +90,7 @@ export type RequestParams = [operation: string, options?: RequestOptions];
 export interface GraphQLClient {
   readonly config: ClientConfig;
   fetch: (...props: RequestParams) => Promise<Response>;
-  request: <TData = unknown>(
+  request: <TData = any>(
     ...props: RequestParams
   ) => Promise<ClientResponse<TData>>;
 }

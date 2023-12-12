@@ -62,8 +62,8 @@ Sends a request to the Storefront API.
 ### Examples
 
 ```ts
-const products = await storefrontClient.query({
-  data: `{
+const products = await storefrontClient.query(
+  `{
     products (first: 10) {
       edges {
         node {
@@ -74,32 +74,32 @@ const products = await storefrontClient.query({
       }
     }
   }`,
-});
+);
 
 // do something with the returned data
 ```
 
 ### Parameters
 
-#### data
+#### operation
 
-`{[key: string]: unknown} | string` | :exclamation: required
+`string` | :exclamation: required
 
-Either a string, or an object with a `query` and `variables`.
+The query or mutation string.
 
-#### query
+#### options.variables
 
-`{[key: string]: string | number}`
+`{[key: string]: any}`
 
-An optional query argument object to append to the request URL.
+The variables for the operation.
 
-#### extraHeaders
+#### options.extraHeaders
 
 `{[key: string]: string | number}`
 
 Add custom headers to the request.
 
-#### tries
+#### options.tries
 
 `number` | Defaults to `1`, _must be >= 0_
 

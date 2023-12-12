@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 
+import fetch from 'node-fetch';
+
 import {
   setAbstractFetchFunc,
   setAbstractConvertRequestFunc,
@@ -8,10 +10,10 @@ import {
   setAbstractConvertHeadersFunc,
   setAbstractRuntimeString,
   setCrypto,
+  AbstractFetchFunc,
 } from '../../runtime';
 
 import {
-  nodeFetch,
   nodeConvertRequest,
   nodeConvertIncomingResponse,
   nodeConvertAndSendResponse,
@@ -19,7 +21,8 @@ import {
   nodeRuntimeString,
 } from './adapter';
 
-setAbstractFetchFunc(nodeFetch);
+// For the purposes of this package, fetch correctly implements everything we need
+setAbstractFetchFunc(fetch as any as AbstractFetchFunc);
 setAbstractConvertRequestFunc(nodeConvertRequest);
 setAbstractConvertIncomingResponseFunc(nodeConvertIncomingResponse);
 setAbstractConvertResponseFunc(nodeConvertAndSendResponse);

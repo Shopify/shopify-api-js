@@ -1,11 +1,8 @@
 import type {IncomingMessage, ServerResponse} from 'http';
 
-import fetch from 'node-fetch';
-
 import {
   AdapterArgs,
   canonicalizeHeaders,
-  flatHeaders,
   Headers,
   NormalizedRequest,
   NormalizedResponse,
@@ -70,22 +67,6 @@ export async function nodeConvertAndSetHeaders(
   Object.entries(headers).forEach(([header, value]) =>
     res.setHeader(header, value),
   );
-}
-
-export async function nodeFetch({
-  url,
-  method,
-  headers = {},
-  body,
-}: NormalizedRequest): Promise<NormalizedResponse> {
-  const resp = await fetch(url, {method, headers: flatHeaders(headers), body});
-  const respBody = await resp.text();
-  return {
-    statusCode: resp.status,
-    statusText: resp.statusText,
-    body: respBody,
-    headers: canonicalizeHeaders(Object.fromEntries(resp.headers.entries())),
-  };
 }
 
 export function nodeRuntimeString() {

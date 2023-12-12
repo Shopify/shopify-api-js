@@ -1,5 +1,4 @@
-import {ShopifyClients} from 'lib';
-
+import type {ShopifyClients} from '../lib';
 import {ConfigInterface} from '../lib/base-types';
 import {logger} from '../lib/logger';
 

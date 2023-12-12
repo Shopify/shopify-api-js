@@ -1,4 +1,4 @@
-import { APIClientLogger } from "./types";
+import { ApiClientLogger } from "./types";
 
 export function validateDomainAndGetStoreUrl({
   client,
@@ -24,7 +24,7 @@ export function validateDomainAndGetStoreUrl({
     return url.origin;
   } catch (_error) {
     throw new Error(
-      `${client}: a valid store domain ("${storeDomain}") must be provided`
+      `${client}: a valid store domain ("${storeDomain}") must be provided`,
     );
   }
 }
@@ -38,11 +38,11 @@ export function validateApiVersion({
   client: string;
   currentSupportedApiVersions: string[];
   apiVersion: string;
-  logger?: APIClientLogger;
+  logger?: ApiClientLogger;
 }) {
   const versionError = `${client}: the provided apiVersion ("${apiVersion}")`;
-  const supportedVersion = `Current supported API versions: ${currentSupportedApiVersions.join(
-    ", "
+  const supportedVersion = `Currently supported API versions: ${currentSupportedApiVersions.join(
+    ", ",
   )}`;
 
   if (!apiVersion || typeof apiVersion !== "string") {
@@ -62,7 +62,7 @@ export function validateApiVersion({
       });
     } else {
       console.warn(
-        `${versionError} is deprecated or not supported. ${supportedVersion}`
+        `${versionError} is likely deprecated or not supported. ${supportedVersion}`,
       );
     }
   }

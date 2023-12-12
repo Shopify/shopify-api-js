@@ -1,13 +1,13 @@
 import {
-  getCurrentAPIVersion,
-  getCurrentSupportedAPIVersions,
+  getCurrentApiVersion,
+  getCurrentSupportedApiVersions,
 } from "../api-versions";
 
 const mockDate = new Date("2023-10-15");
 
-describe("getCurrentAPIVersion()", () => {
+describe("getCurrentApiVersion()", () => {
   beforeEach(() => {
-    jest.spyOn(window, "Date").mockImplementation(() => mockDate);
+    jest.spyOn(global, "Date").mockImplementation(() => mockDate);
   });
 
   afterEach(() => {
@@ -15,7 +15,7 @@ describe("getCurrentAPIVersion()", () => {
   });
 
   it("returns the current API version based on the current date", () => {
-    const currentVersion = getCurrentAPIVersion();
+    const currentVersion = getCurrentApiVersion();
 
     expect(currentVersion).toEqual({
       year: 2023,
@@ -25,9 +25,9 @@ describe("getCurrentAPIVersion()", () => {
   });
 });
 
-describe("getCurrentSupportedAPIVersions()", () => {
+describe("getCurrentSupportedApiVersions()", () => {
   beforeEach(() => {
-    jest.spyOn(window, "Date").mockImplementation(() => mockDate);
+    jest.spyOn(global, "Date").mockImplementation(() => mockDate);
   });
 
   afterEach(() => {
@@ -35,7 +35,7 @@ describe("getCurrentSupportedAPIVersions()", () => {
   });
 
   it("returns the a list of supported API version based on the current date", () => {
-    const currentVersions = getCurrentSupportedAPIVersions();
+    const currentVersions = getCurrentSupportedApiVersions();
 
     expect(currentVersions).toEqual([
       "2023-01",

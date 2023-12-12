@@ -49,17 +49,17 @@ describe('HTTP client', () => {
     }).toMatchMadeHttpRequest();
   });
 
-  it('allows the body to contain non-json 2xx response without dying', () => {
+  it('allows the body to contain non-json 2xx response without dying', async () => {
     const client = new HttpClient({domain});
     queueMockResponse('not a json object');
 
     const request = client.get({path: '/url/path'});
 
+    await expect(request).resolves.toMatchObject({body: {}});
     expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
-    expect(request).resolves.toMatchObject({body: {}});
   });
 
-  it('handles non-json non-2xx response', () => {
+  it('handles non-json non-2xx response', async () => {
     const client = new HttpClient({domain});
     queueMockResponse('not a json object', {
       statusCode: 404,
@@ -69,8 +69,10 @@ describe('HTTP client', () => {
 
     const request = client.get({path: '/url/path'});
 
+    await expect(request).rejects.toBeInstanceOf(
+      ShopifyErrors.HttpResponseError,
+    );
     expect({method: 'GET', domain, path: '/url/path'}).toMatchMadeHttpRequest();
-    expect(request).rejects.toBeInstanceOf(ShopifyErrors.HttpResponseError);
   });
 
   it('can make POST request with type JSON', async () => {

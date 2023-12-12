@@ -1,0 +1,73 @@
+{
+  "name": "@shopify/admin-api-client",
+  "version": "0.1.0",
+  "description": "Shopify Admin API Client - A lightweight JS client to interact with Shopify's Admin API",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shopify/shopify-api-js.git"
+  },
+  "author": "Shopify",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/ts/index.d.ts",
+  "exports": {
+    ".": {
+      "module": {
+        "types": "./dist/ts/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "import": {
+        "types": "./dist/ts/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/ts/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "default": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "lint": "eslint . --ext .js,.ts",
+    "build": "yarn run rollup",
+    "test": "jest",
+    "test:ci": "yarn test",
+    "rollup": "rollup -c --bundleConfigAsCjs",
+    "clean": "rimraf dist/*",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "yarn build && changeset publish"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./src/tests/setupTests.ts"
+    ],
+    "transform": {
+      ".*": "babel-jest"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "shopify",
+    "node",
+    "graphql",
+    "admin API"
+  ],
+  "files": [
+    "dist/**/*.*"
+  ],
+  "dependencies": {
+    "@shopify/graphql-client": "^0.8.0"
+  },
+  "devDependencies": {
+    "jest-environment-jsdom": "^29.5.0",
+    "regenerator-runtime": "^0.14.0"
+  },
+  "bugs": {
+    "url": "https://github.com/Shopify/shopify-api-js/issues"
+  },
+  "homepage": "https://github.com/Shopify/shopify-api-js/packages/admin-api-client#readme"
+}
