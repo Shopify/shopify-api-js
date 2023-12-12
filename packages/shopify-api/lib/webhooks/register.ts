@@ -1,7 +1,7 @@
 import {graphqlClientClass, GraphqlClient} from '../clients/admin';
 import {InvalidDeliveryMethodError, ShopifyError} from '../error';
 import {logger} from '../logger';
-import {gdprTopics} from '../types';
+import {privacyTopics} from '../types';
 import {ConfigInterface} from '../base-types';
 import {Session} from '../session/session';
 
@@ -73,7 +73,7 @@ export function register(
         continue;
       }
 
-      if (gdprTopics.includes(topic)) {
+      if (privacyTopics.includes(topic)) {
         continue;
       }
 

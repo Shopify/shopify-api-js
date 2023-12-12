@@ -36,7 +36,7 @@ export enum ClientType {
   Graphql = 'graphql',
 }
 
-export const gdprTopics: string[] = [
+export const privacyTopics: string[] = [
   'CUSTOMERS_DATA_REQUEST',
   'CUSTOMERS_REDACT',
   'SHOP_REDACT',
