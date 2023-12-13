@@ -3,7 +3,7 @@
 <!-- ![Build Status]() -->
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../../LICENSE.md)
-[![npm version](https://badge.fury.io/js/%40shopify%api-codegen-preset.svg)](https://badge.fury.io/js/%40shopify%api-codegen-preset)
+[![npm version](https://badge.fury.io/js/@shopify%2Fapi-codegen-preset.svg)](https://badge.fury.io/js/@shopify%2Fapi-codegen-preset)
 
 This package enables JavaScript / TypeScript apps to use a `#graphql` tag to parse queries with [`graphql-codegen`](https://the-guild.dev/graphql/codegen).
 
@@ -41,7 +41,7 @@ This gives you complete control over your configuration if you want to set up a 
 
 | Option  | Type      | Default              | Description                                                                                                                          |
 | ------- | --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| apiType | `ApiType` |                      | The API to pull schemas from.                                                                                                        |
+| apiType | `ApiType` | *N/A*                | The API to pull schemas from.                                                                                                        |
 | module  | `string?` | Depends on `ApiType` | Change the module whose types will be overridden. Use this to override the types for any package, as long as it uses the same names. |
 
 #### Example `.graphqlrc.ts` file
@@ -52,15 +52,14 @@ import { ApiType, pluckConfig, preset } from "@shopify/api-codegen-preset";
 export default {
   // For syntax highlighting / auto-complete when writing operations
   schema: "https://shopify.dev/admin-graphql-direct-proxy",
-  documents: ["*.{js,ts,jsx,tsx}"],
+  documents: ["./**/*.{js,ts,jsx,tsx}"],
   projects: {
     default: {
+      // For type extraction
       schema: "https://shopify.dev/admin-graphql-direct-proxy",
-      documents: ["*.{js,ts,jsx,tsx}"],
+      documents: ["./**/*.{js,ts,jsx,tsx}"],
       extensions: {
         codegen: {
-          schema: "https://shopify.dev/admin-graphql-direct-proxy",
-          documents: ["*.{js,ts,jsx,tsx}"],
           // Enables support for `#graphql` tags, as well as `/* GraphQL */`
           pluckConfig,
           generates: {
@@ -92,7 +91,7 @@ Use this function if you want to configure a custom project, or add your own `ge
 
 | Option     | Type        | Default              | Description                                                                                                                          |
 | ---------- | ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| apiType    | `ApiType`   |                      | The API to pull schemas from.                                                                                                        |
+| apiType    | `ApiType`   | *N/A*                | The API to pull schemas from.                                                                                                        |
 | apiVersion | `string?`   | Latest               | Pull schemas for a specific version.                                                                                                 |
 | outputDir  | `string?`   | `.`                  | Where to output the types files.                                                                                                     |
 | documents  | `string[]?` | `./**/*.{ts,tsx}`    | Glob pattern for files to parse.                                                                                                     |
@@ -136,7 +135,7 @@ This function creates a fully-functional project configuration.
 
 | Option     | Type        | Default              | Description                                                                                                                          |
 | ---------- | ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| apiType    | `ApiType`   |                      | The API to pull schemas from.                                                                                                        |
+| apiType    | `ApiType`   | *N/A*                | The API to pull schemas from.                                                                                                        |
 | apiVersion | `string?`   | Latest               | Pull schemas for a specific version.                                                                                                 |
 | outputDir  | `string?`   | `.`                  | Where to output the types files.                                                                                                     |
 | documents  | `string[]?` | `./**/*.{ts,tsx}`    | Glob pattern for files to parse.                                                                                                     |
@@ -195,6 +194,7 @@ pnpm run graphql-codegen
 > [!NOTE]
 > Codegen will fail if it can't find any documents to parse.
 > To fix that, either create a query or set the [`ignoreNoDocuments` option](https://the-guild.dev/graphql/codegen/docs/config-reference/codegen-config#configuration-options) to `true`.
+> Queries and mutations must have a name for the parsing to work.
 
 Once the script parses your operations, you can mark any operations for parsing by adding the `#graphql` tag to the string.
 For example:
