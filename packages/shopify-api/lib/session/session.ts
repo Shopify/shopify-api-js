@@ -103,8 +103,11 @@ export class Session {
     return !scopesObject.equals(this.scope);
   }
 
-  public isExpired(): boolean {
-    return Boolean(this.expires && this.expires < new Date());
+  public isExpired(withinMillisecondsOfExpiry = 0): boolean {
+    return Boolean(
+      this.expires &&
+        this.expires.getTime() - withinMillisecondsOfExpiry < Date.now(),
+    );
   }
 
   public toObject(): SessionParams {

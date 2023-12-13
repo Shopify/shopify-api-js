@@ -87,7 +87,31 @@ describe('isExpired', () => {
     expect(session.isExpired()).toBeTruthy();
   });
 
-  it('returns false if session is expired', () => {
+  it('returns true if session expiry is within specified value', () => {
+    const session = new Session({
+      id: 'not_active',
+      shop: 'inactive-shop',
+      state: 'not_same',
+      isOnline: true,
+      scope: 'test_scope',
+      expires: new Date(Date.now() + 55000),
+    });
+    expect(session.isExpired(60000)).toBeTruthy();
+  });
+
+  it('returns false if session expiry is not within specified value', () => {
+    const session = new Session({
+      id: 'not_active',
+      shop: 'inactive-shop',
+      state: 'not_same',
+      isOnline: true,
+      scope: 'test_scope',
+      expires: new Date(Date.now() + 75000),
+    });
+    expect(session.isExpired(60000)).toBeFalsy();
+  });
+
+  it('returns false if session is not expired', () => {
     const session = new Session({
       id: 'active',
       shop: 'active-shop',
