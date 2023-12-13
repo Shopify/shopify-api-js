@@ -73,6 +73,9 @@ pnpm run graphql-codegen
 When the script runs, it'll create a new `admin.generated.d.ts` file - or `storefront` depending on your configuration.
 The `@shopify/shopify-api` package will automatically apply the types created in those files, so your queries will have variables and return types automatically!
 
+> [!NOTE]
+> Make sure to include the `.generated.d.ts` files in your `tsconfig` `"include"` configuration for the types to load.
+
 To make your development flow faster, you can pass in the `--watch` flag to update the query types whenever you save a file:
 
 ```sh
