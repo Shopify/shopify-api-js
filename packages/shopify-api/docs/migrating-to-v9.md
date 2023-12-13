@@ -4,10 +4,6 @@ This document covers the changes apps will need to make to be able to upgrade to
 
 In this major version, our focus has been to integrate the `@shopify/shopify-api` package with our new GraphQL API clients, also contained in this repository.
 
-> [!NOTE]
-> This change is only breaking for apps that have created a custom runtime adapter that calls `setAbstractFetchFunc`.
-> All our existing adapters were already updated accordingly.
-
 The new clients provide the same level of functionality as the current ones, plus some other advantages:
 - You can combine them with the `@shopify/api-codegen-preset` package to automatically add types for the variables and return objects
 - Better support for the Storefront API
@@ -27,12 +23,35 @@ The new clients provide the same level of functionality as the current ones, plu
 To make it easier to navigate this guide, here is an overview of the sections it contains:
 
 - [Migrating to v9](#migrating-to-v9)
+  - [Updated `gdprTopics` export](#updated-gdprtopics-export)
   - [Changes to runtime adapters](#changes-to-runtime-adapters)
   - [Using the new clients](#using-the-new-clients)
 
 ---
 
+## Updated `gdprTopics` export
+
+We rephrased "GDPR" to "Privacy" to account for other privacy regulations with data subject requests, which affectsthe `gdprTopics` export.
+
+You can fix this by changing your `import` statements:
+
+Before:
+
+```ts
+import {gdprTopics} from '@shopify/shopify-api';
+```
+
+After:
+
+```ts
+import {privacyTopics} from '@shopify/shopify-api';
+```
+
 ## Changes to runtime adapters
+
+> [!NOTE]
+> This change is only breaking for apps that have created a custom runtime adapter that calls `setAbstractFetchFunc`.
+> All our existing adapters were already updated accordingly.
 
 To better integrate with the new clients' ability to return the [Web API fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) response, our adapters were slightly changed: the `setAbstractFetchFunc` will now match the `fetch` API.
 
