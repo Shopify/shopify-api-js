@@ -74,16 +74,14 @@ describe('sanitizeShop', () => {
     );
   });
 
-  [
+  test.each([
     INVALID_SHOP_URL_1,
     INVALID_SHOP_URL_2,
     VALID_SHOPIFY_HOST_BUT_NOT_VALID_ADMIN_URL,
-  ].forEach((invalidUrl) => {
-    test('returns null for invalid URLs', () => {
-      const shopify = shopifyApi(testConfig());
+  ])('returns null for invalid URL - %s', (invalidUrl) => {
+    const shopify = shopifyApi(testConfig());
 
-      expect(shopify.utils.sanitizeShop(invalidUrl)).toBe(null);
-    });
+    expect(shopify.utils.sanitizeShop(invalidUrl)).toBe(null);
   });
 
   test('throws for invalid URLs if set to', () => {
@@ -119,14 +117,15 @@ describe('sanitizeShop', () => {
     ).toBe(null);
   });
 
-  VALID_SHOP_ADMIN_URLS.forEach(({adminUrl, legacyAdminUrl}) => {
-    test('accepts new format of shop admin URLs and converts to legacy admin URLs', () => {
+  test.each(VALID_SHOP_ADMIN_URLS)(
+    'accepts new format of shop admin URLs and converts to legacy admin URLs - %s',
+    ({adminUrl, legacyAdminUrl}) => {
       const shopify = shopifyApi(testConfig());
       const actual = shopify.utils.sanitizeShop(adminUrl);
 
       expect(actual).toEqual(legacyAdminUrl);
-    });
-  });
+    },
+  );
 });
 
 describe('sanitizeHost', () => {

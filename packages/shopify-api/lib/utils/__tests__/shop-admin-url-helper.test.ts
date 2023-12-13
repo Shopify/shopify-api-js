@@ -12,21 +12,24 @@ const VALID_URLS = [
   },
 ];
 
-VALID_URLS.forEach(({adminUrl, legacyAdminUrl}) => {
-  test('converts shop admin URL to legacy URL', () => {
-    const shopify = shopifyApi(testConfig());
-    const actual = shopify.utils.shopAdminUrlToLegacyUrl(adminUrl);
-    expect(actual).toEqual(legacyAdminUrl);
-  });
+describe.each(VALID_URLS)(
+  'For valid shop URLs: %s',
+  ({adminUrl, legacyAdminUrl}) => {
+    it('can convert from shop admin URL to legacy URL', () => {
+      const shopify = shopifyApi(testConfig());
+      const actual = shopify.utils.shopAdminUrlToLegacyUrl(adminUrl);
+      expect(actual).toEqual(actual);
+    });
 
-  test('converts legacy URL to shop admin URL', () => {
-    const shopify = shopifyApi(testConfig());
-    const actual = shopify.utils.legacyUrlToShopAdminUrl(legacyAdminUrl);
-    expect(actual).toEqual(adminUrl);
-  });
-});
+    it('can convert from legacy URL to shop admin URL', () => {
+      const shopify = shopifyApi(testConfig());
+      const actual = shopify.utils.legacyUrlToShopAdminUrl(legacyAdminUrl);
+      expect(actual).toEqual(adminUrl);
+    });
+  },
+);
 
-test('returns null when trying to convert from shop admin url to legacy url', () => {
+it('returns null when trying to convert from shop admin url to legacy url', () => {
   const invalid_url = 'not-admin.shopify.com/store/my-shop';
   const shopify = shopifyApi(testConfig());
 
