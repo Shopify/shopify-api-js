@@ -21,7 +21,7 @@ export function sanitizeShop(config: ConfigInterface) {
     );
 
     const shopAdminRegex = new RegExp(
-      `^admin.shopify.com/store/([a-zA-Z0-9][a-zA-Z0-9-_]*)$`,
+      `^admin\\.(${domainsRegex.join('|')})/store/([a-zA-Z0-9][a-zA-Z0-9-_]*)$`,
     );
 
     const isShopAdminUrl = shopAdminRegex.test(shopUrl);

@@ -8,16 +8,20 @@ export function shopAdminUrlToLegacyUrl() {
       return null;
     }
 
-    const urlComponents = shopAdminUrl.split('/');
-    const shopName = urlComponents[urlComponents.length - 1];
+    const regex = new RegExp(`admin\\..+/store/(.+)`);
+    const matches = shopAdminUrl.match(regex);
 
-    const isSpinUrl = shopAdminUrl.includes('spin.dev/store/');
-    if (isSpinUrl) {
-      const spinUrlComponents = shopAdminUrl.split('.').slice(2, 5).join('.');
+    if (matches && matches.length === 2) {
+      const shopName = matches[1];
+      const isSpinUrl = shopAdminUrl.includes('spin.dev/store/');
 
-      return `${shopName}.shopify.${spinUrlComponents}.spin.dev`;
+      if (isSpinUrl) {
+        return spinAdminUrlToLegacyUrl(shopAdminUrl);
+      } else {
+        return `${shopName}.myshopify.com`;
+      }
     } else {
-      return `${shopName}.myshopify.com`;
+      return null;
     }
   };
 }
@@ -25,14 +29,46 @@ export function shopAdminUrlToLegacyUrl() {
 // Converts my-shop.myshopify.com to admin.shopify.com/store/my-shop
 export function legacyUrlToShopAdminUrl() {
   return (legacyAdminUrl: string): string | null => {
-    const shopName = legacyAdminUrl.split('.')[0];
+    const regex = new RegExp(`(.+)\\.myshopify\\.com$`);
+    const matches = legacyAdminUrl.match(regex);
 
-    const isSpinUrl = legacyAdminUrl.endsWith('spin.dev');
-    if (isSpinUrl) {
-      const spinUrlComponents = legacyAdminUrl.split('.').slice(2, 5).join('.');
-      return `admin.web.${spinUrlComponents}.spin.dev/store/${shopName}`;
-    } else {
+    if (matches && matches.length === 2) {
+      const shopName = matches[1];
       return `admin.shopify.com/store/${shopName}`;
+    } else {
+      const isSpinUrl = legacyAdminUrl.endsWith('spin.dev');
+
+      if (isSpinUrl) {
+        return spinLegacyUrlToAdminUrl(legacyAdminUrl);
+      } else {
+        return null;
+      }
     }
   };
+}
+
+function spinAdminUrlToLegacyUrl(shopAdminUrl: string) {
+  const spinRegex = new RegExp(`admin\\.web\\.(.+\\.spin\\.dev)/store/(.+)`);
+  const spinMatches = shopAdminUrl.match(spinRegex);
+
+  if (spinMatches && spinMatches.length === 3) {
+    const spinUrl = spinMatches[1];
+    const shopName = spinMatches[2];
+    return `${shopName}.shopify.${spinUrl}`;
+  } else {
+    return null;
+  }
+}
+
+function spinLegacyUrlToAdminUrl(legacyAdminUrl: string) {
+  const spinRegex = new RegExp(`(.+)\\.shopify\\.(.+\\.spin\\.dev)`);
+  const spinMatches = legacyAdminUrl.match(spinRegex);
+
+  if (spinMatches && spinMatches.length === 3) {
+    const shopName = spinMatches[1];
+    const spinUrl = spinMatches[2];
+    return `admin.web.${spinUrl}/store/${shopName}`;
+  } else {
+    return null;
+  }
 }

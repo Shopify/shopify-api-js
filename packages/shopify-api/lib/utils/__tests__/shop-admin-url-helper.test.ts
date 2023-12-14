@@ -12,13 +12,26 @@ const VALID_URLS = [
   },
 ];
 
+const INVALID_ADMIN_URLS = [
+  'not-admin.shopify.com/store/my-shop',
+  'adminisnotthis.shopify.com/store/my-shop',
+  'adminisnot.web.abc.def-gh.ij.spin.dev/store/my-shop',
+  'admin.what.abc.def-gh.ij.spin.dev/store/my-shop',
+];
+
+const INVALID_LEGACY_URLS = [
+  'notshopify.com',
+  'my-shop.myshopify.com.nope',
+  'my-shop.myshopify.com/admin',
+];
+
 describe.each(VALID_URLS)(
-  'For valid shop URLs: %s',
+  'For valid shop URL: %s',
   ({adminUrl, legacyAdminUrl}) => {
     it('can convert from shop admin URL to legacy URL', () => {
       const shopify = shopifyApi(testConfig());
       const actual = shopify.utils.shopAdminUrlToLegacyUrl(adminUrl);
-      expect(actual).toEqual(actual);
+      expect(actual).toEqual(legacyAdminUrl);
     });
 
     it('can convert from legacy URL to shop admin URL', () => {
@@ -29,9 +42,24 @@ describe.each(VALID_URLS)(
   },
 );
 
-it('returns null when trying to convert from shop admin url to legacy url', () => {
-  const invalid_url = 'not-admin.shopify.com/store/my-shop';
-  const shopify = shopifyApi(testConfig());
+describe.each(INVALID_ADMIN_URLS)(
+  'For invalid shop admin URL: %s',
+  (invalidUrl) => {
+    it('returns null when trying to convert from shop admin url to legacy url', () => {
+      const shopify = shopifyApi(testConfig());
 
-  expect(shopify.utils.shopAdminUrlToLegacyUrl(invalid_url)).toBe(null);
-});
+      expect(shopify.utils.shopAdminUrlToLegacyUrl(invalidUrl)).toBe(null);
+    });
+  },
+);
+
+describe.each(INVALID_LEGACY_URLS)(
+  'For invalid legacy shop URL: %s',
+  (invalidUrl) => {
+    it('returns null when trying to convert from legacy url to shop admin url', () => {
+      const shopify = shopifyApi(testConfig());
+
+      expect(shopify.utils.legacyUrlToShopAdminUrl(invalidUrl)).toBe(null);
+    });
+  },
+);

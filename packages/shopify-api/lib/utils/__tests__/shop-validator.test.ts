@@ -126,6 +126,23 @@ describe('sanitizeShop', () => {
       expect(actual).toEqual(legacyAdminUrl);
     },
   );
+
+  test('Accepts new format of spin admin URL and converts to legacy admin URL', () => {
+    const expectedLegacyAdminUrl = 'my-shop.shopify.abc.def-gh.ij.spin.dev';
+    const spinAdminUrl = 'admin.web.abc.def-gh.ij.spin.dev/store/my-shop';
+
+    const shopify = shopifyApi(
+      testConfig({
+        customShopDomains: [
+          'web\\.abc\\.def-gh\\.ij\\.spin\\.dev',
+          'shopify\\.abc\\.def-gh\\.ij\\.spin\\.dev',
+        ],
+      }),
+    );
+    const actual = shopify.utils.sanitizeShop(spinAdminUrl);
+
+    expect(actual).toEqual(expectedLegacyAdminUrl);
+  });
 });
 
 describe('sanitizeHost', () => {
