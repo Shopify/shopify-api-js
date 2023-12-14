@@ -2,4 +2,4 @@
 "@shopify/shopify-api": minor
 ---
 
-Add helpers to convert unified admin URLs, and sanitizeShop util method can now support unified admin URLs
+Add helpers to convert between shop admin URLs and legacy URLs. `sanitizeShop` utility method can now support shop admin URLs.
