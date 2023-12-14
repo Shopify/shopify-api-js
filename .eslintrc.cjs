@@ -8,5 +8,6 @@ module.exports = {
   rules: {
     'no-console': 0,
     '@typescript-eslint/naming-convention': 0,
+    'import/no-extraneous-dependencies': 0
   },
 };
