@@ -31,7 +31,7 @@ To make it easier to navigate this guide, here is an overview of the sections it
 
 ## Updated `gdprTopics` export
 
-We rephrased "GDPR" to "Privacy" to account for other privacy regulations with data subject requests, which affectsthe `gdprTopics` export.
+We rephrased "GDPR" to "Privacy" to account for other privacy regulations with data subject requests, which affects the `gdprTopics` export.
 
 You can fix this by changing your `import` statements:
 
