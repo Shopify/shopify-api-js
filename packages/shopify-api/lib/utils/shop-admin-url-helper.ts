@@ -8,7 +8,7 @@ export function shopAdminUrlToLegacyUrl() {
       return null;
     }
 
-    const regex = new RegExp(`admin\\..+/store/(.+)`);
+    const regex = new RegExp(`admin\\..+/store/([^/]+)`);
     const matches = shopAdminUrl.match(regex);
 
     if (matches && matches.length === 2) {
