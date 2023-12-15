@@ -9,6 +9,8 @@ const VALID_SHOP_URL_4 = 'dev-shop-.myshopify.io';
 
 const INVALID_SHOP_URL_1 = 'notshopify.com';
 const INVALID_SHOP_URL_2 = '-invalid.myshopify.io';
+const VALID_SHOPIFY_HOST_BUT_NOT_VALID_ADMIN_URL =
+  'not-admin.shopify.com/store/my-shop';
 
 const CUSTOM_DOMAIN = 'my-custom-domain.com';
 const VALID_SHOP_WITH_CUSTOM_DOMAIN = `my-shop.${CUSTOM_DOMAIN}`;
@@ -27,6 +29,13 @@ const VALID_HOSTS = [
 ].map((testhost) => {
   return {testhost, base64host: Buffer.from(testhost).toString('base64')};
 });
+
+const VALID_SHOP_ADMIN_URLS = [
+  {
+    adminUrl: 'admin.shopify.com/store/my-shop',
+    legacyAdminUrl: 'my-shop.myshopify.com',
+  },
+];
 
 const INVALID_HOSTS = [
   {
@@ -65,11 +74,14 @@ describe('sanitizeShop', () => {
     );
   });
 
-  test('returns null for invalid URLs', () => {
+  test.each([
+    INVALID_SHOP_URL_1,
+    INVALID_SHOP_URL_2,
+    VALID_SHOPIFY_HOST_BUT_NOT_VALID_ADMIN_URL,
+  ])('returns null for invalid URL - %s', (invalidUrl) => {
     const shopify = shopifyApi(testConfig());
 
-    expect(shopify.utils.sanitizeShop(INVALID_SHOP_URL_1)).toBe(null);
-    expect(shopify.utils.sanitizeShop(INVALID_SHOP_URL_2)).toBe(null);
+    expect(shopify.utils.sanitizeShop(invalidUrl)).toBe(null);
   });
 
   test('throws for invalid URLs if set to', () => {
@@ -103,6 +115,33 @@ describe('sanitizeShop', () => {
     expect(
       shopify.utils.sanitizeShop(INVALID_SHOP_WITH_CUSTOM_DOMAIN_REGEX),
     ).toBe(null);
+  });
+
+  test.each(VALID_SHOP_ADMIN_URLS)(
+    'accepts new format of shop admin URLs and converts to legacy admin URLs - %s',
+    ({adminUrl, legacyAdminUrl}) => {
+      const shopify = shopifyApi(testConfig());
+      const actual = shopify.utils.sanitizeShop(adminUrl);
+
+      expect(actual).toEqual(legacyAdminUrl);
+    },
+  );
+
+  test('Accepts new format of spin admin URL and converts to legacy admin URL', () => {
+    const expectedLegacyAdminUrl = 'my-shop.shopify.abc.def-gh.ij.spin.dev';
+    const spinAdminUrl = 'admin.web.abc.def-gh.ij.spin.dev/store/my-shop';
+
+    const shopify = shopifyApi(
+      testConfig({
+        customShopDomains: [
+          'web\\.abc\\.def-gh\\.ij\\.spin\\.dev',
+          'shopify\\.abc\\.def-gh\\.ij\\.spin\\.dev',
+        ],
+      }),
+    );
+    const actual = shopify.utils.sanitizeShop(spinAdminUrl);
+
+    expect(actual).toEqual(expectedLegacyAdminUrl);
   });
 });
 
