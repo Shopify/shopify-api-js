@@ -15,8 +15,8 @@ export function shopifyUtils(config: ConfigInterface) {
     validateHmac: validateHmac(config),
     versionCompatible: versionCompatible(config),
     versionPriorTo: versionPriorTo(config),
-    shopAdminUrlToLegacyUrl: shopAdminUrlToLegacyUrl(),
-    legacyUrlToShopAdminUrl: legacyUrlToShopAdminUrl(),
+    shopAdminUrlToLegacyUrl,
+    legacyUrlToShopAdminUrl,
   };
 }
 

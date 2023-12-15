@@ -1,52 +1,48 @@
 // Converts admin.shopify.com/store/my-shop to my-shop.myshopify.com
-export function shopAdminUrlToLegacyUrl() {
-  return (shopAdminUrl: string): string | null => {
-    const shopUrl = removeProtocol(shopAdminUrl);
+export function shopAdminUrlToLegacyUrl(shopAdminUrl: string): string | null {
+  const shopUrl = removeProtocol(shopAdminUrl);
 
-    const isShopAdminUrl = shopUrl.split('.')[0] === 'admin';
+  const isShopAdminUrl = shopUrl.split('.')[0] === 'admin';
 
-    if (!isShopAdminUrl) {
-      return null;
-    }
+  if (!isShopAdminUrl) {
+    return null;
+  }
 
-    const regex = new RegExp(`admin\\..+/store/([^/]+)`);
-    const matches = shopUrl.match(regex);
+  const regex = new RegExp(`admin\\..+/store/([^/]+)`);
+  const matches = shopUrl.match(regex);
 
-    if (matches && matches.length === 2) {
-      const shopName = matches[1];
-      const isSpinUrl = shopUrl.includes('spin.dev/store/');
+  if (matches && matches.length === 2) {
+    const shopName = matches[1];
+    const isSpinUrl = shopUrl.includes('spin.dev/store/');
 
-      if (isSpinUrl) {
-        return spinAdminUrlToLegacyUrl(shopUrl);
-      } else {
-        return `${shopName}.myshopify.com`;
-      }
+    if (isSpinUrl) {
+      return spinAdminUrlToLegacyUrl(shopUrl);
     } else {
-      return null;
+      return `${shopName}.myshopify.com`;
     }
-  };
+  } else {
+    return null;
+  }
 }
 
 // Converts my-shop.myshopify.com to admin.shopify.com/store/my-shop
-export function legacyUrlToShopAdminUrl() {
-  return (legacyAdminUrl: string): string | null => {
-    const shopUrl = removeProtocol(legacyAdminUrl);
-    const regex = new RegExp(`(.+)\\.myshopify\\.com$`);
-    const matches = shopUrl.match(regex);
+export function legacyUrlToShopAdminUrl(legacyAdminUrl: string): string | null {
+  const shopUrl = removeProtocol(legacyAdminUrl);
+  const regex = new RegExp(`(.+)\\.myshopify\\.com$`);
+  const matches = shopUrl.match(regex);
 
-    if (matches && matches.length === 2) {
-      const shopName = matches[1];
-      return `admin.shopify.com/store/${shopName}`;
+  if (matches && matches.length === 2) {
+    const shopName = matches[1];
+    return `admin.shopify.com/store/${shopName}`;
+  } else {
+    const isSpinUrl = shopUrl.endsWith('spin.dev');
+
+    if (isSpinUrl) {
+      return spinLegacyUrlToAdminUrl(shopUrl);
     } else {
-      const isSpinUrl = shopUrl.endsWith('spin.dev');
-
-      if (isSpinUrl) {
-        return spinLegacyUrlToAdminUrl(shopUrl);
-      } else {
-        return null;
-      }
+      return null;
     }
-  };
+  }
 }
 
 function spinAdminUrlToLegacyUrl(shopAdminUrl: string) {

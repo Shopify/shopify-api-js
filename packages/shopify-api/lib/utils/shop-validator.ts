@@ -26,8 +26,7 @@ export function sanitizeShop(config: ConfigInterface) {
 
     const isShopAdminUrl = shopAdminRegex.test(shopUrl);
     if (isShopAdminUrl) {
-      const shopAdminUrlToLegacyUrlUtil = shopAdminUrlToLegacyUrl();
-      shopUrl = shopAdminUrlToLegacyUrlUtil(shopUrl) || '';
+      shopUrl = shopAdminUrlToLegacyUrl(shopUrl) || '';
     }
 
     const sanitizedShop = shopUrlRegex.test(shopUrl) ? shopUrl : null;
