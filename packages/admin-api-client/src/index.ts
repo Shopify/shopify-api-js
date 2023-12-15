@@ -1,10 +1,13 @@
-export { createAdminApiClient } from "./admin-api-client";
+export { createAdminApiClient } from "./graphql";
 export {
   AdminApiClient,
   AdminQueries,
   AdminMutations,
   AdminOperations,
-} from "./types";
+} from "./graphql/types";
+
+export { createAdminRestApiClient } from "./rest";
+export { AdminRestApiClient, SearchParams } from "./rest/types";
 
 export type {
   AllOperations,

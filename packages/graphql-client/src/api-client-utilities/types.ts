@@ -40,7 +40,7 @@ export type ApiClientLogger<TLogContentTypes = ApiClientLogContentTypes> =
 export interface ApiClientConfig {
   storeDomain: string;
   apiVersion: string;
-  headers: Headers;
+  headers?: Headers;
   apiUrl: string;
   retries?: number;
 }

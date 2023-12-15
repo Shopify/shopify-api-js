@@ -1,8 +1,8 @@
 import { createGraphQLClient, GraphQLClient } from "@shopify/graphql-client";
-import { AdminApiClient } from "types";
+import { AdminApiClient } from "graphql/types";
 
-import { createAdminApiClient } from "../admin-api-client";
-import { ACCESS_TOKEN_HEADER, DEFAULT_CONTENT_TYPE } from "../constants";
+import { createAdminApiClient } from "../client";
+import { ACCESS_TOKEN_HEADER, DEFAULT_CONTENT_TYPE } from "../../constants";
 
 const mockApiVersions = [
   "2023-01",
