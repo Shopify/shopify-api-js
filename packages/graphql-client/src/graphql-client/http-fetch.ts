@@ -1,17 +1,22 @@
-import { CLIENT, RETRIABLE_STATUS_CODES } from "../graphql-client/constants";
-import { CustomFetchApi, GraphQLClient, Logger } from "../graphql-client/types";
-import {
-  formatErrorMessage,
-  getErrorMessage,
-} from "../graphql-client/utilities";
+import { CLIENT, RETRIABLE_STATUS_CODES, RETRY_WAIT_TIME } from "./constants";
+import { CustomFetchApi, GraphQLClient, Logger } from "./types";
+import { formatErrorMessage, getErrorMessage } from "./utilities";
 
-export function generateHttpFetch(
-  fetchApi: CustomFetchApi,
-  clientLogger: Logger,
-  defaultRetryWaitTime: number,
+interface GenerateHttpFetchOptions {
+  clientLogger: Logger;
+  fetchApi?: CustomFetchApi;
+  client?: string;
+  defaultRetryWaitTime?: number;
+  retriableCodes?: number[];
+}
+
+export function generateHttpFetch({
+  clientLogger,
+  fetchApi = fetch,
   client = CLIENT,
+  defaultRetryWaitTime = RETRY_WAIT_TIME,
   retriableCodes = RETRIABLE_STATUS_CODES,
-) {
+}: GenerateHttpFetchOptions) {
   const httpFetch = async (
     requestParams: Parameters<CustomFetchApi>,
     count: number,

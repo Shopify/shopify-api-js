@@ -42,7 +42,6 @@ export function createAdminRestApiClient({
   accessToken,
   userAgentPrefix,
   logger,
-  headers: clientHeadersObj,
   customFetchApi = fetch,
   retries: clientRetries = 0,
   scheme = "https",
@@ -79,13 +78,13 @@ export function createAdminRestApiClient({
     formatPaths,
   );
   const clientLogger = generateClientLogger(logger);
-  const httpFetch = generateHttpFetch(
-    customFetchApi,
+  const httpFetch = generateHttpFetch({
+    fetchApi: customFetchApi,
     clientLogger,
-    defaultRetryTime,
-    CLIENT,
-    RETRIABLE_STATUS_CODES,
-  );
+    defaultRetryWaitTime: defaultRetryTime,
+    client: CLIENT,
+    retriableCodes: RETRIABLE_STATUS_CODES,
+  });
 
   const request = async (
     path: string,
@@ -102,7 +101,6 @@ export function createAdminRestApiClient({
 
     const url = apiUrlFormatter(path, searchParams ?? {}, apiVersion);
 
-    const clientHeaders = normalizedHeaders(clientHeadersObj ?? {});
     const requestHeaders = normalizedHeaders(requestHeadersObj ?? {});
     const userAgent = [
       ...(requestHeaders["user-agent"] ? [requestHeaders["user-agent"]] : []),
@@ -112,7 +110,6 @@ export function createAdminRestApiClient({
 
     const headers = normalizedHeaders({
       "Content-Type": DEFAULT_CONTENT_TYPE,
-      ...clientHeaders,
       ...requestHeaders,
       Accept: DEFAULT_CONTENT_TYPE,
       [ACCESS_TOKEN_HEADER]: accessToken,

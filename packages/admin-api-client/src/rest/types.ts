@@ -38,7 +38,8 @@ export interface PutRequestOptions extends PostRequestOptions {}
 
 export interface DeleteRequestOptions extends GetRequestOptions {}
 
-export interface AdminRestApiClientOptions extends AdminApiClientOptions {
+export interface AdminRestApiClientOptions
+  extends Omit<AdminApiClientOptions, "headers"> {
   scheme?: "https" | "http";
   defaultRetryTime?: number;
   formatPaths?: boolean;

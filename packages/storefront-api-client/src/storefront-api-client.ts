@@ -85,7 +85,7 @@ export function createStorefrontApiClient({
   };
 
   const graphqlClient = createGraphQLClient({
-    headers: config.headers ?? {},
+    headers: config.headers,
     url: config.apiUrl,
     retries,
     fetchApi: clientFetchApi,

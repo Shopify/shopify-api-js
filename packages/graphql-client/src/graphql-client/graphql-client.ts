@@ -1,5 +1,4 @@
-import { generateHttpFetch } from "../api-client-utilities/http-fetch";
-
+import { generateHttpFetch } from "./http-fetch";
 import {
   ClientOptions,
   CustomFetchApi,
@@ -40,7 +39,11 @@ export function createGraphQLClient({
   };
 
   const clientLogger = generateClientLogger(logger);
-  const httpFetch = generateHttpFetch(fetchApi, clientLogger, RETRY_WAIT_TIME);
+  const httpFetch = generateHttpFetch({
+    fetchApi,
+    clientLogger,
+    defaultRetryWaitTime: RETRY_WAIT_TIME,
+  });
   const fetch = generateFetch(httpFetch, config);
   const request = generateRequest(fetch);
 

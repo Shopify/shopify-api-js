@@ -12,7 +12,10 @@ export type AdminApiClientConfig = ApiClientConfig & {
   userAgentPrefix?: string;
 };
 
-export type AdminApiClientOptions = Omit<AdminApiClientConfig, "apiUrl"> & {
+export type AdminApiClientOptions = Omit<
+  AdminApiClientConfig,
+  "headers" | "apiUrl"
+> & {
   customFetchApi?: CustomFetchApi;
   logger?: ApiClientLogger<AdminApiClientLogContentTypes>;
 };
