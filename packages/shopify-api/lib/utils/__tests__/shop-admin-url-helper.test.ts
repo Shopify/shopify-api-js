@@ -39,6 +39,20 @@ describe.each(VALID_URLS)(
       const actual = shopify.utils.legacyUrlToShopAdminUrl(legacyAdminUrl);
       expect(actual).toEqual(adminUrl);
     });
+
+    it('can strip protocol before converting from shop admin URL to legacy URL', () => {
+      const shopify = shopifyApi(testConfig());
+      const urlWithProtocol = `https://${adminUrl}`;
+      const actual = shopify.utils.shopAdminUrlToLegacyUrl(urlWithProtocol);
+      expect(actual).toEqual(legacyAdminUrl);
+    });
+
+    it('can strip protocol before converting from legacy URL to shop admin URL', () => {
+      const shopify = shopifyApi(testConfig());
+      const urlWithProtocol = `https://${legacyAdminUrl}`;
+      const actual = shopify.utils.legacyUrlToShopAdminUrl(urlWithProtocol);
+      expect(actual).toEqual(adminUrl);
+    });
   },
 );
 

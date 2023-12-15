@@ -1,22 +1,23 @@
-// This class assumes the legacy url has protocol stripped already
 // Converts admin.shopify.com/store/my-shop to my-shop.myshopify.com
 export function shopAdminUrlToLegacyUrl() {
   return (shopAdminUrl: string): string | null => {
-    const isShopAdminUrl = shopAdminUrl.split('.')[0] === 'admin';
+    const shopUrl = removeProtocol(shopAdminUrl);
+
+    const isShopAdminUrl = shopUrl.split('.')[0] === 'admin';
 
     if (!isShopAdminUrl) {
       return null;
     }
 
     const regex = new RegExp(`admin\\..+/store/([^/]+)`);
-    const matches = shopAdminUrl.match(regex);
+    const matches = shopUrl.match(regex);
 
     if (matches && matches.length === 2) {
       const shopName = matches[1];
-      const isSpinUrl = shopAdminUrl.includes('spin.dev/store/');
+      const isSpinUrl = shopUrl.includes('spin.dev/store/');
 
       if (isSpinUrl) {
-        return spinAdminUrlToLegacyUrl(shopAdminUrl);
+        return spinAdminUrlToLegacyUrl(shopUrl);
       } else {
         return `${shopName}.myshopify.com`;
       }
@@ -29,17 +30,18 @@ export function shopAdminUrlToLegacyUrl() {
 // Converts my-shop.myshopify.com to admin.shopify.com/store/my-shop
 export function legacyUrlToShopAdminUrl() {
   return (legacyAdminUrl: string): string | null => {
+    const shopUrl = removeProtocol(legacyAdminUrl);
     const regex = new RegExp(`(.+)\\.myshopify\\.com$`);
-    const matches = legacyAdminUrl.match(regex);
+    const matches = shopUrl.match(regex);
 
     if (matches && matches.length === 2) {
       const shopName = matches[1];
       return `admin.shopify.com/store/${shopName}`;
     } else {
-      const isSpinUrl = legacyAdminUrl.endsWith('spin.dev');
+      const isSpinUrl = shopUrl.endsWith('spin.dev');
 
       if (isSpinUrl) {
-        return spinLegacyUrlToAdminUrl(legacyAdminUrl);
+        return spinLegacyUrlToAdminUrl(shopUrl);
       } else {
         return null;
       }
@@ -71,4 +73,8 @@ function spinLegacyUrlToAdminUrl(legacyAdminUrl: string) {
   } else {
     return null;
   }
+}
+
+function removeProtocol(url: string): string {
+  return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 }
