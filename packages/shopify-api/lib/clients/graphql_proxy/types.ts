@@ -1,5 +1,5 @@
 import {Session} from '../../session/session';
-import {RequestReturn} from '../http_client/types';
+import type {RequestReturn} from '../types';
 
 export interface GraphqlProxyParams {
   session: Session;

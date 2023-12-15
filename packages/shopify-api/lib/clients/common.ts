@@ -58,13 +58,20 @@ export function clientLoggerFactory(config: ConfigInterface) {
 }
 
 export function throwFailedRequest(
-  body: any,
+  rawBody: string,
   response: Awaited<ReturnType<AbstractFetchFunc>>,
   retry = true,
 ): never {
   const responseHeaders = canonicalizeHeaders(
     Object.fromEntries(response.headers.entries() ?? []),
   );
+
+  let body: any = rawBody;
+  try {
+    body = JSON.parse(rawBody);
+  } catch (error) {
+    // Do nothing
+  }
 
   if (response.status === StatusCode.Ok && body.errors.graphQLErrors) {
     throw new ShopifyErrors.GraphqlQueryError({
@@ -111,13 +118,19 @@ export function throwFailedRequest(
       }
     }
     case response.status >= StatusCode.InternalServerError:
-      throw new ShopifyErrors.HttpInternalError({
-        message: `Shopify internal error${errorMessage}`,
-        code,
-        statusText,
-        body,
-        headers: responseHeaders,
-      });
+      if (retry) {
+        throw new ShopifyErrors.HttpInternalError({
+          message: `Shopify internal error${errorMessage}`,
+          code,
+          statusText,
+          body,
+          headers: responseHeaders,
+        });
+      } else {
+        throw new ShopifyErrors.HttpMaxRetriesError(
+          'Attempted the maximum number of retries for HTTP request.',
+        );
+      }
     default:
       throw new ShopifyErrors.HttpResponseError({
         message: `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,

@@ -2,7 +2,6 @@ import {v4 as uuidv4} from 'uuid';
 
 import {Session} from '../../session/session';
 import {ConfigInterface} from '../../base-types';
-import {RequestReturn} from '../../clients/http_client/types';
 import {logger} from '../../logger';
 import {getJwtSessionId, getOfflineId} from '../../session/session-utils';
 
@@ -66,18 +65,4 @@ export function createSession({
       scope: accessTokenResponse.scope,
     });
   }
-}
-
-export function accessTokenResponse(
-  postResponse: RequestReturn,
-): AccessTokenResponse {
-  const associatedUser = (postResponse.body as OnlineAccessResponse)
-    .associated_user;
-  const isOnline = Boolean(associatedUser);
-
-  if (isOnline) {
-    return postResponse.body as OnlineAccessResponse;
-  }
-
-  return postResponse.body as AccessTokenResponse;
 }

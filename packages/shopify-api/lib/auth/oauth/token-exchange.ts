@@ -1,11 +1,12 @@
+import {throwFailedRequest} from '../../clients/common';
 import {decodeSessionToken} from '../../session/decode-session-token';
 import {sanitizeShop} from '../../utils/shop-validator';
 import {ConfigInterface} from '../../base-types';
-import {DataType} from '../../clients/http_client/types';
-import {httpClientClass} from '../../clients/http_client/http_client';
 import {Session} from '../../session/session';
+import {abstractFetch} from '../../../runtime';
+import {DataType} from '../../clients/types';
 
-import {accessTokenResponse, createSession} from './create-session';
+import {createSession} from './create-session';
 
 export enum RequestedTokenType {
   OnlineAccessToken = 'urn:shopify:params:oauth:token-type:online-access-token',
@@ -43,23 +44,35 @@ export function tokenExchange(config: ConfigInterface): TokenExchange {
       requested_token_type: requestedTokenType,
     };
 
-    const postParams = {
-      path: '/admin/oauth/access_token',
-      type: DataType.JSON,
-      data: body,
-      extraHeaders: {
-        Accept: DataType.JSON,
-      },
-    };
-
     const cleanShop = sanitizeShop(config)(shop, true)!;
-    const HttpClient = httpClientClass(config);
-    const client = new HttpClient({domain: cleanShop});
-    const postResponse = await client.post(postParams);
+
+    const postResponse = await abstractFetch(
+      `https://${cleanShop}/admin/oauth/access_token`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': DataType.JSON,
+          Accept: DataType.JSON,
+        },
+      },
+    );
+
+    if (!postResponse.ok) {
+      throwFailedRequest(
+        await postResponse.text(),
+        {
+          statusCode: postResponse.status,
+          statusText: postResponse.statusText,
+          headers: Object.fromEntries(postResponse.headers.entries()),
+        },
+        false,
+      );
+    }
 
     return {
       session: createSession({
-        accessTokenResponse: accessTokenResponse(postResponse),
+        accessTokenResponse: await postResponse.json(),
         shop: cleanShop,
         // We need to keep this as an empty string as our template DB schemas have this required
         state: '',
