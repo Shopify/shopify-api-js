@@ -5,19 +5,20 @@ This document covers the changes apps will need to make to be able to upgrade to
 In this major version, our focus has been to integrate the `@shopify/shopify-api` package with our new GraphQL API clients, also contained in this repository.
 
 The new clients provide the same level of functionality as the current ones, plus some other advantages:
+
 - You can combine them with the `@shopify/api-codegen-preset` package to automatically add types for the variables and return objects
 - Better support for the Storefront API
 - We've refactored the `query` method API so that it's closer to common GraphQL clients (e.g. Apollo) to make them feel more familiar:
-    ```ts
-    const client = new shopify.clients.Graphql({session});
-    const response: Response = await client.query(
-      `query { ... }`,
-      { variables: { ... } }
-    );
-    ```
-    > [!NOTE]
-    > The previous method API still works, but you'll get deprecation notices until we release v10.
-    > We encourage using the new format because of the typing improvements we made.
+  ```ts
+  const client = new shopify.clients.Graphql({session});
+  const response: Response = await client.request(
+    `query { ... }`,
+    { variables: { ... } }
+  );
+  ```
+  > [!NOTE]
+  > The previous method API still works, but you'll get deprecation notices until we release v10.
+  > We encourage using the new format because of the typing improvements we made.
 - Support for more API clients in the future
 
 To make it easier to navigate this guide, here is an overview of the sections it contains:
@@ -95,23 +96,38 @@ setAbstractFetchFunc(fetch);
 or, if a `fetch` implementation isn't available:
 
 ```ts
-import {AbstractFetchFunc, setAbstractFetchFunc} from '@shopify/shopify-api/runtime';
+import {
+  AbstractFetchFunc,
+  setAbstractFetchFunc,
+} from '@shopify/shopify-api/runtime';
 
 const convertFetch: AbstractFetchFunc = (url, init) => {
   // Make the actual request
 
   return new Response(/* ... */);
-}
+};
 
 setAbstractFetchFunc(convertFetch);
 ```
 
 ## Using the new clients
 
-With the introduction of the new clients, we've deprecated the previous interface of the `query` method, so that the `data` field is no longer necessary.
+With the introduction of the new clients, we've deprecated the `query` method in favor of `request`.
 
-You can now pass in the query / mutation as the first argument, and a `variables` property to the options.
-The previous format will still work until the next major version, and log a deprecation for now.
+`request` takes in the query / mutation as the first argument, and the following options:
+
+| Old option          | New option  | Notes                                                                                  |
+| ------------------- | ----------- | -------------------------------------------------------------------------------------- |
+| `data.query`        | _N/A_       | The operation is the first argument now.                                               |
+| `data.variables`    | `variables` | Variables are their own option now.                                                    |
+| `data.extraHeaders` | `headers`   | Same option, renamed.                                                                  |
+| `data.tries`        | `retries`   | Same purpose, but we felt `retries` is clearer. Subtract `1` from your previous value. |
+
+The return type is also slightly different: instead of returning `body`, it returns the direct output of the underlying client, which are the two fields within `body`.
+
+> [!NOTE]
+>
+> `query` will still work until the next major version, and log a deprecation for now.
 
 Before:
 
@@ -122,26 +138,20 @@ const response = await client.query({
     query: QUERY,
     variables: {first: 1},
   },
-  extraHeaders: {
-    myHeader: '1',
-  },
-  retries: 1,
+  extraHeaders: {myHeader: '1'},
+  tries: 1,
 });
-console.log(response.body, response.headers);
+console.log(response.body.data, response.body.extensions);
 ```
 
 After:
 
 ```ts
 const client = new shopify.clients.Graphql({session});
-const response = await client.query(QUERY,
-  {
-    variables: {first: 1},
-    extraHeaders: {
-      myHeader: '1',
-    },
-    retries: 1,
-  }
-);
-console.log(response.body, response.headers);
+const response = await client.request(QUERY, {
+  variables: {first: 1},
+  headers: {myHeader: '1'},
+  retries: 2,
+});
+console.log(response.data, response.extensions);
 ```

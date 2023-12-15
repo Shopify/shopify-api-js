@@ -34,8 +34,8 @@ export interface GraphqlQueryOptions<
   Operations extends AllOperations,
 > {
   variables?: ApiClientRequestOptions<Operation, Operations>['variables'];
-  extraHeaders?: Record<string, string | number>;
-  tries?: number;
+  headers?: Record<string, string | number>;
+  retries?: number;
 }
 
 export interface ShopifyClients {

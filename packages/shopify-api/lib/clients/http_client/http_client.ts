@@ -9,6 +9,7 @@ import {createSHA256HMAC} from '../../../runtime/crypto';
 import {HashFormat} from '../../../runtime/crypto/types';
 import {
   abstractFetch,
+  AbstractFetchFunc,
   canonicalizeHeaders,
   flatHeaders,
   getHeader,
@@ -224,7 +225,12 @@ export class HttpClient {
   ): Promise<RequestReturn<T>> {
     const log = logger(this.httpClass().config);
 
-    const response: NormalizedResponse = await normalizedFetch(request);
+    const fetchResponse = await abstractFetch(request.url, {
+      method: request.method,
+      headers: flatHeaders(request.headers),
+      body: request.body,
+    });
+    const response: NormalizedResponse = await normalizeResponse(fetchResponse);
 
     if (this.httpClass().config.logger.httpRequests) {
       log.debug(
@@ -243,7 +249,7 @@ export class HttpClient {
     }
 
     if (!isOK(response)) {
-      throwFailedRequest(body, response);
+      throwFailedRequest(body, fetchResponse);
     }
 
     const deprecationReason = getHeader(
@@ -305,22 +311,16 @@ export function httpClientClass(
   return NewHttpClient as typeof HttpClient;
 }
 
-export async function normalizedFetch({
-  headers,
-  method,
-  url,
-  body,
-}: NormalizedRequest): Promise<NormalizedResponse> {
-  const resp = await abstractFetch(url, {
-    method,
-    headers: flatHeaders(headers),
-    body,
-  });
-  const respBody = await resp.text();
+export async function normalizeResponse(
+  response: Awaited<ReturnType<AbstractFetchFunc>>,
+): Promise<NormalizedResponse> {
+  const respBody = await response.text();
   return {
-    statusCode: resp.status,
-    statusText: resp.statusText,
+    statusCode: response.status,
+    statusText: response.statusText,
     body: respBody,
-    headers: canonicalizeHeaders(Object.fromEntries(resp.headers.entries())),
+    headers: canonicalizeHeaders(
+      Object.fromEntries(response.headers.entries()),
+    ),
   };
 }

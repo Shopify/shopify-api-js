@@ -30,24 +30,18 @@ export function cancel(config: ConfigInterface) {
     const client = new GraphqlClient({session});
 
     try {
-      const response = await client.query<CancelResponse>({
-        data: {
-          query: CANCEL_MUTATION,
-          variables: {
-            id: subscriptionId,
-            prorate,
-          },
-        },
+      const response = await client.request<CancelResponse>(CANCEL_MUTATION, {
+        variables: {id: subscriptionId, prorate},
       });
 
-      if (response.body.data.appSubscriptionCancel.userErrors.length) {
+      if (response.data?.appSubscriptionCancel?.userErrors.length) {
         throw new BillingError({
           message: 'Error while canceling a subscription',
-          errorData: response.body.data.appSubscriptionCancel.userErrors,
+          errorData: response.data?.appSubscriptionCancel?.userErrors,
         });
       }
 
-      return response.body.data.appSubscriptionCancel.appSubscription;
+      return response.data?.appSubscriptionCancel?.appSubscription!;
     } catch (error) {
       if (error instanceof GraphqlQueryError) {
         throw new BillingError({

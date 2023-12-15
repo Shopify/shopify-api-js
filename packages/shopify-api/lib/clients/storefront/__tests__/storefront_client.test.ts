@@ -60,8 +60,8 @@ describe('Storefront GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query(QUERY)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+    await expect(client.request(QUERY)).resolves.toEqual(
+      expect.objectContaining(successResponse),
     );
 
     expect({
@@ -89,8 +89,8 @@ describe('Storefront GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query(QUERY)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+    await expect(client.request(QUERY)).resolves.toEqual(
+      expect.objectContaining(successResponse),
     );
 
     expect({
@@ -122,8 +122,8 @@ describe('Storefront GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query(QUERY)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+    await expect(client.request(QUERY)).resolves.toEqual(
+      expect.objectContaining(successResponse),
     );
 
     expect({
@@ -149,8 +149,8 @@ describe('Storefront GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query(QUERY)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+    await expect(client.request(QUERY)).resolves.toEqual(
+      expect.objectContaining(successResponse),
     );
 
     expect({
@@ -171,11 +171,3 @@ describe('Storefront GraphQL client', () => {
     );
   });
 });
-
-function buildExpectedResponse(obj: unknown) {
-  const expectedResponse = {
-    body: obj,
-    headers: expect.objectContaining({}),
-  };
-  return expect.objectContaining(expectedResponse);
-}
