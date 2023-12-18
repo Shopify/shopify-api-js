@@ -55,14 +55,14 @@ The session for the request.
 This will override the default API version.
 Any requests made by this client will reach this version instead.
 
-## Query
+## Request
 
 Sends a request to the Storefront API.
 
 ### Examples
 
 ```ts
-const products = await storefrontClient.query(
+const products = await storefrontClient.request(
   `{
     products (first: 10) {
       edges {
@@ -93,34 +93,34 @@ The query or mutation string.
 
 The variables for the operation.
 
-#### options.extraHeaders
+#### options.headers
 
 `{[key: string]: string | number}`
 
 Add custom headers to the request.
 
-#### options.tries
+#### options.retries
 
-`number` | Defaults to `1`, _must be >= 0_
+`number` | _Must be between_ `0 and 3`
 
 The maximum number of times to retry the request.
 
 ### Return
 
-`Promise<RequestResponse>`
+`Promise<ClientResponse>`
 
 Returns an object containing:
 
-#### Headers
-
-`{[key: string]: string | string[]}`
-
-The HTTP headers in the response from Shopify.
-
-#### Body
+#### Data
 
 `any`
 
-The HTTP body in the response from Shopify.
+The `data` component of the response.
+
+#### Extensions
+
+`any`
+
+The `extensions` component of the response.
 
 [Back to shopify.clients](./README.md)

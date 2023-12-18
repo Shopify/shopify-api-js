@@ -45,7 +45,7 @@ The Shopify Session containing an access token to the API.
 This will override the default API version.
 Any requests made by this client will reach this version instead.
 
-## Query
+## Request
 
 Sends a request to the Admin API.
 
@@ -54,7 +54,7 @@ Sends a request to the Admin API.
 #### Using a query string
 
 ```ts
-const response = await client.query(
+const response = await client.request(
   `{
     products (first: 10) {
       edges {
@@ -67,13 +67,13 @@ const response = await client.query(
     }
   }`,
 );
-console.log(response.headers, response.body);
+console.log(response.data, response.extensions);
 ```
 
 #### Using variables
 
 ```ts
-const response = await client.query(
+const response = await client.request(
   `query GetProducts($first: Int!) {
     products (first: $first) {
       edges {
@@ -91,7 +91,7 @@ const response = await client.query(
     },
   },
 );
-console.log(response.headers, response.body);
+console.log(response.data, response.extensions);
 ```
 
 > **Note**: If using TypeScript, you can pass in a type argument for the response body:
@@ -104,19 +104,19 @@ interface MyResponseBodyType {
   };
 }
 
-const response = await client.query<MyResponseBodyType>(/* ... */);
+const response = await client.request<MyResponseBodyType>(/* ... */);
 
 // response.body will be of type MyResponseBodyType
 console.log(response.body.data);
 ```
 
-> **Note**: If there are any errors in the response, `query` will throw a `GraphqlQueryError` which includes details from the API response:
+> **Note**: If there are any errors in the response, `request` will throw a `GraphqlQueryError` which includes details from the API response:
 
 ```ts
 import {GraphqlQueryError} from '@shopify/shopify-api';
 
 try {
-  const products = await client.query(/* ... */);
+  const products = await client.request(/* ... */);
 
   // No errors, proceed with logic
 } catch (error) {
@@ -144,34 +144,34 @@ The query or mutation string.
 
 The variables for the operation.
 
-#### options.extraHeaders
+#### options.headers
 
 `{[key: string]: string | number}`
 
 Add custom headers to the request.
 
-#### options.tries
+#### options.retries
 
-`number` | Defaults to `1`, _must be >= 0_
+`number` | _Must be between_ `0 and 3`
 
 The maximum number of times to retry the request.
 
 ### Return
 
-`Promise<RequestResponse>`
+`Promise<ClientResponse>`
 
 Returns an object containing:
 
-#### Headers
-
-`{[key: string]: string | string[]}`
-
-The HTTP headers in the response from Shopify.
-
-#### Body
+#### Data
 
 `any`
 
-The HTTP body in the response from Shopify.
+The [`data` component](https://shopify.dev/docs/api/admin/getting-started#graphql-admin-api) of the response.
+
+#### Extensions
+
+`any`
+
+The [`extensions` component](https://shopify.dev/docs/api/admin-graphql#rate_limits) of the response.
 
 [Back to shopify.clients](./README.md)
