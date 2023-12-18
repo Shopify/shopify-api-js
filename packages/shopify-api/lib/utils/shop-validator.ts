@@ -2,8 +2,11 @@ import {ConfigInterface} from '../base-types';
 import {InvalidHostError, InvalidShopError} from '../error';
 import {decodeHost} from '../auth/decode-host';
 
+import {shopAdminUrlToLegacyUrl} from './shop-admin-url-helper';
+
 export function sanitizeShop(config: ConfigInterface) {
   return (shop: string, throwOnInvalid = false): string | null => {
+    let shopUrl = shop;
     const domainsRegex = ['myshopify\\.com', 'shopify\\.com', 'myshopify\\.io'];
     if (config.customShopDomains) {
       domainsRegex.push(
@@ -17,7 +20,16 @@ export function sanitizeShop(config: ConfigInterface) {
       `^[a-zA-Z0-9][a-zA-Z0-9-_]*\\.(${domainsRegex.join('|')})[/]*$`,
     );
 
-    const sanitizedShop = shopUrlRegex.test(shop) ? shop : null;
+    const shopAdminRegex = new RegExp(
+      `^admin\\.(${domainsRegex.join('|')})/store/([a-zA-Z0-9][a-zA-Z0-9-_]*)$`,
+    );
+
+    const isShopAdminUrl = shopAdminRegex.test(shopUrl);
+    if (isShopAdminUrl) {
+      shopUrl = shopAdminUrlToLegacyUrl(shopUrl) || '';
+    }
+
+    const sanitizedShop = shopUrlRegex.test(shopUrl) ? shopUrl : null;
     if (!sanitizedShop && throwOnInvalid) {
       throw new InvalidShopError('Received invalid shop argument');
     }
