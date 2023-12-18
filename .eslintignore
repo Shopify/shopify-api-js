@@ -1,6 +1,5 @@
 rollup.config.js
-rollup-common.js
-rollup-umd.config.js
+rollup.config.cjs
 .eslintrc.cjs
 node_modules/
 dist/
