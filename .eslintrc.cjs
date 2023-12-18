@@ -5,6 +5,7 @@ module.exports = {
   },
   extends: ['plugin:@shopify/typescript', 'plugin:@shopify/prettier'],
   ignorePatterns: ['dist/'],
+  workingDirectories: ['packages/*'],
   rules: {
     'no-console': 0,
     '@typescript-eslint/naming-convention': 0,
