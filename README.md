@@ -18,7 +18,7 @@ A library to interact with Shopify's GraphQL Storefront API. For use on the clie
 
 ## [`@shopify/admin-api-client`](./packages/admin-api-client)
 
-A library to interact with Shopify's GraphQL Admin API. For use on the server.
+A library to interact with Shopify's GraphQL and REST Admin APIs. For use on the server.
 
 ## [`@shopify/graphql-client`](./packages/graphql-client)
 
