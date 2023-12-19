@@ -29,7 +29,7 @@ export interface GetRequestParams {
 }
 
 export type PostRequestParams = GetRequestParams & {
-  data: Record<string, unknown> | string;
+  data: Record<string, any> | string;
 };
 
 export type PutRequestParams = PostRequestParams;

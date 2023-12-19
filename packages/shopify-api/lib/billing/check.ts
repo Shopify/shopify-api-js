@@ -84,14 +84,12 @@ async function assessPayments<Params extends CheckInternalParams>({
   let installation: CurrentAppInstallation;
   let endCursor: string | null = null;
   do {
-    const currentInstallations = await client.query<CurrentAppInstallations>({
-      data: {
-        query: HAS_PAYMENTS_QUERY,
-        variables: {endCursor},
-      },
-    });
+    const currentInstallations = await client.request<CurrentAppInstallations>(
+      HAS_PAYMENTS_QUERY,
+      {variables: {endCursor}},
+    );
 
-    installation = currentInstallations.body.data.currentAppInstallation;
+    installation = currentInstallations.data?.currentAppInstallation!;
     if (returnObject) {
       installation.activeSubscriptions.map((subscription) => {
         if (subscriptionMeetsCriteria({plans, isTest, subscription})) {

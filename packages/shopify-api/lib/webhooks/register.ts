@@ -125,11 +125,9 @@ async function getExistingHandlers(
   do {
     const query = buildCheckQuery(endCursor);
 
-    const response = await client.query<WebhookCheckResponse>({
-      data: query,
-    });
+    const response = await client.request<WebhookCheckResponse>(query);
 
-    response.body.data.webhookSubscriptions.edges.forEach((edge) => {
+    response.data?.webhookSubscriptions?.edges.forEach((edge) => {
       const handler = buildHandlerFromNode(edge);
 
       if (!existingHandlers[edge.node.topic]) {
@@ -139,8 +137,8 @@ async function getExistingHandlers(
       existingHandlers[edge.node.topic].push(handler);
     });
 
-    endCursor = response.body.data.webhookSubscriptions.pageInfo.endCursor;
-    hasNextPage = response.body.data.webhookSubscriptions.pageInfo.hasNextPage;
+    endCursor = response.data?.webhookSubscriptions?.pageInfo.endCursor!;
+    hasNextPage = response.data?.webhookSubscriptions?.pageInfo.hasNextPage!;
   } while (hasNextPage);
 
   return existingHandlers;
@@ -341,12 +339,12 @@ async function runMutation({
   try {
     const query = buildMutation(config, topic, handler, operation);
 
-    const result = await client.query(query);
+    const result = await client.request(query);
 
     registerResult = {
       deliveryMethod: handler.deliveryMethod,
-      success: isSuccess(result.body, handler, operation),
-      result: result.body,
+      success: isSuccess(result, handler, operation),
+      result,
       operation,
     };
   } catch (error) {

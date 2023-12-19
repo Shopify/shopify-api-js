@@ -10,8 +10,9 @@ import {LIBRARY_NAME} from '../types';
 import {ConfigInterface} from '../base-types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../version';
 import {
-  NormalizedResponse,
+  AbstractFetchFunc,
   abstractRuntimeString,
+  canonicalizeHeaders,
   getHeader,
 } from '../../runtime';
 import {logger} from '../logger';
@@ -58,14 +59,27 @@ export function clientLoggerFactory(config: ConfigInterface) {
 
 export function throwFailedRequest(
   body: any,
-  response: NormalizedResponse,
+  response: Awaited<ReturnType<AbstractFetchFunc>>,
   retry = true,
 ): never {
+  const responseHeaders = canonicalizeHeaders(
+    Object.fromEntries(response.headers.entries() ?? []),
+  );
+
+  if (response.status === StatusCode.Ok && body.errors.graphQLErrors) {
+    throw new ShopifyErrors.GraphqlQueryError({
+      message:
+        body.errors.graphQLErrors?.[0].message ?? 'GraphQL operation failed',
+      response: response as Record<string, any>,
+      headers: responseHeaders,
+    });
+  }
+
   const errorMessages: string[] = [];
   if (body.errors) {
     errorMessages.push(JSON.stringify(body.errors, null, 2));
   }
-  const xRequestId = getHeader(response.headers, 'x-request-id');
+  const xRequestId = getHeader(responseHeaders, 'x-request-id');
   if (xRequestId) {
     errorMessages.push(
       `If you report this error, please include this id: ${xRequestId}`,
@@ -75,20 +89,19 @@ export function throwFailedRequest(
   const errorMessage = errorMessages.length
     ? `:\n${errorMessages.join('\n')}`
     : '';
-  const headers = response.headers ? response.headers : {};
-  const code = response.statusCode;
+  const code = response.status;
   const statusText = response.statusText;
 
   switch (true) {
-    case response.statusCode === StatusCode.TooManyRequests: {
+    case response.status === StatusCode.TooManyRequests: {
       if (retry) {
-        const retryAfter = getHeader(response.headers, 'Retry-After');
+        const retryAfter = getHeader(responseHeaders, 'Retry-After');
         throw new ShopifyErrors.HttpThrottlingError({
           message: `Shopify is throttling requests${errorMessage}`,
           code,
           statusText,
           body,
-          headers,
+          headers: responseHeaders,
           retryAfter: retryAfter ? parseFloat(retryAfter) : undefined,
         });
       } else {
@@ -97,21 +110,21 @@ export function throwFailedRequest(
         );
       }
     }
-    case response.statusCode >= StatusCode.InternalServerError:
+    case response.status >= StatusCode.InternalServerError:
       throw new ShopifyErrors.HttpInternalError({
         message: `Shopify internal error${errorMessage}`,
         code,
         statusText,
         body,
-        headers,
+        headers: responseHeaders,
       });
     default:
       throw new ShopifyErrors.HttpResponseError({
-        message: `Received an error response (${response.statusCode} ${response.statusText}) from Shopify${errorMessage}`,
+        message: `Received an error response (${response.status} ${response.statusText}) from Shopify${errorMessage}`,
         code,
         statusText,
         body,
-        headers,
+        headers: responseHeaders,
       });
   }
 }

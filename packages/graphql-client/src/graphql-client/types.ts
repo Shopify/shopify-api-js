@@ -9,7 +9,7 @@ export type CustomFetchApi = (
 
 type OperationVariables = Record<string, any>;
 
-export type Headers = Record<string, string>;
+export type Headers = Record<string, string | string[]>;
 
 export interface ResponseErrors {
   networkStatusCode?: number;

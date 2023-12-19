@@ -61,9 +61,9 @@ describe('GraphQL client', () => {
     const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
 
-    const response = await client.query(QUERY);
+    const response = await client.request(QUERY);
 
-    expect(response).toEqual(buildExpectedResponse(successResponse));
+    expect(response).toEqual(expect.objectContaining(successResponse));
     expect({
       method: 'POST',
       domain,
@@ -83,8 +83,8 @@ describe('GraphQL client', () => {
     queueMockResponse(JSON.stringify(successResponse));
 
     await expect(
-      client.query(QUERY, {extraHeaders: customHeader}),
-    ).resolves.toEqual(buildExpectedResponse(successResponse));
+      client.request(QUERY, {headers: customHeader}),
+    ).resolves.toEqual(expect.objectContaining(successResponse));
 
     customHeader[ShopifyHeader.AccessToken] = accessToken;
     expect({
@@ -107,8 +107,8 @@ describe('GraphQL client', () => {
     const client = new shopify.clients.Graphql({session});
     queueMockResponse(JSON.stringify(successResponse));
 
-    await expect(client.query(QUERY)).resolves.toEqual(
-      buildExpectedResponse(successResponse),
+    await expect(client.request(QUERY)).resolves.toEqual(
+      expect.objectContaining(successResponse),
     );
 
     const customHeaders: Record<string, string> = {};
@@ -167,8 +167,8 @@ describe('GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(expectedResponse));
 
-    await expect(client.query(query, {variables})).resolves.toEqual(
-      buildExpectedResponse(expectedResponse),
+    await expect(client.request(query, {variables})).resolves.toEqual(
+      expect.objectContaining(expectedResponse),
     );
 
     expect({
@@ -232,7 +232,7 @@ describe('GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(errorResponse));
 
-    await expect(() => client.query(query)).rejects.toThrow(
+    await expect(() => client.request(query)).rejects.toThrow(
       new ShopifyErrors.GraphqlQueryError({
         // Expect to throw the original error message
         message: 'you must provide one of first or last',
@@ -264,9 +264,9 @@ describe('GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(successResponse));
 
-    const response = await client.query(QUERY);
+    const response = await client.request(QUERY);
 
-    expect(response).toEqual(buildExpectedResponse(successResponse));
+    expect(response).toEqual(expect.objectContaining(successResponse));
     expect({
       method: 'POST',
       domain,
@@ -282,11 +282,3 @@ describe('GraphQL client', () => {
     );
   });
 });
-
-function buildExpectedResponse(obj: any) {
-  const expectedResponse = {
-    body: obj,
-    headers: expect.objectContaining({}),
-  };
-  return expect.objectContaining(expectedResponse);
-}

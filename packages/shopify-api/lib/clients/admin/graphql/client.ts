@@ -1,14 +1,15 @@
 import {
   AdminApiClient,
   AdminOperations,
+  ApiClientRequestOptions,
+  ClientResponse,
   createAdminApiClient,
-  FetchResponseBody,
   ReturnData,
 } from '@shopify/admin-api-client';
 
 import {ApiVersion} from '../../../types';
 import {ConfigInterface} from '../../../base-types';
-import {HeaderParams, RequestReturn} from '../../http_client/types';
+import {RequestReturn} from '../../http_client/types';
 import {Session} from '../../../session/session';
 import {logger} from '../../../logger';
 import * as ShopifyErrors from '../../../error';
@@ -64,98 +65,68 @@ export class GraphqlClient {
     });
   }
 
-  public async query<
+  public async query<T = undefined>(
+    params: GraphqlParams,
+  ): Promise<RequestReturn<T>> {
+    logger(this.graphqlClass().config).deprecated(
+      '10.0.0',
+      'The query method is deprecated, and was replaced with the request method.\n' +
+        'See the migration guide: https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#using-the-new-clients.',
+    );
+
+    if (
+      (typeof params.data === 'string' && params.data.length === 0) ||
+      Object.entries(params.data).length === 0
+    ) {
+      throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
+    }
+
+    let operation: string;
+    let variables: Record<string, any> | undefined;
+    if (typeof params.data === 'string') {
+      operation = params.data;
+    } else {
+      operation = params.data.query;
+      variables = params.data.variables;
+    }
+
+    const headers = Object.fromEntries(
+      Object.entries(params?.extraHeaders ?? {}).map(([key, value]) => [
+        key,
+        Array.isArray(value) ? value.join(', ') : value.toString(),
+      ]),
+    );
+
+    const response = await this.request<T>(operation, {
+      headers,
+      retries: params.tries ? params.tries - 1 : undefined,
+      variables,
+    });
+
+    return {body: response as T, headers: {}};
+  }
+
+  public async request<
     T = undefined,
     Operation extends keyof Operations = string,
     Operations extends AdminOperations = AdminOperations,
   >(
-    params: GraphqlParams | Operation,
+    operation: Operation,
     options?: GraphqlQueryOptions<Operation, Operations>,
   ): Promise<
-    RequestReturn<
-      T extends undefined
-        ? Required<FetchResponseBody<ReturnData<Operation, Operations>>>
-        : T
-    >
+    ClientResponse<T extends undefined ? ReturnData<Operation, Operations> : T>
   > {
-    let operation: Operation;
-    let variables: Record<string, any> | undefined;
-    let headers: HeaderParams = {};
-    let tries: number | undefined;
-    if (typeof params === 'object') {
-      logger(this.graphqlClass().config).deprecated(
-        '10.0.0',
-        'The query method with a single object argument is deprecated.\n' +
-          'See the migration guide: https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#using-the-new-clients.',
-      );
-
-      if (
-        (typeof params.data === 'string' && params.data.length === 0) ||
-        Object.entries(params.data).length === 0
-      ) {
-        throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
-      }
-
-      if (typeof params.data === 'string') {
-        operation = params.data as Operation;
-      } else {
-        operation = params.data.query as Operation;
-        variables = params.data.variables as typeof variables;
-      }
-      headers = params.extraHeaders ?? {};
-      tries = params.tries;
-    } else {
-      operation = params;
-      variables = options?.variables;
-      headers = options?.extraHeaders ?? {};
-      tries = options?.tries;
-    }
-
-    const response = await this.client.fetch(operation as string, {
+    const response = await this.client.request<T, Operation>(operation, {
       apiVersion: this.apiVersion || this.graphqlClass().config.apiVersion,
-      variables,
-      retries: tries && tries > 0 ? tries - 1 : undefined,
-      headers: Object.fromEntries(
-        Object.entries(headers).map(([key, value]) => [
-          key,
-          Array.isArray(value) ? value.join(', ') : value.toString(),
-        ]),
-      ),
+      ...(options as ApiClientRequestOptions<Operation, AdminOperations>),
     });
 
-    if (!response.ok) {
-      const responseHeaders = Object.fromEntries(response.headers.entries());
-
-      throwFailedRequest(
-        await response.text(),
-        {
-          statusCode: response.status,
-          statusText: response.statusText,
-          headers: responseHeaders,
-        },
-        false,
-      );
+    if (response.errors) {
+      const fetchResponse = response.errors.response!;
+      throwFailedRequest(response, fetchResponse, false);
     }
 
-    const body = (await response.json()) as T extends undefined
-      ? Required<FetchResponseBody<ReturnData<Operation, Operations>>>
-      : T;
-
-    // Get errors array
-    const errors = (body as unknown as Record<string, unknown>).errors as any[];
-
-    const responseHeaders = Object.fromEntries(response.headers.entries());
-
-    // Throw error if response contains errors
-    if (errors?.length > 0) {
-      throw new ShopifyErrors.GraphqlQueryError({
-        message: errors[0]?.message ?? 'GraphQL query returned errors',
-        response: body as unknown as Record<string, unknown>,
-        headers: responseHeaders,
-      });
-    }
-
-    return {body, headers: responseHeaders};
+    return response;
   }
 
   private graphqlClass() {

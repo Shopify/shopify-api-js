@@ -28,6 +28,8 @@ export function graphqlProxy(config: ConfigInterface): GraphqlProxy {
       throw new ShopifyErrors.MissingRequiredArgument('Query missing.');
     }
 
-    return client.query(query, {variables});
+    const response = await client.request(query, {variables});
+
+    return {body: response, headers: {}};
   };
 }

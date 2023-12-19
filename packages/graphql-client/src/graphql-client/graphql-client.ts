@@ -166,14 +166,18 @@ function generateFetch(
 
     validateRetries({ client: CLIENT, retries: overrideRetries });
 
+    const flatHeaders = Object.fromEntries(
+      Object.entries({ ...headers, ...overrideHeaders }).map(([key, value]) => [
+        key,
+        Array.isArray(value) ? value.join(", ") : value.toString(),
+      ]),
+    );
+
     const fetchParams: Parameters<CustomFetchApi> = [
       overrideUrl ?? url,
       {
         method: "POST",
-        headers: {
-          ...headers,
-          ...overrideHeaders,
-        },
+        headers: flatHeaders,
         body,
       },
     ];

@@ -9,6 +9,7 @@ export {
 export type {
   AllOperations,
   ApiClientRequestOptions,
+  ClientResponse,
   FetchResponseBody,
   HTTPResponseLog,
   HTTPRetryLog,
