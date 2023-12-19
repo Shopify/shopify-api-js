@@ -87,7 +87,7 @@
   "devDependencies": {
     "jest-environment-jsdom": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
-    "regenerator-runtime": "^0.14.0",
+    "regenerator-runtime": "^0.14.1",
     "web-streams-polyfill": "^3.2.1"
   },
   "bugs": {
