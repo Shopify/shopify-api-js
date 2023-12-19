@@ -2,6 +2,10 @@
   "files": [],
   "include": [],
   "references": [
-    {"path": "./packages/shopify-api"}
+    {"path": "./packages/admin-api-client"},
+    {"path": "./packages/api-codegen-preset"},
+    {"path": "./packages/graphql-client"},
+    {"path": "./packages/shopify-api"},
+    {"path": "./packages/storefront-api-client"},
   ]
 }
