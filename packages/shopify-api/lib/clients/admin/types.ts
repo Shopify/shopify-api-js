@@ -4,7 +4,7 @@ import {RequestReturn, QueryParams} from '../http_client/types';
 
 export interface PageInfoParams {
   path: string;
-  query: {[key: string]: QueryParams};
+  query: Record<string, QueryParams>;
 }
 
 export interface PageInfo {

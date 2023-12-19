@@ -40,9 +40,7 @@ interface RegisterTestResponse {
   responses: MockResponse[];
 }
 
-interface MutationParams {
-  [key: string]: any;
-}
+type MutationParams = Record<string, any>;
 
 const session = new Session({
   id: 'test-session',

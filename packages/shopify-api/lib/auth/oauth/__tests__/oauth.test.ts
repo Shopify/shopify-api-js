@@ -20,9 +20,7 @@ import {shopifyApi} from '../../..';
 const VALID_NONCE = 'noncenoncenonce';
 jest.mock('../nonce', () => ({nonce: jest.fn(() => VALID_NONCE)}));
 
-interface QueryMock {
-  [key: string]: any;
-}
+type QueryMock = Record<string, any>;
 
 let shop: string;
 

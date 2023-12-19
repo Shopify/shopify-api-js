@@ -195,7 +195,7 @@ describe('REST client', () => {
 
     const client = new shopify.clients.Rest({session});
 
-    const customHeaders: {[key: string]: string} = {
+    const customHeaders: Record<string, string> = {
       'X-Not-A-Real-Header': 'some_value',
     };
 
@@ -385,7 +385,7 @@ describe('REST client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const customHeaders: {[key: string]: string} = {};
+    const customHeaders: Record<string, string> = {};
     customHeaders[ShopifyHeader.AccessToken] =
       shopify.config.adminApiAccessToken;
 

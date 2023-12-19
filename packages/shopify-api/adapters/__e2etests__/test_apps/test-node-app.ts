@@ -240,7 +240,7 @@ function handle(_signal: any): void {
 
 function setRestClientRetryTime(time: number) {
   // We de-type HttpClient here so we can alter its readonly time property
-  (HttpClient as unknown as {[key: string]: number}).RETRY_WAIT_TIME = time;
+  (HttpClient as any).RETRY_WAIT_TIME = time;
 }
 
 process.on('SIGINT', handle);

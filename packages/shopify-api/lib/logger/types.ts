@@ -1,3 +1,1 @@
-export interface LogContext {
-  [key: string]: any;
-}
+export type LogContext = Record<string, any>;

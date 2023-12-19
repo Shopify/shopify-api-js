@@ -1,5 +1,5 @@
 export default class ProcessedQuery {
-  static stringify(keyValuePairs?: {[key: string]: any}): string {
+  static stringify(keyValuePairs?: Record<string, any>): string {
     if (!keyValuePairs || Object.keys(keyValuePairs).length === 0) return '';
 
     return new ProcessedQuery().putAll(keyValuePairs).stringify();
@@ -11,7 +11,7 @@ export default class ProcessedQuery {
     this.processedQuery = new URLSearchParams();
   }
 
-  putAll(keyValuePairs: {[key: string]: any}): ProcessedQuery {
+  putAll(keyValuePairs: Record<string, any>): ProcessedQuery {
     Object.entries(keyValuePairs).forEach(([key, value]: [string, any]) =>
       this.put(key, value),
     );

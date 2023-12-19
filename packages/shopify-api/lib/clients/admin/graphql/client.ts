@@ -79,7 +79,7 @@ export class GraphqlClient {
     >
   > {
     let operation: Operation;
-    let variables: {[key: string]: any} | undefined;
+    let variables: Record<string, any> | undefined;
     let headers: HeaderParams = {};
     let tries: number | undefined;
     if (typeof params === 'object') {
@@ -142,8 +142,7 @@ export class GraphqlClient {
       : T;
 
     // Get errors array
-    const errors = (body as unknown as {[key: string]: unknown})
-      .errors as any[];
+    const errors = (body as unknown as Record<string, unknown>).errors as any[];
 
     const responseHeaders = Object.fromEntries(response.headers.entries());
 
@@ -151,7 +150,7 @@ export class GraphqlClient {
     if (errors?.length > 0) {
       throw new ShopifyErrors.GraphqlQueryError({
         message: errors[0]?.message ?? 'GraphQL query returned errors',
-        response: body as unknown as {[key: string]: unknown},
+        response: body as unknown as Record<string, unknown>,
         headers: responseHeaders,
       });
     }

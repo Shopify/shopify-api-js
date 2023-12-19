@@ -16,7 +16,7 @@ export function graphqlProxy(config: ConfigInterface): GraphqlProxy {
     const client = new GraphqlClient({session});
 
     let query: string;
-    let variables: {[key: string]: any} | undefined;
+    let variables: Record<string, any> | undefined;
     if (typeof rawBody === 'string') {
       query = rawBody;
     } else {

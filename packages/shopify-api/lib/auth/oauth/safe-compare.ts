@@ -1,8 +1,8 @@
 import * as ShopifyErrors from '../../error';
 
 export type SafeCompare = (
-  strA: string | {[key: string]: string} | string[] | number[],
-  strB: string | {[key: string]: string} | string[] | number[],
+  strA: string | Record<string, string> | string[] | number[],
+  strB: string | Record<string, string> | string[] | number[],
 ) => boolean;
 
 export const safeCompare: SafeCompare = (strA, strB) => {

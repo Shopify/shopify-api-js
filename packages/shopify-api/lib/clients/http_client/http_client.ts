@@ -48,7 +48,7 @@ export class HttpClient {
   static readonly RETRY_WAIT_TIME = 1000;
   // 5 minutes
   static readonly DEPRECATION_ALERT_DELAY = 300000;
-  loggedDeprecations: {[key: string]: number} = {};
+  loggedDeprecations: Record<string, number> = {};
   readonly domain: string;
 
   public constructor(params: HttpClientParams) {
@@ -126,7 +126,7 @@ export class HttpClient {
               typeof data === 'string'
                 ? data
                 : new URLSearchParams(
-                    data as {[key: string]: string},
+                    data as Record<string, string>,
                   ).toString();
             break;
           case DataType.GraphQL:
@@ -232,7 +232,7 @@ export class HttpClient {
       );
     }
 
-    let body: {[key: string]: string} | string | T = {};
+    let body: Record<string, string> | string | T = {};
 
     if (response.body) {
       try {

@@ -76,7 +76,7 @@ describe('GraphQL client', () => {
     const shopify = shopifyApi(testConfig());
 
     const client = new shopify.clients.Graphql({session});
-    const customHeader: {[key: string]: string} = {
+    const customHeader: Record<string, string> = {
       'X-Glib-Glob': 'goobers',
     };
 
@@ -111,7 +111,7 @@ describe('GraphQL client', () => {
       buildExpectedResponse(successResponse),
     );
 
-    const customHeaders: {[key: string]: string} = {};
+    const customHeaders: Record<string, string> = {};
     customHeaders[ShopifyHeader.AccessToken] =
       shopify.config.adminApiAccessToken;
 

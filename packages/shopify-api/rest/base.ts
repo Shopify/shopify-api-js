@@ -63,8 +63,8 @@ export class Base {
   protected static customPrefix: string | null = null;
   protected static readOnlyAttributes: string[] = [];
 
-  protected static hasOne: {[attribute: string]: typeof Base} = {};
-  protected static hasMany: {[attribute: string]: typeof Base} = {};
+  protected static hasOne: Record<string, typeof Base> = {};
+  protected static hasMany: Record<string, typeof Base> = {};
 
   protected static paths: ResourcePath[] = [];
 
@@ -109,7 +109,7 @@ export class Base {
 
     const path = this.getPath({http_method, operation, urlIds, entity});
 
-    const cleanParams: {[key: string]: string | number} = {};
+    const cleanParams: Record<string, string | number> = {};
     if (params) {
       for (const key in params) {
         if (params[key] !== null) {

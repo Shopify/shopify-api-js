@@ -40,4 +40,4 @@ export type ShopifyAuth<Future extends FutureFlagOptions> = {
   buildEmbeddedAppUrl: BuildEmbeddedAppUrl;
 } & (FeatureEnabled<Future, 'unstable_tokenExchange'> extends true
   ? {tokenExchange: TokenExchange}
-  : {[key: string]: never});
+  : Record<string, never>);

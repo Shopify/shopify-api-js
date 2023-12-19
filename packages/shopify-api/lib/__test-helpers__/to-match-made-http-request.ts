@@ -8,8 +8,8 @@ interface ExpectRequestParams {
   domain: string;
   path: string;
   query?: string;
-  headers?: {[key: string]: any};
-  data?: string | {[key: string]: any} | null;
+  headers?: Record<string, any>;
+  data?: string | Record<string, any> | null;
   attempts?: number;
 }
 

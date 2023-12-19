@@ -32,7 +32,7 @@ interface ErrorCallResult {
   errorMessage: string;
 }
 
-const STATUS_TEXT_LOOKUP: {[key: string]: string} = {
+const STATUS_TEXT_LOOKUP: Record<string, string> = {
   [StatusCode.Ok]: 'OK',
   [StatusCode.BadRequest]: 'Bad Request',
   [StatusCode.Unauthorized]: 'Unauthorized',
