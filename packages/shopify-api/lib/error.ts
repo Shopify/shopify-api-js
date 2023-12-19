@@ -23,8 +23,8 @@ export class HttpMaxRetriesError extends ShopifyError {}
 interface HttpResponseData {
   code: number;
   statusText: string;
-  body?: {[key: string]: unknown};
-  headers?: {[key: string]: unknown};
+  body?: Record<string, unknown>;
+  headers?: Record<string, unknown>;
 }
 interface HttpResponseErrorParams extends HttpResponseData {
   message: string;
@@ -70,8 +70,8 @@ export class HttpThrottlingError extends HttpRetriableError<HttpThrottlingErrorD
 
 export class RestResourceError extends ShopifyError {}
 export class GraphqlQueryError extends ShopifyError {
-  readonly response: {[key: string]: unknown};
-  headers?: {[key: string]: unknown};
+  readonly response: Record<string, unknown>;
+  headers?: Record<string, unknown>;
 
   public constructor({
     message,
@@ -79,8 +79,8 @@ export class GraphqlQueryError extends ShopifyError {
     headers,
   }: {
     message: string;
-    response: {[key: string]: unknown};
-    headers?: {[key: string]: unknown};
+    response: Record<string, unknown>;
+    headers?: Record<string, unknown>;
   }) {
     super(message);
     this.response = response;

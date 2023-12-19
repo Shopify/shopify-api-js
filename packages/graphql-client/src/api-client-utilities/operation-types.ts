@@ -16,8 +16,8 @@ type UnpackedInputMaybe<InputType> = InputType extends InputMaybe<infer R>
 export type OperationVariables<
   Operation extends keyof Operations,
   Operations extends AllOperations,
-> = Operations[Operation]["variables"] extends { [key: string]: never }
-  ? { [key: string]: never }
+> = Operations[Operation]["variables"] extends Record<string, never>
+  ? Record<string, never>
   : {
       variables?: {
         [k in keyof Operations[Operation]["variables"]]: UnpackedInputMaybe<

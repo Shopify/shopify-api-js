@@ -54,7 +54,7 @@ export type ApiClientRequestOptions<
   retries?: number;
 } & (Operation extends keyof Operations
   ? OperationVariables<Operation, Operations>
-  : { variables?: { [key: string]: any } });
+  : { variables?: Record<string, any> });
 
 export type ApiClientRequestParams<
   Operation extends keyof Operations,

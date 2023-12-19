@@ -229,9 +229,7 @@ async function registerTopic({
   return registerResults;
 }
 
-interface HandlersByKey {
-  [key: string]: WebhookHandler;
-}
+type HandlersByKey = Record<string, WebhookHandler>;
 
 function categorizeHandlers(
   config: ConfigInterface,
@@ -373,7 +371,7 @@ function buildMutation(
   handler: WebhookHandler,
   operation: WebhookOperation,
 ): string {
-  const params: {[key: string]: string} = {};
+  const params: Record<string, string> = {};
 
   let identifier: string;
   if (handler.id) {

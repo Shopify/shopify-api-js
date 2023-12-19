@@ -43,9 +43,7 @@ export interface CookieData {
   sameSite?: 'strict' | 'lax' | 'none';
 }
 
-export interface CookieJar {
-  [key: string]: CookieData;
-}
+export type CookieJar = Record<string, CookieData>;
 interface CookiesOptions {
   keys: string[];
   // Ignored. Only for type-compatibility with the node package for now.

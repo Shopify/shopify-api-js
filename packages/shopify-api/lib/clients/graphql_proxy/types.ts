@@ -3,7 +3,7 @@ import {RequestReturn} from '../http_client/types';
 
 export interface GraphqlProxyParams {
   session: Session;
-  rawBody: string | {[key: string]: any};
+  rawBody: string | Record<string, any>;
 }
 
 export type GraphqlProxy = (

@@ -6,7 +6,7 @@ import {LogContext} from './types';
 export type LoggerFunction = (
   severity: LogSeverity,
   message: string,
-  context?: {[key: string]: any},
+  context?: Record<string, any>,
 ) => void;
 
 export function log(config: ConfigInterface): LoggerFunction {

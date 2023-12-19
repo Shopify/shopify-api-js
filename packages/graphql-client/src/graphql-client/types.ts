@@ -7,13 +7,9 @@ export type CustomFetchApi = (
   },
 ) => Promise<Response>;
 
-interface OperationVariables {
-  [key: string]: any;
-}
+type OperationVariables = Record<string, any>;
 
-export interface Headers {
-  [key: string]: string;
-}
+export type Headers = Record<string, string>;
 
 export interface ResponseErrors {
   networkStatusCode?: number;
@@ -22,9 +18,7 @@ export interface ResponseErrors {
   response?: Response;
 }
 
-export interface GQLExtensions {
-  [key: string]: any;
-}
+export type GQLExtensions = Record<string, any>;
 
 export interface FetchResponseBody<TData = any> {
   data?: Partial<TData>;

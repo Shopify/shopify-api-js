@@ -57,11 +57,9 @@ export type BillingConfigItem<
   ? BillingConfigOneTimePlan | BillingConfigSubscriptionLineItemPlan
   : BillingConfigLegacyItem;
 
-export interface BillingConfig<
+export type BillingConfig<
   Future extends FutureFlagOptions = FutureFlagOptions,
-> {
-  [plan: string]: BillingConfigItem<Future>;
-}
+> = Record<string, BillingConfigItem<Future>>;
 
 export type RequestConfigOverrides =
   | Partial<BillingConfigOneTimePlan>

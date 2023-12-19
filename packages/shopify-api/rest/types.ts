@@ -1,14 +1,8 @@
-export interface IdSet {
-  [id: string]: string | number | null;
-}
+export type IdSet = Record<string, string | number | null>;
 
-export interface ParamSet {
-  [key: string]: any;
-}
+export type ParamSet = Record<string, any>;
 
-export interface Body {
-  [key: string]: any;
-}
+export type Body = Record<string, any>;
 
 export interface ResourcePath {
   http_method: string;
@@ -17,9 +11,7 @@ export interface ResourcePath {
   path: string;
 }
 
-export interface ShopifyRestResources {
-  [resource: string]: any;
-}
+export type ShopifyRestResources = Record<string, any>;
 
 export interface ResourceNames {
   singular: string;

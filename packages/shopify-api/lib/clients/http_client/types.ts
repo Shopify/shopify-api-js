@@ -2,9 +2,7 @@ import {Method} from '@shopify/network';
 
 import {Headers} from '../../../runtime/http';
 
-export interface HeaderParams {
-  [key: string]: string | number | string[];
-}
+export type HeaderParams = Record<string, string | number | string[]>;
 
 /* eslint-disable @shopify/typescript/prefer-pascal-case-enums */
 export enum DataType {
@@ -24,14 +22,14 @@ export type QueryParams =
 export interface GetRequestParams {
   path: string;
   type?: DataType;
-  data?: {[key: string]: unknown} | string;
-  query?: {[key: string]: QueryParams};
+  data?: Record<string, unknown> | string;
+  query?: Record<string, QueryParams>;
   extraHeaders?: HeaderParams;
   tries?: number;
 }
 
 export type PostRequestParams = GetRequestParams & {
-  data: {[key: string]: unknown} | string;
+  data: Record<string, unknown> | string;
 };
 
 export type PutRequestParams = PostRequestParams;

@@ -46,12 +46,9 @@ export type WebhookHandler =
   | EventBridgeWebhookHandler
   | PubSubWebhookHandler;
 
-export interface WebhookRegistry<
-  Handler extends WebhookHandler = WebhookHandler,
-> {
-  // See https://shopify.dev/docs/api/admin-graphql/latest/enums/webhooksubscriptiontopic for available topics
-  [topic: string]: Handler[];
-}
+// See https://shopify.dev/docs/api/admin-graphql/latest/enums/webhooksubscriptiontopic for available topics
+export type WebhookRegistry<Handler extends WebhookHandler = WebhookHandler> =
+  Record<string, Handler[]>;
 
 // eslint-disable-next-line no-warning-comments
 // TODO Rethink the wording for this enum - the operations we're doing are actually "subscribing" and "unsubscribing"
@@ -73,9 +70,7 @@ export interface RegisterResult {
   operation: WebhookOperation;
 }
 
-export interface RegisterReturn {
-  [topic: string]: RegisterResult[];
-}
+export type RegisterReturn = Record<string, RegisterResult[]>;
 
 export interface WebhookCheckResponseNode<
   T = {
@@ -115,9 +110,10 @@ export interface WebhookCheckResponse<T = WebhookCheckResponseNode> {
   };
 }
 
-export interface AddHandlersParams {
-  [topic: string]: WebhookHandler | WebhookHandler[];
-}
+export type AddHandlersParams = Record<
+  string,
+  WebhookHandler | WebhookHandler[]
+>;
 
 export interface WebhookProcessParams extends AdapterArgs {
   rawBody: string;

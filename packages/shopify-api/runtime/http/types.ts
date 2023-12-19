@@ -1,6 +1,4 @@
-export interface Headers {
-  [key: string]: string | string[];
-}
+export type Headers = Record<string, string | string[]>;
 
 export interface NormalizedRequest {
   method: string;

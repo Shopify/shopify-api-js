@@ -18,7 +18,7 @@ interface Test {
 const port: number = parseInt(process.env.HTTP_SERVER_PORT || '3000', 10);
 const errorStatusText = 'Did not work';
 const requestId = 'Request id header';
-const tests: {[key: string | number]: Test} = {
+const tests: Record<string | number, Test> = {
   200: {
     expectedRequest: initTestRequest(),
     testResponse: initTestResponse(),

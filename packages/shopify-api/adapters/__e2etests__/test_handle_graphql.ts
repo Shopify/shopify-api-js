@@ -27,7 +27,7 @@ export const handleGraphqlTest = async ({
   const graphqlClient = graphqlClientFactory(apiServer);
 
   let operation: string;
-  let variables: {[key: string]: any} | undefined;
+  let variables: Record<string, any> | undefined;
   try {
     const bodyJSON = JSON.parse(testRequest.body!);
     operation = bodyJSON.query;

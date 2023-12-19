@@ -1,6 +1,4 @@
-export interface MockResponse {
-  [key: string]: unknown;
-}
+export type MockResponse = Record<string, unknown>;
 
 export const TEST_WEBHOOK_ID = 'gid://shopify/WebhookSubscription/12345';
 

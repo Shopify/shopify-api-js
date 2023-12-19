@@ -1,4 +1,4 @@
-export function queryTemplate(template: string, params: {[key: string]: any}) {
+export function queryTemplate(template: string, params: Record<string, any>) {
   let query = template;
 
   Object.entries(params).forEach(([key, value]) => {
