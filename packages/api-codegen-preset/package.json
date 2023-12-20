@@ -75,6 +75,6 @@
     "graphql": "^16.8.1"
   },
   "devDependencies": {
-    "regenerator-runtime": "^0.14.0"
+    "regenerator-runtime": "^0.14.1"
   }
 }

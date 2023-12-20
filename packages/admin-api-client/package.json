@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "jest-environment-jsdom": "^29.5.0",
-    "regenerator-runtime": "^0.14.0"
+    "regenerator-runtime": "^0.14.1"
   },
   "bugs": {
     "url": "https://github.com/Shopify/shopify-api-js/issues"
