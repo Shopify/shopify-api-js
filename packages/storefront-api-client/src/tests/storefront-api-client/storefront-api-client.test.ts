@@ -24,7 +24,7 @@ jest.mock("@shopify/graphql-client", () => {
   return {
     ...jest.requireActual("@shopify/graphql-client"),
     createGraphQLClient: jest.fn(),
-    getCurrentSupportedAPIVersions: () => mockApiVersions,
+    getCurrentSupportedApiVersions: () => mockApiVersions,
   };
 });
 
