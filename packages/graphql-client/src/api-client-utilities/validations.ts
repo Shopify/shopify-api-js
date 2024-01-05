@@ -54,7 +54,7 @@ export function validateApiVersion({
   if (!currentSupportedApiVersions.includes(trimmedApiVersion)) {
     if (logger) {
       logger({
-        type: "UNSUPPORTED_API_VERSION",
+        type: "Unsupported_Api_Version",
         content: {
           apiVersion,
           supportedApiVersions: currentSupportedApiVersions,

@@ -23,7 +23,7 @@ export {
 } from "./operation-types";
 
 export interface UnsupportedApiVersionLog extends LogContent {
-  type: "UNSUPPORTED_API_VERSION";
+  type: "Unsupported_Api_Version";
   content: {
     apiVersion: string;
     supportedApiVersions: string[];
