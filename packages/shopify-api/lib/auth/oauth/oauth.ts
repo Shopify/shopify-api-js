@@ -194,15 +194,7 @@ export function callback(config: ConfigInterface): OAuthCallback {
     );
 
     if (!postResponse.ok) {
-      throwFailedRequest(
-        await postResponse.text(),
-        {
-          statusCode: postResponse.status,
-          statusText: postResponse.statusText,
-          headers: Object.fromEntries(postResponse.headers.entries()),
-        },
-        false,
-      );
+      throwFailedRequest(await postResponse.json(), postResponse, false);
     }
 
     const session: Session = createSession({

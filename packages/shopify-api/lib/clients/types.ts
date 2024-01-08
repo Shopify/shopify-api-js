@@ -23,9 +23,7 @@ export interface ClientArgs {
   retries?: number;
 }
 
-export interface HeaderParams {
-  [key: string]: string | number | string[];
-}
+export type HeaderParams = Record<string, string | number | string[]>;
 
 /* eslint-disable @shopify/typescript/prefer-pascal-case-enums */
 export enum DataType {
@@ -38,14 +36,14 @@ export enum DataType {
 export interface GetRequestParams {
   path: string;
   type?: DataType;
-  data?: {[key: string]: unknown} | string;
+  data?: Record<string, any> | string;
   query?: SearchParams;
   extraHeaders?: HeaderParams;
   tries?: number;
 }
 
 export type PostRequestParams = GetRequestParams & {
-  data: {[key: string]: unknown} | string;
+  data: Record<string, any> | string;
 };
 
 export type PutRequestParams = PostRequestParams;

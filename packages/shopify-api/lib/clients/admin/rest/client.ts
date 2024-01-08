@@ -54,7 +54,7 @@ export class RestClient {
   static RETRY_WAIT_TIME = 1000;
 
   static readonly DEPRECATION_ALERT_DELAY = 300000;
-  loggedDeprecations: {[key: string]: number} = {};
+  loggedDeprecations: Record<string, number> = {};
 
   readonly client: AdminRestApiClient;
 
@@ -160,26 +160,17 @@ export class RestClient {
         );
     }
 
-    const body = await response.text();
+    const body = await response.json<any>();
     const responseHeaders = canonicalizeHeaders(
       Object.fromEntries(response.headers.entries()),
     );
 
     if (!response.ok) {
-      throwFailedRequest(
-        body,
-        {
-          statusCode: response.status,
-          statusText: response.statusText,
-          headers: responseHeaders,
-        },
-        (params.tries ?? 1) <= 1,
-      );
+      throwFailedRequest(body, response, (params.tries ?? 1) <= 1);
     }
 
-    const jsonBody = JSON.parse(body);
     const requestReturn: RestRequestReturn<T> = {
-      body: jsonBody,
+      body,
       headers: responseHeaders,
     };
 

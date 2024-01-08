@@ -58,20 +58,13 @@ export function clientLoggerFactory(config: ConfigInterface) {
 }
 
 export function throwFailedRequest(
-  rawBody: string,
+  body: any,
   response: Awaited<ReturnType<AbstractFetchFunc>>,
   retry = true,
 ): never {
   const responseHeaders = canonicalizeHeaders(
     Object.fromEntries(response.headers.entries() ?? []),
   );
-
-  let body: any = rawBody;
-  try {
-    body = JSON.parse(rawBody);
-  } catch (error) {
-    // Do nothing
-  }
 
   if (response.status === StatusCode.Ok && body.errors.graphQLErrors) {
     throw new ShopifyErrors.GraphqlQueryError({

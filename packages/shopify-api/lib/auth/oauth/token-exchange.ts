@@ -59,15 +59,7 @@ export function tokenExchange(config: ConfigInterface): TokenExchange {
     );
 
     if (!postResponse.ok) {
-      throwFailedRequest(
-        await postResponse.text(),
-        {
-          statusCode: postResponse.status,
-          statusText: postResponse.statusText,
-          headers: Object.fromEntries(postResponse.headers.entries()),
-        },
-        false,
-      );
+      throwFailedRequest(await postResponse.json(), postResponse, false);
     }
 
     return {
