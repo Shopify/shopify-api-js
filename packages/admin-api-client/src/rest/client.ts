@@ -205,10 +205,8 @@ function generateClientLogger(logger?: Logger): Logger {
   };
 }
 
-function normalizedHeaders(headersObj: HeaderOptions): {
-  [key: string]: string;
-} {
-  const normalizedHeaders: { [key: string]: string } = {};
+function normalizedHeaders(headersObj: HeaderOptions): Record<string, string> {
+  const normalizedHeaders: Record<string, string> = {};
   for (const [key, value] of Object.entries(headersObj)) {
     normalizedHeaders[key.toLowerCase()] = Array.isArray(value)
       ? value.join(", ")

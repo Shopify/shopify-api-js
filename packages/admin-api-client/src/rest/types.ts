@@ -13,18 +13,14 @@ type SearchParamField = string | number;
 export type SearchParamFields =
   | SearchParamField
   | SearchParamField[]
-  | { [key: string]: SearchParamField | SearchParamField[] };
-export interface SearchParams {
-  [key: string]: SearchParamFields;
-}
+  | Record<string, SearchParamField | SearchParamField[]>;
+export type SearchParams = Record<string, SearchParamFields>;
 
-export interface HeaderOptions {
-  [key: string]: string | number | string[];
-}
+export type HeaderOptions = Record<string, string | number | string[]>;
 
 export interface GetRequestOptions {
   headers?: HeaderOptions;
-  data?: { [key: string]: any } | string;
+  data?: Record<string, any> | string;
   searchParams?: SearchParams;
   retries?: number;
   apiVersion?: string;
