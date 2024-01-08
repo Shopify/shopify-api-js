@@ -26,7 +26,7 @@ describe('Webhook resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"webhooks": [{"id": 4759306, "address": "https://apple.com", "topic": "orders/create", "created_at": "2023-10-04T09:49:37-04:00", "updated_at": "2023-10-04T09:49:37-04:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}, {"id": 892403750, "address": "https://example.org/fully_loaded_1", "topic": "orders/cancelled", "created_at": "2021-12-01T05:23:43-05:00", "updated_at": "2021-12-01T05:23:43-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}, {"id": 901431826, "address": "https://apple.com/uninstall", "topic": "app/uninstalled", "created_at": "2023-10-04T09:49:37-04:00", "updated_at": "2023-10-04T09:49:37-04:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}, {"id": 1014196360, "address": "https://example.org/app_uninstalled", "topic": "app/uninstalled", "created_at": "2023-10-04T09:49:37-04:00", "updated_at": "2023-10-04T09:49:37-04:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}]}));
+    queueMockResponse(JSON.stringify({"webhooks": [{"id": 4759306, "address": "https://apple.com", "topic": "orders/create", "created_at": "2024-01-02T08:59:11-05:00", "updated_at": "2024-01-02T08:59:11-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}, {"id": 892403750, "address": "https://example.org/fully_loaded_1", "topic": "orders/cancelled", "created_at": "2021-12-01T05:23:43-05:00", "updated_at": "2021-12-01T05:23:43-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}, {"id": 901431826, "address": "https://apple.com/uninstall", "topic": "app/uninstalled", "created_at": "2024-01-02T08:59:11-05:00", "updated_at": "2024-01-02T08:59:11-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}, {"id": 1014196360, "address": "https://example.org/app_uninstalled", "topic": "app/uninstalled", "created_at": "2024-01-02T08:59:11-05:00", "updated_at": "2024-01-02T08:59:11-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}]}));
 
     await shopify.rest.Webhook.all({
       session: session,
@@ -47,7 +47,7 @@ describe('Webhook resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"webhooks": [{"id": 1014196360, "address": "https://example.org/app_uninstalled", "topic": "app/uninstalled", "created_at": "2023-10-04T09:49:37-04:00", "updated_at": "2023-10-04T09:49:37-04:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}]}));
+    queueMockResponse(JSON.stringify({"webhooks": [{"id": 1014196360, "address": "https://example.org/app_uninstalled", "topic": "app/uninstalled", "created_at": "2024-01-02T08:59:11-05:00", "updated_at": "2024-01-02T08:59:11-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}]}));
 
     await shopify.rest.Webhook.all({
       session: session,
@@ -69,7 +69,7 @@ describe('Webhook resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"webhook": {"id": 6963638724, "address": "pubsub://projectName:topicName", "topic": "customers/update", "created_at": "2023-10-04T09:51:12-04:00", "updated_at": "2023-10-04T09:51:12-04:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
+    queueMockResponse(JSON.stringify({"webhook": {"id": 6883828544, "address": "pubsub://projectName:topicName", "topic": "customers/update", "created_at": "2024-01-02T09:06:06-05:00", "updated_at": "2024-01-02T09:06:06-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
 
     const webhook = new shopify.rest.Webhook({session: session});
     webhook.address = "pubsub://projectName:topicName";
@@ -92,7 +92,7 @@ describe('Webhook resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"webhook": {"id": 6963638717, "address": "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source", "topic": "customers/update", "created_at": "2023-10-04T09:50:58-04:00", "updated_at": "2023-10-04T09:50:58-04:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
+    queueMockResponse(JSON.stringify({"webhook": {"id": 6883828534, "address": "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source", "topic": "customers/update", "created_at": "2024-01-02T09:05:41-05:00", "updated_at": "2024-01-02T09:05:41-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
 
     const webhook = new shopify.rest.Webhook({session: session});
     webhook.address = "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source";
@@ -115,7 +115,7 @@ describe('Webhook resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"webhook": {"id": 6963638738, "address": "https://example.hostname.com/", "topic": "orders/create", "created_at": "2023-10-04T09:51:57-04:00", "updated_at": "2023-10-04T09:51:57-04:00", "format": "json", "fields": ["id", "note"], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
+    queueMockResponse(JSON.stringify({"webhook": {"id": 6883828554, "address": "https://example.hostname.com/", "topic": "orders/create", "created_at": "2024-01-02T09:06:30-05:00", "updated_at": "2024-01-02T09:06:30-05:00", "format": "json", "fields": ["id", "note"], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
 
     const webhook = new shopify.rest.Webhook({session: session});
     webhook.topic = "orders/create";
@@ -185,7 +185,7 @@ describe('Webhook resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"webhook": {"id": 4759306, "address": "https://apple.com", "topic": "orders/create", "created_at": "2023-10-04T09:49:37-04:00", "updated_at": "2023-10-04T09:49:37-04:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
+    queueMockResponse(JSON.stringify({"webhook": {"id": 4759306, "address": "https://apple.com", "topic": "orders/create", "created_at": "2024-01-02T08:59:11-05:00", "updated_at": "2024-01-02T08:59:11-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
 
     await shopify.rest.Webhook.find({
       session: session,
@@ -207,7 +207,7 @@ describe('Webhook resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"webhook": {"id": 4759306, "address": "https://somewhere-else.com/", "topic": "orders/create", "created_at": "2023-10-04T09:49:37-04:00", "updated_at": "2023-10-04T09:51:08-04:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
+    queueMockResponse(JSON.stringify({"webhook": {"id": 4759306, "address": "https://somewhere-else.com/", "topic": "orders/create", "created_at": "2024-01-02T08:59:11-05:00", "updated_at": "2024-01-02T09:08:15-05:00", "format": "json", "fields": [], "metafield_namespaces": [], "api_version": "unstable", "private_metafield_namespaces": []}}));
 
     const webhook = new shopify.rest.Webhook({session: session});
     webhook.id = 4759306;

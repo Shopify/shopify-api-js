@@ -60,6 +60,7 @@ export class PaymentTransaction extends Base {
     return response ? response.body : null;
   }
 
+  public adjustment_order_transactions: {[key: string]: unknown}[] | null;
   public amount: string | null;
   public currency: Currency | null | {[key: string]: any};
   public fee: string | null;
@@ -70,7 +71,7 @@ export class PaymentTransaction extends Base {
   public processed_at: string | null;
   public source_id: number | null;
   public source_order_id: number | null;
-  public source_order_transaction_id: number | null;
+  public source_order_transaction_id: string | null;
   public source_type: string | null;
   public test: boolean | null;
   public type: string | null;

@@ -49,7 +49,7 @@ describe('CarrierService resource', () => {
       testConfig({apiVersion: ApiVersion.January23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"carrier_services": [{"id": 1036894958, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894958", "format": "json", "callback_url": "http://example.com/"}, {"id": 260046840, "name": "ups_shipping", "active": true, "service_discovery": true, "carrier_service_type": "legacy", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/260046840"}]}));
+    queueMockResponse(JSON.stringify({"carrier_services": [{"id": 1036894957, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894957", "format": "json", "callback_url": "http://example.com/"}, {"id": 260046840, "name": "ups_shipping", "active": true, "service_discovery": true, "carrier_service_type": "legacy", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/260046840"}]}));
 
     await shopify.rest.CarrierService.all({
       session: session,
@@ -70,10 +70,10 @@ describe('CarrierService resource', () => {
       testConfig({apiVersion: ApiVersion.January23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"carrier_service": {"active": false, "id": 1036894957, "name": "Some new name", "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894957", "format": "json", "callback_url": "http://example.com/"}}));
+    queueMockResponse(JSON.stringify({"carrier_service": {"active": false, "id": 1036894958, "name": "Some new name", "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894958", "format": "json", "callback_url": "http://example.com/"}}));
 
     const carrier_service = new shopify.rest.CarrierService({session: session});
-    carrier_service.id = 1036894957;
+    carrier_service.id = 1036894958;
     carrier_service.name = "Some new name";
     carrier_service.active = false;
     await carrier_service.save({});
@@ -81,7 +81,7 @@ describe('CarrierService resource', () => {
     expect({
       method: 'PUT',
       domain,
-      path: '/admin/api/2023-01/carrier_services/1036894957.json',
+      path: '/admin/api/2023-01/carrier_services/1036894958.json',
       query: '',
       headers,
       data: { "carrier_service": {"name": "Some new name", "active": false} }
@@ -93,17 +93,17 @@ describe('CarrierService resource', () => {
       testConfig({apiVersion: ApiVersion.January23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"carrier_service": {"id": 1036894956, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894956", "format": "json", "callback_url": "http://example.com/"}}));
+    queueMockResponse(JSON.stringify({"carrier_service": {"id": 1036894954, "name": "Purolator", "active": true, "service_discovery": true, "carrier_service_type": "api", "admin_graphql_api_id": "gid://shopify/DeliveryCarrierService/1036894954", "format": "json", "callback_url": "http://example.com/"}}));
 
     await shopify.rest.CarrierService.find({
       session: session,
-      id: 1036894956,
+      id: 1036894954,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2023-01/carrier_services/1036894956.json',
+      path: '/admin/api/2023-01/carrier_services/1036894954.json',
       query: '',
       headers,
       data: undefined
@@ -119,13 +119,13 @@ describe('CarrierService resource', () => {
 
     await shopify.rest.CarrierService.delete({
       session: session,
-      id: 1036894954,
+      id: 1036894955,
     });
 
     expect({
       method: 'DELETE',
       domain,
-      path: '/admin/api/2023-01/carrier_services/1036894954.json',
+      path: '/admin/api/2023-01/carrier_services/1036894955.json',
       query: '',
       headers,
       data: undefined

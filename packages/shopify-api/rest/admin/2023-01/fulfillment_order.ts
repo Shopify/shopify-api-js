@@ -45,6 +45,7 @@ interface ReleaseHoldArgs {
 }
 interface RescheduleArgs {
   [key: string]: unknown;
+  new_fulfill_at?: unknown;
   body?: {[key: string]: unknown} | null;
 }
 interface SetFulfillmentOrdersDeadlineArgs {
@@ -227,6 +228,7 @@ export class FulfillmentOrder extends Base {
 
   public async reschedule(
     {
+      new_fulfill_at = null,
       body = null,
       ...otherArgs
     }: RescheduleArgs
@@ -236,7 +238,7 @@ export class FulfillmentOrder extends Base {
       operation: "reschedule",
       session: this.session,
       urlIds: {"id": this.id},
-      params: {...otherArgs},
+      params: {"new_fulfill_at": new_fulfill_at, ...otherArgs},
       body: body,
       entity: this,
     });
@@ -282,5 +284,5 @@ export class FulfillmentOrder extends Base {
   public shop_id: number | null;
   public status: string | null;
   public supported_actions: string[] | null;
-  public updated_at: {[key: string]: unknown} | null;
+  public updated_at: string | null;
 }

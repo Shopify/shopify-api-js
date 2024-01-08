@@ -26,7 +26,7 @@ describe('DiscountCode resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"discount_code": {"id": 1054381139, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2023-10-03T13:22:41-04:00", "updated_at": "2023-10-03T13:22:41-04:00"}}));
+    queueMockResponse(JSON.stringify({"discount_code": {"id": 1054381139, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2024-01-02T08:58:18-05:00", "updated_at": "2024-01-02T08:58:18-05:00"}}));
 
     const discount_code = new shopify.rest.DiscountCode({session: session});
     discount_code.price_rule_id = 507328175;
@@ -48,7 +48,7 @@ describe('DiscountCode resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"discount_codes": [{"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2023-10-03T13:19:52-04:00", "updated_at": "2023-10-03T13:19:52-04:00"}]}));
+    queueMockResponse(JSON.stringify({"discount_codes": [{"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2024-01-02T08:56:04-05:00", "updated_at": "2024-01-02T08:56:04-05:00"}]}));
 
     await shopify.rest.DiscountCode.all({
       session: session,
@@ -70,7 +70,7 @@ describe('DiscountCode resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "WINTERSALE20OFF", "usage_count": 0, "created_at": "2023-10-03T13:19:52-04:00", "updated_at": "2023-10-03T13:22:42-04:00"}}));
+    queueMockResponse(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "WINTERSALE20OFF", "usage_count": 0, "created_at": "2024-01-02T08:56:04-05:00", "updated_at": "2024-01-02T08:58:12-05:00"}}));
 
     const discount_code = new shopify.rest.DiscountCode({session: session});
     discount_code.price_rule_id = 507328175;
@@ -93,7 +93,7 @@ describe('DiscountCode resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2023-10-03T13:19:52-04:00", "updated_at": "2023-10-03T13:19:52-04:00"}}));
+    queueMockResponse(JSON.stringify({"discount_code": {"id": 507328175, "price_rule_id": 507328175, "code": "SUMMERSALE10OFF", "usage_count": 0, "created_at": "2024-01-02T08:56:04-05:00", "updated_at": "2024-01-02T08:56:04-05:00"}}));
 
     await shopify.rest.DiscountCode.find({
       session: session,
@@ -160,7 +160,7 @@ describe('DiscountCode resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"discount_code_creation": {"id": 989355119, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2023-10-03T13:22:38-04:00", "updated_at": "2023-10-03T13:22:38-04:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
+    queueMockResponse(JSON.stringify({"discount_code_creation": {"id": 989355119, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2024-01-02T08:58:20-05:00", "updated_at": "2024-01-02T08:58:20-05:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
 
     const discount_code = new shopify.rest.DiscountCode({session: session});
     discount_code.price_rule_id = 507328175;
@@ -183,7 +183,7 @@ describe('DiscountCode resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"discount_code_creation": {"id": 173232803, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2023-10-03T13:19:52-04:00", "updated_at": "2023-10-03T13:19:52-04:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
+    queueMockResponse(JSON.stringify({"discount_code_creation": {"id": 173232803, "price_rule_id": 507328175, "started_at": null, "completed_at": null, "created_at": "2024-01-02T08:56:04-05:00", "updated_at": "2024-01-02T08:56:04-05:00", "status": "queued", "codes_count": 3, "imported_count": 0, "failed_count": 0, "logs": []}}));
 
     await shopify.rest.DiscountCode.get_all({
       session: session,
