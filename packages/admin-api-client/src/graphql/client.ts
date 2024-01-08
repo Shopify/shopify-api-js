@@ -8,21 +8,18 @@ import {
 } from "@shopify/graphql-client";
 
 import {
-  AdminApiClientOptions,
-  AdminApiClient,
-  AdminApiClientConfig,
-  AdminOperations,
-} from "./types";
-import {
   DEFAULT_CONTENT_TYPE,
   ACCESS_TOKEN_HEADER,
   CLIENT,
   DEFAULT_CLIENT_VERSION,
-} from "./constants";
+} from "../constants";
 import {
   validateRequiredAccessToken,
   validateServerSideUsage,
-} from "./validations";
+} from "../validations";
+import { AdminApiClientConfig, AdminApiClientOptions } from "../types";
+
+import { AdminApiClient, AdminOperations } from "./types";
 
 export function createAdminApiClient({
   storeDomain,

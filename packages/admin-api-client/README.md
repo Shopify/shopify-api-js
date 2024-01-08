@@ -42,6 +42,9 @@ const {data, errors, extensions} = await client.request(operation, {
 });
 ```
 
+> [!NOTE]
+> If you want to query the Admin REST API, you can [use the REST client](#using-the-rest-api-client) instead.
+
 ### `createAdminApiClient()` parameters
 
 | Property            | Type             | Description                                                                                                                                                                                                                                          |
@@ -51,7 +54,7 @@ const {data, errors, extensions} = await client.request(operation, {
 | accessToken         | `string`         | The Admin API access token |
 | userAgentPrefix?    | `string`         | Any prefix you wish to include in the User-Agent for requests made by the library. |
 | retries?            | `number`         | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. Maximum value is `3`. |
-| customFetchAPI?     | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
+| customFetchApi?     | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
 | logger?             | `(logContent:`[`UnsupportedApiVersionLog`](#unsupportedapiversionlog) ` \| `[`HTTPResponseLog`](#httpresponselog)`\|`[`HTTPRetryLog`](#httpretrylog)`) => void` | A logger function that accepts [log content objects](#log-content-types). This logger will be called in certain conditions with contextual information. |
 
 ## Client properties
@@ -361,3 +364,147 @@ This log content is sent to the logger whenever the client attempts to retry HTT
 | -------- | ------------------------ | ---------------------------------- |
 | url      | `string`                 | Requested URL            |
 | init?  | `{method?: string, headers?: HeaderInit, body?: string}` | The request information  |
+
+## Using the REST API client
+
+Initialize the client:
+
+```typescript
+import {createAdminRestApiClient} from '@shopify/admin-api-client';
+
+const client = createAdminRestApiClient({
+  storeDomain: 'your-shop-name.myshopify.com',
+  apiVersion: '2023-04',
+  accessToken: 'your-admin-api-access-token',
+});
+```
+
+Query for a product:
+
+```typescript
+const response = await client.get("products/1234567890");
+
+if (response.ok) {
+  const body = await response.json();
+}
+```
+
+### `createAdminRestApiClient()` parameters
+
+| Property            | Type              | Description                                                                                                                                                                                                                                          |
+| ------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| storeDomain         | `string`          | The `myshopify.com` domain |
+| apiVersion          | `string`          | The requested Admin API version |
+| accessToken         | `string`          | The Admin API access token |
+| userAgentPrefix?    | `string`          | Any prefix you wish to include in the User-Agent for requests made by the library. |
+| retries?            | `number`          | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. Maximum value is `3`. |
+| customFetchApi?     | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
+| logger?             | `(logContent:`[`UnsupportedApiVersionLog`](#unsupportedapiversionlog) ` \| `[`HTTPResponseLog`](#httpresponselog)`\|`[`HTTPRetryLog`](#httpretrylog)`) => void` | A logger function that accepts [log content objects](#log-content-types). This logger will be called in certain conditions with contextual information. |
+| scheme?             | `http` \| `https` | The HTTP scheme to use for requests |
+| defaultRetryTime?   | `number`          | How long to wait for a retry when missing the `Retry-After` header |
+| formatPaths?        | `boolean`         | Whether to format paths, e.g. `products/123` => `/products/123.json` |
+
+## Client properties
+
+| Property      | Type                                                            | Description                                                                                                                                                                    |
+| ------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| get    | `(path: string, options?:`[`GetRequestOptions`](#getrequestoptions-properties)`) => Promise<Response>` | Performs a GET request to the API. |
+| post   | `(path: string, options?:`[`PostRequestOptions`](#postrequestoptions-properties)`) => Promise<Response>` | Performs a POST request to the API. |
+| put    | `(path: string, options?:`[`PutRequestOptions`](#putrequestoptions-properties)`) => Promise<Response>` | Performs a PUT request to the API. |
+| delete | `(path: string, options?:`[`DeleteRequestOptions`](#deleterequestoptions-properties)`) => Promise<Response>` | Performs a DELETE request to the API. |
+
+## `GetRequestOptions` properties
+
+| Name          | Type                                    | Description                                           |
+| ------------- | --------------------------------------- | ----------------------------------------------------- |
+| apiVersion?   | `string`                                | The Admin API version to use in the API request.      |
+| headers?      | `{[key: string]: string}`               | Customized headers to be included in the API request. |
+| searchParams? | `{ [key: string]: string \| number[] }` | Any extra query string arguments to include in the request. |
+| retries?      | `number`                                | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3.` |
+| data?         | `{ [key: string]: any } \| string`      | Request body data.                                    |
+
+## `PostRequestOptions` properties
+
+Same options as for [GET requests](#getrequestoptions-properties), but `data` isn't optional.
+
+## `PutRequestOptions` properties
+
+Same options as for [POST requests](#postrequestoptions-properties).
+
+## `DeleteRequestOptions` properties
+
+Same options as for [GET requests](#getrequestoptions-properties).
+
+## Usage examples
+
+### Query for a product
+
+```typescript
+const response = await client.get("products/1234567890");
+
+if (response.ok) {
+  const body = await response.json();
+}
+```
+
+### Update a product
+
+```typescript
+const response = await client.put("products/1234567890",
+  {
+    data: {
+      product: {
+        handle: "my-new-handle",
+      }
+    }
+  }
+);
+
+if (response.ok) {
+  const body = await response.json();
+}
+```
+
+### Dynamically set the Admin API version per data fetch
+
+```typescript
+const response = await client.get("products/1234567890",
+  {
+    apiVersion: '2023-01',
+  }
+);
+
+if (response.ok) {
+  const body = await response.json();
+}
+```
+
+### Add custom headers to API request
+
+```typescript
+const response = await client.get("products/1234567890",
+  {
+    headers: {
+      'X-My-Custom-Header': "1",
+    },
+  }
+);
+
+if (response.ok) {
+  const body = await response.json();
+}
+```
+
+### Dynamically set the number of retries per request
+
+```typescript
+const response = await client.get("products/1234567890",
+  {
+    retries: 2,
+  }
+);
+
+if (response.ok) {
+  const body = await response.json();
+}
+```
