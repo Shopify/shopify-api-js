@@ -148,7 +148,7 @@ describe("validateRequiredApiVersion()", () => {
     );
   });
 
-  it("logs an UNSUPPORTED_API_VERSION log object when a logger is provided and the api version is not supported", () => {
+  it("logs an Unsupported_Api_Version log object when a logger is provided and the api version is not supported", () => {
     const apiVersion = "2021-10";
     const logger = jest.fn();
 
@@ -160,7 +160,7 @@ describe("validateRequiredApiVersion()", () => {
     });
 
     expect(logger).toHaveBeenCalledWith({
-      type: "UNSUPPORTED_API_VERSION",
+      type: "Unsupported_Api_Version",
       content: {
         apiVersion,
         supportedApiVersions: mockApiVersions,

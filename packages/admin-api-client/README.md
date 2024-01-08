@@ -334,7 +334,7 @@ This log content is sent to the logger whenever an unsupported API version is pr
 
 | Property | Type                     | Description                        |
 | -------- | ------------------------ | ---------------------------------- |
-| type      | `LogType['UNSUPPORTED_API_VERSION']`                 | The type of log content. Is always set to `UNSUPPORTED_API_VERSION`            |
+| type      | `LogType['Unsupported_Api_Version']`                 | The type of log content. Is always set to `Unsupported_Api_Version`            |
 | content  | `{apiVersion: string, supportedApiVersions: string[]}` | Contextual info including the provided API version and the list of currently supported API versions. |
 
 ### `HTTPResponseLog`
