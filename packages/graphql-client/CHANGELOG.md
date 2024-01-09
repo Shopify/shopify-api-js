@@ -1,5 +1,24 @@
 # @shopify/graphql-client
 
+## 0.9.0
+
+### Minor Changes
+
+- 0286e7fe: Export a REST API client from `admin-api-client`, with an API that is similar to the GraphQL client.
+- 18781092: Updated shopify-api GraphQL clients' APIs to be closer to the underlying clients
+- 2b9e06f6: Add the raw network response object to `ResponseErrors`
+- 194ddcf2: Update api version validation error, generic error messages and client types
+- c9622cd7: Update `UNSUPPORTED_API_VERSION` log type to `Unsupported_Api_Version` for consistent log type format
+
+### Patch Changes
+
+- 218f4521: Use the new GraphQL API clients in shopify-api to use all of the latest features, including automatic types for query / mutation return object and variables.
+
+  For more information and examples, see the [migration guide to v9](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#using-the-new-clients).
+
+- 49952d66: Fix `ResponseWithType` to correctly type the `json` return value
+- 82ee942e: Update `ResponseWithType` type to extend from the `Response` type
+
 ## 0.8.0
 
 ### Minor Changes

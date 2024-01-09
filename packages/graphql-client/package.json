@@ -1,6 +1,6 @@
 {
   "name": "@shopify/graphql-client",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Shopify GraphQL Client - A lightweight generic GraphQL JS client to interact with Shopify GraphQL APIs",
   "repository": {
     "type": "git",

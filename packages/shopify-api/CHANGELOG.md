@@ -1,5 +1,61 @@
 # Changelog
 
+## 9.0.0
+
+### Major Changes
+
+- 64f61414: > [!NOTE]
+
+  > This change only affects apps that are using custom runtime adapters.
+  > If you're using a default adapter from this package, you don't need to make this change.
+
+  Changed `setAbstractFetchFunc` to accept a `fetch` API instead of one based on `NormalizedRequest` and `NormalizedResponse`.
+
+  With this change, we can return a `Response` object for requests with the upcoming clients, which can help make the interface for requests more familiar to users.
+
+  For more information and examples, see the [migration guide to v9](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#changes-to-runtime-adapters).
+
+- 7bd4be08: Rephrased `gdprTopics` to `privacyTopics` to account for other privacy regulations with data subject requests.
+
+  This changes the name of the exported object.
+  You can fix this by changing your `import` statements:
+
+  Before:
+
+  ```ts
+  import { gdprTopics } from "@shopify/shopify-api";
+  ```
+
+  After:
+
+  ```ts
+  import { privacyTopics } from "@shopify/shopify-api";
+  ```
+
+### Minor Changes
+
+- 83b15905: Allow access tokens to be marked as expired before actual expiry.
+- 218f4521: Use the new GraphQL API clients in shopify-api to use all of the latest features, including automatic types for query / mutation return object and variables.
+
+  For more information and examples, see the [migration guide to v9](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#using-the-new-clients).
+
+- 18781092: Updated shopify-api GraphQL clients' APIs to be closer to the underlying clients
+- 4dd7612d: Underpinned the new REST client from `admin-api-client` into `shopify-api`, so apps can access it as a standalone client as well.
+- 5e85e15b: Added support for the 2024-01 API version.
+- 64cda80a: Add helpers to convert between shop admin URLs and legacy URLs. `sanitizeShop` utility method can now support shop admin URLs.
+
+### Patch Changes
+
+- Updated dependencies [88858305]
+- Updated dependencies [218f4521]
+- Updated dependencies [0286e7fe]
+- Updated dependencies [18781092]
+- Updated dependencies [2b9e06f6]
+- Updated dependencies [194ddcf2]
+- Updated dependencies [c9622cd7]
+  - @shopify/admin-api-client@0.2.0
+  - @shopify/storefront-api-client@0.2.0
+
 ## 8.1.1
 
 ### Patch Changes
