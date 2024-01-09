@@ -26,7 +26,7 @@ describe('GiftCardAdjustment resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"adjustments": [{"id": 1064273908, "gift_card_id": 1035197676, "api_client_id": null, "user_id": null, "order_transaction_id": null, "number": null, "amount": "10.00", "processed_at": null, "created_at": "2024-01-02T09:28:43-05:00", "updated_at": "2024-01-02T09:28:43-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}]}));
+    queueMockResponse(JSON.stringify({"adjustments": [{"id": 1064273908, "gift_card_id": 1035197676, "api_client_id": null, "user_id": null, "order_transaction_id": null, "number": null, "amount": "10.00", "processed_at": null, "created_at": "2024-01-03T11:57:29-05:00", "updated_at": "2024-01-03T11:57:29-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}]}));
 
     await shopify.rest.GiftCardAdjustment.all({
       session: session,
@@ -48,7 +48,7 @@ describe('GiftCardAdjustment resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273913, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2024-01-02T09:31:22-05:00", "created_at": "2024-01-02T09:31:22-05:00", "updated_at": "2024-01-02T09:31:22-05:00", "note": null, "remote_transaction_ref": "gift_card_app_transaction_193402", "remote_transaction_url": "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}}));
+    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273909, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2024-01-03T11:58:04-05:00", "created_at": "2024-01-03T11:58:04-05:00", "updated_at": "2024-01-03T11:58:04-05:00", "note": null, "remote_transaction_ref": "gift_card_app_transaction_193402", "remote_transaction_url": "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}}));
 
     const gift_card_adjustment = new shopify.rest.GiftCardAdjustment({session: session});
     gift_card_adjustment.gift_card_id = 1035197676;
@@ -72,7 +72,7 @@ describe('GiftCardAdjustment resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273914, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2024-01-02T09:31:24-05:00", "created_at": "2024-01-02T09:31:24-05:00", "updated_at": "2024-01-02T09:31:24-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273912, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2024-01-03T11:58:07-05:00", "created_at": "2024-01-03T11:58:07-05:00", "updated_at": "2024-01-03T11:58:07-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}}));
 
     const gift_card_adjustment = new shopify.rest.GiftCardAdjustment({session: session});
     gift_card_adjustment.gift_card_id = 1035197676;
@@ -95,7 +95,7 @@ describe('GiftCardAdjustment resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273912, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "-20.00", "processed_at": "2024-01-02T09:31:21-05:00", "created_at": "2024-01-02T09:31:21-05:00", "updated_at": "2024-01-02T09:31:21-05:00", "note": "Customer spent $20 via external service", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273911, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "-20.00", "processed_at": "2024-01-03T11:58:06-05:00", "created_at": "2024-01-03T11:58:06-05:00", "updated_at": "2024-01-03T11:58:06-05:00", "note": "Customer spent $20 via external service", "remote_transaction_ref": null, "remote_transaction_url": null}}));
 
     const gift_card_adjustment = new shopify.rest.GiftCardAdjustment({session: session});
     gift_card_adjustment.gift_card_id = 1035197676;
@@ -118,12 +118,12 @@ describe('GiftCardAdjustment resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273911, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2023-07-02T09:31:20-04:00", "created_at": "2024-01-02T09:31:20-05:00", "updated_at": "2024-01-02T09:31:20-05:00", "note": null, "remote_transaction_ref": null, "remote_transaction_url": null}}));
+    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273910, "gift_card_id": 1035197676, "api_client_id": 755357713, "user_id": null, "order_transaction_id": null, "number": 1, "amount": "10.00", "processed_at": "2023-07-03T11:58:04-04:00", "created_at": "2024-01-03T11:58:04-05:00", "updated_at": "2024-01-03T11:58:04-05:00", "note": null, "remote_transaction_ref": null, "remote_transaction_url": null}}));
 
     const gift_card_adjustment = new shopify.rest.GiftCardAdjustment({session: session});
     gift_card_adjustment.gift_card_id = 1035197676;
     gift_card_adjustment.amount = 10.0;
-    gift_card_adjustment.processed_at = "2023-07-02T09:31:20-04:00";
+    gift_card_adjustment.processed_at = "2023-07-03T11:58:04-04:00";
     await gift_card_adjustment.save({});
 
     expect({
@@ -132,7 +132,7 @@ describe('GiftCardAdjustment resource', () => {
       path: '/admin/api/2023-10/gift_cards/1035197676/adjustments.json',
       query: '',
       headers,
-      data: { "adjustment": {"amount": 10.0, "processed_at": "2023-07-02T09:31:20-04:00"} }
+      data: { "adjustment": {"amount": 10.0, "processed_at": "2023-07-03T11:58:04-04:00"} }
     }).toMatchMadeHttpRequest();
   });
 
@@ -141,7 +141,7 @@ describe('GiftCardAdjustment resource', () => {
       testConfig({apiVersion: ApiVersion.October23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273908, "gift_card_id": 1035197676, "api_client_id": null, "user_id": null, "order_transaction_id": null, "number": null, "amount": "10.00", "processed_at": null, "created_at": "2024-01-02T09:28:43-05:00", "updated_at": "2024-01-02T09:28:43-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}}));
+    queueMockResponse(JSON.stringify({"adjustment": {"id": 1064273908, "gift_card_id": 1035197676, "api_client_id": null, "user_id": null, "order_transaction_id": null, "number": null, "amount": "10.00", "processed_at": null, "created_at": "2024-01-03T11:57:29-05:00", "updated_at": "2024-01-03T11:57:29-05:00", "note": "Customer refilled gift card by $10", "remote_transaction_ref": null, "remote_transaction_url": null}}));
 
     await shopify.rest.GiftCardAdjustment.find({
       session: session,
