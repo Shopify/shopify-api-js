@@ -79,7 +79,7 @@ export function createAdminRestApiClient({
   );
   const clientLogger = generateClientLogger(logger);
   const httpFetch = generateHttpFetch({
-    fetchApi: customFetchApi,
+    customFetchApi,
     clientLogger,
     defaultRetryWaitTime: defaultRetryTime,
     client: CLIENT,

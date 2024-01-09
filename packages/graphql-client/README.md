@@ -26,6 +26,24 @@ const client = createGraphQLClient({
 });
 ```
 
+### Create a server enabled client using a custom Fetch API
+
+In order to use the client within a server, a server enabled JS Fetch API will need to be provided to the client at initialization. By default, the client uses `window.fetch` for network requests.
+
+```typescript
+import {createGraphQLClient} from '@shopify/graphql-client';
+import {fetch as nodeFetch} from 'node-fetch';
+
+const client = createGraphQLClient({
+  url: 'http://your-shop-name.myshopify.com/api/2023-10/graphql.json',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Shopify-Storefront-Access-Token': 'public-token',
+  },
+  customFetchApi: fetch
+});
+```
+
 ### `createGraphQLClient()` parameters
 
 | Property | Type                     | Description                        |
@@ -33,7 +51,7 @@ const client = createGraphQLClient({
 | url      | `string`                 | The GraphQL API URL             |
 | headers  | `{[key: string]: string}` | Headers to be included in requests |
 | retries?  | `number` | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. Maximum value is `3`. |
-| fetchApi?  | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
+| customFetchApi?  | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
 | logger?  | `(logContent: `[`HTTPResponseLog`](#httpresponselog)`\|`[`HTTPRetryLog`](#httpretrylog)`) => void` | A logger function that accepts [log content objects](#log-content-types). This logger will be called in certain conditions with contextual information.  |
 
 ## Client properties

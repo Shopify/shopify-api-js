@@ -27,7 +27,7 @@ export function createAdminApiClient({
   accessToken,
   userAgentPrefix,
   retries = 0,
-  customFetchApi: clientFetchApi,
+  customFetchApi,
   logger,
 }: AdminApiClientOptions): AdminApiClient {
   const currentSupportedApiVersions = getCurrentSupportedApiVersions();
@@ -78,7 +78,7 @@ export function createAdminApiClient({
     headers: config.headers,
     url: config.apiUrl,
     retries,
-    fetchApi: clientFetchApi,
+    customFetchApi,
     logger,
   });
 
