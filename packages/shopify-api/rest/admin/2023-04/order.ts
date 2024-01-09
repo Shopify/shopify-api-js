@@ -295,13 +295,11 @@ export class Order extends Base {
   public order_status_url: string | null;
   public original_total_additional_fees_set: {[key: string]: unknown} | null;
   public original_total_duties_set: {[key: string]: unknown} | null;
-  public payment_details: {[key: string]: unknown} | null;
   public payment_gateway_names: string[] | null;
   public payment_terms: {[key: string]: unknown} | null;
   public phone: string | null;
   public presentment_currency: string | null;
   public processed_at: string | null;
-  public processing_method: string | null;
   public referring_site: string | null;
   public refunds: Refund[] | null | {[key: string]: any};
   public shipping_address: {[key: string]: unknown} | null;

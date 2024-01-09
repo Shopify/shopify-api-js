@@ -26,7 +26,7 @@ describe('Policy resource', () => {
       testConfig({apiVersion: ApiVersion.April23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"policies": [{"body": "You have 30 days to get a refund", "created_at": "2023-10-03T13:18:49-04:00", "updated_at": "2023-10-03T13:18:49-04:00", "handle": "refund-policy", "title": "Refund policy", "url": "https://jsmith.myshopify.com/548380009/policies/878590288"}]}));
+    queueMockResponse(JSON.stringify({"policies": [{"body": "You have 30 days to get a refund", "created_at": "2024-01-02T08:58:20-05:00", "updated_at": "2024-01-02T08:58:20-05:00", "handle": "refund-policy", "title": "Refund policy", "url": "https://jsmith.myshopify.com/548380009/policies/997884056"}]}));
 
     await shopify.rest.Policy.all({
       session: session,

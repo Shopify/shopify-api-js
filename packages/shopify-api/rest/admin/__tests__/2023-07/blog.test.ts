@@ -26,7 +26,7 @@ describe('Blog resource', () => {
       testConfig({apiVersion: ApiVersion.July23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"blogs": [{"id": 382285388, "handle": "banana-blog", "title": "A Gnu Blog", "updated_at": "2006-02-02T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:17:01-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/382285388"}, {"id": 241253187, "handle": "apple-blog", "title": "Mah Blog", "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:17:01-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}]}));
+    queueMockResponse(JSON.stringify({"blogs": [{"id": 382285388, "handle": "banana-blog", "title": "A Gnu Blog", "updated_at": "2006-02-02T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T08:59:11-05:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/382285388"}, {"id": 241253187, "handle": "apple-blog", "title": "Mah Blog", "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T08:59:11-05:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}]}));
 
     await shopify.rest.Blog.all({
       session: session,
@@ -47,7 +47,7 @@ describe('Blog resource', () => {
       testConfig({apiVersion: ApiVersion.July23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"blogs": [{"id": 382285388, "handle": "banana-blog", "title": "A Gnu Blog", "updated_at": "2006-02-02T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:17:01-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/382285388"}, {"id": 1008414252, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2023-10-03T13:19:03-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:19:03-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414252"}]}));
+    queueMockResponse(JSON.stringify({"blogs": [{"id": 382285388, "handle": "banana-blog", "title": "A Gnu Blog", "updated_at": "2006-02-02T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T08:59:11-05:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/382285388"}, {"id": 1008414253, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2024-01-02T09:12:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T09:12:00-05:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414253"}]}));
 
     await shopify.rest.Blog.all({
       session: session,
@@ -69,7 +69,7 @@ describe('Blog resource', () => {
       testConfig({apiVersion: ApiVersion.July23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"blog": {"id": 1008414250, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2023-10-03T13:18:56-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:18:56-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414250"}}));
+    queueMockResponse(JSON.stringify({"blog": {"id": 1008414249, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2024-01-02T09:11:50-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T09:11:50-05:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414249"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.title = "Apple main blog";
@@ -90,7 +90,7 @@ describe('Blog resource', () => {
       testConfig({apiVersion: ApiVersion.July23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"blog": {"id": 1008414251, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2023-10-03T13:18:57-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:18:57-04:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414251"}}));
+    queueMockResponse(JSON.stringify({"blog": {"id": 1008414248, "handle": "apple-main-blog", "title": "Apple main blog", "updated_at": "2024-01-02T09:11:48-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T09:11:48-05:00", "template_suffix": null, "tags": "", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/1008414248"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.title = "Apple main blog";
@@ -140,7 +140,7 @@ describe('Blog resource', () => {
       testConfig({apiVersion: ApiVersion.July23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"blog": {"id": 241253187, "handle": "apple-blog", "title": "Mah Blog", "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:17:01-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
+    queueMockResponse(JSON.stringify({"blog": {"id": 241253187, "handle": "apple-blog", "title": "Mah Blog", "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T08:59:11-05:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
 
     await shopify.rest.Blog.find({
       session: session,
@@ -185,7 +185,7 @@ describe('Blog resource', () => {
       testConfig({apiVersion: ApiVersion.July23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"blog": {"title": "Mah Blog", "handle": "apple-blog", "id": 241253187, "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:17:01-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
+    queueMockResponse(JSON.stringify({"blog": {"title": "Mah Blog", "handle": "apple-blog", "id": 241253187, "updated_at": "2006-02-01T19:00:00-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T08:59:11-05:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.id = 241253187;
@@ -214,7 +214,7 @@ describe('Blog resource', () => {
       testConfig({apiVersion: ApiVersion.July23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"blog": {"title": "IPod Updates", "handle": "apple-blog", "id": 241253187, "updated_at": "2023-10-03T13:18:59-04:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:17:01-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
+    queueMockResponse(JSON.stringify({"blog": {"title": "IPod Updates", "handle": "apple-blog", "id": 241253187, "updated_at": "2024-01-02T09:11:50-05:00", "commentable": "no", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T08:59:11-05:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.id = 241253187;
@@ -236,7 +236,7 @@ describe('Blog resource', () => {
       testConfig({apiVersion: ApiVersion.July23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"blog": {"title": "IPod Updates", "handle": "ipod-updates", "commentable": "moderate", "id": 241253187, "updated_at": "2023-10-03T13:19:05-04:00", "feedburner": null, "feedburner_location": null, "created_at": "2023-10-03T13:17:01-04:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
+    queueMockResponse(JSON.stringify({"blog": {"title": "IPod Updates", "handle": "ipod-updates", "commentable": "moderate", "id": 241253187, "updated_at": "2024-01-02T09:12:01-05:00", "feedburner": null, "feedburner_location": null, "created_at": "2024-01-02T08:59:11-05:00", "template_suffix": null, "tags": "Announcing, Mystery", "admin_graphql_api_id": "gid://shopify/OnlineStoreBlog/241253187"}}));
 
     const blog = new shopify.rest.Blog({session: session});
     blog.id = 241253187;

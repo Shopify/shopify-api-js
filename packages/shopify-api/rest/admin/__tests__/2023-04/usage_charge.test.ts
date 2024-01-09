@@ -26,7 +26,7 @@ describe('UsageCharge resource', () => {
       testConfig({apiVersion: ApiVersion.April23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618213, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2023-10-03T13:21:00-04:00", "currency": "USD", "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
+    queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618213, "description": "Super Mega Plan 1000 emails", "price": "1.00", "created_at": "2024-01-02T09:31:50-05:00", "currency": "USD", "balance_used": 11.0, "balance_remaining": 89.0, "risk_level": 0}}));
 
     const usage_charge = new shopify.rest.UsageCharge({session: session});
     usage_charge.recurring_application_charge_id = 455696195;
@@ -49,7 +49,7 @@ describe('UsageCharge resource', () => {
       testConfig({apiVersion: ApiVersion.April23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"usage_charges": [{"id": 1034618208, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2023-10-03T13:20:57-04:00", "currency": "USD", "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
+    queueMockResponse(JSON.stringify({"usage_charges": [{"id": 1034618206, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2024-01-02T09:31:46-05:00", "currency": "USD", "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}]}));
 
     await shopify.rest.UsageCharge.all({
       session: session,
@@ -71,18 +71,18 @@ describe('UsageCharge resource', () => {
       testConfig({apiVersion: ApiVersion.April23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618209, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2023-10-03T13:20:58-04:00", "currency": "USD", "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
+    queueMockResponse(JSON.stringify({"usage_charge": {"id": 1034618211, "description": "Super Mega Plan Add-ons", "price": "10.00", "created_at": "2024-01-02T09:31:49-05:00", "currency": "USD", "balance_used": 10.0, "balance_remaining": 90.0, "risk_level": 0}}));
 
     await shopify.rest.UsageCharge.find({
       session: session,
       recurring_application_charge_id: 455696195,
-      id: 1034618209,
+      id: 1034618211,
     });
 
     expect({
       method: 'GET',
       domain,
-      path: '/admin/api/2023-04/recurring_application_charges/455696195/usage_charges/1034618209.json',
+      path: '/admin/api/2023-04/recurring_application_charges/455696195/usage_charges/1034618211.json',
       query: '',
       headers,
       data: undefined

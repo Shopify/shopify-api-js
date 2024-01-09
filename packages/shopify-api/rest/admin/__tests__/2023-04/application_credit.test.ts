@@ -48,7 +48,7 @@ describe('ApplicationCredit resource', () => {
       testConfig({apiVersion: ApiVersion.April23, restResources}),
     );
 
-    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636125, "amount": "5.00", "description": "application credit for refund", "test": true, "currency": "USD"}}));
+    queueMockResponse(JSON.stringify({"application_credit": {"id": 1031636126, "amount": "5.00", "description": "application credit for refund", "test": true, "currency": "USD"}}));
 
     const application_credit = new shopify.rest.ApplicationCredit({session: session});
     application_credit.description = "application credit for refund";
