@@ -4,8 +4,9 @@
 
 ### Major Changes
 
-- 64f61414: > [!NOTE]
+- 64f61414:
 
+  > [!NOTE]
   > This change only affects apps that are using custom runtime adapters.
   > If you're using a default adapter from this package, you don't need to make this change.
 
