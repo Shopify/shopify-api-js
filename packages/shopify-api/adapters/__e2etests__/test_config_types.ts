@@ -1,7 +1,7 @@
 import {ChildProcess} from 'child_process';
 
 import {NormalizedRequest, NormalizedResponse} from '../../runtime/http';
-import {DataType} from '../../lib/clients/http_client/types';
+import {DataType} from '../../lib/clients/types';
 
 export enum TestType {
   Rest = 'rest',

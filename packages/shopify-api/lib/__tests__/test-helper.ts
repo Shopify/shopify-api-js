@@ -11,7 +11,7 @@ import {
   NormalizedResponse,
 } from '../../runtime/http';
 import {Session} from '../session/session';
-import {RequestReturn} from '../clients/http_client/types';
+import {RequestReturn} from '../clients/types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../version';
 
 declare global {
