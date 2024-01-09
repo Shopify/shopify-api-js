@@ -2,6 +2,7 @@ import {Headers, canonicalizeHeaders} from '../../runtime/http';
 import {ConfigInterface} from '../../lib/base-types';
 import {LATEST_API_VERSION, LogSeverity} from '../../lib/types';
 import {AuthScopes} from '../../lib/auth/scopes';
+import {Session} from '../../lib';
 
 export function matchHeaders(received: Headers, expected: Headers): boolean {
   let expectedHeadersCorrect = true;
@@ -42,3 +43,12 @@ export const config: ConfigInterface = {
     unstable_tokenExchange: true,
   },
 };
+
+export const session = new Session({
+  id: 'test_session',
+  isOnline: false,
+  shop: 'test-shop.myshopify.io',
+  state: '1234',
+  scope: 'test_scope',
+  accessToken: 'test_access_token',
+});

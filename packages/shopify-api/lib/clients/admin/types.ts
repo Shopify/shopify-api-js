@@ -1,10 +1,12 @@
+import {SearchParams} from '@shopify/admin-api-client';
+
 import {ApiVersion} from '../../types';
 import {Session} from '../../session/session';
-import {RequestReturn, QueryParams} from '../http_client/types';
+import {Headers} from '../../../runtime';
 
 export interface PageInfoParams {
   path: string;
-  query: Record<string, QueryParams>;
+  query: SearchParams;
 }
 
 export interface PageInfo {
@@ -16,9 +18,11 @@ export interface PageInfo {
   nextPage?: PageInfoParams;
 }
 
-export type RestRequestReturn<T = unknown> = RequestReturn<T> & {
+export interface RestRequestReturn<T = any> {
+  body: T;
+  headers: Headers;
   pageInfo?: PageInfo;
-};
+}
 
 export interface RestClientParams {
   session: Session;

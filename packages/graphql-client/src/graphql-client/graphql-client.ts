@@ -1,3 +1,4 @@
+import { generateHttpFetch } from "./http-fetch";
 import {
   ClientOptions,
   CustomFetchApi,
@@ -13,7 +14,6 @@ import {
   UNEXPECTED_CONTENT_TYPE_ERROR,
   NO_DATA_OR_ERRORS_ERROR,
   CONTENT_TYPES,
-  RETRIABLE_STATUS_CODES,
   RETRY_WAIT_TIME,
 } from "./constants";
 import {
@@ -39,7 +39,11 @@ export function createGraphQLClient({
   };
 
   const clientLogger = generateClientLogger(logger);
-  const httpFetch = generateHttpFetch(fetchApi, clientLogger);
+  const httpFetch = generateHttpFetch({
+    fetchApi,
+    clientLogger,
+    defaultRetryWaitTime: RETRY_WAIT_TIME,
+  });
   const fetch = generateFetch(httpFetch, config);
   const request = generateRequest(fetch);
 
@@ -48,10 +52,6 @@ export function createGraphQLClient({
     fetch,
     request,
   };
-}
-
-async function sleep(waitTime: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, waitTime));
 }
 
 export function generateClientLogger(logger?: Logger): Logger {
@@ -83,68 +83,6 @@ async function processJSONResponse<TData = any>(
         }
       : {}),
   };
-}
-
-function generateHttpFetch(fetchApi: CustomFetchApi, clientLogger: Logger) {
-  const httpFetch = async (
-    requestParams: Parameters<CustomFetchApi>,
-    count: number,
-    maxRetries: number,
-  ): ReturnType<GraphQLClient["fetch"]> => {
-    const nextCount = count + 1;
-    const maxTries = maxRetries + 1;
-    let response: Response | undefined;
-
-    try {
-      response = await fetchApi(...requestParams);
-
-      clientLogger({
-        type: "HTTP-Response",
-        content: {
-          requestParams,
-          response,
-        },
-      });
-
-      if (
-        !response.ok &&
-        RETRIABLE_STATUS_CODES.includes(response.status) &&
-        nextCount <= maxTries
-      ) {
-        throw new Error();
-      }
-
-      return response;
-    } catch (error) {
-      if (nextCount <= maxTries) {
-        await sleep(RETRY_WAIT_TIME);
-
-        clientLogger({
-          type: "HTTP-Retry",
-          content: {
-            requestParams,
-            lastResponse: response,
-            retryAttempt: count,
-            maxRetries,
-          },
-        });
-
-        return httpFetch(requestParams, nextCount, maxRetries);
-      }
-
-      throw new Error(
-        formatErrorMessage(
-          `${
-            maxRetries > 0
-              ? `Attempted maximum number of ${maxRetries} network retries. Last message - `
-              : ""
-          }${getErrorMessage(error)}`,
-        ),
-      );
-    }
-  };
-
-  return httpFetch;
 }
 
 function generateFetch(

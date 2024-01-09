@@ -1,10 +1,11 @@
 import {createServer, IncomingMessage, ServerResponse} from 'http';
 
 import '../../node';
+import {Session} from '../../../lib';
 import {Headers} from '../../../runtime/http';
-import {DataType} from '../../../lib/clients/http_client/types';
-import {httpClientClass} from '../../../lib/clients/http_client/http_client';
-import {config, matchHeaders} from '../utils';
+import {DataType} from '../../../lib/clients/types';
+import {restClientClass} from '../../../lib/clients/admin';
+import {config, matchHeaders, session} from '../utils';
 import {
   TestResponse,
   TestConfig,
@@ -18,7 +19,10 @@ const RED = '\x1b[31m';
 const GREEN = '\x1b[32m';
 const RESET = '\x1b[39m';
 
-const HttpClient = httpClientClass(config, 'http');
+const RestClient = restClientClass({
+  config: {...config, hostScheme: 'http'},
+  formatPaths: false,
+});
 
 /* eslint-disable no-process-env */
 const apiServerPort: number = parseInt(
@@ -28,7 +32,7 @@ const apiServerPort: number = parseInt(
 const appPort: number = parseInt(process.env.PORT || '8787', 10);
 /* eslint-enable no-process-env */
 const apiServer = `localhost:${apiServerPort}`;
-const defaultRetryTimer = HttpClient.RETRY_WAIT_TIME;
+const defaultRetryTimer = RestClient.RETRY_WAIT_TIME;
 let testCount = 0;
 
 const server = createServer(
@@ -67,7 +71,9 @@ const server = createServer(
           `[node] testPassed=${testPassed}, testFailedDebug=${testFailedDebug}\n`,
         );
       } else {
-        const client = new HttpClient({domain: apiServer});
+        const client = new RestClient({
+          session: new Session({...session, shop: apiServer}),
+        });
         let timedOut = false;
         let retryTimeout;
 
@@ -81,12 +87,12 @@ const server = createServer(
         if (typeof testRequest.retryTimeoutTimer !== 'undefined') {
           setRestClientRetryTime(testRequest.retryTimeoutTimer);
           console.log(
-            `[node] RETRY_TIME_WAIT (BEFORE) = ${HttpClient.RETRY_WAIT_TIME} ms\n\n`,
+            `[node] RETRY_TIME_WAIT (BEFORE) = ${RestClient.RETRY_WAIT_TIME} ms\n\n`,
           );
 
           if (testRequest.retryTimeoutTimer !== 0) {
             console.log(
-              `[node] setting setTimeout @ ${HttpClient.RETRY_WAIT_TIME} ms\n`,
+              `[node] setting setTimeout @ ${RestClient.RETRY_WAIT_TIME} ms\n`,
             );
             retryTimeout = setTimeout(() => {
               try {
@@ -95,7 +101,7 @@ const server = createServer(
                 );
               } catch (error) {
                 console.log(
-                  `[node] ${RED}setTimeout fired!${RESET} @ ${HttpClient.RETRY_WAIT_TIME}\n`,
+                  `[node] ${RED}setTimeout fired!${RESET} @ ${RestClient.RETRY_WAIT_TIME}\n`,
                 );
                 testFailedDebug = JSON.stringify({
                   errorMessageReceived: error.message,
@@ -239,8 +245,7 @@ function handle(_signal: any): void {
 }
 
 function setRestClientRetryTime(time: number) {
-  // We de-type HttpClient here so we can alter its readonly time property
-  (HttpClient as any).RETRY_WAIT_TIME = time;
+  (RestClient as any).RETRY_WAIT_TIME = time;
 }
 
 process.on('SIGINT', handle);

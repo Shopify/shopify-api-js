@@ -1,9 +1,11 @@
 import {
+  buildMockResponse,
+  queueError,
   queueMockResponse,
   queueMockResponses,
 } from '../../../__tests__/test-helper';
 import {testConfig} from '../../../__tests__/test-config';
-import {DataType, GetRequestParams} from '../../http_client/types';
+import {DataType, GetRequestParams} from '../../types';
 import {RestRequestReturn, PageInfo} from '../types';
 import * as ShopifyErrors from '../../../error';
 import {
@@ -15,6 +17,7 @@ import {
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 import {shopifyApi} from '../../..';
+import {RestClient} from '../rest/client';
 
 const domain = 'test-shop.myshopify.io';
 const successResponse = {
@@ -143,7 +146,7 @@ describe('REST client', () => {
       domain,
       path: `/admin/api/${shopify.config.apiVersion}/products.json`,
       headers: {'Content-Type': DataType.URLEncoded.toString()},
-      data: 'title=Test+product+%2B+something+else&amount=10',
+      data: JSON.stringify(postData),
     }).toMatchMadeHttpRequest();
   });
 
@@ -473,6 +476,453 @@ describe('REST client', () => {
       ),
     );
   });
+
+  it('gracefully handles errors', async () => {
+    const shopify = shopifyApi(
+      testConfig({
+        isCustomStoreApp: true,
+        adminApiAccessToken: 'test-admin-api-access-token',
+      }),
+    );
+
+    const client = new shopify.clients.Rest({session});
+
+    const statusText = 'Did not work';
+    const requestId = 'Request id header';
+
+    const testErrorResponse = async (
+      status: number | null,
+      expectedError: NewableFunction,
+      expectRequestId: boolean,
+    ) => {
+      let caught = false;
+      await client.get({path: '/url/path'}).catch((error) => {
+        caught = true;
+        expect(error).toBeInstanceOf(expectedError);
+        if (expectedError === ShopifyErrors.HttpResponseError) {
+          expect(error).toHaveProperty('response.code', status);
+          expect(error).toHaveProperty('response.statusText', statusText);
+        }
+        if (expectRequestId) {
+          expect(error.message).toContain(requestId);
+        }
+
+        expect({
+          method: 'GET',
+          domain,
+          path: `/admin/api/${shopify.config.apiVersion}/url/path.json`,
+        }).toMatchMadeHttpRequest();
+      });
+
+      expect(caught).toEqual(true);
+    };
+
+    queueMockResponses(
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {
+          statusCode: 403,
+          statusText,
+          headers: {'x-request-id': requestId},
+        },
+      ],
+      [JSON.stringify({}), {statusCode: 404, statusText, headers: {}}],
+      [
+        JSON.stringify({errors: 'Something went wrong!'}),
+        {
+          statusCode: 429,
+          statusText,
+          headers: {'x-request-id': requestId},
+        },
+      ],
+      [
+        JSON.stringify({}),
+        {
+          statusCode: 500,
+          statusText,
+          headers: {'x-request-id': requestId},
+        },
+      ],
+    );
+
+    await testErrorResponse(403, ShopifyErrors.HttpResponseError, true);
+    await testErrorResponse(404, ShopifyErrors.HttpResponseError, false);
+    await testErrorResponse(429, ShopifyErrors.HttpThrottlingError, true);
+    await testErrorResponse(500, ShopifyErrors.HttpInternalError, true);
+
+    queueError(new Error());
+    await testErrorResponse(null, Error, false);
+  });
+
+  it('logs deprecation headers to the console when they are present', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Rest({session});
+
+    const postBody = {
+      query: 'some query',
+    };
+
+    queueMockResponses(
+      [
+        JSON.stringify({
+          message: 'Some deprecated request',
+        }),
+        {
+          statusCode: 200,
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
+        },
+      ],
+      [
+        JSON.stringify({
+          message: 'Some deprecated post request',
+          body: postBody,
+        }),
+        {
+          statusCode: 200,
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
+        },
+      ],
+    );
+
+    await client.get({path: '/url/path'});
+
+    // first call to .log is .debug with package and runtime info during initialization
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining('API Deprecation Notice'),
+    );
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining(
+        JSON.stringify({
+          message: 'This API endpoint has been deprecated',
+          path: '/url/path',
+        }),
+      ),
+    );
+
+    await client.post({
+      path: '/url/path',
+      type: DataType.JSON,
+      data: postBody,
+    });
+
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(3);
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining(
+        JSON.stringify({
+          message: 'This API endpoint has been deprecated',
+          path: '/url/path',
+          body: `${JSON.stringify(postBody)}...`,
+        }),
+      ),
+    );
+  });
+
+  it('will wait 5 minutes before logging repeat deprecation alerts', async () => {
+    jest.useFakeTimers();
+
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Rest({session});
+
+    queueMockResponses(
+      [
+        JSON.stringify({
+          message: 'Some deprecated request',
+        }),
+        {
+          statusCode: 200,
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
+        },
+      ],
+      [
+        JSON.stringify({
+          message: 'Some deprecated request',
+        }),
+        {
+          statusCode: 200,
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
+        },
+      ],
+      [
+        JSON.stringify({
+          message: 'Some deprecated request',
+        }),
+        {
+          statusCode: 200,
+          headers: {
+            'X-Shopify-API-Deprecated-Reason':
+              'This API endpoint has been deprecated',
+          },
+        },
+      ],
+    );
+    // first call should call console.warn
+    await client.get({path: '/url/path'});
+    // this one should skip it
+    await client.get({path: '/url/path'});
+    // first call to .log is .debug with package and runtime info during initialization
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(2);
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.anything(),
+    );
+
+    // use jest.fn() to advance time by 5 minutes
+    const currentTime = Date.now();
+    Date.now = jest.fn(() => currentTime + 300000);
+
+    // should warn a second time since 5 mins have passed
+    await client.get({path: '/url/path'});
+
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(3);
+    expect(shopify.config.logger.log).toHaveBeenLastCalledWith(
+      LogSeverity.Warning,
+      expect.anything(),
+    );
+  });
+
+  it('calls log function with deprecation notice if one is specified in config', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Rest({session});
+
+    queueMockResponse(
+      JSON.stringify({
+        message: 'Some deprecated request',
+      }),
+      {
+        statusCode: 200,
+        headers: {
+          'X-Shopify-API-Deprecated-Reason':
+            'This API endpoint has been deprecated',
+        },
+      },
+    );
+
+    await client.get({path: '/url/path'});
+
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining('API Deprecation Notice'),
+    );
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining(
+        JSON.stringify({
+          message: 'This API endpoint has been deprecated',
+          path: '/url/path',
+        }),
+      ),
+    );
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Warning,
+      expect.stringContaining('Stack Trace: Error'),
+    );
+  });
+
+  it('properly encodes strings in the error message', async () => {
+    setRestClientRetryTime(0);
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Rest({session});
+
+    queueMockResponses([
+      JSON.stringify({errors: 'Something went wrong'}),
+      {statusCode: 500, statusText: 'Did not work'},
+    ]);
+
+    let caught = false;
+    await client
+      .get({path: '/url/path'})
+      .then(() => fail('Expected request to fail'))
+      .catch((error) => {
+        caught = true;
+        expect(error).toBeInstanceOf(ShopifyErrors.HttpInternalError);
+        expect(error.message).toEqual(
+          `Shopify internal error:\n"Something went wrong"`,
+        );
+      });
+    expect(caught).toEqual(true);
+    expect({
+      method: 'GET',
+      domain,
+      path: `/admin/api/${shopify.config.apiVersion}/url/path.json`,
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('properly encodes objects in the error message', async () => {
+    setRestClientRetryTime(0);
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Rest({session});
+
+    queueMockResponses([
+      JSON.stringify({
+        errors: {
+          title: 'Invalid title',
+          description: 'Invalid description',
+        },
+      }),
+      {statusCode: 500, statusText: 'Did not work'},
+    ]);
+
+    let caught = false;
+    await client
+      .get({path: '/url/path'})
+      .then(() => fail('Expected request to fail'))
+      .catch((error) => {
+        caught = true;
+        expect(error).toBeInstanceOf(ShopifyErrors.HttpInternalError);
+        expect(error.message).toEqual(
+          `Shopify internal error:` +
+            `\n{` +
+            `\n  "title": "Invalid title",` +
+            `\n  "description": "Invalid description"` +
+            `\n}`,
+        );
+      });
+    expect(caught).toEqual(true);
+    expect({
+      method: 'GET',
+      domain,
+      path: `/admin/api/${shopify.config.apiVersion}/url/path.json`,
+    }).toMatchMadeHttpRequest();
+  });
+
+  it('throws exceptions with response details on internal errors', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Rest({session});
+
+    queueMockResponse(JSON.stringify({errors: 'Error 500'}), {
+      statusCode: 500,
+      statusText: 'Error 500',
+      headers: {'X-Text-Header': 'Error 500'},
+    });
+
+    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpInternalError);
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    expectedError.toMatchObject({
+      response: {
+        body: {errors: 'Error 500'},
+        code: 500,
+        statusText: 'Error 500',
+        headers: {'X-Text-Header': ['Error 500']},
+      },
+    });
+  });
+
+  it('throws exceptions with response details on throttled requests', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Rest({session});
+
+    queueMockResponse(JSON.stringify({errors: 'Error 429'}), {
+      statusCode: 429,
+      statusText: 'Error 429',
+      headers: {'X-Text-Header': 'Error 429', 'Retry-After': '100'},
+    });
+
+    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpThrottlingError);
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    expectedError.toMatchObject({
+      response: {
+        body: {errors: 'Error 429'},
+        code: 429,
+        statusText: 'Error 429',
+        headers: {'X-Text-Header': ['Error 429'], 'Retry-After': ['100']},
+        retryAfter: 100,
+      },
+    });
+  });
+
+  it('throws exceptions with response details on any other errors', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Rest({session});
+
+    queueMockResponse(JSON.stringify({errors: 'Error 403'}), {
+      statusCode: 403,
+      statusText: 'Error 403',
+      headers: {'X-Text-Header': 'Error 403'},
+    });
+
+    const expectedError = await expect(client.get({path: '/url/path'})).rejects;
+    expectedError.toBeInstanceOf(ShopifyErrors.HttpResponseError);
+    expectedError.toMatchObject({
+      response: {
+        body: {errors: 'Error 403'},
+        code: 403,
+        statusText: 'Error 403',
+        headers: {'X-Text-Header': ['Error 403']},
+      },
+    });
+  });
+
+  it('does not log HTTP requests when the setting is off', async () => {
+    const shopify = shopifyApi(
+      testConfig({
+        logger: {level: LogSeverity.Debug, httpRequests: false, log: jest.fn()},
+      }),
+    );
+
+    const data = {test: 'data'};
+
+    const client = new shopify.clients.Rest({session});
+    queueMockResponse(buildMockResponse(successResponse));
+
+    await client.post({path: '/url/path', data});
+
+    // The first log call is the runtime info
+    expect(shopify.config.logger.log).toHaveBeenCalledTimes(1);
+  });
+
+  it('logs HTTP requests when the setting is on', async () => {
+    const shopify = shopifyApi(
+      testConfig({
+        logger: {level: LogSeverity.Debug, httpRequests: true, log: jest.fn()},
+      }),
+    );
+
+    const data = {test: 'data'};
+
+    const client = new shopify.clients.Rest({session});
+    queueMockResponse(buildMockResponse(successResponse));
+
+    await client.post({path: '/url/path', data});
+
+    expect(shopify.config.logger.log).toHaveBeenCalledWith(
+      LogSeverity.Debug,
+      expect.anything(),
+    );
+    const logMessage = (shopify.config.logger.log as jest.Mock).mock
+      .calls[1][1];
+    expect(logMessage).toContain('Received response for HTTP');
+    expect(logMessage).toContain(
+      `https://test-shop.myshopify.io/admin/api/${shopify.config.apiVersion}/url/path`,
+    );
+    expect(logMessage).toContain('"user-agent":"Shopify API Library');
+    expect(logMessage).toContain('"body":"{\\"test\\":\\"data\\"}"');
+  });
 });
 
 function getDefaultPageInfo(apiVersion: ApiVersion): PageInfo {
@@ -525,4 +975,8 @@ function buildExpectedResponse(
   }
 
   return expect.objectContaining(expectedResponse);
+}
+
+function setRestClientRetryTime(time: number) {
+  (RestClient as any).RETRY_WAIT_TIME = time;
 }
