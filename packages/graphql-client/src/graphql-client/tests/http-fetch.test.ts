@@ -62,7 +62,7 @@ describe("httpFetch utility", () => {
         );
 
         const httpFetch = generateHttpFetch({
-          fetchApi: mockFetch,
+          customFetchApi: mockFetch,
           clientLogger,
         });
 

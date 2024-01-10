@@ -15,7 +15,7 @@ function graphqlClientFactory(apiServer: string) {
   return createGraphQLClient({
     url: `http://${apiServer}`,
     headers: {},
-    fetchApi: abstractFetch,
+    customFetchApi: abstractFetch,
   });
 }
 
