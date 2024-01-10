@@ -40,7 +40,7 @@ const client = createGraphQLClient({
     'Content-Type': 'application/json',
     'X-Shopify-Storefront-Access-Token': 'public-token',
   },
-  customFetchApi: fetch
+  customFetchApi: nodeFetch
 });
 ```
 
