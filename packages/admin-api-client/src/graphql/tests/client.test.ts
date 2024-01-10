@@ -111,7 +111,7 @@ describe("Admin API Client", () => {
         expect(createGraphQLClient).toHaveBeenCalled();
         expect(
           (createGraphQLClient as jest.Mock).mock.calls[0][0],
-        ).toHaveProperty("fetchApi", customFetchApi);
+        ).toHaveProperty("customFetchApi", customFetchApi);
       });
 
       it("calls the graphql client with the provided logger", () => {
