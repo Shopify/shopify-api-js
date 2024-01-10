@@ -140,7 +140,7 @@ describe("GraphQL Client", () => {
 
         const client = createGraphQLClient({
           ...config,
-          fetchApi: customFetchApi,
+          customFetchApi,
         });
 
         const props: [string, RequestOptions] = [
@@ -277,7 +277,7 @@ describe("GraphQL Client", () => {
 
         const client = createGraphQLClient({
           ...config,
-          fetchApi: customFetchApi,
+          customFetchApi,
         });
 
         const props: [string, RequestOptions] = [

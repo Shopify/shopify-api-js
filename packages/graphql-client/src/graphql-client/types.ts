@@ -61,7 +61,7 @@ export type Logger<TLogContentTypes = LogContentTypes> = (
 export interface ClientOptions {
   headers: Headers;
   url: string;
-  fetchApi?: CustomFetchApi;
+  customFetchApi?: CustomFetchApi;
   retries?: number;
   logger?: Logger;
 }

@@ -4,7 +4,7 @@ import { formatErrorMessage, getErrorMessage } from "./utilities";
 
 interface GenerateHttpFetchOptions {
   clientLogger: Logger;
-  fetchApi?: CustomFetchApi;
+  customFetchApi?: CustomFetchApi;
   client?: string;
   defaultRetryWaitTime?: number;
   retriableCodes?: number[];
@@ -12,7 +12,7 @@ interface GenerateHttpFetchOptions {
 
 export function generateHttpFetch({
   clientLogger,
-  fetchApi = fetch,
+  customFetchApi = fetch,
   client = CLIENT,
   defaultRetryWaitTime = RETRY_WAIT_TIME,
   retriableCodes = RETRIABLE_STATUS_CODES,
@@ -27,7 +27,7 @@ export function generateHttpFetch({
     let response: Response | undefined;
 
     try {
-      response = await fetchApi(...requestParams);
+      response = await customFetchApi(...requestParams);
 
       clientLogger({
         type: "HTTP-Response",

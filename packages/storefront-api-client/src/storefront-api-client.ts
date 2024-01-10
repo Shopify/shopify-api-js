@@ -36,7 +36,7 @@ export function createStorefrontApiClient({
   privateAccessToken,
   clientName,
   retries = 0,
-  customFetchApi: clientFetchApi,
+  customFetchApi,
   logger,
 }: StorefrontApiClientOptions): StorefrontApiClient {
   const currentSupportedApiVersions = getCurrentSupportedApiVersions();
@@ -88,7 +88,7 @@ export function createStorefrontApiClient({
     headers: config.headers,
     url: config.apiUrl,
     retries,
-    fetchApi: clientFetchApi,
+    customFetchApi,
     logger,
   });
 

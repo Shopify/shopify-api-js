@@ -26,7 +26,7 @@ import {
 export function createGraphQLClient({
   headers,
   url,
-  fetchApi = fetch,
+  customFetchApi = fetch,
   retries = 0,
   logger,
 }: ClientOptions): GraphQLClient {
@@ -40,7 +40,7 @@ export function createGraphQLClient({
 
   const clientLogger = generateClientLogger(logger);
   const httpFetch = generateHttpFetch({
-    fetchApi,
+    customFetchApi,
     clientLogger,
     defaultRetryWaitTime: RETRY_WAIT_TIME,
   });
