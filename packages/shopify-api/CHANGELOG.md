@@ -1,5 +1,13 @@
 # Changelog
 
+## 9.0.1
+
+### Patch Changes
+
+- fdd25e13: Fixed an issue in the `RestClient` class' `request` method, which was incorrectly made `private` instead of `protected.`
+  - @shopify/admin-api-client@0.2.1
+  - @shopify/storefront-api-client@0.2.1
+
 ## 9.0.0
 
 ### Major Changes

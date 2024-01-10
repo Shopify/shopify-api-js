@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.9.1
+
+### Patch Changes
+
+- a23cd941: Rename `fetchApi` parameter to `customFetchApi` for clarity
+
 ## 0.9.0
 
 ### Minor Changes
