@@ -60,7 +60,7 @@ export function clientLoggerFactory(config: ConfigInterface) {
 export function throwFailedRequest(
   body: any,
   response: Awaited<ReturnType<AbstractFetchFunc>>,
-  retry = true,
+  atMaxRetries: boolean,
 ): never {
   const responseHeaders = canonicalizeHeaders(
     Object.fromEntries(response.headers.entries() ?? []),
@@ -94,7 +94,11 @@ export function throwFailedRequest(
 
   switch (true) {
     case response.status === StatusCode.TooManyRequests: {
-      if (retry) {
+      if (atMaxRetries) {
+        throw new ShopifyErrors.HttpMaxRetriesError(
+          'Attempted the maximum number of retries for HTTP request.',
+        );
+      } else {
         const retryAfter = getHeader(responseHeaders, 'Retry-After');
         throw new ShopifyErrors.HttpThrottlingError({
           message: `Shopify is throttling requests${errorMessage}`,
@@ -104,14 +108,14 @@ export function throwFailedRequest(
           headers: responseHeaders,
           retryAfter: retryAfter ? parseFloat(retryAfter) : undefined,
         });
-      } else {
-        throw new ShopifyErrors.HttpMaxRetriesError(
-          'Attempted the maximum number of retries for HTTP request.',
-        );
       }
     }
     case response.status >= StatusCode.InternalServerError:
-      if (retry) {
+      if (atMaxRetries) {
+        throw new ShopifyErrors.HttpMaxRetriesError(
+          'Attempted the maximum number of retries for HTTP request.',
+        );
+      } else {
         throw new ShopifyErrors.HttpInternalError({
           message: `Shopify internal error${errorMessage}`,
           code,
@@ -119,10 +123,6 @@ export function throwFailedRequest(
           body,
           headers: responseHeaders,
         });
-      } else {
-        throw new ShopifyErrors.HttpMaxRetriesError(
-          'Attempted the maximum number of retries for HTTP request.',
-        );
       }
     default:
       throw new ShopifyErrors.HttpResponseError({

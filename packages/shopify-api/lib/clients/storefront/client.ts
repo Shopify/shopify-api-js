@@ -138,7 +138,7 @@ export class StorefrontClient {
 
     if (response.errors) {
       const fetchResponse = response.errors.response!;
-      throwFailedRequest(response, fetchResponse, false);
+      throwFailedRequest(response, fetchResponse, (options?.retries ?? 0) > 0);
     }
 
     return response;

@@ -33,6 +33,8 @@ import type {
   PostRequestParams,
   DeleteRequestParams,
 } from '../../types';
+import {ApiVersion} from '../../../types';
+import {Session} from '../../../session/session';
 
 export interface RestClientClassParams {
   config: ConfigInterface;
@@ -57,6 +59,8 @@ export class RestClient {
   loggedDeprecations: Record<string, number> = {};
 
   readonly client: AdminRestApiClient;
+  readonly session: Session;
+  readonly apiVersion: ApiVersion;
 
   public constructor({session, apiVersion}: RestClientParams) {
     const config = this.restClass().config;
@@ -79,6 +83,8 @@ export class RestClient {
     const customStoreAppAccessToken =
       config.adminApiAccessToken ?? config.apiSecretKey;
 
+    this.session = session;
+    this.apiVersion = apiVersion ?? config.apiVersion;
     this.client = createAdminRestApiClient({
       scheme: config.hostScheme,
       storeDomain: session.shop,
@@ -160,13 +166,13 @@ export class RestClient {
         );
     }
 
-    const body = await response.json<any>();
+    const body: any = await response.json();
     const responseHeaders = canonicalizeHeaders(
       Object.fromEntries(response.headers.entries()),
     );
 
     if (!response.ok) {
-      throwFailedRequest(body, response, (params.tries ?? 1) <= 1);
+      throwFailedRequest(body, response, (params.tries ?? 1) > 1);
     }
 
     const requestReturn: RestRequestReturn<T> = {
