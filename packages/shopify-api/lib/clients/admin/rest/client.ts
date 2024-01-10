@@ -122,7 +122,7 @@ export class RestClient {
     return this.request<T>({method: Method.Delete, ...params});
   }
 
-  private async request<T = any>(
+  protected async request<T = any>(
     params: RequestParams,
   ): Promise<RestRequestReturn<T>> {
     const requestParams = {
