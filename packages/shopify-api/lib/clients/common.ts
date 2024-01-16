@@ -72,6 +72,7 @@ export function throwFailedRequest(
         body.errors.graphQLErrors?.[0].message ?? 'GraphQL operation failed',
       response: response as Record<string, any>,
       headers: responseHeaders,
+      graphQLErrors: body.errors.graphQLErrors as Record<string, any>[],
     });
   }
 
@@ -101,7 +102,7 @@ export function throwFailedRequest(
       } else {
         const retryAfter = getHeader(responseHeaders, 'Retry-After');
         throw new ShopifyErrors.HttpThrottlingError({
-          message: `Shopify is throttling requests${errorMessage}`,
+          message: `Shopify is throttling requests ${errorMessage}`,
           code,
           statusText,
           body,

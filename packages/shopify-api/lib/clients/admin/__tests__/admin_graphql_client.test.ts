@@ -198,8 +198,7 @@ describe('GraphQL client', () => {
     }`;
 
     const expectedHeaders = {
-      'Content-Type': DataType.JSON.toString(),
-      'X-Shopify-Access-Token': 'any_access_token',
+      'Content-Type': [DataType.JSON.toString()],
     };
 
     const errorResponse = {
@@ -232,14 +231,19 @@ describe('GraphQL client', () => {
 
     queueMockResponse(JSON.stringify(errorResponse));
 
-    await expect(() => client.request(query)).rejects.toThrow(
-      new ShopifyErrors.GraphqlQueryError({
-        // Expect to throw the original error message
-        message: 'you must provide one of first or last',
-        response: errorResponse,
-        headers: expectedHeaders,
-      }),
-    );
+    try {
+      await client.request(query);
+    } catch (error) {
+      if (!(error instanceof ShopifyErrors.GraphqlQueryError)) {
+        throw new Error(
+          `Expected GraphqlQueryError to be thrown, but it wasn't: ${error}`,
+        );
+      }
+      expect(error.message).toBe('you must provide one of first or last');
+      expect(error.response).not.toBeUndefined();
+      expect(error.headers).toEqual(expectedHeaders);
+      expect(error.graphQLErrors).toEqual(errorResponse.errors);
+    }
 
     expect({
       method: 'POST',
