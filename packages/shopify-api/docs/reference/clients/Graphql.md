@@ -121,8 +121,8 @@ try {
   // No errors, proceed with logic
 } catch (error) {
   if (error instanceof GraphqlQueryError) {
-    // look at error.response for details returned from API,
-    // specifically, error.response.errors[0].message
+    // look at the GraphQL errors returned from the API response
+    error.graphQLErrors[0]
     // Also, error.headers contains the headers of the response received from Shopify
   } else {
     // handle other errors
