@@ -1,5 +1,15 @@
 # Changelog
 
+## 9.0.2
+
+### Patch Changes
+
+- 4d7f9a01: Update documentation with required shopifyApi params
+- 1b4caf91: Return "body" field from GraphqlQueryError type
+- Updated dependencies [b2414c2f]
+  - @shopify/storefront-api-client@0.2.2
+  - @shopify/admin-api-client@0.2.2
+
 ## 9.0.1
 
 ### Patch Changes
