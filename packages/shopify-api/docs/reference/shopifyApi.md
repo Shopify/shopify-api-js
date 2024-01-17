@@ -72,13 +72,13 @@ App host name in the format `my-host-name.com`. Do **not** include the scheme or
 
 The scheme for your app's public URL. `http` is only allowed if your app is running on `localhost`.
 
-### apiVersion
+### apiVersion | :exclamation: **required**
 
 `ApiVersion` | Defaults to `LATEST_API_VERSION`
 
 API version your app will be querying. E.g. `ApiVersion.October22`.
 
-### isEmbeddedApp
+### isEmbeddedApp | :exclamation: **required**
 
 `boolean` | Defaults to `true`
 
