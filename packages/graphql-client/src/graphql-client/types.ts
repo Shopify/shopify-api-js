@@ -21,7 +21,7 @@ export interface ResponseErrors {
 export type GQLExtensions = Record<string, any>;
 
 export interface FetchResponseBody<TData = any> {
-  data?: Partial<TData>;
+  data?: TData;
   extensions?: GQLExtensions;
 }
 
