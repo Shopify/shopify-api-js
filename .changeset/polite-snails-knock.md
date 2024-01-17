@@ -2,4 +2,4 @@
 "@shopify/shopify-api": patch
 ---
 
-Add new graphQLErrors field to GraphqlError type
+Return "body" field from GraphqlQueryError type
