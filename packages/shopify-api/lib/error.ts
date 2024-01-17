@@ -72,23 +72,23 @@ export class RestResourceError extends ShopifyError {}
 export class GraphqlQueryError extends ShopifyError {
   readonly response: Record<string, unknown>;
   headers?: Record<string, unknown>;
-  graphQLErrors?: Record<string, unknown>[];
+  body?: Record<string, any>;
 
   public constructor({
     message,
     response,
     headers,
-    graphQLErrors,
+    body,
   }: {
     message: string;
     response: Record<string, unknown>;
     headers?: Record<string, unknown>;
-    graphQLErrors?: Record<string, unknown>[];
+    body?: Record<string, any>;
   }) {
     super(message);
     this.response = response;
     this.headers = headers;
-    this.graphQLErrors = graphQLErrors;
+    this.body = body;
   }
 }
 

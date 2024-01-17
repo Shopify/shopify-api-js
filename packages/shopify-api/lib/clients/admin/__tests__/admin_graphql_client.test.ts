@@ -239,10 +239,12 @@ describe('GraphQL client', () => {
           `Expected GraphqlQueryError to be thrown, but it wasn't: ${error}`,
         );
       }
+
       expect(error.message).toBe('you must provide one of first or last');
       expect(error.response).not.toBeUndefined();
       expect(error.headers).toEqual(expectedHeaders);
-      expect(error.graphQLErrors).toEqual(errorResponse.errors);
+      expect(error.body?.errors.graphQLErrors).toEqual(errorResponse.errors);
+      expect(error.body?.extensions).toEqual(errorResponse.extensions);
     }
 
     expect({

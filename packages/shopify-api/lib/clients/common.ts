@@ -72,7 +72,7 @@ export function throwFailedRequest(
         body.errors.graphQLErrors?.[0].message ?? 'GraphQL operation failed',
       response: response as Record<string, any>,
       headers: responseHeaders,
-      graphQLErrors: body.errors.graphQLErrors as Record<string, any>[],
+      body: body as Record<string, any>,
     });
   }
 
