@@ -1,5 +1,13 @@
 # @shopify/storefront-api-client
 
+## 0.2.2
+
+### Patch Changes
+
+- b2414c2f: Remove `Partial` around the `ClientResponse.data` type for easier consumption of the client's returned typed data
+- Updated dependencies [b2414c2f]
+  - @shopify/graphql-client@0.9.2
+
 ## 0.2.1
 
 ### Patch Changes
