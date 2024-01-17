@@ -91,7 +91,7 @@ const {data, errors, extensions} = await client.request(operation, {
 
 | Name        | Type                      | Description                                                                                                                                                                                         |
 | ----------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| data?       | `Partial<TData> \| any`            | Data returned from the Admin API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                                  |
+| data?       | `TData \| any`            | Data returned from the Admin API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                                  |
 | errors?     | [`ResponseErrors`](#responseerrors) | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
 | extensions? | `{[key: string]: any}`    | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
 
