@@ -69,5 +69,5 @@
   "bugs": {
     "url": "https://github.com/Shopify/shopify-api-js/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify-api-js/packages/admin-api-client#readme"
+  "homepage": "https://github.com/Shopify/shopify-api-js/tree/main/packages/admin-api-client#readme"
 }
