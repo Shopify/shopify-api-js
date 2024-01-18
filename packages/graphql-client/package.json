@@ -93,5 +93,5 @@
   "bugs": {
     "url": "https://github.com/Shopify/shopify-api-js/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify-api-js/packages/graphql-client#readme"
+  "homepage": "https://github.com/Shopify/shopify-api-js/tree/main/packages/graphql-client#readme"
 }
