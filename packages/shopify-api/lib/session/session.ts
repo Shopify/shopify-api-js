@@ -75,19 +75,46 @@ export class Session {
     return obj;
   }
 
+  /**
+   * The unique identifier for the session.
+   */
   readonly id: string;
+  /**
+   * The Shopify shop domain.
+   */
   public shop: string;
+  /**
+   * The state of the session. Used for the OAuth authentication code flow.
+   */
   public state: string;
+  /**
+   * Whether the access token in the session is online or offline.
+   */
   public isOnline: boolean;
+  /**
+   * The desired scopes for the access token, at the time the session was created.
+   */
   public scope?: string;
+  /**
+   * The date the access token expires.
+   */
   public expires?: Date;
+  /**
+   * The access token for the session.
+   */
   public accessToken?: string;
+  /**
+   * Information on the user for the session. Only present for online sessions.
+   */
   public onlineAccessInfo?: OnlineAccessInfo;
 
   constructor(params: SessionParams) {
     Object.assign(this, params);
   }
 
+  /**
+   * Whether the session is active. Active sessions have an access token that is not expired, and has the given scopes.
+   */
   public isActive(scopes: AuthScopes | string | string[]): boolean {
     return (
       !this.isScopeChanged(scopes) &&
@@ -96,6 +123,9 @@ export class Session {
     );
   }
 
+  /**
+   * Whether the access token has the given scopes.
+   */
   public isScopeChanged(scopes: AuthScopes | string | string[]): boolean {
     const scopesObject =
       scopes instanceof AuthScopes ? scopes : new AuthScopes(scopes);
@@ -103,6 +133,9 @@ export class Session {
     return !scopesObject.equals(this.scope);
   }
 
+  /**
+   * Whether the access token is expired.
+   */
   public isExpired(withinMillisecondsOfExpiry = 0): boolean {
     return Boolean(
       this.expires &&
@@ -110,6 +143,9 @@ export class Session {
     );
   }
 
+  /**
+   * Converts an object with data into a Session.
+   */
   public toObject(): SessionParams {
     const object: SessionParams = {
       id: this.id,
@@ -133,6 +169,9 @@ export class Session {
     return object;
   }
 
+  /**
+   * Checks whether the given session is equal to this session.
+   */
   public equals(other: Session | undefined): boolean {
     if (!other) return false;
 
@@ -153,6 +192,9 @@ export class Session {
     return JSON.stringify(copyA) === JSON.stringify(copyB);
   }
 
+  /**
+   * Converts the session into an array of key-value pairs.
+   */
   public toPropertyArray(): [string, string | number | boolean][] {
     return (
       Object.entries(this)
