@@ -1,4 +1,4 @@
-import isbot from 'isbot';
+import {isbot} from 'isbot';
 
 import {throwFailedRequest} from '../../clients/common';
 import ProcessedQuery from '../../utils/processed-query';
