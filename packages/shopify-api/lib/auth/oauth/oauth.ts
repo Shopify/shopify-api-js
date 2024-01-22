@@ -1,4 +1,4 @@
-import isbot from 'isbot';
+import {isbot} from 'isbot';
 
 import {throwFailedRequest} from '../../clients/common';
 import ProcessedQuery from '../../utils/processed-query';
@@ -74,7 +74,11 @@ export function begin(config: ConfigInterface): OAuthBegin {
     const request = await abstractConvertRequest(adapterArgs);
     const response = await abstractConvertIncomingResponse(adapterArgs);
 
-    if (isbot(request.headers['User-Agent'])) {
+    let userAgent = request.headers['User-Agent'];
+    if (Array.isArray(userAgent)) {
+      userAgent = userAgent[0];
+    }
+    if (isbot(userAgent)) {
       logForBot({request, log, func: 'begin'});
       response.statusCode = 410;
       return abstractConvertResponse(response, adapterArgs);
@@ -140,7 +144,11 @@ export function callback(config: ConfigInterface): OAuthCallback {
     const shop = query.get('shop')!;
 
     const response = {} as NormalizedResponse;
-    if (isbot(request.headers['User-Agent'])) {
+    let userAgent = request.headers['User-Agent'];
+    if (Array.isArray(userAgent)) {
+      userAgent = userAgent[0];
+    }
+    if (isbot(userAgent)) {
       logForBot({request, log, func: 'callback'});
       throw new ShopifyErrors.BotActivityDetected(
         'Invalid OAuth callback initiated by bot',
