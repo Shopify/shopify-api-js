@@ -53,7 +53,7 @@ See the sections below for specific details related to the steps outlined above.
    git checkout changeset-release/main
    ```
 
-1. Update the version string in the `lib/version.ts` file to match the version in the `package.json` file in this branch.
+1. Update the version string in the `packages/shopify-api/lib/version.ts` file to match the version in the `package.json` file in this branch.
 
 1. If needed, edit/remove any of the comments in the `CHANGELOG.md` files and commit them to the `changeset-release/main` branch.
 
@@ -94,7 +94,7 @@ For significant API changes that could result in significant refactoring on the 
    git checkout changeset-release/release-candidate
    ```
 
-1. Update the version string in the `lib/version.ts` file to match the version in the `package.json` file. Make sure to add an `-rc.X` to the version, like so:
+1. Update the version string in the `packages/shopify-api/lib/version.ts` file to match the version in the `package.json` file. Make sure to add an `-rc.X` to the version, like so:
 
    ```text
    7.0.0-rc.1

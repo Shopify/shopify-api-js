@@ -1,6 +1,6 @@
 {
   "name": "@shopify/admin-api-client",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Shopify Admin API Client - A lightweight JS client to interact with Shopify's Admin API",
   "repository": {
     "type": "git",
@@ -60,7 +60,7 @@
     "dist/**/*.*"
   ],
   "dependencies": {
-    "@shopify/graphql-client": "^0.9.1"
+    "@shopify/graphql-client": "^0.9.2"
   },
   "devDependencies": {
     "jest-environment-jsdom": "^29.5.0",
@@ -69,5 +69,5 @@
   "bugs": {
     "url": "https://github.com/Shopify/shopify-api-js/issues"
   },
-  "homepage": "https://github.com/Shopify/shopify-api-js/packages/admin-api-client#readme"
+  "homepage": "https://github.com/Shopify/shopify-api-js/tree/main/packages/admin-api-client#readme"
 }

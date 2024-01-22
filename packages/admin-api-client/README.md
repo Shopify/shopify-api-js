@@ -1,14 +1,17 @@
 # Admin API Client
 
-The Admin API Client library is for developers who want to interact with Shopify's GraphQL `Admin API`. The features of this library are designed to be lightweight and minimally opinionated.
-
-## Getting Started
-
-Install the package:
+The Admin API Client library is for developers who want to interact with Shopify's `Admin API`. The features of this library are designed to be lightweight and minimally opinionated.
 
 ```
 npm install @shopify/admin-api-client -s
 ```
+
+- [GraphQL Client](#graphql-client)
+- [REST Client](#rest-client)
+
+## GraphQL Client
+
+### Getting Started
 
 Initialize the client:
 
@@ -45,7 +48,7 @@ const {data, errors, extensions} = await client.request(operation, {
 > [!NOTE]
 > If you want to query the Admin REST API, you can [use the REST client](#using-the-rest-api-client) instead.
 
-### `createAdminApiClient()` parameters
+#### `createAdminApiClient()` parameters
 
 | Property            | Type             | Description                                                                                                                                                                                                                                          |
 | ------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -57,7 +60,7 @@ const {data, errors, extensions} = await client.request(operation, {
 | customFetchApi?     | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
 | logger?             | `(logContent:`[`UnsupportedApiVersionLog`](#unsupportedapiversionlog) ` \| `[`HTTPResponseLog`](#httpresponselog)`\|`[`HTTPRetryLog`](#httpretrylog)`) => void` | A logger function that accepts [log content objects](#log-content-types). This logger will be called in certain conditions with contextual information. |
 
-## Client properties
+### Client properties
 
 | Property      | Type                                                                                                                                                                       | Description                                                                                                                                                                                                                                                                                                                                                                |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -67,7 +70,7 @@ const {data, errors, extensions} = await client.request(operation, {
 | fetch         | `(operation: string, options?:`[`AdminAPIClientRequestOptions`](#adminapiclientrequestoptions-properties)`) => Promise<Response>`                                          | Fetches data from Admin API using the provided GQL `operation` string and [`AdminAPIClientRequestOptions`](#adminapiclientrequestoptions-properties) object and returns the network response.                                                                                                                                                                                 |
 | request       | `<TData>(operation: string, options?:`[`AdminAPIClientRequestOptions`](#adminapiclientrequestoptions-properties)`) => Promise<`[`ClientResponse<TData>`](#clientresponsetdata)`>` | Requests data from Admin API using the provided GQL `operation` string and [`AdminAPIClientRequestOptions`](#adminapiclientrequestoptions-properties) object and returns a normalized response object.                                                                                                                                                                        |
 
-## `AdminApiClientConfig` properties
+### `AdminApiClientConfig` properties
 
 | Name           | Type                     | Description                                          |
 | -------------- | ------------------------ | ---------------------------------------------------- |
@@ -78,7 +81,7 @@ const {data, errors, extensions} = await client.request(operation, {
 | apiUrl | `string` | The API URL generated from the provided store domain and api version |
 | retries? | `number` | The number of retries the client will attempt when the API responds with a `Too Many Requests (429)` or `Service Unavailable (503)` response |
 
-## `ApiClientRequestOptions` properties
+### `ApiClientRequestOptions` properties
 
 | Name           | Type                     | Description                                          |
 | -------------- | ------------------------ | ---------------------------------------------------- |
@@ -87,15 +90,15 @@ const {data, errors, extensions} = await client.request(operation, {
 | headers?       | `{[key: string]: string}`| Customized headers to be included in the API request |
 | retries?       | `number`                 | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3`. |
 
-## `ClientResponse<TData>`
+### `ClientResponse<TData>`
 
 | Name        | Type                      | Description                                                                                                                                                                                         |
 | ----------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| data?       | `Partial<TData> \| any`            | Data returned from the Admin API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                                  |
+| data?       | `TData \| any`            | Data returned from the Admin API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                                  |
 | errors?     | [`ResponseErrors`](#responseerrors) | Error object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
 | extensions? | `{[key: string]: any}`    | Additional information on the GraphQL response data and context. It can include the `context` object that contains the localization context information used to generate the returned API response. |
 
-## `ResponseErrors`
+### `ResponseErrors`
 
 | Name        | Type                  | Description                                                                                                                                                                                         |
 | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -104,12 +107,12 @@ const {data, errors, extensions} = await client.request(operation, {
 | graphQLErrors? | `any[]` | The GraphQL API errors returned by the server |
 | response? | `Response` | The raw response object from the network fetch call |
 
-### Client `request()` response examples
+#### Client `request()` response examples
 
 <details>
   <summary>Successful response</summary>
 
-### API response
+#### API response
 
 ```json
 {
@@ -139,7 +142,7 @@ const {data, errors, extensions} = await client.request(operation, {
 <details>
   <summary>Error responses</summary>
 
-### Network error
+#### Network error
 
 ```json
 {
@@ -148,7 +151,7 @@ const {data, errors, extensions} = await client.request(operation, {
 }
 ```
 
-### Admin API graphQL error
+#### Admin API graphQL error
 
 ```json
 {
@@ -176,9 +179,9 @@ const {data, errors, extensions} = await client.request(operation, {
 
 </details>
 
-## Usage examples
+### Usage examples
 
-### Query for a product
+#### Query for a product
 
 ```typescript
 const productQuery = `
@@ -198,7 +201,7 @@ const {data, errors, extensions} = await client.request(productQuery, {
 });
 ```
 
-### Dynamically set the Admin API version per data fetch
+#### Dynamically set the Admin API version per data fetch
 
 ```typescript
 const productQuery = `
@@ -219,7 +222,7 @@ const {data, errors, extensions} = await client.request(productQuery, {
 });
 ```
 
-### Add custom headers to API request
+#### Add custom headers to API request
 
 ```typescript
 const productQuery = `
@@ -242,7 +245,7 @@ const {data, errors, extensions} = await client.request(productQuery, {
 });
 ```
 
-### Using `client.fetch()` to get API data
+#### Using `client.fetch()` to get API data
 
 ```typescript
 const shopQuery = `
@@ -260,7 +263,7 @@ if (response.ok) {
 }
 ```
 
-### Dynamically set the number of retries per request
+#### Dynamically set the number of retries per request
 
 ```typescript
 const productQuery = `
@@ -281,7 +284,7 @@ const {data, errors, extensions} = await client.request(productQuery, {
 });
 ```
 
-## Typing variables and return objects
+### Typing variables and return objects
 
 This client is compatible with the `@shopify/api-codegen-preset` package.
 You can use that package to create types from your operations with the [Codegen CLI](https://www.graphql-cli.com/codegen/).
@@ -329,9 +332,9 @@ There are different ways to [configure codegen](https://github.com/Shopify/shopi
 Once the script runs, it'll create the file `./types/admin.generated.d.ts`.
 When TS includes that file, it'll automatically cause the client to detect the types for each query.
 
-## Log Content Types
+### Log Content Types
 
-### `UnsupportedApiVersionLog`
+#### `UnsupportedApiVersionLog`
 
 This log content is sent to the logger whenever an unsupported API version is provided to the client.
 
@@ -340,7 +343,7 @@ This log content is sent to the logger whenever an unsupported API version is pr
 | type      | `LogType['Unsupported_Api_Version']`                 | The type of log content. Is always set to `Unsupported_Api_Version`            |
 | content  | `{apiVersion: string, supportedApiVersions: string[]}` | Contextual info including the provided API version and the list of currently supported API versions. |
 
-### `HTTPResponseLog`
+#### `HTTPResponseLog`
 
 This log content is sent to the logger whenever a HTTP response is received by the client.
 
@@ -349,7 +352,7 @@ This log content is sent to the logger whenever a HTTP response is received by t
 | type      | `LogType['HTTP-Response']`                 | The type of log content. Is always set to `HTTP-Response`            |
 | content  | `{`[`requestParams`](#requestparams)`: [url, init?], response: Response}` | Contextual data regarding the request and received response |
 
-### `HTTPRetryLog`
+#### `HTTPRetryLog`
 
 This log content is sent to the logger whenever the client attempts to retry HTTP requests.
 
@@ -358,14 +361,16 @@ This log content is sent to the logger whenever the client attempts to retry HTT
 | type      | `LogType['HTTP-Retry']`                 | The type of log content. Is always set to `HTTP-Retry`            |
 | content  | `{`[`requestParams`](#requestparams)`: [url, init?], lastResponse?: Response, retryAttempt: number, maxRetries: number}` | Contextual data regarding the upcoming retry attempt. <br /><br/>`requestParams`: [parameters](#requestparams) used in the request<br/>`lastResponse`: previous response <br/> `retryAttempt`: the current retry attempt count <br/> `maxRetries`: the maximum number of retries  |
 
-### `RequestParams`
+#### `RequestParams`
 
 | Property | Type                     | Description                        |
 | -------- | ------------------------ | ---------------------------------- |
 | url      | `string`                 | Requested URL            |
 | init?  | `{method?: string, headers?: HeaderInit, body?: string}` | The request information  |
 
-## Using the REST API client
+## REST Client
+
+### Getting Started
 
 Initialize the client:
 
@@ -389,7 +394,7 @@ if (response.ok) {
 }
 ```
 
-### `createAdminRestApiClient()` parameters
+#### `createAdminRestApiClient()` parameters
 
 | Property            | Type              | Description                                                                                                                                                                                                                                          |
 | ------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -404,7 +409,7 @@ if (response.ok) {
 | defaultRetryTime?   | `number`          | How long to wait for a retry when missing the `Retry-After` header |
 | formatPaths?        | `boolean`         | Whether to format paths, e.g. `products/123` => `/products/123.json` |
 
-## Client properties
+### Client properties
 
 | Property      | Type                                                            | Description                                                                                                                                                                    |
 | ------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -413,7 +418,7 @@ if (response.ok) {
 | put    | `(path: string, options?:`[`PutRequestOptions`](#putrequestoptions-properties)`) => Promise<Response>` | Performs a PUT request to the API. |
 | delete | `(path: string, options?:`[`DeleteRequestOptions`](#deleterequestoptions-properties)`) => Promise<Response>` | Performs a DELETE request to the API. |
 
-## `GetRequestOptions` properties
+### `GetRequestOptions` properties
 
 | Name          | Type                                    | Description                                           |
 | ------------- | --------------------------------------- | ----------------------------------------------------- |
@@ -423,21 +428,21 @@ if (response.ok) {
 | retries?      | `number`                                | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3.` |
 | data?         | `{ [key: string]: any } \| string`      | Request body data.                                    |
 
-## `PostRequestOptions` properties
+### `PostRequestOptions` properties
 
 Same options as for [GET requests](#getrequestoptions-properties), but `data` isn't optional.
 
-## `PutRequestOptions` properties
+### `PutRequestOptions` properties
 
 Same options as for [POST requests](#postrequestoptions-properties).
 
-## `DeleteRequestOptions` properties
+### `DeleteRequestOptions` properties
 
 Same options as for [GET requests](#getrequestoptions-properties).
 
-## Usage examples
+### Usage examples
 
-### Query for a product
+#### Query for a product
 
 ```typescript
 const response = await client.get("products/1234567890");
@@ -447,7 +452,7 @@ if (response.ok) {
 }
 ```
 
-### Update a product
+#### Update a product
 
 ```typescript
 const response = await client.put("products/1234567890",
@@ -465,7 +470,7 @@ if (response.ok) {
 }
 ```
 
-### Dynamically set the Admin API version per data fetch
+#### Dynamically set the Admin API version per data fetch
 
 ```typescript
 const response = await client.get("products/1234567890",
@@ -479,7 +484,7 @@ if (response.ok) {
 }
 ```
 
-### Add custom headers to API request
+#### Add custom headers to API request
 
 ```typescript
 const response = await client.get("products/1234567890",
@@ -495,7 +500,7 @@ if (response.ok) {
 }
 ```
 
-### Dynamically set the number of retries per request
+#### Dynamically set the number of retries per request
 
 ```typescript
 const response = await client.get("products/1234567890",
