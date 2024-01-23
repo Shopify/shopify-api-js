@@ -6695,15 +6695,15 @@ jiti@^1.17.1, jiti@^1.18.2:
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.20.0.tgz#2d823b5852ee8963585c8dd8b7992ffc1ae83b42"
   integrity sha512-3TV69ZbrvV6U5DfQimop50jE9Dl6J8O1ja1dvBbMba/sZ3YBEQqJ2VZRoQPVnhlzjNtU1vaXRZVrVjU4qtm8yA==
 
-jose@^4.9.1:
-  version "4.15.4"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-4.15.4.tgz#02a9a763803e3872cf55f29ecef0dfdcc218cc03"
-  integrity sha512-W+oqK4H+r5sITxfxpSU+MMdr/YSWGvgZMQDIsNoBDGGy4i7GBPTtvFKibQzW06n3U3TqHjhvBJsirShsEJ6eeQ==
-
 jose@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-5.0.1.tgz#a2f0bb241ecfe6ebf37ef435498a491918a1a0e0"
-  integrity sha512-gRVzy7s3RRdGbXmcTdlOswJOjhwPLx1ijIgAqLY6ktzFpOJxxYn4l0fC2vHaHHi4YBX/5FOL3aY+6W0cvQgpug==
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-5.1.3.tgz#303959d85c51b5cb14725f930270b72be56abdca"
+  integrity sha512-GPExOkcMsCLBTi1YetY2LmkoY559fss0+0KVa6kOfb2YFe84nAM7Nm/XzuZozah4iHgmBGrCOHL5/cy670SBRw==
+
+jose@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-5.2.0.tgz#d0ffd7f7e31253f633eefb190a930cd14a916995"
+  integrity sha512-oW3PCnvyrcm1HMvGTzqjxxfnEs9EoFOFWi2HsEGhlFVOXxTE3K9GKWVMFoFw06yPUqwpvEWic1BmtUZBI/tIjw==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
@@ -7267,7 +7267,7 @@ node-addon-api@^7.0.0:
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-7.0.0.tgz#8136add2f510997b3b94814f4af1cce0b0e3962e"
   integrity sha512-vgbBJTS4m5/KkE16t5Ly0WW9hz46swAstv0hYYwMtbG7AznRhNyfLRe8HZAiWIpcHzoO7HxhLuBQj9rJ/Ho0ZA==
 
-node-fetch@^2.5.0, node-fetch@^2.6.1, node-fetch@^2.6.12:
+node-fetch@^2.5.0, node-fetch@^2.6.1, node-fetch@^2.6.12, node-fetch@^2.6.7:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
