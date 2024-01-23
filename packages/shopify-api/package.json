@@ -67,7 +67,7 @@
     "Storefront API"
   ],
   "resolutions": {
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^3.3.2"
   },
   "dependencies": {
     "@shopify/admin-api-client": "^0.2.2",
@@ -76,7 +76,7 @@
     "compare-versions": "^5.0.3",
     "isbot": "^4.4.0",
     "jose": "^4.9.1",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.3.2",
     "tslib": "^2.0.3",
     "uuid": "^9.0.0"
   },
