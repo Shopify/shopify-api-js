@@ -46,11 +46,8 @@ function setRestClientRetryTime(time: number) {
 
 /* eslint-disable-next-line import/no-anonymous-default-export */
 export default {
-  async fetch(req: any, _env: any, _ctx: any) {
-    const apiServerPort: number = parseInt(
-      (globalThis as any).HTTP_SERVER_PORT || '3000',
-      10,
-    );
+  async fetch(req: any, env: any, _ctx: any) {
+    const apiServerPort: number = parseInt(env.HTTP_SERVER_PORT || '3000', 10);
     const apiServer = `localhost:${apiServerPort}`;
     const client = new RestClient({
       session: new Session({...session, shop: apiServer}),

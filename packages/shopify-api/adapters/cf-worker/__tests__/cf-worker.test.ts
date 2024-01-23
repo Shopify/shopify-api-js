@@ -1,4 +1,5 @@
 import {spawn} from 'child_process';
+import path from 'path';
 
 import '..';
 
@@ -6,6 +7,7 @@ import '../../../runtime/__tests__/all.test';
 import {runTests, E2eTestEnvironment} from '../../__e2etests__/e2e-runner.test';
 
 const cfWorkerAppPort = '7777';
+// This value must match the one in ./wrangler.toml
 const dummyServerPort = '7778';
 
 const workerEnvironment: E2eTestEnvironment = {
@@ -15,12 +17,14 @@ const workerEnvironment: E2eTestEnvironment = {
   process: spawn(
     'yarn',
     [
-      'miniflare',
-      '--global',
-      `HTTP_SERVER_PORT=${dummyServerPort}`,
+      'wrangler',
+      'dev',
+      '-c',
+      path.join(__dirname, './wrangler.toml'),
       '--port',
       `${cfWorkerAppPort}`,
-      '--modules',
+      '--inspector-port',
+      '9249',
       'bundle/test-web-api-app.js',
     ],
     {
