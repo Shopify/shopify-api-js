@@ -31,22 +31,6 @@ To learn more about:
   - [Token Exchange](ZL:TODO link to shopify.dev)
   - [Declaring scopes with CLI on Shopify Partners](ZL: TODO link to shopify.dev managed install)
 
-###### Non-remix App
-1. Ensure your scopes are [declared on Shopify Partners through the Shopify CLI](ZL:TODO link to shopify.dev for managed install)
-2. Turn on future flag `unstable_tokenExchange` when configuring shopifyApi
-
-```ts
-shopifyApi({
-  ...
-  isEmbeddedApp: true,
-  future: {
-    unstable_tokenExchange: true,
-  },
-})
-```
-3. Start the OAuth process by calling [shopify.auth.tokenExchange](../reference/auth/tokenExchange.md) to exchange user session token to access token.
-4. Use the exchanged session token to make authenticated API queries, see [After OAuth](#after-oauth)
-
 ###### Remix App
 Newly created Remix apps from template after February 1st 2024 will have token exchange turned on by default.
 
@@ -66,6 +50,22 @@ const shopify = shopifyApp({
 ```
 
 3. Enjoy no-redirect OAuth flow.
+
+###### Non-remix App
+1. Ensure your scopes are [declared on Shopify Partners through the Shopify CLI](ZL:TODO link to shopify.dev for managed install)
+2. Turn on future flag `unstable_tokenExchange` when configuring shopifyApi
+
+```ts
+shopifyApi({
+  ...
+  isEmbeddedApp: true,
+  future: {
+    unstable_tokenExchange: true,
+  },
+})
+```
+3. Start the OAuth process by calling [shopify.auth.tokenExchange](../reference/auth/tokenExchange.md) to exchange user session token to access token.
+4. Use the exchanged session token to make authenticated API queries, see [After OAuth](#after-oauth)
 
 #### Detecting scope changes
 If your scopes are declared on Shopify Partners, scope changes will be handled by Shopify automatically. See [ZL:TODO NAME THIS](ZL:TODO link to shopify.dev for managed install) 
