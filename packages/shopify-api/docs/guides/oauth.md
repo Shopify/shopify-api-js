@@ -27,6 +27,8 @@ The first thing your app will need to do is to get a token to access the Admin A
     - Access scope changes are managed by the app
 
 ## Token Exchange
+OAuth process by exchanging the current user's [Session Token](ZL:TODO) for an [Access Token](ZL:TODO).
+
 To learn more about:
   - [Token Exchange](ZL:TODO link to shopify.dev)
   - [Configuring access scopes through CLI](https://shopify.dev/docs/apps/tools/cli/configuration)
