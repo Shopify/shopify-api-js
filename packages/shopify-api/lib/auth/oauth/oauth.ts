@@ -28,6 +28,7 @@ import {
   BeginParams,
   CallbackParams,
   AuthQuery,
+  AccessTokenResponse,
 } from './types';
 import {nonce} from './nonce';
 import {safeCompare} from './safe-compare';
@@ -206,7 +207,7 @@ export function callback(config: ConfigInterface): OAuthCallback {
     }
 
     const session: Session = createSession({
-      accessTokenResponse: await postResponse.json(),
+      accessTokenResponse: await postResponse.json<AccessTokenResponse>(),
       shop: cleanShop,
       state: stateFromCookie,
       config,

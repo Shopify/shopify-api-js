@@ -7,6 +7,7 @@ import {abstractFetch} from '../../../runtime';
 import {DataType} from '../../clients/types';
 
 import {createSession} from './create-session';
+import {AccessTokenResponse} from './types';
 
 export enum RequestedTokenType {
   OnlineAccessToken = 'urn:shopify:params:oauth:token-type:online-access-token',
@@ -64,7 +65,7 @@ export function tokenExchange(config: ConfigInterface): TokenExchange {
 
     return {
       session: createSession({
-        accessTokenResponse: await postResponse.json(),
+        accessTokenResponse: await postResponse.json<AccessTokenResponse>(),
         shop: cleanShop,
         // We need to keep this as an empty string as our template DB schemas have this required
         state: '',

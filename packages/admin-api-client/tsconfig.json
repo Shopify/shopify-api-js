@@ -5,7 +5,7 @@
     "declaration": true,
     "declarationMap": true,
     "target": "ES2022",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext"],
     "rootDir": "src",
     "baseUrl": "src",
     "strict": true,
