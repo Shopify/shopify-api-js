@@ -75,6 +75,8 @@ export interface GraphqlQueryOptions<
   retries?: number;
 }
 
+export {GraphqlClient} from './admin/graphql/client';
+
 export interface ShopifyClients {
   Rest: typeof RestClient;
   Graphql: typeof GraphqlClient;
