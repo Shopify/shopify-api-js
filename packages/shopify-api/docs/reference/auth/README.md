@@ -4,15 +4,15 @@ This object contains functions used to authenticate apps, and redirect users to 
 
 ## Token Exchange
 
-ZL:TODO -> Add links to token exchange guide
+Learn more about [Token Exchange](../../guides/oauth.md#token-exchange).
 
 | Property                                        | Description                                                                                       |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | [tokenExchange](./tokenExchange.md)             | Performs token exchange to get access token from session token                                    |
 
-## Authorization Code Grant
+## Authorization Code Grant Flow
 
-ZL:TODO -> Add links to authorization code grant guide
+Learn more about [Authorization Code Grant Flow](../../guides/oauth.md#authorization-code-grant-flow).
 
 | Property                                        | Description                                                                                       |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------- |
