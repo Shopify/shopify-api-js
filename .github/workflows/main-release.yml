@@ -21,8 +21,9 @@ jobs:
           node-version: 16.x
           cache: 'yarn'
 
+      # TODO Remove the --ignore-engines flag when we drop support for Node 16
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: yarn --frozen-lockfile --ignore-engines
 
       - name: Create release Pull Request or publish to NPM
         id: changesets
