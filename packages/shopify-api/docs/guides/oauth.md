@@ -1,12 +1,23 @@
 # Performing OAuth
 
+##### Table of content
+- [Supported types of OAuth Flow](#supported-types-of-oauth-flow)
+- [Token Exchange Flow](#token-exchange-flow)
+  - [Non-Remix App](#non-remix-app)
+  - [Remix App](#remix-app)
+  - [Detecting scope changes](#detecting-scope-changes)
+- [Authorization Code Grant Flow](#authorization-code-grant-flow)
+  - [Detecting scope changes](#detecting-scope-changes-1)
+- [After OAuth](#after-oauth)
+
+----------------------------------------------------------------------------------
 > [!TIP]
 > If you are building an embedded app and you have scopes specified on Shopify Partners. We **strongly** recommend using the [Token Exchange Flow](#token-exchange-flow) for OAuth.
 
 After you set up the library for your project, you'll be able to use it to interact with the APIs, and add your own functionality.
 The first thing your app will need to do is to get a token to access the Admin API by performing the OAuth process. Learn more about [OAuth on the Shopify platform](https://shopify.dev/docs/apps/auth/oauth).
 
-### Supported types of OAuth flow:
+## Supported types of OAuth flow
 1. [Token Exchange Flow](#token-exchange-flow)
     - Recommended for embedded apps that have scopes declared on Shopify Partners dashboard
     - Avoids redirect to your app to continue the OAuth flow
