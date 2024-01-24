@@ -3,21 +3,21 @@
 ##### Table of content
 - [Supported types of OAuth Flow](#supported-types-of-oauth-flow)
 - [Token Exchange](#token-exchange)
-  - [Non-Remix App](#non-remix-app)
   - [Remix App](#remix-app)
+  - [Non-Remix App](#non-remix-app)
   - [Detecting scope changes](#detecting-scope-changes)
 - [Authorization Code Grant Flow](#authorization-code-grant-flow)
   - [Detecting scope changes](#detecting-scope-changes-1)
 - [After OAuth](#after-oauth)
 
 ----------------------------------------------------------------------------------
-> [!TIP]
-> If you are building an embedded app, we **strongly** recommend using the [Token Exchange](#token-exchange) for OAuth.
-
 After you set up the library for your project, you'll be able to use it to interact with the APIs, and add your own functionality.
 The first thing your app will need to do is to get a token to access the Admin API by performing the OAuth process. Learn more about [OAuth on the Shopify platform](https://shopify.dev/docs/apps/auth/oauth).
 
 ## Supported types of OAuth
+> [!TIP]
+> If you are building an embedded app, we **strongly** recommend using the [Token Exchange](#token-exchange) for OAuth.
+
 1. [Token Exchange](#token-exchange)
     - Recommended for embedded apps
     - Avoids redirect to your app to continue the OAuth flow
@@ -30,8 +30,9 @@ The first thing your app will need to do is to get a token to access the Admin A
 OAuth process by exchanging the current user's [Session Token](ZL:TODO) for an [Access Token](ZL:TODO).
 
 To learn more about:
-  - [Token Exchange](ZL:TODO link to shopify.dev)
-  - [Configuring access scopes through CLI](https://shopify.dev/docs/apps/tools/cli/configuration)
+  - [How Token Exchange Works](ZL:TODO link to shopify.dev)
+  - [Using Shopify Managed Install To Install Your App](ZL:TODO Link to shopify.dev)
+  - [Configuring Access Scopes Through CLI](https://shopify.dev/docs/apps/tools/cli/configuration)
 
 ###### Remix App
 Newly created Remix apps from template after February 1st 2024 will have token exchange turned on by default.
