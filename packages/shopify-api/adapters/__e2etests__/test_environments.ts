@@ -32,6 +32,9 @@ function allEnvironmentsReady(environments: E2eTestEnvironment[]): boolean {
 export async function runEnvironments(
   environments: E2eTestEnvironment[],
 ): Promise<boolean> {
+  // Give enough time for the servers to start listening
+  await sleep(2000);
+
   const maxAttempts = 5;
 
   if (allEnvironmentsReady(environments)) return true;

@@ -1,0 +1,7 @@
+name="test_web_api"
+compatibility_date="2024-01-22"
+
+send_metrics=false
+
+[vars]
+HTTP_SERVER_PORT=8889
