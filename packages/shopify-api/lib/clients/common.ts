@@ -10,7 +10,6 @@ import {LIBRARY_NAME} from '../types';
 import {ConfigInterface} from '../base-types';
 import {SHOPIFY_API_LIBRARY_VERSION} from '../version';
 import {
-  AbstractFetchFunc,
   abstractRuntimeString,
   canonicalizeHeaders,
   getHeader,
@@ -59,7 +58,7 @@ export function clientLoggerFactory(config: ConfigInterface) {
 
 export function throwFailedRequest(
   body: any,
-  response: Awaited<ReturnType<AbstractFetchFunc>>,
+  response: Response,
   atMaxRetries: boolean,
 ): never {
   const responseHeaders = canonicalizeHeaders(

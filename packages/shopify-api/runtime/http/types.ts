@@ -22,7 +22,9 @@ export interface AdapterArgs {
   rawResponse?: AdapterResponse;
 }
 
-export type AbstractFetchFunc = typeof fetch;
+export type AbstractFetchFunc = (
+  ...params: Parameters<typeof fetch>
+) => Promise<Response>;
 
 export type AbstractConvertRequestFunc = (
   adapterArgs: AdapterArgs,
