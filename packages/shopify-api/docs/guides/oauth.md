@@ -16,7 +16,7 @@ The first thing your app will need to do is to get a token to access the Admin A
 
 ## Supported types of OAuth
 > [!TIP]
-> If you are building an embedded app, we **strongly** recommend using [Shopify managed install](ZL:TODO) with [Token Exchange](#token-exchange) instead of Authorizing Code Grant Flow.
+> If you are building an embedded app, we **strongly** recommend using [Shopify managed install](ZL:TODO) with [Token Exchange](#token-exchange) instead of the Authorization Code Grant Flow.
 
 1. [Token Exchange](#token-exchange)
     - Recommended for embedded apps
@@ -91,7 +91,7 @@ available in Shopify.
 
 ## Authorization Code Grant Flow
 > [!NOTE]
-> If you are building an embedded app, we **strongly** recommend using [Shopify managed install](ZL:TODO) with [Token Exchange](#token-exchange) instead of Authorizing Code Grant Flow.
+> If you are building an embedded app, we **strongly** recommend using [Shopify managed install](ZL:TODO) with [Token Exchange](#token-exchange) instead of the Authorization Code Grant Flow.
 
 To perform Authorization Code Grant Flow, you will need to create two endpoints in your app:
 

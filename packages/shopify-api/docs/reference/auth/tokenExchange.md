@@ -15,7 +15,7 @@ app.get('/auth', async (req, res) => {
   const searchParamSessionToken = getSessionTokenFromUrlParam(request);
   const sessionToken = (headerSessionToken || searchParamSessionToken)!;
 
-  await shopify.auth.exchangeToken({
+  await shopify.auth.tokenExchange({
     sessionToken,
     shop,
     requestedTokenType: RequestedTokenType.OfflineAccessToken // or RequestedTokenType.OnlineAccessToken
