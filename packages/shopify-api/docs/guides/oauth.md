@@ -16,30 +16,32 @@ The first thing your app will need to do is to get a token to access the Admin A
 
 ## Supported types of OAuth
 > [!TIP]
-> If you are building an embedded app, we **strongly** recommend using [Shopify managed install](ZL:TODO) with [Token Exchange](#token-exchange) instead of the Authorization Code Grant Flow.
+> If you are building an embedded app, we **strongly** recommend using [Shopify managed install](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation) with [Token Exchange](#token-exchange) instead of the Authorization Code Grant Flow.
 
 1. [Token Exchange](#token-exchange)
     - Recommended for embedded apps
     - Avoids redirect to your app to continue the OAuth flow
-    - Access scope changes are handled by Shopify if you use [Shopify managed install](ZL:TODO).
+    - Access scope changes are handled by Shopify if you use [Shopify managed install](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation).
 2. [Authorization Code Grant Flow](#authorization-code-grant-flow)
     - Suitable for non-embedded apps
     - Installations, and access scope changes are managed by the app
 
 ## Token Exchange
-OAuth process by exchanging the current user's [Session Token](ZL:TODO) for an [Access Token](ZL:TODO).
+OAuth process by exchanging the current user's [Session Token](https://shopify.dev/docs/apps/auth/session-tokens) for an
+[Access Token](https://shopify-dev-staging2.shopifycloud.com/docs/apps/auth/access-token-types/online.md) to make
+authenticated Shopify API queries.
 
-This can replace authorization code grant flow completely if you also take advantage of [Shopify managed install](ZL:TODO)
+This can replace authorization code grant flow completely if you also take advantage of [Shopify managed install](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
 
 To learn more about:
-  - [How Token Exchange Works](ZL:TODO)
-  - [Using Shopify Managed Install for your app's installation](ZL:TODO)
+  - [How Token Exchange Works](https://shopify.dev/docs/apps/auth/get-access-tokens/token-exchange/overview)
+  - [Using Shopify Managed Install for your app's installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
   - [Configuring Access Scopes Through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration)
 
 ###### Remix App
 Newly created Remix apps from template after February 1st 2024 will have token exchange turned on by default.
 
-1. Ensure your access scopes are [configured through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration)
+1. Ensure your access scopes are [configured through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration).
 2. Turn on the future flag `unstable_newEmbeddedAuthStrategy` when configuring your Remix app
 
 ```ts
@@ -78,7 +80,7 @@ shopifyApi({
 
 ##### Shopify Managed Install
 If your access scopes are [configured through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration), scope changes will be handled by Shopify automatically.
-Learn more about [Shopify managed install](ZL:TODO). Using token exchange will guarantee that the access token retrieved will always have the latest access scopes.
+Learn more about [Shopify managed install](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation). Using token exchange will guarantee that the access token retrieved will always have the latest access scopes.
 
 ##### Not using Shopify Managed Install - not recommended
 If you don't have access scopes configured through the Shopify CLI, you can still use Token Exchange to exchange the current user's Session Token for Access Token.
@@ -91,9 +93,9 @@ available in Shopify.
 
 ## Authorization Code Grant Flow
 > [!NOTE]
-> If you are building an embedded app, we **strongly** recommend using [Shopify managed install](ZL:TODO) with [Token Exchange](#token-exchange) instead of the Authorization Code Grant Flow.
+> If you are building an embedded app, we **strongly** recommend using [Shopify managed install](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation) with [Token Exchange](#token-exchange) instead of the Authorization Code Grant Flow.
 
-To perform Authorization Code Grant Flow, you will need to create two endpoints in your app:
+To perform [Authorization Code Grant Flow](https://shopify.dev/docs/apps/auth/get-access-tokens/authorization-code-grant), you will need to create two endpoints in your app:
 
 1. Start the process by calling [shopify.auth.begin](../reference/auth/begin.md) to redirect the merchant to Shopify, to ask for permission to install the app.
 1. Return the merchant to your app once they approve the app installation, by calling [shopify.auth.callback](../reference/auth/callback.md) to set up a session with an API access token.

@@ -1,6 +1,8 @@
 # shopify.auth.tokenExchange
 
-Begins the OAuth process by exchanging the current user's [Session Token](#ZL:TODO) for an [Access Token](#ZL:TODO).
+Begins the OAuth process by exchanging the current user's [Session Token](https://shopify.dev/docs/apps/auth/session-tokens) for an
+[Access Token](https://shopify.dev/docs/apps/auth/access-token-types/online.md) to make
+authenticated Shopify API queries.
 
 Learn more:
 - [Token Exchange](../../guides/oauth.md#token-exchange)
