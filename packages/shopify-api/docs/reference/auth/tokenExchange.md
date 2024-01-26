@@ -1,8 +1,7 @@
 # shopify.auth.tokenExchange
 
-Begins the OAuth process by exchanging the current user's [Session Token](https://shopify.dev/docs/apps/auth/session-tokens) for an
-[Access Token](https://shopify.dev/docs/apps/auth/access-token-types/online.md) to make
-authenticated Shopify API queries.
+Begins the OAuth process by exchanging the current user's [session token](https://shopify.dev/docs/apps/auth/session-tokens) for an
+[access token](https://shopify.dev/docs/apps/auth/access-token-types/online.md) to make authenticated Shopify API queries.
 
 Learn more:
 - [Token Exchange](../../guides/oauth.md#token-exchange)
@@ -65,10 +64,8 @@ A Shopify domain name in the form `{exampleshop}.myshopify.com`.
 
 [`RequestedTokenType` in token-exchange.ts](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/lib/auth/oauth/token-exchange.ts)
 
-- `RequestedTokenType.OnlineAccessToken`
-- `RequestedTokenType.OfflineAccessToken`
-
-Learn more about [OAuth access modes](https://shopify.dev/docs/apps/auth/oauth/access-modes).
+- `RequestedTokenType.OnlineAccessToken` - Learn more about [online tokens](https://shopify.dev/docs/apps/auth/access-token-types/online.md)
+- `RequestedTokenType.OfflineAccessToken` - Learn more about [offline tokens](https://shopify.dev/docs/apps/auth/access-token-types/offline.md)
 
 ## Return
 

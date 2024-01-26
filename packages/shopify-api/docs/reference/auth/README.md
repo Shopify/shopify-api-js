@@ -4,7 +4,7 @@ This object contains functions used to authenticate apps, and redirect users to 
 
 ## Token Exchange
 
-Learn more about [Token Exchange](../../guides/oauth.md#token-exchange).
+Learn more about [token exchange](../../guides/oauth.md#token-exchange).
 
 | Property                                        | Description                                                                                       |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -12,7 +12,7 @@ Learn more about [Token Exchange](../../guides/oauth.md#token-exchange).
 
 ## Authorization Code Grant Flow
 
-Learn more about [Authorization Code Grant Flow](../../guides/oauth.md#authorization-code-grant-flow).
+Learn more about [authorization code grant flow](../../guides/oauth.md#authorization-code-grant-flow).
 
 | Property                                        | Description                                                                                       |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------- |
