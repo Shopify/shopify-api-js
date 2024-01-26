@@ -35,7 +35,7 @@
     "@shopify/prettier-config": "^1.1.2",
     "@shopify/typescript-configs": "^5.1.0",
     "@types/jest": "^29.5.0",
-    "@types/regenerator-runtime": "^0.13.1",
+    "@types/regenerator-runtime": "^0.13.5",
     "@typescript-eslint/parser": "^6.19.1",
     "babel-jest": "^29.5.0",
     "eslint": "^8.56.0",
