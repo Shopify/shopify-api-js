@@ -7428,7 +7428,7 @@ min-indent@^1.0.0:
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
-miniflare@3.20231218.3:
+miniflare@3.20231218.3, miniflare@^3.20231218.3:
   version "3.20231218.3"
   resolved "https://registry.yarnpkg.com/miniflare/-/miniflare-3.20231218.3.tgz#31aa7f9165970ae53d3048eeb24ffb13ee84cf1e"
   integrity sha512-OrPBYWO0WnFv6DrxZ7hF8f5agZ4+xo/2qSLE0wwCJSqlFhr91dfSJautxfCOBD896nAA7Jqr5LBPEnqq3/k/JQ==
@@ -7441,24 +7441,6 @@ miniflare@3.20231218.3:
     glob-to-regexp "^0.4.1"
     stoppable "^1.1.0"
     undici "^5.28.2"
-    workerd "1.20231218.0"
-    ws "^8.11.0"
-    youch "^3.2.2"
-    zod "^3.20.6"
-
-miniflare@^3.20231218.2:
-  version "3.20231218.2"
-  resolved "https://registry.yarnpkg.com/miniflare/-/miniflare-3.20231218.2.tgz#301cbf7833b7b962e4eaaf1bf4abe2ad507f3f5e"
-  integrity sha512-rCUI2OjqCf3fZVdmSX4DOZQRzSDvHp/oL2vjER/cvJEdWSYiqRxDp2oO7A7JcEo1/Y+kPa5VQ1pFfdZpjBcpFg==
-  dependencies:
-    "@cspotcode/source-map-support" "0.8.1"
-    acorn "^8.8.0"
-    acorn-walk "^8.2.0"
-    capnp-ts "^0.7.0"
-    exit-hook "^2.2.1"
-    glob-to-regexp "^0.4.1"
-    stoppable "^1.1.0"
-    undici "^5.22.1"
     workerd "1.20231218.0"
     ws "^8.11.0"
     youch "^3.2.2"
@@ -9386,7 +9368,7 @@ undici@5.20.0:
   dependencies:
     busboy "^1.6.0"
 
-undici@^5.22.1, undici@^5.28.2:
+undici@^5.28.2:
   version "5.28.2"
   resolved "https://registry.yarnpkg.com/undici/-/undici-5.28.2.tgz#fea200eac65fc7ecaff80a023d1a0543423b4c91"
   integrity sha512-wh1pHJHnUeQV5Xa8/kyQhO7WFa8M34l026L5P/+2TYiakvGy5Rdc8jWZVyG7ieht/0WgJLEd3kcU5gKx+6GC8w==
