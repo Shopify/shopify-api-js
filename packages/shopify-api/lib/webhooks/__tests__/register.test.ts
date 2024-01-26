@@ -22,7 +22,12 @@ import {Shopify, shopifyApi} from '../..';
 
 import * as mockResponses from './responses';
 import {MockResponse} from './responses';
-import {EVENT_BRIDGE_HANDLER, HTTP_HANDLER, PUB_SUB_HANDLER} from './handlers';
+import {
+  EVENT_BRIDGE_HANDLER,
+  HTTP_HANDLER,
+  HTTP_HANDLER_WITH_SUBTOPIC,
+  PUB_SUB_HANDLER,
+} from './handlers';
 
 interface RegisterTestWebhook {
   shopify: Shopify;
@@ -70,6 +75,32 @@ describe('shopify.webhooks.register', () => {
       'webhookSubscriptionCreate',
       `topic: ${topic}`,
       {callbackUrl: `"https://test_host_name/webhooks"`},
+    );
+    assertRegisterResponse({registerReturn, topic, responses});
+  });
+
+  it('sends a request with a subtopic', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    const topic = 'METAOBJECTS_CREATE';
+    const handler = HTTP_HANDLER_WITH_SUBTOPIC;
+    const responses = [mockResponses.successResponse];
+
+    const registerReturn = await registerWebhook({
+      shopify,
+      topic,
+      handler,
+      responses,
+    });
+
+    assertWebhookRegistrationRequest(
+      shopify.config.apiVersion,
+      'webhookSubscriptionCreate',
+      `topic: ${topic}`,
+      {
+        callbackUrl: `"https://test_host_name/webhooks"`,
+        subTopic: 'example:topic',
+      },
     );
     assertRegisterResponse({registerReturn, topic, responses});
   });

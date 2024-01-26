@@ -19,6 +19,7 @@ interface BaseWebhookHandler {
   id?: string;
   includeFields?: string[];
   metafieldNamespaces?: string[];
+  subTopic?: string;
 }
 
 export interface HttpWebhookHandler extends BaseWebhookHandler {

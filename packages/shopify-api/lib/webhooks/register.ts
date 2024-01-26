@@ -412,6 +412,10 @@ function buildMutation(
       params.metafieldNamespaces = JSON.stringify(handler.metafieldNamespaces);
     }
 
+    if (handler.subTopic) {
+      params.subTopic = handler.subTopic;
+    }
+
     const paramsString = Object.entries(params)
       .map(([key, value]) => `${key}: ${value}`)
       .join(', ');
