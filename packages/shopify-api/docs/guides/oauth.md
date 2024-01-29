@@ -1,7 +1,7 @@
 # Performing OAuth
 
-##### Table of content
-- [Supported types of OAuth Flow](#supported-types-of-oauth-flow)
+##### Table of contents
+- [Supported types of OAuth Flow](#supported-types-of-oauth)
 - [Token Exchange](#token-exchange)
   - [Remix App](#remix-app)
   - [Non-Remix App](#non-remix-app)
@@ -21,8 +21,8 @@ with [token exchange](#token-exchange) instead of the authorization code grant f
 
 1. [Token Exchange](#token-exchange)
     - Recommended for embedded apps
-    - Avoids redirect to your app to continue the OAuth flow
-    - Access scope changes are handled by Shopify if you use [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation).
+    - Doesn't require redirects, which makes it faster and prevents flickering when loading the app
+    - Access scope changes are handled by Shopify if you use [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
 2. [Authorization Code Grant Flow](#authorization-code-grant-flow)
     - Suitable for non-embedded apps
     - Installations, and access scope changes are managed by the app
@@ -32,9 +32,9 @@ OAuth process by exchanging the current user's [session token](https://shopify.d
 [access token](https://shopify-dev-staging2.shopifycloud.com/docs/apps/auth/access-token-types/online.md) to make
 authenticated Shopify API queries.
 
-This can replace authorization code grant flow completely if you also take advantage of [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
+This can replace authorization code grant flow completely if you also take advantage of [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation).
 
-To learn more about:
+Learn more about:
   - [How token exchange works](https://shopify.dev/docs/apps/auth/get-access-tokens/token-exchange/overview)
   - [Using Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
   - [Configuring access scopes through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration)
@@ -65,16 +65,18 @@ shopifyApi({
 
 ##### Shopify managed installation
 If your access scopes are [configured through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration), scope changes will be handled by Shopify automatically.
-Learn more about [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation). Using token exchange will guarantee that the access token retrieved will always have the latest access scopes.
+Learn more about [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation).
+Using token exchange will ensure that the access token retrieved will always have the latest access scopes granted by the user.
 
 ##### Not using Shopify managed installation - not recommended
 If you don't have access scopes configured through the Shopify CLI, you can still use token exchange to exchange the current user's session token for access token.
-This is not recommended because you'll have to managed both OAuth flow.
+This is not recommended because you'll have to manage both OAuth flows.
 
 1. Use [authorization code grant flow](#authorization-code-grant-flow) to handle app installation so your app's access scopes will be 
 available in Shopify.
 2. Once the app is installed for the user, you can use token exchange to exchange that user's session token to retrieve access token to refresh an expired token.
-   - Using token exchange will ensure you don't have to handle redirects through the [authorization code grant flow](#authorization-code-grant-flow) on subsequent authorization calls.
+   - Using token exchange will ensure you don't have to handle redirects through the [authorization code grant flow](#authorization-code-grant-flow) on subsequent authorization calls,
+   except when your requested access scopes changes.
 
 ## Authorization Code Grant Flow
 > [!NOTE]
