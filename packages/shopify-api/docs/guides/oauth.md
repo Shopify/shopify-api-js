@@ -40,7 +40,7 @@ Learn more about:
   - [Configuring access scopes through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration)
 
 ###### Remix App
-See ["new embedded authorization Strategy"](https://shopify.dev/docs/api/shopify-app-remix#embedded-auth-strategy) to enable this feature.
+See ["new embedded app authorization Strategy"](https://shopify.dev/docs/api/shopify-app-remix#embedded-auth-strategy) to enable this feature.
 
 ###### Non-remix App
 1. Ensure your access scopes are available on Shopify:
