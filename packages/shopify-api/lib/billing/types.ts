@@ -302,8 +302,17 @@ export interface BillingSubscriptionParams {
 }
 
 export interface AppSubscription {
+  /**
+   * The ID of the app subscription.
+   */
   id: string;
+  /**
+   * The name of the purchased plan.
+   */
   name: string;
+  /**
+   * Whether this is a test subscription.
+   */
   test: boolean;
 }
 
@@ -312,9 +321,21 @@ export interface ActiveSubscriptions {
 }
 
 export interface OneTimePurchase {
+  /**
+   * The ID of the one-time purchase.
+   */
   id: string;
+  /**
+   * The name of the purchased plan.
+   */
   name: string;
+  /**
+   * Whether this is a test purchase.
+   */
   test: boolean;
+  /**
+   * The status of the one-time purchase.
+   */
   status: string;
 }
 
