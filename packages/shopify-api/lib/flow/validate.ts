@@ -4,6 +4,7 @@ import {HashFormat} from '../../runtime/crypto/types';
 import {ConfigInterface} from '../base-types';
 import {safeCompare} from '../auth/oauth/safe-compare';
 import {logger} from '../logger';
+import {ShopifyHeader} from '../types';
 
 import {
   FlowValidateParams,
@@ -20,10 +21,10 @@ export function validateFactory(config: ConfigInterface) {
     const request = await abstractConvertRequest(adapterArgs);
 
     if (!rawBody.length) {
-      fail(FlowValidationErrorReason.MissingBody, config);
+      return fail(FlowValidationErrorReason.MissingBody, config);
     }
 
-    const hmac = getHeader(request.headers, 'x-shopify-hmac-sha256');
+    const hmac = getHeader(request.headers, ShopifyHeader.Hmac);
 
     if (!hmac) {
       return fail(FlowValidationErrorReason.MissingHmac, config);

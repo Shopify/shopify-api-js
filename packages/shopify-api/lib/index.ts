@@ -27,6 +27,7 @@ export * from './billing/types';
 export * from './clients/types';
 export * from './session/types';
 export * from './webhooks/types';
+export * from './flow/types';
 
 export interface Shopify<
   Params extends ConfigParams = ConfigParams,
@@ -69,9 +70,9 @@ export function shopifyApi<
     utils: shopifyUtils(validatedConfig),
     webhooks: shopifyWebhooks(validatedConfig),
     billing: shopifyBilling(validatedConfig),
+    flow: shopifyFlow(validatedConfig),
     logger: logger(validatedConfig),
     rest: {} as Resources,
-    flow: shopifyFlow(validatedConfig),
   };
 
   if (restResources) {
