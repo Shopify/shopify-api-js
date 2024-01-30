@@ -70,7 +70,9 @@ Using token exchange will ensure that the access token retrieved will always hav
 
 ##### Not using Shopify managed installation - not recommended
 If you don't have access scopes configured through the Shopify CLI, you can still use token exchange to exchange the current user's session token for access token.
-This is not recommended because you'll have to manage both OAuth flows.
+
+> [!WARNING]
+> This is not recommended because you'll have to manage both OAuth flows.
 
 1. Use [authorization code grant flow](#authorization-code-grant-flow) to handle app installation so your app's access scopes will be 
 available in Shopify.
