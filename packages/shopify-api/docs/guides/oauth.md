@@ -35,7 +35,7 @@ authenticated Shopify API queries.
 This can replace authorization code grant flow completely if you also take advantage of [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation).
 
 Learn more about:
-  - [How token exchange works](https://shopify.dev/docs/apps/auth/get-access-tokens/token-exchange/overview)
+  - [How token exchange works](https://shopify.dev/docs/apps/auth/get-access-tokens/token-exchange)
   - [Using Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
   - [Configuring access scopes through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration)
 
