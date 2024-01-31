@@ -25,6 +25,7 @@ export enum ShopifyHeader {
   Domain = 'X-Shopify-Shop-Domain',
   Hmac = 'X-Shopify-Hmac-Sha256',
   Topic = 'X-Shopify-Topic',
+  SubTopic = 'X-Shopify-Sub-Topic',
   WebhookId = 'X-Shopify-Webhook-Id',
   StorefrontPrivateToken = 'Shopify-Storefront-Private-Token',
   StorefrontSDKVariant = 'X-SDK-Variant',
