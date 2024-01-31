@@ -126,6 +126,8 @@
 
 - eae5a4a8: Introduce token exchange API for fetching access tokens. This feature is currently unstable and is hidden behind the `unstable_tokenExchange` future flag.
 
+   :exclamation: To learn more about Token Exchange, see [Performing OAuth](./docs/guides/oauth.md)
+
 ## 8.0.2
 
 ### Patch Changes
