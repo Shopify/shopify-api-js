@@ -111,6 +111,7 @@ To do that, apps will need to:
 - [Storing sessions](docs/guides/session-storage.md)
 - [Setting up webhooks](docs/guides/webhooks.md)
 - [Using REST resources](docs/guides/rest-resources.md)
+- [Using GraphQL types](docs/guides/graphql-types.md)
 - [Configuring Billing](docs/guides/billing.md)
 - [Adding custom runtimes](docs/guides/runtimes.md)
 - [Customizing logging configuration](docs/guides/logger.md)
