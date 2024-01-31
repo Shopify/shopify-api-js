@@ -99,8 +99,8 @@ describe('shopify.webhooks.register', () => {
       `topic: ${topic}`,
       {
         callbackUrl: `"https://test_host_name/webhooks"`,
-        subTopic: 'example:topic',
       },
+      `subTopic: ${handler.subTopic} `,
     );
     assertRegisterResponse({registerReturn, topic, responses});
   });
@@ -568,6 +568,7 @@ function assertWebhookRegistrationRequest(
   mutationName: string,
   identifier: string,
   mutationParams: MutationParams = {},
+  subTopic?: string,
 ) {
   const paramsString = Object.entries(mutationParams)
     .map(([key, value]) => `${key}: ${value}`)
@@ -576,6 +577,7 @@ function assertWebhookRegistrationRequest(
   const webhookQuery = queryTemplate(TEMPLATE_MUTATION, {
     MUTATION_NAME: mutationName,
     IDENTIFIER: identifier,
+    ...(subTopic ? {SUB_TOPIC: subTopic} : {}),
     MUTATION_PARAMS: paramsString.length
       ? `webhookSubscription: {${paramsString}}`
       : '',
