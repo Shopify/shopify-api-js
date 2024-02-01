@@ -70,7 +70,7 @@
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/introspection": "^4.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
-    "@parcel/watcher": "^2.3.0",
+    "@parcel/watcher": "^2.4.0",
     "@shopify/hydrogen-codegen": "^0.1.0",
     "graphql": "^16.8.1"
   },
