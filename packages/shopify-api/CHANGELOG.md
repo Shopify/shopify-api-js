@@ -32,7 +32,7 @@
 
   With this change, we can return a `Response` object for requests with the upcoming clients, which can help make the interface for requests more familiar to users.
 
-  For more information and examples, see the [migration guide to v9](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#changes-to-runtime-adapters).
+  For more information and examples, see the [migration guide to v9](./docs/migrating-to-v9.md#changes-to-runtime-adapters).
 
 - 7bd4be08: Rephrased `gdprTopics` to `privacyTopics` to account for other privacy regulations with data subject requests.
 
@@ -56,7 +56,7 @@
 - 83b15905: Allow access tokens to be marked as expired before actual expiry.
 - 218f4521: Use the new GraphQL API clients in shopify-api to use all of the latest features, including automatic types for query / mutation return object and variables.
 
-  For more information and examples, see the [migration guide to v9](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#using-the-new-clients).
+  For more information and examples, see the [migration guide to v9](./docs/migrating-to-v9.md#using-the-new-clients).
 
 - 18781092: Updated shopify-api GraphQL clients' APIs to be closer to the underlying clients
 - 4dd7612d: Underpinned the new REST client from `admin-api-client` into `shopify-api`, so apps can access it as a standalone client as well.
@@ -125,6 +125,8 @@
   ```
 
 - eae5a4a8: Introduce token exchange API for fetching access tokens. This feature is currently unstable and is hidden behind the `unstable_tokenExchange` future flag.
+
+   :exclamation: To learn more about Token Exchange, see [Performing OAuth](./docs/guides/oauth.md)
 
 ## 8.0.2
 
