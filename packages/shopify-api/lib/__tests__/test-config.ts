@@ -52,9 +52,10 @@ type TestConfig<Overrides extends TestOverridesOption<Future>, Future> = Modify<
  * This way, we'll always ensure our tests are covering all future flags. Please make sure to also have tests for the
  * old behaviour.
  */
-const TEST_FUTURE_FLAGS: Required<{[key in keyof FutureFlags]: true}> = {
+const TEST_FUTURE_FLAGS: Required<{
+  [key in keyof Omit<FutureFlags, 'unstable_tokenExchange'>]: true;
+}> = {
   v10_lineItemBilling: true,
-  unstable_tokenExchange: true,
 } as const;
 
 const TEST_CONFIG = {

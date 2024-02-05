@@ -39,9 +39,7 @@ export const config: ConfigInterface = {
     httpRequests: false,
     timestamps: false,
   },
-  future: {
-    unstable_tokenExchange: true,
-  },
+  future: {},
 };
 
 export const session = new Session({

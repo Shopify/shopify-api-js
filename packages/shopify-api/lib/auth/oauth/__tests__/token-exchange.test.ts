@@ -211,7 +211,7 @@ describe('tokenExchange', () => {
   });
 
   describe('with future flag disabled', () => {
-    test('shopifyAuth object does not have tokenExchange property', () => {
+    test('shopifyAuth object still has tokenExchange property', () => {
       const shopify = shopifyApi(
         testConfig({
           future: {
@@ -220,7 +220,7 @@ describe('tokenExchange', () => {
         }),
       );
 
-      expect(shopify.auth).not.toHaveProperty('tokenExchange');
+      expect(shopify.auth).toHaveProperty('tokenExchange');
     });
   });
 });
