@@ -17,13 +17,13 @@ export interface ConfigParams<
   /**
    * The API key for your app.
    *
-   * You can find this in the Partner Dashboard.
+   * Also known as Client ID in your Partner Dashboard.
    */
   apiKey?: string;
   /**
    * The API secret key for your app.
    *
-   * You can find this in the Partner Dashboard.
+   * Also known as Client Secret in your Partner Dashboard.
    */
   apiSecretKey: string;
   /**
@@ -31,7 +31,7 @@ export interface ConfigParams<
    */
   scopes?: string[] | AuthScopes;
   /**
-   * THe host name of your app.
+   * The host name of your app.
    */
   hostName: string;
   /**
