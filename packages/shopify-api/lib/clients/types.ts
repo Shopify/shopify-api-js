@@ -23,6 +23,9 @@ export interface ClientArgs {
   retries?: number;
 }
 
+/**
+ * Headers to be sent with the request.
+ */
 export type HeaderParams = Record<string, string | number | string[]>;
 
 /* eslint-disable @shopify/typescript/prefer-pascal-case-enums */
@@ -34,11 +37,29 @@ export enum DataType {
 /* eslint-enable @shopify/typescript/prefer-pascal-case-enums */
 
 export interface GetRequestParams {
+  /**
+   * The path to the resource, relative to the API version root.
+   */
   path: string;
+  /**
+   * The type of data expected in the response.
+   */
   type?: DataType;
+  /**
+   * The request body.
+   */
   data?: Record<string, any> | string;
+  /**
+   * Query parameters to be sent with the request.
+   */
   query?: SearchParams;
+  /**
+   * Additional headers to be sent with the request.
+   */
   extraHeaders?: HeaderParams;
+  /**
+   * The maximum number of times the request can be made if it fails with a throttling or server error.
+   */
   tries?: number;
 }
 
@@ -55,7 +76,13 @@ export type RequestParams = (GetRequestParams | PostRequestParams) & {
 };
 
 export interface RequestReturn<T = unknown> {
+  /**
+   * The response body.
+   */
   body: T;
+  /**
+   * The response headers.
+   */
   headers: Headers;
 }
 
@@ -70,8 +97,17 @@ export interface GraphqlQueryOptions<
   Operation extends keyof Operations,
   Operations extends AllOperations,
 > {
+  /**
+   * The variables to include in the operation.
+   */
   variables?: ApiClientRequestOptions<Operation, Operations>['variables'];
+  /**
+   * Additional headers to be sent with the request.
+   */
   headers?: Record<string, string | number>;
+  /**
+   * The maximum number of times to retry the request if it fails with a throttling or server error.
+   */
   retries?: number;
 }
 
