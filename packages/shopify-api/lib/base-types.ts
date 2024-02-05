@@ -47,7 +47,9 @@ export interface ConfigParams<
    */
   isEmbeddedApp: boolean;
   /**
-   * Whether the app is a custom store app.
+   * Whether the app is a Shopify admin custom store app.
+   *
+   * @link https://shopify.dev/docs/apps/distribution
    */
   isCustomStoreApp?: boolean;
   /**

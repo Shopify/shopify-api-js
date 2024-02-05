@@ -80,7 +80,7 @@ export class Session {
    */
   readonly id: string;
   /**
-   * The Shopify shop domain.
+   * The Shopify shop domain, such as `example.myshopify.com`.
    */
   public shop: string;
   /**
