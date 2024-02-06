@@ -70,6 +70,17 @@ export function validateHmac(config: ConfigInterface) {
   };
 }
 
+export async function validateHmacString(
+  config: ConfigInterface,
+  data: string,
+  hmac: string,
+  format: HashFormat,
+) {
+  const localHmac = await createSHA256HMAC(config.apiSecretKey, data, format);
+
+  return safeCompare(hmac, localHmac);
+}
+
 export function getCurrentTimeInSec() {
   return Math.trunc(Date.now() / 1000);
 }

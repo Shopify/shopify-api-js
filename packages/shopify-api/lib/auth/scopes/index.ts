@@ -1,3 +1,6 @@
+/**
+ * A class that represents a set of access token scopes.
+ */
 class AuthScopes {
   public static SCOPE_DELIMITER = ',';
 
@@ -31,6 +34,9 @@ class AuthScopes {
     this.expandedScopes = new Set([...scopeSet, ...impliedSet]);
   }
 
+  /**
+   * Checks whether the current set of scopes includes the given one.
+   */
   public has(scope: string | string[] | AuthScopes | undefined) {
     let other: AuthScopes;
 
@@ -45,6 +51,9 @@ class AuthScopes {
     );
   }
 
+  /**
+   * Checks whether the current set of scopes equals the given one.
+   */
   public equals(otherScopes: string | string[] | AuthScopes | undefined) {
     let other: AuthScopes;
 
@@ -60,10 +69,16 @@ class AuthScopes {
     );
   }
 
+  /**
+   * Returns a comma-separated string with the current set of scopes.
+   */
   public toString() {
     return this.toArray().join(AuthScopes.SCOPE_DELIMITER);
   }
 
+  /**
+   * Returns an array with the current set of scopes.
+   */
   public toArray() {
     return [...this.compressedScopes];
   }
