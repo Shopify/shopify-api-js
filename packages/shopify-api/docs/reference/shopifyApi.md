@@ -172,6 +172,7 @@ This function returns an object containing the following properties:
 | [session](./session/README.md)      | Object containing functions to manage Shopify sessions.                                                                                                 |
 | [webhooks](./webhooks/README.md)    | Object containing functions to configure and handle Shopify webhooks.                                                                                   |
 | [billing](./billing/README.md)      | Object containing functions to enable apps to bill merchants.                                                                                           |
+| [flow](./flow/README.md)            | Object containing functions to authenticate Flow extension requests.                                                                                    |
 | [utils](./utils/README.md)          | Object containing general functions to help build apps.                                                                                                 |
 | [rest](../guides/rest-resources.md) | Object containing OO representations of the Admin REST API. See the [API reference documentation](https://shopify.dev/docs/api/admin-rest) for details. |
 

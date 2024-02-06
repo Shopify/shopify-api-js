@@ -18,7 +18,14 @@ export type AdapterRequest = any;
 export type AdapterResponse = any;
 export type AdapterHeaders = any;
 export interface AdapterArgs {
+  /**
+   * The raw request, from the app's framework.
+   */
   rawRequest: AdapterRequest;
+  /**
+   * The raw response, from the app's framework. Only applies to frameworks that expose an API similar to Node's HTTP
+   * module.
+   */
   rawResponse?: AdapterResponse;
 }
 
