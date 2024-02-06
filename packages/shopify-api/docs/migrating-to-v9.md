@@ -114,6 +114,9 @@ setAbstractFetchFunc(convertFetch);
 
 With the introduction of the new clients, we've deprecated the `query` method in favor of `request`.
 
+One of the main improvements we made in the new clients is the ability to type GraphQL operations using TypeScript types.
+To start using types in your app, you can follow the [GraphQL types guide](./guides/graphql-types.md).
+
 `request` takes in the query / mutation as the first argument, and the following options:
 
 | Old option          | New option  | Notes                                                                                  |
