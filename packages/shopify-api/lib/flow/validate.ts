@@ -1,10 +1,9 @@
 import {abstractConvertRequest, getHeader} from '../../runtime/http';
-import {createSHA256HMAC} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
 import {ConfigInterface} from '../base-types';
-import {safeCompare} from '../auth/oauth/safe-compare';
 import {logger} from '../logger';
 import {ShopifyHeader} from '../types';
+import {validateHmacString} from '../utils/hmac-validator';
 
 import {
   FlowValidateParams,
@@ -30,7 +29,7 @@ export function validateFactory(config: ConfigInterface) {
       return fail(FlowValidationErrorReason.MissingHmac, config);
     }
 
-    if (await hmacIsValid(config.apiSecretKey, rawBody, hmac)) {
+    if (await validateHmacString(config, rawBody, hmac, HashFormat.Base64)) {
       return succeed(config);
     }
 
@@ -43,7 +42,7 @@ async function fail(
   config: ConfigInterface,
 ): Promise<FlowValidationInvalid> {
   const log = logger(config);
-  await log.debug('Flow request is not valid');
+  await log.debug('Flow request is not valid', {reason});
 
   return {
     valid: false,
@@ -53,23 +52,9 @@ async function fail(
 
 async function succeed(config: ConfigInterface): Promise<FlowValidationValid> {
   const log = logger(config);
-  await log.debug('Flow request is not valid');
+  await log.debug('Flow request is valid');
 
   return {
     valid: true,
   };
-}
-
-async function hmacIsValid(
-  secret: string,
-  rawBody: string,
-  hmac: string,
-): Promise<boolean> {
-  const generatedHash = await createSHA256HMAC(
-    secret,
-    rawBody,
-    HashFormat.Base64,
-  );
-
-  return safeCompare(generatedHash, hmac);
 }
