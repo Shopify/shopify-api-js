@@ -89,7 +89,7 @@
     "@types/supertest": "^2.0.10",
     "@types/uuid": "^9.0.0",
     "express": "^4.17.13",
-    "jest-environment-miniflare": "^2.12.1",
+    "jest-environment-miniflare": "^2.14.2",
     "miniflare": "^3.20231218.3",
     "rollup": "^2.79.1",
     "rollup-plugin-swc": "^0.2.1",
