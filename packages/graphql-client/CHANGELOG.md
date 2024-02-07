@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.9.3
+
+### Patch Changes
+
+- 0f0ffb8a: Updated global fetch types to more closely match reality
+
 ## 0.9.2
 
 ### Patch Changes
