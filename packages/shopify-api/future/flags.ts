@@ -9,7 +9,7 @@ export interface FutureFlags {
   /**
    * Enable line item billing, to make billing configuration more similar to the GraphQL API.
    */
-  unstable_lineItemBilling?: boolean;
+  v10_lineItemBilling?: boolean;
 }
 
 /**

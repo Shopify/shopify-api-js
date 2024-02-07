@@ -9,7 +9,7 @@ To trigger the billing behaviour, you'll need to set the `billing` value when ca
 
 ## Configuring LineItem billing
 
-With the future flag `unstable_lineItemBilling`, the billing configuration can now specify the the `AppSubscriptionLineItems`. This will allow you to create app subscription plans with both recurring and usage based charges.
+With the future flag `v10_lineItemBilling`, the billing configuration can now specify the the `AppSubscriptionLineItems`. This will allow you to create app subscription plans with both recurring and usage based charges.
 
 Subscription plans can have 1 or 2 line items. There can be a maximum of 1 of each type of plan Usage and Recurring. Usage line items can only be used in conjunction with recurring line items when the recurring line item interval is `BillingInterval.Every30Days`.
 
@@ -47,7 +47,7 @@ const shopify = shopifyApi({
   },
 }
 future: {
-  unstable_lineItemBilling: true,
+  v10_lineItemBilling: true,
 });
 ```
 
@@ -89,7 +89,7 @@ const shopify = shopifyApi({
   },
 },
 future: {
-  unstable_lineItemBilling: true,
+  v10_lineItemBilling: true,
 });
 ```
 
@@ -113,7 +113,7 @@ const shopify = shopifyApi({
   },
 }
 future: {
-  unstable_lineItemBilling: true,
+  v10_lineItemBilling: true,
 });
 ```
 
@@ -158,7 +158,7 @@ future: {
 
 ## Configuring Billing
 
-Prior to the future flag `unstable_lineItemBilling` and when the flag is set to false you will configure billing as follows. For example, the following configuration will allow you to charge merchants $30 every 30 days. The first three charges will be discounted by $10, so merchants would be charged $20.
+Prior to the future flag `v10_lineItemBilling` and when the flag is set to false you will configure billing as follows. For example, the following configuration will allow you to charge merchants $30 every 30 days. The first three charges will be discounted by $10, so merchants would be charged $20.
 
 ```ts
 import {
