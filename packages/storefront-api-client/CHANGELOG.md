@@ -1,5 +1,13 @@
 # @shopify/storefront-api-client
 
+## 0.2.3
+
+### Patch Changes
+
+- 0f0ffb8a: Updated global fetch types to more closely match reality
+- Updated dependencies [0f0ffb8a]
+  - @shopify/graphql-client@0.9.3
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # Changelog
 
+## 9.1.0
+
+### Minor Changes
+
+- 9c41d910: Added support for validating Flow extension requests, using `shopify.authenticate.flow`.
+
+  Please see [the `flow` object documentation](./docs/reference/flow/README.md) for more information.
+
+- 348b138a: Export GraphqlClient class from types
+
+### Patch Changes
+
+- 224fbf57: Fixed the types of the `balance` and `currency` fields in the `GiftCard` object.
+- 0f0ffb8a: Updated global fetch types to more closely match reality
+- Updated dependencies [0f0ffb8a]
+  - @shopify/storefront-api-client@0.2.3
+  - @shopify/admin-api-client@0.2.3
+
 ## 9.0.2
 
 ### Patch Changes
@@ -126,7 +144,7 @@
 
 - eae5a4a8: Introduce token exchange API for fetching access tokens. This feature is currently unstable and is hidden behind the `unstable_tokenExchange` future flag.
 
-   :exclamation: To learn more about Token Exchange, see [Performing OAuth](./docs/guides/oauth.md)
+  :exclamation: To learn more about Token Exchange, see [Performing OAuth](./docs/guides/oauth.md)
 
 ## 8.0.2
 

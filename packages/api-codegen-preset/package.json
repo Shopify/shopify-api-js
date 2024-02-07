@@ -1,6 +1,6 @@
 {
   "name": "@shopify/api-codegen-preset",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Preset for graphql-codegen to parse and type queries to Shopify APIs",
   "author": "Shopify",
   "license": "MIT",
