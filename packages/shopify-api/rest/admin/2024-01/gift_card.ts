@@ -7,9 +7,6 @@ import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
-import {Balance} from './balance';
-import {Currency} from './currency';
-
 interface FindArgs {
   session: Session;
   id: number | string;
@@ -47,10 +44,7 @@ interface DisableArgs {
 export class GiftCard extends Base {
   public static apiVersion = ApiVersion.January24;
 
-  protected static hasOne: {[key: string]: typeof Base} = {
-    "balance": Balance,
-    "currency": Currency
-  };
+  protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "get", "operation": "count", "ids": [], "path": "gift_cards/count.json"},
@@ -168,10 +162,10 @@ export class GiftCard extends Base {
   }
 
   public api_client_id: number | null;
-  public balance: Balance | null | {[key: string]: any};
+  public balance: string | null;
   public code: string | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public customer_id: number | null;
   public disabled_at: string | null;
   public expires_on: string | null;
