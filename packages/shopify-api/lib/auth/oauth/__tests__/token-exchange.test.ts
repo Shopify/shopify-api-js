@@ -209,18 +209,4 @@ describe('tokenExchange', () => {
       ).rejects.toThrow(ShopifyErrors.InvalidJwtError);
     });
   });
-
-  describe('with future flag disabled', () => {
-    test('shopifyAuth object still has tokenExchange property', () => {
-      const shopify = shopifyApi(
-        testConfig({
-          future: {
-            unstable_tokenExchange: false,
-          },
-        }),
-      );
-
-      expect(shopify.auth).toHaveProperty('tokenExchange');
-    });
-  });
 });

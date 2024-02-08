@@ -83,13 +83,6 @@ export function shopifyApi<
     });
   }
 
-  if (shopify.config.future?.unstable_tokenExchange) {
-    shopify.logger.deprecated(
-      '10.0.0',
-      'unstable_tokenExchange is now deprecated. Token Exchange API is stable and available.',
-    );
-  }
-
   shopify.logger
     .info(
       `version ${SHOPIFY_API_LIBRARY_VERSION}, environment ${abstractRuntimeString()}`,

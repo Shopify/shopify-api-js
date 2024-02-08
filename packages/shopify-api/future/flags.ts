@@ -3,10 +3,6 @@
  */
 export interface FutureFlags {
   /**
-   * Enable the token exchange OAuth flow.
-   */
-  unstable_tokenExchange?: boolean;
-  /**
    * Enable line item billing, to make billing configuration more similar to the GraphQL API.
    */
   v10_lineItemBilling?: boolean;

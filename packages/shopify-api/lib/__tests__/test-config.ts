@@ -53,7 +53,7 @@ type TestConfig<Overrides extends TestOverridesOption<Future>, Future> = Modify<
  * old behaviour.
  */
 const TEST_FUTURE_FLAGS: Required<{
-  [key in keyof Omit<FutureFlags, 'unstable_tokenExchange'>]: true;
+  [key in keyof FutureFlags]: true;
 }> = {
   v10_lineItemBilling: true,
 } as const;
