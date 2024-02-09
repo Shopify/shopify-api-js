@@ -1,5 +1,23 @@
 # Changelog
 
+## 9.2.0
+
+### Minor Changes
+
+- e2d4fee2: Update lineItemBilling future flag to v10. Current users of `unstable_lineItemBilling` will need to update to `v10_lineItemBilling` to continue using this feature.
+
+  ```ts
+  const shopify = shopifyApi({
+    // ...
+  future: {
+    v10_lineItemBilling: true,
+  });
+  ```
+
+### Patch Changes
+
+- db7d9cff: Remove gating of the token exchange API behind the `unstable_tokenExchange` flag.
+
 ## 9.1.0
 
 ### Minor Changes
@@ -60,13 +78,13 @@
   Before:
 
   ```ts
-  import { gdprTopics } from "@shopify/shopify-api";
+  import {gdprTopics} from '@shopify/shopify-api';
   ```
 
   After:
 
   ```ts
-  import { privacyTopics } from "@shopify/shopify-api";
+  import {privacyTopics} from '@shopify/shopify-api';
   ```
 
 ### Minor Changes
@@ -119,13 +137,13 @@
           {
             interval: BillingInterval.Usage,
             amount: 30,
-            currencyCode: "USD",
-            terms: "per 1000 emails",
+            currencyCode: 'USD',
+            terms: 'per 1000 emails',
           },
           {
             interval: BillingInterval.Every30Days,
             amount: 30,
-            currencyCode: "USD",
+            currencyCode: 'USD',
             discount: {
               durationLimitInIntervals: 3,
               value: {
@@ -497,7 +515,7 @@
   Before:
 
   ```js
-  app.post("/graphql", async (req, res) => {
+  app.post('/graphql', async (req, res) => {
     await Shopify.Utils.graphqlProxy(req, res);
   });
   ```
@@ -505,7 +523,7 @@
   After:
 
   ```js
-  app.post("/graphql", async (req, res) => {
+  app.post('/graphql', async (req, res) => {
     const response = await Shopify.Utils.graphqlProxy(req, res);
     res.status(200).send(response.body);
   });
