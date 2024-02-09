@@ -47,19 +47,8 @@ See ["new embedded app authorization Strategy"](https://shopify.dev/docs/api/sho
   - [configured through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration) or
   - install your app through the [authorization code grant flow](#authorization-code-grant-flow) (not recommended)
 
-2. Turn on future flag `unstable_tokenExchange` when configuring shopifyApi
-
-```ts
-shopifyApi({
-  ...
-  isEmbeddedApp: true,
-  future: {
-    unstable_tokenExchange: true,
-  },
-})
-```
-3. Start the OAuth process by calling [shopify.auth.tokenExchange](../reference/auth/tokenExchange.md) to exchange user session token to access token.
-4. Use the exchanged session token to make authenticated API queries, see [After OAuth](#after-oauth)
+2. Start the token acquisition process by calling [shopify.auth.tokenExchange](../reference/auth/tokenExchange.md) to exchange user session token to access token.
+3. Use the exchanged session token to make authenticated API queries, see [After OAuth](#after-oauth)
 
 #### Detecting scope changes
 

@@ -32,11 +32,11 @@ export * from './flow/types';
 export interface Shopify<
   Params extends ConfigParams = ConfigParams,
   Resources extends ShopifyRestResources = ShopifyRestResources,
-  Future extends FutureFlagOptions = FutureFlagOptions,
+  _Future extends FutureFlagOptions = FutureFlagOptions,
 > {
   config: ConfigInterface<Params>;
   clients: ShopifyClients;
-  auth: ShopifyAuth<Future>;
+  auth: ShopifyAuth;
   session: ShopifySession;
   utils: ShopifyUtils;
   webhooks: ShopifyWebhooks;
