@@ -4,11 +4,28 @@ The GraphQL Client can be used to interact with any Shopify's GraphQL APIs. Clie
 
 
 ## Getting Started
+To install this package in a project, you can run either command in your terminal:
 
-To install this package, you can run this in your terminal:
+### Yarn
+```bash
+yarn add @shopify/graphql-client
+```
 
-```typescript
-npm install @shopify/graphql-client
+### NPM
+```bash
+npm install @shopify/graphql-client --s
+```
+
+### CDN
+The UMD builds of each release version are available via the [`unpkg` CDN](https://unpkg.com/browse/@shopify/graphql-client@latest/dist/umd/)
+
+```html
+// The minified `v0.9.3` version of the GraphQL API Client
+<script src="https://unpkg.com/@shopify/graphql-client@0.9.3/dist/umd/graphql-client.min.js"></script>
+
+<script>
+const client = ShopifyGraphQLClient.createGraphQLClient({...});
+</script>
 ```
 
 ## Client initialization
