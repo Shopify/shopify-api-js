@@ -3,16 +3,18 @@
 The Storefront API Client manages the API's authentication information and provides various methods that enables devs to interacts with the API.
 
 ## Getting started
-To install this package in a project, you can run either command in your terminal:
+Using your preferred package manager, install this package in a project:
 
-### Yarn
-```bash
+```sh
 yarn add @shopify/storefront-api-client
 ```
 
-### NPM
-```bash
+```sh
 npm install @shopify/storefront-api-client --s
+```
+
+```sh
+pnpm add @shopify/storefront-api-client
 ```
 
 ### CDN
