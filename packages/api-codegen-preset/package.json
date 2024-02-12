@@ -69,7 +69,7 @@
   "dependencies": {
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/introspection": "^4.0.0",
-    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript": "^4.0.4",
     "@parcel/watcher": "^2.4.0",
     "@shopify/hydrogen-codegen": "^0.2.0",
     "graphql": "^16.8.1"
