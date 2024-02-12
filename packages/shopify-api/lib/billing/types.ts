@@ -118,9 +118,10 @@ export type BillingConfigLegacyItem =
 
 export type BillingConfigItem<
   Future extends FutureFlagOptions = FutureFlagOptions,
-> = FeatureEnabled<Future, 'v10_lineItemBilling'> extends true
-  ? BillingConfigOneTimePlan | BillingConfigSubscriptionLineItemPlan
-  : BillingConfigLegacyItem;
+> =
+  FeatureEnabled<Future, 'v10_lineItemBilling'> extends true
+    ? BillingConfigOneTimePlan | BillingConfigSubscriptionLineItemPlan
+    : BillingConfigLegacyItem;
 
 // Type this as an interface to improve TSDoc support for it.
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
