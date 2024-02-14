@@ -73,6 +73,26 @@ describe("validateDomainAndGetStoreUrl())", () => {
     });
     expect(domain).toEqual(`https://${domainOnly}`);
   });
+
+  it("returns a store url when a protocol-less store domain starting with http is provided", () => {
+    const domainOnly = "http-test-store.myshopify.io";
+
+    const domain = validateDomainAndGetStoreUrl({
+      client,
+      storeDomain: domainOnly,
+    });
+    expect(domain).toEqual(`https://${domainOnly}`);
+  });
+
+  it("returns a store url when a protocol-less store domain starting with https is provided", () => {
+    const domainOnly = "https-test-store.myshopify.io";
+
+    const domain = validateDomainAndGetStoreUrl({
+      client,
+      storeDomain: domainOnly,
+    });
+    expect(domain).toEqual(`https://${domainOnly}`);
+  });
 });
 
 describe("validateRequiredApiVersion()", () => {
