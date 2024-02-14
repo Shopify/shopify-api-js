@@ -1,0 +1,23 @@
+name: shopify-api-js
+
+type: node
+
+up:
+  - node:
+      version: v18.19.0
+      yarn: 1.22.21
+      packages:
+        - .
+env:
+  NODE_ENV: "development"
+
+commands:
+  server:
+    run: yarn dev
+  test:
+    syntax:
+      argument: file
+      optional: args...
+    desc: 'run tests'
+    aliases: [t]
+    run: yarn test
