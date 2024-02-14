@@ -14,10 +14,3 @@ env:
 commands:
   server:
     run: yarn dev
-  test:
-    syntax:
-      argument: file
-      optional: args...
-    desc: 'run tests'
-    aliases: [t]
-    run: yarn test
