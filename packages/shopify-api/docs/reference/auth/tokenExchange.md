@@ -71,7 +71,6 @@ A Shopify domain name in the form `{exampleshop}.myshopify.com`.
 
 `Promise<Session>`
 
-See [Session](../session/README.md) reference.
+The new Shopify [Session object](../../../lib/session/session.ts), containing the API access token.
 
-
-
+[Back to shopify.auth](./README.md)
