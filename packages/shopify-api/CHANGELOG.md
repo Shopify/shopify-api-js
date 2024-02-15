@@ -1,5 +1,18 @@
 # Changelog
 
+## 9.3.0
+
+### Minor Changes
+
+- 35e06823: Add webhook subtopic as an additional option field when creating webhook subscriptions
+
+### Patch Changes
+
+- fbae4bcc: Bumps compare-versions from 5.0.3 to 6.1.0.
+- cc52aaca: Fix linked reference for session in token exchange docs
+  - @shopify/admin-api-client@0.2.4
+  - @shopify/storefront-api-client@0.2.4
+
 ## 9.2.0
 
 ### Minor Changes
@@ -78,13 +91,13 @@
   Before:
 
   ```ts
-  import {gdprTopics} from '@shopify/shopify-api';
+  import { gdprTopics } from "@shopify/shopify-api";
   ```
 
   After:
 
   ```ts
-  import {privacyTopics} from '@shopify/shopify-api';
+  import { privacyTopics } from "@shopify/shopify-api";
   ```
 
 ### Minor Changes
@@ -137,13 +150,13 @@
           {
             interval: BillingInterval.Usage,
             amount: 30,
-            currencyCode: 'USD',
-            terms: 'per 1000 emails',
+            currencyCode: "USD",
+            terms: "per 1000 emails",
           },
           {
             interval: BillingInterval.Every30Days,
             amount: 30,
-            currencyCode: 'USD',
+            currencyCode: "USD",
             discount: {
               durationLimitInIntervals: 3,
               value: {
@@ -515,7 +528,7 @@
   Before:
 
   ```js
-  app.post('/graphql', async (req, res) => {
+  app.post("/graphql", async (req, res) => {
     await Shopify.Utils.graphqlProxy(req, res);
   });
   ```
@@ -523,7 +536,7 @@
   After:
 
   ```js
-  app.post('/graphql', async (req, res) => {
+  app.post("/graphql", async (req, res) => {
     const response = await Shopify.Utils.graphqlProxy(req, res);
     res.status(200).send(response.body);
   });

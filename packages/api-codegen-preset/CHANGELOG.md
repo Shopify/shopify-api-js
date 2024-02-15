@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.3
+
+### Patch Changes
+
+- e10395ca: Update @graphql-codegen/typescript from 4.0.1 to 4.0.4.
+
 ## 0.0.2
 
 ### Patch Changes
