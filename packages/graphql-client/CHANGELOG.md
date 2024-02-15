@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.9.4
+
+### Patch Changes
+
+- 295859d6: Fix GraphQL client validations for store hosts starting with http
+
 ## 0.9.3
 
 ### Patch Changes
