@@ -18,16 +18,17 @@ import {
 } from './types';
 import {topicForStorage} from './registry';
 
+const OPTIONAL_HANDLER_PROPERTIES = {
+  subTopic: ShopifyHeader.SubTopic,
+};
+
 const HANDLER_PROPERTIES = {
   apiVersion: ShopifyHeader.ApiVersion,
   domain: ShopifyHeader.Domain,
   hmac: ShopifyHeader.Hmac,
   topic: ShopifyHeader.Topic,
   webhookId: ShopifyHeader.WebhookId,
-};
-
-const OPTIONAL_HANDLER_PROPERTIES = {
-  subTopic: ShopifyHeader.SubTopic,
+  ...OPTIONAL_HANDLER_PROPERTIES,
 };
 
 export function validateFactory(config: ConfigInterface) {
@@ -80,25 +81,16 @@ function checkWebhookRequest(
     keyof WebhookFields,
     ShopifyHeader,
   ][];
-  const optionalEntries = Object.entries(OPTIONAL_HANDLER_PROPERTIES) as [
-    keyof WebhookFields,
-    ShopifyHeader,
-  ][];
-  const headerValues = [...entries, ...optionalEntries].reduce(
-    (acc, [property, headerName]) => {
-      const headerValue = getHeader(headers, headerName);
-      if (headerValue) {
-        acc[property] = headerValue;
-      } else if (
-        entries.some(([entryProperty]) => entryProperty === property)
-      ) {
-        missingHeaders.push(headerName);
-      }
+  const headerValues = entries.reduce((acc, [property, headerName]) => {
+    const headerValue = getHeader(headers, headerName);
+    if (headerValue) {
+      acc[property] = headerValue;
+    } else if (!(property in OPTIONAL_HANDLER_PROPERTIES)) {
+      missingHeaders.push(headerName);
+    }
 
-      return acc;
-    },
-    {} as WebhookFields,
-  );
+    return acc;
+  }, {} as WebhookFields);
 
   if (missingHeaders.length) {
     return {

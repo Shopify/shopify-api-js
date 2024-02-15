@@ -67,7 +67,7 @@ Namespaces to be included in the callback, defaulting to including all of them.
 ### subTopic
 `string`
 
-Webhook sub-topics are an extra level of grouping available for some webhook topics. See the [Shopify documentation](https://shopify.dev/docs/apps/webhooks/sub-topics#topics-with-sub-topics) for more information, and the list of topics that support sub-topics.
+Webhook sub-topics are an extra level of grouping available for some webhook topics. See the [Shopify documentation](https://shopify.dev/docs/apps/webhooks/sub-topics) for more information, and the list of topics that support sub-topics.
 
 ## Delivery method-specific parameters
 
