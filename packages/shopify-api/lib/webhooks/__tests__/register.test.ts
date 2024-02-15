@@ -100,7 +100,7 @@ describe('shopify.webhooks.register', () => {
       {
         callbackUrl: `"https://test_host_name/webhooks"`,
       },
-      `subTopic: ${handler.subTopic} `,
+      `subTopic: "${handler.subTopic}",`,
     );
     assertRegisterResponse({registerReturn, topic, responses});
   });
@@ -574,12 +574,13 @@ function assertWebhookRegistrationRequest(
     .map(([key, value]) => `${key}: ${value}`)
     .join(', ');
 
+  const subTopicString = subTopic || '';
+
   const webhookQuery = queryTemplate(TEMPLATE_MUTATION, {
     MUTATION_NAME: mutationName,
     IDENTIFIER: identifier,
-    ...(subTopic ? {SUB_TOPIC: subTopic} : {}),
     MUTATION_PARAMS: paramsString.length
-      ? `webhookSubscription: {${paramsString}}`
+      ? `${subTopicString}webhookSubscription: {${paramsString}}`
       : '',
   });
 
