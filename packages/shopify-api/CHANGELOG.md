@@ -1,5 +1,41 @@
 # Changelog
 
+## 9.2.0
+
+### Minor Changes
+
+- e2d4fee2: Update lineItemBilling future flag to v10. Current users of `unstable_lineItemBilling` will need to update to `v10_lineItemBilling` to continue using this feature.
+
+  ```ts
+  const shopify = shopifyApi({
+    // ...
+  future: {
+    v10_lineItemBilling: true,
+  });
+  ```
+
+### Patch Changes
+
+- db7d9cff: Remove gating of the token exchange API behind the `unstable_tokenExchange` flag.
+
+## 9.1.0
+
+### Minor Changes
+
+- 9c41d910: Added support for validating Flow extension requests, using `shopify.authenticate.flow`.
+
+  Please see [the `flow` object documentation](./docs/reference/flow/README.md) for more information.
+
+- 348b138a: Export GraphqlClient class from types
+
+### Patch Changes
+
+- 224fbf57: Fixed the types of the `balance` and `currency` fields in the `GiftCard` object.
+- 0f0ffb8a: Updated global fetch types to more closely match reality
+- Updated dependencies [0f0ffb8a]
+  - @shopify/storefront-api-client@0.2.3
+  - @shopify/admin-api-client@0.2.3
+
 ## 9.0.2
 
 ### Patch Changes
@@ -32,7 +68,7 @@
 
   With this change, we can return a `Response` object for requests with the upcoming clients, which can help make the interface for requests more familiar to users.
 
-  For more information and examples, see the [migration guide to v9](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#changes-to-runtime-adapters).
+  For more information and examples, see the [migration guide to v9](./docs/migrating-to-v9.md#changes-to-runtime-adapters).
 
 - 7bd4be08: Rephrased `gdprTopics` to `privacyTopics` to account for other privacy regulations with data subject requests.
 
@@ -42,13 +78,13 @@
   Before:
 
   ```ts
-  import { gdprTopics } from "@shopify/shopify-api";
+  import {gdprTopics} from '@shopify/shopify-api';
   ```
 
   After:
 
   ```ts
-  import { privacyTopics } from "@shopify/shopify-api";
+  import {privacyTopics} from '@shopify/shopify-api';
   ```
 
 ### Minor Changes
@@ -56,7 +92,7 @@
 - 83b15905: Allow access tokens to be marked as expired before actual expiry.
 - 218f4521: Use the new GraphQL API clients in shopify-api to use all of the latest features, including automatic types for query / mutation return object and variables.
 
-  For more information and examples, see the [migration guide to v9](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/migrating-to-v9.md#using-the-new-clients).
+  For more information and examples, see the [migration guide to v9](./docs/migrating-to-v9.md#using-the-new-clients).
 
 - 18781092: Updated shopify-api GraphQL clients' APIs to be closer to the underlying clients
 - 4dd7612d: Underpinned the new REST client from `admin-api-client` into `shopify-api`, so apps can access it as a standalone client as well.
@@ -101,13 +137,13 @@
           {
             interval: BillingInterval.Usage,
             amount: 30,
-            currencyCode: "USD",
-            terms: "per 1000 emails",
+            currencyCode: 'USD',
+            terms: 'per 1000 emails',
           },
           {
             interval: BillingInterval.Every30Days,
             amount: 30,
-            currencyCode: "USD",
+            currencyCode: 'USD',
             discount: {
               durationLimitInIntervals: 3,
               value: {
@@ -125,6 +161,8 @@
   ```
 
 - eae5a4a8: Introduce token exchange API for fetching access tokens. This feature is currently unstable and is hidden behind the `unstable_tokenExchange` future flag.
+
+  :exclamation: To learn more about Token Exchange, see [Performing OAuth](./docs/guides/oauth.md)
 
 ## 8.0.2
 
@@ -477,7 +515,7 @@
   Before:
 
   ```js
-  app.post("/graphql", async (req, res) => {
+  app.post('/graphql', async (req, res) => {
     await Shopify.Utils.graphqlProxy(req, res);
   });
   ```
@@ -485,7 +523,7 @@
   After:
 
   ```js
-  app.post("/graphql", async (req, res) => {
+  app.post('/graphql', async (req, res) => {
     const response = await Shopify.Utils.graphqlProxy(req, res);
     res.status(200).send(response.body);
   });

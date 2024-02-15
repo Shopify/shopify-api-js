@@ -2,6 +2,34 @@
 
 The Storefront API Client manages the API's authentication information and provides various methods that enables devs to interacts with the API.
 
+## Getting started
+Using your preferred package manager, install this package in a project:
+
+```sh
+yarn add @shopify/storefront-api-client
+```
+
+```sh
+npm install @shopify/storefront-api-client --s
+```
+
+```sh
+pnpm add @shopify/storefront-api-client
+```
+
+### CDN
+The UMD builds of each release version are available via the [`unpkg` CDN](https://unpkg.com/browse/@shopify/storefront-api-client@latest/dist/umd/)
+
+```html
+// The minified `0.2.3` version of the Storefront API Client
+<script src="https://unpkg.com/@shopify/storefront-api-client@0.2.3/dist/umd/storefront-api-client.min.js"></script>
+
+
+<script>
+const client = ShopifyStorefrontAPIClient.createStorefrontApiClient({...});
+</script>
+```
+
 ## Initialization
 
 ### Public access token client initialization

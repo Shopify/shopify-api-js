@@ -1,8 +1,16 @@
+/**
+ * Future flags are used to enable features that are not yet available by default.
+ */
 export interface FutureFlags {
-  unstable_tokenExchange?: boolean;
-  unstable_lineItemBilling?: boolean;
+  /**
+   * Enable line item billing, to make billing configuration more similar to the GraphQL API.
+   */
+  v10_lineItemBilling?: boolean;
 }
 
+/**
+ * Configuration option for future flags.
+ */
 export type FutureFlagOptions = FutureFlags | undefined;
 
 export type FeatureEnabled<

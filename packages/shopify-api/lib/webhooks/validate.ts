@@ -4,12 +4,11 @@ import {
   Headers,
   NormalizedRequest,
 } from '../../runtime/http';
-import {createSHA256HMAC} from '../../runtime/crypto';
-import {HashFormat} from '../../runtime/crypto/types';
 import {ShopifyHeader} from '../types';
 import {ConfigInterface} from '../base-types';
-import {safeCompare} from '../auth/oauth/safe-compare';
 import {logger} from '../logger';
+import {validateHmacString} from '../utils/hmac-validator';
+import {HashFormat} from '../../runtime';
 
 import {
   WebhookFields,
@@ -50,7 +49,7 @@ export function validateFactory(config: ConfigInterface) {
     const {hmac, valid: _valid, ...loggingContext} = webhookCheck;
     await log.debug('Webhook request is well formed', loggingContext);
 
-    if (await checkWebhookHmac(config.apiSecretKey, rawBody, hmac)) {
+    if (await validateHmacString(config, rawBody, hmac, HashFormat.Base64)) {
       await log.debug('Webhook request is valid', loggingContext);
       return webhookCheck;
     } else {
@@ -115,18 +114,4 @@ function checkWebhookRequest(
       topic: topicForStorage(headerValues.topic),
     };
   }
-}
-
-async function checkWebhookHmac(
-  secret: string,
-  rawBody: string,
-  hmac: string,
-): Promise<boolean> {
-  const generatedHash = await createSHA256HMAC(
-    secret,
-    rawBody,
-    HashFormat.Base64,
-  );
-
-  return safeCompare(generatedHash, hmac);
 }
