@@ -18,12 +18,17 @@ import {
 } from './types';
 import {topicForStorage} from './registry';
 
+const OPTIONAL_HANDLER_PROPERTIES = {
+  subTopic: ShopifyHeader.SubTopic,
+};
+
 const HANDLER_PROPERTIES = {
   apiVersion: ShopifyHeader.ApiVersion,
   domain: ShopifyHeader.Domain,
   hmac: ShopifyHeader.Hmac,
   topic: ShopifyHeader.Topic,
   webhookId: ShopifyHeader.WebhookId,
+  ...OPTIONAL_HANDLER_PROPERTIES,
 };
 
 export function validateFactory(config: ConfigInterface) {
@@ -80,7 +85,7 @@ function checkWebhookRequest(
     const headerValue = getHeader(headers, headerName);
     if (headerValue) {
       acc[property] = headerValue;
-    } else {
+    } else if (!(property in OPTIONAL_HANDLER_PROPERTIES)) {
       missingHeaders.push(headerName);
     }
 
@@ -97,6 +102,7 @@ function checkWebhookRequest(
     return {
       valid: true,
       ...headerValues,
+      ...(headerValues.subTopic ? {subTopic: headerValues.subTopic} : {}),
       topic: topicForStorage(headerValues.topic),
     };
   }

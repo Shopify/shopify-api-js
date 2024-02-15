@@ -381,6 +381,7 @@ function buildMutation(
   const mutationArguments = {
     MUTATION_NAME: getMutationName(handler, operation),
     IDENTIFIER: identifier,
+    SUB_TOPIC: '',
     MUTATION_PARAMS: '',
   };
 
@@ -410,6 +411,11 @@ function buildMutation(
     }
     if (handler.metafieldNamespaces) {
       params.metafieldNamespaces = JSON.stringify(handler.metafieldNamespaces);
+    }
+
+    if (handler.subTopic) {
+      const subTopicString = `subTopic: "${handler.subTopic}",`;
+      mutationArguments.SUB_TOPIC = subTopicString;
     }
 
     const paramsString = Object.entries(params)
