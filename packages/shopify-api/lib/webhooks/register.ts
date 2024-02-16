@@ -381,7 +381,6 @@ function buildMutation(
   const mutationArguments = {
     MUTATION_NAME: getMutationName(handler, operation),
     IDENTIFIER: identifier,
-    SUB_TOPIC: '',
     MUTATION_PARAMS: '',
   };
 
@@ -415,14 +414,14 @@ function buildMutation(
 
     if (handler.subTopic) {
       const subTopicString = `subTopic: "${handler.subTopic}",`;
-      mutationArguments.SUB_TOPIC = subTopicString;
+      mutationArguments.MUTATION_PARAMS = subTopicString;
     }
 
     const paramsString = Object.entries(params)
       .map(([key, value]) => `${key}: ${value}`)
       .join(', ');
 
-    mutationArguments.MUTATION_PARAMS = `webhookSubscription: {${paramsString}}`;
+    mutationArguments.MUTATION_PARAMS += `webhookSubscription: {${paramsString}}`;
   }
 
   return queryTemplate(TEMPLATE_MUTATION, mutationArguments);
