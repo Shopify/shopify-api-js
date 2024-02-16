@@ -68,7 +68,7 @@ const client = createGraphQLClient({
 | Property | Type                     | Description                        |
 | -------- | ------------------------ | ---------------------------------- |
 | url      | `string`                 | The GraphQL API URL             |
-| headers  | `{[key: string]: string}` | Headers to be included in requests |
+| headers  | `Record<string, string \| string[]>` | Headers to be included in requests |
 | retries?  | `number` | The number of HTTP request retries if the request was abandoned or the server responded with a `Too Many Requests (429)` or `Service Unavailable (503)` response. Default value is `0`. Maximum value is `3`. |
 | customFetchApi?  | `(url: string, init?: {method?: string, headers?: HeaderInit, body?: string}) => Promise<Response>` | A replacement `fetch` function that will be used in all client network requests. By default, the client uses `window.fetch()`. |
 | logger?  | `(logContent: `[`HTTPResponseLog`](#httpresponselog)`\|`[`HTTPRetryLog`](#httpretrylog)`) => void` | A logger function that accepts [log content objects](#log-content-types). This logger will be called in certain conditions with contextual information.  |
@@ -77,17 +77,18 @@ const client = createGraphQLClient({
 
 | Property      | Type                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                                                                                                |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| config        | `{url: string, headers: {[key: string]: string}, retries: number}`                                                                                                                                | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
+| config        | `{url: string, headers: Record<string, string \| string[]>, retries: number}`                                                                                                                                | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
 | fetch         | `(operation: string, options?: `[`RequestOptions`](#requestoptions-properties)`) => Promise<Response>`                                          | Fetches data from the GraphQL API using the provided GQL operation string and [`RequestOptions`](#requestoptions-properties) object and returns the network response                                                                                                                                                                                                         |
 | request       | `<TData>(operation: string, options?: `[`RequestOptions`](#requestoptions-properties)`) => Promise<`[`ClientResponse<TData>`](#ClientResponsetdata)`>` | Fetches data from the GraphQL API using the provided GQL operation string and [`RequestOptions`](#requestoptions-properties) object and returns a [normalized response object](#clientresponsetdata)                                            |
+| requestStream | `<TData>(operation: string, options?: `[`RequestOptions`](#requestoptions-properties)`) => Promise <AsyncIterator<`[`ClientStreamResponse<TData>`](#clientstreamresponsetdata)`>>`                      | Fetches GQL operations that can result in a streamed response from the API. The function returns an async iterator and the iterator will return [normalized stream response objects](#clientstreamresponsetdata) as data becomes available through the stream. |
 
 ## `RequestOptions` properties
 
 | Name       | Type                  | Description                                                      |
 | ---------- | --------------------- | ---------------------------------------------------------------- |
-| variables? | `{[key: string]: any}` | Variable values needed in the graphQL operation                  |
+| variables? | `Record<string, any>` | Variable values needed in the graphQL operation                  |
 | url?       | `string`              | Alternative request API URL                                     |
-| headers?   | `{[key: string]: string}`             | Additional and/or replacement headers to be used in the request |
+| headers?   | `Record<string, string \| string[]>`             | Additional and/or replacement headers to be used in the request |
 | retries?   | `number`             | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3`.|
 
 ## `ClientResponse<TData>`
@@ -96,7 +97,16 @@ const client = createGraphQLClient({
 | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data?       | `TData \| any`        | Data returned from the GraphQL API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                             |
 | errors?      | [`ResponseErrors`](#responseerrors)       | Errors object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
-| extensions? | `{[key: string]: any}` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the context settings used to generate the returned API response. |
+| extensions? | `Record<string, any>` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the context settings used to generate the returned API response. |
+
+## `ClientStreamResponse<TData>`
+
+| Name        | Type                    | Description                                                                                                                                                                                         |
+| ----------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data?       | `Partial<TData> \| any` | Currently available data returned from the GraphQL API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                         |
+| errors?      | [`ResponseErrors`](#responseerrors)           | Errors object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
+| extensions? | `Record<string, any>` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the context settings used to generate the returned API response. |
+| hasNext     | `boolean`               | Flag to indicate whether the response stream has more incoming data                                                                                                                                 |
 
 ## `ResponseErrors`
 
@@ -106,7 +116,6 @@ const client = createGraphQLClient({
 | message?      | `string`       | The provided error message                                                       |
 | graphQLErrors? | `any[]` | The GraphQL API errors returned by the server |
 | response? | `Response` | The raw response object from the network fetch call |
-
 
 ## Usage examples
 
@@ -128,6 +137,32 @@ const {data, errors, extensions} = await client.request(productQuery, {
     handle: 'sample-product',
   },
 });
+```
+
+### Query for product info using the `@defer` directive
+
+```typescript
+const productQuery = `
+  query ProductQuery($handle: String) {
+    product(handle: $handle) {
+      id
+      handle
+      ... @defer(label: "deferredFields") {
+        title
+        description
+      }
+    }
+  }
+`;
+
+const responseStream = await client.requestStream(productQuery, {
+  variables: {handle: 'sample-product'},
+});
+
+// await available data from the async iterator
+for await (const response of responseStream) {
+  const {data, errors, extensions, hasNext} = response;
+}
 ```
 
 ### Add additional custom headers to the API request
@@ -192,14 +227,15 @@ const {data, errors, extensions} = await client.request(shopQuery, {
 });
 ```
 
-### Provide GQL query type to `client.request()`
+### Provide GQL query type to `client.request()` and `client.requestStream()`
 
 ```typescript
 import {print} from 'graphql/language';
 
 // GQL operation types are usually auto generated during the application build
-import {CollectionQuery} from 'types/appTypes';
+import {CollectionQuery, CollectionDeferredQuery} from 'types/appTypes';
 import collectionQuery from './collectionQuery.graphql';
+import collectionDeferredQuery from './collectionDeferredQuery.graphql';
 
 const {data, errors, extensions} = await client.request<CollectionQuery>(
   print(collectionQuery),
@@ -207,6 +243,13 @@ const {data, errors, extensions} = await client.request<CollectionQuery>(
     variables: {
       handle: 'sample-collection',
     },
+  }
+);
+
+const responseStream = await client.requestStream<CollectionDeferredQuery>(
+  print(collectionDeferredQuery),
+  {
+    variables: {handle: 'sample-collection'},
   }
 );
 ```

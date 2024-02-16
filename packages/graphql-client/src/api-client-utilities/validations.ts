@@ -14,10 +14,9 @@ export function validateDomainAndGetStoreUrl({
 
     const trimmedDomain = storeDomain.trim();
 
-    const protocolUrl =
-      trimmedDomain.startsWith("http:") || trimmedDomain.startsWith("https:")
-        ? trimmedDomain
-        : `https://${trimmedDomain}`;
+    const protocolUrl = trimmedDomain.match(/^https?:/)
+      ? trimmedDomain
+      : `https://${trimmedDomain}`;
 
     const url = new URL(protocolUrl);
     url.protocol = "https";

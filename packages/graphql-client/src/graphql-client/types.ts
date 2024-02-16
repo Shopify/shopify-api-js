@@ -9,6 +9,8 @@ export type CustomFetchApi = (
 
 type OperationVariables = Record<string, any>;
 
+export type DataChunk = Buffer | Uint8Array;
+
 export type Headers = Record<string, string | string[]>;
 
 export interface ResponseErrors {
@@ -27,6 +29,16 @@ export interface FetchResponseBody<TData = any> {
 
 export interface ClientResponse<TData = any> extends FetchResponseBody<TData> {
   errors?: ResponseErrors;
+}
+
+export interface ClientStreamResponse<TData = any>
+  extends Omit<ClientResponse<TData>, "data"> {
+  data?: Partial<TData>;
+  hasNext: boolean;
+}
+
+export interface ClientStreamIterator<TData = any> {
+  [Symbol.asyncIterator](): AsyncIterator<ClientStreamResponse<TData>>;
 }
 
 export interface LogContent {
@@ -87,4 +99,7 @@ export interface GraphQLClient {
   request: <TData = any>(
     ...props: RequestParams
   ) => Promise<ClientResponse<TData>>;
+  requestStream: <TData = any>(
+    ...props: RequestParams
+  ) => Promise<ClientStreamIterator<TData>>;
 }

@@ -82,10 +82,11 @@ const client = createStorefrontApiClient({
 | Property      | Type                                                                                                                                                                       | Description                                                                                                                                                                                                                                                                                                                                                                |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | config        | [`StorefrontApiClientConfig`](#storefrontapiclientconfig-properties)                                                                                                                                                             | Configuration for the client                                                                                                                                                                                                                                                                                                                                               |
-| getHeaders    | `(headers?: {[key: string]: string}) => {[key: string]: string}`                                                                                                       | Returns Storefront API specific headers needed to interact with the API. If additional `headers` are provided, the custom headers will be included in the returned headers object.                                                                                                                                                                                               |
+| getHeaders    | `(headers?: Record<string, string \| string[]>) => Record<string, string \| string[]>`                                                                                                       | Returns Storefront API specific headers needed to interact with the API. If additional `headers` are provided, the custom headers will be included in the returned headers object.                                                                                                                                                                                               |
 | getApiUrl     | `(apiVersion?: string) => string`                                                                                                                                          | Returns the shop specific API url. If an API version is provided, the returned URL will include the provided version, else the URL will include the API version set at client initialization.                                                                                                                                                                              |
 | fetch         | `(operation: string, options?: `[`ApiClientRequestOptions`](#apiclientrequestoptions-properties)`) => Promise<Response>`                                          | Fetches data from Storefront API using the provided GQL `operation` string and [`ApiClientRequestOptions`](#apiclientrequestoptions-properties) object and returns the network response.                                                                                                                                                                                 |
 | request       | `<TData>(operation: string, options?: `[`ApiClientRequestOptions`](#apiclientrequestoptions-properties)`) => Promise<`[`ClientResponse<TData>`](#ClientResponsetdata)`>` | Requests data from Storefront API using the provided GQL `operation` string and [`ApiClientRequestOptions`](#apiclientrequestoptions-properties) object and returns a normalized response object.                                                                                                                                                                        |
+| requestStream | `<TData>(operation: string, options?: `[`RequestOptions`](#requestoptions-properties)`) => Promise <AsyncIterator<`[`ClientStreamResponse<TData>`](#clientstreamresponsetdata)`>>`                      | Fetches GQL operations that can result in a streamed response from the API. The function returns an async iterator and the iterator will return [normalized stream response objects](#clientstreamresponsetdata) as data becomes available through the stream. |
 
 
 ## `StorefrontApiClientConfig` properties
@@ -96,7 +97,7 @@ const client = createStorefrontApiClient({
 | apiVersion    | `string`                 | The Storefront API version to use in the API request |
 | publicAccessToken | `string \| never` | The provided public access token. If `privateAccessToken` was provided, `publicAccessToken` will not be available. |
 | privateAccessToken | `string \| never` | The provided private access token. If `publicAccessToken` was provided, `privateAccessToken` will not be available. |
-| headers | `{[key: string]: string}` | The headers generated by the client during initialization |
+| headers | `Record<string, string \| string[]>` | The headers generated by the client during initialization |
 | apiUrl | `string` | The API URL generated from the provided store domain and api version |
 | clientName? | `string` | The provided client name |
 | retries? | `number` | The number of retries the client will attempt when the API responds with a `Too Many Requests (429)` or `Service Unavailable (503)` response |
@@ -106,9 +107,9 @@ const client = createStorefrontApiClient({
 
 | Name           | Type                     | Description                                          |
 | -------------- | ------------------------ | ---------------------------------------------------- |
-| variables?     | `{[key: string]: any}`    | Variable values needed in the graphQL operation      |
+| variables?     | `Record<string, any>`    | Variable values needed in the graphQL operation      |
 | apiVersion?    | `string`                 | The Storefront API version to use in the API request |
-| headers? | `{[key: string]: string}` | Customized headers to be included in the API request |
+| headers? | `Record<string, string \| string[]>` | Customized headers to be included in the API request |
 | retries?   | `number`             | Alternative number of retries for the request. Retries only occur for requests that were abandoned or if the server responds with a `Too Many Request (429)` or `Service Unavailable (503)` response. Minimum value is `0` and maximum value is `3`.|
 
 ## `ClientResponse<TData>`
@@ -117,7 +118,16 @@ const client = createStorefrontApiClient({
 | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | data?       | `TData \| any`        | Data returned from the Storefront API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                                             |
 | errors?      | [`ResponseErrors`](#responseerrors)       | Errors object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
-| extensions? | `{[key: string]: any}` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the context settings used to generate the returned API response. |
+| extensions? | `Record<string, any>` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the context settings used to generate the returned API response. |
+
+## `ClientStreamResponse<TData>`
+
+| Name        | Type                    | Description                                                                                                                                                                                         |
+| ----------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data?       | `Partial<TData> \| any` | Currently available data returned from the Storefront API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                         |
+| errors?      | [`ResponseErrors`](#responseerrors)           | Errors object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
+| extensions? | `Record<string, any>` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the context settings used to generate the returned API response. |
+| hasNext     | `boolean`               | Flag to indicate whether the response stream has more incoming data                                                                                                                                 |
 
 ## `ResponseErrors`
 
@@ -218,6 +228,32 @@ const {data, errors, extensions} = await client.request(productQuery, {
     handle: 'sample-product',
   },
 });
+```
+
+### Query for product info using the `@defer` directive
+
+```typescript
+const productQuery = `
+  query ProductQuery($handle: String) {
+    product(handle: $handle) {
+      id
+      handle
+      ... @defer(label: "deferredFields") {
+        title
+        description
+      }
+    }
+  }
+`;
+
+const responseStream = await client.requestStream(productQuery, {
+  variables: {handle: 'sample-product'},
+});
+
+// await available data from the async iterator
+for await (const response of responseStream) {
+  const {data, errors, extensions, hasNext} = response;
+}
 ```
 
 ### Create a localized cart
@@ -329,21 +365,29 @@ const {data, errors, extensions} = await client.request(productQuery, {
 });
 ```
 
-### Provide GQL query type to `client.request()`
+### Provide GQL query type to `client.request()` and `client.requestStream()`
 
 ```typescript
 import {print} from 'graphql/language';
 
 // GQL operation types are usually auto generated during the application build
-import {CollectionQuery} from 'types/appTypes';
+import {CollectionQuery, CollectionDeferredQuery} from 'types/appTypes';
 import collectionQuery from './collectionQuery.graphql';
+import collectionDeferredQuery from './collectionDeferredQuery.graphql';
 
-const {data, error, extensions} = await client.request<CollectionQuery>(
+const {data, errors, extensions} = await client.request<CollectionQuery>(
   print(collectionQuery),
   {
     variables: {
       handle: 'sample-collection',
     },
+  }
+);
+
+const responseStream = await client.requestStream<CollectionDeferredQuery>(
+  print(collectionDeferredQuery),
+  {
+    variables: {handle: 'sample-collection'},
   }
 );
 ```

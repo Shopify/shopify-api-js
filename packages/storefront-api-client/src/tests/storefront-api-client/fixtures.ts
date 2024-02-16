@@ -26,4 +26,5 @@ export const graphqlClientMock: GraphQLClient = {
   },
   fetch: jest.fn(),
   request: jest.fn(),
+  requestStream: jest.fn(),
 };

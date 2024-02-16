@@ -5,6 +5,7 @@ import {
   Headers,
   ClientResponse,
   FetchResponseBody,
+  ClientStreamIterator,
 } from "../graphql-client/types";
 
 import {
@@ -80,6 +81,16 @@ export type ApiClientRequest<Operations extends AllOperations = AllOperations> =
       TData extends undefined ? ReturnData<Operation, Operations> : TData
     >
   >;
+
+export type ApiClientRequestStream<
+  Operations extends AllOperations = AllOperations,
+> = <TData = undefined, Operation extends keyof Operations = string>(
+  ...params: ApiClientRequestParams<Operation, Operations>
+) => Promise<
+  ClientStreamIterator<
+    TData extends undefined ? ReturnData<Operation, Operations> : TData
+  >
+>;
 
 export interface ApiClient<
   TClientConfig extends ApiClientConfig = ApiClientConfig,

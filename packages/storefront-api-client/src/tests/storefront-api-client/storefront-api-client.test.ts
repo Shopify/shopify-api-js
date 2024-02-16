@@ -34,6 +34,7 @@ describe("Storefront API Client", () => {
     const mockRequestResponse = {
       data: {},
     };
+    const mockRequestStreamResponse = {};
 
     beforeEach(() => {
       (createGraphQLClient as jest.Mock).mockReturnValue(graphqlClientMock);
@@ -106,15 +107,16 @@ describe("Storefront API Client", () => {
         ).toHaveProperty("logger", logger);
       });
 
-      it("returns a client object that contains a config object, getters for header and API URL and request and fetch functions", () => {
+      it("returns a client object that contains a config object, getters for header and API URL and request, requestStream and fetch functions", () => {
         const client = createStorefrontApiClient(config);
 
         expect(client).toHaveProperty("config");
         expect(client).toMatchObject({
           getHeaders: expect.any(Function),
           getApiUrl: expect.any(Function),
-          request: expect.any(Function),
           fetch: expect.any(Function),
+          request: expect.any(Function),
+          requestStream: expect.any(Function),
         });
       });
 
@@ -329,242 +331,165 @@ describe("Storefront API Client", () => {
       });
     });
 
-    describe("getHeaders()", () => {
-      let client: StorefrontApiClient;
-
-      beforeEach(() => {
-        client = createStorefrontApiClient(config);
-      });
-
-      it("returns the client's default headers if no custom headers are provided", () => {
-        const headers = client.getHeaders();
-        expect(headers).toEqual(client.config.headers);
-      });
-
-      it("returns a headers object that contains both the client default headers and the provided custom headers", () => {
-        const headers = {
-          "Shopify-Storefront-Id": "test-id",
-        };
-        const updatedHeaders = client.getHeaders(headers);
-        expect(updatedHeaders).toEqual({
-          ...headers,
-          ...client.config.headers,
-        });
-      });
-    });
-
-    describe("getApiUrl()", () => {
-      let client: StorefrontApiClient;
-
-      beforeEach(() => {
-        client = createStorefrontApiClient(config);
-      });
-
-      it("returns the client's default API url if no API version was provided", () => {
-        const url = client.getApiUrl();
-        expect(url).toBe(client.config.apiUrl);
-      });
-
-      it("returns an API url that is directed at the provided api version", () => {
-        const version = "unstable";
-        const url = client.getApiUrl(version);
-        expect(url).toEqual(
-          `${config.storeDomain}/api/${version}/graphql.json`,
-        );
-      });
-
-      it("throws an error when the api version is not a string", () => {
-        const version = 123;
-        expect(() => client.getApiUrl(version as any)).toThrow(
-          new Error(
-            `Storefront API Client: the provided apiVersion ("123") is invalid. Currently supported API versions: ${mockApiVersions.join(
-              ", ",
-            )}`,
-          ),
-        );
-      });
-
-      it("console warns when a unsupported api version is provided", () => {
-        const consoleWarnSpy = jest
-          .spyOn(global.console, "warn")
-          .mockImplementation(jest.fn());
-
-        const version = "2021-01";
-        client.getApiUrl(version);
-
-        expect(consoleWarnSpy).toHaveBeenCalledWith(
-          `Storefront API Client: the provided apiVersion ("2021-01") is likely deprecated or not supported. Currently supported API versions: ${mockApiVersions.join(
-            ", ",
-          )}`,
-        );
-      });
-    });
-
-    describe("fetch()", () => {
-      let client: StorefrontApiClient;
+    describe("client functions", () => {
       const operation = `
-        query products{
-          products(first: 1) {
-            nodes {
-              id
-              title
+          query products{
+            products(first: 1) {
+              nodes {
+                id
+                title
+              }
             }
           }
-        }
-      `;
+        `;
+
+      let client: StorefrontApiClient;
 
       beforeEach(() => {
         (graphqlClientMock.fetch as jest.Mock).mockResolvedValue(
           mockFetchResponse,
         );
 
-        client = createStorefrontApiClient(config);
-      });
-
-      afterEach(() => {
-        jest.resetAllMocks();
-      });
-
-      describe("parameters", () => {
-        it("calls the graphql client fetch() with just the operation string when there are no options provided", async () => {
-          await client.fetch(operation);
-
-          expect(graphqlClientMock.fetch).toHaveBeenCalledWith(operation);
-        });
-
-        it("calls the graphql client fetch() with provided variables", async () => {
-          const variables = { first: 1 };
-
-          await client.fetch(operation, { variables });
-          expect((graphqlClientMock.fetch as jest.Mock).mock.calls[0][0]).toBe(
-            operation,
-          );
-          expect(
-            (graphqlClientMock.fetch as jest.Mock).mock.calls[0][1],
-          ).toEqual({ variables });
-        });
-
-        it("calls the graphql client fetch() with customized headers", async () => {
-          const headers = { "custom-header": "custom" };
-
-          await client.fetch(operation, { headers });
-          expect(
-            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1],
-          ).toEqual({
-            headers: client.getHeaders(headers),
-          });
-        });
-
-        it("calls the graphql client fetch() with provided api version URL", async () => {
-          const apiVersion = "unstable";
-
-          await client.fetch(operation, { apiVersion });
-          expect(
-            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1],
-          ).toEqual({
-            url: client.getApiUrl(apiVersion),
-          });
-        });
-
-        it("calls the graphql client fetch() with provided retries", async () => {
-          const retries = 2;
-
-          await client.fetch(operation, { retries });
-          expect(
-            (graphqlClientMock.fetch as jest.Mock).mock.calls.pop()[1],
-          ).toEqual({
-            retries,
-          });
-        });
-      });
-
-      it("returns the graphql client fetch response", async () => {
-        const response = await client.fetch(operation);
-        expect(response).toBe(mockFetchResponse);
-      });
-    });
-
-    describe("request()", () => {
-      let client: StorefrontApiClient;
-      const operation = `
-        query products{
-          products(first: 1) {
-            nodes {
-              id
-              title
-            }
-          }
-        }
-      `;
-
-      beforeEach(() => {
         (graphqlClientMock.request as jest.Mock).mockResolvedValue(
           mockRequestResponse,
+        );
+
+        (graphqlClientMock.requestStream as jest.Mock).mockResolvedValue(
+          mockRequestStreamResponse,
         );
 
         client = createStorefrontApiClient(config);
       });
 
-      afterEach(() => {
-        jest.resetAllMocks();
-      });
-
-      describe("parameters", () => {
-        it("calls the graphql client request() with just the operation string when there are no options provided", async () => {
-          await client.request(operation);
-
-          expect(graphqlClientMock.request).toHaveBeenCalledWith(operation);
+      describe("getHeaders()", () => {
+        it("returns the client's default headers if no custom headers are provided", () => {
+          const headers = client.getHeaders();
+          expect(headers).toEqual(client.config.headers);
         });
 
-        it("calls the graphql client request() with provided variables", async () => {
-          const variables = { first: 1 };
-
-          await client.request(operation, { variables });
-          expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls[0][0],
-          ).toBe(operation);
-          expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls[0][1],
-          ).toEqual({ variables });
-        });
-
-        it("calls the graphql client request() with customized headers", async () => {
-          const headers = { "custom-header": "custom" };
-
-          await client.request(operation, { headers });
-          expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1],
-          ).toEqual({
-            headers: client.getHeaders(headers),
-          });
-        });
-
-        it("calls the graphql client request() with provided api version URL", async () => {
-          const apiVersion = "unstable";
-
-          await client.request(operation, { apiVersion });
-          expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1],
-          ).toEqual({
-            url: client.getApiUrl(apiVersion),
-          });
-        });
-
-        it("calls the graphql client request() with provided retries", async () => {
-          const retries = 2;
-
-          await client.request(operation, { retries });
-          expect(
-            (graphqlClientMock.request as jest.Mock).mock.calls.pop()[1],
-          ).toEqual({
-            retries,
+        it("returns a headers object that contains both the client default headers and the provided custom headers", () => {
+          const headers = {
+            "Shopify-Storefront-Id": "test-id",
+          };
+          const updatedHeaders = client.getHeaders(headers);
+          expect(updatedHeaders).toEqual({
+            ...headers,
+            ...client.config.headers,
           });
         });
       });
 
-      it("returns the graphql client request response", async () => {
-        const response = await client.request(operation);
-        expect(response).toBe(mockRequestResponse);
+      describe("getApiUrl()", () => {
+        it("returns the client's default API url if no API version was provided", () => {
+          const url = client.getApiUrl();
+          expect(url).toBe(client.config.apiUrl);
+        });
+
+        it("returns an API url that is directed at the provided api version", () => {
+          const version = "unstable";
+          const url = client.getApiUrl(version);
+          expect(url).toEqual(
+            `${config.storeDomain}/api/${version}/graphql.json`,
+          );
+        });
+
+        it("throws an error when the api version is not a string", () => {
+          const version = 123;
+          expect(() => client.getApiUrl(version as any)).toThrow(
+            new Error(
+              `Storefront API Client: the provided apiVersion ("123") is invalid. Currently supported API versions: ${mockApiVersions.join(
+                ", ",
+              )}`,
+            ),
+          );
+        });
+
+        it("console warns when a unsupported api version is provided", () => {
+          const consoleWarnSpy = jest
+            .spyOn(global.console, "warn")
+            .mockImplementation(jest.fn());
+
+          const version = "2021-01";
+          client.getApiUrl(version);
+
+          expect(consoleWarnSpy).toHaveBeenCalledWith(
+            `Storefront API Client: the provided apiVersion ("2021-01") is likely deprecated or not supported. Currently supported API versions: ${mockApiVersions.join(
+              ", ",
+            )}`,
+          );
+        });
+      });
+
+      describe.each([
+        ["fetch", mockFetchResponse],
+        ["request", mockRequestResponse],
+        ["requestStream", mockRequestStreamResponse],
+      ])("%s()", (functionName, mockResponse) => {
+        describe("parameters", () => {
+          it(`calls the graphql client ${functionName}() with just the operation string when there are no options provided`, async () => {
+            await client[functionName](operation);
+
+            expect(graphqlClientMock[functionName]).toHaveBeenCalledWith(
+              operation,
+            );
+          });
+
+          it(`calls the graphql client ${functionName}() with provided variables`, async () => {
+            const variables = { first: 1 };
+
+            await client[functionName](operation, { variables });
+            expect(
+              (graphqlClientMock[functionName] as jest.Mock).mock.calls[0][0],
+            ).toBe(operation);
+            expect(
+              (graphqlClientMock[functionName] as jest.Mock).mock.calls[0][1],
+            ).toEqual({ variables });
+          });
+
+          it(`calls the graphql client ${functionName}() with customized headers`, async () => {
+            const headers = { "custom-header": "custom" };
+
+            await client[functionName](operation, { headers });
+            expect(
+              (
+                graphqlClientMock[functionName] as jest.Mock
+              ).mock.calls.pop()[1],
+            ).toEqual({
+              headers: client.getHeaders(headers),
+            });
+          });
+
+          it(`calls the graphql client ${functionName}() with provided api version URL`, async () => {
+            const apiVersion = "unstable";
+
+            await client[functionName](operation, { apiVersion });
+            expect(
+              (
+                graphqlClientMock[functionName] as jest.Mock
+              ).mock.calls.pop()[1],
+            ).toEqual({
+              url: client.getApiUrl(apiVersion),
+            });
+          });
+
+          it(`calls the graphql client ${functionName}() with provided retries`, async () => {
+            const retries = 2;
+
+            await client[functionName](operation, { retries });
+            expect(
+              (
+                graphqlClientMock[functionName] as jest.Mock
+              ).mock.calls.pop()[1],
+            ).toEqual({
+              retries,
+            });
+          });
+        });
+
+        it(`returns the graphql client ${functionName} response`, async () => {
+          const response = await client[functionName](operation);
+          expect(response).toBe(mockResponse);
+        });
       });
     });
   });
