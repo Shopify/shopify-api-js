@@ -1,5 +1,13 @@
 # Changelog
 
+## 9.3.2
+
+### Patch Changes
+
+- Updated dependencies [9df4bacf]
+  - @shopify/storefront-api-client@0.3.0
+  - @shopify/admin-api-client@0.2.5
+
 ## 9.3.1
 
 ### Patch Changes

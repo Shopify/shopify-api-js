@@ -1,5 +1,16 @@
 # @shopify/storefront-api-client
 
+## 0.3.0
+
+### Minor Changes
+
+- 9df4bacf: Add new `requestStream()` function to support streamed responses from Storefront API
+
+### Patch Changes
+
+- Updated dependencies [9df4bacf]
+  - @shopify/graphql-client@0.10.0
+
 ## 0.2.4
 
 ### Patch Changes
