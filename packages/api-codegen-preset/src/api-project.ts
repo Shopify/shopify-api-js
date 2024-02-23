@@ -1,4 +1,3 @@
-import "@shopify/hydrogen-codegen/patch";
 import fs from "fs";
 
 import { pluckConfig } from "@shopify/hydrogen-codegen";
