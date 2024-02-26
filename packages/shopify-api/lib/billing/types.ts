@@ -315,12 +315,92 @@ export interface AppSubscription {
    * Whether this is a test subscription.
    */
   test: boolean;
+
+  /*
+   * The line items for this plan. This will become mandatory in v10.
+   */
+  lineItems?: ActiveSubscriptionLineItem[];
 }
 
 export interface ActiveSubscriptions {
   activeSubscriptions: AppSubscription[];
 }
 
+export interface ActiveSubscriptionLineItem {
+  /*
+   * The ID of the line item.
+   */
+  id: string;
+  /*
+   * The details of the plan.
+   */
+  plan: AppPlan;
+}
+
+export interface RecurringAppPlan {
+  /*
+   * The interval for this plan is charged on.
+   */
+  interval: BillingInterval.Every30Days | BillingInterval.Annual;
+  /*
+   * The price of the plan.
+   */
+  price: Money;
+  /*
+   * The discount applied to the plan.
+   */
+  discount: AppPlanDiscount;
+}
+
+export interface UsageAppPlan {
+  /*
+   * The total usage records for interval.
+   */
+  balanceUsed: Money;
+  /*
+   * The capped amount prevents the merchant from being charged for any usage over that amount during a billing period.
+   */
+  cappedAmount: Money;
+  /*
+   * The terms and conditions for app usage pricing.
+   */
+  terms: string;
+}
+
+interface Money {
+  amount: number;
+  currencyCode: string;
+}
+
+export interface AppPlanDiscount {
+  /*
+   * The total number of intervals the discount applies to.
+   */
+  durationLimitInIntervals: number;
+  /*
+   * The remaining number of intervals the discount applies to.
+   */
+  remainingDurationInIntervals: number;
+  /*
+   * The price after the discount is applied.
+   */
+  priceAfterDiscount: Money;
+  /*
+   * The value of the discount applied every billing interval.
+   */
+  value: AppPlanDiscountAmount;
+}
+
+type AppPlanDiscountAmount =
+  | BillingConfigSubscriptionPlanDiscountAmount
+  | BillingConfigSubscriptionPlanDiscountPercentage;
+
+export interface AppPlan {
+  /*
+   * The pricing details of the plan.
+   */
+  pricingDetails: RecurringAppPlan | UsageAppPlan;
+}
 export interface OneTimePurchase {
   /**
    * The ID of the one-time purchase.

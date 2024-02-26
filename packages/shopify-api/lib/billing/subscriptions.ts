@@ -9,13 +9,56 @@ import {
 } from './types';
 
 const SUBSCRIPTION_QUERY = `
-  query appSubscription {
-    currentAppInstallation {
-      activeSubscriptions {
+query appSubscription {
+  currentAppInstallation {
+    activeSubscriptions {
+      id
+      name
+      test
+      lineItems {
         id
-        name
-        test
+        plan {
+          pricingDetails {
+            ... on AppRecurringPricing {
+              price {
+                amount
+                currencyCode
+              }
+              interval
+              discount {
+                durationLimitInIntervals
+                remainingDurationInIntervals
+                priceAfterDiscount {
+                  amount
+                }
+                value {
+                  ... on AppSubscriptionDiscountAmount {
+                    amount {
+                      amount
+                      currencyCode
+                    }
+                  }
+                  ... on AppSubscriptionDiscountPercentage {
+                    percentage
+                  }
+                }
+              }
+            }
+            ... on AppUsagePricing {
+              balanceUsed {
+                amount
+                currencyCode
+              }
+              cappedAmount {
+                amount
+                currencyCode
+              }
+              terms
+            }
+          }
+        }
       }
+    }
   }
 }
 `;
