@@ -50,7 +50,7 @@
     "ts-node": "^10.9.2",
     "tslib": "^2.5.0",
     "turbo": "^1.12.4",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3"
   },
   "dependencies": {},
   "workspaces": [
