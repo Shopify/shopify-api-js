@@ -57,9 +57,17 @@ const streamResponseConfig = {
   }),
 };
 
+function getStringEncoder() {
+  const textEncoder = new TextEncoder();
+
+  return (str: any) => {
+    return textEncoder.encode(str);
+  };
+}
+
 function createReadableStream(
   responseArray: string[],
-  stringEncoder?: (str: any) => Uint8Array,
+  stringEncoder: (str: any) => Uint8Array = getStringEncoder(),
 ) {
   return new ReadableStream({
     start(controller) {
@@ -67,7 +75,7 @@ function createReadableStream(
       queueData();
       function queueData() {
         const chunk = responseArray[index];
-        const string = stringEncoder ? stringEncoder(chunk) : chunk;
+        const string = stringEncoder(chunk);
 
         // Add the string to the stream
         controller.enqueue(string);
@@ -86,10 +94,7 @@ function createReadableStream(
 }
 
 export function createReaderStreamResponse(responseArray: string[]) {
-  const encoder = new TextEncoder();
-  const stream = createReadableStream(responseArray, (str) => {
-    return encoder.encode(str);
-  });
+  const stream = createReadableStream(responseArray);
 
   return {
     ...streamResponseConfig,
@@ -101,6 +106,15 @@ export function createReaderStreamResponse(responseArray: string[]) {
 
 export function createIterableResponse(responseArray: string[]) {
   const stream = createReadableStream(responseArray);
+
+  return new Response(Readable.from(stream) as any, streamResponseConfig);
+}
+
+export function createIterableBufferResponse(responseArray: string[]) {
+  const encoder = new TextEncoder();
+  const stream = createReadableStream(responseArray, (str) => {
+    return Buffer.from(encoder.encode(str));
+  });
 
   return new Response(Readable.from(stream) as any, streamResponseConfig);
 }

@@ -188,14 +188,19 @@ function generateRequest(
 async function* getStreamBodyIterator(
   response: Response,
 ): AsyncIterableIterator<string> {
-  // Support node-fetch format
+  const decoder = new TextDecoder();
+
+  // Support node format
   if ((response.body as any)![Symbol.asyncIterator]) {
     for await (const chunk of response.body! as any) {
-      yield (chunk as Buffer).toString();
+      if (Buffer.isBuffer(chunk)) {
+        yield (chunk as Buffer).toString();
+      } else {
+        yield decoder.decode(chunk);
+      }
     }
   } else {
     const reader = response.body!.getReader();
-    const decoder = new TextDecoder();
 
     let readResult: ReadableStreamReadResult<DataChunk>;
     try {

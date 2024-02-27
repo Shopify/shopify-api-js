@@ -6,6 +6,7 @@ import {
   clientConfig,
   getValidClient,
   createIterableResponse,
+  createIterableBufferResponse,
   createReaderStreamResponse,
 } from "./fixtures";
 import { fetchApiTests, parametersTests, retryTests } from "./common-tests";
@@ -261,7 +262,8 @@ describe("GraphQL Client", () => {
         describe("response is Content-Type: multipart/mixed", () => {
           describe.each([
             ["Readable Stream", createReaderStreamResponse],
-            ["Async Iterator", createIterableResponse],
+            ["Async Iterator - Encoded (ArrayBuffer)", createIterableResponse],
+            ["Async Iterator - Buffer", createIterableBufferResponse],
           ])("Server responded with a %s", (_name, responseGenerator) => {
             const streamCompleteDataChunks: [string, string[]] = [
               "stream multiple, complete data chunk",
