@@ -1,5 +1,17 @@
 # Changelog
 
+## 9.4.0
+
+### Minor Changes
+
+- d6657e8: Return additional app subscription plan information, including the line item IDs
+
+### Patch Changes
+
+- 6eb8091: Updated dependency on `jose`
+  - @shopify/admin-api-client@0.2.6
+  - @shopify/storefront-api-client@0.3.1
+
 ## 9.3.2
 
 ### Patch Changes

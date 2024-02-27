@@ -1,5 +1,12 @@
 # @shopify/storefront-api-client
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [56d2fcd]
+  - @shopify/graphql-client@0.10.1
+
 ## 0.3.0
 
 ### Minor Changes

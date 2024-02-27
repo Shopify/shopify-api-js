@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.10.1
+
+### Patch Changes
+
+- 56d2fcd: Update `requestStream()` to support `Uint8Array` streamed encoded format in `node` environments
+
 ## 0.10.0
 
 ### Minor Changes

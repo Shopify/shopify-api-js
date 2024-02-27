@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.4
+
+### Patch Changes
+
+- 37f1b7b: Updated dependency on @shopify/hydrogen-codegen
+
 ## 0.0.3
 
 ### Patch Changes
