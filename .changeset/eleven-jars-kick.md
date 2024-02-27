@@ -2,4 +2,4 @@
 "@shopify/graphql-client": patch
 ---
 
-Update `requestStream()` to check if `Buffer` exists before using Buffer check utility
+Update `requestStream()` to always process response iterator chunks as `Uint8Array` values

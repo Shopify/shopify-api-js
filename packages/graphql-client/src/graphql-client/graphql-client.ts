@@ -193,11 +193,7 @@ async function* getStreamBodyIterator(
   // Response body is an async iterator
   if ((response.body as any)![Symbol.asyncIterator]) {
     for await (const chunk of response.body! as any) {
-      if (typeof Buffer !== "undefined" && Buffer.isBuffer(chunk)) {
-        yield (chunk as Buffer).toString();
-      } else {
-        yield decoder.decode(chunk);
-      }
+      yield decoder.decode(chunk);
     }
   } else {
     const reader = response.body!.getReader();
