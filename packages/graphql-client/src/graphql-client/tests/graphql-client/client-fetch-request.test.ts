@@ -1,9 +1,20 @@
 import fetchMock from "jest-fetch-mock";
 
 import { GraphQLClient } from "../../types";
+import {
+  SDK_VARIANT_HEADER,
+  SDK_VERSION_HEADER,
+  DEFAULT_CLIENT_VERSION,
+  DEFAULT_SDK_VARIANT,
+} from "../../constants";
 
 import { operation, variables, clientConfig, getValidClient } from "./fixtures";
-import { fetchApiTests, parametersTests, retryTests } from "./common-tests";
+import {
+  fetchApiTests,
+  parametersTests,
+  sdkHeadersTests,
+  retryTests,
+} from "./common-tests";
 
 describe("GraphQL Client", () => {
   let mockLogger: jest.Mock;
@@ -33,6 +44,10 @@ describe("GraphQL Client", () => {
     describe("calling the function", () => {
       describe("function parameters", () => {
         parametersTests(functionName);
+      });
+
+      describe("SDK headers", () => {
+        sdkHeadersTests(functionName);
       });
 
       describe("returned object", () => {
@@ -121,7 +136,11 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: {
+                  ...clientConfig.headers,
+                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                },
               },
             ];
 
@@ -247,7 +266,11 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: {
+                  ...clientConfig.headers,
+                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                },
               },
             ];
 
@@ -312,7 +335,11 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: clientConfig.headers,
+                  headers: {
+                    ...clientConfig.headers,
+                    [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                    [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                  },
                 },
               ],
             },
@@ -326,6 +353,10 @@ describe("GraphQL Client", () => {
     const functionName = "request";
 
     fetchApiTests(functionName);
+
+    describe("SDK headers", () => {
+      sdkHeadersTests(functionName);
+    });
 
     describe("calling the function", () => {
       describe("function parameters", () => {
@@ -626,7 +657,11 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: {
+                  ...clientConfig.headers,
+                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                },
               },
             ];
 
@@ -767,7 +802,11 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: {
+                  ...clientConfig.headers,
+                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                },
               },
             ];
 
@@ -833,7 +872,11 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: clientConfig.headers,
+                  headers: {
+                    ...clientConfig.headers,
+                    [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                    [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                  },
                 },
               ],
             },

@@ -1,6 +1,12 @@
 import fetchMock from "jest-fetch-mock";
 
 import { GraphQLClient, ClientStreamResponse } from "../../types";
+import {
+  SDK_VARIANT_HEADER,
+  SDK_VERSION_HEADER,
+  DEFAULT_CLIENT_VERSION,
+  DEFAULT_SDK_VARIANT,
+} from "../../constants";
 
 import {
   clientConfig,
@@ -9,7 +15,12 @@ import {
   createIterableBufferResponse,
   createReaderStreamResponse,
 } from "./fixtures";
-import { fetchApiTests, parametersTests, retryTests } from "./common-tests";
+import {
+  fetchApiTests,
+  parametersTests,
+  sdkHeadersTests,
+  retryTests,
+} from "./common-tests";
 
 const operation = `
 query shop($country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
@@ -56,6 +67,10 @@ describe("GraphQL Client", () => {
     const description = "Test shop description";
 
     fetchApiTests(functionName, operation);
+
+    describe("SDK headers", () => {
+      sdkHeadersTests(functionName, operation);
+    });
 
     describe("calling the function", () => {
       describe("fetch parameters", () => {
@@ -1171,7 +1186,11 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: {
+                  ...clientConfig.headers,
+                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                },
               },
             ];
 
@@ -1333,7 +1352,11 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: {
+                  ...clientConfig.headers,
+                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                },
               },
             ];
 
@@ -1407,7 +1430,11 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: clientConfig.headers,
+                  headers: {
+                    ...clientConfig.headers,
+                    [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+                    [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+                  },
                 },
               ],
             },

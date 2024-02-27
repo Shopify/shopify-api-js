@@ -19,6 +19,10 @@ import {
   HEADER_SEPARATOR,
   DEFER_OPERATION_REGEX,
   BOUNDARY_HEADER_REGEX,
+  SDK_VARIANT_HEADER,
+  SDK_VERSION_HEADER,
+  DEFAULT_SDK_VARIANT,
+  DEFAULT_CLIENT_VERSION,
 } from "./constants";
 import {
   formatErrorMessage,
@@ -121,6 +125,11 @@ function generateFetch(
       headers[key] = Array.isArray(value) ? value.join(", ") : value.toString();
       return headers;
     }, {});
+
+    if (!flatHeaders[SDK_VARIANT_HEADER] && !flatHeaders[SDK_VERSION_HEADER]) {
+      flatHeaders[SDK_VARIANT_HEADER] = DEFAULT_SDK_VARIANT;
+      flatHeaders[SDK_VERSION_HEADER] = DEFAULT_CLIENT_VERSION;
+    }
 
     const fetchParams: Parameters<CustomFetchApi> = [
       overrideUrl ?? url,

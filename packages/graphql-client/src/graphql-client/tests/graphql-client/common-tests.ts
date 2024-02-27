@@ -2,10 +2,22 @@ import fetchMock from "jest-fetch-mock";
 
 import { createGraphQLClient } from "../../graphql-client";
 import { GraphQLClient } from "../../types";
+import {
+  SDK_VARIANT_HEADER,
+  SDK_VERSION_HEADER,
+  DEFAULT_CLIENT_VERSION,
+  DEFAULT_SDK_VARIANT,
+} from "../../constants";
 
 import { operation, variables, clientConfig, getValidClient } from "./fixtures";
 
 type ClientFunctionNames = keyof Omit<GraphQLClient, "config">;
+
+const defaultHeaders = {
+  ...clientConfig.headers,
+  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+};
 
 export const fetchApiTests = (
   functionName: ClientFunctionNames,
@@ -22,7 +34,11 @@ export const fetchApiTests = (
 
     expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
       method: "POST",
-      headers: clientConfig.headers,
+      headers: {
+        ...clientConfig.headers,
+        [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+        [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+      },
       body: JSON.stringify({
         query: gqlOperation,
       }),
@@ -45,7 +61,7 @@ export const fetchApiTests = (
 
     expect(customFetchApi).toHaveBeenCalledWith(clientConfig.url, {
       method: "POST",
-      headers: clientConfig.headers,
+      headers: defaultHeaders,
       body: JSON.stringify({
         query: gqlOperation,
       }),
@@ -68,7 +84,7 @@ export const parametersTests = (
     await client[functionName](gqlOperation);
     expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
       method: "POST",
-      headers: clientConfig.headers,
+      headers: defaultHeaders,
       body: JSON.stringify({
         query: gqlOperation,
       }),
@@ -79,7 +95,7 @@ export const parametersTests = (
     await client[functionName](gqlOperation, { variables });
     expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
       method: "POST",
-      headers: clientConfig.headers,
+      headers: defaultHeaders,
       body: JSON.stringify({
         query: gqlOperation,
         variables,
@@ -92,7 +108,7 @@ export const parametersTests = (
     await client[functionName](gqlOperation, { url });
     expect(fetchMock).toHaveBeenCalledWith(url, {
       method: "POST",
-      headers: clientConfig.headers,
+      headers: defaultHeaders,
       body: JSON.stringify({
         query: gqlOperation,
       }),
@@ -115,13 +131,161 @@ export const parametersTests = (
     expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
       method: "POST",
       headers: {
-        ...clientConfig.headers,
+        ...defaultHeaders,
         ...stringHeaders,
         [arrayHeadersProp]: arrayHeadersValue.join(", "),
       },
       body: JSON.stringify({
         query: gqlOperation,
       }),
+    });
+  });
+};
+
+export const sdkHeadersTests = (
+  functionName: ClientFunctionNames,
+  gqlOperation: string = operation,
+) => {
+  let client: GraphQLClient;
+
+  beforeEach(() => {
+    client = getValidClient();
+  });
+
+  it("includes the default SDK variant and SDK version headers if none were provided in the init config headers or override header", async () => {
+    await client[functionName](gqlOperation);
+    expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
+      method: "POST",
+      headers: defaultHeaders,
+      body: JSON.stringify({
+        query: gqlOperation,
+      }),
+    });
+  });
+
+  describe("SDK headers provided in client init", () => {
+    it("includes the custom SDK variant and SDK version headers if they were provided in the init config headers", async () => {
+      const initCustomHeaders = {
+        [SDK_VARIANT_HEADER]: "custom-client",
+        [SDK_VERSION_HEADER]: "0.0.1",
+      };
+
+      client = getValidClient({
+        headers: initCustomHeaders,
+      });
+
+      await client[functionName](gqlOperation);
+      expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
+        method: "POST",
+        headers: {
+          ...clientConfig.headers,
+          ...initCustomHeaders,
+        },
+        body: JSON.stringify({
+          query: gqlOperation,
+        }),
+      });
+    });
+
+    it("does not includes the default SDK variant and version headers if an SDK variant was provided in the init config headers", async () => {
+      const initCustomHeaders = {
+        [SDK_VARIANT_HEADER]: "custom-client",
+      };
+
+      client = getValidClient({
+        headers: initCustomHeaders,
+      });
+
+      await client[functionName](gqlOperation);
+      expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
+        method: "POST",
+        headers: {
+          ...clientConfig.headers,
+          ...initCustomHeaders,
+        },
+        body: JSON.stringify({
+          query: gqlOperation,
+        }),
+      });
+    });
+
+    it("does not includes the default SDK variant and version headers if an SDK version was provided in the init config headers", async () => {
+      const initCustomHeaders = {
+        [SDK_VERSION_HEADER]: "0.0.1",
+      };
+
+      client = getValidClient({
+        headers: initCustomHeaders,
+      });
+
+      await client[functionName](gqlOperation);
+      expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
+        method: "POST",
+        headers: {
+          ...clientConfig.headers,
+          ...initCustomHeaders,
+        },
+        body: JSON.stringify({
+          query: gqlOperation,
+        }),
+      });
+    });
+  });
+
+  describe("SDK headers provided in function parameter headers", () => {
+    it("includes the custom SDK variant and SDK version headers if they were provided in the function parameter headers", async () => {
+      const customHeaders = {
+        [SDK_VARIANT_HEADER]: "custom-client",
+        [SDK_VERSION_HEADER]: "0.0.1",
+      };
+
+      await client[functionName](gqlOperation, { headers: customHeaders });
+      expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
+        method: "POST",
+        headers: {
+          ...clientConfig.headers,
+          ...customHeaders,
+        },
+        body: JSON.stringify({
+          query: gqlOperation,
+        }),
+      });
+    });
+
+    it("does not includes the default SDK variant and version headers if an SDK variant was provided in the function parameter headers", async () => {
+      const customHeaders = {
+        [SDK_VARIANT_HEADER]: "custom-client",
+      };
+
+      await client[functionName](gqlOperation, { headers: customHeaders });
+      expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
+        method: "POST",
+        headers: {
+          ...clientConfig.headers,
+          ...customHeaders,
+        },
+        body: JSON.stringify({
+          query: gqlOperation,
+        }),
+      });
+    });
+
+    it("does not includes the default SDK variant and version headers if an SDK version was provided in the functiono parameter headers", async () => {
+      const customHeaders = {
+        [SDK_VERSION_HEADER]: "0.0.1",
+      };
+
+      await client[functionName](gqlOperation, { headers: customHeaders });
+      expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
+        method: "POST",
+        headers: {
+          ...clientConfig.headers,
+          ...customHeaders,
+        },
+        body: JSON.stringify({
+          query: gqlOperation,
+        }),
+      });
     });
   });
 };
