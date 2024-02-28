@@ -190,14 +190,10 @@ async function* getStreamBodyIterator(
 ): AsyncIterableIterator<string> {
   const decoder = new TextDecoder();
 
-  // Support node format
+  // Response body is an async iterator
   if ((response.body as any)![Symbol.asyncIterator]) {
     for await (const chunk of response.body! as any) {
-      if (Buffer.isBuffer(chunk)) {
-        yield (chunk as Buffer).toString();
-      } else {
-        yield decoder.decode(chunk);
-      }
+      yield decoder.decode(chunk);
     }
   } else {
     const reader = response.body!.getReader();
