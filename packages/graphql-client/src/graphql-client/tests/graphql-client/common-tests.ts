@@ -9,15 +9,15 @@ import {
   DEFAULT_SDK_VARIANT,
 } from "../../constants";
 
-import { operation, variables, clientConfig, getValidClient } from "./fixtures";
+import {
+  operation,
+  variables,
+  clientConfig,
+  getValidClient,
+  defaultHeaders,
+} from "./fixtures";
 
 type ClientFunctionNames = keyof Omit<GraphQLClient, "config">;
-
-const defaultHeaders = {
-  ...clientConfig.headers,
-  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-};
 
 export const fetchApiTests = (
   functionName: ClientFunctionNames,
@@ -238,6 +238,34 @@ export const sdkHeadersTests = (
         [SDK_VARIANT_HEADER]: "custom-client",
         [SDK_VERSION_HEADER]: "0.0.1",
       };
+
+      await client[functionName](gqlOperation, { headers: customHeaders });
+      expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {
+        method: "POST",
+        headers: {
+          ...clientConfig.headers,
+          ...customHeaders,
+        },
+        body: JSON.stringify({
+          query: gqlOperation,
+        }),
+      });
+    });
+
+    it("includes the function parameter custom SDK variant and version headers if both function parameter and client init config includes SDK headers", async () => {
+      const initCustomHeaders = {
+        [SDK_VARIANT_HEADER]: "custom-client",
+        [SDK_VERSION_HEADER]: "0.0.1",
+      };
+
+      const customHeaders = {
+        [SDK_VARIANT_HEADER]: "custom-client-1",
+        [SDK_VERSION_HEADER]: "0.0.2",
+      };
+
+      client = getValidClient({
+        headers: initCustomHeaders,
+      });
 
       await client[functionName](gqlOperation, { headers: customHeaders });
       expect(fetchMock).toHaveBeenCalledWith(clientConfig.url, {

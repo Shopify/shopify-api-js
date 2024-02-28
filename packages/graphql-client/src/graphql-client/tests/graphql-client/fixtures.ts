@@ -9,6 +9,12 @@ import {
   ClientOptions,
   Headers as TypesHeaders,
 } from "../../types";
+import {
+  SDK_VARIANT_HEADER,
+  SDK_VERSION_HEADER,
+  DEFAULT_CLIENT_VERSION,
+  DEFAULT_SDK_VARIANT,
+} from "../../constants";
 
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder as any;
@@ -31,6 +37,12 @@ query {
 
 export const variables = {
   country: "US",
+};
+
+export const defaultHeaders = {
+  ...clientConfig.headers,
+  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
 };
 
 export function getValidClient({

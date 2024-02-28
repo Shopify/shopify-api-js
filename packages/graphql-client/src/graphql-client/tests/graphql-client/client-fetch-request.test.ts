@@ -1,14 +1,14 @@
 import fetchMock from "jest-fetch-mock";
 
 import { GraphQLClient } from "../../types";
-import {
-  SDK_VARIANT_HEADER,
-  SDK_VERSION_HEADER,
-  DEFAULT_CLIENT_VERSION,
-  DEFAULT_SDK_VARIANT,
-} from "../../constants";
 
-import { operation, variables, clientConfig, getValidClient } from "./fixtures";
+import {
+  operation,
+  variables,
+  clientConfig,
+  getValidClient,
+  defaultHeaders,
+} from "./fixtures";
 import {
   fetchApiTests,
   parametersTests,
@@ -136,11 +136,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: {
-                  ...clientConfig.headers,
-                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                },
+                headers: defaultHeaders,
               },
             ];
 
@@ -266,11 +262,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: {
-                  ...clientConfig.headers,
-                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                },
+                headers: defaultHeaders,
               },
             ];
 
@@ -335,11 +327,7 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: {
-                    ...clientConfig.headers,
-                    [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                    [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                  },
+                  headers: defaultHeaders,
                 },
               ],
             },
@@ -657,11 +645,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: {
-                  ...clientConfig.headers,
-                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                },
+                headers: defaultHeaders,
               },
             ];
 
@@ -802,11 +786,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: {
-                  ...clientConfig.headers,
-                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                },
+                headers: defaultHeaders,
               },
             ];
 
@@ -872,11 +852,7 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: {
-                    ...clientConfig.headers,
-                    [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                    [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                  },
+                  headers: defaultHeaders,
                 },
               ],
             },

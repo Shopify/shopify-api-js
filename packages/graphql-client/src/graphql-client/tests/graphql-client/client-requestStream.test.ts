@@ -1,12 +1,6 @@
 import fetchMock from "jest-fetch-mock";
 
 import { GraphQLClient, ClientStreamResponse } from "../../types";
-import {
-  SDK_VARIANT_HEADER,
-  SDK_VERSION_HEADER,
-  DEFAULT_CLIENT_VERSION,
-  DEFAULT_SDK_VARIANT,
-} from "../../constants";
 
 import {
   clientConfig,
@@ -14,6 +8,7 @@ import {
   createIterableResponse,
   createIterableBufferResponse,
   createReaderStreamResponse,
+  defaultHeaders,
 } from "./fixtures";
 import {
   fetchApiTests,
@@ -1186,11 +1181,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: {
-                  ...clientConfig.headers,
-                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                },
+                headers: defaultHeaders,
               },
             ];
 
@@ -1352,11 +1343,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: {
-                  ...clientConfig.headers,
-                  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                },
+                headers: defaultHeaders,
               },
             ];
 
@@ -1430,11 +1417,7 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: {
-                    ...clientConfig.headers,
-                    [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
-                    [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
-                  },
+                  headers: defaultHeaders,
                 },
               ],
             },
