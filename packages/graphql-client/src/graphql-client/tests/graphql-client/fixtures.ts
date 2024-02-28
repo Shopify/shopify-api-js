@@ -4,7 +4,17 @@ import { Readable } from "stream";
 import { ReadableStream } from "web-streams-polyfill/es2018";
 
 import { createGraphQLClient } from "../../graphql-client";
-import { LogContentTypes, ClientOptions } from "../../types";
+import {
+  LogContentTypes,
+  ClientOptions,
+  Headers as TypesHeaders,
+} from "../../types";
+import {
+  SDK_VARIANT_HEADER,
+  SDK_VERSION_HEADER,
+  DEFAULT_CLIENT_VERSION,
+  DEFAULT_SDK_VARIANT,
+} from "../../constants";
 
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder as any;
@@ -29,12 +39,20 @@ export const variables = {
   country: "US",
 };
 
+export const defaultHeaders = {
+  ...clientConfig.headers,
+  [SDK_VARIANT_HEADER]: DEFAULT_SDK_VARIANT,
+  [SDK_VERSION_HEADER]: DEFAULT_CLIENT_VERSION,
+};
+
 export function getValidClient({
   retries,
   logger,
+  headers,
 }: {
   retries?: number;
   logger?: (logContent: LogContentTypes) => void;
+  headers?: TypesHeaders;
 } = {}) {
   const updatedConfig: ClientOptions = { ...clientConfig };
 
@@ -44,6 +62,13 @@ export function getValidClient({
 
   if (logger !== undefined) {
     updatedConfig.logger = logger;
+  }
+
+  if (headers !== undefined) {
+    updatedConfig.headers = {
+      ...updatedConfig.headers,
+      ...headers,
+    };
   }
 
   return createGraphQLClient(updatedConfig);

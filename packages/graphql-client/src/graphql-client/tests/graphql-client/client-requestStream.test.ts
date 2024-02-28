@@ -8,8 +8,14 @@ import {
   createIterableResponse,
   createIterableBufferResponse,
   createReaderStreamResponse,
+  defaultHeaders,
 } from "./fixtures";
-import { fetchApiTests, parametersTests, retryTests } from "./common-tests";
+import {
+  fetchApiTests,
+  parametersTests,
+  sdkHeadersTests,
+  retryTests,
+} from "./common-tests";
 
 const operation = `
 query shop($country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
@@ -56,6 +62,10 @@ describe("GraphQL Client", () => {
     const description = "Test shop description";
 
     fetchApiTests(functionName, operation);
+
+    describe("SDK headers", () => {
+      sdkHeadersTests(functionName, operation);
+    });
 
     describe("calling the function", () => {
       describe("fetch parameters", () => {
@@ -1171,7 +1181,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: defaultHeaders,
               },
             ];
 
@@ -1333,7 +1343,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: defaultHeaders,
               },
             ];
 
@@ -1407,7 +1417,7 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: clientConfig.headers,
+                  headers: defaultHeaders,
                 },
               ],
             },
