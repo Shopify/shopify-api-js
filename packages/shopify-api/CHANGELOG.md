@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.4.1
+
+### Patch Changes
+
+- @shopify/admin-api-client@0.2.7
+- @shopify/storefront-api-client@0.3.2
+
 ## 9.4.0
 
 ### Minor Changes

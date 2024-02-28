@@ -1,5 +1,12 @@
 # @shopify/graphql-client
 
+## 0.10.2
+
+### Patch Changes
+
+- 2f862e3: Update `requestStream()` to always process response iterator chunks as `Uint8Array` values
+- b2f29ae: Add default SDK headers to all API requests when none are provided
+
 ## 0.10.1
 
 ### Patch Changes
