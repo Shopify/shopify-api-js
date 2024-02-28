@@ -1,1 +1,1 @@
-export const SHOPIFY_API_LIBRARY_VERSION = '9.4.0';
+export const SHOPIFY_API_LIBRARY_VERSION = '9.4.1';
