@@ -1,7 +1,7 @@
 import {loadRestResources} from '../rest/load-rest-resources';
 import {ShopifyRestResources} from '../rest/types';
 import {abstractRuntimeString} from '../runtime/platform';
-import {FutureFlagOptions} from '../future/flags';
+import {FutureFlagOptions, logDisabledFutureFlags} from '../future/flags';
 
 import {ConfigParams, ConfigInterface} from './base-types';
 import {validateConfig} from './config';
@@ -88,6 +88,8 @@ export function shopifyApi<
       `version ${SHOPIFY_API_LIBRARY_VERSION}, environment ${abstractRuntimeString()}`,
     )
     .catch((err) => console.log(err));
+
+  logDisabledFutureFlags(validatedConfig, shopify.logger);
 
   return shopify as Shopify<Params, Resources, Future>;
 }
