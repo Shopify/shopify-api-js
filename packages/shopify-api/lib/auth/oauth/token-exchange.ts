@@ -3,8 +3,8 @@ import {decodeSessionToken} from '../../session/decode-session-token';
 import {sanitizeShop} from '../../utils/shop-validator';
 import {ConfigInterface} from '../../base-types';
 import {Session} from '../../session/session';
-import {abstractFetch} from '../../../runtime';
 import {DataType} from '../../clients/types';
+import {fetchRequestFactory} from '../../utils/fetch-request';
 
 import {createSession} from './create-session';
 import {AccessTokenResponse} from './types';
@@ -47,7 +47,7 @@ export function tokenExchange(config: ConfigInterface): TokenExchange {
 
     const cleanShop = sanitizeShop(config)(shop, true)!;
 
-    const postResponse = await abstractFetch(
+    const postResponse = await fetchRequestFactory(config)(
       `https://${cleanShop}/admin/oauth/access_token`,
       {
         method: 'POST',

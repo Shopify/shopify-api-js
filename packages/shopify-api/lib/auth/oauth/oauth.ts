@@ -12,7 +12,6 @@ import {
   abstractConvertIncomingResponse,
   abstractConvertResponse,
   abstractConvertHeaders,
-  abstractFetch,
   AdapterResponse,
   AdapterHeaders,
   Cookies,
@@ -21,6 +20,7 @@ import {
 } from '../../../runtime/http';
 import {logger, ShopifyLogger} from '../../logger';
 import {DataType} from '../../clients/types';
+import {fetchRequestFactory} from '../../utils/fetch-request';
 
 import {
   SESSION_COOKIE_NAME,
@@ -190,7 +190,7 @@ export function callback(config: ConfigInterface): OAuthCallback {
 
     const cleanShop = sanitizeShop(config)(query.get('shop')!, true)!;
 
-    const postResponse = await abstractFetch(
+    const postResponse = await fetchRequestFactory(config)(
       `https://${cleanShop}/admin/oauth/access_token`,
       {
         method: 'POST',
