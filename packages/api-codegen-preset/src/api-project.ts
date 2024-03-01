@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { pluckConfig } from "@shopify/hydrogen-codegen";
+import { pluckConfig } from "@shopify/graphql-codegen";
 
 import type { ShopifyApiProjectOptions } from "./types";
 import { shopifyApiTypes } from "./api-types";

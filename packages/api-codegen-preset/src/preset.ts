@@ -1,5 +1,5 @@
 import type { Types } from "@graphql-codegen/plugin-helpers";
-import { preset as hydrogenPreset } from "@shopify/hydrogen-codegen";
+import { preset as hydrogenPreset } from "@shopify/graphql-codegen";
 
 import { type ShopifyApiPresetConfig } from "./types";
 import { apiConfigs } from "./helpers/api-configs";
