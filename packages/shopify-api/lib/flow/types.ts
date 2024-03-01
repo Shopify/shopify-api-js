@@ -1,3 +1,8 @@
+import {
+  ValidationErrorReason,
+  ValidationInvalid,
+  ValidationValid,
+} from '../utils/types';
 import {AdapterArgs} from '../../runtime/types';
 
 export interface FlowValidateParams extends AdapterArgs {
@@ -7,26 +12,19 @@ export interface FlowValidateParams extends AdapterArgs {
   rawBody: string;
 }
 
-export enum FlowValidationErrorReason {
-  MissingBody = 'missing_body',
-  MissingHmac = 'missing_hmac',
-  InvalidHmac = 'invalid_hmac',
-}
+export const FlowValidationErrorReason = {
+  ...ValidationErrorReason,
+} as const;
 
-export interface FlowValidationInvalid {
-  /**
-   * Whether the request is a valid Flow request from Shopify.
-   */
-  valid: false;
+export type FlowValidationErrorReasonType =
+  (typeof FlowValidationErrorReason)[keyof typeof FlowValidationErrorReason];
+
+export interface FlowValidationInvalid
+  extends Omit<ValidationInvalid, 'reason'> {
   /**
    * The reason why the request is not valid.
    */
-  reason: FlowValidationErrorReason;
+  reason: FlowValidationErrorReasonType;
 }
 
-export interface FlowValidationValid {
-  /**
-   * Whether the request is a valid Flow request from Shopify.
-   */
-  valid: true;
-}
+export interface FlowValidationValid extends ValidationValid {}

@@ -248,7 +248,12 @@ describe('shopify.webhooks.process', () => {
     for (const header of emptyHeaders) {
       const response = await request(app)
         .post('/webhooks')
-        .set(headers(header))
+        .set(
+          headers({
+            hmac: hmac(shopify.config.apiSecretKey, rawBody),
+            ...header,
+          }),
+        )
         .send(rawBody)
         .expect(StatusCode.BadRequest);
 
