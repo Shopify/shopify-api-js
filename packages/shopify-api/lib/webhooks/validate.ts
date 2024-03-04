@@ -18,6 +18,7 @@ import {
   WebhookValidationValid,
 } from './types';
 import {topicForStorage} from './registry';
+import { logger } from 'lib/logger';
 
 const OPTIONAL_HANDLER_PROPERTIES = {
   subTopic: ShopifyHeader.SubTopic,
@@ -55,6 +56,12 @@ export function validateFactory(config: ConfigInterface) {
           reason: WebhookValidationErrorReason.MissingHeaders,
           missingHeaders: [ShopifyHeader.Hmac],
         };
+      }
+      if (validHmacResult.reason === ValidationErrorReason.InvalidHmac) {
+        const log = logger(config);
+        await log.debug(
+          "Webhook HMAC validation failed. Please note that events manually triggered from a store's Notifications settings will fail this validation. To test this, please use the CLI or trigger the actual event in a development store.",
+        );
       }
       return validHmacResult;
     }
