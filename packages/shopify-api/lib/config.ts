@@ -23,6 +23,7 @@ export function validateConfig<Params extends ConfigParams>(
       timestamps: false,
     },
     future: {},
+    _logDisabledFutureFlags: true,
   } as ConfigInterface<Params>;
 
   // Make sure that the essential params actually have content in them

@@ -107,6 +107,12 @@ export interface ConfigParams<
    * Future flags to include for this app.
    */
   future?: Future;
+  /**
+   * Whether to log disabled future flags at startup.
+   *
+   * @private
+   */
+  _logDisabledFutureFlags?: boolean;
 }
 
 export type ConfigInterface<Params extends ConfigParams = ConfigParams> = Omit<
