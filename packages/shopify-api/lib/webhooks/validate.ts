@@ -1,3 +1,4 @@
+import {logger} from '../logger';
 import {validateHmacFromRequestFactory} from '../utils/hmac-validator';
 import {HmacValidationType, ValidationErrorReason} from '../utils/types';
 import {
@@ -18,7 +19,6 @@ import {
   WebhookValidationValid,
 } from './types';
 import {topicForStorage} from './registry';
-import { logger } from 'lib/logger';
 
 const OPTIONAL_HANDLER_PROPERTIES = {
   subTopic: ShopifyHeader.SubTopic,

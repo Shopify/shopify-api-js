@@ -3,11 +3,6 @@ export enum HmacValidationType {
   Webhook = 'webhook',
 }
 
-export enum ValidationType {
-  Flow = 'flow',
-  Webhook = 'webhook',
-}
-
 export const ValidationErrorReason = {
   MissingBody: 'missing_body',
   InvalidHmac: 'invalid_hmac',
