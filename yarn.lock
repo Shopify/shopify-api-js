@@ -2890,10 +2890,10 @@
     pkg-dir "^5.0.0"
     pluralize "^8.0.0"
 
-"@shopify/hydrogen-codegen@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@shopify/hydrogen-codegen/-/hydrogen-codegen-0.2.1.tgz#24ae0ddd3e051005b4d8b07a793060096a018062"
-  integrity sha512-Ozb1YT37XutNdmdigJaKLgon0q2kAzdzT0hQR6A9ea71P4/oeRaMKhRe5f05XHLktUAVmdghVSDry+bU9bEXqQ==
+"@shopify/graphql-codegen@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@shopify/graphql-codegen/-/graphql-codegen-0.0.1.tgz#5d1633d148db7fb091b51af50087b55cca8a6ff1"
+  integrity sha512-A6LwdihfS0DzfiwwFcSC4CSG5laTwEyVySqYlf1uvo2G9fuxb79FjhmO6WY0kP3P1/Ktg/w3H1w6muzOv2n3qA==
   dependencies:
     "@graphql-codegen/add" "^5.0.1"
     "@graphql-codegen/typescript" "^4.0.2"
@@ -9358,9 +9358,9 @@ type-fest@^0.8.1:
   integrity sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==
 
 type-fest@^4.5.0:
-  version "4.10.2"
-  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.10.2.tgz#3abdb144d93c5750432aac0d73d3e85fcab45738"
-  integrity sha512-anpAG63wSpdEbLwOqH8L84urkL6PiVIov3EMmgIhhThevh9aiMQov+6Btx0wldNcvm4wV+e2/Rt1QdDwKHFbHw==
+  version "4.10.3"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.10.3.tgz#ff01cb0a1209f59583d61e1312de9715e7ea4874"
+  integrity sha512-JLXyjizi072smKGGcZiAJDCNweT8J+AuRxmPZ1aG7TERg4ijx9REl8CNhbr36RV4qXqL1gO1FF9HL8OkVmmrsA==
 
 type-is@~1.6.18:
   version "1.6.18"
