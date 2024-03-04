@@ -103,7 +103,7 @@ const client = createGraphQLClient({
 
 | Name        | Type                    | Description                                                                                                                                                                                         |
 | ----------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| data?       | `Partial<TData> \| any` | Currently available data returned from the GraphQL API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                         |
+| data?       | `TData \| any` | Currently available data returned from the GraphQL API. If `TData` was provided to the function, the return type is `TData`, else it returns type `any`.                                         |
 | errors?      | [`ResponseErrors`](#responseerrors)           | Errors object that contains any API or network errors that occured while fetching the data from the API. It does not include any `UserErrors`.                                                       |
 | extensions? | `Record<string, any>` | Additional information on the GraphQL response data and context. It can include the `context` object that contains the context settings used to generate the returned API response. |
 | hasNext     | `boolean`               | Flag to indicate whether the response stream has more incoming data                                                                                                                                 |
