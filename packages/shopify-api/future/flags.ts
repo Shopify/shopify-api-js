@@ -29,19 +29,17 @@ export function logDisabledFutureFlags(
   config: ConfigInterface,
   logger: ShopifyLogger,
 ) {
-  if (!config.future) {
+  if (!config._logDisabledFutureFlags) {
     return;
   }
 
   const logFlag = (flag: string, message: string) =>
-    `Future flag ${flag} is disabled.\n\n  ${message}\n`;
+    logger.info(`Future flag ${flag} is disabled.\n\n  ${message}\n`);
 
-  if (!config.future.v10_lineItemBilling) {
-    logger.info(
-      logFlag(
-        'v10_lineItemBilling',
-        'Enable this flag to use the new billing API, that supports multiple line items per plan.',
-      ),
+  if (!config.future?.v10_lineItemBilling) {
+    logFlag(
+      'v10_lineItemBilling',
+      'Enable this flag to use the new billing API, that supports multiple line items per plan.',
     );
   }
 }
