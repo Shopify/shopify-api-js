@@ -6,7 +6,7 @@ import {
   type NormalizedRequest,
 } from '../../../runtime';
 import {testConfig} from '../../__tests__/test-config';
-import {FlowValidationErrorReason} from '../types';
+import {ValidationErrorReason} from '../../utils/types';
 
 describe('flow', () => {
   describe('validate', () => {
@@ -31,7 +31,7 @@ describe('flow', () => {
         // THEN
         expect(result).toMatchObject({
           valid: false,
-          reason: FlowValidationErrorReason.MissingHmac,
+          reason: ValidationErrorReason.MissingHmac,
         });
       });
 
@@ -55,7 +55,7 @@ describe('flow', () => {
         // THEN
         expect(result).toMatchObject({
           valid: false,
-          reason: FlowValidationErrorReason.InvalidHmac,
+          reason: ValidationErrorReason.InvalidHmac,
         });
       });
 
@@ -84,7 +84,7 @@ describe('flow', () => {
         // THEN
         expect(result).toMatchObject({
           valid: false,
-          reason: FlowValidationErrorReason.MissingBody,
+          reason: ValidationErrorReason.MissingBody,
         });
       });
     });

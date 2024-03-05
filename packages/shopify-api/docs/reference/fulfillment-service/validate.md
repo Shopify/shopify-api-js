@@ -59,7 +59,7 @@ Whether the request is a valid fulfillment service request from Shopify.
 
 #### reason
 
-`FulfillmentServiceValidationErrorReason`
+`ValidationErrorReason`
 
 The reason why the check was considered invalid.
 

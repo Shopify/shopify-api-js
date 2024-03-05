@@ -28,8 +28,7 @@ export * from './billing/types';
 export * from './clients/types';
 export * from './session/types';
 export * from './webhooks/types';
-export * from './flow/types';
-export * from './fulfillment-service/types';
+export * from './utils/types';
 
 export interface Shopify<
   Params extends ConfigParams = ConfigParams,
