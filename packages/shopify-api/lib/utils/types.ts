@@ -1,6 +1,7 @@
 export enum HmacValidationType {
   Flow = 'flow',
   Webhook = 'webhook',
+  FulfillmentService = 'fulfillment_service',
 }
 
 export const ValidationErrorReason = {

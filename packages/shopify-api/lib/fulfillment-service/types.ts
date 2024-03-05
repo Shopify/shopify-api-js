@@ -1,3 +1,8 @@
+import {
+  ValidationErrorReason,
+  ValidationInvalid,
+  ValidationValid,
+} from '../utils/types';
 import {AdapterArgs} from '../../runtime/types';
 
 export interface FulfillmentServiceParams extends AdapterArgs {
@@ -7,26 +12,19 @@ export interface FulfillmentServiceParams extends AdapterArgs {
   rawBody: string;
 }
 
-export enum FulfillmentServiceErrorReason {
-  MissingBody = 'missing_body',
-  MissingHmac = 'missing_hmac',
-  InvalidHmac = 'invalid_hmac',
-}
+export const FulfillmentServiceValidationErrorReason = {
+  ...ValidationErrorReason,
+} as const;
 
-export interface FulfillmentServiceInvalid {
-  /**
-   * Whether the request is a valid fulfillment service request from Shopify.
-   */
-  valid: false;
+export type FulfillmentServiceValidationErrorReasonType =
+  (typeof FulfillmentServiceValidationErrorReason)[keyof typeof FulfillmentServiceValidationErrorReason];
+
+export interface FulfillmentServiceValidationInvalid
+  extends Omit<ValidationInvalid, 'reason'> {
   /**
    * The reason why the request is not valid.
    */
-  reason: FulfillmentServiceErrorReason;
+  reason: FulfillmentServiceValidationErrorReasonType;
 }
 
-export interface FulfillmentServiceValid {
-  /**
-   * Whether the request is a valid fulfillment service request from Shopify.
-   */
-  valid: true;
-}
+export interface FulfillmentServiceValidationValid extends ValidationValid {}

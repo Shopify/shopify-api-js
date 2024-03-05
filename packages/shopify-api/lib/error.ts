@@ -127,16 +127,4 @@ export class BillingError extends ShopifyError {
     this.errorData = errorData;
   }
 }
-
-export class FulfillmentServiceError extends ShopifyError {
-  readonly errorData: any;
-
-  public constructor({message, errorData}: {message: string; errorData: any}) {
-    super(message);
-
-    this.message = message;
-    this.errorData = errorData;
-  }
-}
-
 export class FeatureDeprecatedError extends ShopifyError {}

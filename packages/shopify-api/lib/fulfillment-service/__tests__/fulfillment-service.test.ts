@@ -6,7 +6,7 @@ import {
   type NormalizedRequest,
 } from '../../../runtime';
 import {testConfig} from '../../__tests__/test-config';
-import {FulfillmentServiceErrorReason} from '../types';
+import {FulfillmentServiceValidationErrorReason} from '../types';
 
 describe('fulfillment service', () => {
   describe('validate', () => {
@@ -31,7 +31,7 @@ describe('fulfillment service', () => {
         // THEN
         expect(result).toMatchObject({
           valid: false,
-          reason: FulfillmentServiceErrorReason.MissingHmac,
+          reason: FulfillmentServiceValidationErrorReason.MissingHmac,
         });
       });
 
@@ -55,7 +55,7 @@ describe('fulfillment service', () => {
         // THEN
         expect(result).toMatchObject({
           valid: false,
-          reason: FulfillmentServiceErrorReason.InvalidHmac,
+          reason: FulfillmentServiceValidationErrorReason.InvalidHmac,
         });
       });
 
@@ -84,7 +84,7 @@ describe('fulfillment service', () => {
         // THEN
         expect(result).toMatchObject({
           valid: false,
-          reason: FulfillmentServiceErrorReason.MissingBody,
+          reason: FulfillmentServiceValidationErrorReason.MissingBody,
         });
       });
     });
