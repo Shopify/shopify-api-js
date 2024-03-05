@@ -6,6 +6,7 @@ import {Base, FindAllResponse} from '../../base';
 import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+import {logger} from '../../../lib/logger';
 
 interface FindArgs {
   session: Session;
@@ -35,6 +36,7 @@ interface SearchArgs {
   created_at_max?: unknown;
   updated_at_min?: unknown;
   updated_at_max?: unknown;
+  returnObject?: boolean;
 }
 interface DisableArgs {
   [key: string]: unknown;
@@ -126,9 +128,17 @@ export class GiftCard extends Base {
       created_at_max = null,
       updated_at_min = null,
       updated_at_max = null,
+      returnObject = false,
       ...otherArgs
     }: SearchArgs
   ): Promise<unknown> {
+    if (!returnObject) {
+      logger(this.config).deprecated(
+        '10.0.0',
+        'The search() method will start returning the full response, similar to all(). Pass in returnObject: true to get the full response before the next major release.',
+      );
+    }
+
     const response = await this.request<GiftCard>({
       http_method: "get",
       operation: "search",
@@ -139,7 +149,7 @@ export class GiftCard extends Base {
       entity: null,
     });
 
-    return response ? response.body : null;
+    return returnObject ? response : response?.body;
   }
 
   public async disable(

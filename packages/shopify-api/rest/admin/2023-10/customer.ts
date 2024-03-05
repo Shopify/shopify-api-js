@@ -6,6 +6,7 @@ import {Base, FindAllResponse} from '../../base';
 import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
+import {logger} from '../../../lib/logger';
 
 import {Metafield} from './metafield';
 
@@ -51,6 +52,7 @@ interface SearchArgs {
   query?: unknown;
   limit?: unknown;
   fields?: unknown;
+  returnObject?: boolean;
 }
 interface AccountActivationUrlArgs {
   [key: string]: unknown;
@@ -193,9 +195,17 @@ export class Customer extends Base {
       query = null,
       limit = null,
       fields = null,
+      returnObject = false,
       ...otherArgs
     }: SearchArgs
   ): Promise<unknown> {
+    if (!returnObject) {
+      logger(this.config).deprecated(
+        '10.0.0',
+        'The search() method will start returning the full response, similar to all(). Pass in returnObject: true to get the full response before the next major release.',
+      );
+    }
+
     const response = await this.request<Customer>({
       http_method: "get",
       operation: "search",
@@ -206,7 +216,7 @@ export class Customer extends Base {
       entity: null,
     });
 
-    return response ? response.body : null;
+    return returnObject ? response : response?.body;
   }
 
   public async account_activation_url(
