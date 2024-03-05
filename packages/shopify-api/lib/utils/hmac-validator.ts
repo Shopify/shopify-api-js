@@ -1,3 +1,10 @@
+import {logger} from '../logger';
+import {ShopifyHeader} from '../types';
+import {
+  AdapterArgs,
+  abstractConvertRequest,
+  getHeader,
+} from '../../runtime/http';
 import {ConfigInterface} from '../base-types';
 import {createSHA256HMAC} from '../../runtime/crypto';
 import {HashFormat} from '../../runtime/crypto/types';
@@ -6,10 +13,28 @@ import * as ShopifyErrors from '../error';
 import {safeCompare} from '../auth/oauth/safe-compare';
 
 import ProcessedQuery from './processed-query';
+import {
+  ValidationErrorReason,
+  ValidationInvalid,
+  HmacValidationType,
+  ValidationValid,
+  ValidationErrorReasonType,
+} from './types';
 
 const HMAC_TIMESTAMP_PERMITTED_CLOCK_TOLERANCE_SEC = 90;
 
 export type HMACSignator = 'admin' | 'appProxy';
+
+export interface ValidateParams extends AdapterArgs {
+  /**
+   * The type of validation to perform, either 'flow' or 'webhook'.
+   */
+  type: HmacValidationType;
+  /**
+   * The raw body of the request.
+   */
+  rawBody: string;
+}
 
 function stringifyQueryForAdmin(query: AuthQuery): string {
   const processedQuery = new ProcessedQuery();
@@ -85,6 +110,34 @@ export function getCurrentTimeInSec() {
   return Math.trunc(Date.now() / 1000);
 }
 
+export function validateHmacFromRequestFactory(config: ConfigInterface) {
+  return async function validateHmacFromRequest({
+    type,
+    rawBody,
+    ...adapterArgs
+  }: ValidateParams): Promise<ValidationInvalid | ValidationValid> {
+    const request = await abstractConvertRequest(adapterArgs);
+    if (!rawBody.length) {
+      return fail(ValidationErrorReason.MissingBody, type, config);
+    }
+    const hmac = getHeader(request.headers, ShopifyHeader.Hmac);
+    if (!hmac) {
+      return fail(ValidationErrorReason.MissingHmac, type, config);
+    }
+    const validHmac = await validateHmacString(
+      config,
+      rawBody,
+      hmac,
+      HashFormat.Base64,
+    );
+    if (!validHmac) {
+      return fail(ValidationErrorReason.InvalidHmac, type, config);
+    }
+
+    return succeed(type, config);
+  };
+}
+
 function validateHmacTimestamp(query: AuthQuery) {
   if (
     Math.abs(getCurrentTimeInSec() - Number(query.timestamp)) >
@@ -94,4 +147,30 @@ function validateHmacTimestamp(query: AuthQuery) {
       'HMAC timestamp is outside of the tolerance range',
     );
   }
+}
+
+async function fail(
+  reason: ValidationErrorReasonType,
+  type: HmacValidationType,
+  config: ConfigInterface,
+): Promise<ValidationInvalid> {
+  const log = logger(config);
+  await log.debug(`${type} request is not valid`, {reason});
+
+  return {
+    valid: false,
+    reason,
+  };
+}
+
+async function succeed(
+  type: HmacValidationType,
+  config: ConfigInterface,
+): Promise<ValidationValid> {
+  const log = logger(config);
+  await log.debug(`${type} request is valid`);
+
+  return {
+    valid: true,
+  };
 }
