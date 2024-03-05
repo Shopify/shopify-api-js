@@ -15,6 +15,7 @@ import {logger, ShopifyLogger} from './logger';
 import {SHOPIFY_API_LIBRARY_VERSION} from './version';
 import {restClientClass} from './clients/admin/rest/client';
 import {ShopifyFlow, shopifyFlow} from './flow';
+import {FulfillmentService, fulfillmentService} from './fulfillment-service';
 
 export * from './error';
 export * from './session/classes';
@@ -27,7 +28,7 @@ export * from './billing/types';
 export * from './clients/types';
 export * from './session/types';
 export * from './webhooks/types';
-export * from './flow/types';
+export * from './utils/types';
 
 export interface Shopify<
   Params extends ConfigParams = ConfigParams,
@@ -44,6 +45,7 @@ export interface Shopify<
   logger: ShopifyLogger;
   rest: Resources;
   flow: ShopifyFlow;
+  fulfillmentService: FulfillmentService;
 }
 
 export function shopifyApi<
@@ -71,6 +73,7 @@ export function shopifyApi<
     webhooks: shopifyWebhooks(validatedConfig),
     billing: shopifyBilling(validatedConfig),
     flow: shopifyFlow(validatedConfig),
+    fulfillmentService: fulfillmentService(validatedConfig),
     logger: logger(validatedConfig),
     rest: {} as Resources,
   };

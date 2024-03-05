@@ -1,11 +1,11 @@
+import {ConfigInterface} from '../base-types';
+import {validateHmacFromRequestFactory} from '../utils/hmac-validator';
 import {
   HmacValidationType,
+  ValidateParams,
   ValidationInvalid,
   ValidationValid,
-  ValidateParams,
 } from '../utils/types';
-import {validateHmacFromRequestFactory} from '../utils/hmac-validator';
-import {ConfigInterface} from '../base-types';
 
 export function validateFactory(config: ConfigInterface) {
   return async function validate({
@@ -13,7 +13,7 @@ export function validateFactory(config: ConfigInterface) {
     ...adapterArgs
   }: ValidateParams): Promise<ValidationInvalid | ValidationValid> {
     return validateHmacFromRequestFactory(config)({
-      type: HmacValidationType.Flow,
+      type: HmacValidationType.FulfillmentService,
       rawBody,
       ...adapterArgs,
     });

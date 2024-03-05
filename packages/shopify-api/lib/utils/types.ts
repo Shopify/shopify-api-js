@@ -1,6 +1,16 @@
+import {AdapterArgs} from '../../runtime/types';
+
 export enum HmacValidationType {
   Flow = 'flow',
   Webhook = 'webhook',
+  FulfillmentService = 'fulfillment_service',
+}
+
+export interface ValidateParams extends AdapterArgs {
+  /**
+   * The raw body of the request.
+   */
+  rawBody: string;
 }
 
 export const ValidationErrorReason = {
