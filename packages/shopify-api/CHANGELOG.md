@@ -1,5 +1,20 @@
 # Changelog
 
+## 9.5.0
+
+### Minor Changes
+
+- 01371f7: Add function to authenticate fulfillment service requests
+
+### Patch Changes
+
+- 4e7c479: Show an INFO log for disabled future flags to encourage apps to migrate ahead of time, making major version bumps simpler.
+- 13a230d: Enabled returning the full response object in `Customer.search()` and `GiftCard.search()`, so that apps can paginate through the results.
+- f57712c: Refactor HMAC validation to use a common function.
+- 01a803d: Reintroduced logging of HTTP requests for OAuth processes, which was incorrectly removed when the new clients were introduced.
+  - @shopify/admin-api-client@0.2.8
+  - @shopify/storefront-api-client@0.3.3
+
 ## 9.4.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.5
+
+### Patch Changes
+
+- 8e06306: Replaced @shopify/hydrogen-codegen with its more generic successor, @shopify/graphql-codegen. All of the changes are internal, so this package is unchanged.
+
 ## 0.0.4
 
 ### Patch Changes
