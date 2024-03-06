@@ -35,6 +35,7 @@ interface SearchArgs {
   created_at_max?: unknown;
   updated_at_min?: unknown;
   updated_at_max?: unknown;
+  returnFullResponse?: boolean;
 }
 interface DisableArgs {
   [key: string]: unknown;
@@ -126,6 +127,7 @@ export class GiftCard extends Base {
       created_at_max = null,
       updated_at_min = null,
       updated_at_max = null,
+      returnFullResponse = false,
       ...otherArgs
     }: SearchArgs
   ): Promise<unknown> {
@@ -139,7 +141,7 @@ export class GiftCard extends Base {
       entity: null,
     });
 
-    return response ? response.body : null;
+    return returnFullResponse ? response : response?.body;
   }
 
   public async disable(
