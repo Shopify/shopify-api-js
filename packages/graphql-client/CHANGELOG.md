@@ -1,5 +1,11 @@
 # @shopify/graphql-client
 
+## 0.10.3
+
+### Patch Changes
+
+- e9652b7: Remove `Partial` around the `ClientStreamResponse.data` type
+
 ## 0.10.2
 
 ### Patch Changes
