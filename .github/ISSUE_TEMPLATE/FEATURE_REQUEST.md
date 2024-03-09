@@ -1,7 +1,10 @@
 ---
-name: '🙌 Feature Request'
+name: "\U0001F64C Feature Request"
 about: Suggest a new feature, or changes to an existing one
-labels: 'Type: Feature Request :raised_hands:'
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 ## Overview

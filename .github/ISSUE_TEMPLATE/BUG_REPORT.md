@@ -1,7 +1,10 @@
 ---
-name: "🐛 Bug Report"
+name: "\U0001F41B Bug Report"
 about: Something isn't working
-labels: "Type: Bug 🐛"
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 # Issue summary
