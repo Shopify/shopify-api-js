@@ -8,8 +8,10 @@ interface ApiConfig {
   interfaceExtension: string;
   module: string;
   presetConfigs: {
-    importTypesFrom: string;
-    namespacedImportName: string;
+    importTypes: {
+      namespace: string;
+      from: string;
+    };
   };
 }
 
@@ -26,8 +28,10 @@ export const apiConfigs: ApiConfigs = {
     interfaceExtension: `declare module '%%MODULE%%' {\n  type InputMaybe<T> = AdminTypes.InputMaybe<T>;\n  interface AdminQueries extends %%QUERY%% {}\n  interface AdminMutations extends %%MUTATION%% {}\n}`,
     module: "@shopify/admin-api-client",
     presetConfigs: {
-      importTypesFrom: "./admin.types.d.ts",
-      namespacedImportName: "AdminTypes",
+      importTypes: {
+        namespace: "AdminTypes",
+        from: "./admin.types.d.ts",
+      },
     },
   },
   Storefront: {
@@ -39,8 +43,10 @@ export const apiConfigs: ApiConfigs = {
     interfaceExtension: `declare module '%%MODULE%%' {\n  type InputMaybe<T> = StorefrontTypes.InputMaybe<T>;\n  interface StorefrontQueries extends %%QUERY%% {}\n  interface StorefrontMutations extends %%MUTATION%% {}\n}`,
     module: "@shopify/storefront-api-client",
     presetConfigs: {
-      importTypesFrom: "./storefront.types.d.ts",
-      namespacedImportName: "StorefrontTypes",
+      importTypes: {
+        namespace: "StorefrontTypes",
+        from: "./storefront.types.d.ts",
+      },
     },
   },
 };

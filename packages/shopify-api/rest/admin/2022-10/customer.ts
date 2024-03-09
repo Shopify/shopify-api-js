@@ -51,6 +51,7 @@ interface SearchArgs {
   query?: unknown;
   limit?: unknown;
   fields?: unknown;
+  returnFullResponse?: boolean;
 }
 interface AccountActivationUrlArgs {
   [key: string]: unknown;
@@ -193,8 +194,9 @@ export class Customer extends Base {
       query = null,
       limit = null,
       fields = null,
+      returnFullResponse = false,
       ...otherArgs
-    }: SearchArgs
+    }: SearchArgs,
   ): Promise<unknown> {
     const response = await this.request<Customer>({
       http_method: "get",
@@ -206,7 +208,7 @@ export class Customer extends Base {
       entity: null,
     });
 
-    return response ? response.body : null;
+    return returnFullResponse ? response : response?.body;
   }
 
   public async account_activation_url(

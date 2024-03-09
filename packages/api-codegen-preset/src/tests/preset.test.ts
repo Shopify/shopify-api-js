@@ -1,7 +1,7 @@
 import path from "path";
 
 import { executeCodegen } from "@graphql-codegen/cli";
-import { pluckConfig } from "@shopify/hydrogen-codegen";
+import { pluckConfig } from "@shopify/graphql-codegen";
 
 import { ApiType, preset } from "..";
 

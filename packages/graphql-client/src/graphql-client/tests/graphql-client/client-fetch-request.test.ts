@@ -2,8 +2,19 @@ import fetchMock from "jest-fetch-mock";
 
 import { GraphQLClient } from "../../types";
 
-import { operation, variables, clientConfig, getValidClient } from "./fixtures";
-import { fetchApiTests, parametersTests, retryTests } from "./common-tests";
+import {
+  operation,
+  variables,
+  clientConfig,
+  getValidClient,
+  defaultHeaders,
+} from "./fixtures";
+import {
+  fetchApiTests,
+  parametersTests,
+  sdkHeadersTests,
+  retryTests,
+} from "./common-tests";
 
 describe("GraphQL Client", () => {
   let mockLogger: jest.Mock;
@@ -33,6 +44,10 @@ describe("GraphQL Client", () => {
     describe("calling the function", () => {
       describe("function parameters", () => {
         parametersTests(functionName);
+      });
+
+      describe("SDK headers", () => {
+        sdkHeadersTests(functionName);
       });
 
       describe("returned object", () => {
@@ -121,7 +136,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: defaultHeaders,
               },
             ];
 
@@ -247,7 +262,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: defaultHeaders,
               },
             ];
 
@@ -312,7 +327,7 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: clientConfig.headers,
+                  headers: defaultHeaders,
                 },
               ],
             },
@@ -326,6 +341,10 @@ describe("GraphQL Client", () => {
     const functionName = "request";
 
     fetchApiTests(functionName);
+
+    describe("SDK headers", () => {
+      sdkHeadersTests(functionName);
+    });
 
     describe("calling the function", () => {
       describe("function parameters", () => {
@@ -626,7 +645,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: defaultHeaders,
               },
             ];
 
@@ -767,7 +786,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: defaultHeaders,
               },
             ];
 
@@ -833,7 +852,7 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: clientConfig.headers,
+                  headers: defaultHeaders,
                 },
               ],
             },

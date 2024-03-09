@@ -1,3 +1,6 @@
+import {logger} from '../logger';
+import {validateHmacFromRequestFactory} from '../utils/hmac-validator';
+import {HmacValidationType, ValidationErrorReason} from '../utils/types';
 import {
   abstractConvertRequest,
   getHeader,
@@ -6,15 +9,14 @@ import {
 } from '../../runtime/http';
 import {ShopifyHeader} from '../types';
 import {ConfigInterface} from '../base-types';
-import {logger} from '../logger';
-import {validateHmacString} from '../utils/hmac-validator';
-import {HashFormat} from '../../runtime';
 
 import {
   WebhookFields,
   WebhookValidateParams,
   WebhookValidation,
   WebhookValidationErrorReason,
+  WebhookValidationMissingHeaders,
+  WebhookValidationValid,
 } from './types';
 import {topicForStorage} from './registry';
 
@@ -39,43 +41,38 @@ export function validateFactory(config: ConfigInterface) {
     const request: NormalizedRequest =
       await abstractConvertRequest(adapterArgs);
 
-    const log = logger(config);
+    const validHmacResult = await validateHmacFromRequestFactory(config)({
+      type: HmacValidationType.Webhook,
+      rawBody,
+      ...adapterArgs,
+    });
 
-    const webhookCheck = checkWebhookRequest(rawBody, request.headers);
-    if (!webhookCheck.valid) {
-      await log.debug('Received malformed webhook request', webhookCheck);
-      return webhookCheck;
+    if (!validHmacResult.valid) {
+      // Deprecated: this is for backwards compatibility with the old HMAC validation
+      // This will be removed in the next major version, and missing_hmac will be returned instead of missing_header when the hmac is missing
+      if (validHmacResult.reason === ValidationErrorReason.MissingHmac) {
+        return {
+          valid: false,
+          reason: WebhookValidationErrorReason.MissingHeaders,
+          missingHeaders: [ShopifyHeader.Hmac],
+        };
+      }
+      if (validHmacResult.reason === ValidationErrorReason.InvalidHmac) {
+        const log = logger(config);
+        await log.debug(
+          "Webhook HMAC validation failed. Please note that events manually triggered from a store's Notifications settings will fail this validation. To test this, please use the CLI or trigger the actual event in a development store.",
+        );
+      }
+      return validHmacResult;
     }
 
-    const {hmac, valid: _valid, ...loggingContext} = webhookCheck;
-    await log.debug('Webhook request is well formed', loggingContext);
-
-    if (await validateHmacString(config, rawBody, hmac, HashFormat.Base64)) {
-      await log.debug('Webhook request is valid', loggingContext);
-      return webhookCheck;
-    } else {
-      await log.debug(
-        "Webhook HMAC validation failed. Please note that events manually triggered from a store's Notifications settings will fail this validation. To test this, please use the CLI or trigger the actual event in a development store.",
-      );
-      return {
-        valid: false,
-        reason: WebhookValidationErrorReason.InvalidHmac,
-      };
-    }
+    return checkWebhookHeaders(request.headers);
   };
 }
 
-function checkWebhookRequest(
-  rawBody: string,
+function checkWebhookHeaders(
   headers: Headers,
-): WebhookValidation {
-  if (!rawBody.length) {
-    return {
-      valid: false,
-      reason: WebhookValidationErrorReason.MissingBody,
-    };
-  }
-
+): WebhookValidationMissingHeaders | WebhookValidationValid {
   const missingHeaders: ShopifyHeader[] = [];
   const entries = Object.entries(HANDLER_PROPERTIES) as [
     keyof WebhookFields,

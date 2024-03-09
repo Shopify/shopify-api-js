@@ -32,8 +32,7 @@ export interface ClientResponse<TData = any> extends FetchResponseBody<TData> {
 }
 
 export interface ClientStreamResponse<TData = any>
-  extends Omit<ClientResponse<TData>, "data"> {
-  data?: Partial<TData>;
+  extends ClientResponse<TData> {
   hasNext: boolean;
 }
 

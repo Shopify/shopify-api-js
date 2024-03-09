@@ -127,5 +127,4 @@ export class BillingError extends ShopifyError {
     this.errorData = errorData;
   }
 }
-
 export class FeatureDeprecatedError extends ShopifyError {}

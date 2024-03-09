@@ -1,3 +1,4 @@
+import {ValidationErrorReason, ValidationInvalid} from '../utils/types';
 import {AdapterArgs} from '../../runtime/types';
 import {Session} from '../session/session';
 
@@ -121,11 +122,13 @@ export interface WebhookProcessParams extends AdapterArgs {
 
 export interface WebhookValidateParams extends WebhookProcessParams {}
 
-export enum WebhookValidationErrorReason {
-  MissingHeaders = 'missing_headers',
-  MissingBody = 'missing_body',
-  InvalidHmac = 'invalid_hmac',
-}
+export const WebhookValidationErrorReason = {
+  ...ValidationErrorReason,
+  MissingHeaders: 'missing_headers',
+} as const;
+
+export type WebhookValidationErrorReasonType =
+  (typeof WebhookValidationErrorReason)[keyof typeof WebhookValidationErrorReason];
 
 export interface WebhookFields {
   webhookId: string;
@@ -136,14 +139,15 @@ export interface WebhookFields {
   subTopic?: string;
 }
 
-export interface WebhookValidationInvalid {
+export interface WebhookValidationInvalid
+  extends Omit<ValidationInvalid, 'reason'> {
   valid: false;
-  reason: WebhookValidationErrorReason;
+  reason: WebhookValidationErrorReasonType;
 }
 
 export interface WebhookValidationMissingHeaders
   extends WebhookValidationInvalid {
-  reason: WebhookValidationErrorReason.MissingHeaders;
+  reason: typeof WebhookValidationErrorReason.MissingHeaders;
   missingHeaders: string[];
 }
 

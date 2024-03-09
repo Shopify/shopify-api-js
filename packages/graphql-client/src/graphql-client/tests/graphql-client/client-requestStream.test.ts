@@ -6,9 +6,16 @@ import {
   clientConfig,
   getValidClient,
   createIterableResponse,
+  createIterableBufferResponse,
   createReaderStreamResponse,
+  defaultHeaders,
 } from "./fixtures";
-import { fetchApiTests, parametersTests, retryTests } from "./common-tests";
+import {
+  fetchApiTests,
+  parametersTests,
+  sdkHeadersTests,
+  retryTests,
+} from "./common-tests";
 
 const operation = `
 query shop($country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
@@ -55,6 +62,10 @@ describe("GraphQL Client", () => {
     const description = "Test shop description";
 
     fetchApiTests(functionName, operation);
+
+    describe("SDK headers", () => {
+      sdkHeadersTests(functionName, operation);
+    });
 
     describe("calling the function", () => {
       describe("fetch parameters", () => {
@@ -261,7 +272,8 @@ describe("GraphQL Client", () => {
         describe("response is Content-Type: multipart/mixed", () => {
           describe.each([
             ["Readable Stream", createReaderStreamResponse],
-            ["Async Iterator", createIterableResponse],
+            ["Async Iterator - Encoded (ArrayBuffer)", createIterableResponse],
+            ["Async Iterator - Buffer", createIterableBufferResponse],
           ])("Server responded with a %s", (_name, responseGenerator) => {
             const streamCompleteDataChunks: [string, string[]] = [
               "stream multiple, complete data chunk",
@@ -1169,7 +1181,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: defaultHeaders,
               },
             ];
 
@@ -1331,7 +1343,7 @@ describe("GraphQL Client", () => {
               {
                 method: "POST",
                 body: JSON.stringify({ query: operation }),
-                headers: clientConfig.headers,
+                headers: defaultHeaders,
               },
             ];
 
@@ -1405,7 +1417,7 @@ describe("GraphQL Client", () => {
                 {
                   method: "POST",
                   body: JSON.stringify({ query: operation }),
-                  headers: clientConfig.headers,
+                  headers: defaultHeaders,
                 },
               ],
             },

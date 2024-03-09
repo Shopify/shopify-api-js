@@ -8,7 +8,7 @@ import {
 import {testConfig} from '../../__tests__/test-config';
 import {ValidationErrorReason} from '../../utils/types';
 
-describe('flow', () => {
+describe('fulfillment service', () => {
   describe('validate', () => {
     describe('failure cases', () => {
       it('fails if the HMAC header is missing', async () => {
@@ -23,7 +23,7 @@ describe('flow', () => {
         };
 
         // WHEN
-        const result = await shopify.flow.validate({
+        const result = await shopify.fulfillmentService.validate({
           rawBody: JSON.stringify(payload),
           rawRequest: req,
         });
@@ -47,7 +47,7 @@ describe('flow', () => {
         };
 
         // WHEN
-        const result = await shopify.flow.validate({
+        const result = await shopify.fulfillmentService.validate({
           rawBody: JSON.stringify(payload),
           rawRequest: req,
         });
@@ -76,7 +76,7 @@ describe('flow', () => {
         };
 
         // WHEN
-        const result = await shopify.flow.validate({
+        const result = await shopify.fulfillmentService.validate({
           rawBody: '',
           rawRequest: req,
         });
@@ -107,7 +107,7 @@ describe('flow', () => {
       };
 
       // WHEN
-      const result = await shopify.flow.validate({
+      const result = await shopify.fulfillmentService.validate({
         rawBody: JSON.stringify(payload),
         rawRequest: req,
       });

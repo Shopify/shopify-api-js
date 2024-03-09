@@ -1,6 +1,6 @@
 {
   "name": "@shopify/shopify-api",
-  "version": "9.3.2",
+  "version": "9.5.0",
   "description": "Shopify API Library for Node - accelerate development with support for authentication, graphql proxy, webhooks",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -70,31 +70,31 @@
     "node-fetch": "^2.6.7"
   },
   "dependencies": {
-    "@shopify/admin-api-client": "^0.2.5",
+    "@shopify/admin-api-client": "^0.2.8",
     "@shopify/network": "^3.2.1",
-    "@shopify/storefront-api-client": "^0.3.0",
+    "@shopify/storefront-api-client": "^0.3.3",
     "compare-versions": "^6.1.0",
     "isbot": "^4.4.0",
-    "jose": "^5.2.0",
+    "jose": "^5.2.2",
     "node-fetch": "^2.6.1",
     "tslib": "^2.0.3",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240129.0",
-    "@swc/core": "^1.4.1",
+    "@swc/core": "^1.4.2",
     "@types/express": "^4.17.13",
-    "@types/node": "^20.11.17",
+    "@types/node": "^20.11.20",
     "@types/node-fetch": "^2.6.11",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^9.0.0",
     "express": "^4.17.13",
     "jest-environment-miniflare": "^2.14.2",
-    "miniflare": "^3.20240129.2",
-    "rollup": "^2.79.1",
+    "miniflare": "^3.20240304.0",
+    "rollup": "^4.12.0",
     "rollup-plugin-swc": "^0.2.1",
     "supertest": "^6.3.4",
-    "wrangler": "^3.26.0"
+    "wrangler": "^3.28.4"
   },
   "files": [
     "**/*.d.ts",
