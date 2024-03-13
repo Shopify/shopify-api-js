@@ -13,6 +13,7 @@ const propertiesToSave = [
   'accessToken',
   'expires',
   'onlineAccessInfo',
+  'userId',
 ];
 /**
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.
@@ -39,6 +40,8 @@ export class Session {
               return ['accessToken', value];
             case 'onlineaccessinfo':
               return ['onlineAccessInfo', value];
+            case 'userId':
+              return ['userId', value];
             default:
               return [key.toLowerCase(), value];
           }
@@ -66,6 +69,8 @@ export class Session {
                   },
                 },
               ];
+            case 'userId':
+              return [key, Number(value)];
             default:
               return [key, value];
           }
@@ -107,6 +112,10 @@ export class Session {
    * Information on the user for the session. Only present for online sessions.
    */
   public onlineAccessInfo?: OnlineAccessInfo;
+  /**
+   * The user ID associated with the session, relevant for identifying the specific user.
+   */
+  public userId?: bigint;
 
   constructor(params: SessionParams) {
     Object.assign(this, params);
@@ -165,6 +174,9 @@ export class Session {
     }
     if (this.onlineAccessInfo) {
       object.onlineAccessInfo = this.onlineAccessInfo;
+    }
+    if (this.userId) {
+      object.userId = this.userId;
     }
     return object;
   }

@@ -34,6 +34,10 @@ export interface SessionParams {
    * Information on the user for the session. Only present for online sessions.
    */
   onlineAccessInfo?: OnlineAccessInfo;
+  /**
+   * The user ID associated with the session, relevant for identifying the specific user.
+   */
+  userId?: bigint;
 }
 
 export interface JwtPayload {
