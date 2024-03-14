@@ -87,7 +87,7 @@
     "@types/node": "^20.11.27",
     "@types/node-fetch": "^2.6.11",
     "@types/supertest": "^6.0.2",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^9.0.8",
     "express": "^4.17.13",
     "jest-environment-miniflare": "^2.14.2",
     "miniflare": "^3.20240304.0",
