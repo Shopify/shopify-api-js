@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.5.1
+
+### Patch Changes
+
+- 1344258: Bumps jose from 5.2.2 to 5.2.3.
+
 ## 9.5.0
 
 ### Minor Changes

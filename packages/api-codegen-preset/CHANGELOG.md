@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.6
+
+### Patch Changes
+
+- dba2232: Bumps @graphql-codegen/cli from 5.0.0 to 5.0.2.
+- edb4bb0: Bumps @parcel/watcher from 2.4.0 to 2.4.1.
+
 ## 0.0.5
 
 ### Patch Changes
