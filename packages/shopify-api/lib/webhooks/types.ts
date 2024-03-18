@@ -15,6 +15,7 @@ export type WebhookHandlerFunction = (
   webhookId: string,
   apiVersion?: string,
   subTopic?: string,
+  context?: any,
 ) => Promise<void>;
 
 interface BaseWebhookHandler {
@@ -22,6 +23,7 @@ interface BaseWebhookHandler {
   includeFields?: string[];
   metafieldNamespaces?: string[];
   subTopic?: string;
+  context?: any;
 }
 
 export interface HttpWebhookHandler extends BaseWebhookHandler {
@@ -118,6 +120,7 @@ export type AddHandlersParams = Record<
 
 export interface WebhookProcessParams extends AdapterArgs {
   rawBody: string;
+  context?: any;
 }
 
 export interface WebhookValidateParams extends WebhookProcessParams {}
