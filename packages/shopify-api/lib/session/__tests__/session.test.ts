@@ -1,6 +1,6 @@
 import {Session} from '../session';
 import {testConfig} from '../../__tests__/test-config';
-import {shopifyApi} from '../..';
+import {SessionParams, shopifyApi} from '../..';
 
 describe('session', () => {
   it('can create a session from another session', () => {
@@ -174,7 +174,13 @@ describe('isScopeChanged', () => {
 const expiresDate = new Date(Date.now() + 86400);
 const expiresNumber = expiresDate.getTime();
 
-const testSessions = [
+interface SessionTestData {
+  session: SessionParams;
+  propertyArray: [string, string | number | boolean][];
+}
+type SessionTestDataArray = SessionTestData[];
+
+const testSessions: SessionTestDataArray = [
   {
     session: {
       id: 'offline_session_id',
@@ -258,6 +264,58 @@ const testSessions = [
     ],
   },
   {
+    // Represents an online session fetched from the DB stored in the old format
+    session: {
+      id: 'online_session_id',
+      shop: 'online-session-shop',
+      state: 'online-session-state',
+      isOnline: true,
+      scope: 'online-session-scope',
+      accessToken: 'online-session-token',
+      expires: expiresDate,
+      onlineAccessInfo: {
+        expires_in: 1,
+        associated_user_scope: 'online-session-user-scope',
+        associated_user: {
+          id: 1,
+        },
+      },
+    },
+    propertyArray: [
+      ['id', 'online_session_id'],
+      ['shop', 'online-session-shop'],
+      ['state', 'online-session-state'],
+      ['isOnline', true],
+      ['scope', 'online-session-scope'],
+      ['accessToken', 'online-session-token'],
+      ['expires', expiresNumber],
+      ['onlineAccessInfo', 1],
+    ],
+  },
+  {
+    session: {
+      id: 'online_session_id',
+      shop: 'online-session-shop',
+      state: 'online-session-state',
+      isOnline: true,
+      onlineAccessInfo: {
+        expires_in: 1,
+        associated_user_scope: 'online-session-user-scope',
+        associated_user: {
+          id: 1,
+        },
+      },
+    },
+    propertyArray: [
+      ['id', 'online_session_id'],
+      ['shop', 'online-session-shop'],
+      ['state', 'online-session-state'],
+      ['isOnline', true],
+      ['onlineAccessInfo', 1],
+    ],
+  },
+  {
+    // Represents a session stored in new format
     session: {
       id: 'online_session_id',
       shop: 'online-session-shop',
@@ -289,40 +347,17 @@ const testSessions = [
       ['scope', 'online-session-scope'],
       ['accessToken', 'online-session-token'],
       ['expires', expiresNumber],
-      ['onlineAccessInfo', 1],
-    ],
-  },
-  {
-    session: {
-      id: 'online_session_id',
-      shop: 'online-session-shop',
-      state: 'online-session-state',
-      isOnline: true,
-      onlineAccessInfo: {
-        expires_in: 1,
-        associated_user_scope: 'online-session-user-scope',
-        associated_user: {
-          id: 1,
-          first_name: 'online-session-first-name',
-          last_name: 'online-session-last-name',
-          email: 'online-session-email',
-          locale: 'online-session-locale',
-          email_verified: true,
-          account_owner: true,
-          collaborator: false,
-        },
-      },
-    },
-    propertyArray: [
-      ['id', 'online_session_id'],
-      ['shop', 'online-session-shop'],
-      ['state', 'online-session-state'],
-      ['isOnline', true],
-      ['onlineAccessInfo', 1],
+      ['userId', 1],
+      ['firstName', 'online-session-first-name'],
+      ['lastName', 'online-session-last-name'],
+      ['email', 'online-session-email'],
+      ['locale', 'online-session-locale'],
+      ['emailVerified', true],
+      ['accountOwner', true],
+      ['collaborator', false],
     ],
   },
 ];
-
 describe('toObject', () => {
   testSessions.forEach((test) => {
     const onlineOrOffline = test.session.isOnline ? 'online' : 'offline';
