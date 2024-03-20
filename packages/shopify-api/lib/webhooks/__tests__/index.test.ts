@@ -104,6 +104,7 @@ describe('webhooks', () => {
       body,
       webhookId,
       shopify.config.apiVersion,
+      undefined,
     );
     expect(handler3.callback).toHaveBeenCalledWith(
       topic,
@@ -111,6 +112,7 @@ describe('webhooks', () => {
       body,
       webhookId,
       shopify.config.apiVersion,
+      undefined,
     );
   });
 

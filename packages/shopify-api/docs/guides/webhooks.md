@@ -19,6 +19,8 @@ const shopify = shopifyApi({
 
 // Call shopify.webhooks.addHandlers here (see examples below)
 
+## Node.js
+
 const app = express();
 
 // Register webhooks after OAuth completes
@@ -86,6 +88,7 @@ const handleWebhookRequest = async (
   webhookRequestBody: string,
   webhookId: string,
   apiVersion: string,
+  context?: any,
 ) => {
   const sessionId = shopify.session.getOfflineId(shop);
 
@@ -117,6 +120,28 @@ app.post('/webhooks', express.text({type: '*/*'}), async (req, res) => {
     console.log(error.message);
   }
 });
+```
+
+## Cloudflare workers
+
+// Register webhooks after OAuth completes
+
+```ts
+async function handleFetch(
+  request: Request,
+  env: unknown,
+  context: any,
+): Promise<Response> {
+  try {
+    await shopify.webhooks.process({
+      context: {env, ...context}, // is object or undefined
+      rawBody: await request.text(), // is a string
+      rawRequest: request,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 ```
 
 ## Note regarding use of body parsers
