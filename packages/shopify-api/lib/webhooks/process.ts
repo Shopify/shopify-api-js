@@ -45,6 +45,7 @@ export function process(
   webhookRegistry: WebhookRegistry<HttpWebhookHandlerWithCallback>,
 ) {
   return async function process({
+    context,
     rawBody,
     ...adapterArgs
   }: WebhookProcessParams): Promise<AdapterResponse> {
@@ -68,6 +69,7 @@ export function process(
         webhookRegistry,
         webhookCheck,
         rawBody,
+        context,
       );
 
       response.statusCode = handlerResult.statusCode;
@@ -99,6 +101,7 @@ async function callWebhookHandlers(
   webhookRegistry: WebhookRegistry<HttpWebhookHandlerWithCallback>,
   webhookCheck: WebhookValidationValid,
   rawBody: string,
+  context: any,
 ): Promise<HandlerCallResult> {
   const log = logger(config);
   const {hmac: _hmac, valid: _valid, ...loggingContext} = webhookCheck;
@@ -140,6 +143,7 @@ async function callWebhookHandlers(
         webhookCheck.webhookId,
         webhookCheck.apiVersion,
         ...(webhookCheck?.subTopic ? webhookCheck.subTopic : ''),
+        context,
       );
     } catch (error) {
       response.statusCode = StatusCode.InternalServerError;
