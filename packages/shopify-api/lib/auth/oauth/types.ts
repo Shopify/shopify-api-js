@@ -45,31 +45,31 @@ export interface OnlineAccessUser {
   /**
    * The user's first name.
    */
-  first_name?: string;
+  first_name: string;
   /**
    * The user's last name.
    */
-  last_name?: string;
+  last_name: string;
   /**
    * The user's email address.
    */
-  email?: string;
+  email: string;
   /**
    * Whether the user has verified their email address.
    */
-  email_verified?: boolean;
+  email_verified: boolean;
   /**
    * Whether the user is the account owner.
    */
-  account_owner?: boolean;
+  account_owner: boolean;
   /**
    * The user's locale.
    */
-  locale?: string;
+  locale: string;
   /**
    * Whether the user is a collaborator.
    */
-  collaborator?: boolean;
+  collaborator: boolean;
 }
 
 export interface OnlineAccessResponse

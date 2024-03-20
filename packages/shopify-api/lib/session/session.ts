@@ -133,7 +133,7 @@ export class Session {
         }),
     ) as any;
     // If the onlineAccessInfo is not present, we are using the new session info and  add it to the object
-    if (!obj.onlineAccessInfo) {
+    if (!obj.onlineAccessInfo && Object.keys(associatedUserObj).length === 0) {
       obj.onlineAccessInfo = associatedUserObj;
     }
     Object.setPrototypeOf(obj, Session.prototype);

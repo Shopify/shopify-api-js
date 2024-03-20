@@ -178,9 +178,8 @@ interface SessionTestData {
   session: SessionParams;
   propertyArray: [string, string | number | boolean][];
 }
-type SessionTestDataArray = SessionTestData[];
 
-const testSessions: SessionTestDataArray = [
+const testSessions: SessionTestData[] = [
   {
     session: {
       id: 'offline_session_id',
