@@ -65,6 +65,8 @@ Now that the app has a JavaScript object containing the data of a `Session`, it 
 
 The `Session` class also includes an instance method called `.toPropertyArray` that returns an array of key-value pairs, e.g.,
 
+`toPropertyArray` has an optional parameter `returnUserData`, defaulted to false, when set to true it will return the associated user data as part of the property array object.
+
 ```ts
 const {session, headers} = shopify.auth.callback({
   rawRequest: req,
@@ -97,7 +99,7 @@ const {session, headers} = shopify.auth.callback({
   }
  */
 
-const sessionProperties = session.toPropertyArray();
+const sessionProperties = session.toPropertyArray(true);
 /*
   ... then sessionProperties will have the following data...
    [
@@ -126,7 +128,7 @@ const {session, headers} = shopify.auth.callback({
   rawResponse: res,
 });
 /*
-  If session has the following data content...
+   If session has the following data content...
   {
     id: 'online_session_id',
     shop: 'online-session-shop',
@@ -140,12 +142,19 @@ const {session, headers} = shopify.auth.callback({
       associated_user_scope: 'online-session-user-scope',
       associated_user: {
         id: 1,
-      }
+        first_name: 'online-session-first-name',
+        last_name: 'online-session-last-name',
+        email: 'online-session-email',
+        locale: 'online-session-locale',
+        email_verified: true,
+        account_owner: true,
+        collaborator: false,
+      },
     }
   }
  */
 
-const sessionProperties = session.toPropertyArray();
+const sessionProperties = session.toPropertyArray(false);
 /*
   ... then sessionProperties will have the following data...
    [
@@ -192,7 +201,7 @@ Once the `Session` is found, the app must ensure that it converts it from the st
 If the `.toPropertyArray` method was used to obtain the session data, the `Session` class has a `.fromPropertyArray` static method that can be used to convert the array data back into a session.
 
 ```ts
-const sessionProperties = session.toPropertyArray();
+const sessionProperties = session.toPropertyArray(true);
 /*
   if sessionProperties has the following data...
   [

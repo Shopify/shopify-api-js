@@ -46,6 +46,8 @@ export class Session {
               return ['accessToken', value];
             case 'onlineaccessinfo':
               return ['onlineAccessInfo', value];
+            case 'userid':
+              return ['userId', value];
             case 'firstname':
               return ['firstName', value];
             case 'lastname':
@@ -54,8 +56,6 @@ export class Session {
               return ['accountOwner', value];
             case 'emailverified':
               return ['emailVerified', value];
-            case 'userid':
-              return ['userId', value];
             default:
               return [key.toLowerCase(), value];
           }
@@ -133,7 +133,7 @@ export class Session {
         }),
     ) as any;
     // If the onlineAccessInfo is not present, we are using the new session info and  add it to the object
-    if (!obj.onlineAccessInfo && Object.keys(associatedUserObj).length === 0) {
+    if (!obj.onlineAccessInfo && Object.keys(associatedUserObj).length !== 0) {
       obj.onlineAccessInfo = associatedUserObj;
     }
     Object.setPrototypeOf(obj, Session.prototype);
@@ -248,10 +248,10 @@ export class Session {
 
     if (!mandatoryPropsMatch) return false;
 
-    const copyA = this.toPropertyArray();
+    const copyA = this.toPropertyArray(true);
     copyA.sort(([k1], [k2]) => (k1 < k2 ? -1 : 1));
 
-    const copyB = other.toPropertyArray();
+    const copyB = other.toPropertyArray(true);
     copyB.sort(([k1], [k2]) => (k1 < k2 ? -1 : 1));
 
     return JSON.stringify(copyA) === JSON.stringify(copyB);
@@ -260,7 +260,9 @@ export class Session {
   /**
    * Converts the session into an array of key-value pairs.
    */
-  public toPropertyArray(): [string, string | number | boolean][] {
+  public toPropertyArray(
+    returnUserData = false,
+  ): [string, string | number | boolean][] {
     return (
       Object.entries(this)
         .filter(
@@ -270,16 +272,13 @@ export class Session {
             value !== null,
         )
         // Prepare values for db storage
-        .flatMap(([key, value]) => {
+        .flatMap(([key, value]): [string, string | number | boolean][] => {
           switch (key) {
             case 'expires':
               return [[key, value ? value.getTime() : undefined]];
             case 'onlineAccessInfo':
-              if (
-                value?.associated_user &&
-                Object.keys(value.associated_user).length === 1 &&
-                value.associated_user.id !== undefined
-              ) {
+              // eslint-disable-next-line no-negated-condition
+              if (!returnUserData) {
                 return [[key, value.associated_user.id]];
               } else {
                 return [
@@ -297,6 +296,8 @@ export class Session {
               return [[key, value]];
           }
         })
+        // Filter out tuples with undefined values
+        .filter(([_key, value]) => value !== undefined)
     );
   }
 }

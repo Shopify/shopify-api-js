@@ -1,6 +1,6 @@
 import {Session} from '../session';
 import {testConfig} from '../../__tests__/test-config';
-import {SessionParams, shopifyApi} from '../..';
+import {shopifyApi} from '../..';
 
 describe('session', () => {
   it('can create a session from another session', () => {
@@ -174,12 +174,7 @@ describe('isScopeChanged', () => {
 const expiresDate = new Date(Date.now() + 86400);
 const expiresNumber = expiresDate.getTime();
 
-interface SessionTestData {
-  session: SessionParams;
-  propertyArray: [string, string | number | boolean][];
-}
-
-const testSessions: SessionTestData[] = [
+const testSessions = [
   {
     session: {
       id: 'offline_session_id',
@@ -199,6 +194,7 @@ const testSessions: SessionTestData[] = [
       ['accessToken', 'offline-session-token'],
       ['expires', expiresNumber],
     ],
+    returnUserData: false,
   },
   {
     session: {
@@ -213,6 +209,7 @@ const testSessions: SessionTestData[] = [
       ['state', 'offline-session-state'],
       ['isOnline', false],
     ],
+    returnUserData: false,
   },
   {
     session: {
@@ -229,6 +226,7 @@ const testSessions: SessionTestData[] = [
       ['isOnline', false],
       ['scope', 'offline-session-scope'],
     ],
+    returnUserData: false,
   },
   {
     session: {
@@ -245,6 +243,7 @@ const testSessions: SessionTestData[] = [
       ['isOnline', false],
       ['accessToken', 'offline-session-token'],
     ],
+    returnUserData: false,
   },
   {
     session: {
@@ -261,9 +260,9 @@ const testSessions: SessionTestData[] = [
       ['isOnline', false],
       ['expires', expiresNumber],
     ],
+    returnUserData: false,
   },
   {
-    // Represents an online session fetched from the DB stored in the old format
     session: {
       id: 'online_session_id',
       shop: 'online-session-shop',
@@ -277,6 +276,13 @@ const testSessions: SessionTestData[] = [
         associated_user_scope: 'online-session-user-scope',
         associated_user: {
           id: 1,
+          first_name: 'online-session-first-name',
+          last_name: 'online-session-last-name',
+          email: 'online-session-email',
+          locale: 'online-session-locale',
+          email_verified: true,
+          account_owner: true,
+          collaborator: false,
         },
       },
     },
@@ -290,6 +296,7 @@ const testSessions: SessionTestData[] = [
       ['expires', expiresNumber],
       ['onlineAccessInfo', 1],
     ],
+    returnUserData: false,
   },
   {
     session: {
@@ -302,6 +309,13 @@ const testSessions: SessionTestData[] = [
         associated_user_scope: 'online-session-user-scope',
         associated_user: {
           id: 1,
+          first_name: 'online-session-first-name',
+          last_name: 'online-session-last-name',
+          email: 'online-session-email',
+          locale: 'online-session-locale',
+          email_verified: true,
+          account_owner: true,
+          collaborator: false,
         },
       },
     },
@@ -312,9 +326,30 @@ const testSessions: SessionTestData[] = [
       ['isOnline', true],
       ['onlineAccessInfo', 1],
     ],
+    returnUserData: false,
   },
   {
-    // Represents a session stored in new format
+    session: {
+      id: 'offline_session_id',
+      shop: 'offline-session-shop',
+      state: 'offline-session-state',
+      isOnline: false,
+      scope: 'offline-session-scope',
+      accessToken: 'offline-session-token',
+      expires: expiresDate,
+    },
+    propertyArray: [
+      ['id', 'offline_session_id'],
+      ['shop', 'offline-session-shop'],
+      ['state', 'offline-session-state'],
+      ['isOnline', false],
+      ['scope', 'offline-session-scope'],
+      ['accessToken', 'offline-session-token'],
+      ['expires', expiresNumber],
+    ],
+    returnUserData: true,
+  },
+  {
     session: {
       id: 'online_session_id',
       shop: 'online-session-shop',
@@ -355,8 +390,39 @@ const testSessions: SessionTestData[] = [
       ['accountOwner', true],
       ['collaborator', false],
     ],
+    returnUserData: true,
+  },
+  {
+    session: {
+      id: 'online_session_id',
+      shop: 'online-session-shop',
+      state: 'online-session-state',
+      isOnline: true,
+      scope: 'online-session-scope',
+      accessToken: 'online-session-token',
+      expires: expiresDate,
+      onlineAccessInfo: {
+        expires_in: 1,
+        associated_user_scope: 'online-session-user-scope',
+        associated_user: {
+          id: 1,
+        },
+      },
+    },
+    propertyArray: [
+      ['id', 'online_session_id'],
+      ['shop', 'online-session-shop'],
+      ['state', 'online-session-state'],
+      ['isOnline', true],
+      ['scope', 'online-session-scope'],
+      ['accessToken', 'online-session-token'],
+      ['expires', expiresNumber],
+      ['userId', 1],
+    ],
+    returnUserData: true,
   },
 ];
+
 describe('toObject', () => {
   testSessions.forEach((test) => {
     const onlineOrOffline = test.session.isOnline ? 'online' : 'offline';
@@ -376,14 +442,19 @@ describe('toObject', () => {
 describe('toPropertyArray and fromPropertyArray', () => {
   testSessions.forEach((test) => {
     const onlineOrOffline = test.session.isOnline ? 'online' : 'offline';
-    it(`returns a property array of an ${onlineOrOffline} session`, () => {
+    const userData = test.returnUserData ? 'with' : 'without';
+    it(`returns a property array of an ${onlineOrOffline} session ${userData} user data`, () => {
       const session = new Session(test.session);
-      expect(session.toPropertyArray()).toStrictEqual(test.propertyArray);
+      expect(session.toPropertyArray(test.returnUserData)).toStrictEqual(
+        test.propertyArray,
+      );
     });
 
-    it(`recreates a Session from a property array of an ${onlineOrOffline} session`, () => {
+    it(`recreates a Session from a property array of an ${onlineOrOffline} session ${userData} user data`, () => {
       const session = new Session(test.session);
-      const sessionCopy = Session.fromPropertyArray(session.toPropertyArray());
+      const sessionCopy = Session.fromPropertyArray(
+        session.toPropertyArray(test.returnUserData),
+      );
       expect(session.id).toStrictEqual(sessionCopy.id);
       expect(session.shop).toStrictEqual(sessionCopy.shop);
       expect(session.state).toStrictEqual(sessionCopy.state);
@@ -394,6 +465,61 @@ describe('toPropertyArray and fromPropertyArray', () => {
       expect(session.onlineAccessInfo?.associated_user.id).toStrictEqual(
         sessionCopy.onlineAccessInfo?.associated_user.id,
       );
+      if (test.returnUserData) {
+        expect(
+          session.onlineAccessInfo?.associated_user.first_name,
+        ).toStrictEqual(
+          sessionCopy.onlineAccessInfo?.associated_user.first_name,
+        );
+        expect(
+          session.onlineAccessInfo?.associated_user.last_name,
+        ).toStrictEqual(
+          sessionCopy.onlineAccessInfo?.associated_user.last_name,
+        );
+        expect(session.onlineAccessInfo?.associated_user.email).toStrictEqual(
+          sessionCopy.onlineAccessInfo?.associated_user.email,
+        );
+        expect(session.onlineAccessInfo?.associated_user.locale).toStrictEqual(
+          sessionCopy.onlineAccessInfo?.associated_user.locale,
+        );
+        expect(
+          session.onlineAccessInfo?.associated_user.email_verified,
+        ).toStrictEqual(
+          sessionCopy.onlineAccessInfo?.associated_user.email_verified,
+        );
+        expect(
+          session.onlineAccessInfo?.associated_user.account_owner,
+        ).toStrictEqual(
+          sessionCopy.onlineAccessInfo?.associated_user.account_owner,
+        );
+        expect(
+          session.onlineAccessInfo?.associated_user.collaborator,
+        ).toStrictEqual(
+          sessionCopy.onlineAccessInfo?.associated_user.collaborator,
+        );
+      } else {
+        expect(
+          sessionCopy.onlineAccessInfo?.associated_user.first_name,
+        ).toBeUndefined();
+        expect(
+          sessionCopy.onlineAccessInfo?.associated_user.last_name,
+        ).toBeUndefined();
+        expect(
+          sessionCopy.onlineAccessInfo?.associated_user.email,
+        ).toBeUndefined();
+        expect(
+          sessionCopy.onlineAccessInfo?.associated_user.locale,
+        ).toBeUndefined();
+        expect(
+          sessionCopy.onlineAccessInfo?.associated_user.email_verified,
+        ).toBeUndefined();
+        expect(
+          sessionCopy.onlineAccessInfo?.associated_user.account_owner,
+        ).toBeUndefined();
+        expect(
+          sessionCopy.onlineAccessInfo?.associated_user.collaborator,
+        ).toBeUndefined();
+      }
     });
   });
 });
