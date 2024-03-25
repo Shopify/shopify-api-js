@@ -34,40 +34,42 @@ export interface OnlineAccessInfo {
   /**
    * The user associated with the access token.
    */
-  associated_user: {
-    /**
-     * The user's ID.
-     */
-    id: number;
-    /**
-     * The user's first name.
-     */
-    first_name: string;
-    /**
-     * The user's last name.
-     */
-    last_name: string;
-    /**
-     * The user's email address.
-     */
-    email: string;
-    /**
-     * Whether the user has verified their email address.
-     */
-    email_verified: boolean;
-    /**
-     * Whether the user is the account owner.
-     */
-    account_owner: boolean;
-    /**
-     * The user's locale.
-     */
-    locale: string;
-    /**
-     * Whether the user is a collaborator.
-     */
-    collaborator: boolean;
-  };
+  associated_user: OnlineAccessUser;
+}
+
+export interface OnlineAccessUser {
+  /**
+   * The user's ID.
+   */
+  id: number;
+  /**
+   * The user's first name.
+   */
+  first_name: string;
+  /**
+   * The user's last name.
+   */
+  last_name: string;
+  /**
+   * The user's email address.
+   */
+  email: string;
+  /**
+   * Whether the user has verified their email address.
+   */
+  email_verified: boolean;
+  /**
+   * Whether the user is the account owner.
+   */
+  account_owner: boolean;
+  /**
+   * The user's locale.
+   */
+  locale: string;
+  /**
+   * Whether the user is a collaborator.
+   */
+  collaborator: boolean;
 }
 
 export interface OnlineAccessResponse

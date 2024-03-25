@@ -1,5 +1,5 @@
 import {AdapterArgs} from '../../runtime/http';
-import {OnlineAccessInfo} from '../auth/oauth/types';
+import {OnlineAccessInfo, OnlineAccessUser} from '../auth/oauth/types';
 
 export interface SessionParams {
   /**
@@ -33,8 +33,12 @@ export interface SessionParams {
   /**
    * Information on the user for the session. Only present for online sessions.
    */
-  onlineAccessInfo?: OnlineAccessInfo;
+  onlineAccessInfo?: OnlineAccessInfo | StoredOnlineAccessInfo;
 }
+
+type StoredOnlineAccessInfo = Omit<OnlineAccessInfo, 'associated_user'> & {
+  associated_user: Partial<OnlineAccessUser>;
+};
 
 export interface JwtPayload {
   /**
