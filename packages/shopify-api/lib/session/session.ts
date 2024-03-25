@@ -1,5 +1,5 @@
 import {InvalidSession} from '../error';
-import {OnlineAccessInfo} from '../auth/oauth/types';
+import {OnlineAccessInfo, OnlineAccessUser} from '../auth/oauth/types';
 import {AuthScopes} from '../auth/scopes';
 
 import {SessionParams} from './types';
@@ -14,6 +14,10 @@ const propertiesToSave = [
   'expires',
   'onlineAccessInfo',
 ];
+
+interface AssociatedUserObject {
+  associated_user: Partial<OnlineAccessUser>;
+}
 /**
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.
  */
@@ -27,6 +31,9 @@ export class Session {
       );
     }
 
+    const associatedUserObj: AssociatedUserObject = {
+      associated_user: {},
+    };
     const obj = Object.fromEntries(
       entries
         .filter(([_key, value]) => value !== null && value !== undefined)
@@ -39,10 +46,21 @@ export class Session {
               return ['accessToken', value];
             case 'onlineaccessinfo':
               return ['onlineAccessInfo', value];
+            case 'userid':
+              return ['userId', value];
+            case 'firstname':
+              return ['firstName', value];
+            case 'lastname':
+              return ['lastName', value];
+            case 'accountowner':
+              return ['accountOwner', value];
+            case 'emailverified':
+              return ['emailVerified', value];
             default:
               return [key.toLowerCase(), value];
           }
         })
+
         // Sanitize values
         .map(([key, value]) => {
           switch (key) {
@@ -66,11 +84,58 @@ export class Session {
                   },
                 },
               ];
+            case 'userId':
+              return [
+                key,
+                (associatedUserObj.associated_user.id = Number(value)),
+              ];
+            case 'firstName':
+              return [
+                key,
+                (associatedUserObj.associated_user.first_name = String(value)),
+              ];
+            case 'lastName':
+              return [
+                key,
+                (associatedUserObj.associated_user.last_name = String(value)),
+              ];
+            case 'email':
+              return [
+                key,
+                (associatedUserObj.associated_user.email = String(value)),
+              ];
+            case 'accountOwner':
+              return [
+                key,
+                (associatedUserObj.associated_user.account_owner =
+                  Boolean(value)),
+              ];
+            case 'locale':
+              return [
+                key,
+                (associatedUserObj.associated_user.locale = String(value)),
+              ];
+            case 'collaborator':
+              return [
+                key,
+                (associatedUserObj.associated_user.collaborator =
+                  Boolean(value)),
+              ];
+            case 'emailVerified':
+              return [
+                key,
+                (associatedUserObj.associated_user.email_verified =
+                  Boolean(value)),
+              ];
             default:
               return [key, value];
           }
         }),
     ) as any;
+    // If the onlineAccessInfo is not present, we are using the new session info and  add it to the object
+    if (!obj.onlineAccessInfo && Object.keys(associatedUserObj).length !== 0) {
+      obj.onlineAccessInfo = associatedUserObj;
+    }
     Object.setPrototypeOf(obj, Session.prototype);
     return obj;
   }
@@ -183,10 +248,10 @@ export class Session {
 
     if (!mandatoryPropsMatch) return false;
 
-    const copyA = this.toPropertyArray();
+    const copyA = this.toPropertyArray(true);
     copyA.sort(([k1], [k2]) => (k1 < k2 ? -1 : 1));
 
-    const copyB = other.toPropertyArray();
+    const copyB = other.toPropertyArray(true);
     copyB.sort(([k1], [k2]) => (k1 < k2 ? -1 : 1));
 
     return JSON.stringify(copyA) === JSON.stringify(copyB);
@@ -195,7 +260,9 @@ export class Session {
   /**
    * Converts the session into an array of key-value pairs.
    */
-  public toPropertyArray(): [string, string | number | boolean][] {
+  public toPropertyArray(
+    returnUserData = false,
+  ): [string, string | number | boolean][] {
     return (
       Object.entries(this)
         .filter(
@@ -205,16 +272,32 @@ export class Session {
             value !== null,
         )
         // Prepare values for db storage
-        .map(([key, value]) => {
+        .flatMap(([key, value]): [string, string | number | boolean][] => {
           switch (key) {
             case 'expires':
-              return [key, value ? value.getTime() : undefined];
+              return [[key, value ? value.getTime() : undefined]];
             case 'onlineAccessInfo':
-              return [key, value?.associated_user?.id];
+              // eslint-disable-next-line no-negated-condition
+              if (!returnUserData) {
+                return [[key, value.associated_user.id]];
+              } else {
+                return [
+                  ['userId', value?.associated_user?.id],
+                  ['firstName', value?.associated_user?.first_name],
+                  ['lastName', value?.associated_user?.last_name],
+                  ['email', value?.associated_user?.email],
+                  ['locale', value?.associated_user?.locale],
+                  ['emailVerified', value?.associated_user?.email_verified],
+                  ['accountOwner', value?.associated_user?.account_owner],
+                  ['collaborator', value?.associated_user?.collaborator],
+                ];
+              }
             default:
-              return [key, value];
+              return [[key, value]];
           }
         })
+        // Filter out tuples with undefined values
+        .filter(([_key, value]) => value !== undefined)
     );
   }
 }

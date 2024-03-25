@@ -65,6 +65,8 @@ Now that the app has a JavaScript object containing the data of a `Session`, it 
 
 The `Session` class also includes an instance method called `.toPropertyArray` that returns an array of key-value pairs, e.g.,
 
+`toPropertyArray` has an optional parameter `returnUserData`, defaulted to false, when set to true it will return the associated user data as part of the property array object.
+
 ```ts
 const {session, headers} = shopify.auth.callback({
   rawRequest: req,
@@ -97,19 +99,74 @@ const {session, headers} = shopify.auth.callback({
   }
  */
 
-const sessionProperties = session.toPropertyArray();
+const sessionProperties = session.toPropertyArray(true);
 /*
   ... then sessionProperties will have the following data...
-  [
+   [
     ['id', 'online_session_id'],
     ['shop', 'online-session-shop'],
     ['state', 'online-session-state'],
     ['isOnline', true],
     ['scope', 'online-session-scope'],
     ['accessToken', 'online-session-token'],
-    ['expires', 1641013200000],  // number, milliseconds since Jan 1, 1970
-    ['onlineAccessInfo', 1],  // only the `id` property of the `associated_user` property is stored
-  ]
+    ['expires', 1641013200000],  // example = January 1, 2022, as number of milliseconds since Jan 1, 1970
+    ['userId', 1],
+    ['first_name', 'online-session-first-name'],
+    ['last_name', 'online-session-last-name'],
+    ['email', 'online-session-email'],
+    ['locale', 'online-session-locale'],
+    ['email_verified', false]
+    ['account_owner', true,]
+    ['collaborator', false],
+    ],
+ */
+```
+
+```ts
+const {session, headers} = shopify.auth.callback({
+  rawRequest: req,
+  rawResponse: res,
+});
+/*
+   If session has the following data content...
+  {
+    id: 'online_session_id',
+    shop: 'online-session-shop',
+    state: 'online-session-state',
+    isOnline: true,
+    scope: 'online-session-scope',
+    accessToken: 'online-session-token',
+    expires: 2022-01-01T05:00:00.000Z,  // Date object
+    onlineAccessInfo: {
+      expires_in: 1,
+      associated_user_scope: 'online-session-user-scope',
+      associated_user: {
+        id: 1,
+        first_name: 'online-session-first-name',
+        last_name: 'online-session-last-name',
+        email: 'online-session-email',
+        locale: 'online-session-locale',
+        email_verified: true,
+        account_owner: true,
+        collaborator: false,
+      },
+    }
+  }
+ */
+
+const sessionProperties = session.toPropertyArray(false);
+/*
+  ... then sessionProperties will have the following data...
+   [
+    ['id', 'online_session_id'],
+    ['shop', 'online-session-shop'],
+    ['state', 'online-session-state'],
+    ['isOnline', true],
+    ['scope', 'online-session-scope'],
+    ['accessToken', 'online-session-token'],
+    ['expires', 1641013200000],  // example = January 1, 2022, as number of milliseconds since Jan 1, 1970
+    ['onlineAccessInfo', 1], // The userID is returned under onlineAccessInfo
+    ],
  */
 ```
 
@@ -144,7 +201,7 @@ Once the `Session` is found, the app must ensure that it converts it from the st
 If the `.toPropertyArray` method was used to obtain the session data, the `Session` class has a `.fromPropertyArray` static method that can be used to convert the array data back into a session.
 
 ```ts
-const sessionProperties = session.toPropertyArray();
+const sessionProperties = session.toPropertyArray(true);
 /*
   if sessionProperties has the following data...
   [
@@ -155,8 +212,58 @@ const sessionProperties = session.toPropertyArray();
     ['scope', 'online-session-scope'],
     ['accessToken', 'online-session-token'],
     ['expires', 1641013200000],  // example = January 1, 2022, as number of milliseconds since Jan 1, 1970
-    ['onlineAccessInfo', 1],  // only the `id` property of the `associated_user` property is stored
-  ]
+    ['userId', 1],
+    ['first_name', 'online-session-first-name'],
+    ['last_name', 'online-session-last-name'],
+    ['email', 'online-session-email'],
+    ['locale', 'online-session-locale'],
+    ['email_verified', false]
+    ['account_owner', true,]
+    ['collaborator', false],
+    ],
+ */
+
+const session = Session.fromPropertyArray(sessionProperties);
+/*
+  ... then session will have the following data...
+  {
+    id: 'online_session_id',
+    shop: 'online-session-shop',
+    state: 'online-session-state',
+    isOnline: true,
+    scope: 'online-session-scope',
+    accessToken: 'online-session-token',
+    expires: 2022-01-01T05:00:00.000Z,  // Date object
+    onlineAccessInfo: {
+      associated_user: {
+        id: 1,
+        first_name: 'online-session-first-name'
+        last_name: 'online-session-last-name',
+        email: 'online-session-email',
+        locale: 'online-session-locale',
+        email_verified: false,
+        account_owner: true,
+        collaborator: false,
+      },
+    }
+  }
+ */
+```
+
+```ts
+const sessionProperties = session.toPropertyArray();
+/*
+  if sessionProperties has the following data, without the user data
+  [
+    ['id', 'online_session_id'],
+    ['shop', 'online-session-shop'],
+    ['state', 'online-session-state'],
+    ['isOnline', true],
+    ['scope', 'online-session-scope'],
+    ['accessToken', 'online-session-token'],
+    ['expires', 1641013200000],  // example = January 1, 2022, as number of milliseconds since Jan 1, 1970
+    ['onlineAccessInfo', 1],
+    ],
  */
 
 const session = Session.fromPropertyArray(sessionProperties);
