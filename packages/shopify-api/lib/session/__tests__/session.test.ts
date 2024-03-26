@@ -454,6 +454,7 @@ describe('toPropertyArray and fromPropertyArray', () => {
       const session = new Session(test.session);
       const sessionCopy = Session.fromPropertyArray(
         session.toPropertyArray(test.returnUserData),
+        test.returnUserData,
       );
       expect(session.id).toStrictEqual(sessionCopy.id);
       expect(session.shop).toStrictEqual(sessionCopy.shop);

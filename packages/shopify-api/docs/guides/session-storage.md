@@ -200,6 +200,8 @@ Once the `Session` is found, the app must ensure that it converts it from the st
 
 If the `.toPropertyArray` method was used to obtain the session data, the `Session` class has a `.fromPropertyArray` static method that can be used to convert the array data back into a session.
 
+`FromPropertyArray` has an optional parameter `returnUserData`, defaulted to false, when set to true it will return the associated user data if it is included in the property array.
+
 ```ts
 const sessionProperties = session.toPropertyArray(true);
 /*
@@ -223,7 +225,7 @@ const sessionProperties = session.toPropertyArray(true);
     ],
  */
 
-const session = Session.fromPropertyArray(sessionProperties);
+const session = Session.fromPropertyArray(sessionProperties, true);
 /*
   ... then session will have the following data...
   {
