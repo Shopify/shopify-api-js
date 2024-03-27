@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 import {InvalidSession} from '../error';
 import {OnlineAccessInfo, OnlineAccessUser} from '../auth/oauth/types';
 import {AuthScopes} from '../auth/scopes';
@@ -24,6 +25,7 @@ interface AssociatedUserObject {
 export class Session {
   public static fromPropertyArray(
     entries: [string, string | number | boolean][],
+    returnUserData = false,
   ): Session {
     if (!Array.isArray(entries)) {
       throw new InvalidSession(
@@ -85,55 +87,73 @@ export class Session {
                 },
               ];
             case 'userId':
-              return [
-                key,
-                (associatedUserObj.associated_user.id = Number(value)),
-              ];
+              if (returnUserData) {
+                return [
+                  key,
+                  (associatedUserObj.associated_user.id = Number(value)),
+                ];
+              }
             case 'firstName':
-              return [
-                key,
-                (associatedUserObj.associated_user.first_name = String(value)),
-              ];
+              if (returnUserData) {
+                return [
+                  key,
+                  (associatedUserObj.associated_user.first_name =
+                    String(value)),
+                ];
+              }
             case 'lastName':
-              return [
-                key,
-                (associatedUserObj.associated_user.last_name = String(value)),
-              ];
+              if (returnUserData) {
+                return [
+                  key,
+                  (associatedUserObj.associated_user.last_name = String(value)),
+                ];
+              }
             case 'email':
-              return [
-                key,
-                (associatedUserObj.associated_user.email = String(value)),
-              ];
+              if (returnUserData) {
+                return [
+                  key,
+                  (associatedUserObj.associated_user.email = String(value)),
+                ];
+              }
             case 'accountOwner':
-              return [
-                key,
-                (associatedUserObj.associated_user.account_owner =
-                  Boolean(value)),
-              ];
+              if (returnUserData) {
+                return [
+                  key,
+                  (associatedUserObj.associated_user.account_owner =
+                    Boolean(value)),
+                ];
+              }
             case 'locale':
-              return [
-                key,
-                (associatedUserObj.associated_user.locale = String(value)),
-              ];
+              if (returnUserData) {
+                return [
+                  key,
+                  (associatedUserObj.associated_user.locale = String(value)),
+                ];
+              }
             case 'collaborator':
-              return [
-                key,
-                (associatedUserObj.associated_user.collaborator =
-                  Boolean(value)),
-              ];
+              if (returnUserData) {
+                return [
+                  key,
+                  (associatedUserObj.associated_user.collaborator =
+                    Boolean(value)),
+                ];
+              }
             case 'emailVerified':
-              return [
-                key,
-                (associatedUserObj.associated_user.email_verified =
-                  Boolean(value)),
-              ];
+              if (returnUserData) {
+                return [
+                  key,
+                  (associatedUserObj.associated_user.email_verified =
+                    Boolean(value)),
+                ];
+              }
+            // If returnUserData is false, return any user keys as passed in
             default:
               return [key, value];
           }
         }),
     ) as any;
     // If the onlineAccessInfo is not present, we are using the new session info and  add it to the object
-    if (!obj.onlineAccessInfo && Object.keys(associatedUserObj).length !== 0) {
+    if (returnUserData) {
       obj.onlineAccessInfo = associatedUserObj;
     }
     Object.setPrototypeOf(obj, Session.prototype);
