@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.7
+
+### Patch Changes
+
+- d86dc11: Bumps @graphql-codegen/introspection from 4.0.0 to 4.0.3.
+
 ## 0.0.6
 
 ### Patch Changes
