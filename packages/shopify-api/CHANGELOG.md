@@ -6,7 +6,7 @@
 
 - b912ecd: Updates the Session class to handle the associated user information on the session object.
 
-  Updates the Session `fromPropertyArray` to handle all user info fields.
+  Updates the Session `fromPropertyArray` to handle all user info fields. New optional argument `returnUserData`, (defaulted to `false`), will return the user data if it is apart of the property array. This will be defaulted to `true` in an upcoming version.
 
   <details>
 
