@@ -116,7 +116,7 @@ function mergeOrAddHandler(
       break;
     } else {
       throw new InvalidDeliveryMethodError(
-        `Can only add multiple handlers when deliveryMethod is Http. Invalid handler: ${JSON.stringify(
+        `Can only add multiple handlers for a topic when deliveryMethod is Http. Please be sure that you used addHandler method once after creating ShopifyApi instance in your app.  Invalid handler: ${JSON.stringify(
           handler,
         )}`,
       );

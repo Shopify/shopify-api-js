@@ -69,7 +69,9 @@ describe('shopify.webhooks.addHandlers', () => {
       return shopify.webhooks.addHandlers({
         PRODUCTS_CREATE: [EVENT_BRIDGE_HANDLER, EVENT_BRIDGE_HANDLER],
       });
-    }).toThrow('Can only add multiple handlers when deliveryMethod is Http.');
+    }).toThrow(
+      'Can only add multiple handlers for a topic when deliveryMethod is Http. Please be sure that you used addHandler method once after creating ShopifyApi instance in your app.',
+    );
   });
 
   it('fails if pubsub handlers point to the same location', async () => {
@@ -79,7 +81,9 @@ describe('shopify.webhooks.addHandlers', () => {
       return shopify.webhooks.addHandlers({
         PRODUCTS_CREATE: [PUB_SUB_HANDLER, PUB_SUB_HANDLER],
       });
-    }).toThrow('Can only add multiple handlers when deliveryMethod is Http.');
+    }).toThrow(
+      'Can only add multiple handlers for a topic when deliveryMethod is Http. Please be sure that you used addHandler method once after creating ShopifyApi instance in your app.',
+    );
   });
 
   it('adds handler with lowercase/slash-period format to the webhook registry', async () => {
