@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.6.2
+
+### Patch Changes
+
+- b60c6c9: Fixes bug, that is returning the onlineAccessInfo field on the session, when the session if offline
+
 ## 9.6.1
 
 ### Patch Changes
