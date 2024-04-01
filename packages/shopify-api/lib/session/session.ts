@@ -134,8 +134,8 @@ export class Session {
           sessionData[key] = value;
       }
     });
-    Object.setPrototypeOf(sessionData, Session.prototype);
-    return sessionData as Session;
+    const session = new Session(sessionData);
+    return session;
   }
 
   /**
