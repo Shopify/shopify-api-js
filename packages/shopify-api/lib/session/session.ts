@@ -62,7 +62,7 @@ export class Session {
       onlineAccessInfo: {
         associated_user: {},
       },
-    } as any;
+    } as SessionParams;
     Object.entries(obj).forEach(([key, value]) => {
       switch (key) {
         case 'isOnline':
@@ -81,50 +81,51 @@ export class Session {
           sessionData[key] = value ? new Date(Number(value)) : undefined;
           break;
         case 'onlineAccessInfo':
-          sessionData.onlineAccessInfo.associated_user.id = Number(value);
+          sessionData.onlineAccessInfo!.associated_user.id = Number(value);
           break;
         case 'userId':
           if (returnUserData) {
-            sessionData.onlineAccessInfo.associated_user.id = Number(value);
+            sessionData.onlineAccessInfo!.associated_user.id = Number(value);
             break;
           }
         case 'firstName':
           if (returnUserData) {
-            sessionData.onlineAccessInfo.associated_user.first_name =
+            sessionData.onlineAccessInfo!.associated_user.first_name =
               String(value);
             break;
           }
         case 'lastName':
           if (returnUserData) {
-            sessionData.onlineAccessInfo.associated_user.last_name =
+            sessionData.onlineAccessInfo!.associated_user.last_name =
               String(value);
             break;
           }
         case 'email':
           if (returnUserData) {
-            sessionData.onlineAccessInfo.associated_user.email = String(value);
+            sessionData.onlineAccessInfo!.associated_user.email = String(value);
             break;
           }
         case 'accountOwner':
           if (returnUserData) {
-            sessionData.onlineAccessInfo.associated_user.account_owner =
+            sessionData.onlineAccessInfo!.associated_user.account_owner =
               Boolean(value);
             break;
           }
         case 'locale':
           if (returnUserData) {
-            sessionData.onlineAccessInfo.associated_user.locale = String(value);
+            sessionData.onlineAccessInfo!.associated_user.locale =
+              String(value);
             break;
           }
         case 'collaborator':
           if (returnUserData) {
-            sessionData.onlineAccessInfo.associated_user.collaborator =
+            sessionData.onlineAccessInfo!.associated_user.collaborator =
               Boolean(value);
             break;
           }
         case 'emailVerified':
           if (returnUserData) {
-            sessionData.onlineAccessInfo.associated_user.email_verified =
+            sessionData.onlineAccessInfo!.associated_user.email_verified =
               Boolean(value);
             break;
           }
