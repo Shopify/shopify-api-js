@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
 import {InvalidSession} from '../error';
-import {OnlineAccessInfo, OnlineAccessUser} from '../auth/oauth/types';
+import {OnlineAccessInfo} from '../auth/oauth/types';
 import {AuthScopes} from '../auth/scopes';
 
 import {SessionParams} from './types';
@@ -16,9 +16,6 @@ const propertiesToSave = [
   'onlineAccessInfo',
 ];
 
-interface AssociatedUserObject {
-  associated_user: Partial<OnlineAccessUser>;
-}
 /**
  * Stores App information from logged in merchants so they can make authenticated requests to the Admin API.
  */
@@ -33,9 +30,6 @@ export class Session {
       );
     }
 
-    const associatedUserObj: AssociatedUserObject = {
-      associated_user: {},
-    };
     const obj = Object.fromEntries(
       entries
         .filter(([_key, value]) => value !== null && value !== undefined)
@@ -61,103 +55,86 @@ export class Session {
             default:
               return [key.toLowerCase(), value];
           }
-        })
-
-        // Sanitize values
-        .map(([key, value]) => {
-          switch (key) {
-            case 'isOnline':
-              if (typeof value === 'string') {
-                return [key, value.toString().toLowerCase() === 'true'];
-              } else if (typeof value === 'number') {
-                return [key, Boolean(value)];
-              }
-              return [key, value];
-            case 'scope':
-              return [key, value.toString()];
-            case 'expires':
-              return [key, value ? new Date(Number(value)) : undefined];
-            case 'onlineAccessInfo':
-              return [
-                key,
-                {
-                  associated_user: {
-                    id: Number(value),
-                  },
-                },
-              ];
-            case 'userId':
-              if (returnUserData) {
-                return [
-                  key,
-                  (associatedUserObj.associated_user.id = Number(value)),
-                ];
-              }
-            case 'firstName':
-              if (returnUserData) {
-                return [
-                  key,
-                  (associatedUserObj.associated_user.first_name =
-                    String(value)),
-                ];
-              }
-            case 'lastName':
-              if (returnUserData) {
-                return [
-                  key,
-                  (associatedUserObj.associated_user.last_name = String(value)),
-                ];
-              }
-            case 'email':
-              if (returnUserData) {
-                return [
-                  key,
-                  (associatedUserObj.associated_user.email = String(value)),
-                ];
-              }
-            case 'accountOwner':
-              if (returnUserData) {
-                return [
-                  key,
-                  (associatedUserObj.associated_user.account_owner =
-                    Boolean(value)),
-                ];
-              }
-            case 'locale':
-              if (returnUserData) {
-                return [
-                  key,
-                  (associatedUserObj.associated_user.locale = String(value)),
-                ];
-              }
-            case 'collaborator':
-              if (returnUserData) {
-                return [
-                  key,
-                  (associatedUserObj.associated_user.collaborator =
-                    Boolean(value)),
-                ];
-              }
-            case 'emailVerified':
-              if (returnUserData) {
-                return [
-                  key,
-                  (associatedUserObj.associated_user.email_verified =
-                    Boolean(value)),
-                ];
-              }
-            // If returnUserData is false, return any user keys as passed in
-            default:
-              return [key, value];
-          }
         }),
-    ) as any;
-    // If the onlineAccessInfo is not present, we are using the new session info and  add it to the object
-    if (returnUserData) {
-      obj.onlineAccessInfo = associatedUserObj;
-    }
-    Object.setPrototypeOf(obj, Session.prototype);
-    return obj;
+    );
+
+    const sessionData = {
+      onlineAccessInfo: {
+        associated_user: {},
+      },
+    } as any;
+    Object.entries(obj).forEach(([key, value]) => {
+      switch (key) {
+        case 'isOnline':
+          if (typeof value === 'string') {
+            sessionData[key] = value.toString().toLowerCase() === 'true';
+          } else if (typeof value === 'number') {
+            sessionData[key] = Boolean(value);
+          } else {
+            sessionData[key] = value;
+          }
+          break;
+        case 'scope':
+          sessionData[key] = value.toString();
+          break;
+        case 'expires':
+          sessionData[key] = value ? new Date(Number(value)) : undefined;
+          break;
+        case 'onlineAccessInfo':
+          sessionData.onlineAccessInfo.associated_user.id = Number(value);
+          break;
+        case 'userId':
+          if (returnUserData) {
+            sessionData.onlineAccessInfo.associated_user.id = Number(value);
+            break;
+          }
+        case 'firstName':
+          if (returnUserData) {
+            sessionData.onlineAccessInfo.associated_user.first_name =
+              String(value);
+            break;
+          }
+        case 'lastName':
+          if (returnUserData) {
+            sessionData.onlineAccessInfo.associated_user.last_name =
+              String(value);
+            break;
+          }
+        case 'email':
+          if (returnUserData) {
+            sessionData.onlineAccessInfo.associated_user.email = String(value);
+            break;
+          }
+        case 'accountOwner':
+          if (returnUserData) {
+            sessionData.onlineAccessInfo.associated_user.account_owner =
+              Boolean(value);
+            break;
+          }
+        case 'locale':
+          if (returnUserData) {
+            sessionData.onlineAccessInfo.associated_user.locale = String(value);
+            break;
+          }
+        case 'collaborator':
+          if (returnUserData) {
+            sessionData.onlineAccessInfo.associated_user.collaborator =
+              Boolean(value);
+            break;
+          }
+        case 'emailVerified':
+          if (returnUserData) {
+            sessionData.onlineAccessInfo.associated_user.email_verified =
+              Boolean(value);
+            break;
+          }
+        // Return any user keys as passed in
+        default:
+          sessionData[key] = value;
+      }
+    });
+    Object.setPrototypeOf(sessionData, Session.prototype);
+    return sessionData as Session;
   }
 
   /**
