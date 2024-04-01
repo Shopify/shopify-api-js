@@ -58,11 +58,10 @@ export class Session {
         }),
     );
 
-    const sessionData = {
-      onlineAccessInfo: {
-        associated_user: {},
-      },
-    } as SessionParams;
+    const sessionData = {} as SessionParams;
+    const onlineAccessInfo = {
+      associated_user: {},
+    } as OnlineAccessInfo;
     Object.entries(obj).forEach(([key, value]) => {
       switch (key) {
         case 'isOnline':
@@ -81,52 +80,46 @@ export class Session {
           sessionData[key] = value ? new Date(Number(value)) : undefined;
           break;
         case 'onlineAccessInfo':
-          sessionData.onlineAccessInfo!.associated_user.id = Number(value);
+          onlineAccessInfo.associated_user.id = Number(value);
           break;
         case 'userId':
           if (returnUserData) {
-            sessionData.onlineAccessInfo!.associated_user.id = Number(value);
+            onlineAccessInfo.associated_user.id = Number(value);
             break;
           }
         case 'firstName':
           if (returnUserData) {
-            sessionData.onlineAccessInfo!.associated_user.first_name =
-              String(value);
+            onlineAccessInfo.associated_user.first_name = String(value);
             break;
           }
         case 'lastName':
           if (returnUserData) {
-            sessionData.onlineAccessInfo!.associated_user.last_name =
-              String(value);
+            onlineAccessInfo.associated_user.last_name = String(value);
             break;
           }
         case 'email':
           if (returnUserData) {
-            sessionData.onlineAccessInfo!.associated_user.email = String(value);
+            onlineAccessInfo.associated_user.email = String(value);
             break;
           }
         case 'accountOwner':
           if (returnUserData) {
-            sessionData.onlineAccessInfo!.associated_user.account_owner =
-              Boolean(value);
+            onlineAccessInfo.associated_user.account_owner = Boolean(value);
             break;
           }
         case 'locale':
           if (returnUserData) {
-            sessionData.onlineAccessInfo!.associated_user.locale =
-              String(value);
+            onlineAccessInfo.associated_user.locale = String(value);
             break;
           }
         case 'collaborator':
           if (returnUserData) {
-            sessionData.onlineAccessInfo!.associated_user.collaborator =
-              Boolean(value);
+            onlineAccessInfo.associated_user.collaborator = Boolean(value);
             break;
           }
         case 'emailVerified':
           if (returnUserData) {
-            sessionData.onlineAccessInfo!.associated_user.email_verified =
-              Boolean(value);
+            onlineAccessInfo.associated_user.email_verified = Boolean(value);
             break;
           }
         // Return any user keys as passed in
@@ -134,6 +127,9 @@ export class Session {
           sessionData[key] = value;
       }
     });
+    if (sessionData.isOnline) {
+      sessionData.onlineAccessInfo = onlineAccessInfo;
+    }
     const session = new Session(sessionData);
     return session;
   }

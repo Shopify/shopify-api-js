@@ -571,5 +571,20 @@ describe('toPropertyArray and fromPropertyArray', () => {
         ).toBeUndefined();
       }
     });
+    const describe = test.session.isOnline ? 'Does' : 'Does not';
+    const isOnline = test.session.isOnline ? 'online' : 'offline';
+
+    it(`${describe} have online access info when the token is ${isOnline}`, () => {
+      const session = new Session(test.session);
+      const sessionCopy = Session.fromPropertyArray(
+        session.toPropertyArray(test.returnUserData),
+        test.returnUserData,
+      );
+      if (test.session.isOnline) {
+        expect(sessionCopy.onlineAccessInfo).toBeDefined();
+      } else {
+        expect(sessionCopy.onlineAccessInfo).toBeUndefined();
+      }
+    });
   });
 });
