@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.6.1
+
+### Patch Changes
+
+- 96a0aab: Fix bug that was causing duplicate keys in Session when using FromPropertyArray with returnUserData = true
+
 ## 9.6.0
 
 ### Minor Changes
