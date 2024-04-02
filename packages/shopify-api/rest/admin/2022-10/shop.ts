@@ -28,6 +28,22 @@ export class Shop extends Base {
     }
   ];
 
+  public static async current(
+    {
+      session,
+      fields = null,
+      ...otherArgs
+    }: AllArgs
+  ): Promise<Shop | null> {
+    const result = await this.baseFind<Shop>({
+      session: session,
+      urlIds: {},
+      params: {"fields": fields, ...otherArgs},
+    });
+
+    return result.data ? result.data[0] : null;
+  }
+
   public static async all(
     {
       session,
