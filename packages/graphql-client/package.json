@@ -88,7 +88,7 @@
     "jest-environment-jsdom": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
     "regenerator-runtime": "^0.14.1",
-    "web-streams-polyfill": "^3.3.2"
+    "web-streams-polyfill": "^4.0.0"
   },
   "bugs": {
     "url": "https://github.com/Shopify/shopify-api-js/issues"
