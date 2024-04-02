@@ -456,6 +456,7 @@ describe('toPropertyArray and fromPropertyArray', () => {
         session.toPropertyArray(test.returnUserData),
         test.returnUserData,
       );
+
       expect(session.id).toStrictEqual(sessionCopy.id);
       expect(session.shop).toStrictEqual(sessionCopy.shop);
       expect(session.state).toStrictEqual(sessionCopy.state);
@@ -466,6 +467,7 @@ describe('toPropertyArray and fromPropertyArray', () => {
       expect(session.onlineAccessInfo?.associated_user.id).toStrictEqual(
         sessionCopy.onlineAccessInfo?.associated_user.id,
       );
+
       if (test.returnUserData) {
         expect(
           session.onlineAccessInfo?.associated_user.first_name,
@@ -498,7 +500,54 @@ describe('toPropertyArray and fromPropertyArray', () => {
         ).toStrictEqual(
           sessionCopy.onlineAccessInfo?.associated_user.collaborator,
         );
+        // Test that the user information is correctly moved to the associated_user object from property array
+        expect(sessionCopy).toEqual(
+          expect.not.objectContaining({
+            firstName: session.onlineAccessInfo?.associated_user.first_name,
+          }),
+        );
+        expect(sessionCopy).toEqual(
+          expect.not.objectContaining({
+            lastName: session.onlineAccessInfo?.associated_user.last_name,
+          }),
+        );
+        expect(sessionCopy).toEqual(
+          expect.not.objectContaining({
+            email: session.onlineAccessInfo?.associated_user.email,
+          }),
+        );
+        expect(sessionCopy).toEqual(
+          expect.not.objectContaining({
+            locale: session.onlineAccessInfo?.associated_user.locale,
+          }),
+        );
+        expect(sessionCopy).toEqual(
+          expect.not.objectContaining({
+            emailVerified:
+              session.onlineAccessInfo?.associated_user.email_verified,
+          }),
+        );
+        expect(sessionCopy).toEqual(
+          expect.not.objectContaining({
+            accountOwner:
+              session.onlineAccessInfo?.associated_user.account_owner,
+          }),
+        );
+        expect(sessionCopy).toEqual(
+          expect.not.objectContaining({
+            collaborator:
+              session.onlineAccessInfo?.associated_user.collaborator,
+          }),
+        );
+        expect(sessionCopy).toEqual(
+          expect.not.objectContaining({
+            associated_user: {id: session.onlineAccessInfo?.associated_user.id},
+          }),
+        );
       } else {
+        expect(sessionCopy.onlineAccessInfo?.associated_user?.id).toStrictEqual(
+          session.onlineAccessInfo?.associated_user?.id,
+        );
         expect(
           sessionCopy.onlineAccessInfo?.associated_user.first_name,
         ).toBeUndefined();
@@ -520,6 +569,21 @@ describe('toPropertyArray and fromPropertyArray', () => {
         expect(
           sessionCopy.onlineAccessInfo?.associated_user.collaborator,
         ).toBeUndefined();
+      }
+    });
+    const describe = test.session.isOnline ? 'Does' : 'Does not';
+    const isOnline = test.session.isOnline ? 'online' : 'offline';
+
+    it(`${describe} have online access info when the token is ${isOnline}`, () => {
+      const session = new Session(test.session);
+      const sessionCopy = Session.fromPropertyArray(
+        session.toPropertyArray(test.returnUserData),
+        test.returnUserData,
+      );
+      if (test.session.isOnline) {
+        expect(sessionCopy.onlineAccessInfo).toBeDefined();
+      } else {
+        expect(sessionCopy.onlineAccessInfo).toBeUndefined();
       }
     });
   });
