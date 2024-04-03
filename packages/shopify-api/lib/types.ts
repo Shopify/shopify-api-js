@@ -12,11 +12,12 @@ export enum ApiVersion {
   July23 = '2023-07',
   October23 = '2023-10',
   January24 = '2024-01',
+  April24 = '2024-04',
   Unstable = 'unstable',
 }
 
 export const LIBRARY_NAME = 'Shopify API Library';
-export const LATEST_API_VERSION = ApiVersion.January24;
+export const LATEST_API_VERSION = ApiVersion.April24;
 
 /* eslint-disable @shopify/typescript/prefer-pascal-case-enums */
 export enum ShopifyHeader {
