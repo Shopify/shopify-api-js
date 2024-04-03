@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.7.0
+
+### Minor Changes
+
+- 3415a8c: Added support for the 2024-04 API version.
+- c9dff9f: Add `Shop.current()` method to the REST resources
+
 ## 9.6.2
 
 ### Patch Changes
