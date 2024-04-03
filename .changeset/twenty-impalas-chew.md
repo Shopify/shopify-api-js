@@ -1,5 +1,5 @@
 ---
-"@shopify/shopify-api": major
+"@shopify/shopify-api": minor
 ---
 
-add Shop.current method
+Add `Shop.current()` method to the REST resources
