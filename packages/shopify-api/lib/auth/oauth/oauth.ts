@@ -21,6 +21,7 @@ import {
 import {logger, ShopifyLogger} from '../../logger';
 import {DataType} from '../../clients/types';
 import {fetchRequestFactory} from '../../utils/fetch-request';
+import {AuthScopes} from '../scopes';
 
 import {
   SESSION_COOKIE_NAME,
@@ -68,6 +69,10 @@ export function begin(config: ConfigInterface): OAuthBegin {
       config.isCustomStoreApp,
       'Cannot perform OAuth for private apps',
     );
+    throwIfScopesUndefined(
+      config.scopes,
+      'Apps that use OAuth must define the required scopes in the config',
+    );
 
     const log = logger(config);
     log.info('Beginning OAuth', {shop, isOnline, callbackPath});
@@ -101,7 +106,8 @@ export function begin(config: ConfigInterface): OAuthBegin {
 
     const query = {
       client_id: config.apiKey,
-      scope: config.scopes.toString(),
+      // If scopes is undefined, threw an error
+      scope: config.scopes!.toString(),
       redirect_uri: `${config.hostScheme}://${config.hostName}${callbackPath}`,
       state,
       'grant_options[]': isOnline ? 'per-user' : '',
@@ -253,5 +259,14 @@ function throwIfCustomStoreApp(
 ): void {
   if (isCustomStoreApp) {
     throw new ShopifyErrors.PrivateAppError(message);
+  }
+}
+
+function throwIfScopesUndefined(
+  scopes: string | AuthScopes | undefined,
+  message: string,
+): void {
+  if (!scopes) {
+    throw new ShopifyErrors.MissingRequiredArgument(message);
   }
 }
