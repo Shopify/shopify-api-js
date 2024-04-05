@@ -7,8 +7,6 @@ import {ResourcePath, ResourceNames} from '../../types';
 import {Session} from '../../../lib/session/session';
 import {ApiVersion} from '../../../lib/types';
 
-import {Currency} from './currency';
-
 interface FindArgs {
   session: Session;
   id: number | string;
@@ -32,9 +30,7 @@ interface CustomizeArgs {
 export class RecurringApplicationCharge extends Base {
   public static apiVersion = ApiVersion.October22;
 
-  protected static hasOne: {[key: string]: typeof Base} = {
-    "currency": Currency
-  };
+  protected static hasOne: {[key: string]: typeof Base} = {};
   protected static hasMany: {[key: string]: typeof Base} = {};
   protected static paths: ResourcePath[] = [
     {"http_method": "delete", "operation": "delete", "ids": ["id"], "path": "recurring_application_charges/<id>.json"},
@@ -124,7 +120,7 @@ export class RecurringApplicationCharge extends Base {
   public capped_amount: string | number | null;
   public confirmation_url: string | null;
   public created_at: string | null;
-  public currency: Currency | null | {[key: string]: any};
+  public currency: string | null;
   public id: number | null;
   public name: string | null;
   public price: string | number | null;
