@@ -1,4 +1,6 @@
-import {queueMockResponse} from '../../../__tests__/test-helper';
+import {FetchError} from 'node-fetch';
+
+import {queueError, queueMockResponse} from '../../../__tests__/test-helper';
 import {testConfig} from '../../../__tests__/test-config';
 import {
   ApiVersion,
@@ -8,7 +10,7 @@ import {
 } from '../../../types';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
-import {MissingRequiredArgument} from '../../../error';
+import {HttpRequestError, MissingRequiredArgument} from '../../../error';
 import {shopifyApi} from '../../../index';
 
 const domain = 'test-shop.myshopify.io';
@@ -169,5 +171,27 @@ describe('Storefront GraphQL client', () => {
         `Storefront client overriding default API version ${LATEST_API_VERSION} with 2020-01`,
       ),
     );
+  });
+
+  it('throws error if no response is available', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Storefront({
+      session,
+      apiVersion: '2020-01' as any as ApiVersion,
+    });
+
+    queueError(
+      new FetchError(
+        `uri requested responds with an invalid redirect URL: http://test.com`,
+        'invalid-redirect',
+      ),
+    );
+
+    const request = async () => {
+      await client.request(QUERY);
+    };
+
+    await expect(request).rejects.toThrow(HttpRequestError);
   });
 });

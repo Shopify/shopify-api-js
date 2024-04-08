@@ -137,8 +137,9 @@ export class StorefrontClient {
     });
 
     if (response.errors) {
-      const fetchResponse = response.errors.response!;
-      throwFailedRequest(response, fetchResponse, (options?.retries ?? 0) > 0);
+      const fetchResponse = response.errors.response;
+
+      throwFailedRequest(response, (options?.retries ?? 0) > 0, fetchResponse);
     }
 
     return response;
