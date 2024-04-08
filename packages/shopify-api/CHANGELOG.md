@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.7.1
+
+### Patch Changes
+
+- a60c214: Fix type error in graphql error handler
+- 513f9e6: Fixed an issue with the `RecurringApplicationCharge` REST resource currency type
+
 ## 9.7.0
 
 ### Minor Changes
