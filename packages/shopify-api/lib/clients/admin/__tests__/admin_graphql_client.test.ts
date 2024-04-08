@@ -1,3 +1,5 @@
+import {FetchError} from 'node-fetch';
+
 import * as ShopifyErrors from '../../../error';
 import {
   ApiVersion,
@@ -5,11 +7,12 @@ import {
   LogSeverity,
   ShopifyHeader,
 } from '../../../types';
-import {queueMockResponse} from '../../../__tests__/test-helper';
+import {queueError, queueMockResponse} from '../../../__tests__/test-helper';
 import {testConfig} from '../../../__tests__/test-config';
 import {Session} from '../../../session/session';
 import {JwtPayload} from '../../../session/types';
 import {DataType, shopifyApi} from '../../..';
+import {HttpRequestError} from '../../../error';
 
 const domain = 'test-shop.myshopify.io';
 const QUERY = `
@@ -257,6 +260,34 @@ describe('GraphQL client', () => {
       },
       data: {query},
     }).toMatchMadeHttpRequest();
+  });
+
+  it('throws error if no response is available', async () => {
+    const shopify = shopifyApi(testConfig());
+
+    const client = new shopify.clients.Graphql({session});
+    const query = `query getProducts {
+      products {
+        edges {
+          node {
+            id
+          }
+        }
+      }
+    }`;
+
+    queueError(
+      new FetchError(
+        `uri requested responds with an invalid redirect URL: http://test.com`,
+        'invalid-redirect',
+      ),
+    );
+
+    const request = async () => {
+      await client.request(query);
+    };
+
+    await expect(request).rejects.toThrow(HttpRequestError);
   });
 
   it('allows overriding the API version', async () => {

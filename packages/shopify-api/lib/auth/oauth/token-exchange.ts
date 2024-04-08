@@ -60,7 +60,7 @@ export function tokenExchange(config: ConfigInterface): TokenExchange {
     );
 
     if (!postResponse.ok) {
-      throwFailedRequest(await postResponse.json(), postResponse, false);
+      throwFailedRequest(await postResponse.json(), false, postResponse);
     }
 
     return {

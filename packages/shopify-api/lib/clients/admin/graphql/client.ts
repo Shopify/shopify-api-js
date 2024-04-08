@@ -124,13 +124,7 @@ export class GraphqlClient {
     if (response.errors) {
       const fetchResponse = response.errors.response;
 
-      if (!fetchResponse) {
-        throw new ShopifyErrors.GraphqlQueryError({
-          message: 'fetch api exception',
-          response: response as Record<string, any>,
-        });
-      }
-      throwFailedRequest(response, fetchResponse, (options?.retries ?? 0) > 0);
+      throwFailedRequest(response, (options?.retries ?? 0) > 0, fetchResponse);
     }
 
     return response;

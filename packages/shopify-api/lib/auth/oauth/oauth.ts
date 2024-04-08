@@ -203,7 +203,7 @@ export function callback(config: ConfigInterface): OAuthCallback {
     );
 
     if (!postResponse.ok) {
-      throwFailedRequest(await postResponse.json(), postResponse, false);
+      throwFailedRequest(await postResponse.json(), false, postResponse);
     }
 
     const session: Session = createSession({

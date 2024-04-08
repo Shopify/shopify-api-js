@@ -58,9 +58,18 @@ export function clientLoggerFactory(config: ConfigInterface) {
 
 export function throwFailedRequest(
   body: any,
-  response: Response,
   atMaxRetries: boolean,
+  response?: Response,
 ): never {
+  if (typeof response === 'undefined') {
+    throw new ShopifyErrors.HttpRequestError(
+      'Http request error, no response available',
+      {
+        body,
+      },
+    );
+  }
+
   const responseHeaders = canonicalizeHeaders(
     Object.fromEntries(response.headers.entries() ?? []),
   );

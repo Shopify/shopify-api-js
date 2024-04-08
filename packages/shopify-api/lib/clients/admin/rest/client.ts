@@ -172,7 +172,7 @@ export class RestClient {
     );
 
     if (!response.ok) {
-      throwFailedRequest(body, response, (params.tries ?? 1) > 1);
+      throwFailedRequest(body, (params.tries ?? 1) > 1, response);
     }
 
     const requestReturn: RestRequestReturn<T> = {
