@@ -181,17 +181,18 @@ describe('Storefront GraphQL client', () => {
       apiVersion: '2020-01' as any as ApiVersion,
     });
 
-    queueError(
-      new FetchError(
-        `uri requested responds with an invalid redirect URL: http://test.com`,
-        'invalid-redirect',
-      ),
+    const fetchError = new FetchError(
+      `uri requested responds with an invalid redirect URL: http://test.com`,
+      'invalid-redirect',
     );
+    queueError(fetchError);
+    queueError(fetchError);
 
     const request = async () => {
       await client.request(QUERY);
     };
 
     await expect(request).rejects.toThrow(HttpRequestError);
+    await expect(request).rejects.toThrow('invalid redirect');
   });
 });

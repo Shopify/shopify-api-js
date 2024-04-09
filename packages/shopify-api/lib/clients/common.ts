@@ -62,11 +62,9 @@ export function throwFailedRequest(
   response?: Response,
 ): never {
   if (typeof response === 'undefined') {
+    const message = body?.errors?.message ?? '';
     throw new ShopifyErrors.HttpRequestError(
-      'Http request error, no response available',
-      {
-        body,
-      },
+      `Http request error, no response available: ${message}`,
     );
   }
 

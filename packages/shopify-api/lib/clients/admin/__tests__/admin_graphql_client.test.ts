@@ -276,18 +276,19 @@ describe('GraphQL client', () => {
       }
     }`;
 
-    queueError(
-      new FetchError(
-        `uri requested responds with an invalid redirect URL: http://test.com`,
-        'invalid-redirect',
-      ),
+    const fetchError = new FetchError(
+      `uri requested responds with an invalid redirect URL: http://test.com`,
+      'invalid-redirect',
     );
+    queueError(fetchError);
+    queueError(fetchError);
 
     const request = async () => {
       await client.request(query);
     };
 
     await expect(request).rejects.toThrow(HttpRequestError);
+    await expect(request).rejects.toThrow('invalid redirect');
   });
 
   it('allows overriding the API version', async () => {
