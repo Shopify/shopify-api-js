@@ -27,7 +27,7 @@ export interface ConfigParams<
    */
   apiSecretKey: string;
   /**
-   * The scopes your app needs to access the API.
+   * The scopes your app needs to access the API. Not required if using Shopify managed installation.
    */
   scopes?: string[] | AuthScopes;
   /**
@@ -121,7 +121,7 @@ export type ConfigInterface<Params extends ConfigParams = ConfigParams> = Omit<
 > & {
   apiKey: string;
   hostScheme: 'http' | 'https';
-  scopes: AuthScopes;
+  scopes?: AuthScopes;
   isCustomStoreApp: boolean;
   billing?: BillingConfig<Params['future']>;
   logger: {

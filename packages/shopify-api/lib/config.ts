@@ -10,7 +10,6 @@ export function validateConfig<Params extends ConfigParams>(
   const config = {
     apiKey: '',
     apiSecretKey: '',
-    scopes: new AuthScopes([]),
     hostName: '',
     hostScheme: 'https',
     apiVersion: LATEST_API_VERSION,
@@ -30,7 +29,6 @@ export function validateConfig<Params extends ConfigParams>(
   const mandatory: (keyof Params)[] = ['apiSecretKey', 'hostName'];
   if (!('isCustomStoreApp' in params) || !params.isCustomStoreApp) {
     mandatory.push('apiKey');
-    mandatory.push('scopes');
   }
   if ('isCustomStoreApp' in params && params.isCustomStoreApp) {
     if (

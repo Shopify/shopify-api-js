@@ -58,20 +58,46 @@ describe('isActive', () => {
 
     expect(session.isActive(shopify.config.scopes)).toBeTruthy();
   });
+});
 
-  it('returns false if session is not active', () => {
-    const shopify = shopifyApi(testConfig());
-
-    const session = new Session({
-      id: 'not_active',
-      shop: 'inactive-shop',
-      state: 'not_same',
-      isOnline: true,
-      scope: 'test_scope',
-      expires: new Date(Date.now() - 1),
-    });
-    expect(session.isActive(shopify.config.scopes)).toBeFalsy();
+it('returns true when scopes that passed in empty and scopes are not equal', () => {
+  const session = new Session({
+    id: 'active',
+    shop: 'active-shop',
+    state: 'test_state',
+    isOnline: true,
+    scope: 'test_scope',
+    accessToken: 'indeed',
+    expires: new Date(Date.now() + 86400),
   });
+
+  expect(session.isActive('')).toBeTruthy();
+});
+
+it('returns false if session is not active', () => {
+  const shopify = shopifyApi(testConfig());
+
+  const session = new Session({
+    id: 'not_active',
+    shop: 'inactive-shop',
+    state: 'not_same',
+    isOnline: true,
+    scope: 'test_scope',
+    expires: new Date(Date.now() - 1),
+  });
+  expect(session.isActive(shopify.config.scopes)).toBeFalsy();
+});
+
+it('returns false if checking scopes and scopes are not equal', () => {
+  const session = new Session({
+    id: 'not_active',
+    shop: 'inactive-shop',
+    state: 'not_same',
+    isOnline: true,
+    scope: 'test_scope',
+    expires: new Date(Date.now() - 1),
+  });
+  expect(session.isActive('fake_scope')).toBeFalsy();
 });
 
 describe('isExpired', () => {
