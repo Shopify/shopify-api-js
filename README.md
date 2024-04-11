@@ -1,4 +1,11 @@
-# `@shopify/shopify-api-js`
+# This repo has been moved
+
+> [!IMPORTANT]
+> This repo has been merged with [`Shopify/shopify-app-js`](https://github.com/Shopify/shopify-app-js). All of the packages contained within this repo were copied over and will be maintained / released from there.
+>
+> If you have an issue or feature request, please create it in the new repository.
+
+## `@shopify/shopify-api-js`
 
 This mono-repo is a collection of Shopify's JavaScript API client libraries and utilities.
 
