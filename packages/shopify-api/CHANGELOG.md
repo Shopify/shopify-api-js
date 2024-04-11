@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.7.2
+
+### Patch Changes
+
+- 16f52ee: Include error message into HttpRequestError
+
 ## 9.7.1
 
 ### Patch Changes
